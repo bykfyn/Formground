@@ -1,0 +1,42 @@
+# WHAT THIS DOES:
+#   Runs the scraper automatically once a week, so you never have to
+#   manually run anything. It also saves the updated database back to
+#   the repo so the latest data is always there.
+#
+# HOW TO TRIGGER IT MANUALLY:
+#   Go to the "Actions" tab in GitHub, click "Scrape brand sites" on the
+#   left, then click the "Run workflow" button. That's the same button
+#   this schedule presses automatically every week.
+
+name: Scrape brand sites
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"  # every Monday at 6am UTC
+  workflow_dispatch: {}    # adds the manual "Run workflow" button in GitHub
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Run the scraper
+        run: python scraper/scrape.py
+
+      - name: Save updated data back to the repo
+        run: |
+          git config user.name "formground-bot"
+          git config user.email "bot@formground.local"
+          git add data/formground.db data/last_scrape_report.json
+          git diff --quiet --cached || git commit -m "Update scraped data"
+          git push

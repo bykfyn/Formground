@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formground</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
+<style>
+  :root {
+    --bg: #faf9f7;
+    --surface-1: #f1efec;
+    --surface-2: #ffffff;
+    --text-primary: #1c1b1a;
+    --text-secondary: #57534e;
+    --text-muted: #948d85;
+    --text-accent: #4a6670;
+    --border: #e4e0da;
+    --border-accent: #4a6670;
+    --border-strong: #c9c2b8;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 48px 20px 60px;
+  }
+
+  /* --- header --- */
+  .brand-header { text-align: center; margin-bottom: 28px; }
+  .brand-header .wordmark {
+    font-size: 15px; font-weight: 500; letter-spacing: 0.02em;
+    margin: 0 0 8px; color: var(--text-primary);
+  }
+  .brand-header .tagline { font-size: 13px; color: var(--text-secondary); margin: 0 0 4px; }
+  .brand-header .descriptor { font-size: 12px; color: var(--text-muted); margin: 0; }
+
+  /* --- ask box --- */
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px; margin-top: 28px;
+  }
+  .ask-box i { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* --- chips --- */
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 28px; }
+  .chip {
+    font-size: 12px; padding: 6px 12px; border-radius: var(--radius);
+    border: 0.5px solid var(--border); color: var(--text-secondary);
+    background: none; cursor: pointer; font-family: inherit;
+  }
+  .chip:hover { border-color: var(--border-strong); }
+  .chip i { font-size: 13px; vertical-align: -2px; margin-right: 4px; }
+
+  /* --- results --- */
+  #results-meta {
+    font-size: 12px; color: var(--text-muted); text-align: center;
+    margin: 32px 0 20px; display: none;
+  }
+  .results-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    background: var(--surface-2); border: 0.5px solid var(--border);
+    border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit;
+    display: block;
+  }
+  .card.thin { border-style: dashed; border-color: var(--border-strong); }
+  .card-image {
+    aspect-ratio: 1 / 1; background: var(--surface-1);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .card-image i { font-size: 28px; color: var(--text-muted); }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-body { padding: 10px 12px; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 6px; }
+  .card-detail { font-size: 11px; color: var(--text-muted); margin: 0; }
+  .card-note { font-size: 11px; color: var(--text-accent); margin: 0; }
+  .card-note i { font-size: 12px; vertical-align: -1px; margin-right: 3px; }
+
+  /* --- footer / empty state / errors --- */
+  .foot-note {
+    font-size: 11px; color: var(--text-muted); text-align: center;
+    margin: 32px 0 0; line-height: 1.6;
+  }
+  #status { font-size: 13px; color: var(--text-muted); text-align: center; margin: 32px 0; display: none; }
+  #status.error { color: #a14b3f; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<main>
+  <div class="brand-header">
+    <p class="wordmark">Formground</p>
+    <p class="tagline">Search finds what's popular. This finds what's real.</p>
+    <p class="descriptor">Furniture, lighting, and objects from independent makers.</p>
+  </div>
+
+  <form id="search-form">
+    <div class="ask-box">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input id="query-input" type="text" placeholder="describe what you're looking for" autocomplete="off">
+    </div>
+  </form>
+
+  <!-- Category browse chips (Chairs/Lighting/Ceramics/Tables) were
+       removed on purpose, not just deferred - see project memory
+       product_interface_decisions.md. The taxonomy across the 16
+       brands' own category data is too inconsistent (mixed levels,
+       different languages, missing tags on some brands) to guarantee a
+       "healthy" result count for every chip, and a browse affordance
+       that sometimes returns 3 results from one brand reads as broken.
+       Normal search doesn't have this problem since a real query only
+       needs to match well, not comprehensively, for every possible
+       category. -->
+  <div class="chips">
+    <button class="chip" id="discover-chip"><i class="ti ti-dice" aria-hidden="true"></i>Surprise me</button>
+  </div>
+
+  <p id="status"></p>
+  <p id="results-meta"></p>
+  <div id="results-grid" class="results-grid"></div>
+
+  <p class="foot-note">
+    No account needed. Results link straight to each maker's own site.<br>
+    Equally relevant results are shown in random order &mdash; nobody paid to be here.
+  </p>
+</main>
+
+<script>
+  // Change this to the deployed backend URL once it exists (see README).
+  const API_BASE = window.FORMGROUND_API_BASE || "http://localhost:8000";
+
+  const form = document.getElementById("search-form");
+  const input = document.getElementById("query-input");
+  const statusEl = document.getElementById("status");
+  const metaEl = document.getElementById("results-meta");
+  const gridEl = document.getElementById("results-grid");
+
+  const CATEGORY_ICONS = {
+    chair: "ti-armchair", stool: "ti-armchair", bench: "ti-armchair", seat: "ti-armchair",
+    table: "ti-table", lamp: "ti-bulb", light: "ti-bulb", sconce: "ti-bulb",
+    ceramic: "ti-vase", vase: "ti-vase", bowl: "ti-vase",
+  };
+
+  function iconFor(category) {
+    const c = (category || "").toLowerCase();
+    for (const key in CATEGORY_ICONS) {
+      if (c.includes(key)) return CATEGORY_ICONS[key];
+    }
+    return "ti-photo";
+  }
+
+  function iconMarkup(category) {
+    return `<i class="ti ${iconFor(category)}" aria-hidden="true"></i>`;
+  }
+
+  function renderCard(r) {
+    const a = document.createElement("a");
+    a.className = "card" + (r.thin ? " thin" : "");
+    a.href = r.product_url;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+
+    const imageDiv = document.createElement("div");
+    imageDiv.className = "card-image";
+    if (r.image_url) {
+      // Set via property, not interpolated into an HTML string - this is
+      // scraped data from an external site, not something to trust blindly.
+      const img = document.createElement("img");
+      img.src = r.image_url;
+      img.alt = "";
+      img.loading = "lazy";
+      img.onerror = () => { imageDiv.innerHTML = iconMarkup(r.category); };
+      imageDiv.appendChild(img);
+    } else {
+      imageDiv.innerHTML = iconMarkup(r.category);
+    }
+
+    // "There's more than one option here, go see the brand's page for the
+    // rest" is one signal whether it comes from merged listings (notes,
+    // e.g. "2 variants") or a single listing with several finish choices
+    // (material_options) - both get the same info-icon treatment, and
+    // only one shows at a time to keep the card minimal. A single
+    // material/dimension, when that's all there is, is just a plain fact
+    // and doesn't need the icon.
+    const materials = r.material_options || [];
+    const noteText = r.notes || (materials.length > 1 ? `Available in ${materials.length} variants` : "");
+
+    const body = document.createElement("div");
+    body.className = "card-body";
+    body.innerHTML = `
+      <p class="card-title"></p>
+      <p class="card-brand"></p>
+      ${noteText
+        ? `<p class="card-note"><i class="ti ti-info-circle" aria-hidden="true"></i><span></span></p>`
+        : `<p class="card-detail"></p>`}
+    `;
+    body.querySelector(".card-title").textContent = r.product_name;
+    body.querySelector(".card-brand").textContent = r.brand;
+    if (noteText) {
+      body.querySelector(".card-note span").textContent = noteText;
+    } else {
+      body.querySelector(".card-detail").textContent = materials.join(", ") || r.dimensions || "";
+    }
+
+    a.appendChild(imageDiv);
+    a.appendChild(body);
+    return a;
+  }
+
+  function renderResults(results, metaText, emptyText) {
+    gridEl.innerHTML = "";
+    statusEl.style.display = "none";
+
+    if (results.length === 0) {
+      statusEl.className = "";
+      statusEl.style.display = "block";
+      statusEl.textContent = emptyText;
+      metaEl.style.display = "none";
+      return;
+    }
+
+    metaEl.textContent = metaText(results.length);
+    metaEl.style.display = "block";
+    results.forEach(r => gridEl.appendChild(renderCard(r)));
+  }
+
+  async function runSearch(query) {
+    gridEl.innerHTML = "";
+    metaEl.style.display = "none";
+    statusEl.className = "";
+    statusEl.style.display = "block";
+    statusEl.textContent = "Searching…";
+
+    try {
+      const resp = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}`);
+      if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
+      const data = await resp.json();
+      renderResults(
+        data.results || [],
+        (n) => `${n} result${n === 1 ? "" : "s"}, real makers, no rankings`,
+        "No matches yet - try describing it a different way."
+      );
+    } catch (err) {
+      statusEl.className = "error";
+      statusEl.style.display = "block";
+      statusEl.textContent = "Couldn't reach Formground's search right now - please try again shortly.";
+      console.error(err);
+    }
+  }
+
+  async function runDiscover() {
+    gridEl.innerHTML = "";
+    metaEl.style.display = "none";
+    statusEl.className = "";
+    statusEl.style.display = "block";
+    statusEl.textContent = "Shuffling…";
+
+    try {
+      const resp = await fetch(`${API_BASE}/discover`);
+      if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
+      const data = await resp.json();
+      renderResults(
+        data.results || [],
+        (n) => `${n} real objects, picked at random across every maker`,
+        "Nothing to discover yet."
+      );
+    } catch (err) {
+      statusEl.className = "error";
+      statusEl.style.display = "block";
+      statusEl.textContent = "Couldn't reach Formground right now - please try again shortly.";
+      console.error(err);
+    }
+  }
+
+  // Typing "random" is a shortcut for the same random browse the
+  // "Surprise me" chip triggers - either way should feel like the same
+  // feature, not two different things that happen to look similar.
+  function submitQuery(q) {
+    if (q.trim().toLowerCase() === "random") {
+      runDiscover();
+    } else if (q) {
+      runSearch(q);
+    }
+  }
+
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    submitQuery(input.value.trim());
+  });
+
+  // Explicit fallback: don't rely solely on native "Enter submits the
+  // form" behavior for a single-input form - some environments don't
+  // reliably dispatch that.
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      submitQuery(input.value.trim());
+    }
+  });
+
+  document.getElementById("discover-chip").addEventListener("click", () => {
+    input.value = "";
+    runDiscover();
+  });
+</script>
+
+</body>
+</html>
