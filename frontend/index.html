@@ -238,8 +238,18 @@
     // per-item note field for any future real per-item fact, but nothing
     // populates it today.
     const materials = r.material_options || [];
-    const noteText = r.matched_material
-      ? `Available in ${r.matched_material.charAt(0).toUpperCase()}${r.matched_material.slice(1)}`
+    // Same "reads as a fake category label" problem as
+    // materialDuplicatesCategory below applies here too - confirming
+    // "Available in Ceramic" on a ceramics maker's card is redundant
+    // with the brand/category context, unlike "Available in Black" on a
+    // chair, which is genuinely informative. Filter per matched term
+    // (matched_material can hold more than one, e.g. "black, oak") so a
+    // genuinely useful term still shows even if another one is filtered.
+    const matchedTerms = (r.matched_material || "")
+      .split(", ")
+      .filter((t) => t && !materialDuplicatesCategory(t, r.category));
+    const noteText = matchedTerms.length
+      ? `Available in ${matchedTerms.map((t) => t.charAt(0).toUpperCase() + t.slice(1)).join(", ")}`
       : (r.notes || "");
 
     const body = document.createElement("div");
