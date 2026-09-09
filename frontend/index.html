@@ -369,9 +369,18 @@
     }
   });
 
+  // Blank field: full random discovery, same as before. A typed query:
+  // re-run that same search instead - results are capped per brand and
+  // randomly selected each time (see cap_per_brand), so a search with
+  // more matches than shown surfaces a fresh set rather than the same
+  // one every time.
   document.getElementById("discover-chip").addEventListener("click", () => {
-    input.value = "";
-    runDiscover();
+    const q = input.value.trim();
+    if (q) {
+      submitQuery(q);
+    } else {
+      runDiscover();
+    }
   });
 </script>
 
