@@ -231,7 +231,14 @@ def extract_kieran_kinsella(brand):
                     "category": "Furniture / Object",
                     "material_options": [],
                     "dimensions": "",
-                    "notes": "Hand-carved wood piece.",
+                    # Every Kieran Kinsella piece is hand-carved wood - a
+                    # brand-wide fact, not a per-item one, so hardcoding it
+                    # here just repeats the identical phrase on all 10
+                    # cards. Same reasoning as material_options that just
+                    # restate the category (see materialDuplicatesCategory
+                    # in frontend/index.html) - left blank rather than
+                    # shown as if it distinguished this piece from another.
+                    "notes": "",
                     "image_url": _squarespace_image_url(img),
                 })
         else:
@@ -250,7 +257,10 @@ def extract_kieran_kinsella(brand):
                 "category": "Furniture / Object",
                 "material_options": [],  # would need a follow-up pass to parse material text
                 "dimensions": "",
-                "notes": "Hand-carved wood piece.",
+                # Same reasoning as the gallery-items branch above - every
+                # piece is hand-carved wood, a brand-wide fact repeated
+                # identically on every card, not a per-item distinguisher.
+                "notes": "",
                 "image_url": _squarespace_image_url(soup.find("img")),
             })
         time.sleep(1)  # be polite - don't hammer the site

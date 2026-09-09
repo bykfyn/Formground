@@ -183,6 +183,16 @@
     ceramic: "ti-vase", vase: "ti-vase", bowl: "ti-vase",
   };
 
+  // A material that's just the singular of the category ("Ceramic" next
+  // to category "Ceramics") isn't a distinguishing per-item fact - it's
+  // the same word repeated on every card from that brand, reading as a
+  // fake category label sitting where no other card shows one.
+  function materialDuplicatesCategory(material, category) {
+    if (!material || !category) return false;
+    const norm = (s) => s.trim().toLowerCase().replace(/s$/, "");
+    return norm(material) === norm(category);
+  }
+
   function iconFor(category) {
     const c = (category || "").toLowerCase();
     for (const key in CATEGORY_ICONS) {
@@ -243,12 +253,7 @@
     body.querySelector(".card-brand").textContent = r.brand;
     if (noteText) {
       body.querySelector(".card-note span").textContent = noteText;
-    } else if (!r.thin) {
-      // A "thin" entry (e.g. Paola Paronetto's collection-level cards)
-      // shows the same single generic material on every card - not a
-      // distinguishing fact, and reads like a category label sitting
-      // where other cards show none. Same minimal treatment already
-      // given to notes on these cards.
+    } else if (materials.length !== 1 || !materialDuplicatesCategory(materials[0], r.category)) {
       body.querySelector(".card-detail").textContent = materials.join(", ") || r.dimensions || "";
     }
 
