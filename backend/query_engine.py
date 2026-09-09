@@ -248,6 +248,15 @@ def filter_products(intent: dict) -> list:
 
     wanted_category = (intent.get("category") or "").strip()
     wanted_material = (intent.get("material") or "").strip().lower()
+    # translate_query() extracts color as its own field, separate from
+    # material - it was being parsed and then silently thrown away here,
+    # so a query like "black chair" filtered on category alone and could
+    # return a chair with no black option at all (confirmed live: "black
+    # surface mount" returned In Common With's Mira Surface Mount, which
+    # has zero "black" anywhere in its material_options). Checked the same
+    # way material is - color names are already embedded in the same
+    # compound material_options strings (e.g. "Black / Bone / Hardwire").
+    wanted_color = (intent.get("color") or "").strip().lower()
 
     products = []
     for row in rows:
@@ -259,6 +268,20 @@ def filter_products(intent: dict) -> list:
             continue
         if wanted_material and wanted_material not in product["material_options"].lower():
             continue
+        if wanted_color and wanted_color not in product["material_options"].lower():
+            continue
+
+        # A product with many raw finish/color combos merged into one
+        # entry (see extract_shopify's grouping) picks just one for its
+        # thumbnail at scrape time - if the user searched for a specific
+        # material/color and it matched here, that confirms it exists
+        # even when what's pictured is something else entirely (e.g.
+        # "black chair" matching a listing photographed in red).
+        # Surfacing the confirmed term(s) directly is more useful and
+        # less noisy than a bare variant count ever was.
+        matched_terms = [t for t in (wanted_material, wanted_color) if t]
+        if matched_terms:
+            product["matched_material"] = ", ".join(matched_terms)
 
         # Stored as a JSON string (see scraper/scrape.py's save_product) -
         # callers of this API should get a real array, not a string they

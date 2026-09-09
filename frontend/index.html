@@ -230,15 +230,17 @@
       imageDiv.innerHTML = iconMarkup(r.category);
     }
 
-    // "There's more than one option here, go see the brand's page for the
-    // rest" is one signal whether it comes from merged listings (notes,
-    // e.g. "2 variants") or a single listing with several finish choices
-    // (material_options) - both get the same info-icon treatment, and
-    // only one shows at a time to keep the card minimal. A single
-    // material/dimension, when that's all there is, is just a plain fact
-    // and doesn't need the icon.
+    // Confirming the exact material the user searched for ("Available in
+    // black") is a real, query-relevant fact worth the info-icon - a bare
+    // variant count is not (some In Common With fixtures merge 1000+ raw
+    // color/length SKUs into one card; "available in 1680 variants" tells
+    // nobody anything useful). r.notes is kept as a general-purpose
+    // per-item note field for any future real per-item fact, but nothing
+    // populates it today.
     const materials = r.material_options || [];
-    const noteText = r.notes || (materials.length > 1 ? `Available in ${materials.length} variants` : "");
+    const noteText = r.matched_material
+      ? `Available in ${r.matched_material.charAt(0).toUpperCase()}${r.matched_material.slice(1)}`
+      : (r.notes || "");
 
     const body = document.createElement("div");
     body.className = "card-body";
@@ -253,7 +255,11 @@
     body.querySelector(".card-brand").textContent = r.brand;
     if (noteText) {
       body.querySelector(".card-note span").textContent = noteText;
-    } else if (materials.length !== 1 || !materialDuplicatesCategory(materials[0], r.category)) {
+    } else if (materials.length <= 1 && !(materials.length === 1 && materialDuplicatesCategory(materials[0], r.category))) {
+      // materials.length > 1 with no note falls through to show nothing
+      // rather than dumping every raw finish combo as one long string -
+      // that's exactly the noise a real multi-material search match now
+      // resolves to a clean "Available in X" above instead.
       body.querySelector(".card-detail").textContent = materials.join(", ") || r.dimensions || "";
     }
 

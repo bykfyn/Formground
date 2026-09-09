@@ -676,7 +676,13 @@ def extract_shopify(brand):
             "category": _infer_category_from_name(base_name, product_type),
             "material_options": sorted(material_options),
             "dimensions": "",
-            "notes": f"{len(group)} variants" if len(group) > 1 else "",
+            # No longer a bare variant count here (2026-09-09) - some
+            # In Common With fixtures merge 1000+ raw color/length SKUs
+            # into one entry (e.g. Gemma Pendant: 1680), making a literal
+            # count meaningless noise regardless of the number. Confirming
+            # a specific searched-for material instead is handled at
+            # query time (see filter_products()'s matched_material).
+            "notes": "",
             "image_url": images[0]["src"] if images else "",
         })
 
@@ -768,7 +774,13 @@ def extract_woocommerce(brand):
             "category": ", ".join(categories),
             "material_options": sorted(material_options),
             "dimensions": "",
-            "notes": f"{len(group)} variants" if len(group) > 1 else "",
+            # No longer a bare variant count here (2026-09-09) - some
+            # In Common With fixtures merge 1000+ raw color/length SKUs
+            # into one entry (e.g. Gemma Pendant: 1680), making a literal
+            # count meaningless noise regardless of the number. Confirming
+            # a specific searched-for material instead is handled at
+            # query time (see filter_products()'s matched_material).
+            "notes": "",
             "image_url": image_url,
         })
 
