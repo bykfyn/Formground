@@ -112,6 +112,7 @@ def setup_database():
         "ALTER TABLE products ADD COLUMN thin INTEGER DEFAULT 0",
         "ALTER TABLE products ADD COLUMN image_url TEXT",
         "ALTER TABLE products ADD COLUMN designer TEXT",
+        "ALTER TABLE products ADD COLUMN link_dead INTEGER DEFAULT 0",
     ):
         try:
             conn.execute(statement)
@@ -773,7 +774,7 @@ EXTRACTORS = {
     "In Common With": extract_shopify,
     "Anna Löwenhielm Ceramics": extract_shopify,
     "A. Petersen": extract_shopify,
-    "Luke Hope / Hope in the Woods": extract_shopify,
+    "Luke Hope": extract_shopify,
     "Verk": extract_woocommerce,
     "Another Country": extract_woocommerce,
 }
@@ -822,6 +823,29 @@ def run():
             })
             continue
 
+        if not products:
+            # A brand's extractor succeeding but returning nothing is more
+            # likely a transient scrape hiccup (site hiccup, layout change)
+            # than the brand genuinely having zero products - don't wipe
+            # its existing good data over that; a real "brand pulled every
+            # product" case gets caught the next run this keeps returning 0.
+            brand_seconds = round(time.monotonic() - brand_start, 1)
+            print(f"  Got 0 products for {brand['name']} - keeping previous data, not overwriting.")
+            brand_reports.append({
+                "brand": brand["name"], "products_saved": 0,
+                "seconds": brand_seconds, "error": "0 products returned - kept previous data",
+            })
+            continue
+
+        # Replace this brand's rows wholesale rather than appending -
+        # otherwise a product still live gets re-inserted as a duplicate
+        # every run, and a product genuinely removed from the brand's site
+        # (see the Luke Hope "tanned walnut" paddle, 2026-09-09) never gets
+        # cleared since nothing ever deletes old rows. Scoped to one brand
+        # at a time (not a full-table wipe) so a mid-run stop from
+        # MAX_TOTAL_RUNTIME_SECONDS leaves brands not yet reached untouched.
+        conn.execute("DELETE FROM products WHERE brand = ?", (brand["name"],))
+        conn.commit()
         for product in products:
             save_product(conn, product)
         brand_seconds = round(time.monotonic() - brand_start, 1)

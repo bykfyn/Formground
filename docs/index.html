@@ -198,7 +198,10 @@
   function renderCard(r) {
     const a = document.createElement("a");
     a.className = "card" + (r.thin ? " thin" : "");
-    a.href = r.product_url;
+    // Falls back to the brand's homepage if check_links.py has flagged
+    // this product page as a confirmed 404, so a card never leads to a
+    // dead link between full scrapes.
+    a.href = r.link_dead ? r.brand_url : r.product_url;
     a.target = "_blank";
     a.rel = "noopener noreferrer";
 
@@ -240,7 +243,12 @@
     body.querySelector(".card-brand").textContent = r.brand;
     if (noteText) {
       body.querySelector(".card-note span").textContent = noteText;
-    } else {
+    } else if (!r.thin) {
+      // A "thin" entry (e.g. Paola Paronetto's collection-level cards)
+      // shows the same single generic material on every card - not a
+      // distinguishing fact, and reads like a category label sitting
+      // where other cards show none. Same minimal treatment already
+      // given to notes on these cards.
       body.querySelector(".card-detail").textContent = materials.join(", ") || r.dimensions || "";
     }
 

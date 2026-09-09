@@ -56,7 +56,10 @@ def agent_search(q: str = Query(..., description="Structured or natural language
             "@type": "Product",
             "name": r["product_name"],
             "brand": {"@type": "Brand", "name": r["brand"]},
-            "url": r["product_url"],
+            # Falls back to the brand's homepage if check_links.py has
+            # flagged this product page as a confirmed 404, so an agent
+            # never gets handed a dead link between full scrapes.
+            "url": r["brand_url"] if r["link_dead"] else r["product_url"],
             "category": r["category"],
         }
         for r in results

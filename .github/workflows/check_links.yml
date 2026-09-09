@@ -1,0 +1,44 @@
+# WHAT THIS DOES:
+#   Runs scraper/check_links.py daily - a lightweight pass over the
+#   existing database that flags product links now 404ing on the
+#   brand's own site, so the frontend can fall back to that brand's
+#   homepage instead of a dead link. Deliberately more frequent than
+#   the weekly full scrape (scrape.yml), since its whole purpose is to
+#   catch a broken link in the gap between full scrapes.
+#
+# HOW TO TRIGGER IT MANUALLY:
+#   Go to the "Actions" tab in GitHub, click "Check product links" on
+#   the left, then click the "Run workflow" button.
+
+name: Check product links
+
+on:
+  schedule:
+    - cron: "0 6 * * *"  # every day at 6am UTC
+  workflow_dispatch: {}    # adds the manual "Run workflow" button in GitHub
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+
+      - name: Check product links
+        run: python scraper/check_links.py
+
+      - name: Save updated data back to the repo
+        run: |
+          git config user.name "formground-bot"
+          git config user.email "bot@formground.local"
+          git add data/formground.db
+          git diff --quiet --cached || git commit -m "Update link-check flags"
+          git push
