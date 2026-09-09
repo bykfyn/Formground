@@ -623,6 +623,13 @@ def extract_shopify(brand):
         p for p in raw_products
         if (p.get("product_type") or "").strip().lower() not in EXCLUDED_CATEGORIES
     ]
+    # A product name with zero Roman-alphabet characters (confirmed on
+    # GATOMIKIO - 40 of 175 titles are Japanese-only, e.g. "その他の椀
+    # 高台椀（大）") gives a non-Japanese-reading visitor nothing legible to
+    # go on - excluded rather than shown as an unreadable card. Harmless
+    # for every other Shopify brand here, all of which name products in
+    # English.
+    raw_products = [p for p in raw_products if re.search(r"[A-Za-z]", p["title"])]
 
     # Group same-design variant-as-separate-product listings back into one
     # entry (see _base_name), merging their distinguishing suffixes into
