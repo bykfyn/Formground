@@ -203,14 +203,20 @@ def render_brand_page(brand, brand_url, products, umbrellas, country=None):
 
 
 def render_makers_index(brands_data):
+    # Deliberately no product count here - "brand is the minimum unit
+    # of inclusion", equal weight regardless of catalog size, is a
+    # core principle elsewhere on the site (dashed-border cards, no
+    # ranking by data richness) - showing "(1 piece)" next to
+    # "(261 pieces)" on the one page listing every maker side by side
+    # would visually undercut that.
     items = ""
-    for brand, slug, umbrellas, count, country in sorted(brands_data, key=lambda b: b[0].lower()):
+    for brand, slug, umbrellas, _count, country in sorted(brands_data, key=lambda b: b[0].lower()):
         tag_list = list(umbrellas) + ([country] if country else [])
         tags = " ".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
         items += f"""
       <li>
         <a class="maker-name" href="/brands/{slug}.html">{html.escape(brand)}</a>
-        ({count} piece{"s" if count != 1 else ""}) {tags}
+        {tags}
       </li>"""
     return f"""<!DOCTYPE html>
 <html lang="en">
