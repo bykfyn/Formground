@@ -941,6 +941,7 @@ EXTRACTORS = {
     "In Common With": extract_shopify,
     "Anna Löwenhielm Ceramics": extract_shopify,
     "A. Petersen": extract_shopify,
+    "De La Espada": extract_shopify,
     "Luke Hope": extract_shopify,
     "Verk": extract_woocommerce,
     "Another Country": extract_woocommerce,
