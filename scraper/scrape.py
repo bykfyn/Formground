@@ -625,13 +625,22 @@ def extract_baleri_italia(brand):
 # "Finish Samples" (In Common With's swatch listings, e.g. "Saga
 # Finishes"), "Swatches" (Another Country's fabric samples), "Spare
 # Part"/"Spare Parts" (101cph's mounting plates/cable kits), "Libri
-# fisici" (Bitossi's actual physical books). Checked against each
-# brand's real category breakdown before adding - e.g. Bitossi's
-# "Designers" category was NOT added here despite sounding similarly
-# suspicious, because its actual products (Vaso, Bolo) are real ceramic
-# pieces just organized by which designer made them.
+# fisici" (Bitossi's actual physical books), "Architectuur"/
+# "Architectuur projecten"/"Inrichtingen"/"Horeca" (Piet Hein Eek runs
+# real architecture/interior-fit-out case studies - hospitality venues,
+# private homes - through the same WooCommerce catalog as its actual
+# furniture; confirmed live these are all price=0 project writeups, not
+# purchasable objects). Checked against each brand's real category
+# breakdown before adding - e.g. Bitossi's "Designers" category was NOT
+# added here despite sounding similarly suspicious, because its actual
+# products (Vaso, Bolo) are real ceramic pieces just organized by which
+# designer made them, and Piet Hein Eek's much larger "Opdrachten"
+# (commissions) category was deliberately NOT added here either - it
+# mixes those same project writeups with genuinely real, purchasable
+# custom/bespoke furniture, too broad a net to exclude cleanly.
 EXCLUDED_CATEGORIES = {
     "finish samples", "swatches", "spare part", "spare parts", "libri fisici",
+    "architectuur", "architectuur projecten", "inrichtingen", "horeca",
 }
 
 # Some Shopify brands use product_type for something other than a real
@@ -945,6 +954,7 @@ EXTRACTORS = {
     "Luke Hope": extract_shopify,
     "Verk": extract_woocommerce,
     "Another Country": extract_woocommerce,
+    "Piet Hein Eek": extract_woocommerce,
 }
 
 
