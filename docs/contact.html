@@ -125,7 +125,7 @@
       <label for="message">Message <span class="optional">(optional)</span></label>
       <textarea id="message" name="message"></textarea>
     </div>
-    <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off">
+    <input class="hp" type="checkbox" name="botcheck" tabindex="-1" autocomplete="off">
     <button type="submit" id="submit-btn">Send</button>
   </form>
   <p id="form-status"></p>
@@ -146,12 +146,17 @@
     statusEl.style.display = "none";
 
     try {
-      const resp = await fetch("https://formsubmit.co/ajax/info@formground.com", {
+      const payload = Object.fromEntries(new FormData(form));
+      payload.access_key = "fc15b03d-9cf7-4a99-ba3a-9eebd86b08b0";
+      payload.subject = "New Formground contact form submission";
+
+      const resp = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json", "Accept": "application/json" },
-        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        body: JSON.stringify(payload),
       });
-      if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
+      const data = await resp.json();
+      if (!resp.ok || !data.success) throw new Error(data.message || `Server returned ${resp.status}`);
 
       form.hidden = true;
       statusEl.className = "success";
