@@ -1,0 +1,57 @@
+/* Shared across every page except index.html (the homepage's search
+   hero is deliberately its own thing - bigger centered logo, no
+   reading-width content). Everything here was previously duplicated
+   independently in about.html, contact.html, and
+   generate_brand_pages.py's PAGE_CSS - which is exactly how they
+   drifted out of sync with each other (home-link margin was 40px in
+   two places and 32px in the third, h1 margin-bottom was 28px in two
+   places and 12px in the third, foot-note was missing line-height in
+   one place). One file now, so that class of drift is no longer
+   possible - only page-specific rules (form fields, card grids, main's
+   own max-width) stay local to each page. */
+
+:root {
+  --bg: #faf9f7;
+  --surface-1: #f1efec;
+  --surface-2: #ffffff;
+  --text-primary: #1c1b1a;
+  --text-secondary: #57534e;
+  --text-muted: #948d85;
+  --text-accent: #4a6670;
+  --border: #e4e0da;
+  --border-strong: #c9c2b8;
+  --radius: 10px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+a.home-link {
+  display: inline-block;
+  margin-bottom: 40px;
+}
+a.home-link img { height: 28px; width: auto; display: block; }
+
+h1 {
+  font-size: 22px; line-height: 1.35; font-weight: 600;
+  margin: 0 0 28px;
+}
+
+.tag {
+  display: inline-block; font-size: 11px; color: var(--text-secondary);
+  border: 0.5px solid var(--border); border-radius: var(--radius);
+  padding: 4px 10px; margin: 0 6px 6px 0;
+}
+
+.foot-note {
+  font-size: 11px; color: var(--text-muted); text-align: left;
+  margin-top: 60px; padding-top: 24px; line-height: 1.6;
+  border-top: 0.5px solid var(--border);
+}
+.foot-note a { color: var(--text-muted); }

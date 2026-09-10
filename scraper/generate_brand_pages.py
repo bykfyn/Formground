@@ -129,20 +129,11 @@ def product_card_html(p):
       </a>"""
 
 
+# Only page-specific rules here - shared rules (:root, body, home-link,
+# h1, .tag, .foot-note) live in /site.css, linked with an absolute path
+# below since these pages are nested under /brands/.
 PAGE_CSS = """
-  :root {
-    --bg: #faf9f7; --surface-1: #f1efec; --surface-2: #ffffff;
-    --text-primary: #1c1b1a; --text-secondary: #57534e; --text-muted: #948d85;
-    --text-accent: #4a6670; --border: #e4e0da; --border-strong: #c9c2b8;
-    --radius: 10px;
-  }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text-primary);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   main { max-width: 1100px; margin: 0 auto; padding: 48px 20px 60px; }
-  a.home-link { display: inline-block; margin-bottom: 32px; }
-  a.home-link img { height: 28px; width: auto; display: block; }
-  h1 { font-size: 22px; font-weight: 600; margin: 0 0 28px; }
   .maker-header { text-align: center; margin-bottom: 32px; }
   .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
     letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
@@ -150,9 +141,6 @@ PAGE_CSS = """
   .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
   .brand-site-link:hover { text-decoration: underline; }
   .tags { margin-bottom: 12px; }
-  .tag { display: inline-block; font-size: 11px; color: var(--text-secondary);
-    border: 0.5px solid var(--border); border-radius: var(--radius);
-    padding: 4px 10px; margin: 0 6px 6px 0; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
   .card { background: var(--surface-2); border: 0.5px solid var(--border);
     border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; display: block; }
@@ -160,9 +148,6 @@ PAGE_CSS = """
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-body { padding: 10px 12px; }
   .card-title { font-size: 13px; font-weight: 500; margin: 0; }
-  .foot-note { font-size: 11px; color: var(--text-muted); margin-top: 60px;
-    padding-top: 24px; border-top: 0.5px solid var(--border); }
-  .foot-note a { color: var(--text-muted); }
   .maker-list { list-style: none; padding: 0; margin: 0; }
   .maker-list li { padding: 16px 0; border-bottom: 0.5px solid var(--border); text-align: center; }
   .maker-list a.maker-name { display: block; font-size: 18px; font-weight: 500;
@@ -184,6 +169,7 @@ def render_brand_page(brand, brand_url, products, umbrellas, country=None):
 <title>{html.escape(brand)} on Formground</title>
 <meta name="description" content="{html.escape(brand)}'s work on Formground - {len(products)} pieces, linked straight to their own site.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/site.css">
 <style>{PAGE_CSS}</style>
 </head>
 <body>
@@ -229,6 +215,7 @@ def render_makers_index(brands_data):
 <title>Makers — Formground</title>
 <meta name="description" content="Every independent maker currently on Formground, browsable by name.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/site.css">
 <style>{PAGE_CSS}</style>
 </head>
 <body>
