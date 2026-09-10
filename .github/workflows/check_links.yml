@@ -35,10 +35,13 @@ jobs:
       - name: Check product links
         run: python scraper/check_links.py
 
+      - name: Regenerate brand pages, makers index, and sitemap
+        run: python scraper/generate_brand_pages.py
+
       - name: Save updated data back to the repo
         run: |
           git config user.name "formground-bot"
           git config user.email "bot@formground.local"
-          git add data/formground.db
-          git diff --quiet --cached || git commit -m "Update link-check flags"
+          git add data/formground.db docs/brands docs/makers.html docs/sitemap.xml
+          git diff --quiet --cached || git commit -m "Update link-check flags and regenerate brand pages"
           git push

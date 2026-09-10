@@ -33,10 +33,13 @@ jobs:
       - name: Run the scraper
         run: python scraper/scrape.py
 
+      - name: Regenerate brand pages, makers index, and sitemap
+        run: python scraper/generate_brand_pages.py
+
       - name: Save updated data back to the repo
         run: |
           git config user.name "formground-bot"
           git config user.email "bot@formground.local"
-          git add data/formground.db data/last_scrape_report.json
-          git diff --quiet --cached || git commit -m "Update scraped data"
+          git add data/formground.db data/last_scrape_report.json docs/brands docs/makers.html docs/sitemap.xml
+          git diff --quiet --cached || git commit -m "Update scraped data and regenerate brand pages"
           git push
