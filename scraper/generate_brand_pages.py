@@ -165,8 +165,10 @@ PAGE_CSS = """
   .foot-note a { color: var(--text-muted); }
   .maker-list { list-style: none; padding: 0; margin: 0; }
   .maker-list li { padding: 16px 0; border-bottom: 0.5px solid var(--border); }
-  .maker-list a.maker-name { font-size: 15px; font-weight: 500; color: var(--text-primary); text-decoration: none; }
+  .maker-list a.maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-primary); text-decoration: none; margin-bottom: 8px; }
   .maker-list a.maker-name:hover { text-decoration: underline; }
+  .maker-tags { line-height: 1.8; }
 """
 
 
@@ -217,7 +219,7 @@ def render_makers_index(brands_data):
         items += f"""
       <li>
         <a class="maker-name" href="/brands/{slug}.html">{html.escape(brand)}</a>
-        {tags}
+        <div class="maker-tags">{tags}</div>
       </li>"""
     return f"""<!DOCTYPE html>
 <html lang="en">
