@@ -561,6 +561,68 @@ def extract_kallemo(brand):
     return products
 
 
+def extract_joris_poggioli(brand):
+    """
+    jorispoggioli.com is a Next.js app with no robots.txt at all (no
+    file exists - the site returns its own 404 page for the path,
+    confirmed live) and no bot restrictions of any kind. It doesn't
+    need per-product fetches or even a dedicated listing page: the
+    homepage's own server-rendered __NEXT_DATA__ JSON blob already
+    embeds the complete "design" catalog (74 items) with clean
+    structured fields - name, category (designType), material,
+    dimensions, and image - richer data than most brands here, in one
+    fetch. The site's separate "architecture" section (real interior/
+    hospitality project case studies, not purchasable objects - same
+    shape as Piet Hein Eek's excluded categories) isn't part of this
+    data at all, so there's nothing to filter out.
+    """
+    domain = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(domain, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {domain}: {e}")
+        return []
+
+    match = re.search(
+        r'<script id="__NEXT_DATA__" type="application/json">(.*?)</script>',
+        resp.text, re.S,
+    )
+    if not match:
+        print(f"  Could not find __NEXT_DATA__ on {domain}")
+        return []
+
+    try:
+        data = json.loads(match.group(1))
+        items = data["props"]["pageProps"]["designItems"]
+    except (json.JSONDecodeError, KeyError) as e:
+        print(f"  Unexpected __NEXT_DATA__ shape on {domain}: {e}")
+        return []
+
+    products = []
+    for item in items:
+        dims = item.get("dimensions", {}) or {}
+        dimension_parts = [
+            f"{label} {dims[key]}"
+            for key, label in (("height", "H"), ("width", "W"), ("depth", "D"), ("diameter", "Ø"))
+            if dims.get(key)
+        ]
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": item.get("name", ""),
+            "product_url": f"{domain}/design/{item['designTypeSlug']}/{item['slug']}",
+            "category": item.get("designType", "").title(),
+            "material_options": [m.strip() for m in (item.get("material") or "").split("/") if m.strip()],
+            "dimensions": " x ".join(dimension_parts) + " cm" if dimension_parts else "",
+            "notes": "",
+            "image_url": item.get("imageGrid", {}).get("url", ""),
+        })
+
+    return products
+
+
 def extract_baleri_italia(brand):
     """
     baleri-italia.com has a "products.json" endpoint too, but unlike a real
@@ -940,6 +1002,7 @@ EXTRACTORS = {
     "Yird Ceramics": extract_yird_ceramics,
     "Ingo Maurer": extract_ingo_maurer,
     "Källemo": extract_kallemo,
+    "Joris Poggioli": extract_joris_poggioli,
     "Baleri Italia": extract_baleri_italia,
     "Paola Paronetto": extract_paola_paronetto,
     "Minimalux": extract_shopify,
