@@ -164,9 +164,9 @@ PAGE_CSS = """
     padding-top: 24px; border-top: 0.5px solid var(--border); }
   .foot-note a { color: var(--text-muted); }
   .maker-list { list-style: none; padding: 0; margin: 0; }
-  .maker-list li { padding: 16px 0; border-bottom: 0.5px solid var(--border); }
-  .maker-list a.maker-name { display: block; font-size: 15px; font-weight: 500;
-    color: var(--text-primary); text-decoration: none; margin-bottom: 8px; }
+  .maker-list li { padding: 16px 0; border-bottom: 0.5px solid var(--border); text-align: center; }
+  .maker-list a.maker-name { display: block; font-size: 18px; font-weight: 500;
+    color: var(--text-secondary); text-decoration: none; margin-bottom: 8px; }
   .maker-list a.maker-name:hover { text-decoration: underline; }
   .maker-tags { line-height: 1.8; }
 """
@@ -197,7 +197,7 @@ def render_brand_page(brand, brand_url, products, umbrellas, country=None):
   </div>
   <div class="grid">{cards}</div>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">All makers</a>
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a>
   </p>
 </main>
 </body>
@@ -226,7 +226,7 @@ def render_makers_index(brands_data):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>All Makers — Formground</title>
+<title>Makers — Formground</title>
 <meta name="description" content="Every independent maker currently on Formground, browsable by name.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
 <style>{PAGE_CSS}</style>
@@ -234,7 +234,7 @@ def render_makers_index(brands_data):
 <body>
 <main style="max-width:640px;">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-  <h1>All makers</h1>
+  <h1 style="text-align:center;">Makers</h1>
   <ul class="maker-list">{items}
   </ul>
   <p class="foot-note">
