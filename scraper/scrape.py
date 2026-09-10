@@ -23,6 +23,7 @@ HOW IT'S ORGANIZED:
     more small functions like extract_kieran_kinsella() below.
 """
 
+import argparse
 import html
 import json
 import re
@@ -429,6 +430,65 @@ def extract_yird_ceramics(brand):
     return products
 
 
+def extract_ingo_maurer(brand):
+    """
+    ingo-maurer.com has no product API, but its single /en/products/ page
+    server-renders the entire catalog (266 items as of this writing) as
+    one isotope grid - name, image, and link for every product in one
+    fetch, same shape as H. Bigeleisen/Yird Ceramics above. Category is
+    hardcoded "Lighting" since the brand makes nothing else (confirmed
+    by scanning all live product names - no furniture/ceramics/objects
+    mixed in). About half the listing (129 of 266) is marked
+    "Discontinued Models" via a `pc10`/`is-ceased` class pair on each
+    <li> - these are excluded, same principle as not showing dead links
+    elsewhere: a design no longer produced isn't a real search result.
+    """
+    url = f"{brand['url'].rstrip('/')}/en/products/"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    domain = brand["url"].rstrip("/")
+    products = []
+    for li in soup.find_all("li", class_="data-cell"):
+        if "is-ceased" in li.get("class", []):
+            continue
+
+        title_el = li.find(class_="isotope-data-title")
+        link_el = title_el.find("a", href=True) if title_el else None
+        if not link_el:
+            continue
+
+        img = li.find("img")
+        image_url = img.get("src", "") if img else ""
+        # One listing ("18 x 18") points at a "coming soon" placeholder
+        # graphic instead of a real product photo - a real image URL,
+        # but not a real product photo, so it's dropped here rather than
+        # relying on the generic "no image" filter downstream to catch it.
+        if "comingsoon" in image_url.lower():
+            continue
+        if image_url.startswith("/"):
+            image_url = f"{domain}{image_url}"
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": link_el.get_text(strip=True),
+            "product_url": f"{domain}{link_el['href']}",
+            "category": "Lighting",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+
+    return products
+
+
 def extract_baleri_italia(brand):
     """
     baleri-italia.com has a "products.json" endpoint too, but unlike a real
@@ -638,8 +698,12 @@ def extract_shopify(brand):
     # 高台椀（大）") gives a non-Japanese-reading visitor nothing legible to
     # go on - excluded rather than shown as an unreadable card. Harmless
     # for every other Shopify brand here, all of which name products in
-    # English.
-    raw_products = [p for p in raw_products if re.search(r"[A-Za-z]", p["title"])]
+    # English. Must check the <br>-stripped title, not the raw one - the
+    # literal "<br>" tag GATOMIKIO uses as a category/name separator
+    # contains the Roman letters "b" and "r", which silently satisfied
+    # this regex for every title regardless of its real content until
+    # this was caught (2026-09-10).
+    raw_products = [p for p in raw_products if re.search(r"[A-Za-z]", _base_name(p["title"]))]
 
     # Group same-design variant-as-separate-product listings back into one
     # entry (see _base_name), merging their distinguishing suffixes into
@@ -793,6 +857,7 @@ EXTRACTORS = {
     "Kieran Kinsella": extract_kieran_kinsella,
     "H. Bigeleisen": extract_hbigeleisen,
     "Yird Ceramics": extract_yird_ceramics,
+    "Ingo Maurer": extract_ingo_maurer,
     "Baleri Italia": extract_baleri_italia,
     "Paola Paronetto": extract_paola_paronetto,
     "Minimalux": extract_shopify,
@@ -809,9 +874,22 @@ EXTRACTORS = {
 }
 
 
-def run():
+def run(brand_name=None):
+    """
+    brand_name: if given, scrapes only that one brand (case-insensitive
+    exact match) instead of the full catalog - for testing/adding a
+    single new brand locally without waiting on the ~5-minute full run
+    (dominated by In Common With's pagination), without needing to skip
+    any of the same per-brand delete-then-insert/safety-limit logic.
+    """
     with open(BRANDS_PATH) as f:
         brands = json.load(f)
+
+    if brand_name:
+        brands = [b for b in brands if b["name"].lower() == brand_name.lower()]
+        if not brands:
+            print(f"No brand named '{brand_name}' found in {BRANDS_PATH}.")
+            return
 
     conn = setup_database()
     start_time = time.monotonic()
@@ -925,4 +1003,10 @@ def print_summary(brand_reports, total_seconds, stopped_early):
 
 
 if __name__ == "__main__":
-    run()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--brand", default=None,
+        help="Scrape only this one brand (exact name from brands.json), instead of the full catalog.",
+    )
+    args = parser.parse_args()
+    run(brand_name=args.brand)
