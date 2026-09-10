@@ -489,6 +489,78 @@ def extract_ingo_maurer(brand):
     return products
 
 
+# Källemo's own category folders under /en/products/ - "archive" is
+# excluded entirely (discontinued designs, same treatment as Ingo
+# Maurer's ceased models); the rest map to a clean single-word category
+# where the folder is unambiguous, and blank where it genuinely mixes
+# object types (confirmed by reading each category's real product names
+# before deciding - "sofas-easychairs" mixes sofas/armchairs, "other"
+# and "limited" mix benches/footstools/cabinets/art objects).
+KALLEMO_CATEGORIES = {
+    "chairs": "Chair",
+    "tables": "Table",
+    "shelves": "Shelf",
+    "sofas-easychairs": "",
+    "other": "",
+    "limited": "",
+}
+
+
+def extract_kallemo(brand):
+    """
+    kallemo.se (Joomla, no product API) organizes its catalog into a
+    handful of category listing pages under /en/products/{category} -
+    each one server-renders every item's name, designer, and image in
+    one fetch (confirmed live: no per-product fetch needed for the data
+    Formground actually shows). Designer is captured but not displayed
+    on cards, same reasoning as Baleri Italia's designer field - showing
+    it for only the brands whose markup happens to make it easy would
+    credit some products' designers and not others, purely from scraping
+    convenience, not a real editorial choice.
+    """
+    domain = brand["url"].rstrip("/")
+    products = []
+
+    for category_slug, category_label in KALLEMO_CATEGORIES.items():
+        url = f"{domain}/en/products/{category_slug}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for title_el in soup.find_all(class_="el-title"):
+            link_el = title_el.find_parent("a", href=True)
+            if not link_el:
+                continue
+
+            img = link_el.find("img")
+            image_url = img.get("src", "") if img else ""
+            if image_url.startswith("/"):
+                image_url = f"{domain}{image_url}"
+
+            designer_el = link_el.find(class_="el-meta")
+
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": title_el.get_text(strip=True),
+                "product_url": f"{domain}{link_el['href']}",
+                "category": category_label,
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": image_url,
+                "designer": designer_el.get_text(strip=True) if designer_el else "",
+            })
+
+        time.sleep(1)  # be polite - don't hammer the site
+
+    return products
+
+
 def extract_baleri_italia(brand):
     """
     baleri-italia.com has a "products.json" endpoint too, but unlike a real
@@ -858,6 +930,7 @@ EXTRACTORS = {
     "H. Bigeleisen": extract_hbigeleisen,
     "Yird Ceramics": extract_yird_ceramics,
     "Ingo Maurer": extract_ingo_maurer,
+    "Källemo": extract_kallemo,
     "Baleri Italia": extract_baleri_italia,
     "Paola Paronetto": extract_paola_paronetto,
     "Minimalux": extract_shopify,
