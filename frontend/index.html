@@ -228,6 +228,20 @@
     a.target = "_blank";
     a.rel = "noopener noreferrer";
 
+    // Anonymous, aggregate click signal only - no cookies, no
+    // per-visitor identifier. sendBeacon fires this without blocking
+    // the navigation to the maker's site (target="_blank" means it
+    // doesn't even need to race a page unload, but sendBeacon is the
+    // right tool either way - fire-and-forget, never throws).
+    a.addEventListener("click", () => {
+      const payload = JSON.stringify({
+        query: input.value.trim() || null,
+        brand: r.brand,
+        product_name: r.product_name,
+      });
+      navigator.sendBeacon(`${API_BASE}/event`, new Blob([payload], { type: "application/json" }));
+    });
+
     const imageDiv = document.createElement("div");
     imageDiv.className = "card-image";
     if (r.image_url) {

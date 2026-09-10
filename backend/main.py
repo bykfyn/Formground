@@ -21,18 +21,21 @@ HOW THIS RUNS FOR REAL:
   close to nothing at low traffic).
 """
 
-from fastapi import FastAPI, Query
+from fastapi import Body, FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
+from analytics import log_event
 from query_engine import discover, search
 
 app = FastAPI(title="Formground")
 
 # Allows the frontend (wherever it's hosted) to call this backend.
+# POST is needed alongside GET now for /event (the click-tracking
+# beacon) - every other route is still read-only GET.
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
     allow_headers=["*"],
 )
 
@@ -41,6 +44,7 @@ app.add_middleware(
 def human_search(q: str = Query(..., description="Natural language search query")):
     """Human-facing search. Returns a plain list of matching products."""
     results = search(q)
+    log_event("search", query=q)
     return {"query": q, "results": results}
 
 
@@ -73,6 +77,25 @@ def discover_random():
     just a fair sample across every brand. Doesn't hit the LLM at all,
     so it's also free to call as often as someone hits "surprise me"."""
     return {"results": discover()}
+
+
+@app.post("/event")
+def track_event(payload: dict = Body(...)):
+    """
+    Click-tracking beacon - the frontend fires this (via
+    navigator.sendBeacon, so it doesn't block the navigation to the
+    maker's site) when a result card is clicked. No cookies, no
+    per-visitor identifier - just which brand/product got clicked and
+    what query led there, the same anonymous-aggregate shape as the
+    search-event logging in /search.
+    """
+    log_event(
+        "click",
+        query=payload.get("query"),
+        brand=payload.get("brand"),
+        product_name=payload.get("product_name"),
+    )
+    return {"status": "ok"}
 
 
 @app.get("/health")
