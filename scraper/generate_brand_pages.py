@@ -141,7 +141,8 @@ PAGE_CSS = """
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
   main { max-width: 1100px; margin: 0 auto; padding: 48px 20px 60px; }
   a.home-link { display: inline-block; margin-bottom: 32px; }
-  a.home-link img { height: 26px; width: auto; display: block; }
+  a.home-link img { height: 28px; width: auto; display: block; }
+  h1 { font-size: 22px; font-weight: 600; margin: 0 0 28px; }
   .maker-header { text-align: center; margin-bottom: 32px; }
   .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
     letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
@@ -188,7 +189,7 @@ def render_brand_page(brand, brand_url, products, umbrellas, country=None):
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
-    <p class="maker-name">{html.escape(brand)}</p>
+    <h1 class="maker-name">{html.escape(brand)}</h1>
     <div class="tags">{tags}</div>
     <a class="brand-site-link" href="{html.escape(brand_url)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
