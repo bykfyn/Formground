@@ -623,6 +623,134 @@ def extract_joris_poggioli(brand):
     return products
 
 
+# moustache.fr (PrestaShop) has no single "all products" listing that's
+# actually complete - its real "86-all" category turned out to be its
+# own distinct 54-item subset, not a superset (confirmed live: only 12
+# of "chaises"(21)'s 54 products also appear there). The site instead
+# runs two parallel, near-non-overlapping category trees under the same
+# /en/ locale - an older French-slugged one (chaises, etageres, tables-
+# basses...) and a newer English-slugged one (chairs, shelves, coffee-
+# tables...) - most likely because English URL slugs were only ever set
+# on newer categories, not because these are different markets. Rather
+# than reverse-engineer which tree is canonical, every real object-type
+# category from both trees is fetched and results are deduped by
+# Prestashop's own numeric product ID, which is stable across whichever
+# category page a product happens to appear on. Aggregator-only
+# categories (all/new arrivals/collectible/divers/produits) are
+# deliberately skipped - not real object types, and every product
+# checked from them also appears under a specific-type category anyway.
+MOUSTACHE_CATEGORIES = {
+    "21-chaises": "Chair", "24-etageres": "Shelf", "25-bancs": "Bench",
+    "26-tables-basses": "Coffee table", "28-portes-manteaux-pateres": "Coat rack",
+    "29-luminaire": "Lighting", "31-lampes-de-table": "Table lamp",
+    "32-suspensions": "Pendant light",
+    "35-vases": "Vase", "36-vide-poches": "Catchall tray", "37-miroirs": "Mirror",
+    "38-carafes": "Carafe", "39-centres-de-table": "Centerpiece",
+    "40-corbeilles-a-fruits": "Fruit basket", "41-tapis": "Rug",
+    "68-wallpapers-posters": "Wallpaper", "69-armchairs": "Armchair",
+    "72-stool": "Stool", "73-sculpture": "Sculpture", "88-sofas": "Sofa",
+    "102-benches": "Bench", "103-sofas": "Sofa", "105-chairs": "Chair",
+    "107-stool": "Stool", "109-shelves": "Shelf", "111-armchairs": "Armchair",
+    "113-doors-coats": "Coat rack", "114-coffee-tables": "Coffee table",
+    "117-tables": "Table", "118-offices": "Desk", "119-dressers-sideboards": "Sideboard",
+    "123-carafes": "Carafe", "125-centerpieces": "Centerpiece",
+    "128-fruit-baskets": "Fruit basket", "132-mirrors": "Mirror",
+    "134-wallpapers": "Wallpaper", "135-sculpture": "Sculpture", "138-rugs": "Rug",
+    "140-vases": "Vase", "143-shelf-to-screw": "Shelf", "146-table-lamps": "Table lamp",
+    "147-suspensions": "Pendant light", "150-appliques": "Wall light",
+    "153-floor-lamps": "Floor lamp", "155-sculpture": "Sculpture",
+    "157-photography": "Photography",
+}
+
+
+def extract_moustache(brand):
+    """
+    Each color is its own top-level PrestaShop product (confirmed live:
+    "Gelato chair" alone has 42 separate product IDs, one per color -
+    78% of the raw catalog turned out to be this same pattern already
+    seen on several Shopify/WooCommerce brands, just with zero
+    distinguishing text in the name itself - the color only lives in
+    the product URL's "#/{id}-color-{name}" fragment). Grouped by exact
+    product name (no _base_name() splitting needed, there's no suffix
+    to strip) with colors parsed out of that fragment and folded into
+    material_options, same treatment as every other brand's variant-as-
+    separate-product problem.
+    """
+    domain = brand["url"].rstrip("/")
+    seen_ids = set()
+    raw_products = []
+
+    for category_slug, category_label in MOUSTACHE_CATEGORIES.items():
+        page = 1
+        while page <= MAX_PAGES_PER_BRAND:
+            url = f"{domain}/en/{category_slug}"
+            if page > 1:
+                url += f"?page={page}"
+            try:
+                resp = requests.get(url, headers=HEADERS, timeout=15)
+                resp.raise_for_status()
+            except requests.RequestException as e:
+                print(f"  Could not fetch {url}: {e}")
+                break
+
+            soup = BeautifulSoup(resp.text, "html.parser")
+            articles = soup.find_all("article", class_="product-miniature")
+            if not articles:
+                break
+
+            for article in articles:
+                product_id = article.get("data-id-product")
+                if not product_id or product_id in seen_ids:
+                    continue
+                seen_ids.add(product_id)
+
+                link_el = article.find("a", class_="product-thumbnail", href=True)
+                name_el = article.find(class_="product-miniature-name")
+                img = article.find("img")
+                if not link_el or not name_el:
+                    continue
+
+                name = name_el.contents[0].strip() if name_el.contents else name_el.get_text(strip=True)
+                href = link_el["href"]
+                color_match = re.search(r"#/\d+-color-([a-z0-9_]+)", href)
+                color = color_match.group(1).replace("_", " ").title() if color_match else ""
+
+                raw_products.append({
+                    "name": name,
+                    "product_url": href.split("#")[0],
+                    "category": category_label,
+                    "color": color,
+                    "image_url": img.get("src", "") if img else "",
+                })
+
+            if not soup.find("a", href=re.compile(r"\?page=" + str(page + 1))):
+                break
+            page += 1
+            time.sleep(1)  # be polite - don't hammer the site
+
+    grouped = {}
+    for p in raw_products:
+        grouped.setdefault(p["name"], []).append(p)
+
+    products = []
+    for name, group in grouped.items():
+        first = group[0]
+        colors = sorted({p["color"] for p in group if p["color"]})
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": first["product_url"],
+            "category": first["category"],
+            "material_options": colors,
+            "dimensions": "",
+            "notes": "",
+            "image_url": first["image_url"],
+        })
+
+    return products
+
+
 def extract_baleri_italia(brand):
     """
     baleri-italia.com has a "products.json" endpoint too, but unlike a real
@@ -1003,6 +1131,7 @@ EXTRACTORS = {
     "Ingo Maurer": extract_ingo_maurer,
     "Källemo": extract_kallemo,
     "Joris Poggioli": extract_joris_poggioli,
+    "Moustache": extract_moustache,
     "Baleri Italia": extract_baleri_italia,
     "Paola Paronetto": extract_paola_paronetto,
     "Minimalux": extract_shopify,
