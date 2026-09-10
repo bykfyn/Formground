@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — Formground</title>
+<meta name="description" content="Want to be listed on Formground, or want your work removed? Get in touch directly — no account, no submission process.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
+<style>
+  :root {
+    --bg: #faf9f7;
+    --surface-1: #f1efec;
+    --surface-2: #ffffff;
+    --text-primary: #1c1b1a;
+    --text-secondary: #57534e;
+    --text-muted: #948d85;
+    --text-accent: #4a6670;
+    --border: #e4e0da;
+    --border-strong: #c9c2b8;
+    --radius: 10px;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+
+  main {
+    max-width: 560px;
+    margin: 0 auto;
+    padding: 64px 20px 60px;
+  }
+
+  a.home-link { display: inline-block; margin-bottom: 40px; }
+  a.home-link img { height: 28px; width: auto; display: block; }
+
+  h1 { font-size: 22px; line-height: 1.35; font-weight: 600; margin: 0 0 12px; }
+  p.intro { font-size: 15px; line-height: 1.6; color: var(--text-secondary); margin: 0 0 32px; }
+
+  label {
+    display: block; font-size: 12px; font-weight: 600; color: var(--text-secondary);
+    margin: 0 0 6px;
+  }
+  .field { margin-bottom: 18px; }
+  input[type="text"], input[type="email"], input[type="url"], select, textarea {
+    width: 100%; font-size: 14px; font-family: inherit; color: var(--text-primary);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 11px 13px; outline: none;
+  }
+  input:focus, select:focus, textarea:focus { border-color: var(--border-strong); }
+  textarea { resize: vertical; min-height: 90px; }
+  .optional { color: var(--text-muted); font-weight: 400; }
+
+  /* Honeypot field - hidden from real visitors, catches bots that fill
+     every field programmatically. */
+  .hp { position: absolute; left: -9999px; }
+
+  button[type="submit"] {
+    font-size: 14px; font-weight: 500; color: var(--surface-2);
+    background: var(--text-primary); border: none; border-radius: var(--radius);
+    padding: 12px 20px; cursor: pointer; font-family: inherit;
+  }
+  button[type="submit"]:hover { background: var(--text-secondary); }
+  button[type="submit"]:disabled { opacity: 0.6; cursor: default; }
+
+  #form-status {
+    font-size: 14px; margin-top: 16px; display: none;
+  }
+  #form-status.success { color: var(--text-accent); }
+  #form-status.error { color: #a14b3f; }
+
+  .foot-note {
+    font-size: 11px; color: var(--text-muted); text-align: left;
+    margin-top: 60px; padding-top: 24px; line-height: 1.6;
+    border-top: 0.5px solid var(--border);
+  }
+  .foot-note a { color: var(--text-muted); }
+</style>
+</head>
+<body>
+
+<main>
+  <a class="home-link" href="/"><img src="logo/formground_logotype_RGB.png" alt="Formground"></a>
+
+  <h1>Get in touch</h1>
+  <p class="intro">
+    Want your work listed on Formground, or want it removed? Either way,
+    just tell us here — no account, no submission process to maintain.
+  </p>
+
+  <form id="contact-form">
+    <div class="field">
+      <label for="name">Your name</label>
+      <input type="text" id="name" name="name" required>
+    </div>
+    <div class="field">
+      <label for="brand">Brand / studio name</label>
+      <input type="text" id="brand" name="brand" required>
+    </div>
+    <div class="field">
+      <label for="website">Website <span class="optional">(optional)</span></label>
+      <input type="url" id="website" name="website" placeholder="https://">
+    </div>
+    <div class="field">
+      <label for="social">Social media <span class="optional">(optional)</span></label>
+      <input type="text" id="social" name="social" placeholder="@yourstudio or a profile link">
+    </div>
+    <div class="field">
+      <label for="email">Email address</label>
+      <input type="email" id="email" name="email" required>
+    </div>
+    <div class="field">
+      <label for="reason">What's this about?</label>
+      <select id="reason" name="reason">
+        <option>I'd like my work listed</option>
+        <option>Please remove my listing</option>
+        <option>Something else</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="message">Message <span class="optional">(optional)</span></label>
+      <textarea id="message" name="message"></textarea>
+    </div>
+    <input class="hp" type="text" name="_honey" tabindex="-1" autocomplete="off">
+    <button type="submit" id="submit-btn">Send</button>
+    <p id="form-status"></p>
+  </form>
+
+  <p class="foot-note">
+    <a href="/">← Back to Formground</a> &middot; <a href="about.html">About Formground</a>
+  </p>
+</main>
+
+<script>
+  const form = document.getElementById("contact-form");
+  const statusEl = document.getElementById("form-status");
+  const submitBtn = document.getElementById("submit-btn");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    submitBtn.disabled = true;
+    statusEl.style.display = "none";
+
+    try {
+      const resp = await fetch("https://formsubmit.co/ajax/info@formground.com", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      });
+      if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
+
+      form.hidden = true;
+      statusEl.className = "success";
+      statusEl.style.display = "block";
+      statusEl.textContent = "Thanks — we'll be in touch.";
+    } catch (err) {
+      statusEl.className = "error";
+      statusEl.style.display = "block";
+      statusEl.textContent = "Something went wrong sending that - try again, or email info@formground.com directly.";
+      submitBtn.disabled = false;
+      console.error(err);
+    }
+  });
+</script>
+
+</body>
+</html>
