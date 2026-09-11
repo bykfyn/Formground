@@ -43,6 +43,16 @@ DOCS_DIR = SCRAPER_DIR.parent / "docs"
 BRANDS_DIR = DOCS_DIR / "brands"
 SITE_URL = "https://formground.com"
 
+# Same snippet added by hand to index.html/about.html/contact.html -
+# kept here as one constant so both places it's used in this file
+# can't drift from each other or from those hand-maintained pages.
+CLOUDFLARE_ANALYTICS = (
+    "<!-- Cloudflare Web Analytics -->"
+    "<script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' "
+    "data-cf-beacon='{\"token\": \"87e51fd2f5894326b3c6e883edc75a6d\"}'></script>"
+    "<!-- End Cloudflare Web Analytics -->"
+)
+
 
 def load_countries():
     """
@@ -205,6 +215,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
     <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a>
   </p>
 </main>
+{CLOUDFLARE_ANALYTICS}
 </body>
 </html>
 """
@@ -248,6 +259,7 @@ def render_makers_index(brands_data):
     <a href="/">&larr; Back to Formground</a> &middot; <a href="/about.html">About Formground</a>
   </p>
 </main>
+{CLOUDFLARE_ANALYTICS}
 </body>
 </html>
 """
