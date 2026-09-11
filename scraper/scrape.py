@@ -1538,6 +1538,309 @@ def extract_new_works_dk(brand):
     return products
 
 
+def extract_eine_kleine_furniture(brand):
+    """
+    ek-furniture.com is a genuinely old, small-scale site (a 1990s-
+    style HTML frameset, no real robots.txt - the request itself 404s
+    at the host level) for a tiny Seoul-based white-oak furniture
+    maker - exactly the "smallest, least-resourced maker" tier this
+    project targets. Real catalog lives on a Korean forum/board CMS
+    (Gnuboard-style, confirmed live), split across two boards
+    ("original" ready-made pieces, "order_made" custom pieces). Each
+    listing page already server-renders every item's name and
+    thumbnail as a pair of <a> tags sharing the same wr_id (one wraps
+    the image, one wraps the text) - no per-post fetch needed, just
+    the two board listing pages.
+    """
+    domain = brand["url"].rstrip("/")
+    boards = {"original": "Furniture (original)", "order_made": "Furniture (made to order)"}
+    products = []
+
+    for bo_table, category_label in boards.items():
+        url = f"{domain}/board/bbs/board.php?bo_table={bo_table}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        by_wr_id = {}
+        for a in soup.find_all("a", href=lambda h: h and "wr_id=" in h):
+            match = re.search(r"wr_id=(\d+)", a["href"])
+            if not match:
+                continue
+            wr_id = match.group(1)
+            entry = by_wr_id.setdefault(wr_id, {"name": "", "image_url": ""})
+
+            text = a.get_text(strip=True)
+            if text:
+                entry["name"] = text
+
+            img = a.find("img")
+            if img and img.get("src"):
+                src = img["src"].lstrip("./")
+                entry["image_url"] = f"{domain}/board/{src}"
+
+        for wr_id, entry in by_wr_id.items():
+            if not entry["name"] or not entry["image_url"]:
+                continue
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": entry["name"],
+                "product_url": f"{domain}/board/bbs/board.php?bo_table={bo_table}&wr_id={wr_id}",
+                "category": category_label,
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": entry["image_url"],
+            })
+
+        time.sleep(1)  # be polite - don't hammer the site
+
+    return products
+
+
+def extract_jon_goulder(brand):
+    """
+    jongoulder.com's own /work-... listing page (Squarespace) server-
+    renders every product's image and link, but not a visible name -
+    it's a pure image gallery, no caption text on the grid itself
+    (confirmed live). Each individual product page does have a real
+    title (page <title>, prefixed with "Jon Goulder " - stripped here),
+    so this fetches the listing once for slugs + images, then each of
+    the ~17 real product pages once for its title - a small, bounded
+    number of extra fetches for real names instead of guessing from
+    the URL slug. "catalogue-*" links on the same listing are separate
+    downloadable collection catalogues, not individual products, and
+    are skipped.
+    """
+    domain = brand["url"].rstrip("/")
+    listing_url = f"{domain}/work-furniture-objects-lighting"
+    try:
+        resp = requests.get(listing_url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {listing_url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    skip_slugs = {"", "about-workshop-design-studo", "cart", "commission", "work-furniture-objects-lighting"}
+    slugs = []
+    for a in soup.find_all("a", href=True):
+        slug = a["href"].strip("/")
+        if slug.startswith("catalogue-") or slug in skip_slugs or slug in slugs:
+            continue
+        if a.find("img"):
+            slugs.append(slug)
+
+    products = []
+    for slug in slugs:
+        product_url = f"{domain}/{slug}"
+        try:
+            page = requests.get(product_url, headers=HEADERS, timeout=15)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {product_url}: {e}")
+            continue
+
+        title_match = re.search(r"<title>([^<]*)</title>", page.text)
+        name = re.sub(r"^Jon Goulder\s*-?\s*", "", title_match.group(1).strip()) if title_match else slug
+
+        img = None
+        for a in soup.find_all("a", href=lambda h: h and h.strip("/") == slug):
+            img = a.find("img")
+            if img:
+                break
+        image_url = (img.get("data-src") or img.get("src", "")) if img else ""
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": product_url,
+            "category": "",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+        time.sleep(0.5)  # be polite - don't hammer the site
+
+    return products
+
+
+# Slugs on lachambredami.com's own product sitemap that are consumables/
+# accessories, not durable design objects: room-fragrance refills/samples
+# (parfum-d-ambiance), a plain lightbulb, a generic electrical fitting, and
+# a tote bag.
+LA_CHAMBRE_DAMI_SKIP_SLUGS = {
+    "automne-parfum-d-ambiance-intervalles-studio",
+    "hiver-parfum-d-ambiance-intervalles-studio",
+    "pritemps-parfum-d-ambiance-intervalles-studio",
+    "ete-parfum-d-ambiance-intervalles-studio",
+    "echantillon-parfum-d-ambiance",
+    "pack-découverte-parfum-d-ambiance",
+    "ampoule-e27",
+    "suspension-électrique-e27",
+    "tote-bag-cadeau",
+}
+
+
+def extract_la_chambre_dami(brand):
+    """
+    lachambredami.com (Wix Stores) exposes a real store-products-sitemap.xml
+    with every product URL, and each /product-page/{slug} server-renders
+    reliable og:title/og:image tags - no price/category available though
+    (color/material is a buyer-chosen option, not fixed per listing). A
+    handful of sitemap entries are consumables/
+    accessories rather than design objects (room-fragrance refills, a bare
+    lightbulb, a generic electrical fitting, a tote bag) - skipped via
+    LA_CHAMBRE_DAMI_SKIP_SLUGS since there's no category field to filter on.
+    """
+    sitemap_url = f"{brand['url'].rstrip('/')}/store-products-sitemap.xml"
+    try:
+        sitemap_resp = requests.get(sitemap_url, headers=HEADERS, timeout=15)
+        sitemap_resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {sitemap_url}: {e}")
+        return []
+
+    urls = re.findall(r"<loc>([^<]+)</loc>", sitemap_resp.text)
+    products = []
+    for url in urls:
+        slug = url.rstrip("/").split("/")[-1]
+        if slug in LA_CHAMBRE_DAMI_SKIP_SLUGS:
+            continue
+
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        og_title = soup.find("meta", property="og:title")
+        name = og_title["content"].split(" | ")[0].strip() if og_title and og_title.get("content") else slug
+        og_image = soup.find("meta", property="og:image")
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": "",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": og_image["content"] if og_image and og_image.get("content") else "",
+        })
+        time.sleep(0.5)  # be polite - don't hammer the site
+
+    return products
+
+
+def extract_esther_knopfler(brand):
+    """
+    estherknopfler.com (Wix Portfolio) exposes every piece on
+    portfolio-projects-sitemap.xml as /portfolio-collections/{collection}/
+    {slug} - a clean, all-real 24-item list of marble furniture (checked:
+    no consumables/junk, unlike lachambredami.com). The collection segment
+    in the URL doubles as a free category signal (e.g. "burger-collection"
+    -> "Burger Collection") with no extra fetch. Each product page's
+    og:title/og:image are server-rendered and reliable.
+    """
+    sitemap_url = f"{brand['url'].rstrip('/')}/portfolio-projects-sitemap.xml"
+    try:
+        sitemap_resp = requests.get(sitemap_url, headers=HEADERS, timeout=15)
+        sitemap_resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {sitemap_url}: {e}")
+        return []
+
+    urls = re.findall(r"<loc>([^<]+)</loc>", sitemap_resp.text)
+    products = []
+    for url in urls:
+        parts = url.rstrip("/").split("/")
+        collection_slug = parts[-2] if len(parts) >= 2 else ""
+        category = collection_slug.replace("-collection", "").replace("-", " ").title()
+        if collection_slug == "untitled-collection":
+            category = ""
+
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        og_title = soup.find("meta", property="og:title")
+        name = og_title["content"].split(" | ")[0].strip() if og_title and og_title.get("content") else parts[-1]
+        og_image = soup.find("meta", property="og:image")
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": og_image["content"] if og_image and og_image.get("content") else "",
+        })
+        time.sleep(0.5)  # be polite - don't hammer the site
+
+    return products
+
+
+def extract_mercoeur_editions(brand):
+    """
+    mercoeur-edition.com (Webflow) server-renders its full 18-item catalog
+    on one /all-products listing page - name, link, and image for every
+    product in one fetch, no per-product pages needed. No reliable category
+    signal (slug and display-name word order don't agree, e.g.
+    /products/boxes-ondine is titled "Ondine Set of 3 boxes"), left blank -
+    same tradeoff as B-Line Italia/H. Bigeleisen.
+    """
+    domain = brand["url"].rstrip("/")
+    url = f"{domain}/all-products"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products = []
+    for a in soup.find_all("a", href=True):
+        if "/products/" not in a["href"]:
+            continue
+        img = a.find("img")
+        name = a.get_text(strip=True)
+        if not img or not name:
+            continue
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": f"{domain}{a['href']}" if a["href"].startswith("/") else a["href"],
+            "category": "",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": img.get("src", ""),
+        })
+
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -1577,6 +1880,11 @@ EXTRACTORS = {
     "Łukasz Korol": extract_shopify,
     "Eric Schmitt Studio": extract_eric_schmitt,
     "New Works DK": extract_new_works_dk,
+    "Eine Kleine Furniture": extract_eine_kleine_furniture,
+    "Jon Goulder": extract_jon_goulder,
+    "La Chambre d'Ami": extract_la_chambre_dami,
+    "Esther Knopfler": extract_esther_knopfler,
+    "Mercoeur Editions": extract_mercoeur_editions,
 }
 
 
