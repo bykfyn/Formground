@@ -165,12 +165,14 @@ PAGE_CSS = """
     color: var(--text-secondary); text-decoration: none; margin-bottom: 8px; }
   .maker-list a.maker-name:hover { text-decoration: underline; }
   .maker-tags { line-height: 1.8; }
-  .page-intro { text-align: center; margin-bottom: 32px; }
-  .page-intro .tagline { font-size: 13px; color: var(--text-secondary); margin: 0 0 8px; }
-  .try-link { display: inline-flex; align-items: center; gap: 6px;
-    font-size: 14px; font-weight: 500; color: var(--text-accent); text-decoration: none; }
-  .try-link:hover { text-decoration: underline; }
-  .try-link i { font-size: 16px; }
+  /* Tagline sits directly under the (left-aligned) logo rather than
+     centered with the page's own heading - a quick "what is this site"
+     for a cold visitor without competing with the page's actual
+     subject (the maker's own name, on brand pages). Overrides
+     site.css's a.home-link margin (40px) since the tagline needs to
+     sit close to the logo, not the next section. */
+  a.home-link { margin-bottom: 6px; }
+  .page-tagline { font-size: 13px; color: var(--text-secondary); margin: 0 0 32px; }
 """
 
 
@@ -210,6 +212,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
 <body>
 <main>
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+  <p class="page-tagline">Discover design from independent makers.</p>
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">{html.escape(brand)}</h1>
@@ -258,11 +261,8 @@ def render_makers_index(brands_data):
 <body>
 <main style="max-width:640px;">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-  <div class="page-intro">
-    <h1 style="margin-bottom: 8px;">Makers</h1>
-    <p class="tagline">Discover design from independent makers.</p>
-    <a class="try-link" href="/">Try a search <i class="ti ti-arrow-right" aria-hidden="true"></i></a>
-  </div>
+  <p class="page-tagline">Discover design from independent makers.</p>
+  <h1 style="text-align:center;">Makers</h1>
   <ul class="maker-list">{items}
   </ul>
   <p class="foot-note">
