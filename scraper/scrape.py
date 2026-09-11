@@ -943,6 +943,23 @@ def _looks_like_a_class_listing(title):
     return any(kw in title_lower for kw in keywords)
 
 
+def _looks_like_a_maintenance_item(title):
+    """
+    Some brands list assembly/cleaning kits and other upkeep accessories
+    in the same catalog as their real design objects (confirmed on Pulkra:
+    "Pulkra assembly kit" and "Pulkra cleaning kit"/"Kit di pulizia
+    Pulkra" sit alongside real furniture, tagged "Accessories"/"Accessori"
+    - a category too broad to blanket-exclude generically since other
+    brands have genuine design accessories under that same word). These
+    aren't design objects Formground exists to surface, so they're
+    excluded by name instead - harmless no-op for any brand that doesn't
+    happen to sell one.
+    """
+    keywords = ("assembly kit", "cleaning kit", "kit di pulizia")
+    title_lower = title.lower()
+    return any(kw in title_lower for kw in keywords)
+
+
 def _base_name(title):
     """
     Several Shopify and WooCommerce brands don't use real variants - they
@@ -998,6 +1015,7 @@ def extract_shopify(brand):
               f"stopping early with what was fetched so far.")
 
     raw_products = [p for p in raw_products if not _looks_like_a_class_listing(p["title"])]
+    raw_products = [p for p in raw_products if not _looks_like_a_maintenance_item(p["title"])]
     raw_products = [
         p for p in raw_products
         if (p.get("product_type") or "").strip().lower() not in EXCLUDED_CATEGORIES
@@ -1106,6 +1124,7 @@ def extract_woocommerce(brand):
         p for p in raw_products
         if not any(c["name"].strip().lower() in EXCLUDED_CATEGORIES for c in p.get("categories", []))
     ]
+    raw_products = [p for p in raw_products if not _looks_like_a_maintenance_item(p["name"])]
 
     # Grouped on name alone, not (categories, name) - the same real design
     # can carry inconsistent category tags across its own listed variants
