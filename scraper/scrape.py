@@ -561,6 +561,37 @@ def extract_kallemo(brand):
     return products
 
 
+def _split_joris_poggioli_materials(raw):
+    """
+    Joris Poggioli's own material field is free-text prose, not a
+    clean delimited list - about a quarter of the 74 products (found
+    via a real user report on "Fernando") read like "Rosewood 100%
+    gloss & cream velvet or Brushed stainless steel & dark olive green
+    velvet", which a plain "/" split (the site's more common separator,
+    e.g. "Black bronze / Plywood") leaves untouched as one long
+    sentence-like blob instead of short material tags. This handles
+    the real conjunctions found across the catalog ("/", " or ", " & ",
+    " and ", ",") and drops the "Other finishes available upon
+    request" caveat some entries end with (informational, not a
+    material). Not a perfect grammatical parse - a few fragments stay
+    slightly phrase-like (e.g. "Sculpted in massive oak") rather than a
+    single clean noun - but a real improvement over one giant sentence.
+    """
+    text = re.sub(r"\.?\s*other finishes available upon request\.?", "", raw, flags=re.IGNORECASE)
+    parts = re.split(r"\s*/\s*|\s+or\s+|\s*&\s*|\s+and\s+|\s*,\s*", text, flags=re.IGNORECASE)
+    cleaned = []
+    for p in parts:
+        # A separator sequence like ", or " leaves a leading "or "/"and "
+        # on the next fragment once the comma's already been split on -
+        # strip that leftover conjunction rather than keeping it as
+        # part of the material name.
+        p = re.sub(r"^(or|and)\s+", "", p.strip(), flags=re.IGNORECASE)
+        p = p.strip().rstrip(".")
+        if p:
+            cleaned.append(p)
+    return cleaned
+
+
 def extract_joris_poggioli(brand):
     """
     jorispoggioli.com is a Next.js app with no robots.txt at all (no
@@ -614,7 +645,7 @@ def extract_joris_poggioli(brand):
             "product_name": item.get("name", ""),
             "product_url": f"{domain}/design/{item['designTypeSlug']}/{item['slug']}",
             "category": item.get("designType", "").title(),
-            "material_options": [m.strip() for m in (item.get("material") or "").split("/") if m.strip()],
+            "material_options": _split_joris_poggioli_materials(item.get("material") or ""),
             "dimensions": " x ".join(dimension_parts) + " cm" if dimension_parts else "",
             "notes": "",
             "image_url": item.get("imageGrid", {}).get("url", ""),
