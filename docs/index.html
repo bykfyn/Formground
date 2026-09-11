@@ -287,7 +287,6 @@
     // nobody anything useful). r.notes is kept as a general-purpose
     // per-item note field for any future real per-item fact, but nothing
     // populates it today.
-    const materials = r.material_options || [];
     // Same "reads as a fake category label" problem as
     // materialDuplicatesCategory below applies here too - confirming
     // "Available in Ceramic" on a ceramics maker's card is redundant
@@ -315,12 +314,11 @@
     body.querySelector(".card-brand").textContent = r.brand;
     if (noteText) {
       body.querySelector(".card-note span").textContent = noteText;
-    } else if (materials.length <= 1 && !(materials.length === 1 && materialDuplicatesCategory(materials[0], r.category))) {
-      // materials.length > 1 with no note falls through to show nothing
-      // rather than dumping every raw finish combo as one long string -
-      // that's exactly the noise a real multi-material search match now
-      // resolves to a clean "Available in X" above instead.
-      body.querySelector(".card-detail").textContent = materials.join(", ") || r.dimensions || "";
+    } else {
+      // No raw material_options here even for a single entry - only a
+      // search-confirmed match earns the "Available in X" note above.
+      // An unconfirmed material is never shown plain, one or many.
+      body.querySelector(".card-detail").textContent = r.dimensions || "";
     }
 
     a.appendChild(imageDiv);
