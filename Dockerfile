@@ -1,10 +1,16 @@
 # Builds the backend for Google Cloud Run.
 #
 # WHY THE BUILD CONTEXT IS THE REPO ROOT, NOT backend/:
-#   query_engine.py expects the database at ../data/formground.db
-#   relative to itself, so this image needs backend/ and data/ side by
-#   side, exactly like they are in the repo - not just backend/ copied
-#   in on its own.
+#   query_engine.py expects the database at ../data/formground.db and
+#   the hidden-brands list at ../scraper/brands.json, both relative to
+#   itself, so this image needs backend/, data/, and scraper/brands.json
+#   side by side, exactly like they are in the repo - not just backend/
+#   copied in on its own. (A brand marked "hidden": true silently had no
+#   effect in production until 2026-09-11, because brands.json was never
+#   copied into the image at all - query_engine.py's own FileNotFoundError
+#   fallback made HIDDEN_BRANDS quietly resolve to an empty set instead of
+#   erroring loudly, so this went unnoticed until a hidden brand was
+#   reported still showing up live.)
 #
 # HOW THE DATABASE GETS INTO THE IMAGE:
 #   Phase 1 scale (a few thousand rows) doesn't need a real database
@@ -23,6 +29,7 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 
 COPY backend/ backend/
 COPY data/ data/
+COPY scraper/brands.json scraper/brands.json
 
 WORKDIR /app/backend
 
