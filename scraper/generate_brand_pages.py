@@ -262,7 +262,6 @@ def render_makers_index(brands_data):
 <main style="max-width:640px;">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
   <p class="page-tagline">Discover design from independent makers.</p>
-  <h1 style="text-align:center;">Makers</h1>
   <ul class="maker-list">{items}
   </ul>
   <p class="foot-note">
