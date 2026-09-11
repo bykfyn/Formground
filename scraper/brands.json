@@ -10,8 +10,9 @@
     "name": "Sizar Alexis",
     "url": "https://sizaralexis.se/",
     "platform": "custom",
-    "scrapable": false,
-    "notes": "Own site is JS-rendered (isotope/revslider gallery, no server-rendered product content) - per Phase 1 policy, JS-rendered sites are deferred rather than solved with a headless browser upfront. Richer structured data exists on 1stDibs/Monde Singulier/Galerie Philia if those are ever brought into scope."
+    "scrapable": true,
+    "notes": "Re-checked 2026-09-11 (user asked about /ode/ directly) - the site has changed since the original 2026-09-01 exclusion. The homepage gallery may still be JS-rendered, but the real catalog lives on 7 named /collection/ pages (itooraba, lahmu, ode, pilier, ousia, amal, bel), each plain server-rendered WordPress content with real prose, dimensions, materials, and edition details - confirmed live. Each page holds several individual pieces named as a bare <strong> tag (\"Ode Chair\", \"Ode Three Legged Stool\") with no product-card markup, handled by extract_sizar_alexis via document-order walking. Location confirmed via the site's own footer (\"SIZAR ALEXIS STUDIO ESKILSTUNA SWEDEN\").",
+    "country": "Sweden"
   },
   {
     "name": "Minimalux",
@@ -436,8 +437,9 @@
     "name": "Monsieur Cailloux",
     "url": "https://www.monsieurcailloux.com/",
     "platform": "ecommerce",
-    "scrapable": false,
-    "notes": "Webflow site (France) - the collection/cart template renders products client-side via JS, nothing in the initial HTML and no public product API found."
+    "scrapable": true,
+    "notes": "Re-checked 2026-09-11 (user asked about /shop/products directly) - the original exclusion was wrong (or the site changed): it is a Webflow CMS collection list that DOES server-render real data. Each piece is a div.collection-item with metadata (age/zone/dimensions), a link-overlay <a> with no inline name/image, and a separate product-description sibling holding the real name+price, plus an image in a repeater block. No pagination found - the ~28 items on the one /shop/products page are treated as the full catalog for this single-artist ceramics practice. No per-piece category (site categorizes by color, not object type), left blank.",
+    "country": "France"
   },
   {
     "name": "Arkadiusz Szwed",
@@ -480,5 +482,102 @@
     "platform": "ecommerce",
     "scrapable": false,
     "notes": "Genuine Shopify storefront with a permissive robots.txt, but the catalog (83 products) is overwhelmingly jewelry and apparel - only a small ceramics subset (~25 items) is in Formground's category scope, and this project scrapes a brand's real catalog rather than a hand-picked subset of it. Excluded as a scope mismatch rather than a technical block; worth revisiting if the ceramics line becomes its own storefront or grows to dominate the catalog."
+  },
+  {
+    "name": "Oven Editions",
+    "url": "https://oveneditions.com",
+    "platform": "ecommerce",
+    "scrapable": true,
+    "notes": "Genuine Shopify storefront, robots.txt permissive (wildcard Allow: /, no ClaudeBot/GPTBot-specific block - just the new agentic-commerce UCP/MCP template Shopify is rolling out). Uses the existing generic extract_shopify unmodified."
+  },
+  {
+    "name": "Mass Productions",
+    "url": "https://www.massproductions.se",
+    "platform": "ecommerce",
+    "scrapable": true,
+    "notes": "Genuine Shopify storefront (Sweden), robots.txt permissive (same new Shopify UCP/MCP agentic-commerce template as Oven Editions, no bot-specific block). Uses the existing generic extract_shopify unmodified.",
+    "country": "Sweden"
+  },
+  {
+    "name": "Joy Objects",
+    "url": "https://joyobjects.com",
+    "platform": "ecommerce",
+    "scrapable": true,
+    "notes": "Genuine Shopify storefront, robots.txt permissive (same new Shopify UCP/MCP agentic-commerce template, no bot-specific block). Uses the existing generic extract_shopify unmodified."
+  },
+  {
+    "name": "W\u00e4stberg",
+    "url": "https://www.wastberg.com",
+    "platform": "custom",
+    "scrapable": true,
+    "notes": "Custom catalog site (checkout runs through a separate connected Shopify backend, but the browsable site itself is not Shopify-fronted - no /products.json). robots.txt fully permissive. The /en/products listing gives real product slugs; each product page cleanly splits into collection name (h1) and mount type (h2, e.g. Table/Ceiling/Wall/Floor/Pendant/Track/Accessories) which doubles as category for this lighting-only brand, plus a real per-product image matched via its PIM asset path.",
+    "country": "Sweden"
+  },
+  {
+    "name": "Pulkra",
+    "url": "https://www.pulkra.it",
+    "platform": "ecommerce",
+    "scrapable": true,
+    "notes": "Genuine WooCommerce storefront (Italy), robots.txt permissive (only disallows internal wc-logs/uploads paths). Uses the existing generic extract_woocommerce unmodified. Note: bare pulkra.it TLS-hangs, use www.pulkra.it.",
+    "country": "Italy"
+  },
+  {
+    "name": "S\u00e9 Collections",
+    "url": "https://www.se-collections.com",
+    "platform": "custom",
+    "scrapable": true,
+    "notes": "Next.js site (UK) - no robots.txt file exists (a 404 falls through to a real page, not a block). Product-grid images lazy-load via a base64 placeholder swapped by JS, but a <noscript><img alt=\"name\" src=\"real image\"> fallback is already server-rendered next to each one, giving clean name+image with no per-product fetch. One listing page per the site's own 7 top-level categories (cabinets, chairs, lighting, mirrors, sofas-and-armchairs, tables, decorative) covers the whole catalog."
+  },
+  {
+    "name": "Gubi",
+    "url": "https://gubi.com",
+    "platform": "ecommerce",
+    "scrapable": true,
+    "notes": "Next.js App Router site (Denmark). No robots.txt file exists (a 404 falls through to a real Next.js error page, not a block) and no products.json/API. Category-grid cards server-render real product name+link text but the <img> itself is empty until client JS runs (no static src, srcset, or noscript fallback - a stricter case than se-collections.com's lazy-loading). 8 top-level category listing pages (from the site's own sitemap.xml, excluding spare-parts/upholstery-swatches/news) give every real product's name+URL+category with zero extra fetches; each product's own og:image (reliable, confirmed) needs one fetch per product - 243 products, bounded by the existing MAX_SECONDS_PER_BRAND ceiling so a slow run still yields correct partial coverage rather than blowing the time budget.",
+    "country": "Denmark"
+  },
+  {
+    "name": "Magis",
+    "url": "https://www.magisdesign.com",
+    "platform": "ecommerce",
+    "scrapable": true,
+    "notes": "WordPress site (Italy), robots.txt permissive (only blocks SEO-crawler bots like Ahrefs/Semrush, no AI-bot-specific rule). Entire ~250-item catalog server-renders on one /product/ listing page - name (h2), designer+price (p), and image all inline per card, no per-product fetch needed. No per-item category (site organizes by function - chairs, tables, etc. - as separate /function/ landing pages, not tagged per item on this listing), left blank.",
+    "country": "Italy"
+  },
+  {
+    "name": "Grain",
+    "url": "https://www.graindesign.com",
+    "platform": "ecommerce",
+    "scrapable": true,
+    "notes": "Squarespace Commerce site. robots.txt uses the harmless generic AI-bot-listing template BUT also explicitly disallows ?format=json here (unlike other Squarespace brands in this project), so the HTML /shop listing is used directly instead - server-renders the full 88-item catalog (name via aria-label, image via data-image) in one fetch. 4 real  material-swatch listings mixed into the same grid are excluded by a \"sample\" substring check on the name (no separate category field to filter on generically)."
+  },
+  {
+    "name": "Will Choui",
+    "url": "https://willchoui.com",
+    "platform": "custom",
+    "scrapable": true,
+    "notes": "Framer site for a small Montreal furniture designer. /collections/collectibles server-renders all 8 real pieces (name as the image link's parent-element text, no alt text on the <img> itself) in one fetch - 2 more pieces than the homepage itself teases. \"Commissions\" is bespoke/custom work with no fixed catalog, correctly excluded.",
+    "country": "Canada"
+  },
+  {
+    "name": "Ari Prasetya",
+    "url": "https://www.ariprasetya.com",
+    "platform": "ecommerce",
+    "scrapable": false,
+    "notes": "Squarespace site - password-gated (401 with a password-entry page), same pattern as Jackie Wright Ceramics. Nothing public to scrape."
+  },
+  {
+    "name": "Ted Larsen",
+    "url": "https://tedlarsen.com",
+    "platform": "custom",
+    "scrapable": false,
+    "notes": "Cargo.site portfolio for a fine-art sculptor represented by galleries (Robischon Gallery, Galerie Dutko, David Shelton Gallery, etc.) - press mentions and gallery links, no direct storefront or purchasable catalog of his own. Structurally out of scope regardless of platform (nothing to list - Formground links to a brand's own product pages, and this artist has none)."
+  },
+  {
+    "name": "Danese Milano",
+    "url": "https://www.danesemilano.com",
+    "platform": "ecommerce",
+    "scrapable": false,
+    "notes": "Custom jQuery/Bootstrap site (Italy) - robots.txt permissive (only blocks SEO-crawler bots). Real category pages exist (/en/products/{id}, e.g. \"Furniture\", \"Ashtrays\") but the actual product grid within each category loads via client-side JS/AJAX with no public API found - only the category nav itself is server-rendered, not the products in it."
   }
 ]

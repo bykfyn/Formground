@@ -1841,6 +1841,511 @@ def extract_mercoeur_editions(brand):
     return products
 
 
+def extract_wastberg(brand):
+    """
+    wastberg.com is a custom catalog (checkout is a separate connected
+    Shopify backend, but the browsable site itself is not Shopify - no
+    /products.json) - the /en/products listing server-renders every
+    product link + a grid thumbnail, but names live one level down. Each
+    product page's <h1>/<h2> cleanly split into collection name ("FARO")
+    and mount type ("TABLE") - combined as the display name, and the mount
+    type doubles as category (Ceiling/Pendant/Wall/Floor/Table/Track/
+    Accessories - all real distinctions for a lighting-only brand, same
+    "hardcode the one category" precedent as Ingo Maurer). The listing
+    page's own thumbnail isn't reliably paired per-product (a shared
+    lifestyle-photo carousel intermixes with the real product shot), so
+    each product page's own primary image is found by matching its PIM
+    asset path against the product's own URL slug with the trailing model
+    code stripped (e.g. "faro-table-w241" -> "faro-table") - confirmed
+    against two different real PIM path shapes this site actually uses
+    (one embeds the full name+model code in the folder name, the other
+    just a numeric asset id, but both always embed the kebab-case name in
+    the filename itself).
+    """
+    domain = brand["url"].rstrip("/")
+    listing_url = f"{domain}/en/products"
+    try:
+        resp = requests.get(listing_url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {listing_url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    slugs = []
+    for a in soup.find_all("a", href=True):
+        match = re.match(r"^/en/products/([a-z0-9-]+)(\?|$)", a["href"])
+        if match and match.group(1) not in slugs:
+            slugs.append(match.group(1))
+
+    products = []
+    for slug in slugs:
+        product_url = f"{domain}/en/products/{slug}"
+        try:
+            page = requests.get(product_url, headers=HEADERS, timeout=15)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {product_url}: {e}")
+            continue
+
+        page_soup = BeautifulSoup(page.text, "html.parser")
+        h1 = page_soup.find("h1")
+        h2 = page_soup.find("h2")
+        if not h1 or not h2:
+            continue
+        collection = h1.get_text(strip=True)
+        mount_type = h2.get_text(strip=True)
+        name = f"{collection.title()} {mount_type.title()}"
+
+        base_key = re.sub(r"-w\d+[a-z0-9]*$", "", slug)
+        image_url = ""
+        img = page_soup.find("img", src=re.compile(rf"/pim/.*{re.escape(base_key)}", re.IGNORECASE))
+        if img:
+            image_url = img["src"]
+            if image_url.startswith("/"):
+                image_url = f"{domain}{image_url}"
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": product_url,
+            "category": mount_type.title(),
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+        time.sleep(0.5)  # be polite - don't hammer the site
+
+    return products
+
+
+SE_COLLECTIONS_CATEGORIES = [
+    "cabinets", "chairs", "lighting", "mirrors",
+    "sofas-and-armchairs", "tables", "decorative",
+]
+
+
+def extract_se_collections(brand):
+    """
+    se-collections.com is a Next.js site whose product-grid <img> tags are
+    lazy-loaded (initial src is a base64 placeholder, real image swapped in
+    by JS) - but each one has a <noscript><img alt="{name}" src="{real
+    image}"> fallback already server-rendered right alongside it, which
+    conveniently gives both a clean name and a real image with zero extra
+    fetches. One listing page per of the site's own 7 top-level categories
+    (SE_COLLECTIONS_CATEGORIES) covers the whole catalog.
+    """
+    domain = brand["url"].rstrip("/")
+    products = []
+    seen_urls = set()
+
+    for category in SE_COLLECTIONS_CATEGORIES:
+        url = f"{domain}/products/{category}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        prefix = f"/products/{category}/"
+        for a in soup.find_all("a", href=True):
+            if not a["href"].startswith(prefix):
+                continue
+            product_url = f"{domain}{a['href']}"
+            if product_url in seen_urls:
+                continue
+            noscript = a.find("noscript")
+            if not noscript:
+                continue
+            img = BeautifulSoup(noscript.decode_contents(), "html.parser").find("img")
+            if not img or not img.get("src"):
+                continue
+            seen_urls.add(product_url)
+
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": img.get("alt", "").strip() or a["href"].rsplit("/", 1)[-1],
+                "product_url": product_url,
+                "category": category.replace("-", " ").title(),
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": img["src"],
+            })
+        time.sleep(0.5)  # be polite - don't hammer the site
+
+    return products
+
+
+GUBI_CATEGORIES = [
+    "lighting", "seating", "tables", "desk-storages", "rugs",
+    "mirrors-2", "outdoor", "accessories",
+]
+
+
+def extract_gubi(brand):
+    """
+    gubi.com is a Next.js App Router site - unlike se-collections.com's
+    lazy-loaded images, these have no static src/srcset/noscript fallback
+    at all (confirmed: the <img> tag in each category-grid card is empty
+    until client JS runs), and there's no products.json/API. Name + URL
+    are still real text in the server-rendered card though, so those come
+    from GUBI_CATEGORIES' 8 listing pages (site's own top-level categories
+    from its own sitemap.xml, minus spare-parts/upholstery-swatches/news -
+    not real products) with zero extra fetches - name specifically comes
+    from the "product_info" div's span, not just the card's first span,
+    since a "News" badge (its own separate span, elsewhere in the card)
+    would otherwise get grabbed instead for newly-launched products. The
+    listing a product is
+    found under also gives category for free. Images need one fetch per
+    product (each product page's own og:image is reliable) - bounded by
+    the same MAX_SECONDS_PER_BRAND ceiling every other brand respects, so
+    a slow day yields partial-but-correct coverage rather than blowing the
+    whole run's time budget.
+    """
+    domain = brand["url"].rstrip("/")
+    seen = {}
+    for category in GUBI_CATEGORIES:
+        url = f"{domain}/en/se/categories/{category}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for a in soup.find_all("a", href=True):
+            if "/products/" not in a["href"]:
+                continue
+            info_div = a.find("div", class_=lambda c: c and "product_info" in c)
+            span = info_div.find("span") if info_div else None
+            if not span:
+                continue
+            product_url = f"{domain}{a['href']}" if a["href"].startswith("/") else a["href"]
+            if product_url not in seen:
+                seen[product_url] = (span.get_text(strip=True), category.replace("-2", "").replace("-", " ").title())
+        time.sleep(0.5)  # be polite - don't hammer the site
+
+    products = []
+    brand_start = time.monotonic()
+    for product_url, (name, category) in seen.items():
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"Gubi's per-product image fetches - stopping with {len(products)} done.")
+            break
+        try:
+            page = requests.get(product_url, headers=HEADERS, timeout=15)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {product_url}: {e}")
+            continue
+
+        page_soup = BeautifulSoup(page.text, "html.parser")
+        og_image = page_soup.find("meta", property="og:image")
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": product_url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": og_image["content"] if og_image and og_image.get("content") else "",
+        })
+        time.sleep(0.3)  # be polite - don't hammer the site
+
+    return products
+
+
+def extract_magis(brand):
+    """
+    magisdesign.com (WordPress) server-renders its entire ~250-item catalog
+    on one /product/ listing page - name (h2), designer + price (p), and
+    image all inline per card (a.load), no per-product fetch needed. No
+    per-product category (the site's own taxonomy is by function - chairs,
+    tables, etc. - as separate landing pages under /function/, not tagged
+    per item on this listing), left blank.
+    """
+    domain = brand["url"].rstrip("/")
+    url = f"{domain}/product/"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products = []
+    for a in soup.find_all("a", class_="load", href=True):
+        h2 = a.find("h2")
+        img = a.find("img")
+        if not h2 or not img:
+            continue
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": h2.get_text(strip=True),
+            "product_url": a["href"],
+            "category": "",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": img.get("src", ""),
+        })
+
+    return products
+
+
+def extract_grain(brand):
+    """
+    graindesign.com's Squarespace Commerce /shop page server-renders its
+    full 88-item catalog on one listing (name via a's aria-label, image via
+    img's data-image/src) - no per-product fetch needed, and its own
+    ?format=json fallback is explicitly disallowed in robots.txt here
+    (unlike other Squarespace brands in this project), so the HTML listing
+    is the only option anyway. Excludes anything with "sample" in the name
+    (confirmed: 4 real material-swatch listings mixed into the main /shop
+    grid, $1 each - not design objects) since there's no separate category
+    field to filter on generically.
+    """
+    domain = brand["url"].rstrip("/")
+    url = f"{domain}/shop"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products = []
+    seen_urls = set()
+    for a in soup.find_all("a", class_="product-list-item-link", href=True):
+        name = a.get("aria-label", "").strip()
+        if not name or "sample" in name.lower():
+            continue
+        product_url = f"{domain}{a['href']}" if a["href"].startswith("/") else a["href"]
+        if product_url in seen_urls:
+            continue
+        seen_urls.add(product_url)
+        img = a.find("img")
+        image_url = (img.get("data-image") or img.get("src", "")) if img else ""
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": product_url,
+            "category": "",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+
+    return products
+
+
+def extract_will_choui(brand):
+    """
+    willchoui.com (Framer) is a small Montreal furniture designer's site -
+    /collections/collectibles server-renders all 8 real pieces (2 more than
+    the homepage itself shows, which only teases 6), each as a plain image
+    link with the product name as its own parent element's text (no alt
+    text on the <img> itself) - one fetch, no per-product pages needed.
+    "commissions" is bespoke/custom work with no fixed catalog, correctly
+    excluded (not a product link, a different kind of page entirely).
+    """
+    domain = brand["url"].rstrip("/")
+    url = f"{domain}/collections/collectibles"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products = []
+    seen = set()
+    for a in soup.find_all("a", href=True):
+        href = a["href"]
+        if not re.match(r"^\./[a-z0-9-]+$", href) or href in ("./collectibles", "./commissions"):
+            continue
+        img = a.find("img")
+        if not img or href in seen:
+            continue
+        seen.add(href)
+        name = a.parent.get_text(strip=True) if a.parent else href.lstrip("./")
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": f"{domain}/collections/{href.lstrip('./')}",
+            "category": "",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": img.get("src", ""),
+        })
+
+    return products
+
+
+SIZAR_ALEXIS_COLLECTIONS = ["itooraba", "lahmu", "ode", "pilier", "ousia", "amal", "bel"]
+SIZAR_ALEXIS_SKIP_STRONGS = {
+    "materials", "edition details", "delivery time", "dimensions", "enquire",
+    "contact", "about", "collections", "exhibitions", "press",
+}
+
+
+def extract_sizar_alexis(brand):
+    """
+    sizaralexis.se was previously excluded (2026-09-01) for a JS-rendered
+    homepage gallery - re-checked 2026-09-11 and its actual catalog pages
+    have since turned out to be plain, fully server-rendered WordPress
+    content (confirmed live: /ode/ renders real prose, dimensions,
+    materials). Each of the site's own 7 named collections
+    (SIZAR_ALEXIS_COLLECTIONS, from its /collection/ index) is a single
+    page holding several individual pieces with no product-card markup -
+    each real piece's name is a <strong> tag reading "{Collection} {Type}"
+    (e.g. "Ode Chair"), interspersed with skippable metadata labels
+    (Materials/Edition details/etc, in SIZAR_ALEXIS_SKIP_STRONGS) and the
+    bare collection title itself. Walked in document order, tracking the
+    most recent real <img> src seen, since each piece's own photos appear
+    directly before its name rather than after. One collection ("bel") has
+    no such per-piece breakdown at all - it's a single design object, so
+    the whole page is treated as one product using its own <title>.
+    """
+    domain = brand["url"].rstrip("/")
+    products = []
+
+    for slug in SIZAR_ALEXIS_COLLECTIONS:
+        url = f"{domain}/{slug}/"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        body = soup.body or soup
+        last_image = ""
+        found_any = False
+        for el in body.find_all(["img", "strong"]):
+            if el.name == "img":
+                src = el.get("src") or el.get("data-src") or ""
+                if src and "loggan" not in src.lower():
+                    last_image = src
+                continue
+
+            text = el.get_text(strip=True)
+            if not text or len(text) > 60:
+                continue
+            if text.lower() in SIZAR_ALEXIS_SKIP_STRONGS:
+                continue
+            if text.upper() == text and text.split() == [slug.upper()]:
+                continue  # the bare collection title itself, not a piece
+
+            found_any = True
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": text,
+                "product_url": url,
+                "category": "",
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": last_image,
+            })
+
+        if not found_any:
+            title = soup.find("title")
+            name = title.get_text(strip=True).split(" – ")[0].strip() if title else slug.title()
+            first_img = next(
+                (img.get("src") or img.get("data-src", "")
+                 for img in body.find_all("img")
+                 if "loggan" not in (img.get("src") or "").lower()),
+                "",
+            )
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": name,
+                "product_url": url,
+                "category": "",
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": first_img,
+            })
+        time.sleep(0.5)  # be polite - don't hammer the site
+
+    return products
+
+
+def extract_monsieur_cailloux(brand):
+    """
+    monsieurcailloux.com was previously excluded for a client-rendered
+    collection/cart template - re-checked 2026-09-11 against the user's
+    own /shop/products link and that turned out wrong: it's a Webflow CMS
+    "collection list" that does server-render real data (dimensions, name,
+    price), just structured unusually - each piece is a div.collection-item
+    holding a metadata block, an aria-label-only link overlay (no name/
+    image inside the <a> itself), and a separate div.product-description
+    sibling with the real name and price, plus an <img> in a repeater
+    block. No pagination controls found (checked), so the ~28 items on
+    this one page are treated as the full catalog for this single-artist
+    ceramics practice. No per-piece category (the site's own categories
+    are color swatches - /category/white, /category/black, etc - not
+    object types), left blank.
+    """
+    domain = brand["url"].rstrip("/")
+    url = f"{domain}/shop/products"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products = []
+    for item in soup.find_all("div", class_="collection-item"):
+        link = item.find("a", href=True)
+        name_el = item.find("div", class_="product-name-text")
+        img = item.find("img")
+        if not link or not name_el:
+            continue
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name_el.get_text(strip=True),
+            "product_url": f"{domain}{link['href']}" if link["href"].startswith("/") else link["href"],
+            "category": "",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": img.get("src", "") if img else "",
+        })
+
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -1885,6 +2390,18 @@ EXTRACTORS = {
     "La Chambre d'Ami": extract_la_chambre_dami,
     "Esther Knopfler": extract_esther_knopfler,
     "Mercoeur Editions": extract_mercoeur_editions,
+    "Oven Editions": extract_shopify,
+    "Mass Productions": extract_shopify,
+    "Joy Objects": extract_shopify,
+    "Wästberg": extract_wastberg,
+    "Pulkra": extract_woocommerce,
+    "Sé Collections": extract_se_collections,
+    "Gubi": extract_gubi,
+    "Magis": extract_magis,
+    "Grain": extract_grain,
+    "Will Choui": extract_will_choui,
+    "Sizar Alexis": extract_sizar_alexis,
+    "Monsieur Cailloux": extract_monsieur_cailloux,
 }
 
 
