@@ -53,6 +53,15 @@ CLOUDFLARE_ANALYTICS = (
     "<!-- End Cloudflare Web Analytics -->"
 )
 
+# Same tags added by hand to index.html/about.html/contact.html - kept
+# here as one constant for the same reason as CLOUDFLARE_ANALYTICS above.
+FAVICON_TAGS = (
+    '<link rel="icon" href="/favicon.ico" sizes="any">\n'
+    '<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">\n'
+    '<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">\n'
+    '<link rel="apple-touch-icon" href="/apple-touch-icon.png">'
+)
+
 
 def load_countries():
     """
@@ -218,6 +227,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{html.escape(brand)} on Formground</title>
+{FAVICON_TAGS}
 <meta name="description" content="{html.escape(brand)}'s work on Formground - {len(products)} pieces, linked straight to their own site.">
 <link rel="canonical" href="{page_url}">
 <script type="application/ld+json">{breadcrumb_json}</script>
@@ -268,6 +278,7 @@ def render_makers_index(brands_data):
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Makers — Formground</title>
+{FAVICON_TAGS}
 <meta name="description" content="Every independent maker currently on Formground, browsable by name.">
 <link rel="canonical" href="https://formground.com/makers.html">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
