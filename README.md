@@ -16,7 +16,8 @@ to read or understand the code itself to know what each part does.
 | `data/` | Where all the scraped info gets stored (a single database file), plus a `last_scrape_report.json` showing how long the last run took, per brand - worth a glance after any run so a slow or misbehaving site gets noticed quickly rather than after the fact |
 | `backend/` | Answers searches - both the human ask-box and the AI-agent version |
 | `frontend/` | The actual ask-box web page a person uses - a single static HTML file, no build step |
-| `.github/workflows/` | Runs the scraper automatically on a schedule - no manual work needed |
+| `tests/` | A small set of automatic checks covering the specific bugs that have already slipped through once (a bad search match, duplicate/stale scraped data) - runs automatically on every change, so one of those can't quietly come back unnoticed |
+| `.github/workflows/` | Runs the scraper automatically on a schedule, and the tests above on every change - no manual work needed |
 
 ## How things run day-to-day
 

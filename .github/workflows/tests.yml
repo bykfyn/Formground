@@ -1,0 +1,32 @@
+# WHAT THIS DOES:
+#   Runs the small regression test suite (tests/) on every push and
+#   pull request against main - no network calls, no API keys, done in
+#   under a second. Catches a change that accidentally reintroduces one
+#   of the specific bugs these tests exist to guard against (see each
+#   test file's own docstring) before it ever reaches production.
+
+name: Run tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 python-dotenv
+
+      - name: Run tests
+        run: python3 -m unittest discover tests -v
