@@ -859,9 +859,15 @@ def extract_baleri_italia(brand):
 # (commissions) category was deliberately NOT added here either - it
 # mixes those same project writeups with genuinely real, purchasable
 # custom/bespoke furniture, too broad a net to exclude cleanly.
+# "Care Kit" (Galvin Brothers' furniture maintenance kit, same shape as
+# Piet Hein Eek's maintenance sets - not a design object). "editorial"/
+# "musica"/"operativo" (Utilitario Mexicano's books/magazines, vinyl
+# records, and a gift-card listing - same "Libri fisici" shape as
+# Bitossi, just Spanish-language category names this time).
 EXCLUDED_CATEGORIES = {
     "finish samples", "swatches", "spare part", "spare parts", "libri fisici",
     "architectuur", "architectuur projecten", "inrichtingen", "horeca",
+    "care kit", "editorial", "musica", "operativo",
 }
 
 # Some Shopify brands use product_type for something other than a real
@@ -1175,9 +1181,16 @@ EXTRACTORS = {
     "A. Petersen": extract_shopify,
     "De La Espada": extract_shopify,
     "Luke Hope": extract_shopify,
+    "Buro Berger": extract_shopify,
+    "Silcohaus": extract_shopify,
+    "Designbythem": extract_shopify,
+    "Raawii": extract_shopify,
+    "Utilitario Mexicano": extract_shopify,
+    "Galvin Brothers": extract_shopify,
     "Verk": extract_woocommerce,
     "Another Country": extract_woocommerce,
     "Piet Hein Eek": extract_woocommerce,
+    "Mati Sipiora": extract_woocommerce,
 }
 
 
