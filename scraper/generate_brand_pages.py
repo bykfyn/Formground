@@ -315,6 +315,7 @@ def render_sitemap(brand_slugs):
         ("https://formground.com/", "weekly", "1.0", None),
         ("https://formground.com/about.html", "monthly", "0.6", None),
         ("https://formground.com/contact.html", "monthly", "0.5", None),
+        ("https://formground.com/resources.html", "monthly", "0.4", None),
         ("https://formground.com/makers.html", "weekly", "0.7", today),
     ]
     urls += [(f"https://formground.com/brands/{slug}.html", "weekly", "0.5", today) for slug in brand_slugs]
