@@ -64,6 +64,22 @@ def load_countries():
     brands = json.loads(BRANDS_PATH.read_text())
     return {b["name"]: b["country"] for b in brands if b.get("country")}
 
+
+def load_hidden_brands():
+    """
+    A brand marked "hidden": true keeps its data and keeps being
+    scraped, but gets no brand page, no makers.html entry, and no
+    sitemap entry - for pausing a brand from showing up (e.g. a design
+    direction that no longer fits well next to the others) without
+    losing its data or its scrape schedule. See query_engine.py's
+    HIDDEN_BRANDS for the matching backend-side exclusion (search/
+    discover). Any previously-generated page for a brand that's since
+    been hidden is deleted here too, rather than left as a stale,
+    still-reachable file.
+    """
+    brands = json.loads(BRANDS_PATH.read_text())
+    return {b["name"] for b in brands if b.get("hidden")}
+
 # A brand can have products across more than one of these - the page
 # shows every umbrella that any of its products match. Kept as a
 # plain, extendable dict (not a fixed enum) since the user has flagged
@@ -313,6 +329,7 @@ def generate():
         by_brand.setdefault(row["brand"], []).append(dict(row))
 
     countries = load_countries()
+    hidden_brands = load_hidden_brands()
     BRANDS_DIR.mkdir(parents=True, exist_ok=True)
 
     slugs_seen = {}
@@ -326,6 +343,14 @@ def generate():
             slug = f"{slug}-{len(slugs_seen)}"
         slugs_seen[slug] = brand
 
+        if brand in hidden_brands:
+            # No page, no makers.html entry, no sitemap entry - and
+            # delete any page generated before this brand was hidden,
+            # rather than leave a stale file still reachable by anyone
+            # with the old URL.
+            (BRANDS_DIR / f"{slug}.html").unlink(missing_ok=True)
+            continue
+
         brand_url = products[0]["brand_url"]
         umbrellas = umbrella_categories_for(products)
         country = countries.get(brand)
@@ -334,7 +359,7 @@ def generate():
         makers_data.append((brand, slug, umbrellas, len(products), country))
 
     (DOCS_DIR / "makers.html").write_text(render_makers_index(makers_data))
-    (DOCS_DIR / "sitemap.xml").write_text(render_sitemap(sorted(slugs_seen.keys())))
+    (DOCS_DIR / "sitemap.xml").write_text(render_sitemap(sorted(m[1] for m in makers_data)))
 
     print(f"Generated {len(makers_data)} brand pages, makers.html, and sitemap.xml "
           f"({sum(m[3] for m in makers_data)} products total).")

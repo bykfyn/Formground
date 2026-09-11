@@ -33,6 +33,8 @@ NOT_FOUND = [
 
 
 def classify_status(brand):
+    if brand.get("hidden"):
+        return "Hidden"
     if brand.get("scrapable"):
         return "Live"
     notes = brand.get("notes", "")
@@ -65,7 +67,7 @@ def main():
             {
                 "Brand": b["name"],
                 "Status": status,
-                "Product Count": counts.get(b["name"], "") if status == "Live" else "",
+                "Product Count": counts.get(b["name"], "") if status in ("Live", "Hidden") else "",
                 "Country": b.get("country", ""),
                 "URL": b.get("url", ""),
                 "Notes": b.get("notes", ""),

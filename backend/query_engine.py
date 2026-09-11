@@ -43,6 +43,30 @@ from dotenv import load_dotenv
 load_dotenv()
 
 DB_PATH = Path(__file__).parent.parent / "data" / "formground.db"
+BRANDS_PATH = Path(__file__).parent.parent / "scraper" / "brands.json"
+
+
+def _load_hidden_brands() -> set:
+    """
+    A brand marked "hidden": true in brands.json keeps being scraped
+    and its data stays in the database (so it's ready to switch back on
+    later), but is excluded from every surface here - search, name
+    matching, and discover. Distinct from "scrapable": false, which
+    only stops future scraping and does nothing about data already in
+    the database - "hidden" is for a brand you want to pause showing
+    without losing its data or its place in the scrape schedule, e.g.
+    a design direction that no longer fits well next to the others
+    right now, as opposed to a permanent remove-on-request case (which
+    just deletes the brand's rows outright).
+    """
+    try:
+        brands = json.loads(BRANDS_PATH.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return set()
+    return {b["name"] for b in brands if b.get("hidden")}
+
+
+HIDDEN_BRANDS = _load_hidden_brands()
 
 LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "anthropic")
 
@@ -264,6 +288,8 @@ def filter_products(intent: dict) -> list:
 
         if not product["image_url"]:
             continue
+        if product["brand"] in HIDDEN_BRANDS:
+            continue
         if wanted_category and not _category_matches(product["category"], wanted_category):
             continue
         if wanted_material and wanted_material not in product["material_options"].lower():
@@ -313,6 +339,8 @@ def filter_by_name(raw_query: str) -> list:
     matches = []
     for row in rows:
         product = dict(row)
+        if product["brand"] in HIDDEN_BRANDS:
+            continue
         if re.search(rf"\b{re.escape(product['product_name'])}\b", raw_query, re.IGNORECASE):
             product["material_options"] = json.loads(product["material_options"] or "[]")
             product["thin"] = bool(product["thin"])
@@ -340,6 +368,8 @@ def discover(per_brand: int = DISCOVER_PER_BRAND) -> list:
     by_brand = {}
     for row in rows:
         product = dict(row)
+        if product["brand"] in HIDDEN_BRANDS:
+            continue
         product["material_options"] = json.loads(product["material_options"] or "[]")
         product["thin"] = bool(product["thin"])
         by_brand.setdefault(product["brand"], []).append(product)
