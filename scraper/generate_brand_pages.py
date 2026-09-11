@@ -27,6 +27,7 @@ WHO RUNS THIS:
     python scraper/generate_brand_pages.py
 """
 
+import datetime
 import html
 import json
 import re
@@ -157,10 +158,26 @@ PAGE_CSS = """
 """
 
 
-def render_brand_page(brand, brand_url, products, umbrellas, country=None):
+def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None):
     tag_list = list(umbrellas) + ([country] if country else [])
     tags = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
     cards = "".join(product_card_html(p) for p in products)
+    page_url = f"{SITE_URL}/brands/{slug}.html"
+    # BreadcrumbList (Home -> Makers -> this brand) - cheap, accurate
+    # structured data with a real shot at a rich-result breadcrumb in
+    # search results. Deliberately no Product/price schema here: we
+    # don't have reliable real-time price/availability data, and
+    # claiming it would overstate what's really just a thumbnail-and-
+    # link-back model (see the project's own fair-use grounding).
+    breadcrumb_json = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Formground", "item": f"{SITE_URL}/"},
+            {"@type": "ListItem", "position": 2, "name": "Makers", "item": f"{SITE_URL}/makers.html"},
+            {"@type": "ListItem", "position": 3, "name": brand, "item": page_url},
+        ],
+    })
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -168,6 +185,8 @@ def render_brand_page(brand, brand_url, products, umbrellas, country=None):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{html.escape(brand)} on Formground</title>
 <meta name="description" content="{html.escape(brand)}'s work on Formground - {len(products)} pieces, linked straight to their own site.">
+<link rel="canonical" href="{page_url}">
+<script type="application/ld+json">{breadcrumb_json}</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
 <link rel="stylesheet" href="/site.css">
 <style>{PAGE_CSS}</style>
@@ -214,6 +233,7 @@ def render_makers_index(brands_data):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Makers — Formground</title>
 <meta name="description" content="Every independent maker currently on Formground, browsable by name.">
+<link rel="canonical" href="https://formground.com/makers.html">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
 <link rel="stylesheet" href="/site.css">
 <style>{PAGE_CSS}</style>
@@ -234,18 +254,29 @@ def render_makers_index(brands_data):
 
 
 def render_sitemap(brand_slugs):
+    # lastmod is only set on the pages this script itself regenerates
+    # every run (makers.html, brand pages) - their content can genuinely
+    # change on any given run, so "today" is a real signal, not a gamed
+    # one. The hand-maintained pages (homepage, about, contact) aren't
+    # touched by this script, so they're left without lastmod rather
+    # than given a date that doesn't reflect when they actually changed
+    # - a wrong lastmod is worse than none, since search engines
+    # discount sitemaps whose freshness signal turns out to be fake.
+    today = datetime.date.today().isoformat()
     urls = [
-        ("https://formground.com/", "weekly", "1.0"),
-        ("https://formground.com/about.html", "monthly", "0.6"),
-        ("https://formground.com/contact.html", "monthly", "0.5"),
-        ("https://formground.com/makers.html", "weekly", "0.7"),
+        ("https://formground.com/", "weekly", "1.0", None),
+        ("https://formground.com/about.html", "monthly", "0.6", None),
+        ("https://formground.com/contact.html", "monthly", "0.5", None),
+        ("https://formground.com/makers.html", "weekly", "0.7", today),
     ]
-    urls += [(f"https://formground.com/brands/{slug}.html", "weekly", "0.5") for slug in brand_slugs]
-    entries = "\n".join(
-        f"  <url>\n    <loc>{loc}</loc>\n    <changefreq>{freq}</changefreq>\n    <priority>{pri}</priority>\n  </url>"
-        for loc, freq, pri in urls
-    )
-    return f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{entries}\n</urlset>\n'
+    urls += [(f"https://formground.com/brands/{slug}.html", "weekly", "0.5", today) for slug in brand_slugs]
+    entries = []
+    for loc, freq, pri, lastmod in urls:
+        lastmod_tag = f"\n    <lastmod>{lastmod}</lastmod>" if lastmod else ""
+        entries.append(
+            f"  <url>\n    <loc>{loc}</loc>{lastmod_tag}\n    <changefreq>{freq}</changefreq>\n    <priority>{pri}</priority>\n  </url>"
+        )
+    return f'<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n{chr(10).join(entries)}\n</urlset>\n'
 
 
 def generate():
@@ -277,7 +308,7 @@ def generate():
         brand_url = products[0]["brand_url"]
         umbrellas = umbrella_categories_for(products)
         country = countries.get(brand)
-        page = render_brand_page(brand, brand_url, products, umbrellas, country)
+        page = render_brand_page(brand, slug, brand_url, products, umbrellas, country)
         (BRANDS_DIR / f"{slug}.html").write_text(page)
         makers_data.append((brand, slug, umbrellas, len(products), country))
 
