@@ -119,6 +119,16 @@ UMBRELLA_KEYWORDS = {
 DEFAULT_UMBRELLA = "Objects"
 
 
+# A few real letters don't NFKD-decompose into a base letter + combining
+# mark the way most accented Latin characters do (they're their own
+# distinct letterform in Unicode, e.g. Polish "Ł" is a stroke, not a
+# diacritic) - NFKD + ascii-encode silently drops them instead of
+# falling back to their nearest plain-letter equivalent (confirmed
+# live: "Łukasz Korol" slugified to "ukasz-korol", not "lukasz-korol").
+# Added to as real cases are found, not guessed ahead of need.
+SLUG_CHAR_OVERRIDES = {"Ł": "L", "ł": "l"}
+
+
 def slugify(name):
     """
     A URL slug needs to be stable once a brand page is indexed -
@@ -127,6 +137,8 @@ def slugify(name):
     characters ("Löwenhielm"), periods ("A. Petersen"), ampersands,
     multiple spaces.
     """
+    for char, replacement in SLUG_CHAR_OVERRIDES.items():
+        name = name.replace(char, replacement)
     normalized = unicodedata.normalize("NFKD", name)
     ascii_only = normalized.encode("ascii", "ignore").decode("ascii")
     slug = re.sub(r"[^a-zA-Z0-9]+", "-", ascii_only).strip("-").lower()

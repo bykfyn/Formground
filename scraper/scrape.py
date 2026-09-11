@@ -24,6 +24,7 @@ HOW IT'S ORGANIZED:
 """
 
 import argparse
+import gzip
 import html
 import json
 import re
@@ -1159,6 +1160,384 @@ def extract_woocommerce(brand):
     return products
 
 
+def extract_bigcartel(brand):
+    """
+    Generic extractor for any brand running Big Cartel, which exposes a
+    clean public /products.json on every store by default (confirmed
+    live: Patrick de Glo de Besses). No pagination needed - Big Cartel
+    catalogs are small by design (it's built for independent artists/
+    makers, per the resources page), and the endpoint returns every
+    active + sold-out product in one response. Sold-out items are kept,
+    not filtered - a design doesn't stop being real just because it's
+    currently unavailable, same treatment as Yird Ceramics' sold-out
+    pieces.
+    """
+    base = brand["url"].rstrip("/")
+    data = _fetch_json(f"{base}/products.json")
+    if not data:
+        return []
+
+    products = []
+    for p in data:
+        categories = sorted({c.get("name", "").strip() for c in p.get("categories", []) if c.get("name")})
+        images = p.get("images", [])
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": p.get("name", ""),
+            "product_url": f"{base}{p['url']}" if p.get("url", "").startswith("/") else p.get("url", base),
+            "category": ", ".join(c.title() for c in categories),
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": images[0]["url"] if images else "",
+        })
+
+    return products
+
+
+def extract_bline(brand):
+    """
+    b-line.it (custom platform, no product API) server-renders its full
+    21-item catalog on one /en/prodotti/ listing page - name (h2) and
+    image (CSS background-image on the card, not an <img> tag) for
+    every product, one fetch. No category on the listing itself and
+    left blank rather than fetching all 21 product pages just for that -
+    same tradeoff already made for H. Bigeleisen/Yird Ceramics.
+    """
+    domain = brand["url"].rstrip("/")
+    url = f"{domain}/en/prodotti/"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products = []
+    for article in soup.find_all("article", class_="post"):
+        link_el = article.find_parent("a", href=True)
+        title_el = article.find("h2")
+        image_div = article.find(class_="image-container")
+        if not link_el or not title_el:
+            continue
+
+        image_url = ""
+        if image_div and image_div.get("style"):
+            match = re.search(r"url\(['\"]?([^'\")]+)['\"]?\)", image_div["style"])
+            if match:
+                image_url = match.group(1)
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": title_el.get_text(strip=True),
+            "product_url": link_el["href"],
+            "category": "",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+
+    return products
+
+
+# omeletteeditions.com's own English URLs mix Spanish and English
+# category segments (confirmed live) - a small translation map rather
+# than showing the raw Spanish word on an English-language card.
+OMELETTE_CATEGORIES = {
+    "accesorios": "Accessories", "butacas": "Armchair", "taburetes": "Stool",
+    "chairs": "Chair", "poufs": "Pouf", "side-table": "Side table",
+    "sofas": "Sofa", "tables": "Table",
+}
+
+
+def extract_omelette_editions(brand):
+    """
+    omeletteeditions.com (WordPress/WooCommerce, but the Store API
+    isn't exposed) has no single listing page with the full catalog -
+    confirmed live, /en/productos/ itself shows category tiles, not
+    products. Its own SEO sitemap (productos-sitemap.xml) is the only
+    place the real per-product URLs are enumerated, so this fetches
+    that instead, keeps only the English "/en/productos/{category}/
+    {slug}/" URLs (dropping the parallel Spanish-language duplicates
+    and the bare category-index entries), and fetches each product
+    page directly for name/image (og:title/og:image) - real title/
+    dimensions/materials would need more per-page parsing than 37
+    products' worth of "name + image" seemed worth building for now.
+    Category comes from the URL path segment itself, not a per-page
+    fetch.
+    """
+    domain = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{domain}/productos-sitemap.xml", headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch sitemap for {brand['name']}: {e}")
+        return []
+
+    urls = re.findall(
+        r"<loc>(https://[^<]+/en/productos/[a-z0-9-]+/[a-z0-9-]+/)</loc>", resp.text
+    )
+    urls = sorted(set(urls))
+
+    products = []
+    for url in urls:
+        match = re.search(r"/en/productos/([a-z0-9-]+)/", url)
+        category = OMELETTE_CATEGORIES.get(match.group(1), "") if match else ""
+
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=15)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        title_match = re.search(r'<meta property="og:title" content="([^"]*)"', page.text)
+        image_match = re.search(r'<meta property="og:image" content="([^"]*)"', page.text)
+        if not title_match:
+            continue
+        name = re.sub(r"\s*-\s*Ommelette\s*$", "", title_match.group(1), flags=re.IGNORECASE)
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_match.group(1) if image_match else "",
+        })
+        time.sleep(0.5)  # be polite - don't hammer the site
+
+    return products
+
+
+def extract_parenpar_ar(brand):
+    """
+    parenpar.com.ar runs on Tiendanube (a Latin American e-commerce
+    platform, confirmed via robots.txt's own comment) - no Shopify-style
+    products.json (confirmed live: returns invalid JSON), so this
+    fetches the platform's own gzipped sitemap (its real location is
+    published directly in robots.txt's Sitemap: line, not a guessable
+    path) for the 80 real /productos/{slug}/ URLs, then fetches each
+    product page directly. Every page embeds a real WebPage JSON-LD
+    block with a breadcrumb trail - the second-to-last breadcrumb item
+    is the real category (e.g. "Bancos y banquetas"), the last is the
+    product's own name; og:image gives the real photo. Not to be
+    confused with the unrelated US resort-wear brand at the plain
+    ".com" domain of the same name - confirmed live this is a genuinely
+    different, real furniture/lighting/ceramics maker in Argentina.
+    """
+    domain = brand["url"].rstrip("/")
+    try:
+        sitemap_index = requests.get(f"{domain}/robots.txt", headers=HEADERS, timeout=15).text
+        sitemap_url_match = re.search(r"Sitemap:\s*(\S+)", sitemap_index)
+        if not sitemap_url_match:
+            print(f"  No sitemap declared in robots.txt for {brand['name']}")
+            return []
+        gz_resp = requests.get(sitemap_url_match.group(1), headers=HEADERS, timeout=15)
+        gz_resp.raise_for_status()
+        sitemap_xml = gzip.decompress(gz_resp.content).decode("utf-8")
+    except (requests.RequestException, OSError) as e:
+        print(f"  Could not fetch sitemap for {brand['name']}: {e}")
+        return []
+
+    urls = sorted(set(re.findall(rf"<loc>({re.escape(domain)}/productos/[a-z0-9-]+/)</loc>", sitemap_xml)))
+
+    products = []
+    for url in urls:
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=15)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        webpage_data = None
+        for block in re.findall(r'<script type="application/ld\+json"[^>]*>(.*?)</script>', page.text, re.S):
+            try:
+                parsed = json.loads(block)
+            except json.JSONDecodeError:
+                continue
+            if parsed.get("@type") == "WebPage":
+                webpage_data = parsed
+                break
+        if not webpage_data:
+            continue
+
+        crumbs = webpage_data.get("breadcrumb", {}).get("itemListElement", [])
+        name = crumbs[-1]["name"] if crumbs else webpage_data.get("name", "")
+        category = crumbs[-2]["name"] if len(crumbs) >= 2 else ""
+
+        image_match = re.search(r'<meta property="og:image" content="([^"]*)"', page.text)
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_match.group(1) if image_match else "",
+        })
+        time.sleep(0.5)  # be polite - don't hammer the site
+
+    return products
+
+
+# Eric Schmitt's own category folders under /realisations_{slug} - the
+# "editeurs_*" ones are the same objects re-grouped by which gallery
+# represents them (would just duplicate everything already caught
+# here), and "in-situ"/"projets" are installation photography, not
+# standalone purchasable objects - both deliberately excluded.
+ERIC_SCHMITT_CATEGORIES = {
+    "assises": "Seating", "autres": "Other", "bijoux": "Jewelry",
+    "bijoux-jane-schmitt": "Jewelry", "consoles": "Console",
+    "elements-darchitecture": "Architectural element", "lumieres": "Lighting",
+    "objets": "Object", "rangements": "Storage", "tables-basses": "Coffee table",
+    "tables-dappoint": "Side table", "tables-hautes": "Table",
+    "vases": "Vase",
+}
+
+
+def extract_eric_schmitt(brand):
+    """
+    ericschmitt.com (a dated custom/PHP site, confirmed permissive
+    robots.txt) has no product API, but each of its 13 real category
+    listing pages server-renders every item's name, designer credit,
+    and image in one fetch - no per-product fetch needed, confirmed by
+    checking one individual product page separately (it has real
+    material/dimension detail this listing doesn't, but that's a
+    smaller gap than the ~50+ extra fetches getting it would cost).
+    """
+    domain = brand["url"].rstrip("/")
+    products = []
+
+    for slug, category_label in ERIC_SCHMITT_CATEGORIES.items():
+        url = f"{domain}/realisations_{slug}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for title_el in soup.find_all("h2", class_="b-card__title"):
+            # The link is a sibling of the title's wrapper div, not an
+            # ancestor - both live inside the shared ".b-card" card.
+            card = title_el.find_parent(class_="b-card")
+            if not card:
+                continue
+            link_el = card.find("a", class_="b-card__link", href=True)
+            img = card.find("img")
+            if not link_el:
+                continue
+
+            image_url = img.get("src", "") if img else ""
+            if image_url.startswith("/"):
+                image_url = f"{domain}{image_url}"
+            elif image_url and not image_url.startswith("http"):
+                image_url = f"{domain}/{image_url}"
+
+            product_url = link_el["href"]
+            if not product_url.startswith("http"):
+                product_url = f"{domain}/{product_url}"
+
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": title_el.get_text(strip=True),
+                "product_url": product_url,
+                "category": category_label,
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": image_url,
+            })
+
+        time.sleep(1)  # be polite - don't hammer the site
+
+    return products
+
+
+def extract_new_works_dk(brand):
+    """
+    newworks.dk was deferred on 2026-09-07 as a client-rendered Nuxt
+    SPA (/en/shop's category pages returned only nav links server-
+    side). Rechecked 2026-09-11 at the user's prompt and that's no
+    longer true - the site now server-renders its full 150-item /en/
+    shop grid directly (name, material/color, price, and a real <img
+    src>, not just a lazy-load placeholder), confirmed live. No
+    category signal on this listing page, left blank rather than
+    fetching all 150 product pages just for that.
+
+    Same color-variant-as-separate-listing pattern seen on several
+    other brands (confirmed live: "Rand Side Table" has two separate
+    product URLs, one per color/finish) - grouped by exact product
+    name with the color/material line folded into material_options.
+    """
+    domain = brand["url"].rstrip("/")
+    url = f"{domain}/en/shop"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    raw_products = []
+    seen_urls = set()
+    for a in soup.find_all("a", href=lambda h: h and h.startswith("/en/product/")):
+        product_url = f"{domain}{a['href']}"
+        if product_url in seen_urls:
+            continue
+        seen_urls.add(product_url)
+
+        img = a.find("img")
+        ps = a.find_all("p")
+        if not ps:
+            continue
+
+        raw_products.append({
+            "name": ps[0].get_text(strip=True),
+            "material": ps[1].get_text(strip=True) if len(ps) > 1 else "",
+            "product_url": product_url,
+            "image_url": (img.get("src") or img.get("data-src") or "") if img else "",
+        })
+
+    grouped = {}
+    for p in raw_products:
+        grouped.setdefault(p["name"], []).append(p)
+
+    products = []
+    for name, group in grouped.items():
+        first = group[0]
+        materials = sorted({p["material"] for p in group if p["material"]})
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": first["product_url"],
+            "category": "",
+            "material_options": materials,
+            "dimensions": "",
+            "notes": "",
+            "image_url": first["image_url"],
+        })
+
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -1191,6 +1570,13 @@ EXTRACTORS = {
     "Another Country": extract_woocommerce,
     "Piet Hein Eek": extract_woocommerce,
     "Mati Sipiora": extract_woocommerce,
+    "Patrick de Glo de Besses": extract_bigcartel,
+    "B-Line Italia": extract_bline,
+    "Omelette Editions": extract_omelette_editions,
+    "Par en Par": extract_parenpar_ar,
+    "Łukasz Korol": extract_shopify,
+    "Eric Schmitt Studio": extract_eric_schmitt,
+    "New Works DK": extract_new_works_dk,
 }
 
 
