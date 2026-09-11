@@ -256,7 +256,7 @@ def render_makers_index(brands_data):
   <ul class="maker-list">{items}
   </ul>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/about.html">About Formground</a>
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/contact.html">Get in touch</a>
   </p>
 </main>
 {CLOUDFLARE_ANALYTICS}
