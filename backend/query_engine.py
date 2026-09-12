@@ -152,10 +152,15 @@ DISCOVER_PER_BRAND = 6
 # A per-brand cap alone no longer bounds the page length now that there are
 # ~50+ scrapable brands - up to 300+ results forced an endless scroll for
 # what's meant to be a quick "surprise me" browse. Capped at a fixed total
-# instead so the whole result fits on roughly one screen's worth of
-# scrolling; hitting "Surprise me" again re-samples a fresh, different set
-# rather than needing to scroll through everything at once.
-DISCOVER_TOTAL_CAP = 24
+# instead so the whole result fits within a modest scroll; hitting
+# "Surprise me" again re-samples a fresh, different set rather than
+# needing to scroll through everything at once. Raised from the original
+# 24 (2026-09-12) once the frontend gained its own trim-to-full-row logic
+# (see renderResults' trimToFullRows) - this number no longer needs to be
+# a common multiple of likely column counts itself, since the actual
+# rendered column count is measured and trimmed to client-side; this is
+# just "how big a pool is worth fetching for one browse."
+DISCOVER_TOTAL_CAP = 30
 
 
 def translate_query(raw_query: str) -> dict:

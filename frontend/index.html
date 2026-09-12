@@ -326,7 +326,7 @@
     return a;
   }
 
-  function renderResults(results, metaText, emptyText) {
+  function renderResults(results, metaText, emptyText, trimToFullRows) {
     gridEl.innerHTML = "";
     statusEl.style.display = "none";
 
@@ -338,9 +338,27 @@
       return;
     }
 
+    results.forEach(r => gridEl.appendChild(renderCard(r)));
+
+    // Discover's grid is a real count of real objects, but an odd-length
+    // trailing row (fuller rows above it, then 2 cards alone on the last
+    // line) looks unfinished in a way a search result count doesn't - a
+    // search's count is itself informative ("13 results"), so it's never
+    // trimmed. The grid's own column count isn't fixed in CSS (auto-fit
+    // reflows by viewport width), so this reads it back from the
+    // rendered layout rather than guessing - it's the only way to
+    // actually guarantee a full last row at any window size.
+    if (trimToFullRows) {
+      const columns = getComputedStyle(gridEl).gridTemplateColumns.trim().split(/\s+/).length;
+      const keep = Math.floor(results.length / columns) * columns || results.length;
+      while (gridEl.children.length > keep) {
+        gridEl.removeChild(gridEl.lastElementChild);
+      }
+      results = results.slice(0, keep);
+    }
+
     metaEl.textContent = metaText(results.length);
     metaEl.style.display = "block";
-    results.forEach(r => gridEl.appendChild(renderCard(r)));
   }
 
   async function runSearch(query) {
@@ -381,7 +399,8 @@
       renderResults(
         data.results || [],
         (n) => `${n} real objects, picked at random across every maker`,
-        "Nothing to discover yet."
+        "Nothing to discover yet.",
+        true
       );
     } catch (err) {
       statusEl.className = "error";
