@@ -149,6 +149,14 @@ MAX_RESULTS_PER_BRAND = 6
 # still giving every brand a genuinely equal shot at appearing.
 DISCOVER_PER_BRAND = 6
 
+# A per-brand cap alone no longer bounds the page length now that there are
+# ~50+ scrapable brands - up to 300+ results forced an endless scroll for
+# what's meant to be a quick "surprise me" browse. Capped at a fixed total
+# instead so the whole result fits on roughly one screen's worth of
+# scrolling; hitting "Surprise me" again re-samples a fresh, different set
+# rather than needing to scroll through everything at once.
+DISCOVER_TOTAL_CAP = 24
+
 
 def translate_query(raw_query: str) -> dict:
     """
@@ -348,7 +356,7 @@ def filter_by_name(raw_query: str) -> list:
     return matches
 
 
-def discover(per_brand: int = DISCOVER_PER_BRAND) -> list:
+def discover(per_brand: int = DISCOVER_PER_BRAND, total_cap: int = DISCOVER_TOTAL_CAP) -> list:
     """
     Random browse across the whole catalog, no query/filtering involved -
     for "surprise me" / typing "random" instead of a real search. Samples
@@ -359,6 +367,11 @@ def discover(per_brand: int = DISCOVER_PER_BRAND) -> list:
     products at all. Same "brand is the minimum unit of inclusion"
     principle as cap_per_brand, just applied to a browse instead of a
     search result.
+
+    The per-brand pool is then cut down to total_cap (see its own comment)
+    - a random total_cap-sized slice of an already-shuffled list, so which
+    brands make the cut varies call to call rather than always favoring
+    the same ones alphabetically or by ID.
     """
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -379,7 +392,7 @@ def discover(per_brand: int = DISCOVER_PER_BRAND) -> list:
         sampled.extend(random.sample(brand_products, min(per_brand, len(brand_products))))
 
     random.shuffle(sampled)
-    return sampled
+    return sampled[:total_cap]
 
 
 def cap_per_brand(products: list, max_per_brand: int = MAX_RESULTS_PER_BRAND) -> list:

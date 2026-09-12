@@ -706,7 +706,9 @@ def extract_moustache(brand):
     product name (no _base_name() splitting needed, there's no suffix
     to strip) with colors parsed out of that fragment and folded into
     material_options, same treatment as every other brand's variant-as-
-    separate-product problem.
+    separate-product problem. Fabric swatch listings ("Extra Bold fabric
+    samples") are excluded by a "sample" name check, same pattern used
+    for Grain's material samples.
     """
     domain = brand["url"].rstrip("/")
     seen_ids = set()
@@ -743,6 +745,8 @@ def extract_moustache(brand):
                     continue
 
                 name = name_el.contents[0].strip() if name_el.contents else name_el.get_text(strip=True)
+                if "sample" in name.lower():
+                    continue  # fabric swatches, not a design object (e.g. "Extra Bold fabric samples")
                 href = link_el["href"]
                 color_match = re.search(r"#/\d+-color-([a-z0-9_]+)", href)
                 color = color_match.group(1).replace("_", " ").title() if color_match else ""
@@ -974,8 +978,19 @@ def _base_name(title):
     one entry per design, consistent with the "brand/design is the unit,
     not every SKU" model the rest of the schema already assumes. Shared
     by extract_shopify and extract_woocommerce.
+
+    Also translates a trailing Japanese "型" ("type"/"shape") into
+    " Type" - confirmed on GATOMIKIO's KOTON container line ("KOTON<br>
+    Y型" -> "KOTON Y型" after the <br> fix above, an otherwise-readable
+    English name with one stray untranslated kanji at the end since the
+    site itself never gives these three variants an English name). A
+    real, meaningful shape distinction (U/Y/V), not noise - translating
+    it beats stripping it outright, which would lose that distinction
+    with no signal left behind. Harmless no-op for every other brand's
+    titles, which don't contain this character.
     """
     title = re.sub(r"<br\s*/?>", " ", title)
+    title = re.sub(r"型\s*$", " Type", title.strip())
     match = re.search(r"\s[/–—-]\s|,\s", title)
     return title[: match.start()].strip() if match else title.strip()
 
@@ -1076,6 +1091,17 @@ def extract_shopify(brand):
             "notes": "",
             "image_url": images[0]["src"] if images else "",
         })
+
+    # A few brands sell a "build your own" configurator as its own listing
+    # rather than a fixed design (confirmed on De La Espada: "Albireo Sofa
+    # System", "Sirius Sofa System", "Frame Sofa System", "Belle Reeve Sofa
+    # System" all group down to a single "CREATE YOUR OWN" material option
+    # and nothing else - a link to a builder tool, not a specific piece).
+    # Only excluded when that's the *entire* material_options list, not
+    # just present alongside real variant names (e.g. "Sofa Eight Modular"
+    # also carries "CREATE YOUR OWN" plus real ones like "Daybed"/"No
+    # Arms" - those are real configurations, kept).
+    products = [p for p in products if p["material_options"] != ["CREATE YOUR OWN"]]
 
     return products
 
@@ -1770,8 +1796,20 @@ def extract_esther_knopfler(brand):
     no consumables/junk, unlike lachambredami.com). The collection segment
     in the URL doubles as a free category signal (e.g. "burger-collection"
     -> "Burger Collection") with no extra fetch. Each product page's
-    og:title/og:image are server-rendered and reliable.
+    og:title is server-rendered and reliable, but og:image is broken on
+    9 of the 24 pieces (confirmed live, e.g. "Lilly dining table") -
+    those specific pages' og:image points at a plain-UUID Wix media asset
+    with no "~mv2" suffix, which 404s/403s when actually fetched, while
+    the same page's own real gallery photos (proper "~mv2"-suffixed
+    assets) load fine. Detected by checking for "~mv2" in og:image's own
+    URL; when missing, falls back to the first non-logo "~mv2" image
+    found in the page's own <img> tags (skipping the shared site-logo
+    asset by its own fixed ID, and skipping each asset's tiny "w_1,h_1"
+    placeholder duplicate for the same reason) - confirmed this lands on
+    the correct per-piece hero photo on both a working-og:image page and
+    a broken one.
     """
+    ESTHER_KNOPFLER_LOGO_ASSET = "6f70b2_7ecbc972b36e4e43a7f53610c2801295"
     sitemap_url = f"{brand['url'].rstrip('/')}/portfolio-projects-sitemap.xml"
     try:
         sitemap_resp = requests.get(sitemap_url, headers=HEADERS, timeout=15)
@@ -1800,6 +1838,13 @@ def extract_esther_knopfler(brand):
         og_title = soup.find("meta", property="og:title")
         name = og_title["content"].split(" | ")[0].strip() if og_title and og_title.get("content") else parts[-1]
         og_image = soup.find("meta", property="og:image")
+        image_url = og_image["content"] if og_image and og_image.get("content") else ""
+        if "~mv2" not in image_url:
+            fallback = soup.find(
+                "img",
+                src=lambda s: s and "~mv2" in s and "w_1,h_1" not in s and ESTHER_KNOPFLER_LOGO_ASSET not in s,
+            )
+            image_url = fallback["src"] if fallback else ""
 
         products.append({
             "brand": brand["name"],
@@ -1810,7 +1855,7 @@ def extract_esther_knopfler(brand):
             "material_options": [],
             "dimensions": "",
             "notes": "",
-            "image_url": og_image["content"] if og_image and og_image.get("content") else "",
+            "image_url": image_url,
         })
         time.sleep(0.5)  # be polite - don't hammer the site
 
