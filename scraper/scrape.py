@@ -1116,8 +1116,20 @@ def extract_woocommerce(brand):
     listings too, same pattern as several Shopify brands (e.g. "Gallon
     Side Table, Low" / "Gallon Side Table, Tall") - grouped back into one
     entry per design via the shared _base_name() helper, same as Shopify.
+
+    Optional brand["woocommerce_category"]: for a maker who sells through
+    a shared multi-maker association shop rather than their own site
+    (confirmed on Konsthantverkarna.se - individual Swedish craft makers
+    each get a real per-maker product_cat taxonomy term on the shared
+    shop, e.g. "jonas-lindholm"), this scopes the Store API query to just
+    that one maker's own products via the API's own `category` filter,
+    rather than pulling the whole association's shop. "Brand" here means
+    the individual maker, not the association - each such maker gets
+    their own brands.json entry with this field set, all pointing at the
+    same underlying site URL.
     """
     base = brand["url"].rstrip("/")
+    category_filter = f"&category={brand['woocommerce_category']}" if brand.get("woocommerce_category") else ""
     raw_products = []
     page = 1
     brand_start = time.monotonic()
@@ -1127,7 +1139,7 @@ def extract_woocommerce(brand):
                   f"{brand['name']} - stopping early with what was fetched so far.")
             break
 
-        url = f"{base}/wp-json/wc/store/v1/products?per_page=100&page={page}"
+        url = f"{base}/wp-json/wc/store/v1/products?per_page=100&page={page}{category_filter}"
         batch = _fetch_json(url)
         if batch is None or not batch:
             break
@@ -1165,8 +1177,17 @@ def extract_woocommerce(brand):
     for base_name, group in grouped.items():
         first = group[0]
         # Union of categories across the whole group, not just the first
-        # item - covers the same inconsistent-tagging case above.
-        categories = sorted({c["name"] for p in group for c in p.get("categories", [])})
+        # item - covers the same inconsistent-tagging case above. A maker
+        # who sells through a shared association shop (see
+        # woocommerce_category) is filed under their own name as a
+        # WooCommerce category too, alongside real ones like "Keramik" -
+        # dropped here since the brand name already says that, same
+        # "don't repeat the brand/category context" principle as
+        # materialDuplicatesCategory in the frontend.
+        categories = sorted({
+            c["name"] for p in group for c in p.get("categories", [])
+            if c["name"].strip().lower() != brand["name"].strip().lower()
+        })
         material_options = set()
         for attr in first.get("attributes", []):
             if attr.get("name", "").lower() in ("material", "materials", "finish"):
@@ -2466,6 +2487,7 @@ EXTRACTORS = {
     "Will Choui": extract_will_choui,
     "Sizar Alexis": extract_sizar_alexis,
     "Monsieur Cailloux": extract_monsieur_cailloux,
+    "Jonas Lindholm": extract_woocommerce,
 }
 
 
