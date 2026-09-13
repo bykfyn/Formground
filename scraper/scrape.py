@@ -2501,6 +2501,16 @@ EXTRACTORS = {
     "Sizar Alexis": extract_sizar_alexis,
     "Monsieur Cailloux": extract_monsieur_cailloux,
     "Jonas Lindholm": extract_woocommerce,
+    "Northern": extract_shopify,
+    "Louise Roe": extract_shopify,
+    "Tolix": extract_shopify,
+    "Rubn": extract_shopify,
+    "Apparatus": extract_shopify,
+    "Wendelbo": extract_shopify,
+    "Pholc": extract_shopify,
+    "Mater": extract_shopify,
+    "Mabeo Furniture": extract_woocommerce,
+    "Editions Midi": extract_woocommerce,
 }
 
 
