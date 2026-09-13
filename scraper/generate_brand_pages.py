@@ -145,21 +145,48 @@ def slugify(name):
     return slug or "brand"
 
 
+def _umbrellas_for_product(p):
+    """Which umbrella(s) a single product matches - shared by
+    umbrella_categories_for (unions this across a brand's whole
+    catalog) and representative_images_for (needs it per-product to
+    find one representative item per umbrella)."""
+    text = f"{p['category']} {p['product_name']}".lower()
+    found = {
+        umbrella for umbrella, keywords in UMBRELLA_KEYWORDS.items()
+        if any(re.search(rf"\b{re.escape(k)}s?\b", text) for k in keywords)
+    }
+    return found or {DEFAULT_UMBRELLA}
+
+
 def umbrella_categories_for(products):
     """Union of umbrella categories across every product a brand has,
     checked against both category and product_name (some brands, like
     Bitossi, only have a real object-type signal in the name)."""
     found = set()
     for p in products:
-        text = f"{p['category']} {p['product_name']}".lower()
-        matched_any = False
-        for umbrella, keywords in UMBRELLA_KEYWORDS.items():
-            if any(re.search(rf"\b{re.escape(k)}s?\b", text) for k in keywords):
-                found.add(umbrella)
-                matched_any = True
-        if not matched_any:
-            found.add(DEFAULT_UMBRELLA)
+        found |= _umbrellas_for_product(p)
     return sorted(found, key=lambda u: (u != "Furniture", u != "Lighting", u))
+
+
+def representative_images_for(products, umbrellas):
+    """
+    One representative image per umbrella category a brand covers (so
+    makers.html's card is a real snapshot of range, not just whatever
+    products happened first) - naturally capped at 1-4 images since
+    that's the whole size of UMBRELLA_KEYWORDS plus the Objects
+    catch-all. The first product matching each umbrella (in the
+    already-scraped, already-ordered list) is used - no further
+    curation, since "the first real example of this category" is a
+    fair, unbiased representative and avoids adding yet another
+    selection axis on top of category.
+    """
+    images = []
+    for umbrella in umbrellas:
+        for p in products:
+            if umbrella in _umbrellas_for_product(p) and p["image_url"]:
+                images.append(p["image_url"])
+                break
+    return images
 
 
 def product_card_html(p):
@@ -196,11 +223,17 @@ PAGE_CSS = """
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-body { padding: 10px 12px; }
   .card-title { font-size: 13px; font-weight: 500; margin: 0; }
-  .maker-list { list-style: none; padding: 0; margin: 0; }
-  .maker-list li { padding: 16px 0; border-bottom: 0.5px solid var(--border); text-align: center; }
-  .maker-list a.maker-name { display: block; font-size: 18px; font-weight: 500;
-    color: var(--text-secondary); text-decoration: none; margin-bottom: 8px; }
-  .maker-list a.maker-name:hover { text-decoration: underline; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; }
+  .maker-card { background: var(--surface-2); border: 0.5px solid var(--border);
+    border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; display: block; }
+  .maker-card-images { display: flex; aspect-ratio: 3/1; background: var(--surface-1); }
+  .maker-card-images img { flex: 1; min-width: 0; width: 100%; height: 100%; object-fit: cover; }
+  .maker-card-images img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 14px 16px; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 16px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 8px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
   .maker-tags { line-height: 1.8; }
   /* Tagline sits directly under the (left-aligned) logo rather than
      centered with the page's own heading - a quick "what is this site"
@@ -274,16 +307,23 @@ def render_makers_index(brands_data):
     # core principle elsewhere on the site (dashed-border cards, no
     # ranking by data richness) - showing "(1 piece)" next to
     # "(261 pieces)" on the one page listing every maker side by side
-    # would visually undercut that.
+    # would visually undercut that. A brand's image strip is always
+    # 1-4 images (one per umbrella category, see
+    # representative_images_for) regardless of catalog size, so it
+    # doesn't leak catalog size the way a raw count would either.
     items = ""
-    for brand, slug, umbrellas, _count, country in sorted(brands_data, key=lambda b: b[0].lower()):
+    for brand, slug, umbrellas, _count, country, images in sorted(brands_data, key=lambda b: b[0].lower()):
         tag_list = list(umbrellas) + ([country] if country else [])
         tags = " ".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
+        image_tags = "".join(f'<img src="{html.escape(img)}" alt="" loading="lazy">' for img in images)
         items += f"""
-      <li>
-        <a class="maker-name" href="/brands/{slug}.html">{html.escape(brand)}</a>
-        <div class="maker-tags">{tags}</div>
-      </li>"""
+      <a class="maker-card" href="/brands/{slug}.html">
+        <div class="maker-card-images">{image_tags}</div>
+        <div class="maker-card-body">
+          <span class="maker-name">{html.escape(brand)}</span>
+          <div class="maker-tags">{tags}</div>
+        </div>
+      </a>"""
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -298,15 +338,29 @@ def render_makers_index(brands_data):
 <style>{PAGE_CSS}</style>
 </head>
 <body>
-<main style="max-width:640px;">
+<main style="max-width:1100px;">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
   <p class="page-tagline">Discover design from independent makers.</p>
-  <ul class="maker-list">{items}
-  </ul>
+  <div class="maker-grid">{items}
+  </div>
   <p class="foot-note">
     <a href="/">&larr; Back to Formground</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/contact.html">Get in touch</a>
   </p>
 </main>
+<script>
+  // Same fix as frontend/index.html's renderCard(): a single image
+  // stretched across this row's full width can lose most of a tall/
+  // narrow product photo under object-fit: cover (an even more
+  // aggressive crop than the 1:1 search-card case that first surfaced
+  // this - see Magis "Déjà-vu"). Switches to "contain" once the real
+  // aspect ratio is known to be this extreme.
+  document.querySelectorAll(".maker-card-images img").forEach(function (img) {{
+    img.addEventListener("load", function () {{
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    }});
+  }});
+</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -380,7 +434,8 @@ def generate():
         country = countries.get(brand)
         page = render_brand_page(brand, slug, brand_url, products, umbrellas, country)
         (BRANDS_DIR / f"{slug}.html").write_text(page)
-        makers_data.append((brand, slug, umbrellas, len(products), country))
+        images = representative_images_for(products, umbrellas)
+        makers_data.append((brand, slug, umbrellas, len(products), country, images))
 
     (DOCS_DIR / "makers.html").write_text(render_makers_index(makers_data))
     (DOCS_DIR / "sitemap.xml").write_text(render_sitemap(sorted(m[1] for m in makers_data)))
