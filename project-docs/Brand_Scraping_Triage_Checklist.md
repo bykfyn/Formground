@@ -37,7 +37,16 @@ move on to the next brand than to force a hard one to work.
    generic AI-crawler listing (common Squarespace/WordPress boilerplate)
    is fine. A *dedicated* `Disallow: /` record for a specific bot (e.g.
    `ClaudeBot`), separate from the general wildcard rule, is a real,
-   deliberate exclusion — respect it, don't route around it.
+   deliberate exclusion — respect it, don't route around it. **Test with
+   the scraper's own real `HEADERS` User-Agent, not a generic one** -
+   confirmed on De Padova (2026-09-13): the site returns real content to
+   a plain `Mozilla/5.0` curl but a live 403 to `scrape.py`'s actual
+   `FormgroundBot` User-Agent specifically - an active WAF block that a
+   manual curl check with a different UA string would miss entirely. A
+   brand that "works" in manual triage but 403s under the real scraper
+   is excluded, not worked around with a different UA - same
+   don't-route-around-it principle as a named robots.txt block, just
+   enforced by the server instead of a text file.
 
 5. **Does the raw category/product_type data mix non-product listings
    into the main catalog?** For a Shopify/WooCommerce brand, glance at
@@ -84,3 +93,4 @@ publishes. Paola Paronetto is the first case of this - see below.
 | Paola Paronetto | #2 initially - listing page only shows named collections, not individual products. Resolved by indexing at the collection level instead of skipping the brand (see below) | **Built (collection-level)** |
 | In Common With | #5, discovered after the fact rather than at triage - Finish Samples, Service fees, a Swatches-equivalent, and a certification-mark-as-category bug all needed cleanup. Considered removing the brand entirely (2026-09-08) rather than keep fixing it, but after the fixes above, 220 real results remain and a sample check confirmed the "no category" ones are genuine products (Arundel Orb Pendant, Murano Glass Cosmos Chandelier, etc.), not more junk - kept. This is the case that prompted adding check #5. | **Built (kept after cleanup)** |
 | Made by Choice | #1, discovered after building rather than at triage - `/products.json` returned 200 with valid JSON (3 real products), passing a naive "does the API work" check, but the site's own nav listed 8 more real collections (Airisto, Beebee, Laakso, Cabinets, Seating, Tables, Accessories) with zero of their products in that feed - a headless/composable Shopify setup. Removed after shipping and re-checking, rather than leave a 3-product listing that misrepresents the brand. This is the case that prompted adding the count cross-check to #1 (2026-09-13). | Deferred (needs bespoke work) |
+| De Padova | #4, discovered after building rather than at triage - WooCommerce with the Store API disabled, but real server-rendered category pages and product pages were confirmed live during manual triage (curl with a generic UA). Failed once actually run through `scrape.py`: a live 403 under the scraper's real `FormgroundBot` User-Agent specifically. This is the case that prompted testing check #4 with the real scraper headers, not a generic one (2026-09-13). | Deferred (WAF blocks the scraper's real UA) |
