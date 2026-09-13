@@ -24,6 +24,7 @@ HOW IT'S ORGANIZED:
 """
 
 import argparse
+import concurrent.futures
 import gzip
 import html
 import json
@@ -62,6 +63,18 @@ HEADERS = {
 MAX_PAGES_PER_BRAND = 200            # 200 x 250/page = 50,000 raw items - backstop, not expected to bind
 MAX_SECONDS_PER_BRAND = 5 * 60       # give up on one brand after 5 minutes no matter what
 MAX_TOTAL_RUNTIME_SECONDS = 20 * 60  # whole run gives up and reports what it has after 20 minutes
+
+# run() scrapes this many brands concurrently (see run()'s own comment) -
+# each brand's own extractor is almost entirely spent waiting on HTTP
+# responses from *that brand's own site*, not CPU work, so running several
+# at once doesn't put more load on any single target - it just stops one
+# slow brand's network wait from blocking every brand after it in the
+# list. Added 2026-09-13 once the catalog's growth trajectory (a few
+# hundred brands, not ~50) made the old fully-sequential run a real
+# scaling problem, not just a theoretical one - a handful of workers is
+# enough to meaningfully multiply how much fits in MAX_TOTAL_RUNTIME_SECONDS
+# without needing to touch that ceiling itself.
+MAX_CONCURRENT_BRANDS = 8
 
 
 def _fetch_json(url, retries=2, timeout=30):
@@ -2491,6 +2504,25 @@ EXTRACTORS = {
 }
 
 
+def _scrape_one_brand(brand, extractor):
+    """
+    Runs in a worker thread (see run()) - touches no shared state, only
+    returns what it found, so the database write itself (not thread-safe
+    across concurrent SQLite connections/writers) can stay serialized on
+    the main thread. Almost all of a real extractor's time is spent
+    waiting on that one brand's own HTTP responses, which is exactly the
+    kind of work threads parallelize well in Python despite the GIL (the
+    GIL releases during I/O waits).
+    """
+    print(f"Scraping {brand['name']}...")
+    brand_start = time.monotonic()
+    try:
+        products = extractor(brand)
+    except Exception as e:
+        return brand, None, round(time.monotonic() - brand_start, 1), str(e)
+    return brand, products, round(time.monotonic() - brand_start, 1), None
+
+
 def run(brand_name=None):
     """
     brand_name: if given, scrapes only that one brand (case-insensitive
@@ -2498,6 +2530,17 @@ def run(brand_name=None):
     single new brand locally without waiting on the ~5-minute full run
     (dominated by In Common With's pagination), without needing to skip
     any of the same per-brand delete-then-insert/safety-limit logic.
+
+    Scrapes up to MAX_CONCURRENT_BRANDS brands at once (see that
+    constant's own comment) - the old fully-sequential version meant one
+    slow brand delayed every brand listed after it, and at a few hundred
+    brands that stopped being a rounding error and started silently
+    starving brands late in brands.json of ever running within
+    MAX_TOTAL_RUNTIME_SECONDS. Database writes stay on this one thread
+    regardless, in whatever order each brand's scrape actually finishes -
+    SQLite isn't safe for concurrent writers, and the write itself is
+    fast; it's the network I/O inside each extractor that parallelizing
+    here actually speeds up.
     """
     with open(BRANDS_PATH) as f:
         brands = json.load(f)
@@ -2518,66 +2561,68 @@ def run(brand_name=None):
     brand_reports = []
     stopped_early = False
 
+    runnable = []
     for brand in brands:
-        elapsed = time.monotonic() - start_time
-        if elapsed > MAX_TOTAL_RUNTIME_SECONDS:
-            print(f"Hit the {MAX_TOTAL_RUNTIME_SECONDS // 60}-minute total run time limit - "
-                  f"stopping here. Remaining brands will just run next scheduled scrape.")
-            stopped_early = True
-            break
-
         if not brand.get("scrapable", True):
             print(f"Skipping {brand['name']} - marked not scrapable ({brand.get('notes', '')})")
             continue
-
         extractor = EXTRACTORS.get(brand["name"])
         if not extractor:
             print(f"No extractor built yet for {brand['name']} - skipping for now.")
             continue
+        runnable.append((brand, extractor))
 
-        print(f"Scraping {brand['name']}...")
-        brand_start = time.monotonic()
-        try:
-            products = extractor(brand)
-        except Exception as e:
-            print(f"  Error scraping {brand['name']}: {e}")
+    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_CONCURRENT_BRANDS) as pool:
+        futures = []
+        for brand, extractor in runnable:
+            if time.monotonic() - start_time > MAX_TOTAL_RUNTIME_SECONDS:
+                print(f"Hit the {MAX_TOTAL_RUNTIME_SECONDS // 60}-minute total run time limit before "
+                      f"starting {brand['name']} - stopping here. Remaining brands will just run "
+                      f"next scheduled scrape.")
+                stopped_early = True
+                break
+            futures.append(pool.submit(_scrape_one_brand, brand, extractor))
+
+        for future in concurrent.futures.as_completed(futures):
+            brand, products, brand_seconds, error = future.result()
+
+            if error:
+                print(f"  Error scraping {brand['name']}: {error}")
+                brand_reports.append({
+                    "brand": brand["name"], "products_saved": 0,
+                    "seconds": brand_seconds, "error": error,
+                })
+                continue
+
+            if not products:
+                # A brand's extractor succeeding but returning nothing is more
+                # likely a transient scrape hiccup (site hiccup, layout change)
+                # than the brand genuinely having zero products - don't wipe
+                # its existing good data over that; a real "brand pulled every
+                # product" case gets caught the next run this keeps returning 0.
+                print(f"  Got 0 products for {brand['name']} - keeping previous data, not overwriting.")
+                brand_reports.append({
+                    "brand": brand["name"], "products_saved": 0,
+                    "seconds": brand_seconds, "error": "0 products returned - kept previous data",
+                })
+                continue
+
+            # Replace this brand's rows wholesale rather than appending -
+            # otherwise a product still live gets re-inserted as a duplicate
+            # every run, and a product genuinely removed from the brand's site
+            # (see the Luke Hope "tanned walnut" paddle, 2026-09-09) never gets
+            # cleared since nothing ever deletes old rows. Scoped to one brand
+            # at a time (not a full-table wipe) so a mid-run stop leaves
+            # brands not yet reached untouched.
+            conn.execute("DELETE FROM products WHERE brand = ?", (brand["name"],))
+            conn.commit()
+            for product in products:
+                save_product(conn, product)
+            print(f"  Saved {len(products)} products in {brand_seconds}s.")
             brand_reports.append({
-                "brand": brand["name"], "products_saved": 0,
-                "seconds": round(time.monotonic() - brand_start, 1), "error": str(e),
+                "brand": brand["name"], "products_saved": len(products),
+                "seconds": brand_seconds, "error": None,
             })
-            continue
-
-        if not products:
-            # A brand's extractor succeeding but returning nothing is more
-            # likely a transient scrape hiccup (site hiccup, layout change)
-            # than the brand genuinely having zero products - don't wipe
-            # its existing good data over that; a real "brand pulled every
-            # product" case gets caught the next run this keeps returning 0.
-            brand_seconds = round(time.monotonic() - brand_start, 1)
-            print(f"  Got 0 products for {brand['name']} - keeping previous data, not overwriting.")
-            brand_reports.append({
-                "brand": brand["name"], "products_saved": 0,
-                "seconds": brand_seconds, "error": "0 products returned - kept previous data",
-            })
-            continue
-
-        # Replace this brand's rows wholesale rather than appending -
-        # otherwise a product still live gets re-inserted as a duplicate
-        # every run, and a product genuinely removed from the brand's site
-        # (see the Luke Hope "tanned walnut" paddle, 2026-09-09) never gets
-        # cleared since nothing ever deletes old rows. Scoped to one brand
-        # at a time (not a full-table wipe) so a mid-run stop from
-        # MAX_TOTAL_RUNTIME_SECONDS leaves brands not yet reached untouched.
-        conn.execute("DELETE FROM products WHERE brand = ?", (brand["name"],))
-        conn.commit()
-        for product in products:
-            save_product(conn, product)
-        brand_seconds = round(time.monotonic() - brand_start, 1)
-        print(f"  Saved {len(products)} products in {brand_seconds}s.")
-        brand_reports.append({
-            "brand": brand["name"], "products_saved": len(products),
-            "seconds": brand_seconds, "error": None,
-        })
 
     conn.close()
     total_seconds = round(time.monotonic() - start_time, 1)

@@ -16,6 +16,16 @@ WHAT THIS DOES:
   leaves the existing flag untouched rather than guessing, since a
   transient hiccup shouldn't get treated the same as a genuine 404.
 
+  Checks run concurrently (see MAX_CONCURRENT_CHECKS) - each one is a
+  single HEAD request to a different product's own site, almost
+  entirely spent waiting on that response, so running many at once
+  doesn't load any single target harder than a sequential pass would;
+  it just stops one slow/unresponsive site from delaying every check
+  queued after it. Added 2026-09-13 alongside the same fix in
+  scrape.py's run(), once the catalog's growth trajectory (a few
+  hundred brands, thousands more products) made a fully sequential
+  pass over every product every night a real scaling problem.
+
 WHO RUNS THIS:
   The GitHub Action at .github/workflows/check_links.yml, on its own
   daily schedule - deliberately more frequent than the weekly full
@@ -26,16 +36,33 @@ WHO RUNS THIS:
     python scraper/check_links.py
 """
 
+import concurrent.futures
 import time
 
 import requests
 
-from scrape import DB_PATH, HEADERS, setup_database
+from scrape import HEADERS, setup_database
 
 MAX_TOTAL_RUNTIME_SECONDS = 25 * 60  # same safety-ceiling principle as scrape.py - just a
                                       # bigger budget since this is only lightweight HEAD
                                       # requests, not full page fetches/pagination
 REQUEST_TIMEOUT = 10
+MAX_CONCURRENT_CHECKS = 20  # a HEAD request is much lighter than a full brand scrape, and each
+                            # one hits a different product's own site - higher concurrency than
+                            # scrape.py's MAX_CONCURRENT_BRANDS is reasonable here
+
+
+def _check_one_link(product_id, product_url, currently_dead):
+    """Runs in a worker thread - a single HEAD request, no shared state
+    touched. The actual database UPDATE happens back on the main thread
+    (see check_all_links) since SQLite isn't safe for concurrent writers."""
+    try:
+        resp = requests.head(
+            product_url, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True
+        )
+        return product_id, currently_dead, resp.status_code, None
+    except requests.RequestException as e:
+        return product_id, currently_dead, None, str(e)
 
 
 def check_all_links():
@@ -48,33 +75,32 @@ def check_all_links():
     newly_revived = 0
     stopped_early = False
 
-    for product_id, product_url, currently_dead in rows:
-        if time.monotonic() - start_time > MAX_TOTAL_RUNTIME_SECONDS:
-            print(f"Hit the {MAX_TOTAL_RUNTIME_SECONDS // 60}-minute safety limit - "
-                  f"stopping here, remaining links get checked next run.")
-            stopped_early = True
-            break
+    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_CONCURRENT_CHECKS) as pool:
+        futures = []
+        for product_id, product_url, currently_dead in rows:
+            if time.monotonic() - start_time > MAX_TOTAL_RUNTIME_SECONDS:
+                print(f"Hit the {MAX_TOTAL_RUNTIME_SECONDS // 60}-minute safety limit before "
+                      f"queuing every link - stopping here, remaining links get checked next run.")
+                stopped_early = True
+                break
+            futures.append(pool.submit(_check_one_link, product_id, product_url, currently_dead))
 
-        try:
-            resp = requests.head(
-                product_url, headers=HEADERS, timeout=REQUEST_TIMEOUT, allow_redirects=True
-            )
-            status = resp.status_code
-        except requests.RequestException as e:
-            # Ambiguous (network hiccup, timeout, DNS blip) - don't touch
-            # the existing flag either way.
+        for future in concurrent.futures.as_completed(futures):
+            product_id, currently_dead, status, error = future.result()
             checked += 1
-            continue
+            if error:
+                # Ambiguous (network hiccup, timeout, DNS blip) - don't touch
+                # the existing flag either way.
+                continue
 
-        checked += 1
-        if status == 404 and not currently_dead:
-            conn.execute("UPDATE products SET link_dead = 1 WHERE id = ?", (product_id,))
-            conn.commit()
-            newly_dead += 1
-        elif status == 200 and currently_dead:
-            conn.execute("UPDATE products SET link_dead = 0 WHERE id = ?", (product_id,))
-            conn.commit()
-            newly_revived += 1
+            if status == 404 and not currently_dead:
+                conn.execute("UPDATE products SET link_dead = 1 WHERE id = ?", (product_id,))
+                conn.commit()
+                newly_dead += 1
+            elif status == 200 and currently_dead:
+                conn.execute("UPDATE products SET link_dead = 0 WHERE id = ?", (product_id,))
+                conn.commit()
+                newly_revived += 1
 
     conn.close()
     total_seconds = round(time.monotonic() - start_time, 1)
