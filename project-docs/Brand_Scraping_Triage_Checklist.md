@@ -10,7 +10,16 @@ move on to the next brand than to force a hard one to work.
 1. **Is there a clean, documented API?** Shopify (`/products.json`) and
    WooCommerce (`/wp-json/wc/store/v1/products`) both expose one for free —
    check these first on any e-commerce-platform brand before writing any
-   HTML parsing at all.
+   HTML parsing at all. **A 200 response with valid JSON isn't proof the
+   API returns the whole catalog** — a headless/composable storefront can
+   leave the classic public endpoint live but scoped to only a handful of
+   products (confirmed on Made by Choice: `/products.json` returned just
+   3 items - one product line's variants - while the site's own nav
+   listed 8 more real collections with nothing in the feed). Cross-check
+   the API's product count against the number of distinct `/products/`
+   or `/product/` links on the site's own "all products" page before
+   trusting it; a big mismatch is a fail, not a smaller-than-expected
+   brand.
 2. **If not, does a single page reveal real server-rendered content
    easily?** Fetch one plausible listing/product page and look for actual
    product names, materials, or prices in the rendered HTML. If all you
@@ -74,3 +83,4 @@ publishes. Paola Paronetto is the first case of this - see below.
 | New Works DK | #2 - Nuxt.js SPA, product listings are client-rendered with no server-side links | Deferred |
 | Paola Paronetto | #2 initially - listing page only shows named collections, not individual products. Resolved by indexing at the collection level instead of skipping the brand (see below) | **Built (collection-level)** |
 | In Common With | #5, discovered after the fact rather than at triage - Finish Samples, Service fees, a Swatches-equivalent, and a certification-mark-as-category bug all needed cleanup. Considered removing the brand entirely (2026-09-08) rather than keep fixing it, but after the fixes above, 220 real results remain and a sample check confirmed the "no category" ones are genuine products (Arundel Orb Pendant, Murano Glass Cosmos Chandelier, etc.), not more junk - kept. This is the case that prompted adding check #5. | **Built (kept after cleanup)** |
+| Made by Choice | #1, discovered after building rather than at triage - `/products.json` returned 200 with valid JSON (3 real products), passing a naive "does the API work" check, but the site's own nav listed 8 more real collections (Airisto, Beebee, Laakso, Cabinets, Seating, Tables, Accessories) with zero of their products in that feed - a headless/composable Shopify setup. Removed after shipping and re-checking, rather than leave a 3-product listing that misrepresents the brand. This is the case that prompted adding the count cross-check to #1 (2026-09-13). | Deferred (needs bespoke work) |
