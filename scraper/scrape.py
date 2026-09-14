@@ -3149,6 +3149,91 @@ def extract_shibui(brand):
     return products
 
 
+# ghidini1961.com/shop (Italy - Ghidini Giuseppe Bosco S.p.A, Via Gabriele
+# D'Annunzio 27, 25069 Villa Carcina (BS), confirmed via its own product
+# page footer). PrestaShop, but a different theme than moustache.fr/
+# petitefriture.com - no robots.txt restrictions and no page has ever
+# 404'd. 3 of the site's 11 shop categories (Lighting, Complements,
+# Furniture Accessories) consistently render zero product cards despite
+# returning 200 and the same page shell - a real caching quirk on the
+# site's own end (a plain re-fetch of the exact same URL, no header
+# changes, reliably returns the real cards the second time), not a bot
+# block - confirmed by re-fetching one of the three ~10 times in a row
+# and seeing it flip from empty to populated with nothing about the
+# request changed. GHIDINI_CATEGORIES is every category found in the
+# site's own nav; each is retried once after a short pause if the first
+# fetch comes back with no cards at all, rather than trusting a single
+# empty result.
+GHIDINI_CATEGORIES = [
+    "13-brass-lamps", "14-chairs-ottoman", "15-brass-tables", "16-brass-complements",
+    "17-brass-furniture-accessories", "18-cabinets-bookshelves", "19-art-pieces",
+    "20-sofas", "21-armchairs", "22-night-collections", "23-rugs",
+]
+
+
+def extract_ghidini_1961(brand):
+    """
+    Every product's real name, designer, image, and page link are already
+    on each category's own listing page (<div class="prodotto"> ->
+    <p class="nomargin"><a><strong>Name</strong></a></p> for the name,
+    the very next <p class="center"> sibling for the designer, and the
+    image's data-src, not its placeholder src) - no per-product fetch
+    needed, same shape as extract_galerie_kreo. Product pages themselves
+    were checked and don't carry a clean numeric "Dimensions:" field (just
+    a long prose "Technical Features" section plus a huge shared finish/
+    upholstery swatch list, not real per-item material_options), so
+    dimensions/materials are left blank rather than fetching 133 extra
+    pages for data that isn't there. Deduped by product URL since a piece
+    can be cross-listed in more than one category (e.g. Night Collections
+    overlaps with Armchairs/Sofas).
+    """
+    domain = brand["url"].rstrip("/")
+    seen_urls = set()
+    products = []
+
+    for category_slug in GHIDINI_CATEGORIES:
+        url = f"{domain}/shop/en/{category_slug}"
+        cards = []
+        for attempt in range(2):
+            try:
+                resp = requests.get(url, headers=HEADERS, timeout=15)
+                resp.raise_for_status()
+            except requests.RequestException as e:
+                print(f"  Could not fetch {url}: {e}")
+                break
+            soup = BeautifulSoup(resp.text, "html.parser")
+            cards = soup.find_all("div", class_="prodotto")
+            if cards:
+                break
+            time.sleep(2)  # real cards sometimes only show up on a re-fetch - see docstring
+
+        for card in cards:
+            name_p = card.find("p", class_="nomargin")
+            name_link = name_p.find("a", href=True) if name_p else None
+            if not name_link or name_link["href"] in seen_urls:
+                continue
+            seen_urls.add(name_link["href"])
+
+            designer_p = name_p.find_next_sibling("p", class_="center")
+            img = card.find("img")
+
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": name_link.get_text(strip=True),
+                "product_url": name_link["href"],
+                "category": "",
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": img.get("data-src", "") if img else "",
+            })
+
+        time.sleep(1)  # be polite - don't hammer the site
+
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -3225,6 +3310,7 @@ EXTRACTORS = {
     "Kin and Co": extract_kin_and_co,
     "Birgit Severin": extract_birgit_severin,
     "Shibui": extract_shibui,
+    "Ghidini 1961": extract_ghidini_1961,
 }
 
 
