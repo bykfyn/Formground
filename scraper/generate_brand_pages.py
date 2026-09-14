@@ -247,6 +247,10 @@ PAGE_CSS = """
      rule) - browsers bold headings by default, and this needs to look
      identical to the plain <p> version used everywhere else. */
   .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .category-nav { font-size: 12px; color: var(--text-muted); margin: 0 0 32px; }
+  .category-nav a { color: var(--text-accent); text-decoration: none; margin-right: 12px; }
+  .category-nav a:hover { text-decoration: underline; }
 """
 
 
@@ -379,6 +383,7 @@ def render_makers_index(brands_data):
 <main style="max-width:1100px;">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
   <h1 class="page-tagline">Discover design from independent makers.</h1>
+  <p class="category-nav">Browse by category: <a href="/furniture.html">Furniture</a><a href="/lighting.html">Lighting</a><a href="/ceramics.html">Ceramics</a><a href="/objects.html">Objects</a></p>
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
@@ -392,6 +397,133 @@ def render_makers_index(brands_data):
   // aggressive crop than the 1:1 search-card case that first surfaced
   // this - see Magis "Déjà-vu"). Switches to "contain" once the real
   // aspect ratio is known to be this extreme.
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {{
+    img.addEventListener("load", function () {{
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    }});
+  }});
+</script>
+{CLOUDFLARE_ANALYTICS}
+</body>
+</html>
+"""
+
+
+# Real, honest per-category copy - deliberately short (this isn't the
+# homepage-depth content project, that's a separate, bigger piece of
+# work) and grounded only in vocabulary already used elsewhere on the
+# site (About page, umbrella keyword list), not invented marketing
+# language. "Objects" is honestly framed as the catch-all it actually
+# is, rather than pretending it's its own focused discipline.
+CATEGORY_INFO = {
+    "Furniture": {
+        "slug": "furniture",
+        "noun": "furniture",
+        "blurb": "chairs, tables, storage, and seating",
+    },
+    "Lighting": {
+        "slug": "lighting",
+        "noun": "lighting",
+        "blurb": "lamps, pendants, and other fixtures",
+    },
+    "Ceramics": {
+        "slug": "ceramics",
+        "noun": "ceramics",
+        "blurb": "vases, bowls, and other real pottery",
+    },
+    "Objects": {
+        "slug": "objects",
+        "noun": "object",  # singular - "68 independent object makers", not "objects makers"
+        "blurb": "everything that doesn't fit neatly into furniture, lighting, or ceramics",
+    },
+}
+
+
+def render_category_page(umbrella, brands_data):
+    """
+    One static, indexable page per umbrella category (docs/{slug}.html)
+    - furniture.html, lighting.html, ceramics.html, objects.html -
+    reusing the exact maker-card markup/CSS already proven on
+    makers.html, filtered to just the brands with at least one real
+    product in this umbrella. Deliberately not a product-level browse
+    page (that would need real pagination/filtering machinery this
+    project doesn't have yet) - a maker is still the unit of inclusion
+    here, same as everywhere else on the site.
+    """
+    info = CATEGORY_INFO[umbrella]
+    in_category = [b for b in brands_data if umbrella in b[2]]
+    page_url = f"{SITE_URL}/{info['slug']}.html"
+    description = (
+        f"{len(in_category)} independent {info['noun']} makers on Formground - "
+        f"{info['blurb']}. Every result links straight to the maker's own site."
+    )
+
+    other_categories = "".join(
+        f'<a href="/{CATEGORY_INFO[u]["slug"]}.html">{u}</a>'
+        for u in ("Furniture", "Lighting", "Ceramics", "Objects") if u != umbrella
+    )
+
+    items = ""
+    for brand, slug, umbrellas, _count, country, image in sorted(in_category, key=lambda b: b[0].lower()):
+        categories = " · ".join(umbrellas)
+        country_html = html.escape(country) if country else "&nbsp;"
+        image_tag = f'<img src="{html.escape(image)}" alt="{html.escape(brand)}" loading="lazy">' if image else ""
+        items += f"""
+      <a class="maker-card" href="/brands/{slug}.html">
+        <div class="maker-card-hero">{image_tag}</div>
+        <div class="maker-card-body">
+          <span class="maker-name">{html.escape(brand)}</span>
+          <span class="maker-country">{country_html}</span>
+          <span class="maker-categories">{html.escape(categories)}</span>
+        </div>
+      </a>"""
+
+    breadcrumb_json = json.dumps({
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Formground", "item": f"{SITE_URL}/"},
+            {"@type": "ListItem", "position": 2, "name": umbrella, "item": page_url},
+        ],
+    })
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Independent {umbrella} — Formground</title>
+{FAVICON_TAGS}
+<meta name="description" content="{description}">
+<link rel="canonical" href="{page_url}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Independent {umbrella} — Formground">
+<meta property="og:description" content="{description}">
+<meta property="og:url" content="{page_url}">
+<meta property="og:image" content="{SITE_URL}/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Independent {umbrella} — Formground">
+<meta name="twitter:description" content="{description}">
+<script type="application/ld+json">{breadcrumb_json}</script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="/site.css">
+<style>{PAGE_CSS}</style>
+</head>
+<body>
+<main style="max-width:1100px;">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+  <p class="page-tagline">Discover design from independent makers.</p>
+  <h1>Independent {umbrella}</h1>
+  <p class="category-intro">{description}</p>
+  <p class="category-nav">Browse: {other_categories}</p>
+  <div class="maker-grid">{items}
+  </div>
+  <p class="foot-note">
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a>
+  </p>
+</main>
+<script>
   document.querySelectorAll(".maker-card-hero img").forEach(function (img) {{
     img.addEventListener("load", function () {{
       var ratio = img.naturalWidth / img.naturalHeight;
@@ -421,6 +553,10 @@ def render_sitemap(brand_slugs):
         ("https://formground.com/contact.html", "monthly", "0.5", None),
         ("https://formground.com/resources.html", "monthly", "0.4", None),
         ("https://formground.com/makers.html", "weekly", "0.7", today),
+    ]
+    urls += [
+        (f"https://formground.com/{info['slug']}.html", "weekly", "0.6", today)
+        for info in CATEGORY_INFO.values()
     ]
     urls += [(f"https://formground.com/brands/{slug}.html", "weekly", "0.5", today) for slug in brand_slugs]
     entries = []
@@ -476,10 +612,12 @@ def generate():
         makers_data.append((brand, slug, umbrellas, len(products), country, image))
 
     (DOCS_DIR / "makers.html").write_text(render_makers_index(makers_data))
+    for umbrella, info in CATEGORY_INFO.items():
+        (DOCS_DIR / f"{info['slug']}.html").write_text(render_category_page(umbrella, makers_data))
     (DOCS_DIR / "sitemap.xml").write_text(render_sitemap(sorted(m[1] for m in makers_data)))
 
-    print(f"Generated {len(makers_data)} brand pages, makers.html, and sitemap.xml "
-          f"({sum(m[3] for m in makers_data)} products total).")
+    print(f"Generated {len(makers_data)} brand pages, makers.html, {len(CATEGORY_INFO)} category pages, "
+          f"and sitemap.xml ({sum(m[3] for m in makers_data)} products total).")
 
 
 if __name__ == "__main__":
