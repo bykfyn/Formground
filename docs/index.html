@@ -166,9 +166,19 @@
      height card to card. Clamping/truncating each line instead keeps
      every card-body the same height, so the icon lands in the same spot
      on every card. */
+  /* The reserved 2-line height lives on this wrapper, not on .card-title
+     itself, so a one-line title can be vertically centered within it -
+     a bare "-webkit-box-pack: center" on the line-clamp element itself
+     was tried first and does nothing to the text's actual position
+     (verified by measuring rendered glyph coordinates, identical with
+     pack:start and pack:center) - only a flex container around it
+     genuinely centers a line-clamped child. Without this, a short title
+     left a blank line sitting directly above the maker's name; now that
+     slack sits above the title instead, right after the image. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: center; }
   .card-title {
     font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
-    min-height: 2.6em; display: -webkit-box; -webkit-box-orient: vertical;
+    display: -webkit-box; -webkit-box-orient: vertical;
     -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
   }
   .card-brand {
@@ -352,7 +362,7 @@
     const body = document.createElement("div");
     body.className = "card-body";
     body.innerHTML = `
-      <p class="card-title"></p>
+      <div class="card-title-wrap"><p class="card-title"></p></div>
       <p class="card-brand"></p>
       ${noteText
         ? `<p class="card-note"><i class="ti ti-info-circle" aria-hidden="true"></i><span></span></p>`
