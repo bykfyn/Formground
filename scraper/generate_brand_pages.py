@@ -189,8 +189,9 @@ def primary_image_for(products, umbrellas):
 
 def product_card_html(p):
     url = p["brand_url"] if p["link_dead"] else p["product_url"]
+    alt_text = html.escape(f'{p["product_name"]} by {p["brand"]}')
     image = (
-        f'<img src="{html.escape(p["image_url"])}" alt="" loading="lazy">'
+        f'<img src="{html.escape(p["image_url"])}" alt="{alt_text}" loading="lazy">'
         if p["image_url"] else ""
     )
     return f"""
@@ -250,6 +251,19 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
     tags = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
     cards = "".join(product_card_html(p) for p in products)
     page_url = f"{SITE_URL}/brands/{slug}.html"
+    description = f"{html.escape(brand)}'s work on Formground - {len(products)} pieces, linked straight to their own site."
+    # Reusing the same hero image makers.html already picks for this
+    # brand (see primary_image_for) as the share-preview image, rather
+    # than a generic sitewide fallback - a real photo of what this maker
+    # actually makes is a stronger, more specific preview than the
+    # Formground logo would be, and it's already computed for free.
+    hero_image = primary_image_for(products, umbrellas)
+    og_image_tags = (
+        f'<meta property="og:image" content="{html.escape(hero_image)}">\n'
+        f'<meta name="twitter:image" content="{html.escape(hero_image)}">\n'
+        if hero_image else ""
+    )
+    twitter_card_type = "summary_large_image" if hero_image else "summary"
     # BreadcrumbList (Home -> Makers -> this brand) - cheap, accurate
     # structured data with a real shot at a rich-result breadcrumb in
     # search results. Deliberately no Product/price schema here: we
@@ -272,8 +286,15 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>{html.escape(brand)} on Formground</title>
 {FAVICON_TAGS}
-<meta name="description" content="{html.escape(brand)}'s work on Formground - {len(products)} pieces, linked straight to their own site.">
+<meta name="description" content="{description}">
 <link rel="canonical" href="{page_url}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{html.escape(brand)} on Formground">
+<meta property="og:description" content="{description}">
+<meta property="og:url" content="{page_url}">
+{og_image_tags}<meta name="twitter:card" content="{twitter_card_type}">
+<meta name="twitter:title" content="{html.escape(brand)} on Formground">
+<meta name="twitter:description" content="{description}">
 <script type="application/ld+json">{breadcrumb_json}</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
 <link rel="stylesheet" href="/site.css">
@@ -291,7 +312,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
   </div>
   <div class="grid">{cards}</div>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a>
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/resources.html">Resources</a>
   </p>
 </main>
 {CLOUDFLARE_ANALYTICS}
@@ -319,7 +340,7 @@ def render_makers_index(brands_data):
     for brand, slug, umbrellas, _count, country, image in sorted(brands_data, key=lambda b: b[0].lower()):
         categories = " · ".join(umbrellas)
         country_html = html.escape(country) if country else "&nbsp;"
-        image_tag = f'<img src="{html.escape(image)}" alt="" loading="lazy">' if image else ""
+        image_tag = f'<img src="{html.escape(image)}" alt="{html.escape(brand)}" loading="lazy">' if image else ""
         items += f"""
       <a class="maker-card" href="/brands/{slug}.html">
         <div class="maker-card-hero">{image_tag}</div>
@@ -338,6 +359,14 @@ def render_makers_index(brands_data):
 {FAVICON_TAGS}
 <meta name="description" content="Every independent maker currently on Formground, browsable by name.">
 <link rel="canonical" href="https://formground.com/makers.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Makers — Formground">
+<meta property="og:description" content="Every independent maker currently on Formground, browsable by name.">
+<meta property="og:url" content="https://formground.com/makers.html">
+<meta property="og:image" content="{SITE_URL}/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Makers — Formground">
+<meta name="twitter:description" content="Every independent maker currently on Formground, browsable by name.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
 <link rel="stylesheet" href="/site.css">
 <style>{PAGE_CSS}</style>
@@ -349,7 +378,7 @@ def render_makers_index(brands_data):
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/contact.html">Get in touch</a>
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a>
   </p>
 </main>
 <script>
