@@ -376,7 +376,12 @@
       // No raw material_options here even for a single entry - only a
       // search-confirmed match earns the "Available in X" note above.
       // An unconfirmed material is never shown plain, one or many.
-      body.querySelector(".card-detail").textContent = r.dimensions || "";
+      // Dimensions aren't shown either (2026-09-14) - this is a discovery
+      // tool, not a spec sheet, and every card already links straight to
+      // the maker's own product page where real dimensions and variants
+      // live. r.notes is kept as a general-purpose per-item note field for
+      // any future real per-item fact, but nothing populates it today.
+      body.querySelector(".card-detail").textContent = r.notes || "";
     }
 
     // The "deep link" is the same destination the card itself already
