@@ -242,7 +242,11 @@ PAGE_CSS = """
      site.css's a.home-link margin (40px) since the tagline needs to
      sit close to the logo, not the next section. */
   a.home-link { margin-bottom: 6px; }
-  .page-tagline { font-size: 13px; color: var(--text-secondary); margin: 0 0 32px; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
 """
 
 
@@ -374,7 +378,7 @@ def render_makers_index(brands_data):
 <body>
 <main style="max-width:1100px;">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-  <p class="page-tagline">Discover design from independent makers.</p>
+  <h1 class="page-tagline">Discover design from independent makers.</h1>
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
