@@ -1171,6 +1171,14 @@ def extract_woocommerce(brand):
         print(f"  Hit the {MAX_PAGES_PER_BRAND}-page safety limit for {brand['name']} - "
               f"stopping early with what was fetched so far.")
 
+    # A blank name is a real, permanent state on some sites, not a fetch
+    # glitch - confirmed on Piet Hein Eek's own Store API (product id
+    # 52558, a real listing with a real description and photos of "Paarse
+    # antieke vazen" but "name": "" at the source, itself, every time).
+    # An unnamed "product" can't be shown as a meaningful search result
+    # regardless of brand, so it's dropped here rather than downstream.
+    raw_products = [p for p in raw_products if p["name"].strip()]
+
     raw_products = [
         p for p in raw_products
         if not any(c["name"].strip().lower() in EXCLUDED_CATEGORIES for c in p.get("categories", []))
