@@ -304,7 +304,8 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
 <meta name="twitter:title" content="{html.escape(brand)} on Formground">
 <meta name="twitter:description" content="{description}">
 <script type="application/ld+json">{breadcrumb_json}</script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
 <style>{PAGE_CSS}</style>
 </head>
@@ -375,7 +376,8 @@ def render_makers_index(brands_data):
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Makers — Formground">
 <meta name="twitter:description" content="Every independent maker currently on Formground, browsable by name.">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
 <style>{PAGE_CSS}</style>
 </head>
@@ -506,7 +508,8 @@ def render_category_page(umbrella, brands_data):
 <meta name="twitter:title" content="Independent {umbrella} — Formground">
 <meta name="twitter:description" content="{description}">
 <script type="application/ld+json">{breadcrumb_json}</script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
 <style>{PAGE_CSS}</style>
 </head>

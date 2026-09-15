@@ -37,7 +37,8 @@
   "url": "https://formground.com/"
 }
 </script>
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <style>
   :root {
     --bg: #faf9f7;
@@ -126,13 +127,16 @@
   }
 
   /* --- footer --- */
+  /* color is --text-secondary, not --text-muted - fails WCAG contrast
+     against --bg otherwise (confirmed via Lighthouse), and this is
+     real navigation, not decorative chrome. */
   .foot-note {
-    font-size: 11px; color: var(--text-muted); text-align: center;
+    font-size: 11px; color: var(--text-secondary); text-align: center;
     margin-top: auto; padding-top: 24px; line-height: 1.6;
     border-top: 0.5px solid var(--border);
   }
-  .foot-note a { color: var(--text-muted); }
-  .foot-note a:hover { color: var(--text-secondary); }
+  .foot-note a { color: var(--text-secondary); }
+  .foot-note a:hover { color: var(--text-primary); }
 </style>
 </head>
 <body>

@@ -10,7 +10,8 @@
 <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="description" content="Discover furniture, lighting, ceramics, and objects from independent makers. No accounts, no rankings - every result links straight back to the source.">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <style>
   :root {
     --bg: #faf9f7;
@@ -153,13 +154,16 @@
   .card-note i { font-size: 12px; vertical-align: -1px; margin-right: 3px; }
 
   /* --- footer / empty state / errors --- */
+  /* color is --text-secondary, not --text-muted - fails WCAG contrast
+     against --bg otherwise (confirmed via Lighthouse), and this is
+     real navigation, not decorative chrome. */
   .foot-note {
-    font-size: 11px; color: var(--text-muted); text-align: center;
+    font-size: 11px; color: var(--text-secondary); text-align: center;
     margin-top: auto; padding-top: 24px; line-height: 1.6;
     border-top: 0.5px solid var(--border);
   }
-  .foot-note a { color: var(--text-muted); }
-  .foot-note a:hover { color: var(--text-secondary); }
+  .foot-note a { color: var(--text-secondary); }
+  .foot-note a:hover { color: var(--text-primary); }
   #status { font-size: 13px; color: var(--text-muted); text-align: center; margin: 32px 0; display: none; }
   #status.error { color: #a14b3f; }
   [hidden] { display: none !important; }
