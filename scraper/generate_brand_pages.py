@@ -187,18 +187,28 @@ def primary_image_for(products, umbrellas):
     return ""
 
 
-def product_card_html(p):
+def product_card_html(p, show_brand=False):
+    """
+    show_brand adds a brand-name line under the title - off by default
+    since every existing caller (render_brand_page's own single-brand
+    grid) already has the brand as page context and would find it
+    redundant; the New-arrivals page (render_new_page) is the one place
+    a mixed-brand grid actually needs it, since "Bench" alone means
+    nothing without knowing whose.
+    """
     url = p["brand_url"] if p["link_dead"] else p["product_url"]
     alt_text = html.escape(f'{p["product_name"]} by {p["brand"]}')
     image = (
         f'<img src="{html.escape(p["image_url"])}" alt="{alt_text}" loading="lazy">'
         if p["image_url"] else ""
     )
+    brand_line = f'<p class="card-brand">{html.escape(p["brand"])}</p>' if show_brand else ""
     return f"""
       <a class="card" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
         <div class="card-image">{image}</div>
         <div class="card-body">
           <p class="card-title">{html.escape(p["product_name"])}</p>
+          {brand_line}
         </div>
       </a>"""
 
@@ -222,6 +232,7 @@ PAGE_CSS = """
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-body { padding: 10px 12px; }
   .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
   .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 16px; align-items: start; }
   .maker-card { background: var(--surface-2); border: 0.5px solid var(--border);
@@ -251,6 +262,7 @@ PAGE_CSS = """
   .category-nav { font-size: 12px; color: var(--text-muted); margin: 0 0 32px; }
   .category-nav a { color: var(--text-accent); text-decoration: none; margin-right: 12px; }
   .category-nav a:hover { text-decoration: underline; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
 """
 
 
@@ -321,7 +333,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
   </div>
   <div class="grid">{cards}</div>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/resources.html">Resources</a>
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/new.html">New</a> &middot; <a href="/resources.html">Resources</a>
   </p>
 </main>
 {CLOUDFLARE_ANALYTICS}
@@ -389,7 +401,7 @@ def render_makers_index(brands_data):
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a>
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/new.html">New</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a>
   </p>
 </main>
 <script>
@@ -523,7 +535,7 @@ def render_category_page(umbrella, brands_data):
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a>
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/new.html">New</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a>
   </p>
 </main>
 <script>
@@ -534,6 +546,83 @@ def render_category_page(umbrella, brands_data):
     }});
   }});
 </script>
+{CLOUDFLARE_ANALYTICS}
+</body>
+</html>
+"""
+
+
+# How far back "recently added" reaches before a piece rolls off the
+# page - keeps this from slowly turning into a second full catalog as
+# first_seen dates accumulate over months. Purely a display window;
+# nothing is ever deleted from the database because of it.
+NEW_ARRIVALS_WINDOW_DAYS = 90
+
+
+def render_new_page(products):
+    """
+    products is already filtered (first_seen within
+    NEW_ARRIVALS_WINDOW_DAYS, hidden brands excluded) and sorted most-
+    recent-first by the caller (generate()) - this function only
+    renders.
+
+    Genuinely empty on a normal day is expected, not a bug: first_seen
+    only gets a real date the first time a product is detected as new
+    to its brand's catalog since the previous scrape (see scrape.py's
+    run()) - nothing already in the catalog before this feature existed
+    was backfilled with a guessed date, so this page starts empty on
+    rollout and fills in gradually, one weekly scrape at a time.
+    """
+    page_url = f"{SITE_URL}/new.html"
+    if products:
+        n = len(products)
+        description = (
+            f"{n} piece{'s' if n != 1 else ''} newly added to Formground in the last "
+            f"{NEW_ARRIVALS_WINDOW_DAYS} days, from independent makers - every result "
+            "links straight to the maker's own site."
+        )
+    else:
+        description = "Recently added pieces from independent makers on Formground, updated as new work is found."
+
+    if products:
+        cards = "".join(product_card_html(p, show_brand=True) for p in products)
+        body = f'<div class="grid">{cards}</div>'
+    else:
+        body = '<p class="empty-state">Check back soon - new pieces are added here as they are found.</p>'
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New — Formground</title>
+{FAVICON_TAGS}
+<meta name="description" content="{description}">
+<link rel="canonical" href="{page_url}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="New — Formground">
+<meta property="og:description" content="{description}">
+<meta property="og:url" content="{page_url}">
+<meta property="og:image" content="{SITE_URL}/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="New — Formground">
+<meta name="twitter:description" content="{description}">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>{PAGE_CSS}</style>
+</head>
+<body>
+<main>
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+  <p class="page-tagline">Discover design from independent makers.</p>
+  <h1>Recently added</h1>
+  <p class="category-intro">Pieces newly added to Formground, most recent first - updated as new work is found, roughly weekly rather than in real time.</p>
+  {body}
+  <p class="foot-note">
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a>
+  </p>
+</main>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -556,6 +645,7 @@ def render_sitemap(brand_slugs):
         ("https://formground.com/contact.html", "monthly", "0.5", None),
         ("https://formground.com/resources.html", "monthly", "0.4", None),
         ("https://formground.com/makers.html", "weekly", "0.7", today),
+        ("https://formground.com/new.html", "weekly", "0.6", today),
     ]
     urls += [
         (f"https://formground.com/{info['slug']}.html", "weekly", "0.6", today)
@@ -586,6 +676,21 @@ def generate():
     countries = load_countries()
     hidden_brands = load_hidden_brands()
     BRANDS_DIR.mkdir(parents=True, exist_ok=True)
+
+    # New-arrivals page: first_seen is only ever real (not NULL) for a
+    # product genuinely detected as new since the previous scrape (see
+    # scrape.py's run()) - a pre-existing product's unknown real add-
+    # date was never guessed at, so this naturally excludes everything
+    # already in the catalog before the feature existed rather than
+    # needing a separate check here.
+    cutoff = (datetime.date.today() - datetime.timedelta(days=NEW_ARRIVALS_WINDOW_DAYS)).isoformat()
+    new_arrivals = sorted(
+        (dict(row) for row in rows
+         if row["first_seen"] and row["first_seen"] >= cutoff and row["brand"] not in hidden_brands),
+        key=lambda p: p["first_seen"],
+        reverse=True,
+    )
+    (DOCS_DIR / "new.html").write_text(render_new_page(new_arrivals))
 
     slugs_seen = {}
     makers_data = []
@@ -620,6 +725,7 @@ def generate():
     (DOCS_DIR / "sitemap.xml").write_text(render_sitemap(sorted(m[1] for m in makers_data)))
 
     print(f"Generated {len(makers_data)} brand pages, makers.html, {len(CATEGORY_INFO)} category pages, "
+          f"new.html ({len(new_arrivals)} new arrival{'s' if len(new_arrivals) != 1 else ''}), "
           f"and sitemap.xml ({sum(m[3] for m in makers_data)} products total).")
 
 

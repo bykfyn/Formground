@@ -25,6 +25,7 @@ HOW IT'S ORGANIZED:
 
 import argparse
 import concurrent.futures
+import datetime
 import gzip
 import html
 import json
@@ -117,17 +118,27 @@ def setup_database():
             thin INTEGER DEFAULT 0,
             image_url TEXT,
             designer TEXT,
-            last_checked TEXT
+            last_checked TEXT,
+            first_seen TEXT
         )
     """)
     # ALTER TABLE ADD COLUMN fails if the column already exists - this only
     # matters for a database created before these columns existed, so it's
     # safe to ignore that specific failure.
+    #
+    # first_seen has no DEFAULT, so adding it to an existing database
+    # leaves every already-there row NULL - exactly the semantics wanted
+    # for the "New" page (see run()'s carry-forward logic below): a
+    # product already in the catalog before this column existed has an
+    # unknown real add-date, not "added today," so it must not show up
+    # as new. Only a product that's genuinely absent from the previous
+    # scrape gets a real first_seen date going forward.
     for statement in (
         "ALTER TABLE products ADD COLUMN thin INTEGER DEFAULT 0",
         "ALTER TABLE products ADD COLUMN image_url TEXT",
         "ALTER TABLE products ADD COLUMN designer TEXT",
         "ALTER TABLE products ADD COLUMN link_dead INTEGER DEFAULT 0",
+        "ALTER TABLE products ADD COLUMN first_seen TEXT",
     ):
         try:
             conn.execute(statement)
@@ -153,11 +164,17 @@ def save_product(conn, product):
     from scraping convenience. Stored anyway rather than discarded, in
     case more brands' extractors pick this up later and it can be shown
     consistently across all of them at once.
+
+    "first_seen" (the "New" page's data source) must be set by the
+    caller before calling this - see run()'s carry-forward-or-stamp-today
+    logic, computed once per brand right before that brand's old rows are
+    deleted. Never computed in here, since by the time save_product runs
+    the old row (and its real first_seen) is already gone.
     """
     conn.execute("""
         INSERT INTO products (brand, brand_url, product_name, product_url,
-                               category, material_options, dimensions, notes, thin, image_url, designer, last_checked)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+                               category, material_options, dimensions, notes, thin, image_url, designer, last_checked, first_seen)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?)
     """, (
         product["brand"],
         product["brand_url"],
@@ -170,6 +187,7 @@ def save_product(conn, product):
         1 if product.get("thin") else 0,
         product.get("image_url", ""),
         product.get("designer", ""),
+        product.get("first_seen"),
     ))
     conn.commit()
 
@@ -3425,6 +3443,21 @@ def run(brand_name=None):
                 })
                 continue
 
+            # Carry each product's real first_seen forward across the
+            # delete-then-insert below, keyed by product_url (the one
+            # stable identifier across scrapes) - captured *before* the
+            # delete, since the old row (and its real date) is gone the
+            # moment that runs. A url missing from this mapping is
+            # genuinely new to this brand since the last scrape and gets
+            # today's date; a url present keeps whatever it already had,
+            # including NULL (a pre-existing product with an unknown real
+            # add-date must never be re-stamped as "new today").
+            old_first_seen = dict(conn.execute(
+                "SELECT product_url, first_seen FROM products WHERE brand = ?",
+                (brand["name"],),
+            ).fetchall())
+            today = datetime.date.today().isoformat()
+
             # Replace this brand's rows wholesale rather than appending -
             # otherwise a product still live gets re-inserted as a duplicate
             # every run, and a product genuinely removed from the brand's site
@@ -3435,6 +3468,8 @@ def run(brand_name=None):
             conn.execute("DELETE FROM products WHERE brand = ?", (brand["name"],))
             conn.commit()
             for product in products:
+                url = product["product_url"]
+                product["first_seen"] = old_first_seen[url] if url in old_first_seen else today
                 save_product(conn, product)
             print(f"  Saved {len(products)} products in {brand_seconds}s.")
             brand_reports.append({

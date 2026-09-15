@@ -10,6 +10,7 @@ RUNNING THESE:
     python3 -m unittest discover tests
 """
 
+import datetime
 import json
 import sqlite3
 import sys
@@ -228,6 +229,95 @@ class ScrapeRunDeleteThenInsertTests(unittest.TestCase):
         }
         scrape.run()
         self.assertEqual(self._names_for("Beta"), {"Vase"})
+
+
+class FirstSeenCarryForwardTests(ScrapeRunDeleteThenInsertTests):
+    """
+    Covers the "New" page's data source (2026-09-15): first_seen must
+    survive run()'s delete-then-insert unchanged for anything that
+    already existed, and only get stamped for a product genuinely new
+    to that brand since the previous scrape - see run()'s
+    old_first_seen carry-forward logic. Subclasses the delete-then-
+    insert fixture above since it's the exact same setup/teardown.
+    """
+
+    def _first_seen_for(self, brand, name):
+        conn = sqlite3.connect(self.db_path)
+        row = conn.execute(
+            "SELECT first_seen FROM products WHERE brand = ? AND product_name = ?",
+            (brand, name),
+        ).fetchone()
+        conn.close()
+        return row[0] if row else None
+
+    def test_new_product_is_stamped_with_todays_date(self):
+        scrape.EXTRACTORS = {
+            "Alpha": lambda brand: [self._product("Alpha", "Bench")],
+            "Beta": lambda brand: [self._product("Beta", "Vase")],
+        }
+        scrape.run()
+        today = datetime.date.today().isoformat()
+        self.assertEqual(self._first_seen_for("Alpha", "Bench"), today)
+
+    def test_still_live_product_keeps_its_original_first_seen(self):
+        scrape.EXTRACTORS = {
+            "Alpha": lambda brand: [self._product("Alpha", "Bench")],
+            "Beta": lambda brand: [self._product("Beta", "Vase")],
+        }
+        scrape.run()
+        original = self._first_seen_for("Alpha", "Bench")
+
+        # Same product, second run - must not be re-stamped with a
+        # later date just because it went through delete-then-insert
+        # again.
+        scrape.run()
+        self.assertEqual(self._first_seen_for("Alpha", "Bench"), original)
+
+    def test_preexisting_row_with_null_first_seen_is_never_restamped(self):
+        # Simulates the real rollout: a product already in the catalog
+        # before this column existed has first_seen = NULL (what
+        # ALTER TABLE ADD COLUMN with no DEFAULT does to existing rows)
+        # - it must stay NULL forever, not get "new" just because it
+        # happened to predate tracking.
+        scrape.EXTRACTORS = {
+            "Alpha": lambda brand: [self._product("Alpha", "Bench")],
+            "Beta": lambda brand: [self._product("Beta", "Vase")],
+        }
+        scrape.run()
+        conn = sqlite3.connect(self.db_path)
+        conn.execute("UPDATE products SET first_seen = NULL WHERE product_name = 'Bench'")
+        conn.commit()
+        conn.close()
+
+        scrape.run()
+        self.assertIsNone(self._first_seen_for("Alpha", "Bench"))
+
+    def test_removed_then_reintroduced_product_counts_as_new_again(self):
+        scrape.EXTRACTORS = {
+            "Alpha": lambda brand: [self._product("Alpha", "Bench"), self._product("Alpha", "Paddle")],
+            "Beta": lambda brand: [self._product("Beta", "Vase")],
+        }
+        scrape.run()
+
+        # Discontinued - Alpha's extractor still returns real products
+        # (a non-empty list, so this is a genuine delete-then-insert,
+        # not the separate "0 products = keep previous data" hiccup
+        # path), just without Bench this time.
+        scrape.EXTRACTORS = {
+            "Alpha": lambda brand: [self._product("Alpha", "Paddle")],
+            "Beta": lambda brand: [self._product("Beta", "Vase")],
+        }
+        scrape.run()
+        self.assertIsNone(self._first_seen_for("Alpha", "Bench"))
+
+        # Reintroduced later - correctly treated as new again, not as
+        # if it had been there all along.
+        scrape.EXTRACTORS = {
+            "Alpha": lambda brand: [self._product("Alpha", "Bench")],
+            "Beta": lambda brand: [self._product("Beta", "Vase")],
+        }
+        scrape.run()
+        self.assertEqual(self._first_seen_for("Alpha", "Bench"), datetime.date.today().isoformat())
 
 
 if __name__ == "__main__":
