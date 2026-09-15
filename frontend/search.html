@@ -3,40 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Formground — Discover Design From Independent Makers</title>
+<title>Search — Formground</title>
+<meta name="robots" content="noindex, follow">
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="description" content="Discover furniture, lighting, ceramics, and objects from independent makers. No accounts, no rankings - every result links straight back to the source.">
-<meta property="og:title" content="Formground — Discover Design From Independent Makers">
-<meta property="og:description" content="Discover furniture, lighting, ceramics, and objects from independent makers. No accounts, no rankings - every result links straight back to the source.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://formground.com/">
-<meta property="og:site_name" content="Formground">
-<meta property="og:image" content="https://formground.com/favicon-192x192.png">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://formground.com/favicon-192x192.png">
-<meta name="twitter:title" content="Formground — Discover Design From Independent Makers">
-<meta name="twitter:description" content="Discover furniture, lighting, ceramics, and objects from independent makers.">
-<link rel="canonical" href="https://formground.com/">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Formground",
-  "url": "https://formground.com/",
-  "description": "Discover furniture, lighting, ceramics, and objects from independent makers. No accounts, no rankings - every result links straight back to the source."
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Formground",
-  "url": "https://formground.com/"
-}
-</script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css">
 <style>
   :root {
@@ -72,7 +45,7 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 14vh 20px 40px;
+    padding: 8vh 20px 40px;
   }
 
   .search-column {
@@ -92,16 +65,12 @@
     height: 44px; width: auto;
     margin: 0 0 10px;
   }
-  /* font-weight explicit since this class is now on an <h1> (see body
-     below) - browsers bold headings by default and this needs to look
-     identical to how it always has. */
-  .brand-header .tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 4px; }
 
   /* --- ask box --- */
   .ask-box {
     display: flex; align-items: center; gap: 10px;
     background: var(--surface-1); border: 0.5px solid var(--border);
-    border-radius: var(--radius); padding: 13px 16px; margin-top: 28px;
+    border-radius: var(--radius); padding: 13px 16px; margin-top: 0;
   }
   .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
   .ask-box input {
@@ -125,7 +94,65 @@
     .inline-chip { padding: 9px; }
   }
 
-  /* --- footer --- */
+  /* --- results --- */
+  #results-meta {
+    font-size: 12px; color: var(--text-muted); text-align: center;
+    margin: 32px 0 20px; display: none;
+  }
+  .results-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  .card {
+    background: var(--surface-2); border: 0.5px solid var(--border);
+    border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit;
+    display: block; position: relative;
+  }
+  .card.thin { border-style: dashed; border-color: var(--border-strong); }
+  .card-image {
+    aspect-ratio: 1 / 1; background: var(--surface-1);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .card-image i { font-size: 28px; color: var(--text-muted); }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 10px 32px 10px 12px; position: relative; }
+  .share-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 1;
+    width: 24px; height: 24px; border-radius: 50%; border: none;
+    background: transparent; color: var(--text-muted);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+  }
+  .share-btn:hover { background: var(--surface-1); color: var(--text-primary); }
+  .share-btn i { font-size: 14px; }
+  .share-btn.copied::after {
+    content: "Copied"; position: absolute; bottom: 30px; right: 0;
+    background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: center; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 6px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-detail {
+    font-size: 11px; color: var(--text-muted); margin: 0; line-height: 1.3; min-height: 1.3em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-note {
+    font-size: 11px; color: var(--text-accent); margin: 0; line-height: 1.3; min-height: 1.3em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-note i { font-size: 12px; vertical-align: -1px; margin-right: 3px; }
+
+  /* --- footer / empty state / errors --- */
   .foot-note {
     font-size: 11px; color: var(--text-muted); text-align: center;
     margin-top: auto; padding-top: 24px; line-height: 1.6;
@@ -133,6 +160,9 @@
   }
   .foot-note a { color: var(--text-muted); }
   .foot-note a:hover { color: var(--text-secondary); }
+  #status { font-size: 13px; color: var(--text-muted); text-align: center; margin: 32px 0; display: none; }
+  #status.error { color: #a14b3f; }
+  [hidden] { display: none !important; }
 </style>
 </head>
 <body>
@@ -141,20 +171,9 @@
   <div class="search-column">
     <div class="brand-header">
       <a href="/"><img class="wordmark" src="logo/formground_logotype_RGB.png" alt="Formground"></a>
-      <h1 class="tagline">Discover design from independent makers.</h1>
     </div>
   </div>
 
-  <!-- Category browse chips (Chairs/Lighting/Ceramics/Tables) were
-       removed on purpose, not just deferred - see project memory
-       product_interface_decisions.md. The taxonomy across the 16
-       brands' own category data is too inconsistent (mixed levels,
-       different languages, missing tags on some brands) to guarantee a
-       "healthy" result count for every chip, and a browse affordance
-       that sometimes returns 3 results from one brand reads as broken.
-       Normal search doesn't have this problem since a real query only
-       needs to match well, not comprehensively, for every possible
-       category. -->
   <div class="search-wide">
     <form id="search-form">
       <div class="ask-box">
@@ -164,6 +183,10 @@
       </div>
     </form>
   </div>
+
+  <p id="status"></p>
+  <p id="results-meta"></p>
+  <div id="results-grid" class="results-grid"></div>
 
   <p class="foot-note">
     From a curated collection, equally relevant results are shown in
