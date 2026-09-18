@@ -185,7 +185,7 @@ def render_craftspeople_index(people_with_slugs):
 {SITE_NAV_HTML}
 </header>
 <main style="max-width:1100px;">
-  <h1 class="page-tagline">Craftspeople</h1>
+  <h1>Craftspeople</h1>
   <p class="category-intro">
     Production and fabrication partners - real workshops and craftspeople sourced from Swedish
     craft associations, for makers, architects, and homeowners realizing their own designs.
