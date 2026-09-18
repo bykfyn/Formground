@@ -234,7 +234,7 @@ def product_card_html(p, show_brand=False):
 # h1, .tag, .foot-note) live in /site.css, linked with an absolute path
 # below since these pages are nested under /brands/.
 PAGE_CSS = """
-  main { max-width: 1100px; margin: 0 auto; padding: 48px 20px 60px; }
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
   .maker-header { text-align: center; margin-bottom: 32px; }
   .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
     letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
@@ -273,6 +273,35 @@ PAGE_CSS = """
   .category-nav a { color: var(--text-accent); text-decoration: none; margin-right: 12px; }
   .category-nav a:hover { text-decoration: underline; }
   .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- ask box, added to category pages 2026-09-19 so a visitor can
+     search from there directly instead of needing to go back to the
+     homepage - identical markup/behavior to search.html's box, and
+     reuses that same shared /search.js (redirects to
+     /search.html?q=... on submit). --- */
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px; margin: 0 0 28px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+  .inline-chip {
+    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 12px; margin: 0;
+    cursor: pointer; border-radius: 8px; white-space: nowrap;
+  }
+  .inline-chip:hover { border-color: var(--text-muted); }
+  @media (max-width: 480px) {
+    .inline-chip span { display: none; }
+    .inline-chip { padding: 9px; }
+  }
 """
 
 
@@ -412,11 +441,8 @@ def render_makers_index(brands_data):
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
 {SITE_NAV_HTML}
 </header>
-<main style="max-width:1100px;">
+<main style="max-width:1160px;">
   <h1>Makers</h1>
-  <p class="category-intro">Discover design from independent makers.</p>
-  <p class="category-nav">Browse by category: <a href="/furniture.html">Furniture</a><a href="/lighting.html">Lighting</a><a href="/ceramics.html">Ceramics</a><a href="/objects.html">Objects</a></p>
-  <p class="page-tagline">Looking for what's newest? <a href="/new.html">Browse recently added &rarr;</a></p>
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
@@ -549,17 +575,25 @@ def render_category_page(umbrella, brands_data):
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
 {SITE_NAV_HTML}
 </header>
-<main style="max-width:1100px;">
+<main style="max-width:1160px;">
   <p class="page-tagline">Discover design from independent makers.</p>
   <h1>Independent {umbrella}</h1>
   <p class="category-intro">{description}</p>
   <p class="category-nav">Browse: {other_categories}</p>
+  <form id="search-form">
+    <div class="ask-box">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input id="query-input" type="text" placeholder="describe what you're looking for" autocomplete="off">
+      <button type="button" class="inline-chip" id="discover-chip" aria-label="Surprise me"><i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Surprise me</span></button>
+    </div>
+  </form>
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
   </p>
 </main>
+<script src="/search.js"></script>
 <script>
   document.querySelectorAll(".maker-card-hero img").forEach(function (img) {{
     img.addEventListener("load", function () {{

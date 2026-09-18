@@ -184,7 +184,7 @@ def render_craftspeople_index(people_with_slugs):
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
 {SITE_NAV_HTML}
 </header>
-<main style="max-width:1100px;">
+<main style="max-width:1160px;">
   <h1>Craftspeople</h1>
   <p class="category-intro">
     Production and fabrication partners - real workshops and craftspeople sourced from Swedish

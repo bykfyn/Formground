@@ -174,7 +174,7 @@ def render_architects_index(firms_with_slugs):
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
 {SITE_NAV_HTML}
 </header>
-<main style="max-width:1100px;">
+<main style="max-width:1160px;">
   <h1>Architects &amp; Interior Designers</h1>
   <p class="category-intro">
     Buildings and interiors - real firms curated individually, each with a small set of real project
