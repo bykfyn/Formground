@@ -8,9 +8,9 @@
 <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="description" content="Discover furniture, lighting, ceramics, and objects from independent makers. No accounts, no rankings - every result links straight back to the source.">
+<meta name="description" content="Discover furniture, lighting, ceramics, and objects from independent makers, plus architects, interior designers, and the craftspeople who bring designs to life. No accounts, no rankings - every result links straight back to the source.">
 <meta property="og:title" content="Formground — Discover Design From Independent Makers">
-<meta property="og:description" content="Discover furniture, lighting, ceramics, and objects from independent makers. No accounts, no rankings - every result links straight back to the source.">
+<meta property="og:description" content="Discover furniture, lighting, ceramics, and objects from independent makers, plus architects, interior designers, and the craftspeople who bring designs to life. No accounts, no rankings - every result links straight back to the source.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://formground.com/">
 <meta property="og:site_name" content="Formground">
@@ -18,7 +18,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://formground.com/favicon-192x192.png">
 <meta name="twitter:title" content="Formground — Discover Design From Independent Makers">
-<meta name="twitter:description" content="Discover furniture, lighting, ceramics, and objects from independent makers.">
+<meta name="twitter:description" content="Discover furniture, lighting, ceramics, and objects from independent makers, plus architects, interior designers, and craftspeople.">
 <link rel="canonical" href="https://formground.com/">
 <script type="application/ld+json">
 {
@@ -26,7 +26,7 @@
   "@type": "WebSite",
   "name": "Formground",
   "url": "https://formground.com/",
-  "description": "Discover furniture, lighting, ceramics, and objects from independent makers. No accounts, no rankings - every result links straight back to the source."
+  "description": "Discover furniture, lighting, ceramics, and objects from independent makers, plus architects, interior designers, and the craftspeople who bring designs to life. No accounts, no rankings - every result links straight back to the source."
 }
 </script>
 <script type="application/ld+json">
@@ -37,6 +37,9 @@
   "url": "https://formground.com/"
 }
 </script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <style>
@@ -71,38 +74,81 @@
     display: flex;
     flex-direction: column;
     width: 100%;
-    max-width: 1200px;
+    max-width: 1160px;
     margin: 0 auto;
-    padding: 14vh 20px 40px;
+    padding: 0 20px 40px;
   }
 
-  .search-column {
-    max-width: 640px;
-    margin: 0 auto;
-  }
   .search-wide {
     width: 100%;
     max-width: 900px;
     margin: 0 auto;
   }
 
-  /* --- header --- */
-  .brand-header { text-align: center; margin-bottom: 28px; }
-  .brand-header a { display: inline-block; text-decoration: none; }
-  .brand-header .wordmark {
-    height: 44px; width: auto;
-    margin: 0 0 10px;
+  /* --- site header --- */
+  /* Wordmark and nav share one row (unlike every other page's small
+     corner-overlay nav) - the homepage's hero has always been "its own
+     thing" (see site.css's own note on why it's excluded from the
+     shared page family), so this deliberate divergence from the corner
+     nav used elsewhere is consistent with that existing precedent. */
+  .site-header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px 24px;
+    padding: 28px 0; margin-bottom: 48px; border-bottom: 1px solid var(--border);
   }
-  /* font-weight explicit since this class is now on an <h1> (see body
-     below) - browsers bold headings by default and this needs to look
-     identical to how it always has. */
-  .brand-header .tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 4px; }
+  .site-header .wordmark { height: 28px; width: auto; display: block; }
+  .top-nav {
+    display: flex; flex-wrap: wrap; gap: 8px 20px;
+  }
+  .top-nav a {
+    font-size: 13px; color: var(--text-secondary); text-decoration: none;
+  }
+  .top-nav a:hover { color: var(--text-primary); }
 
-  /* --- ask box --- */
+  /* --- hero --- */
+  .hero { text-align: center; margin-bottom: 48px; }
+  .hero-title {
+    font-family: 'Archivo', sans-serif; font-weight: 700; letter-spacing: -0.01em;
+    font-size: 42px; line-height: 1.15; margin: 0 0 16px;
+  }
+  .hero-subtitle {
+    font-size: 17px; color: var(--text-secondary); margin: 0 auto;
+    max-width: 480px; line-height: 1.55;
+  }
+
+  /* --- triptych --- */
+  .triptych { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 56px; }
+  .triptych figure { margin: 0; min-width: 0; }
+  .triptych a { display: block; text-decoration: none; color: inherit; }
+  .triptych .photo {
+    aspect-ratio: 4/3; border-radius: var(--radius); overflow: hidden;
+    background: var(--surface-1); margin: 0 0 14px;
+  }
+  .triptych .photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+  .triptych .photo img.contain-fit { object-fit: contain; }
+  .triptych a:hover .photo img { transform: scale(1.03); }
+  .triptych .cat-name {
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 17px;
+    letter-spacing: -0.01em; line-height: 1.2; margin: 0 0 4px; color: var(--text-primary);
+    white-space: nowrap;
+  }
+  .triptych .cat-desc { font-size: 13.5px; color: var(--text-secondary); margin: 0; line-height: 1.4; }
+
+  @media (max-width: 720px) {
+    .triptych { grid-template-columns: 1fr; }
+    .hero-title { font-size: 32px; }
+  }
+
+  /* --- search --- */
+  .search-lead {
+    text-align: center; font-size: 13px; color: var(--text-muted);
+    max-width: 480px; margin: 16px auto 0; line-height: 1.6;
+  }
+
   .ask-box {
     display: flex; align-items: center; gap: 10px;
     background: var(--surface-1); border: 0.5px solid var(--border);
-    border-radius: var(--radius); padding: 13px 16px; margin-top: 28px;
+    border-radius: var(--radius); padding: 13px 16px;
   }
   .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
   .ask-box input {
@@ -132,7 +178,7 @@
      real navigation, not decorative chrome. */
   .foot-note {
     font-size: 11px; color: var(--text-secondary); text-align: center;
-    margin-top: auto; padding-top: 24px; line-height: 1.6;
+    margin-top: 48px; padding-top: 24px; line-height: 1.6;
     border-top: 0.5px solid var(--border);
   }
   .foot-note a { color: var(--text-secondary); }
@@ -142,12 +188,53 @@
 <body>
 
 <main>
-  <div class="search-column">
-    <div class="brand-header">
-      <a href="/"><img class="wordmark" src="logo/formground_logotype_RGB.png" alt="Formground"></a>
-      <h1 class="tagline">Discover design from independent makers.</h1>
-    </div>
+  <header class="site-header">
+    <a href="/"><img class="wordmark" src="logo/formground_logotype_RGB.png" alt="Formground"></a>
+    <nav class="top-nav">
+      <a href="makers.html">Makers</a>
+      <a href="architects.html">Architects &amp; Interior Designers</a>
+      <a href="craftspeople.html">Craftspeople</a>
+      <a href="resources.html">Resources</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <h1 class="hero-title">Discover their work</h1>
+    <p class="hero-subtitle">and the people who brought them to life.</p>
   </div>
+
+  <section class="triptych">
+    <figure data-category="makers">
+      <a href="makers.html">
+        <div class="photo"><img src="https://images.squarespace-cdn.com/content/v1/546e39aee4b01216a372f659/1581809385354-LHTXG1G4CM5ZFMCCGJ8D/Kieran+Kinsella+Hudson+Valley+Furniture+Maker++WOOD+Bulb+1.png" alt="Kieran Kinsella"></div>
+        <figcaption>
+          <p class="cat-name">Makers</p>
+          <p class="cat-desc">Furniture, lighting, ceramics, objects.</p>
+        </figcaption>
+      </a>
+    </figure>
+
+    <figure data-category="architects">
+      <a href="architects.html">
+        <div class="photo"><img src="https://images.squarespace-cdn.com/content/v1/58c8008a37c581e1410f405f/80d38af2-074b-498a-8472-2178e1f0d7e5/Willners_web_1_w2880_qual60.jpg" alt="Björn Lundquist Arkitektur"></div>
+        <figcaption>
+          <p class="cat-name">Architects &amp; Interior Designers</p>
+          <p class="cat-desc">Buildings &amp; interiors.</p>
+        </figcaption>
+      </a>
+    </figure>
+
+    <figure data-category="craftspeople">
+      <a href="craftspeople.html">
+        <div class="photo"><img src="https://dx7phrh2v9esk.cloudfront.net/sites/11/media/5482_large_Anderssonsmekaniksa.jpg" alt="Anderssons Mekaniska"></div>
+        <figcaption>
+          <p class="cat-name">Craftspeople</p>
+          <p class="cat-desc">Production &amp; fabrication.</p>
+        </figcaption>
+      </a>
+    </figure>
+  </section>
 
   <!-- Category browse chips (Chairs/Lighting/Ceramics/Tables) were
        removed on purpose, not just deferred - see project memory
@@ -163,21 +250,74 @@
     <form id="search-form">
       <div class="ask-box">
         <i class="ti ti-search" aria-hidden="true"></i>
-        <input id="query-input" type="text" placeholder="furniture, lighting, objects — describe what you're looking for" autocomplete="off">
+        <input id="query-input" type="text" placeholder="furniture, lighting, house — describe what you're looking for" autocomplete="off">
         <button type="button" class="inline-chip" id="discover-chip" aria-label="Surprise me"><i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Surprise me</span></button>
       </div>
     </form>
+    <p class="search-lead">Search through a curated collection of work, where equally relevant results are shown in random order and link straight to the source. No paid results.</p>
   </div>
 
   <p class="foot-note">
-    From a curated collection, equally relevant results are shown in
-    random order and link straight to each maker's own site.<br>
-    No paid results. No account needed.<br>
-    <a href="about.html">About Formground</a> &middot; <a href="makers.html">Makers</a> &middot; <a href="new.html">New</a> &middot; <a href="resources.html">Resources</a> &middot; <a href="contact.html">Get in touch</a>
+    <a href="about.html">About Formground</a> &middot; <a href="makers.html">Makers</a> &middot; <a href="new.html">New</a> &middot; <a href="resources.html">Resources</a> &middot; <a href="contact.html">Get in touch</a> &middot; <a href="privacy.html">Privacy</a>
   </p>
 </main>
 
 <script src="search.js"></script>
+<script>
+  // Small real pools per top-level category - on load, pick one at
+  // random per tile and swap its image/link. Mirrors the same "equally
+  // relevant results shown in random order" principle already used for
+  // search results above, applied to the hero itself. Every entry is
+  // real: a real maker/firm/craftsperson already live on Formground,
+  // with a real photo from their own site.
+  const CATEGORY_POOLS = {
+    makers: [
+      { image: "https://images.squarespace-cdn.com/content/v1/546e39aee4b01216a372f659/1581809385354-LHTXG1G4CM5ZFMCCGJ8D/Kieran+Kinsella+Hudson+Valley+Furniture+Maker++WOOD+Bulb+1.png", name: "Kieran Kinsella", href: "brands/kieran-kinsella.html" },
+      { image: "https://cdn.shopify.com/s/files/1/0005/7730/6687/files/APPARATUS_TASSEL_SCONCE_BB.jpg?v=1773336046", name: "Apparatus", href: "brands/apparatus.html" },
+      { image: "https://cdn.shopify.com/s/files/1/0944/2990/5239/files/A-Petersen-Ole-Schjoll-Metal-Stool_ACA_brown_1.jpg?v=1775741576", name: "A. Petersen", href: "brands/a-petersen.html" },
+      { image: "https://cdn.shopify.com/s/files/1/0177/8296/files/Galvin_June_IndiaHobson_LR-117.jpg?v=1784633956", name: "Galvin Brothers", href: "brands/galvin-brothers.html" },
+      { image: "https://cdn.shopify.com/s/files/1/2998/2346/files/Incommonwith_SpotSurfaceMount_SideView_Off_Bone_Standard_Plug-in_withswitch_1eda556a-a3e2-4881-8393-5568b77b6e61.jpg?v=1772658217", name: "In Common With", href: "brands/in-common-with.html" }
+    ],
+    architects: [
+      { image: "https://images.squarespace-cdn.com/content/v1/58c8008a37c581e1410f405f/80d38af2-074b-498a-8472-2178e1f0d7e5/Willners_web_1_w2880_qual60.jpg", name: "Björn Lundquist Arkitektur", href: "architects/bjorn-lundquist-arkitektur-ab.html" },
+      { image: "https://images.prismic.io/ascape/FWjHhGI-cGAFn3rZ_Halsovagen-bostadskvarter-arkitektur-visualisering.jpg?auto=format%2Ccompress&fit=max&w=3840&q=75", name: "Ascape Arkitektur", href: "architects/ascape-arkitektur-ab.html" },
+      { image: "https://images.squarespace-cdn.com/content/v1/562a8180e4b079feac8c6576/1767361968319-YTKQHTLXTOLT2VMC4C4G/lovon.jpg", name: "Arkitekt Lotta Lander", href: "architects/arkitekt-lotta-lander.html" },
+      { image: "https://aren-yde.se/wp-content/uploads/2023/08/IMG_8523-kopia.jpg", name: "Arén & Yde", href: "architects/arkitektkontor-aren-yde-ab.html" },
+      { image: "https://yeparkitekter.se/wp-content/uploads/2026/02/26Yep611-2.jpg", name: "Yep Arkitekter", href: "architects/yep-arkitekter-ab.html" }
+    ],
+    craftspeople: [
+      { image: "https://dx7phrh2v9esk.cloudfront.net/sites/11/media/5482_large_Anderssonsmekaniksa.jpg", name: "Anderssons Mekaniska", href: "craftspeople/anderssons-mekaniska.html" },
+      { image: "https://dx7phrh2v9esk.cloudfront.net/sites/11/media/1444_original_Ackurat_ICS_2_1080x680.jpg", name: "Ackurat Industriplast", href: "craftspeople/ackurat-industriplast.html" },
+      { image: "https://dx7phrh2v9esk.cloudfront.net/sites/11/media/1821_medium_CarlssonsSmide.jpg", name: "Carlsson Smide & Järnaffär", href: "craftspeople/carlsson-smide-jarnaffar.html" },
+      { image: "https://d1da7yrcucvk6m.cloudfront.net/sites/1480/media/2986727_medium_Artex.webp", name: "Artex", href: "craftspeople/artex.html" },
+      { image: "https://dx7phrh2v9esk.cloudfront.net/sites/11/media/1454_original_BendingGroup1080x680.jpg", name: "Bendinggroup", href: "craftspeople/bendinggroup.html" }
+    ]
+  };
+
+  // Same fix as generate_brand_pages.py's card grids: a single image
+  // stretched to fill a fixed box can lose most of a tall/narrow photo
+  // under object-fit: cover (confirmed real case - Kieran Kinsella's
+  // portrait-orientation product shot). Attached before the swap below
+  // so it also catches the swapped-in image's own "load" event, not
+  // just whatever rendered first.
+  document.querySelectorAll(".triptych .photo img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      img.classList.toggle("contain-fit", ratio < 0.55 || ratio > 1.8);
+    });
+  });
+
+  document.querySelectorAll(".triptych figure[data-category]").forEach(function (figure) {
+    const pool = CATEGORY_POOLS[figure.dataset.category];
+    if (!pool) return;
+    const choice = pool[Math.floor(Math.random() * pool.length)];
+    const img = figure.querySelector("img");
+    const link = figure.querySelector("a");
+    img.src = choice.image;
+    img.alt = choice.name;
+    link.href = choice.href;
+  });
+</script>
 
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>

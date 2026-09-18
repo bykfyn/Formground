@@ -62,6 +62,22 @@ FAVICON_TAGS = (
     '<link rel="apple-touch-icon" href="/apple-touch-icon.png">'
 )
 
+# Site-wide header nav, added 2026-09-18 so every page - not just the
+# homepage - lets a visitor jump straight to another top-level section
+# instead of needing the back button or scrolling to the footer. Same
+# constant-sharing rationale as CLOUDFLARE_ANALYTICS/FAVICON_TAGS above;
+# its `.top-nav` CSS lives in site.css (shared) rather than PAGE_CSS,
+# since the homepage also needs it and doesn't use PAGE_CSS.
+SITE_NAV_HTML = (
+    '<nav class="top-nav">\n'
+    '  <a href="/makers.html">Makers</a>\n'
+    '  <a href="/architects.html">Architects &amp; Interior Designers</a>\n'
+    '  <a href="/craftspeople.html">Craftspeople</a>\n'
+    '  <a href="/resources.html">Resources</a>\n'
+    '  <a href="/about.html">About</a>\n'
+    "</nav>"
+)
+
 
 def load_countries():
     """
@@ -322,6 +338,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
 <style>{PAGE_CSS}</style>
 </head>
 <body>
+{SITE_NAV_HTML}
 <main>
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
   <p class="page-tagline">Discover design from independent makers.</p>
@@ -332,8 +349,9 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
     <a class="brand-site-link" href="{html.escape(brand_url)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
   <div class="grid">{cards}</div>
+  <p class="page-tagline">Looking for an architect or someone to help build it? <a href="/architects.html">Browse Architects &amp; Interior Designers</a> &middot; <a href="/craftspeople.html">Browse Craftspeople &rarr;</a></p>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/new.html">New</a> &middot; <a href="/resources.html">Resources</a>
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/new.html">New</a> &middot; <a href="/architects.html">Architects &amp; Interior Designers</a> &middot; <a href="/craftspeople.html">Craftspeople</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/privacy.html">Privacy</a>
   </p>
 </main>
 {CLOUDFLARE_ANALYTICS}
@@ -394,6 +412,7 @@ def render_makers_index(brands_data):
 <style>{PAGE_CSS}</style>
 </head>
 <body>
+{SITE_NAV_HTML}
 <main style="max-width:1100px;">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
   <h1 class="page-tagline">Discover design from independent makers.</h1>
@@ -401,7 +420,7 @@ def render_makers_index(brands_data):
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/new.html">New</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a>
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/new.html">New</a> &middot; <a href="/architects.html">Architects &amp; Interior Designers</a> &middot; <a href="/craftspeople.html">Craftspeople</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a> &middot; <a href="/privacy.html">Privacy</a>
   </p>
 </main>
 <script>
@@ -526,6 +545,7 @@ def render_category_page(umbrella, brands_data):
 <style>{PAGE_CSS}</style>
 </head>
 <body>
+{SITE_NAV_HTML}
 <main style="max-width:1100px;">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
   <p class="page-tagline">Discover design from independent makers.</p>
@@ -535,7 +555,7 @@ def render_category_page(umbrella, brands_data):
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/new.html">New</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a>
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/new.html">New</a> &middot; <a href="/architects.html">Architects &amp; Interior Designers</a> &middot; <a href="/craftspeople.html">Craftspeople</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a> &middot; <a href="/privacy.html">Privacy</a>
   </p>
 </main>
 <script>
@@ -613,6 +633,7 @@ def render_new_page(products):
 <style>{PAGE_CSS}</style>
 </head>
 <body>
+{SITE_NAV_HTML}
 <main>
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
   <p class="page-tagline">Discover design from independent makers.</p>
@@ -620,13 +641,62 @@ def render_new_page(products):
   <p class="category-intro">Pieces newly added to Formground, most recent first - updated as new work is found, roughly weekly rather than in real time.</p>
   {body}
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a>
+    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/architects.html">Architects &amp; Interior Designers</a> &middot; <a href="/craftspeople.html">Craftspeople</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a> &middot; <a href="/privacy.html">Privacy</a>
   </p>
 </main>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
 """
+
+
+def _craftspeople_sitemap_slugs():
+    """
+    Reads data/craftspeople.json directly (rather than relying on
+    generate_craftspeople_pages.py having appended to a previous
+    sitemap.xml) so render_sitemap() is self-contained and correct
+    regardless of which generator last ran - a real ordering bug
+    otherwise: this function used to fully rebuild sitemap.xml from
+    scratch, which would silently wipe out any craftspeople URLs a
+    prior run of generate_craftspeople_pages.py had appended.
+    """
+    path = DATA_DIR / "craftspeople.json"
+    if not path.exists():
+        return []
+    people = json.loads(path.read_text())
+    slugs_seen = {}
+    slugs = []
+    for person in people:
+        slug = slugify(person["name"])
+        if slug in slugs_seen and slugs_seen[slug] != person["name"]:
+            slug = f"{slug}-{len(slugs_seen)}"
+        slugs_seen[slug] = person["name"]
+        slugs.append(slug)
+    return sorted(slugs)
+
+
+def _architects_sitemap_slugs():
+    """Same self-healing rationale as _craftspeople_sitemap_slugs() -
+    reads data/architects.json directly so render_sitemap() stays
+    correct regardless of which generator last ran. Only firms with
+    real photos get a page (see generate_architects_pages.py), so this
+    mirrors that same filter rather than assuming every entry in the
+    data file has a page."""
+    path = DATA_DIR / "architects.json"
+    if not path.exists():
+        return []
+    firms = json.loads(path.read_text())
+    slugs_seen = {}
+    slugs = []
+    for firm in firms:
+        if not firm.get("photos"):
+            continue
+        slug = slugify(firm["name"])
+        if slug in slugs_seen and slugs_seen[slug] != firm["name"]:
+            slug = f"{slug}-{len(slugs_seen)}"
+        slugs_seen[slug] = firm["name"]
+        slugs.append(slug)
+    return sorted(slugs)
 
 
 def render_sitemap(brand_slugs):
@@ -644,6 +714,7 @@ def render_sitemap(brand_slugs):
         ("https://formground.com/about.html", "monthly", "0.6", None),
         ("https://formground.com/contact.html", "monthly", "0.5", None),
         ("https://formground.com/resources.html", "monthly", "0.4", None),
+        ("https://formground.com/privacy.html", "yearly", "0.2", None),
         ("https://formground.com/makers.html", "weekly", "0.7", today),
         ("https://formground.com/new.html", "weekly", "0.6", today),
     ]
@@ -652,6 +723,20 @@ def render_sitemap(brand_slugs):
         for info in CATEGORY_INFO.values()
     ]
     urls += [(f"https://formground.com/brands/{slug}.html", "weekly", "0.5", today) for slug in brand_slugs]
+    craftspeople_slugs = _craftspeople_sitemap_slugs()
+    if craftspeople_slugs:
+        urls.append(("https://formground.com/craftspeople.html", "weekly", "0.7", today))
+        urls += [
+            (f"https://formground.com/craftspeople/{slug}.html", "weekly", "0.5", today)
+            for slug in craftspeople_slugs
+        ]
+    architect_slugs = _architects_sitemap_slugs()
+    if architect_slugs:
+        urls.append(("https://formground.com/architects.html", "weekly", "0.7", today))
+        urls += [
+            (f"https://formground.com/architects/{slug}.html", "weekly", "0.5", today)
+            for slug in architect_slugs
+        ]
     entries = []
     for loc, freq, pri, lastmod in urls:
         lastmod_tag = f"\n    <lastmod>{lastmod}</lastmod>" if lastmod else ""
