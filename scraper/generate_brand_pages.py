@@ -263,13 +263,6 @@ PAGE_CSS = """
   .maker-card:hover .maker-name { text-decoration: underline; }
   .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
   .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
-  /* Tagline sits directly under the (left-aligned) logo rather than
-     centered with the page's own heading - a quick "what is this site"
-     for a cold visitor without competing with the page's actual
-     subject (the maker's own name, on brand pages). Overrides
-     site.css's a.home-link margin (40px) since the tagline needs to
-     sit close to the logo, not the next section. */
-  a.home-link { margin-bottom: 6px; }
   /* font-weight explicit since this class is also used on an <h1> in
      render_makers_index (the homepage's own header carries the same
      rule) - browsers bold headings by default, and this needs to look
@@ -339,9 +332,11 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
 <style>{PAGE_CSS}</style>
 </head>
 <body>
-{SITE_NAV_HTML}
-<main>
+<header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+{SITE_NAV_HTML}
+</header>
+<main>
   <p class="page-tagline">Discover design from independent makers.</p>
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
@@ -413,9 +408,11 @@ def render_makers_index(brands_data):
 <style>{PAGE_CSS}</style>
 </head>
 <body>
-{SITE_NAV_HTML}
-<main style="max-width:1100px;">
+<header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+{SITE_NAV_HTML}
+</header>
+<main style="max-width:1100px;">
   <h1 class="page-tagline">Discover design from independent makers.</h1>
   <p class="category-nav">Browse by category: <a href="/furniture.html">Furniture</a><a href="/lighting.html">Lighting</a><a href="/ceramics.html">Ceramics</a><a href="/objects.html">Objects</a></p>
   <p class="page-tagline">Looking for what's newest? <a href="/new.html">Browse recently added &rarr;</a></p>
@@ -547,9 +544,11 @@ def render_category_page(umbrella, brands_data):
 <style>{PAGE_CSS}</style>
 </head>
 <body>
-{SITE_NAV_HTML}
-<main style="max-width:1100px;">
+<header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+{SITE_NAV_HTML}
+</header>
+<main style="max-width:1100px;">
   <p class="page-tagline">Discover design from independent makers.</p>
   <h1>Independent {umbrella}</h1>
   <p class="category-intro">{description}</p>
@@ -635,9 +634,11 @@ def render_new_page(products):
 <style>{PAGE_CSS}</style>
 </head>
 <body>
-{SITE_NAV_HTML}
-<main>
+<header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+{SITE_NAV_HTML}
+</header>
+<main>
   <p class="page-tagline">Discover design from independent makers.</p>
   <h1>Recently added</h1>
   <p class="category-intro">Pieces newly added to Formground, most recent first - updated as new work is found, roughly weekly rather than in real time.</p>

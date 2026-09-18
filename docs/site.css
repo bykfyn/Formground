@@ -38,24 +38,35 @@ a.home-link {
 }
 a.home-link img { height: 28px; width: auto; display: block; }
 
-/* Site-wide header nav, added 2026-09-18 so every page lets a visitor
-   jump straight to another top-level section instead of needing the
-   back button or the footer. Absolutely positioned (not in normal
-   flow) so it overlays the corner without disturbing each page's own
-   top spacing/layout - same treatment index.html already used for
-   this, kept identical here so it looks and behaves the same
-   everywhere. See generate_brand_pages.py's SITE_NAV_HTML for the
-   shared markup this styles. */
+/* Site-wide header, added 2026-09-18, restructured 2026-09-19 to match
+   index.html's own header exactly (wordmark + nav sharing one row, in
+   normal flow, with a bottom border) - the two had drifted apart: the
+   homepage moved to this row layout early on, but every other page
+   kept a small absolutely-positioned corner-overlay nav with the
+   wordmark sitting separately below it, which read as three different
+   header patterns site-wide (row header / corner overlay / no nav at
+   all on search.html) once actually compared side by side. index.html
+   still can't literally share this rule (it doesn't link site.css -
+   see the note at the top of this file), so its own copy has to be
+   kept in visual sync with this one by hand if either changes. See
+   generate_brand_pages.py's SITE_NAV_HTML for the shared nav markup
+   this styles. */
+.site-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 12px 24px;
+  max-width: 1100px; margin: 0 auto 48px;
+  padding: 28px 20px; border-bottom: 1px solid var(--border);
+}
+.site-header a.home-link { margin-bottom: 0; }
 .top-nav {
-  position: absolute; top: 24px; right: 24px;
-  display: flex; gap: 20px; flex-wrap: wrap; justify-content: flex-end;
+  display: flex; gap: 20px; flex-wrap: wrap;
 }
 .top-nav a {
   font-size: 13px; color: var(--text-secondary); text-decoration: none;
 }
 .top-nav a:hover { color: var(--text-primary); }
 @media (max-width: 480px) {
-  .top-nav { position: static; justify-content: center; margin: 0 0 16px; gap: 14px; }
+  .top-nav { justify-content: center; gap: 14px; }
 }
 
 h1 {

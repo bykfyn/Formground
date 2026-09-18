@@ -117,9 +117,11 @@ def render_architect_page(firm, slug):
 <style>{PAGE_CSS}{PROFILE_PHOTO_CSS}</style>
 </head>
 <body>
-{SITE_NAV_HTML}
-<main>
+<header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+{SITE_NAV_HTML}
+</header>
+<main>
   <p class="page-tagline">Architects &amp; Interior Designers.</p>
   <div class="maker-header">
     <p class="eyebrow">{" / ".join(firm.get("specialization", ["Architect"]))}</p>
@@ -168,9 +170,11 @@ def render_architects_index(firms_with_slugs):
 <style>{PAGE_CSS}</style>
 </head>
 <body>
-{SITE_NAV_HTML}
-<main style="max-width:1100px;">
+<header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+{SITE_NAV_HTML}
+</header>
+<main style="max-width:1100px;">
   <h1 class="page-tagline">Architects &amp; Interior Designers</h1>
   <p class="category-intro">
     Buildings and interiors - real firms curated individually, each with a small set of real project

@@ -46,13 +46,9 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 8vh 20px 40px;
+    padding: 40px 20px 40px;
   }
 
-  .search-column {
-    max-width: 640px;
-    margin: 0 auto;
-  }
   .search-wide {
     width: 100%;
     max-width: 900px;
@@ -60,11 +56,23 @@
   }
 
   /* --- header --- */
-  .brand-header { text-align: center; margin-bottom: 28px; }
-  .brand-header a { display: inline-block; text-decoration: none; }
-  .brand-header .wordmark {
-    height: 44px; width: auto;
-    margin: 0 0 10px;
+  /* Matches index.html's own header exactly (wordmark + nav sharing one
+     row) - see site.css's note on why every other page's header was
+     restructured to this pattern on 2026-09-19. This file can't link
+     site.css (it's fully self-contained like index.html), so this is a
+     hand-kept copy, not a shared rule. */
+  .site-header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px 24px;
+    max-width: 1100px; margin: 0 auto 28px;
+    padding: 20px 20px; border-bottom: 1px solid var(--border);
+  }
+  .site-header .wordmark { height: 28px; width: auto; display: block; }
+  .top-nav { display: flex; gap: 20px; flex-wrap: wrap; }
+  .top-nav a { font-size: 13px; color: var(--text-secondary); text-decoration: none; }
+  .top-nav a:hover { color: var(--text-primary); }
+  @media (max-width: 480px) {
+    .top-nav { justify-content: center; gap: 14px; }
   }
 
   /* --- ask box --- */
@@ -171,13 +179,19 @@
 </head>
 <body>
 
-<main>
-  <div class="search-column">
-    <div class="brand-header">
-      <a href="/"><img class="wordmark" src="logo/formground_logotype_RGB.png" alt="Formground"></a>
-    </div>
-  </div>
+<header class="site-header">
+  <a href="/"><img class="wordmark" src="logo/formground_logotype_RGB.png" alt="Formground"></a>
+  <nav class="top-nav">
+    <a href="/makers.html">Makers</a>
+    <a href="/architects.html">Architects &amp; Interior Designers</a>
+    <a href="/craftspeople.html">Craftspeople</a>
+    <a href="/marketplace.html">Marketplace</a>
+    <a href="/resources.html">Resources</a>
+    <a href="/about.html">About</a>
+  </nav>
+</header>
 
+<main>
   <div class="search-wide">
     <form id="search-form">
       <div class="ask-box">
