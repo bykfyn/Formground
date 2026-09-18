@@ -73,6 +73,7 @@ SITE_NAV_HTML = (
     '  <a href="/makers.html">Makers</a>\n'
     '  <a href="/architects.html">Architects &amp; Interior Designers</a>\n'
     '  <a href="/craftspeople.html">Craftspeople</a>\n'
+    '  <a href="/marketplace.html">Marketplace</a>\n'
     '  <a href="/resources.html">Resources</a>\n'
     '  <a href="/about.html">About</a>\n'
     "</nav>"
@@ -351,7 +352,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
   <div class="grid">{cards}</div>
   <p class="page-tagline">Looking for an architect or someone to help build it? <a href="/architects.html">Browse Architects &amp; Interior Designers</a> &middot; <a href="/craftspeople.html">Browse Craftspeople &rarr;</a></p>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/new.html">New</a> &middot; <a href="/architects.html">Architects &amp; Interior Designers</a> &middot; <a href="/craftspeople.html">Craftspeople</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
   </p>
 </main>
 {CLOUDFLARE_ANALYTICS}
@@ -417,10 +418,11 @@ def render_makers_index(brands_data):
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
   <h1 class="page-tagline">Discover design from independent makers.</h1>
   <p class="category-nav">Browse by category: <a href="/furniture.html">Furniture</a><a href="/lighting.html">Lighting</a><a href="/ceramics.html">Ceramics</a><a href="/objects.html">Objects</a></p>
+  <p class="page-tagline">Looking for what's newest? <a href="/new.html">Browse recently added &rarr;</a></p>
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/new.html">New</a> &middot; <a href="/architects.html">Architects &amp; Interior Designers</a> &middot; <a href="/craftspeople.html">Craftspeople</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
   </p>
 </main>
 <script>
@@ -555,7 +557,7 @@ def render_category_page(umbrella, brands_data):
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/new.html">New</a> &middot; <a href="/architects.html">Architects &amp; Interior Designers</a> &middot; <a href="/craftspeople.html">Craftspeople</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
   </p>
 </main>
 <script>
@@ -641,7 +643,7 @@ def render_new_page(products):
   <p class="category-intro">Pieces newly added to Formground, most recent first - updated as new work is found, roughly weekly rather than in real time.</p>
   {body}
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/architects.html">Architects &amp; Interior Designers</a> &middot; <a href="/craftspeople.html">Craftspeople</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
   </p>
 </main>
 {CLOUDFLARE_ANALYTICS}
@@ -714,6 +716,7 @@ def render_sitemap(brand_slugs):
         ("https://formground.com/about.html", "monthly", "0.6", None),
         ("https://formground.com/contact.html", "monthly", "0.5", None),
         ("https://formground.com/resources.html", "monthly", "0.4", None),
+        ("https://formground.com/marketplace.html", "weekly", "0.5", None),
         ("https://formground.com/privacy.html", "yearly", "0.2", None),
         ("https://formground.com/makers.html", "weekly", "0.7", today),
         ("https://formground.com/new.html", "weekly", "0.6", today),

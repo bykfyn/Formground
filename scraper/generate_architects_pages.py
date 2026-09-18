@@ -131,7 +131,7 @@ def render_architect_page(firm, slug):
   <div class="photo-grid">{photos_html}</div>
   <p class="page-tagline">Looking for someone to help build it? <a href="/craftspeople.html">Browse Craftspeople &rarr;</a></p>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/architects.html">Architects &amp; Interior Designers</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/craftspeople.html">Craftspeople</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
   </p>
 </main>
 {CLOUDFLARE_ANALYTICS}
@@ -179,7 +179,7 @@ def render_architects_index(firms_with_slugs):
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
-    <a href="/">&larr; Back to Formground</a> &middot; <a href="/makers.html">Makers</a> &middot; <a href="/craftspeople.html">Craftspeople</a> &middot; <a href="/about.html">About Formground</a> &middot; <a href="/resources.html">Resources</a> &middot; <a href="/contact.html">Get in touch</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
   </p>
 </main>
 <script>
