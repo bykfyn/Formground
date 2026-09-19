@@ -99,5 +99,73 @@ class CapPerBrandTests(unittest.TestCase):
         self.assertEqual(sum(1 for p in result if p["brand"] == "BigBrand"), 3)
 
 
+class FilterHousesTests(unittest.TestCase):
+    """
+    Covers the backend search merge (2026-09-19): a house is only
+    ever surfaced when the extracted category is house-like, never
+    just because a query happened to name a place - and once
+    triggered, location narrows on real free-text location/region
+    strings, not a geocoded match. Synthetic house records, not real
+    data/houses.json, so these stay correct regardless of what's
+    actually been scraped.
+    """
+
+    def _houses(self):
+        return [
+            {"name": "H House", "firm": "Firm A", "location": "Malexander, Sweden",
+             "region": "Other Sweden", "year": "2012", "image": "a.jpg", "url": "https://a.example/h-house"},
+            {"name": "Villa Eslami", "firm": "Firm B", "location": "Stockholm",
+             "region": "Stockholm", "year": "2009", "image": "b.jpg", "url": "https://b.example/villa-eslami"},
+            {"name": "Serpiente", "firm": "Firm C", "location": "Benalmádena, Spain",
+             "region": "International", "year": None, "image": "c.jpg", "url": "https://c.example/serpiente"},
+        ]
+
+    def test_non_house_category_returns_nothing(self):
+        intent = {"category": "chair", "location": "Stockholm"}
+        self.assertEqual(qe.filter_houses(intent, houses=self._houses()), [])
+
+    def test_house_category_with_no_location_returns_all(self):
+        intent = {"category": "house", "location": None}
+        result = qe.filter_houses(intent, houses=self._houses())
+        self.assertEqual(len(result), 3)
+
+    def test_location_narrows_to_matching_region(self):
+        intent = {"category": "house", "location": "Stockholm"}
+        result = qe.filter_houses(intent, houses=self._houses())
+        self.assertEqual([h["name"] for h in result], ["Villa Eslami"])
+
+    def test_location_match_is_case_insensitive_substring(self):
+        intent = {"category": "house", "location": "sweden"}
+        result = qe.filter_houses(intent, houses=self._houses())
+        names = {h["name"] for h in result}
+        # Matches both the literal "Sweden" in H House's location and
+        # Serpiente's "Spain" must NOT be swept in just for containing
+        # a similar-looking substring.
+        self.assertEqual(names, {"H House"})
+
+    def test_villa_synonym_also_triggers_house_search(self):
+        intent = {"category": "villa", "location": None}
+        result = qe.filter_houses(intent, houses=self._houses())
+        self.assertEqual(len(result), 3)
+
+    def test_normalized_house_aliases_brand_to_firm(self):
+        # cap_per_brand() only ever reads p["brand"] - this is the
+        # whole reason a house can share that fairness cap with
+        # products unmodified.
+        intent = {"category": "house", "location": None}
+        result = qe.filter_houses(intent, houses=self._houses())
+        self.assertEqual({h["brand"] for h in result}, {"Firm A", "Firm B", "Firm C"})
+
+    def test_name_match_finds_house_regardless_of_category(self):
+        result = qe.filter_houses_by_name("tell me about H House", houses=self._houses())
+        self.assertEqual([h["name"] for h in result], ["H House"])
+
+    def test_name_match_is_word_bounded(self):
+        # "H House" shouldn't match a query that only shares a
+        # substring, not the real whole name.
+        result = qe.filter_houses_by_name("a house somewhere", houses=self._houses())
+        self.assertEqual(result, [])
+
+
 if __name__ == "__main__":
     unittest.main()

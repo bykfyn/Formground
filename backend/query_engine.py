@@ -44,6 +44,17 @@ load_dotenv()
 
 DB_PATH = Path(__file__).parent.parent / "data" / "formground.db"
 BRANDS_PATH = Path(__file__).parent.parent / "scraper" / "brands.json"
+HOUSES_PATH = Path(__file__).parent.parent / "data" / "houses.json"
+
+# Words that mean "the user is looking for a house," not a product - the
+# LLM already extracts category as a free string (no fixed enum), so a
+# query like "a minimalist house in Sweden" already comes back with
+# category="house" today without any prompt change. This is the other
+# half: which extracted categories should route to houses.json instead
+# of (or alongside) the products table. Deliberately narrow - a real
+# house is what data/houses.json actually has; "home" is included since
+# it's a common way to say the same thing ("a modern family home").
+HOUSE_CATEGORY_WORDS = {"house", "houses", "villa", "villas", "home", "homes"}
 
 
 def _load_hidden_brands() -> set:
@@ -171,11 +182,15 @@ def translate_query(raw_query: str) -> dict:
     agent's structured request converted to text.
     """
     system_prompt = (
-        "You translate a search query about independent design/furniture "
-        "products into structured JSON with these fields: "
-        "category (string or null), material (string or null), "
+        "You translate a search query about independent design - furniture/"
+        "lighting/ceramics/objects, or an architect-designed house - into "
+        "structured JSON with these fields: "
+        "category (string or null, e.g. 'chair', 'lamp', 'house'), "
+        "material (string or null), "
         "style_descriptors (list of strings, e.g. ['minimalist', 'linear']), "
-        "color (string or null). "
+        "color (string or null), "
+        "location (string or null, e.g. 'Sweden', 'Stockholm' - only set this "
+        "when the query names a real place, mainly relevant for house queries). "
         "Respond ONLY with the JSON object, nothing else."
     )
 
@@ -361,6 +376,99 @@ def filter_by_name(raw_query: str) -> list:
     return matches
 
 
+def _load_houses() -> list:
+    """
+    Reads data/houses.json fresh on every call rather than caching -
+    only 54 real rows today (see scrape_architect_projects.py), so the
+    cost is negligible, and it means a re-scrape is picked up on the
+    next search with no backend restart needed. No Style facet here on
+    purpose (see site_restructuring project memory) - real per-firm
+    style tagging is a manual-triage decision that hasn't happened yet,
+    so this never fabricates one at query time either.
+    """
+    if not HOUSES_PATH.exists():
+        return []
+    return json.loads(HOUSES_PATH.read_text())
+
+
+def _normalize_house(house: dict, matched_location=None) -> dict:
+    """
+    Shapes a raw houses.json record into the same card-renderable shape
+    products already have, so the frontend can reuse most of its
+    existing renderCard() logic rather than needing a parallel one.
+    `brand` is deliberately aliased to the firm name - cap_per_brand()
+    only ever reads `p["brand"]` to group its fairness cap, so a house
+    competes for its "one firm shouldn't crowd out others" slot the
+    exact same way a product does, with no changes to that function.
+    `product_name`/`product_url` are aliased too so click-tracking
+    (which reads those two fields) keeps working unmodified - only the
+    card's visual template needs a real per-type branch.
+    """
+    return {
+        "type": "house",
+        "id": f"house:{house.get('url')}",
+        "name": house.get("name"),
+        "product_name": house.get("name"),
+        "firm": house.get("firm"),
+        "brand": house.get("firm"),
+        "location": house.get("location"),
+        "region": house.get("region"),
+        "year": house.get("year"),
+        "description": house.get("description"),
+        "image_url": house.get("image"),
+        "product_url": house.get("url"),
+        "brand_url": house.get("url"),
+        "link_dead": False,
+        "matched_location": matched_location,
+    }
+
+
+def filter_houses(intent: dict, houses=None) -> list:
+    """
+    Only runs at all when the extracted category is house-like (see
+    HOUSE_CATEGORY_WORDS) - a query about a chair should never surface
+    houses just because it also named a place. Once triggered, location
+    narrows the real 54-house set the same way category/material narrow
+    products: a plain case-insensitive substring check against each
+    house's own real location/region text, not a geocoded match - real
+    strings like "Nacka (Lännersta), Stockholm" and "Skåne" are what's
+    actually stored, no fabricated geo-taxonomy beyond that.
+
+    `houses` defaults to the real data/houses.json (see _load_houses)
+    but can be injected with synthetic records - same dependency-
+    injection shape as filter_products() taking `rows` implicitly via
+    the DB, kept explicit here so tests/test_query_engine.py can cover
+    the real matching logic without depending on real scraped data
+    staying a fixed shape/count.
+    """
+    wanted_category = (intent.get("category") or "").strip().lower()
+    if wanted_category not in HOUSE_CATEGORY_WORDS:
+        return []
+
+    wanted_location = (intent.get("location") or "").strip().lower()
+    matches = []
+    for house in (houses if houses is not None else _load_houses()):
+        if wanted_location:
+            haystack = f"{house.get('location') or ''} {house.get('region') or ''}".lower()
+            if wanted_location not in haystack:
+                continue
+        matches.append(_normalize_house(house, matched_location=intent.get("location") if wanted_location else None))
+    return matches
+
+
+def filter_houses_by_name(raw_query: str, houses=None) -> list:
+    """Same direct-name-match rationale as filter_by_name() for
+    products - a query literally naming a real house ("H House") should
+    match regardless of whether category extraction recognized it as a
+    house query at all."""
+    matches = []
+    for house in (houses if houses is not None else _load_houses()):
+        name = house.get("name")
+        if name and re.search(rf"\b{re.escape(name)}\b", raw_query, re.IGNORECASE):
+            matches.append(_normalize_house(house))
+    return matches
+
+
 def discover(per_brand: int = DISCOVER_PER_BRAND, total_cap: int = DISCOVER_TOTAL_CAP) -> list:
     """
     Random browse across the whole catalog, no query/filtering involved -
@@ -431,7 +539,16 @@ def search(raw_query: str) -> list:
     """The full pipeline: translate, then filter (category/material hard
     facts, plus a direct name match - see filter_by_name), then cap per
     brand. Style-matching over the filtered set is a future step, once
-    there's enough real product data to make it meaningful."""
+    there's enough real product data to make it meaningful.
+
+    Houses (see filter_houses) are folded into the same matches list
+    before capping, not returned separately - "two surfaces, one
+    engine" extends to "one result list," so a house and a product
+    compete for the same per-firm/per-brand fairness cap via the same
+    cap_per_brand() call, unmodified (see _normalize_house's "brand"
+    alias). Scoped to /search only for now, not /discover or
+    /agent/search - see project memory for why those two are
+    deliberately deferred."""
     intent = translate_query(raw_query)
     matches = filter_products(intent)
 
@@ -440,5 +557,14 @@ def search(raw_query: str) -> list:
         if m["id"] not in seen_ids:
             matches.append(m)
             seen_ids.add(m["id"])
+
+    for h in filter_houses(intent):
+        if h["id"] not in seen_ids:
+            matches.append(h)
+            seen_ids.add(h["id"])
+    for h in filter_houses_by_name(raw_query):
+        if h["id"] not in seen_ids:
+            matches.append(h)
+            seen_ids.add(h["id"])
 
     return cap_per_brand(matches)

@@ -102,9 +102,16 @@ function renderCard(r) {
   const matchedTerms = (r.matched_material || "")
     .split(", ")
     .filter((t) => t && !materialDuplicatesCategory(t, r.category));
+  // Houses have no material/notes to show here - location + year is the
+  // equivalent "one real fact worth a line" for a house the way
+  // "Available in black" is for a chair (see _normalize_house in
+  // query_engine.py for the aliased fields this reads).
+  const houseDetail = r.type === "house"
+    ? [r.location, r.year].filter(Boolean).join(" · ")
+    : "";
   const noteText = matchedTerms.length
     ? `Available in ${matchedTerms.map((t) => t.charAt(0).toUpperCase() + t.slice(1)).join(", ")}`
-    : (r.notes || "");
+    : (r.type === "house" ? "" : (r.notes || ""));
 
   const body = document.createElement("div");
   body.className = "card-body";
@@ -128,7 +135,7 @@ function renderCard(r) {
     // the maker's own product page where real dimensions and variants
     // live. r.notes is kept as a general-purpose per-item note field for
     // any future real per-item fact, but nothing populates it today.
-    body.querySelector(".card-detail").textContent = r.notes || "";
+    body.querySelector(".card-detail").textContent = houseDetail || r.notes || "";
   }
 
   // The "deep link" is the same destination the card itself already
