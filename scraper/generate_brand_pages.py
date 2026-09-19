@@ -714,24 +714,26 @@ def _craftspeople_sitemap_slugs():
 
 def _architects_sitemap_slugs():
     """Same self-healing rationale as _craftspeople_sitemap_slugs() -
-    reads data/architects.json directly so render_sitemap() stays
-    correct regardless of which generator last ran. Only firms with
-    real photos get a page (see generate_architects_pages.py), so this
-    mirrors that same filter rather than assuming every entry in the
-    data file has a page."""
-    path = DATA_DIR / "architects.json"
+    reads data/houses.json directly so render_sitemap() stays correct
+    regardless of which generator last ran. A firm gets a page only if
+    it has at least one real house in houses.json (see
+    generate_architects_pages.py) - updated 2026-09-19 from the old
+    "has any representative photo" filter when the house-as-product
+    rebuild narrowed the real roster from 14 firms to 8; a sitemap
+    generated against the old filter would keep listing (and letting
+    search engines crawl) pages that no longer exist on disk."""
+    path = DATA_DIR / "houses.json"
     if not path.exists():
         return []
-    firms = json.loads(path.read_text())
+    houses = json.loads(path.read_text())
+    firm_names = {h["firm"] for h in houses}
     slugs_seen = {}
     slugs = []
-    for firm in firms:
-        if not firm.get("photos"):
-            continue
-        slug = slugify(firm["name"])
-        if slug in slugs_seen and slugs_seen[slug] != firm["name"]:
+    for name in firm_names:
+        slug = slugify(name)
+        if slug in slugs_seen and slugs_seen[slug] != name:
             slug = f"{slug}-{len(slugs_seen)}"
-        slugs_seen[slug] = firm["name"]
+        slugs_seen[slug] = name
         slugs.append(slug)
     return sorted(slugs)
 
