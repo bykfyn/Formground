@@ -260,11 +260,15 @@ async function runDiscover() {
   }
 }
 
-// Always navigates to /search.html, even when already there - a refined
+// Always navigates to /work.html, even when already there - a refined
 // or shuffled query changes what's on screen, and the URL has to change
 // with it so the address bar always matches what's displayed and stays
 // shareable. Typing "random" is treated the same as leaving the box
-// empty - both trigger the same "Surprise me" discovery.
+// empty - both trigger the same "Surprise me" discovery. (This page was
+// itself /search.html until 2026-09-19 - "Work" was always meant to be
+// the real browsing/results surface, so it took over this URL rather
+// than staying a separate, more limited chip-browsing page - see
+// project memory.)
 function submitQuery(q) {
   const trimmed = (q || "").trim();
   const params = new URLSearchParams();
@@ -273,7 +277,7 @@ function submitQuery(q) {
   } else {
     params.set("discover", "1");
   }
-  window.location.href = `/search.html?${params.toString()}`;
+  window.location.href = `/work.html?${params.toString()}`;
 }
 
 if (form) {
@@ -304,7 +308,7 @@ if (discoverChip) {
   });
 }
 
-// Only present on search.html - the homepage has no results grid, so
+// Only present on work.html - the homepage has no results grid, so
 // this block simply never runs there. Reads the query straight from the
 // URL on load and auto-runs it, so a shared/bookmarked link reproduces
 // exactly what was shown when it was shared.

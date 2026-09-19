@@ -275,9 +275,9 @@ PAGE_CSS = """
 
   /* --- ask box, added to category pages 2026-09-19 so a visitor can
      search from there directly instead of needing to go back to the
-     homepage - identical markup/behavior to search.html's box, and
+     homepage - identical markup/behavior to work.html's box, and
      reuses that same shared /search.js (redirects to
-     /search.html?q=... on submit). --- */
+     /work.html?q=... on submit). --- */
   .ask-box {
     display: flex; align-items: center; gap: 10px;
     background: var(--surface-1); border: 0.5px solid var(--border);

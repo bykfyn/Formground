@@ -89,7 +89,7 @@
   .site-header {
     display: flex; align-items: center; justify-content: space-between;
     flex-wrap: wrap; gap: 12px 24px;
-    padding: 28px 0; margin-bottom: 40px; border-bottom: 1px solid var(--border);
+    padding: 28px 0; margin-bottom: 64px; border-bottom: 1px solid var(--border);
   }
   .site-header .wordmark { height: 28px; width: auto; display: block; }
   .top-nav {
@@ -101,10 +101,10 @@
   .top-nav a:hover { color: var(--text-primary); }
 
   /* --- hero --- */
-  .hero { text-align: center; margin-bottom: 40px; }
+  .hero { text-align: center; margin-bottom: 20px; }
   .hero-title {
     font-family: 'Archivo', sans-serif; font-weight: 700; letter-spacing: -0.01em;
-    font-size: 30px; line-height: 1.25; max-width: 620px; margin: 0 auto; text-wrap: balance;
+    font-size: 30px; line-height: 1.25; max-width: 900px; margin: 0 auto; text-wrap: balance;
   }
 
   /* --- category grid --- */
@@ -114,7 +114,7 @@
      grid's auto-fit tracks would leave it stuck to the left edge instead. */
   .category-grid {
     display: flex; flex-wrap: wrap; justify-content: center;
-    gap: 20px; margin: 40px 0;
+    gap: 20px; margin: 20px 0 40px;
   }
   /* Fixed size on the figure (the actual flex item, since each figure
      wraps its own rotating <a>), not flex-grow - a lone leftover item
@@ -212,33 +212,33 @@
   </div>
 
   <section class="category-grid">
-    <figure data-category="House" style="margin:0;">
-      <a href="work.html?category=House">
-        <div class="cat-photo"><img src="" alt="" loading="lazy"></div>
+    <figure style="margin:0;">
+      <a href="work.html?q=house">
+        <div class="cat-photo"><img src="https://images.squarespace-cdn.com/content/v1/58c8008a37c581e1410f405f/1568234543576-KXHFL0JLQZG65C4EL2IE/anlita-arkitekt-bjorn-lundquist-arkitektur-villa-h-02.jpg?format=1500w" alt="H House by Björn Lundquist Arkitektur AB" loading="lazy"></div>
         <p class="cat-name">House</p>
       </a>
     </figure>
-    <figure data-category="Furniture" style="margin:0;">
+    <figure style="margin:0;">
       <a href="furniture.html">
-        <div class="cat-photo"><img src="" alt="" loading="lazy"></div>
+        <div class="cat-photo"><img src="https://verk.se/wp-content/uploads/2023/02/Karmstol-V.EU_.01-1-1680x1831-1-860x937.jpg" alt="Armchair V.EU.01 by Verk" loading="lazy"></div>
         <p class="cat-name">Furniture</p>
       </a>
     </figure>
-    <figure data-category="Lighting" style="margin:0;">
+    <figure style="margin:0;">
       <a href="lighting.html">
-        <div class="cat-photo"><img src="" alt="" loading="lazy"></div>
+        <div class="cat-photo"><img src="https://new.se-collections.com/wp-content/uploads/2021/04/Moirai-Table-Lamp-Version-B-Amber-2-800x800.jpg" alt="Moirai Table Lamp Version B by Sé Collections" loading="lazy"></div>
         <p class="cat-name">Lighting</p>
       </a>
     </figure>
-    <figure data-category="Ceramics" style="margin:0;">
+    <figure style="margin:0;">
       <a href="ceramics.html">
-        <div class="cat-photo"><img src="" alt="" loading="lazy"></div>
+        <div class="cat-photo"><img src="https://cdn.shopify.com/s/files/1/0593/6984/9030/files/OOCI_MediumRosso_INV_00000_01.webp?v=1743690417" alt="Vaso by Bitossi Ceramiche" loading="lazy"></div>
         <p class="cat-name">Ceramics</p>
       </a>
     </figure>
-    <figure data-category="Objects" style="margin:0;">
+    <figure style="margin:0;">
       <a href="objects.html">
-        <div class="cat-photo"><img src="" alt="" loading="lazy"></div>
+        <div class="cat-photo"><img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/C6-SS-web-01.jpg?v=1712655548" alt="Floor Candleholder by Minimalux" loading="lazy"></div>
         <p class="cat-name">Objects</p>
       </a>
     </figure>
@@ -267,72 +267,23 @@
 
 <script src="search.js"></script>
 <script>
-  // Real per-category rotation pools - on load, pick one at random per
-  // tile and swap its image/link. Every entry is real: a real house
-  // designed by a real firm, or a real product from a real maker
-  // already live on Formground, with a real photo from their own site.
-  // Mirrors the same "equally relevant results shown in random order"
-  // principle already used for search results, applied to the hero.
-  const CATEGORY_POOLS = {
-    "House": [
-      { image: "https://images.squarespace-cdn.com/content/v1/562a8180e4b079feac8c6576/1665482439207-8RWDL9BK09STJUBMONB6/IMG_4668.jpg?format=750w", name: "Arkitekt Lotta Lander", href: "http://www.lottalander.se/loparo/" },
-      { image: "https://andersson-arfwedson.se/wp-content/uploads/2021/03/DSCF2470-333x500.jpg", name: "Andersson Arfwedson arkitekter AB", href: "https://andersson-arfwedson.se/projekt/limon-67-gavle/" },
-      { image: "https://aren-yde.se/wp-content/uploads/2026/08/hall.jpg", name: "Arkitektkontor Arén & Yde AB", href: "https://aren-yde.se/projects-item/privatbostad-lund-3/" },
-      { image: "https://www.kontrastarkitekter.se/_next/image?url=https%3A%2F%2Fcdn.sanity.io%2Fimages%2F20rfbnpw%2Fproduction%2F1349569a4374fdf0b62e4dc88e4577d653db8e3c-4167x2778.png%3Fw%3D1600%26h%3D1200%26fm%3Dwebp%26q%3D95%26fit%3Dmax%26crop%3Dcenter%26auto%3Dformat&w=1920&q=75", name: "Kontrast AB", href: "https://www.kontrastarkitekter.se/projekt/villa-eslami" },
-      { image: "https://andersson-arfwedson.se/wp-content/uploads/2021/03/Boo01-500x332.jpg", name: "Andersson Arfwedson arkitekter AB", href: "https://andersson-arfwedson.se/projekt/enbostsadshus-i-nacka/" }
-    ],
-    "Furniture": [
-      { image: "https://images.squarespace-cdn.com/content/v1/546e39aee4b01216a372f659/1582070395920-MXIQSLTH0LBNOBAIOTZO/Kieran+Kinsella+Double+Trunk+Wood+Furniture+Handmade+Hudson+Valley.JPG", name: "Kieran Kinsella", href: "brands/kieran-kinsella.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0467/2903/5944/products/stem-brass.jpg?v=1639846854", name: "Minimalux", href: "brands/minimalux.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Ewer_23_057_LR_ALT.jpg?v=1725641345", name: "Pinch", href: "brands/pinch.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0593/6984/9030/files/Urquiola_URQ_233_03.webp?v=1744723181", name: "Bitossi Ceramiche", href: "brands/bitossi-ceramiche.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0944/2990/5239/files/A-Petersen-Ole-Schjoll-Metal-Stool_ACA_brown_1.jpg?v=1775741576", name: "A. Petersen", href: "brands/a-petersen.html" }
-    ],
-    "Lighting": [
-      { image: "https://cdn.shopify.com/s/files/1/0467/2903/5944/products/stem-brass.jpg?v=1639846854", name: "Minimalux", href: "brands/minimalux.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Ewer_23_057_LR_ALT.jpg?v=1725641345", name: "Pinch", href: "brands/pinch.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0944/2990/5239/files/Featured_A-Petersen-Chris-Halstroem-Modul-Set-1-2048x1393-2-2048x1393.jpg?v=1758104928", name: "A. Petersen", href: "brands/a-petersen.html" },
-      { image: "https://images.squarespace-cdn.com/content/v1/57b3208aff7c50dc3b5aef6a/d1da370f-2029-4609-9ae9-87c320d81a56/Bigeleisen_Sconce_01.jpg", name: "H. Bigeleisen", href: "brands/h-bigeleisen.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Photo_08-05-2026_13_30_36.jpg?v=1778488569", name: "Luke Hope", href: "brands/luke-hope.html" }
-    ],
-    "Ceramics": [
-      { image: "https://cdn.shopify.com/s/files/1/0467/2903/5944/products/vase-w1.jpg?v=1654445599", name: "Minimalux", href: "brands/minimalux.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0593/6984/9030/files/BRD-1_3.jpg?v=1777471272", name: "Bitossi Ceramiche", href: "brands/bitossi-ceramiche.html" },
-      { image: "https://www.paolaparonetto.com/media/pages/collezioni/bottiglie/67bb728a3d-1740229367/bottiglie-1-2000x2000-q85.jpg", name: "Paola Paronetto", href: "brands/paola-paronetto.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Mini-bowl-rippled-sycamore-3-LukeHope.jpg?v=1778236493", name: "Luke Hope", href: "brands/luke-hope.html" },
-      { image: "https://images.squarespace-cdn.com/content/v1/64dcc48363a1706c04591d7e/d623efca-3d61-4dbb-9d6a-d8b8d973da9f/yird-1.jpg", name: "Yird Ceramics", href: "brands/yird-ceramics.html" }
-    ],
-    "Objects": [
-      { image: "https://images.squarespace-cdn.com/content/v1/546e39aee4b01216a372f659/1581809385354-LHTXG1G4CM5ZFMCCGJ8D/Kieran+Kinsella+Hudson+Valley+Furniture+Maker++WOOD+Bulb+1.png", name: "Kieran Kinsella", href: "brands/kieran-kinsella.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0467/2903/5944/products/timeless-stainless-steel_3008ff10-e9d0-402a-8bd3-069c49d49a31.jpg?v=1639849646", name: "Minimalux", href: "brands/minimalux.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0885/7986/6973/files/PinchMarch26_250233.jpg?v=1777974307", name: "Pinch", href: "brands/pinch.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0593/6984/9030/files/RiminiBlu_ZZ999_37_01_4803f53a-3d82-4118-8ccf-edbc00a10b8e.webp?v=1776669096", name: "Bitossi Ceramiche", href: "brands/bitossi-ceramiche.html" },
-      { image: "https://cdn.shopify.com/s/files/1/0944/2990/5239/files/A-Petersen_2025_Line-Depping_ToolBoxes_10_red_1.jpg?v=1761240492", name: "A. Petersen", href: "brands/a-petersen.html" }
-    ]
-  };
-
-  // Same fix as generate_brand_pages.py's card grids: a single image
-  // stretched to fill a fixed box can lose most of a tall/narrow photo
-  // under object-fit: cover. Attached before the swap below so it also
-  // catches the swapped-in image's own "load" event.
+  // Fixed, hand-verified images, not a random rotation pool - a prior
+  // version rotated through several real per-category product photos,
+  // but the pool was built from generate_brand_pages.py's
+  // umbrella_categories_for(), which (confirmed 2026-09-19) has a real
+  // false-positive bug: a product like Minimalux's "Stem" table lamp
+  // gets classified into *both* Furniture (via the word "table" in its
+  // "Table Lamps" category tag) and Lighting, so the Furniture tile
+  // could show a lamp. Rather than trust that classifier for what's
+  // effectively the site's own visual definition of each category,
+  // each image here was opened and looked at directly before being
+  // picked - see project memory for the broader umbrella_categories_for
+  // bug, which still needs its own fix independent of this page.
   document.querySelectorAll(".category-grid .cat-photo img").forEach(function (img) {
     img.addEventListener("load", function () {
       var ratio = img.naturalWidth / img.naturalHeight;
       img.classList.toggle("contain-fit", ratio < 0.55 || ratio > 1.8);
     });
-  });
-
-  document.querySelectorAll(".category-grid figure[data-category]").forEach(function (figure) {
-    const pool = CATEGORY_POOLS[figure.dataset.category];
-    if (!pool) return;
-    const choice = pool[Math.floor(Math.random() * pool.length)];
-    const img = figure.querySelector("img");
-    img.src = choice.image;
-    img.alt = choice.name;
-    // The card's own href stays on the category page (set in the
-    // markup) regardless of which house/product happens to be pictured
-    // - the photo is just illustrative, so the click target shouldn't
-    // jump to whoever happens to be pictured.
   });
 </script>
 
