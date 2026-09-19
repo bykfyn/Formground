@@ -365,7 +365,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
 {SITE_NAV_HTML}
 </header>
 <main>
-  <p class="page-tagline">Discover design from independent makers.</p>
+  <p class="page-tagline">Discover design from makers.</p>
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">{html.escape(brand)}</h1>
@@ -373,7 +373,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
     <a class="brand-site-link" href="{html.escape(brand_url)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
   <div class="grid">{cards}</div>
-  <p class="page-tagline">Looking for an architect or someone to help build it? <a href="/architects.html">Browse Architects &amp; Interior Designers</a> &middot; <a href="/craftspeople.html">Browse Craftspeople &rarr;</a></p>
+  <p class="page-tagline">Looking for an architect or someone to help build it? <a href="/architects.html">Browse Architects</a> &middot; <a href="/craftspeople.html">Browse Craftspeople &rarr;</a></p>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
   </p>
@@ -420,16 +420,16 @@ def render_makers_index(brands_data):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Makers — Formground</title>
 {FAVICON_TAGS}
-<meta name="description" content="Every independent maker currently on Formground, browsable by name.">
+<meta name="description" content="Every maker currently on Formground, browsable by name.">
 <link rel="canonical" href="https://formground.com/makers.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Makers — Formground">
-<meta property="og:description" content="Every independent maker currently on Formground, browsable by name.">
+<meta property="og:description" content="Every maker currently on Formground, browsable by name.">
 <meta property="og:url" content="https://formground.com/makers.html">
 <meta property="og:image" content="{SITE_URL}/favicon-192x192.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Makers — Formground">
-<meta name="twitter:description" content="Every independent maker currently on Formground, browsable by name.">
+<meta name="twitter:description" content="Every maker currently on Formground, browsable by name.">
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
@@ -492,7 +492,7 @@ CATEGORY_INFO = {
     },
     "Objects": {
         "slug": "objects",
-        "noun": "object",  # singular - "68 independent object makers", not "objects makers"
+        "noun": "object",  # singular - "68 object makers", not "objects makers"
         "blurb": "everything that doesn't fit neatly into furniture, lighting, or ceramics",
     },
 }
@@ -513,7 +513,7 @@ def render_category_page(umbrella, brands_data):
     in_category = [b for b in brands_data if umbrella in b[2]]
     page_url = f"{SITE_URL}/{info['slug']}.html"
     description = (
-        f"{len(in_category)} independent {info['noun']} makers on Formground - "
+        f"{len(in_category)} {info['noun']} makers on Formground - "
         f"{info['blurb']}. Every result links straight to the maker's own site."
     )
 
@@ -551,17 +551,17 @@ def render_category_page(umbrella, brands_data):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Independent {umbrella} — Formground</title>
+<title>{umbrella} — Formground</title>
 {FAVICON_TAGS}
 <meta name="description" content="{description}">
 <link rel="canonical" href="{page_url}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Independent {umbrella} — Formground">
+<meta property="og:title" content="{umbrella} — Formground">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:image" content="{SITE_URL}/favicon-192x192.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Independent {umbrella} — Formground">
+<meta name="twitter:title" content="{umbrella} — Formground">
 <meta name="twitter:description" content="{description}">
 <script type="application/ld+json">{breadcrumb_json}</script>
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -575,8 +575,8 @@ def render_category_page(umbrella, brands_data):
 {SITE_NAV_HTML}
 </header>
 <main style="max-width:1160px;">
-  <p class="page-tagline">Discover design from independent makers.</p>
-  <h1>Independent {umbrella}</h1>
+  <p class="page-tagline">Discover design from makers.</p>
+  <h1>{umbrella}</h1>
   <p class="category-intro">{description}</p>
   <p class="category-nav">Browse: {other_categories}</p>
   <form id="search-form">
@@ -633,11 +633,11 @@ def render_new_page(products):
         n = len(products)
         description = (
             f"{n} piece{'s' if n != 1 else ''} newly added to Formground in the last "
-            f"{NEW_ARRIVALS_WINDOW_DAYS} days, from independent makers - every result "
+            f"{NEW_ARRIVALS_WINDOW_DAYS} days, from makers - every result "
             "links straight to the maker's own site."
         )
     else:
-        description = "Recently added pieces from independent makers on Formground, updated as new work is found."
+        description = "Recently added pieces from makers on Formground, updated as new work is found."
 
     if products:
         cards = "".join(product_card_html(p, show_brand=True) for p in products)
@@ -673,7 +673,7 @@ def render_new_page(products):
 {SITE_NAV_HTML}
 </header>
 <main>
-  <p class="page-tagline">Discover design from independent makers.</p>
+  <p class="page-tagline">Discover design from makers.</p>
   <h1>Recently added</h1>
   <p class="category-intro">Pieces newly added to Formground, most recent first - updated as new work is found, roughly weekly rather than in real time.</p>
   {body}
