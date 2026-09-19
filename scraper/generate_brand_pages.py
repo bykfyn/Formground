@@ -70,11 +70,10 @@ FAVICON_TAGS = (
 # since the homepage also needs it and doesn't use PAGE_CSS.
 SITE_NAV_HTML = (
     '<nav class="top-nav">\n'
-    '  <a href="/makers.html">Makers</a>\n'
-    '  <a href="/architects.html">Architects &amp; Interior Designers</a>\n'
-    '  <a href="/craftspeople.html">Craftspeople</a>\n'
+    '  <a href="/work.html">Work</a>\n'
+    '  <a href="/creators.html">Creators</a>\n'
     '  <a href="/marketplace.html">Marketplace</a>\n'
-    '  <a href="/resources.html">Resources</a>\n'
+    '  <a href="/for-creators.html">For Creators</a>\n'
     '  <a href="/about.html">About</a>\n'
     "</nav>"
 )
@@ -749,9 +748,12 @@ def render_sitemap(brand_slugs):
     today = datetime.date.today().isoformat()
     urls = [
         ("https://formground.com/", "weekly", "1.0", None),
+        ("https://formground.com/work.html", "weekly", "0.8", None),
+        ("https://formground.com/creators.html", "weekly", "0.7", None),
+        ("https://formground.com/designers.html", "monthly", "0.5", None),
         ("https://formground.com/about.html", "monthly", "0.6", None),
         ("https://formground.com/contact.html", "monthly", "0.5", None),
-        ("https://formground.com/resources.html", "monthly", "0.4", None),
+        ("https://formground.com/for-creators.html", "monthly", "0.4", None),
         ("https://formground.com/marketplace.html", "weekly", "0.5", None),
         ("https://formground.com/privacy.html", "yearly", "0.2", None),
         ("https://formground.com/makers.html", "weekly", "0.7", today),

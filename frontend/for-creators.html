@@ -3,35 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Resources — Formground</title>
+<title>For Creators — Formground</title>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="description" content="A short, curated list of tools and services for makers, architects & interior designers, and joiners & craftspeople - plus shared topics like SEO and being found by AI search.">
-<meta property="og:title" content="Resources — Formground">
-<meta property="og:description" content="A short, curated list of tools and services for makers, architects & interior designers, and joiners & craftspeople - plus shared topics like SEO and being found by AI search.">
+<meta name="description" content="A short, curated list of tools and services for architects, designers, and makers - plus shared topics like SEO and being found by AI search.">
+<meta property="og:title" content="For Creators — Formground">
+<meta property="og:description" content="A short, curated list of tools and services for architects, designers, and makers - plus shared topics like SEO and being found by AI search.">
 <meta property="og:type" content="website">
-<meta property="og:url" content="https://formground.com/resources.html">
+<meta property="og:url" content="https://formground.com/for-creators.html">
 <meta property="og:site_name" content="Formground">
 <meta property="og:image" content="https://formground.com/favicon-192x192.png">
-<link rel="canonical" href="https://formground.com/resources.html">
+<link rel="canonical" href="https://formground.com/for-creators.html">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://formground.com/favicon-192x192.png">
-<meta name="twitter:title" content="Resources — Formground">
-<meta name="twitter:description" content="A short, curated list of tools and services for makers, architects & interior designers, and joiners & craftspeople.">
+<meta name="twitter:title" content="For Creators — Formground">
+<meta name="twitter:description" content="A short, curated list of tools and services for architects, designers, and makers.">
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
 <style>
   main {
     max-width: 1160px;
     margin: 0 auto;
-    padding: 64px 20px 60px;
+    padding: 24px 20px 60px;
   }
-  /* See about.html for why this is a left-aligned inner cap rather
-     than main's own width. */
-  .content { max-width: 640px; }
+
+  /* Two columns per group, not one long single-column list - lets the
+     page use the same 1160px width as every other page without
+     stretching each line of body text past a readable length. Headings
+     and resource entries stay unbroken (Chrome/Safari respect
+     break-inside/break-after inside a column layout the same as in
+     print pagination), so a topic heading never ends up alone at the
+     bottom of one column with its content starting the next. */
+  .group-columns {
+    column-count: 2; column-gap: 56px; margin-top: 8px;
+  }
+  .group-columns h2 { break-after: avoid-column; margin-top: 32px; }
+  .group-columns h2:first-child { margin-top: 0; }
+  .group-columns .resource, .group-columns > p { break-inside: avoid; }
+
+  @media (max-width: 760px) {
+    .group-columns { column-count: 1; }
+  }
 
   h2 {
     font-size: 13px; font-weight: 600; text-transform: uppercase;
@@ -39,31 +55,38 @@
     margin: 40px 0 12px; scroll-margin-top: 20px;
   }
 
-  /* Group headings (For Makers / For Architects & Interior Designers /
-     For Craftspeople / Shared) sit a level above the existing
-     small-caps h2 topic headings, which now nest inside each group -
-     kept visually distinct so the page reads as groups-of-topics, not
-     one flat list of topics. */
+  /* Group headings (For Makers / For Architects / For Designers / Shared)
+     sit a level above the existing small-caps h2 topic headings, which
+     now nest inside each group - kept visually distinct so the page
+     reads as groups-of-topics, not one flat list of topics. */
   .group-heading {
+    font-family: 'Archivo', sans-serif; letter-spacing: -0.005em;
     font-size: 20px; font-weight: 700; color: var(--text-primary);
-    text-transform: none; letter-spacing: normal;
-    margin: 56px 0 8px; padding-top: 32px; border-top: 1px solid var(--border);
+    text-transform: none;
+    margin: 56px 0 18px; padding-top: 32px; border-top: 1px solid var(--border);
     scroll-margin-top: 20px;
   }
   .group-heading:first-of-type { margin-top: 40px; padding-top: 0; border-top: none; }
   .group-intro { font-size: 14px; color: var(--text-secondary); margin: 0 0 4px; }
 
-  .group-nav { display: flex; flex-wrap: wrap; gap: 16px; margin: 20px 0 0; }
+  /* Chips, not plain links - matches the .tag pill used one level down
+     for sub-topics (Designing & prototyping, Materials, ...), just
+     bigger/bolder so the top-level group nav still reads as one level
+     above its own sub-nav rather than looking plainer than it. */
+  .group-nav { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 0; }
   .group-nav a {
-    font-size: 13px; font-weight: 600; color: var(--text-accent); text-decoration: none;
+    display: inline-flex; align-items: center;
+    font-size: 13.5px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-1); border: 0.5px solid var(--border-strong);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
   }
-  .group-nav a:hover { text-decoration: underline; }
+  .group-nav a:hover { border-color: var(--text-accent); color: var(--text-primary); }
 
   /* Jump nav for a now fairly long list of sections - reuses the
      shared .tag pill from site.css rather than a new component, just
      made clickable/hoverable here since site.css's .tag is normally
      static text (e.g. brand-page material tags). */
-  .section-nav { display: flex; flex-wrap: wrap; gap: 0; margin: 4px 0 8px; }
+  .section-nav { display: flex; flex-wrap: wrap; gap: 0; margin: 4px 0 24px; }
   .section-nav a.tag { text-decoration: none; }
   .section-nav a.tag:hover { border-color: var(--border-strong); color: var(--text-primary); }
 
@@ -89,33 +112,30 @@
 <header class="site-header">
   <a class="home-link" href="/"><img src="logo/formground_logotype_RGB.png" alt="Formground"></a>
 <nav class="top-nav">
-  <a href="/makers.html">Makers</a>
-  <a href="/architects.html">Architects &amp; Interior Designers</a>
-  <a href="/craftspeople.html">Craftspeople</a>
-  <a href="/marketplace.html">Marketplace</a>
-  <a href="/resources.html">Resources</a>
-  <a href="/about.html">About</a>
+  <a href="work.html">Work</a>
+  <a href="creators.html">Creators</a>
+  <a href="marketplace.html">Marketplace</a>
+  <a href="for-creators.html" class="current">For Creators</a>
+  <a href="about.html">About</a>
 </nav>
 </header>
 
 <main id="top">
-<div class="content">
 
-  <h1>Resources</h1>
+  <h1>For Creators</h1>
 
   <p>
-    A short list of tools and services for everyone Formground serves —
-    makers, architects &amp; interior designers, and joiners &amp;
-    craftspeople — plus a shared section for topics that cross all
-    three. Not required, not exhaustive, just things that might be
-    useful. Nothing here replaces your own judgment about what's right
-    for your business.
+    A short list of tools and services for everyone who creates on
+    Formground — architects, designers, and makers — plus a shared
+    section for topics that cross all three. Not required, not
+    exhaustive, just things that might be useful. Nothing here replaces
+    your own judgment about what's right for your business.
   </p>
 
   <nav class="group-nav" aria-label="Jump to a group">
     <a href="#group-makers">For Makers</a>
-    <a href="#group-architects">For Architects &amp; Interior Designers</a>
-    <a href="#group-craftspeople">For Craftspeople</a>
+    <a href="#group-architects">For Architects</a>
+    <a href="#group-designers">For Designers</a>
     <a href="#group-shared">Shared</a>
   </nav>
 
@@ -134,9 +154,10 @@
     <a class="tag" href="#packaging">Packaging</a>
     <a class="tag" href="#shipping">Shipping &amp; fulfillment</a>
     <a class="tag" href="#fairs">Fairs &amp; exhibitions</a>
-    <a class="tag" href="#regulation">Product regulation &amp; associations</a>
+    <a class="tag" href="#regulation">Product regulation</a>
   </nav>
 
+  <div class="group-columns">
   <h2 id="designing">Designing &amp; prototyping</h2>
   <div class="resource">
     <a class="resource-name" href="https://www.autodesk.com/products/fusion-360" target="_blank" rel="noopener noreferrer">Fusion 360<i class="ti ti-external-link" aria-hidden="true"></i></a>
@@ -281,7 +302,7 @@
     <p>A major design and lifestyle trade fair in Japan.</p>
   </div>
 
-  <h2 id="regulation">Product regulation &amp; associations</h2>
+  <h2 id="regulation">Product regulation</h2>
   <p>
     Product-transparency regulation is on the way in several markets,
     and the EU is furthest along. Its Ecodesign for Sustainable
@@ -323,12 +344,14 @@
     <a class="resource-name" href="https://www.efic.eu" target="_blank" rel="noopener noreferrer">EFIC — European Furniture Industries Confederation<i class="ti ti-external-link" aria-hidden="true"></i></a>
     <p>The EU-level furniture trade body, active in shaping how Digital Product Passport rules will apply to furniture makers.</p>
   </div>
+  </div>
 
-  <h2 class="group-heading" id="group-architects">For Architects &amp; Interior Designers</h2>
+  <h2 class="group-heading" id="group-architects">For Architects</h2>
   <p class="group-intro">
     A short starting list — this section is new and will grow as
-    Formground's Architects &amp; Interior Designers directory does.
+    Formground's Architects directory does.
   </p>
+  <div class="group-columns">
   <div class="resource">
     <a class="resource-name" href="https://www.archiproducts.com" target="_blank" rel="noopener noreferrer">Archiproducts<i class="ti ti-external-link" aria-hidden="true"></i></a>
     <p>A large European product-specification platform for architects and designers — furniture, lighting, and materials organized for sourcing a project, not for a single retail purchase.</p>
@@ -337,23 +360,31 @@
     <a class="resource-name" href="https://www.archdaily.com" target="_blank" rel="noopener noreferrer">ArchDaily<i class="ti ti-external-link" aria-hidden="true"></i></a>
     <p>Architecture news, projects, and products, updated continuously — a common reference point for staying current on the field.</p>
   </div>
+  </div>
 
-  <h2 class="group-heading" id="group-craftspeople">For Craftspeople</h2>
+  <h2 class="group-heading" id="group-designers">For Designers</h2>
   <p class="group-intro">
-    A short starting list — this section is new and will grow as
-    Formground's Craftspeople directory does.
+    Coming soon — independent product designers are a new category on Formground, and this section will grow alongside it.
   </p>
-  <div class="resource">
-    <a class="resource-name" href="https://interiorcluster.se" target="_blank" rel="noopener noreferrer">Interior Cluster Sweden<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A Swedish furniture and interior industry cluster connecting manufacturers, designers, and subcontractors — one of the real associations Formground's Craftspeople directory is sourced from.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://skrahantverkarna.se" target="_blank" rel="noopener noreferrer">Föreningen Skråhantverkarna<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A Swedish association of traditional craftspeople, formed to preserve trades and skills — the other real source behind the Craftspeople directory.</p>
-  </div>
 
   <h2 class="group-heading" id="group-shared">Shared</h2>
   <p class="group-intro">Topics that apply regardless of which of the above you are.</p>
+
+  <div class="group-columns">
+  <h2 id="associations">Associations</h2>
+  <p>
+    Trade and craft associations, regardless of which side of the work they represent — a useful
+    place to find peers, references, and shared infrastructure (see Product regulation above for
+    why this matters more every year).
+  </p>
+  <div class="resource">
+    <a class="resource-name" href="https://interiorcluster.se" target="_blank" rel="noopener noreferrer">Interior Cluster Sweden<i class="ti ti-external-link" aria-hidden="true"></i></a>
+    <p>A Swedish furniture and interior industry cluster connecting manufacturers, designers, and subcontractors.</p>
+  </div>
+  <div class="resource">
+    <a class="resource-name" href="https://skrahantverkarna.se" target="_blank" rel="noopener noreferrer">Föreningen Skråhantverkarna<i class="ti ti-external-link" aria-hidden="true"></i></a>
+    <p>A Swedish association of traditional craftspeople, formed to preserve trades and skills.</p>
+  </div>
 
   <h2 id="seo">SEO basics for your own site</h2>
   <p>
@@ -390,12 +421,12 @@
     <a class="resource-name" href="https://schema.org/Product" target="_blank" rel="noopener noreferrer">schema.org structured data<i class="ti ti-external-link" aria-hidden="true"></i></a>
     <p>The structured-data format search engines and AI agents both use to read a page accurately - Product for makers, but schema.org covers people, services, and organizations just as well.</p>
   </div>
+  </div>
 
   <p class="foot-note">
     This list doesn't imply any partnership or endorsement beyond what's stated above.<br>
     &copy; 2026 Formground &middot; <a href="/">← Back to Formground</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a class="back-to-top" href="#top">Back to top ↑</a>
   </p>
-</div>
 </main>
 
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
