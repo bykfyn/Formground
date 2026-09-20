@@ -80,12 +80,15 @@ def site_nav_html(current=None):
     write it "creators", "for-creators", etc. matching a real href's
     basename.
     """
+    # About lives in the footer, not here - the 5th item pushed the nav
+    # to an orphaned 4:1 wrap on the widths where it wrapped at all
+    # (2026-09-20, see project memory); 4 items wrap cleanly at every
+    # width instead.
     links = [
         ("work", "/work.html", "Work"),
         ("creators", "/creators.html", "Creators"),
         ("marketplace", "/marketplace.html", "Marketplace"),
         ("for-creators", "/for-creators.html", "For Creators"),
-        ("about", "/about.html", "About"),
     ]
     current_attr = ' class="current"'
     items = "\n".join(
@@ -480,7 +483,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
   <div class="grid">{cards}</div>
   <p class="page-tagline">Looking for an architect or someone to help build it? <a href="/architects.html">Browse Architects</a> &middot; <a href="/craftspeople.html">Browse Craftspeople &rarr;</a></p>
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
 </main>
 {CLOUDFLARE_ANALYTICS}
@@ -551,7 +554,7 @@ def render_makers_index(brands_data):
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
 </main>
 <script>
@@ -682,7 +685,7 @@ def render_new_page(products):
   <p class="category-intro">Pieces newly added to Formground, most recent first - updated as new work is found, roughly weekly rather than in real time.</p>
   {body}
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
 </main>
 {CLOUDFLARE_ANALYTICS}

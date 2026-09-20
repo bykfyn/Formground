@@ -143,7 +143,7 @@ def render_craftsperson_page(person, slug, associations):
   </div>
   {credit_html}
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
 </main>
 {CLOUDFLARE_ANALYTICS}
@@ -194,7 +194,7 @@ def render_craftspeople_index(people_with_slugs):
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
 </main>
 <script>

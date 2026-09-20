@@ -153,7 +153,7 @@ def render_architect_page(firm_name, slug, meta, houses):
   </div>
   <p class="page-tagline">Looking for someone to help build it? <a href="/craftspeople.html">Browse Craftspeople &rarr;</a> &middot; <a href="/work.html?q=house">Browse every house on Work &rarr;</a></p>
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
 </main>
 <script>
@@ -209,7 +209,7 @@ def render_architects_index(firms_with_slugs, meta_by_name, houses_by_firm):
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
 </main>
 <script>

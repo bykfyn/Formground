@@ -85,6 +85,25 @@
   }
   .ask-box input::placeholder { color: var(--text-muted); }
 
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
   /* Explicit, not relying on the browser's default [hidden] styling -
      .maker-card's own `display: block` below has the same specificity
      and comes later in source order, so it would otherwise win and
@@ -100,7 +119,6 @@
   <a href="/creators.html">Creators</a>
   <a href="/marketplace.html">Marketplace</a>
   <a href="/for-creators.html">For Creators</a>
-  <a href="/about.html">About</a>
 </nav>
 </header>
 <main style="max-width:1160px;">
@@ -529,7 +547,7 @@
       </a>
   </div>
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
 </main>
 <script>
