@@ -124,55 +124,87 @@
     text-align: center; font-size: 12px; color: var(--text-muted);
     margin: 32px 0 20px; text-transform: uppercase; letter-spacing: 0.08em;
   }
-  /* 2x2, not a single row - now that there are only 4 categories
-     (Ceramics folded into Objects, see project memory), each tile can
-     be much larger and more editorial (reference: Hay/Vitra category
-     pages) than the old 5-across row of small squares. */
-  /* max-width: 760px, not the full 1120px content width - at full width
-     each tile came out ~550px wide (~412px tall, 4:3), which pushed the
-     second row (Lighting/Objects) almost entirely below the fold on a
-     laptop-height viewport (confirmed live 2026-09-20 at 1280x800: row
-     2 started at y=748, only 51px visible above the 800px fold - see
-     project memory). At 760px, each tile is ~370px wide/~278px tall,
-     and row 2 starts around y=616 - more than half visible on the same
-     viewport, still noticeably bigger than the original 5-across
-     200px-tile row this replaced. */
+  /* Bento-style asymmetric grid: Houses is a tall hero, Objects/Lighting
+     are small squares, Furniture is a wide strip - real visual variety
+     instead of 4 identical squares (2026-09-20, replacing the uniform
+     2x2 grid; see project memory). Each tile now also carries a
+     hover-reveal (product name + maker) and a real external "visit
+     source" link, sibling to - not nested inside - the internal
+     category link (nested <a> tags are invalid HTML; same pattern as
+     work.html's own share-btn). */
   .category-grid {
-    display: grid; grid-template-columns: 1fr 1fr; max-width: 760px;
-    gap: 20px; margin: 0 auto 40px;
+    display: grid;
+    grid-template-columns: 1.4fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 20px;
+    height: 560px;
+    margin: 0 0 40px;
   }
-  .category-grid figure { margin: 0; }
-  .category-grid a {
-    display: block; text-decoration: none; color: inherit;
+  .tile-houses { grid-column: 1; grid-row: 1 / 3; }
+  .tile-objects { grid-column: 2; grid-row: 1; }
+  .tile-lighting { grid-column: 3; grid-row: 1; }
+  .tile-furniture { grid-column: 2 / 4; grid-row: 2; }
+
+  .cat-tile {
+    position: relative; display: block; overflow: hidden;
+    border: 0.5px solid var(--border); background: var(--surface-1);
+    height: 100%; margin: 0;
   }
-  /* Sharp corners, not var(--radius) - a deliberately more angular,
-     architectural look for these specifically, since they're real
-     building/product photography rather than UI chrome like the ask-box. */
-  .cat-photo {
-    aspect-ratio: 4/3; overflow: hidden;
-    background: var(--surface-1); margin: 0 0 14px; border: 0.5px solid var(--border);
+  .cat-tile img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+    transition: transform 0.4s ease;
   }
-  .cat-photo img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
-  .cat-photo img.contain-fit { object-fit: contain; }
-  .category-grid a:hover .cat-photo img { transform: scale(1.02); }
-  /* font-size scales continuously with viewport width (not a fixed px
-     value), not just at breakpoints, so the caption tracks each tile's
-     own real size as the page resizes (2026-09-20, see project memory).
-     Tried container query units (cqw) first, sized off each figure's
-     own width directly - hit a real bug in this browser where
-     `container-type: inline-size` collapsed every grid item to 0 width
-     even with an explicit width set, so this uses the equivalent linear
-     relationship in vw instead (derived from the grid's own math: tile
-     width = 0.5*viewport - 30px below the grid's 760px cap, so
-     font-size = 2.7vw - 1.62px keeps the same ~5.4% ratio to tile width
-     that the cqw version targeted). Clamped so it never gets unreadably
-     small on a narrow screen or exceeds the original 20px design size
-     (reached once the grid hits its 760px cap, around 800px viewport). */
-  .cat-name {
-    font-family: 'Archivo', sans-serif; font-weight: 700;
-    font-size: clamp(13px, calc(2.7vw - 1.62px), 20px);
-    letter-spacing: -0.005em; margin: 0; color: var(--text-primary);
+  .cat-tile:hover img { transform: scale(1.03); }
+
+  /* The internal "browse this category" link - a sibling to the
+     external visit-source link below, not a wrapper around the whole
+     figure, so the two links can't end up nested (invalid HTML). */
+  .cat-link { position: absolute; inset: 0; z-index: 1; }
+
+  /* Category label - always visible, solid chip with no shadow/blur -
+     some tiles are dark photography (Houses, Lighting), others
+     near-white product shots (Objects, Furniture), and a text-shadow
+     strong enough to read on the light ones looked like a smudge on the
+     dark ones (2026-09-20, see project memory). */
+  .cat-label {
+    position: absolute; top: 16px; left: 16px; z-index: 2;
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 13.5px;
+    color: var(--text-primary); letter-spacing: -0.005em;
+    background: #fff; padding: 6px 11px; margin: 0;
+    pointer-events: none;
   }
+
+  /* Hover reveal - product name + maker, bottom gradient scrim. */
+  .cat-details {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+    padding: 28px 16px 14px;
+    background: linear-gradient(to top, rgba(0,0,0,0.68), rgba(0,0,0,0));
+    color: #fff;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+  .cat-tile:hover .cat-details { opacity: 1; transform: translateY(0); }
+  .cat-details .product-name { display: block; font-size: 13.5px; font-weight: 600; margin: 0 0 2px; }
+  .cat-details .product-maker { display: block; font-size: 12px; opacity: 0.85; }
+
+  /* External "visit source" link - keeps the same promise every search
+     result elsewhere on the site makes (link straight back to the real
+     maker/architect), even from the homepage's own category tiles.
+     Sibling to .cat-link, not nested inside it. */
+  .visit-source {
+    position: absolute; bottom: 12px; right: 12px; z-index: 3;
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600; color: #fff;
+    background: rgba(255,255,255,0.16); border: 0.5px solid rgba(255,255,255,0.4);
+    backdrop-filter: blur(4px);
+    padding: 6px 10px; border-radius: 999px; text-decoration: none;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease, background 0.15s ease;
+  }
+  .cat-tile:hover .visit-source { opacity: 1; transform: translateY(0); }
+  .visit-source:hover { background: rgba(255,255,255,0.3); }
+  .visit-source i { font-size: 13px; }
 
   /* --- search --- */
   .ask-box {
@@ -197,12 +229,16 @@
   .inline-chip:hover { border-color: var(--text-muted); }
   .inline-chip i { font-size: 15px; }
 
-  /* Stacks to one column, same breakpoint as creators.html's group-grid
-     (2026-09-20, see project memory) - full-width tiles read better on
-     a small screen than two cramped columns, consistent with how
-     Creators already collapses. */
+  /* Stacks full-width, same breakpoint as creators.html's group-grid
+     (2026-09-20, see project memory) - the fixed-height bento layout
+     doesn't translate to a narrow screen, so each tile becomes its own
+     full-width 4:3 photo instead. Hover never fires on touch, so the
+     product name/maker and visit-source link are always shown here
+     rather than only on hover. */
   @media (max-width: 760px) {
-    .category-grid { grid-template-columns: 1fr; }
+    .category-grid { display: flex; flex-direction: column; height: auto; gap: 16px; }
+    .cat-tile { aspect-ratio: 4 / 3; }
+    .cat-details, .visit-source { opacity: 1; transform: none; pointer-events: auto; }
   }
 
   @media (max-width: 480px) {
@@ -253,29 +289,48 @@
 
   <p class="browse-label">Or browse by category</p>
   <section class="category-grid">
-    <figure style="margin:0;">
-      <a href="work.html?q=house">
-        <div class="cat-photo"><img src="https://images.squarespace-cdn.com/content/v1/58c8008a37c581e1410f405f/1568234543576-KXHFL0JLQZG65C4EL2IE/anlita-arkitekt-bjorn-lundquist-arkitektur-villa-h-02.jpg?format=1500w" alt="H House by Björn Lundquist Arkitektur AB" loading="lazy"></div>
-        <p class="cat-name">Houses</p>
-      </a>
+    <figure class="cat-tile tile-houses">
+      <a class="cat-link" href="work.html?q=house" aria-label="Browse Houses"></a>
+      <img src="https://static1.squarespace.com/static/68e7d1ef65f5323eae3c3b6c/68fa320b5b04cb318608db95/6981a89900e843417f888e2e/1772734362523/JSA_pinehouse_FINAL_WEB-37.jpg?format=1500w" alt="Pine House by Johan Sundberg Arkitektur" loading="lazy">
+      <p class="cat-label">Houses</p>
+      <div class="cat-details">
+        <span class="product-name">Pine House</span>
+        <span class="product-maker">Johan Sundberg Arkitektur</span>
+      </div>
+      <a class="visit-source" href="https://www.johansundberg.com/projekt/alla/privatbostader/pine-house" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
     </figure>
-    <figure style="margin:0;">
-      <a href="work.html?q=furniture">
-        <div class="cat-photo"><img src="https://verk.se/wp-content/uploads/2023/02/Karmstol-V.EU_.01-1-1680x1831-1-860x937.jpg" alt="Armchair V.EU.01 by Verk" loading="lazy"></div>
-        <p class="cat-name">Furniture</p>
-      </a>
+
+    <figure class="cat-tile tile-objects">
+      <a class="cat-link" href="work.html?q=objects" aria-label="Browse Objects"></a>
+      <img src="https://static.wixstatic.com/media/62b04d_03a219b0ec2045bba12db0754c0b173a.jpg" alt="Pino by Shibui" loading="lazy">
+      <p class="cat-label">Objects</p>
+      <div class="cat-details">
+        <span class="product-name">Pino</span>
+        <span class="product-maker">Shibui</span>
+      </div>
+      <a class="visit-source" href="https://www.shibui.ch/product-page/pino" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
     </figure>
-    <figure style="margin:0;">
-      <a href="work.html?q=lighting">
-        <div class="cat-photo"><img src="https://new.se-collections.com/wp-content/uploads/2021/04/Moirai-Table-Lamp-Version-B-Amber-2-800x800.jpg" alt="Moirai Table Lamp Version B by Sé Collections" loading="lazy"></div>
-        <p class="cat-name">Lighting</p>
-      </a>
+
+    <figure class="cat-tile tile-lighting">
+      <a class="cat-link" href="work.html?q=lighting" aria-label="Browse Lighting"></a>
+      <img src="https://m-workstead.imgix.net/assets/galleries/867/3567_LAN_P_LG_SITU_05.jpg?fit=crop&w=1600&h=1600&q=70&auto=format,compress" alt="Lantern Pendant Large by Workstead" loading="lazy">
+      <p class="cat-label">Lighting</p>
+      <div class="cat-details">
+        <span class="product-name">Lantern Pendant Large</span>
+        <span class="product-maker">Workstead</span>
+      </div>
+      <a class="visit-source" href="https://workstead.com/shop/lantern-pendant-large/" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
     </figure>
-    <figure style="margin:0;">
-      <a href="work.html?q=objects">
-        <div class="cat-photo"><img src="https://cdn.shopify.com/s/files/1/0593/6984/9030/files/OOCI_MediumRosso_INV_00000_01.webp?v=1743690417" alt="Vaso by Bitossi Ceramiche" loading="lazy"></div>
-        <p class="cat-name">Objects</p>
-      </a>
+
+    <figure class="cat-tile tile-furniture">
+      <a class="cat-link" href="work.html?q=furniture" aria-label="Browse Furniture"></a>
+      <img src="https://cdn.shopify.com/s/files/1/0177/8296/files/GalvinBrothers_Products_IndiaHobson_HR-25.jpg?v=1777467413" alt="Split Turned Bench by Galvin Brothers" loading="lazy">
+      <p class="cat-label">Furniture</p>
+      <div class="cat-details">
+        <span class="product-name">Split Turned Bench</span>
+        <span class="product-maker">Galvin Brothers</span>
+      </div>
+      <a class="visit-source" href="https://galvinbrothers.co.uk/products/split-turned-bench" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
     </figure>
   </section>
 
@@ -285,26 +340,6 @@
 </main>
 
 <script src="search.js"></script>
-<script>
-  // Fixed, hand-verified images, not a random rotation pool - a prior
-  // version rotated through several real per-category product photos,
-  // but the pool was built from generate_brand_pages.py's
-  // umbrella_categories_for(), which (confirmed 2026-09-19) has a real
-  // false-positive bug: a product like Minimalux's "Stem" table lamp
-  // gets classified into *both* Furniture (via the word "table" in its
-  // "Table Lamps" category tag) and Lighting, so the Furniture tile
-  // could show a lamp. Rather than trust that classifier for what's
-  // effectively the site's own visual definition of each category,
-  // each image here was opened and looked at directly before being
-  // picked - see project memory for the broader umbrella_categories_for
-  // bug, which still needs its own fix independent of this page.
-  document.querySelectorAll(".category-grid .cat-photo img").forEach(function (img) {
-    img.addEventListener("load", function () {
-      var ratio = img.naturalWidth / img.naturalHeight;
-      img.classList.toggle("contain-fit", ratio < 0.55 || ratio > 1.8);
-    });
-  });
-</script>
 
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
