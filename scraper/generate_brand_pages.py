@@ -473,7 +473,6 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
 {site_nav_html("creators")}
 </header>
 <main>
-  <p class="page-tagline">Discover design from makers.</p>
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">{html.escape(brand)}</h1>
