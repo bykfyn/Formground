@@ -1972,11 +1972,16 @@ def extract_wastberg(brand):
     /products.json) - the /en/products listing server-renders every
     product link + a grid thumbnail, but names live one level down. Each
     product page's <h1>/<h2> cleanly split into collection name ("FARO")
-    and mount type ("TABLE") - combined as the display name, and the mount
-    type doubles as category (Ceiling/Pendant/Wall/Floor/Table/Track/
-    Accessories - all real distinctions for a lighting-only brand, same
-    "hardcode the one category" precedent as Ingo Maurer). The listing
-    page's own thumbnail isn't reliably paired per-product (a shared
+    and mount type ("TABLE") - combined as the display name. The bare
+    mount type alone (Ceiling/Wall/Floor/Table/Suspended/Track/Base/
+    Bracket/Clamp/Pin/Semi-Recessed) doesn't contain a lighting word, so
+    it silently failed both the umbrella classifier and the search
+    backend's category matcher (confirmed live 2026-09-20 - Wästberg
+    never surfaced under Lighting anywhere on the site, and "Table" even
+    misclassified as Furniture - see project memory); WASTBERG_CATEGORY_
+    SUFFIX below appends the real product-type word ("Table" -> "Table
+    Lamp") while keeping the mount type as the tag's own leading word.
+    The listing page's own thumbnail isn't reliably paired per-product (a shared
     lifestyle-photo carousel intermixes with the real product shot), so
     each product page's own primary image is found by matching its PIM
     asset path against the product's own URL slug with the trailing model
@@ -2021,6 +2026,32 @@ def extract_wastberg(brand):
         mount_type = h2.get_text(strip=True)
         name = f"{collection.title()} {mount_type.title()}"
 
+        # Bare mount type ("Table", "Wall", "Suspended"...) never
+        # contains a lighting word itself, so both the static-page
+        # umbrella classifier (generate_brand_pages.py) and the search
+        # backend's category matcher (query_engine.py, same keyword
+        # list) silently miss every Wästberg product - confirmed live
+        # 2026-09-20: Wästberg never appeared for a "lighting" search or
+        # under Lighting anywhere on the site, and "Table" even got
+        # misclassified as Furniture. Appending the actual product-type
+        # word fixes both without losing the real mount-type distinction
+        # ("Table" vs "Wall" vs "Suspended" stays the tag's own leading
+        # word - see project memory).
+        WASTBERG_CATEGORY_SUFFIX = {
+            "Suspended": "Suspension Lamp",
+            "Table": "Table Lamp",
+            "Wall": "Wall Lamp",
+            "Floor": "Floor Lamp",
+            "Ceiling": "Ceiling Lamp",
+            "Track": "Track Lamp",
+            "Semi-Recessed": "Semi-Recessed Lamp",
+            "Base": "Base Lamp",
+            "Bracket": "Bracket Lamp",
+            "Clamp": "Clamp Lamp",
+            "Pin": "Pin Lamp",
+        }
+        category = WASTBERG_CATEGORY_SUFFIX.get(mount_type.title(), f"{mount_type.title()} Lamp")
+
         base_key = re.sub(r"-w\d+[a-z0-9]*$", "", slug)
         image_url = ""
         img = page_soup.find("img", src=re.compile(rf"/pim/.*{re.escape(base_key)}", re.IGNORECASE))
@@ -2034,7 +2065,7 @@ def extract_wastberg(brand):
             "brand_url": brand["url"],
             "product_name": name,
             "product_url": product_url,
-            "category": mount_type.title(),
+            "category": category,
             "material_options": [],
             "dimensions": "",
             "notes": "",

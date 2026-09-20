@@ -191,11 +191,50 @@ def _umbrellas_for_product(p):
     umbrella_categories_for (unions this across a brand's whole
     catalog) and primary_image_for (needs it per-product to find the
     brand's primary category)."""
+    category_tags = {t.strip().lower() for t in (p["category"] or "").split(",")}
+    exact = {u for u in UMBRELLA_KEYWORDS if u.lower() in category_tags}
+    if exact:
+        # A category that IS one of these four umbrella names outright
+        # (several single-umbrella brands hardcode it exactly - Ingo
+        # Maurer, Gubi, Moustache, Northern, Silcohaus, Sé Collections -
+        # same "hardcode the one category" precedent noted in
+        # extract_wastberg) is authoritative on its own: no need to
+        # also keyword-scan the product name, which only introduced
+        # false positives - confirmed live 2026-09-20: Ingo Maurer's
+        # "LED Bench"/"Floating Table"/"Lucellino Table" all showed a
+        # spurious "Furniture" tag purely because their product names
+        # contain furniture-shaped words, even though category already
+        # unambiguously said "Lighting" (see project memory).
+        return exact
     text = f"{p['category']} {p['product_name']}".lower()
-    found = {
-        umbrella for umbrella, keywords in UMBRELLA_KEYWORDS.items()
-        if any(re.search(rf"\b{re.escape(k)}s?\b", text) for k in keywords)
-    }
+    is_lighting = any(
+        re.search(rf"\b{re.escape(k)}s?\b", text) for k in UMBRELLA_KEYWORDS["Lighting"]
+    )
+    found = set()
+    for umbrella, keywords in UMBRELLA_KEYWORDS.items():
+        for k in keywords:
+            if umbrella == "Furniture" and k in ("table", "desk") and is_lighting:
+                # A "table"/"desk" mention alongside a real lighting word
+                # ("lamp", "light"...) always means "table lamp"/"desk
+                # lamp" on this site, never actual furniture - confirmed
+                # live 2026-09-20: Minimalux's real "Table Lamps"
+                # category and Wästberg's product names (the collection
+                # name plus mount type, e.g. "Faro Table" for a table
+                # lamp) both falsely showed a "Furniture" tag purely
+                # because of this collision (see project memory). Scoped
+                # to these two words - no other Furniture keyword
+                # collides with a real Lighting phrase.
+                continue
+            if umbrella == "Furniture" and k == "desk" and re.search(r"\bdesk\s+accessor", text):
+                # A pen pot or tray described as a "desk accessory" is
+                # an object, not furniture - same false-positive family
+                # as the lighting collision above, confirmed live on
+                # Minimalux's real "Desk Accessories" category (see
+                # project memory).
+                continue
+            if re.search(rf"\b{re.escape(k)}s?\b", text):
+                found.add(umbrella)
+                break
     return found or {DEFAULT_UMBRELLA}
 
 
