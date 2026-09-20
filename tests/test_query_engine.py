@@ -79,12 +79,18 @@ class CategoryMatchesTests(unittest.TestCase):
     def test_objects_matches_tag_outside_named_categories(self):
         # "Objects" isn't a real tag anyone uses - it's this site's own
         # catch-all, matched by exclusion (see generate_brand_pages.py's
-        # DEFAULT_UMBRELLA). A tag that isn't furniture/lighting/ceramics
-        # should match it.
+        # DEFAULT_UMBRELLA). A tag that isn't furniture/lighting should
+        # match it.
         self.assertTrue(qe._category_matches("Accessories", "objects"))
 
+    def test_objects_includes_ceramics(self):
+        # The homepage's Objects tile folded Ceramics into it 2026-09-20
+        # (see project memory) - the Objects catch-all has to actually
+        # include real ceramics products for that merge to be real, not
+        # just a UI label change contradicted by the search results.
+        self.assertTrue(qe._category_matches("Vase", "objects"))
+
     def test_objects_does_not_match_named_category_tag(self):
-        self.assertFalse(qe._category_matches("Vase", "objects"))
         self.assertFalse(qe._category_matches("Chair", "objects"))
         self.assertFalse(qe._category_matches("Sconce", "objects"))
 

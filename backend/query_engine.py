@@ -299,13 +299,20 @@ def _category_matches(category_field: str, wanted: str) -> bool:
                 return True
 
     # "Objects" isn't a real taxonomy word anyone's tags use - it's this
-    # site's own catch-all for whatever doesn't match Furniture/Lighting/
-    # Ceramics (see generate_brand_pages.py's DEFAULT_UMBRELLA). So it's
-    # matched the same way it's assigned: by exclusion, not by keyword.
+    # site's own catch-all for whatever doesn't match Furniture/Lighting
+    # (see generate_brand_pages.py's DEFAULT_UMBRELLA). So it's matched
+    # the same way it's assigned: by exclusion, not by keyword. Ceramics
+    # is deliberately NOT excluded here (unlike furniture/lighting) -
+    # the homepage's Objects tile folded Ceramics into it 2026-09-20 (see
+    # project memory), so this residual now has to actually include real
+    # ceramics products, not just the old leftover-everything-else set,
+    # or the merge would be a lie the UI tells but the search results
+    # contradict. A standalone "ceramics" query still works on its own,
+    # unaffected - only the Objects catch-all's own definition widened.
     if wanted.lower() in ("object", "objects"):
         return not any(
             _category_matches(category_field, other)
-            for other in ("furniture", "lighting", "ceramics")
+            for other in ("furniture", "lighting")
         )
 
     return False

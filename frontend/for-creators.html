@@ -28,7 +28,7 @@
   main {
     max-width: 1160px;
     margin: 0 auto;
-    padding: 24px 20px 60px;
+    padding: 12px 20px 60px;
   }
 
   /* Two columns per group, not one long single-column list - lets the
@@ -59,21 +59,35 @@
      sit a level above the existing small-caps h2 topic headings, which
      now nest inside each group - kept visually distinct so the page
      reads as groups-of-topics, not one flat list of topics. */
+  /* Centered, same as .page-intro above - only the heading/intro/topic-
+     chip-row per group, not the actual .group-columns resource list
+     below each (kept left-aligned for the same readability reason). */
+  /* margin-top: 40px, same value the first-of-type override already
+     used - matches the 40px gap between the top intro's chip row and
+     "For Makers" (confirmed live 2026-09-20 as the reference/"good
+     standard" gap - see project memory). Was 56px margin + 32px padding
+     before, a visibly bigger, inconsistent gap above every other
+     section. */
   .group-heading {
     font-family: 'Archivo', sans-serif; letter-spacing: -0.005em;
     font-size: 20px; font-weight: 700; color: var(--text-primary);
-    text-transform: none;
-    margin: 56px 0 18px; padding-top: 32px; border-top: 1px solid var(--border);
+    text-transform: none; text-align: center;
+    margin: 40px 0 18px; padding-top: 0;
     scroll-margin-top: 20px;
   }
-  .group-heading:first-of-type { margin-top: 40px; padding-top: 0; border-top: none; }
-  .group-intro { font-size: 14px; color: var(--text-secondary); margin: 0 0 4px; }
+  .group-intro { font-size: 14px; color: var(--text-secondary); margin: 0 auto 4px; max-width: 640px; text-align: center; }
 
   /* Chips, not plain links - matches the .tag pill used one level down
      for sub-topics (Designing & prototyping, Materials, ...), just
      bigger/bolder so the top-level group nav still reads as one level
      above its own sub-nav rather than looking plainer than it. */
-  .group-nav { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 0; }
+  /* Centered intro (matches about.html/creators.html - see project
+     memory), but only the intro - the resource lists below stay
+     left-aligned, since centering a two-column directory of links and
+     descriptions would make each entry's wrapped lines ragged and
+     harder to scan, unlike a short block of prose. */
+  .page-intro { max-width: 640px; margin: 0 auto; text-align: center; }
+  .group-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 20px 0 0; }
   .group-nav a {
     display: inline-flex; align-items: center;
     font-size: 13.5px; font-weight: 600; color: var(--text-secondary);
@@ -86,7 +100,7 @@
      shared .tag pill from site.css rather than a new component, just
      made clickable/hoverable here since site.css's .tag is normally
      static text (e.g. brand-page material tags). */
-  .section-nav { display: flex; flex-wrap: wrap; gap: 0; margin: 4px 0 24px; }
+  .section-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; margin: 4px 0 24px; }
   .section-nav a.tag { text-decoration: none; }
   .section-nav a.tag:hover { border-color: var(--border-strong); color: var(--text-primary); }
 
@@ -122,22 +136,24 @@
 
 <main id="top">
 
-  <h1>For Creators</h1>
+  <h1 class="sr-only">For Creators</h1>
 
-  <p>
-    A short list of tools and services for everyone who creates on
-    Formground — architects, designers, and makers — plus a shared
-    section for topics that cross all three. Not required, not
-    exhaustive, just things that might be useful. Nothing here replaces
-    your own judgment about what's right for your business.
-  </p>
+  <div class="page-intro">
+    <p>
+      A short list of tools and services for everyone who creates on
+      Formground — architects, designers, and makers — plus a shared
+      section for topics that cross all three. Not required, not
+      exhaustive, just things that might be useful. Nothing here replaces
+      your own judgment about what's right for your business.
+    </p>
 
-  <nav class="group-nav" aria-label="Jump to a group">
-    <a href="#group-makers">For Makers</a>
-    <a href="#group-architects">For Architects</a>
-    <a href="#group-designers">For Designers</a>
-    <a href="#group-shared">Shared</a>
-  </nav>
+    <nav class="group-nav" aria-label="Jump to a group">
+      <a href="#group-makers">For Makers</a>
+      <a href="#group-architects">For Architects</a>
+      <a href="#group-designers">For Designers</a>
+      <a href="#group-shared">Shared</a>
+    </nav>
+  </div>
 
   <h2 class="group-heading" id="group-makers">For Makers</h2>
 

@@ -169,7 +169,11 @@ function renderCard(r) {
       }).catch((err) => console.error(err));
     }
   });
-  body.appendChild(shareBtn);
+  // Appended to imageDiv, not body - the share button overlays the
+  // photo's own bottom-right corner now that the card has no enclosing
+  // surface for it to sit inside (2026-09-20, matches Creators/the
+  // homepage's photo+plain-caption pattern - see project memory).
+  imageDiv.appendChild(shareBtn);
 
   a.appendChild(imageDiv);
   a.appendChild(body);

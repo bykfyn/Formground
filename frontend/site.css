@@ -38,34 +38,42 @@ a.home-link {
 }
 a.home-link img { height: 28px; width: auto; display: block; }
 
-/* Site-wide header, added 2026-09-18, restructured 2026-09-19 to match
-   index.html's own header exactly (wordmark + nav sharing one row, in
-   normal flow, with a bottom border) - the two had drifted apart: the
-   homepage moved to this row layout early on, but every other page
-   kept a small absolutely-positioned corner-overlay nav with the
-   wordmark sitting separately below it, which read as three different
-   header patterns site-wide (row header / corner overlay / no nav at
-   all on search.html) once actually compared side by side. index.html
-   still can't literally share this rule (it doesn't link site.css -
-   see the note at the top of this file), so its own copy has to be
-   kept in visual sync with this one by hand if either changes. See
-   generate_brand_pages.py's SITE_NAV_HTML for the shared nav markup
-   this styles. */
+/* Site-wide header, restructured 2026-09-20 to the stacked Hay-style
+   layout (logo centered on top, nav centered below it, no dividing
+   line) that started as a homepage-only mockup and was confirmed to
+   replace the old side-by-side row + border-bottom everywhere - see
+   project memory. Existing markup on every page already puts the
+   home-link before the nav as plain siblings (see
+   generate_brand_pages.py's SITE_NAV_HTML for the shared nav markup),
+   so flex-direction: column stacks them correctly with no HTML changes
+   anywhere. index.html still can't literally share this rule (it
+   doesn't link site.css - see the note at the top of this file), so
+   its own copy has to be kept in visual sync with this one by hand if
+   either changes. */
 .site-header {
-  display: flex; align-items: center; justify-content: space-between;
-  flex-wrap: wrap; gap: 12px 24px;
+  display: flex; flex-direction: column; align-items: center; gap: 18px;
   max-width: 1160px; margin: 0 auto 40px;
-  padding: 28px 20px; border-bottom: 1px solid var(--border);
+  padding: 32px 20px 20px;
 }
 .site-header a.home-link { margin-bottom: 0; }
+.site-header a.home-link img { height: 44px; }
 .top-nav {
-  display: flex; gap: 20px; flex-wrap: wrap;
+  display: flex; justify-content: center; gap: 8px 22px; flex-wrap: wrap;
 }
+/* border-bottom: transparent by default, not just absent, on every
+   link - not just the current one - so every page's header is exactly
+   the same height whether or not any nav link is marked current (the
+   homepage has none, since it isn't itself in the nav). Confirmed live
+   2026-09-20: this 1.5px border was the exact remaining gap keeping the
+   ask-box from landing at the identical pixel position on work.html vs
+   the homepage. */
 .top-nav a {
-  font-size: 13px; color: var(--text-secondary); text-decoration: none;
+  font-size: 12px; line-height: 16px; text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-secondary); text-decoration: none; padding-bottom: 2px;
+  border-bottom: 1.5px solid transparent;
 }
 .top-nav a:hover { color: var(--text-primary); }
-.top-nav a.current { color: var(--text-primary); font-weight: 600; }
+.top-nav a.current { color: var(--text-primary); border-bottom-color: var(--text-primary); }
 @media (max-width: 480px) {
   .top-nav { justify-content: center; gap: 14px; }
 }
@@ -81,6 +89,17 @@ h1 {
   margin: 0 0 20px;
 }
 
+/* Visually hidden but still readable by search engines/screen readers -
+   every page needs a real h1 for SEO/accessibility even when, like
+   index.html's own wordmark, something else already carries the page's
+   heading visually. Same utility index.html defined locally before this
+   existed here - see that file's own copy, kept in sync by hand since
+   it can't link this file. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
 .tag {
   display: inline-block; font-size: 11px; color: var(--text-secondary);
   border: 0.5px solid var(--border); border-radius: var(--radius);
@@ -91,8 +110,11 @@ h1 {
    fine visually but fails WCAG contrast against --bg (confirmed via
    Lighthouse), and this text/its links are real navigation, not
    decorative chrome. */
+/* text-align: center, not left - matches the homepage's own footer
+   (2026-09-20, confirmed as the real inconsistency between the two -
+   see project memory). */
 .foot-note {
-  font-size: 11px; color: var(--text-secondary); text-align: left;
+  font-size: 11px; color: var(--text-secondary); text-align: center;
   margin-top: 60px; padding-top: 24px; line-height: 1.6;
   border-top: 0.5px solid var(--border);
 }

@@ -68,15 +68,37 @@ FAVICON_TAGS = (
 # constant-sharing rationale as CLOUDFLARE_ANALYTICS/FAVICON_TAGS above;
 # its `.top-nav` CSS lives in site.css (shared) rather than PAGE_CSS,
 # since the homepage also needs it and doesn't use PAGE_CSS.
-SITE_NAV_HTML = (
-    '<nav class="top-nav">\n'
-    '  <a href="/work.html">Work</a>\n'
-    '  <a href="/creators.html">Creators</a>\n'
-    '  <a href="/marketplace.html">Marketplace</a>\n'
-    '  <a href="/for-creators.html">For Creators</a>\n'
-    '  <a href="/about.html">About</a>\n'
-    "</nav>"
-)
+def site_nav_html(current=None):
+    """
+    `current` marks which top-level section this generated page lives
+    under, so e.g. every maker/architect page (and the makers.html/
+    architects.html indexes themselves) highlights "Creators" the same
+    way work.html hand-highlights "Work" - added 2026-09-20 since
+    architects.html/makers.html previously used the fixed, un-highlighted
+    nav below regardless of which section they were actually in. Pass
+    None for pages that aren't under any single nav item (new.html) or
+    write it "creators", "for-creators", etc. matching a real href's
+    basename.
+    """
+    links = [
+        ("work", "/work.html", "Work"),
+        ("creators", "/creators.html", "Creators"),
+        ("marketplace", "/marketplace.html", "Marketplace"),
+        ("for-creators", "/for-creators.html", "For Creators"),
+        ("about", "/about.html", "About"),
+    ]
+    current_attr = ' class="current"'
+    items = "\n".join(
+        f'  <a href="{href}"{current_attr if key == current else ""}>{label}</a>'
+        for key, href, label in links
+    )
+    return f'<nav class="top-nav">\n{items}\n</nav>'
+
+
+# Un-highlighted nav, for generated pages that aren't under any single
+# top-level section (new.html) - see site_nav_html() for the
+# per-section-highlighted version everything else now uses.
+SITE_NAV_HTML = site_nav_html()
 
 
 def load_countries():
@@ -242,21 +264,30 @@ PAGE_CSS = """
   .brand-site-link:hover { text-decoration: underline; }
   .tags { margin-bottom: 12px; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
-  .card { background: var(--surface-2); border: 0.5px solid var(--border);
-    border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; display: block; }
-  .card-image { aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
-  .card-body { padding: 10px 12px; }
+  .card-body { padding: 0; }
   .card-title { font-size: 13px; font-weight: 500; margin: 0; }
   .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
   .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 16px; align-items: start; }
-  .maker-card { background: var(--surface-2); border: 0.5px solid var(--border);
-    border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; display: block; }
-  .maker-card-hero { aspect-ratio: 4/3; background: var(--surface-1); }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
   .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .maker-card-hero img.contain-fit { object-fit: contain; }
-  .maker-card-body { padding: 12px 14px 14px; text-align: center; }
+  .maker-card-body { padding: 0; text-align: center; }
   .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
     color: var(--text-secondary); margin: 0 0 3px; }
   .maker-card:hover .maker-name { text-decoration: underline; }
@@ -269,6 +300,112 @@ PAGE_CSS = """
   .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
   .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
   .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+"""
+
+
+def directory_filter_html(placeholder, category_label):
+    return f"""
+  <div class="search-wide">
+    <div class="ask-box">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <span class="ask-box-context">{html.escape(category_label)}</span>
+      <input id="directory-filter" type="text" placeholder="{placeholder}" autocomplete="off">
+    </div>
+  </div>"""
+
+
+# Overrides PAGE_CSS's own `main` (padding-top: 48px, tuned for brand/
+# profile pages with no search box) and site.css's shared `.site-header`
+# margin-bottom (40px) - later in source order wins at equal
+# specificity, so this lands the filter box at the exact same position
+# as work.html/the homepage/creators.html (2026-09-20, see project
+# memory) without touching either shared rule for the pages that still
+# want their own spacing.
+HERO_SEARCH_POSITION_CSS = """
+  main { padding-top: 24px; }
+  .site-header { margin-bottom: 0; }
+"""
+
+
+# Plain substring match against each card's own text (name/city/category
+# tags) - no fuzzy matching, no ranking, consistent with the rest of the
+# site's "no algorithm, just real filtering" convention. Cards are
+# hidden with the native [hidden] attribute - PAGE_CSS's own
+# `[hidden] { display: none !important; }` rule (added alongside this)
+# is what actually makes that stick, since without it .maker-card's own
+# `display: block` (same specificity, later in source order) would win
+# over the browser's default [hidden] styling and the card would stay
+# visible.
+DIRECTORY_FILTER_JS = """
+  (function () {
+    var filterInput = document.getElementById("directory-filter");
+    function applyFilter(q) {
+      q = q.trim().toLowerCase();
+      document.querySelectorAll(".maker-grid > a").forEach(function (card) {
+        var match = !q || card.textContent.toLowerCase().includes(q);
+        card.hidden = !match;
+      });
+    }
+    filterInput.addEventListener("input", function (e) { applyFilter(e.target.value); });
+    // Pre-filled from Creators' own search box (?q=stockholm after it
+    // strips "architects"/"designers"/"makers" off the front and routes
+    // here) - runs the exact same filter immediately, not just on the
+    // next keystroke, so landing here already shows the real results
+    // rather than the unfiltered full list (2026-09-20, see project
+    // memory).
+    var presetQuery = new URLSearchParams(window.location.search).get("q");
+    if (presetQuery) {
+      filterInput.value = presetQuery;
+      applyFilter(presetQuery);
+    }
+  })();
 """
 
 
@@ -330,7 +467,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
 <body>
 <header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-{SITE_NAV_HTML}
+{site_nav_html("creators")}
 </header>
 <main>
   <p class="page-tagline">Discover design from makers.</p>
@@ -402,14 +539,15 @@ def render_makers_index(brands_data):
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
 <style>{PAGE_CSS}</style>
+<style>{HERO_SEARCH_POSITION_CSS}</style>
 </head>
 <body>
 <header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-{SITE_NAV_HTML}
+{site_nav_html("creators")}
 </header>
-<main style="max-width:1160px;">
-  <h1>Makers</h1>
+<main style="max-width:1160px;">{directory_filter_html("Filter by name, city, or category…", "Makers")}
+  <h1 class="sr-only">Makers</h1>
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
@@ -429,7 +567,7 @@ def render_makers_index(brands_data):
       if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
     }});
   }});
-</script>
+{DIRECTORY_FILTER_JS}</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>

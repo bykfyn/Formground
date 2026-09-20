@@ -31,6 +31,12 @@
     padding: 24px 20px 60px;
   }
 
+  /* Page-specific override of site.css's shared 40px - matches the
+     homepage's own ask-box height exactly (2026-09-20, measured live:
+     154px from viewport top on both pages), so the search box sits at
+     the same place whether you land here or on the homepage. */
+  .site-header { margin-bottom: 0; }
+
   .search-wide {
     width: 100%;
     max-width: 900px;
@@ -74,36 +80,48 @@
     display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 12px;
   }
-  .card {
-    background: var(--surface-2); border: 0.5px solid var(--border);
-    border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit;
-    display: block; position: relative;
-  }
-  .card.thin { border-style: dashed; border-color: var(--border-strong); }
+  /* Matches Creators/the homepage's category tiles (2026-09-20, see
+     project memory): border/background/sharp corners live on the photo
+     alone, not a card box enclosing the photo and text together - text
+     sits as plain content below it. The share button now overlays the
+     photo's own bottom-right corner (position: relative moved from
+     .card to .card-image) rather than the old enclosing card, since
+     there's no card body surface left for it to sit inside. */
+  .card { display: block; text-decoration: none; color: inherit; }
   .card-image {
     aspect-ratio: 1 / 1; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
     display: flex; align-items: center; justify-content: center;
-    overflow: hidden;
+    overflow: hidden; position: relative;
   }
+  .card.thin .card-image { border-style: dashed; border-color: var(--border-strong); }
   .card-image i { font-size: 28px; color: var(--text-muted); }
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-image img.contain-fit { object-fit: contain; }
-  .card-body { padding: 10px 32px 10px 12px; position: relative; }
+  .card-body { padding: 0; }
   .share-btn {
     position: absolute; bottom: 6px; right: 6px; z-index: 1;
-    width: 24px; height: 24px; border-radius: 50%; border: none;
-    background: transparent; color: var(--text-muted);
+    width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(250, 249, 247, 0.85); color: var(--text-secondary);
     display: flex; align-items: center; justify-content: center;
     cursor: pointer; padding: 0;
   }
-  .share-btn:hover { background: var(--surface-1); color: var(--text-primary); }
+  .share-btn:hover { background: var(--surface-2); color: var(--text-primary); }
   .share-btn i { font-size: 14px; }
   .share-btn.copied::after {
-    content: "Copied"; position: absolute; bottom: 30px; right: 0;
+    content: "Copied"; position: absolute; bottom: 32px; right: 0;
     background: var(--text-primary); color: var(--surface-2);
     font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
   }
-  .card-title-wrap { min-height: 2.6em; display: flex; align-items: center; }
+  /* Top-aligned, not centered, and reserving only one line's height, not
+     two - a short, common single-line title used to sit centered in a
+     2-line-tall box, leaving visible empty space between the image and
+     the title that made the two feel disconnected. Top-aligning pulls
+     title+maker name up flush under the image; a genuine 2-line title
+     just pushes its own maker-name line down slightly further than its
+     row-neighbors', a real but minor trade-off for shorter cards
+     overall (2026-09-20, see project memory). */
+  .card-title-wrap { min-height: 1.3em; display: flex; align-items: flex-start; }
   .card-title {
     font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
     display: -webkit-box; -webkit-box-orient: vertical;

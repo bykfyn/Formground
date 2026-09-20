@@ -33,10 +33,14 @@ from pathlib import Path
 
 from generate_brand_pages import (
     CLOUDFLARE_ANALYTICS,
+    DIRECTORY_FILTER_JS,
     FAVICON_TAGS,
+    HERO_SEARCH_POSITION_CSS,
     PAGE_CSS,
     SITE_NAV_HTML,
     SITE_URL,
+    directory_filter_html,
+    site_nav_html,
     slugify,
 )
 
@@ -134,7 +138,7 @@ def render_architect_page(firm_name, slug, meta, houses):
 <body>
 <header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-{SITE_NAV_HTML}
+{site_nav_html("creators")}
 </header>
 <main>
   <p class="page-tagline">Architects.</p>
@@ -193,19 +197,15 @@ def render_architects_index(firms_with_slugs, meta_by_name, houses_by_firm):
 <meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="/site.css">
 <style>{PAGE_CSS}</style>
+<style>{HERO_SEARCH_POSITION_CSS}</style>
 </head>
 <body>
 <header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-{SITE_NAV_HTML}
+{site_nav_html("creators")}
 </header>
-<main style="max-width:1160px;">
-  <h1>Architects</h1>
-  <p class="category-intro">
-    Independent practices designing houses - each firm curated individually, with their real,
-    individually-named house projects pulled from their own site. Not an exhaustive directory;
-    every house links straight back to the firm's own project page.
-  </p>
+<main style="max-width:1160px;">{directory_filter_html("Filter by firm or city…", "Architects")}
+  <h1 class="sr-only">Architects</h1>
   <div class="maker-grid">{items}
   </div>
   <p class="foot-note">
@@ -219,7 +219,7 @@ def render_architects_index(firms_with_slugs, meta_by_name, houses_by_firm):
       if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
     }});
   }});
-</script>
+{DIRECTORY_FILTER_JS}</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>

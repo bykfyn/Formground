@@ -30,23 +30,38 @@
     margin: 0 auto;
     padding: 24px 20px 60px;
   }
-  h1 { margin: 0 0 8px; }
-  p.lead { font-size: 15px; line-height: 1.6; color: var(--text-secondary); margin: 0 0 4px; max-width: 560px; }
-  p.lead-note { font-size: 12.5px; color: var(--text-muted); margin: 0 0 28px; max-width: 560px; }
+  /* Same hero position/size as the rest of the site (2026-09-20, see
+     project memory): tight under the header, 900px wide, 57px tall. */
+  .site-header { margin-bottom: 0; }
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto; }
+  p.lead { font-size: 15px; line-height: 1.6; color: var(--text-secondary); margin: 32px auto 4px; max-width: 560px; text-align: center; }
+  p.lead-note { font-size: 12.5px; color: var(--text-muted); margin: 0 auto 28px; max-width: 560px; text-align: center; }
 
+  /* No opacity here, unlike before - it washed out the background/
+     border/icon color compared to every other page's ask-box (confirmed
+     live 2026-09-20: rgb(241,239,236) at 0.7 opacity reads as visibly
+     duller than the same real color everywhere else - see project
+     memory). Readonly + pointer-events:none on the input already
+     convey "not a real search yet" functionally; the .chips row still
+     carries its own dimmed look separately. */
   .ask-box {
-    display: flex; align-items: center; gap: 10px;
+    display: flex; align-items: center; gap: 10px; min-height: 57px;
     background: var(--surface-1); border: 0.5px solid var(--border);
-    border-radius: var(--radius); padding: 13px 16px; margin-bottom: 16px;
-    opacity: 0.7;
+    border-radius: var(--radius); padding: 13px 16px;
   }
   .ask-box i { font-size: 18px; color: var(--text-muted); }
   .ask-box input {
     border: none; background: none; outline: none; flex: 1;
     font-size: 15px; color: var(--text-muted); font-family: inherit; pointer-events: none;
   }
+  /* Without this, the browser ignores the input's own `color` for
+     placeholder text entirely and falls back to its own default gray
+     (confirmed live 2026-09-20: rendered as rgb(117,117,117), not
+     --text-muted's rgb(148,141,133) - see project memory) - work.html/
+     the homepage already set this explicitly for exactly that reason. */
+  .ask-box input::placeholder { color: var(--text-muted); }
 
-  .chips { display: flex; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
+  .chips { display: flex; justify-content: center; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
   .chip {
     font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 999px;
     border: 0.5px solid var(--border-strong); background: var(--surface-2);
@@ -58,9 +73,16 @@
     border: 1px dashed var(--border-strong); border-radius: 14px;
     padding: 56px 24px; text-align: center; background: var(--surface-1);
   }
+  /* margin: auto 0 auto (horizontal), not just 0 - .eyebrow's own
+     selector (.empty-state .eyebrow) is more specific than the general
+     .empty-state p rule that gives it its 420px max-width, so its own
+     margin here was overriding that rule's margin: 0 auto and pinning
+     the box to the left instead of centering it, even though the text
+     inside read as centered (confirmed live 2026-09-20 - see project
+     memory). */
   .empty-state .eyebrow {
     font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
-    color: var(--text-accent); margin: 0 0 10px;
+    color: var(--text-accent); margin: 0 auto 10px;
   }
   .empty-state p { font-size: 14px; color: var(--text-secondary); max-width: 420px; margin: 0 auto 22px; line-height: 1.6; }
   .cta-btn {
@@ -92,14 +114,17 @@
 
 <main>
 
-  <h1>Marketplace</h1>
+  <h1 class="sr-only">Marketplace</h1>
+
+  <div class="search-wide">
+    <div class="ask-box">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input type="text" placeholder="a new piece, an upcoming course, a design service…" readonly>
+    </div>
+  </div>
+
   <p class="lead">A paid space where architects, designers, and makers can feature something specific — a limited run, a new piece, a course, or a project.</p>
   <p class="lead-note">Every listing here is a paid promotion, clearly marked, and separate from Formground's free search results.</p>
-
-  <div class="ask-box">
-    <i class="ti ti-search" aria-hidden="true"></i>
-    <input type="text" placeholder="a new piece, an upcoming course, a design service…" readonly>
-  </div>
 
   <div class="chips">
     <button class="chip active">All</button>
