@@ -70,6 +70,50 @@ class CategoryMatchesTests(unittest.TestCase):
     def test_hypernym_furniture_does_not_match_unrelated_tag(self):
         self.assertFalse(qe._category_matches("Vase", "furniture"))
 
+    def test_hypernym_ceramics_matches_specific_tag(self):
+        self.assertTrue(qe._category_matches("Vase", "ceramics"))
+
+    def test_hypernym_ceramics_does_not_match_unrelated_tag(self):
+        self.assertFalse(qe._category_matches("Chair", "ceramics"))
+
+    def test_objects_matches_tag_outside_named_categories(self):
+        # "Objects" isn't a real tag anyone uses - it's this site's own
+        # catch-all, matched by exclusion (see generate_brand_pages.py's
+        # DEFAULT_UMBRELLA). A tag that isn't furniture/lighting/ceramics
+        # should match it.
+        self.assertTrue(qe._category_matches("Accessories", "objects"))
+
+    def test_objects_does_not_match_named_category_tag(self):
+        self.assertFalse(qe._category_matches("Vase", "objects"))
+        self.assertFalse(qe._category_matches("Chair", "objects"))
+        self.assertFalse(qe._category_matches("Sconce", "objects"))
+
+
+class ResolveIntentTests(unittest.TestCase):
+    """
+    Covers the 2026-09-20 fix for the homepage's category tiles, which
+    send a bare umbrella word ("furniture", "ceramics", ...) as the whole
+    query. Confirmed live: the LLM often leaves category null for these
+    (too generic to pick a specific object type), which skipped the
+    category filter entirely and returned the whole unfiltered catalog;
+    for "ceramics" specifically, the LLM sometimes echoed the same word
+    into material too, which - correctly ANDed with category for a real
+    query like "black chair" - cut real results down to a handful for
+    this single-word one instead.
+    """
+
+    def test_browse_word_overrides_null_category(self):
+        llm_intent = {"category": None, "material": None}
+        self.assertEqual(qe._resolve_intent("furniture", llm_intent), {"category": "furniture"})
+
+    def test_browse_word_overrides_redundant_material(self):
+        llm_intent = {"category": "ceramics", "material": "ceramic"}
+        self.assertEqual(qe._resolve_intent("ceramics", llm_intent), {"category": "ceramics"})
+
+    def test_non_browse_query_keeps_llm_intent(self):
+        llm_intent = {"category": "chair", "material": "black"}
+        self.assertEqual(qe._resolve_intent("black chair", llm_intent), llm_intent)
+
 
 class CapPerBrandTests(unittest.TestCase):
     """

@@ -268,39 +268,7 @@ PAGE_CSS = """
      identical to the plain <p> version used everywhere else. */
   .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
   .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
-  .category-nav { font-size: 12px; color: var(--text-muted); margin: 0 0 32px; }
-  .category-nav a { color: var(--text-accent); text-decoration: none; margin-right: 12px; }
-  .category-nav a:hover { text-decoration: underline; }
   .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
-
-  /* --- ask box, added to category pages 2026-09-19 so a visitor can
-     search from there directly instead of needing to go back to the
-     homepage - identical markup/behavior to work.html's box, and
-     reuses that same shared /search.js (redirects to
-     /work.html?q=... on submit). --- */
-  .ask-box {
-    display: flex; align-items: center; gap: 10px;
-    background: var(--surface-1); border: 0.5px solid var(--border);
-    border-radius: var(--radius); padding: 13px 16px; margin: 0 0 28px;
-  }
-  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
-  .ask-box input {
-    border: none; background: none; outline: none; flex: 1;
-    font-size: 15px; color: var(--text-primary); font-family: inherit;
-  }
-  .ask-box input::placeholder { color: var(--text-muted); }
-  .inline-chip {
-    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
-    font-size: 13px; color: var(--text-secondary); font-family: inherit;
-    background: var(--surface-2); border: 0.5px solid var(--border-strong);
-    padding: 7px 12px; margin: 0;
-    cursor: pointer; border-radius: 8px; white-space: nowrap;
-  }
-  .inline-chip:hover { border-color: var(--text-muted); }
-  @media (max-width: 480px) {
-    .inline-chip span { display: none; }
-    .inline-chip { padding: 9px; }
-  }
 """
 
 
@@ -468,140 +436,38 @@ def render_makers_index(brands_data):
 """
 
 
-# Real, honest per-category copy - deliberately short (this isn't the
-# homepage-depth content project, that's a separate, bigger piece of
-# work) and grounded only in vocabulary already used elsewhere on the
-# site (About page, umbrella keyword list), not invented marketing
-# language. "Objects" is honestly framed as the catch-all it actually
-# is, rather than pretending it's its own focused discipline.
-CATEGORY_INFO = {
-    "Furniture": {
-        "slug": "furniture",
-        "noun": "furniture",
-        "blurb": "chairs, tables, storage, and seating",
-    },
-    "Lighting": {
-        "slug": "lighting",
-        "noun": "lighting",
-        "blurb": "lamps, pendants, and other fixtures",
-    },
-    "Ceramics": {
-        "slug": "ceramics",
-        "noun": "ceramics",
-        "blurb": "vases, bowls, and other real pottery",
-    },
-    "Objects": {
-        "slug": "objects",
-        "noun": "object",  # singular - "68 object makers", not "objects makers"
-        "blurb": "everything that doesn't fit neatly into furniture, lighting, or ceramics",
-    },
-}
+# Retired 2026-09-20: these 4 slugs used to be full, indexable
+# brand-listing pages (one per umbrella category). Checked first - not
+# indexed by Google despite being live for weeks, no internal links to
+# them from anywhere but the homepage tiles, and no unique content that
+# work.html?q=<slug> doesn't already surface (see project memory).
+# Kept only as this list, so the redirect stubs below still exist at
+# their old URLs for anyone with a bookmark or old link.
+RETIRED_CATEGORY_SLUGS = ["furniture", "lighting", "ceramics", "objects"]
 
 
-def render_category_page(umbrella, brands_data):
+def render_category_redirect_stub(slug):
     """
-    One static, indexable page per umbrella category (docs/{slug}.html)
-    - furniture.html, lighting.html, ceramics.html, objects.html -
-    reusing the exact maker-card markup/CSS already proven on
-    makers.html, filtered to just the brands with at least one real
-    product in this umbrella. Deliberately not a product-level browse
-    page (that would need real pagination/filtering machinery this
-    project doesn't have yet) - a maker is still the unit of inclusion
-    here, same as everywhere else on the site.
+    A lightweight redirect stub at the old docs/{slug}.html URL, same
+    pattern as frontend/search.html's own retirement - noindex, JS
+    redirect, real canonical - so an old bookmark or inbound link still
+    lands somewhere useful instead of 404ing.
     """
-    info = CATEGORY_INFO[umbrella]
-    in_category = [b for b in brands_data if umbrella in b[2]]
-    page_url = f"{SITE_URL}/{info['slug']}.html"
-    description = (
-        f"{len(in_category)} {info['noun']} makers on Formground - "
-        f"{info['blurb']}. Every result links straight to the maker's own site."
-    )
-
-    other_categories = "".join(
-        f'<a href="/{CATEGORY_INFO[u]["slug"]}.html">{u}</a>'
-        for u in ("Furniture", "Lighting", "Ceramics", "Objects") if u != umbrella
-    )
-
-    items = ""
-    for brand, slug, umbrellas, _count, country, image in sorted(in_category, key=lambda b: b[0].lower()):
-        categories = " · ".join(umbrellas)
-        country_html = html.escape(country) if country else "&nbsp;"
-        image_tag = f'<img src="{html.escape(image)}" alt="{html.escape(brand)}" loading="lazy">' if image else ""
-        items += f"""
-      <a class="maker-card" href="/brands/{slug}.html">
-        <div class="maker-card-hero">{image_tag}</div>
-        <div class="maker-card-body">
-          <span class="maker-name">{html.escape(brand)}</span>
-          <span class="maker-country">{country_html}</span>
-          <span class="maker-categories">{html.escape(categories)}</span>
-        </div>
-      </a>"""
-
-    breadcrumb_json = json.dumps({
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            {"@type": "ListItem", "position": 1, "name": "Formground", "item": f"{SITE_URL}/"},
-            {"@type": "ListItem", "position": 2, "name": umbrella, "item": page_url},
-        ],
-    })
-
+    target = f"/work.html?q={slug}"
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{umbrella} — Formground</title>
-{FAVICON_TAGS}
-<meta name="description" content="{description}">
-<link rel="canonical" href="{page_url}">
-<meta property="og:type" content="website">
-<meta property="og:title" content="{umbrella} — Formground">
-<meta property="og:description" content="{description}">
-<meta property="og:url" content="{page_url}">
-<meta property="og:image" content="{SITE_URL}/favicon-192x192.png">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="{umbrella} — Formground">
-<meta name="twitter:description" content="{description}">
-<script type="application/ld+json">{breadcrumb_json}</script>
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
-<link rel="stylesheet" href="/site.css">
-<style>{PAGE_CSS}</style>
+<title>Formground</title>
+<meta name="robots" content="noindex">
+<script>
+  window.location.replace('{target}');
+</script>
+<link rel="canonical" href="{SITE_URL}/work.html">
 </head>
 <body>
-<header class="site-header">
-  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-{SITE_NAV_HTML}
-</header>
-<main style="max-width:1160px;">
-  <p class="page-tagline">Discover design from makers.</p>
-  <h1>{umbrella}</h1>
-  <p class="category-intro">{description}</p>
-  <p class="category-nav">Browse: {other_categories}</p>
-  <form id="search-form">
-    <div class="ask-box">
-      <i class="ti ti-search" aria-hidden="true"></i>
-      <input id="query-input" type="text" placeholder="describe what you're looking for" autocomplete="off">
-      <button type="button" class="inline-chip" id="discover-chip" aria-label="Surprise me"><i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Surprise me</span></button>
-    </div>
-  </form>
-  <div class="maker-grid">{items}
-  </div>
-  <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a>
-  </p>
-</main>
-<script src="/search.js"></script>
-<script>
-  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {{
-    img.addEventListener("load", function () {{
-      var ratio = img.naturalWidth / img.naturalHeight;
-      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
-    }});
-  }});
-</script>
-{CLOUDFLARE_ANALYTICS}
+<p>Formground has moved this page to <a href="{target}">{target}</a>.</p>
 </body>
 </html>
 """
@@ -761,10 +627,6 @@ def render_sitemap(brand_slugs):
         ("https://formground.com/makers.html", "weekly", "0.7", today),
         ("https://formground.com/new.html", "weekly", "0.6", today),
     ]
-    urls += [
-        (f"https://formground.com/{info['slug']}.html", "weekly", "0.6", today)
-        for info in CATEGORY_INFO.values()
-    ]
     urls += [(f"https://formground.com/brands/{slug}.html", "weekly", "0.5", today) for slug in brand_slugs]
     craftspeople_slugs = _craftspeople_sitemap_slugs()
     if craftspeople_slugs:
@@ -848,11 +710,12 @@ def generate():
         makers_data.append((brand, slug, umbrellas, len(products), country, image))
 
     (DOCS_DIR / "makers.html").write_text(render_makers_index(makers_data))
-    for umbrella, info in CATEGORY_INFO.items():
-        (DOCS_DIR / f"{info['slug']}.html").write_text(render_category_page(umbrella, makers_data))
+    for slug in RETIRED_CATEGORY_SLUGS:
+        (DOCS_DIR / f"{slug}.html").write_text(render_category_redirect_stub(slug))
     (DOCS_DIR / "sitemap.xml").write_text(render_sitemap(sorted(m[1] for m in makers_data)))
 
-    print(f"Generated {len(makers_data)} brand pages, makers.html, {len(CATEGORY_INFO)} category pages, "
+    print(f"Generated {len(makers_data)} brand pages, makers.html, "
+          f"{len(RETIRED_CATEGORY_SLUGS)} retired-category redirect stubs, "
           f"new.html ({len(new_arrivals)} new arrival{'s' if len(new_arrivals) != 1 else ''}), "
           f"and sitemap.xml ({sum(m[3] for m in makers_data)} products total).")
 

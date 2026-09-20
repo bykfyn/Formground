@@ -56,6 +56,22 @@ HOUSES_PATH = Path(__file__).parent.parent / "data" / "houses.json"
 # it's a common way to say the same thing ("a modern family home").
 HOUSE_CATEGORY_WORDS = {"house", "houses", "villa", "villas", "home", "homes"}
 
+# The homepage's category tiles send the bare umbrella word itself
+# ("furniture", "objects", ...) as the whole query. Confirmed live
+# 2026-09-20, two separate LLM failure modes for these single-word
+# queries: (1) category often comes back null (too generic to pick a
+# specific object type like 'chair'), which skips the category filter
+# in filter_products() entirely and returns the whole unfiltered
+# catalog; (2) for "ceramics" specifically, the LLM sometimes echoes the
+# same word into BOTH category and material - and since filter_products()
+# correctly ANDs those two together for a real compound query like
+# "black chair", that redundant double-encoding of one single-word query
+# was cutting real results down to a handful. A bare word from this set
+# means "browse this whole category," never "and also match this as a
+# material/color" - so search() below replaces the LLM's intent outright
+# for these, rather than patching just the missing-category case.
+BROWSE_CATEGORY_WORDS = {"furniture", "lighting", "ceramics", "objects", "object"}
+
 
 def _load_hidden_brands() -> set:
     """
@@ -261,6 +277,12 @@ def _category_matches(category_field: str, wanted: str) -> bool:
                       "ottoman", "console", "bookcase", "modular unit",
                       "seat", "seating", "screen", "desk", "storage",
                       "shelving", "furniture"),
+        # Built the same way as furniture/lighting above - pulled every
+        # real category tag across brands the site's own umbrella
+        # classifier (generate_brand_pages.py) already calls Ceramics,
+        # confirmed 2026-09-20: overwhelmingly "Vase(s)", "Bowl(s)",
+        # "Plate(s)", plus a handful of "Cup"/"Carafe"/"Pitcher".
+        "ceramics": ("vase", "bowl", "plate", "cup", "carafe", "pitcher"),
     }
     for hypernym, hyponyms in HYPERNYM_WORDS.items():
         if wanted.lower() not in (hypernym, hypernym + "s"):
@@ -275,6 +297,16 @@ def _category_matches(category_field: str, wanted: str) -> bool:
             pattern = re.compile(rf"\b{re.escape(h)}s?$", re.IGNORECASE)
             if any(pattern.search(tag) for tag in tags):
                 return True
+
+    # "Objects" isn't a real taxonomy word anyone's tags use - it's this
+    # site's own catch-all for whatever doesn't match Furniture/Lighting/
+    # Ceramics (see generate_brand_pages.py's DEFAULT_UMBRELLA). So it's
+    # matched the same way it's assigned: by exclusion, not by keyword.
+    if wanted.lower() in ("object", "objects"):
+        return not any(
+            _category_matches(category_field, other)
+            for other in ("furniture", "lighting", "ceramics")
+        )
 
     return False
 
@@ -535,6 +567,21 @@ def cap_per_brand(products: list, max_per_brand: int = MAX_RESULTS_PER_BRAND) ->
     return capped
 
 
+def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
+    """
+    Overrides the LLM's intent with a clean, category-only one whenever
+    the whole query is exactly one of BROWSE_CATEGORY_WORDS (only ever
+    sent by the homepage's own category tiles, never typed by a person).
+    Kept as its own pure function, independent of the real translate_query()
+    LLM call, so this override logic can be unit tested directly rather
+    than only through a live search() call.
+    """
+    stripped = raw_query.strip().lower()
+    if stripped in BROWSE_CATEGORY_WORDS:
+        return {"category": stripped}
+    return llm_intent
+
+
 def search(raw_query: str) -> list:
     """The full pipeline: translate, then filter (category/material hard
     facts, plus a direct name match - see filter_by_name), then cap per
@@ -549,7 +596,7 @@ def search(raw_query: str) -> list:
     alias). Scoped to /search only for now, not /discover or
     /agent/search - see project memory for why those two are
     deliberately deferred."""
-    intent = translate_query(raw_query)
+    intent = _resolve_intent(raw_query, translate_query(raw_query))
     matches = filter_products(intent)
 
     seen_ids = {m["id"] for m in matches}

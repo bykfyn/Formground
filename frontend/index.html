@@ -76,7 +76,7 @@
     width: 100%;
     max-width: 1160px;
     margin: 0 auto;
-    padding: 0 20px 40px;
+    padding: 0 20px 28px;
   }
 
   .search-wide {
@@ -100,11 +100,12 @@
   }
   .top-nav a:hover { color: var(--text-primary); }
 
-  /* --- hero --- */
-  .hero { text-align: center; margin-bottom: 20px; }
-  .hero-title {
-    font-family: 'Archivo', sans-serif; font-weight: 700; letter-spacing: -0.01em;
-    font-size: 30px; line-height: 1.25; max-width: 900px; margin: 0 auto; text-wrap: balance;
+  /* Visually hidden but still readable by search engines/screen readers -
+     the wordmark carries the page visually, but the page still needs a
+     real h1 for SEO/accessibility. */
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
   }
 
   /* --- category grid --- */
@@ -114,7 +115,7 @@
      grid's auto-fit tracks would leave it stuck to the left edge instead. */
   .category-grid {
     display: flex; flex-wrap: wrap; justify-content: center;
-    gap: 20px; margin: 20px 0 40px;
+    gap: 20px; margin: 100px 0 40px;
   }
   /* Fixed size on the figure (the actual flex item, since each figure
      wraps its own rotating <a>), not flex-grow - a lone leftover item
@@ -122,7 +123,7 @@
      making it bigger than its siblings above. Every card stays the
      same size regardless of how many share its row; flex-wrap +
      justify-content:center still centers a partial row. */
-  .category-grid figure { flex: 0 0 180px; margin: 0; }
+  .category-grid figure { flex: 0 0 200px; margin: 0; }
   .category-grid a {
     display: block; text-decoration: none; color: inherit;
   }
@@ -139,11 +140,6 @@
   }
 
   /* --- search --- */
-  .search-lead {
-    text-align: center; font-size: 12px; color: var(--text-muted);
-    max-width: 480px; margin: 18px auto 0; line-height: 1.6; opacity: 0.85;
-  }
-
   .ask-box {
     display: flex; align-items: center; gap: 10px;
     background: var(--surface-1); border: 0.5px solid var(--border);
@@ -171,22 +167,15 @@
     .inline-chip { padding: 9px; }
   }
 
-  /* --- teasers --- */
-  .teasers {
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    max-width: 480px; margin: 32px auto 0; padding-top: 28px; border-top: 1px solid var(--border);
-  }
-  .teasers p { margin: 0; font-size: 13.5px; color: var(--text-secondary); text-align: center; }
-  .teasers a { color: var(--text-accent); text-decoration: none; font-weight: 500; }
-  .teasers a:hover { text-decoration: underline; }
-
   /* --- footer --- */
   /* color is --text-secondary, not --text-muted - fails WCAG contrast
      against --bg otherwise (confirmed via Lighthouse), and this is
-     real navigation, not decorative chrome. */
+     real navigation, not decorative chrome. margin-top: auto pushes it
+     to the bottom of `main` (a flex column, itself flex:1 in the
+     full-height body) instead of sitting right under the search box. */
   .foot-note {
     font-size: 11px; color: var(--text-secondary); text-align: center;
-    margin-top: 48px; padding-top: 24px; line-height: 1.6;
+    margin-top: 160px; padding-top: 28px; line-height: 1.6;
     border-top: 0.5px solid var(--border);
   }
   .foot-note a { color: var(--text-secondary); }
@@ -207,9 +196,7 @@
     </nav>
   </header>
 
-  <div class="hero">
-    <h1 class="hero-title">Discover work by architects, designers and makers.</h1>
-  </div>
+  <h1 class="sr-only">Discover work by architects, designers and makers.</h1>
 
   <section class="category-grid">
     <figure style="margin:0;">
@@ -219,25 +206,25 @@
       </a>
     </figure>
     <figure style="margin:0;">
-      <a href="furniture.html">
+      <a href="work.html?q=furniture">
         <div class="cat-photo"><img src="https://verk.se/wp-content/uploads/2023/02/Karmstol-V.EU_.01-1-1680x1831-1-860x937.jpg" alt="Armchair V.EU.01 by Verk" loading="lazy"></div>
         <p class="cat-name">Furniture</p>
       </a>
     </figure>
     <figure style="margin:0;">
-      <a href="lighting.html">
+      <a href="work.html?q=lighting">
         <div class="cat-photo"><img src="https://new.se-collections.com/wp-content/uploads/2021/04/Moirai-Table-Lamp-Version-B-Amber-2-800x800.jpg" alt="Moirai Table Lamp Version B by Sé Collections" loading="lazy"></div>
         <p class="cat-name">Lighting</p>
       </a>
     </figure>
     <figure style="margin:0;">
-      <a href="ceramics.html">
+      <a href="work.html?q=ceramics">
         <div class="cat-photo"><img src="https://cdn.shopify.com/s/files/1/0593/6984/9030/files/OOCI_MediumRosso_INV_00000_01.webp?v=1743690417" alt="Vaso by Bitossi Ceramiche" loading="lazy"></div>
         <p class="cat-name">Ceramics</p>
       </a>
     </figure>
     <figure style="margin:0;">
-      <a href="objects.html">
+      <a href="work.html?q=objects">
         <div class="cat-photo"><img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/C6-SS-web-01.jpg?v=1712655548" alt="Floor Candleholder by Minimalux" loading="lazy"></div>
         <p class="cat-name">Objects</p>
       </a>
@@ -248,16 +235,10 @@
     <form id="search-form">
       <div class="ask-box">
         <i class="ti ti-search" aria-hidden="true"></i>
-        <input id="query-input" type="text" placeholder="an oak dining table, a brass wall light, a ceramic vase…" autocomplete="off">
+        <input id="query-input" type="text" placeholder="Search through a curated collection of work" autocomplete="off">
         <button type="button" class="inline-chip" id="discover-chip" aria-label="Surprise me"><i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Surprise me</span></button>
       </div>
     </form>
-    <p class="search-lead">Search through a curated collection of work, where equally relevant results are shown in random order and link straight to the source. No paid results.</p>
-  </div>
-
-  <div class="teasers">
-    <p>Looking for who made it? <a href="creators.html">Browse Creators &rarr;</a></p>
-    <p>Looking for what's newest? <a href="new.html">Browse recently added &rarr;</a></p>
   </div>
 
   <p class="foot-note">
