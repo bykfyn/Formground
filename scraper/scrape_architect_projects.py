@@ -254,7 +254,21 @@ def candidate_images(page):
     )
     seen = []
     for src in og_images + other_images:
-        if src and src not in seen:
+        if not src:
+            continue
+        # Upgraded to https unconditionally, not just when the domain is
+        # known to support it - confirmed live 2026-09-20 on real pushed
+        # data: an http:// image URL is already unusable on formground.com
+        # (an https page) regardless of source-domain support, since
+        # browsers block/fail to fetch it as mixed content. Rewriting to
+        # https can only help (the 4-of-5 real domains checked that day
+        # all supported it fine) and never makes an already-broken image
+        # worse. A domain with truly no HTTPS at all (confirmed that day
+        # for arrhovfrick.se) still needs its images rehosted by hand -
+        # this doesn't solve that case, just stops it from being silent.
+        if src.startswith("http://"):
+            src = "https://" + src[len("http://"):]
+        if src not in seen:
             seen.append(src)
     return seen
 
