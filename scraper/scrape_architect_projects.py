@@ -16,6 +16,27 @@ WHAT THIS DOES:
 STATUS: prototype, testing against 2 firms (Björn Lundquist, Ascape) before
 scaling to the other 8 confirmed-qualifying firms.
 
+2026-09-20 UPDATE: the curated firm list (scraper/architects.json) was
+entirely replaced with 16 new candidates sourced from ArchDaily/Divisare/
+Architizer (editorially curated for design quality, per the user's own
+finding that the prior Sveriges Arkitekter member-list source wasn't
+style-vetted at all - zero overlap between the two pools). Real-site
+survey that same day found 12 of the 16 have genuine, separately-URLed
+project pages; the other 4 (Metropolis Arkitekter, Mikael Bergquist/
+mba.nu, Jonas Lindvall, GIPP Arkitektur) don't - no real per-project
+links exist in their page DOM (spatial-nav grid, stale Blogspot, image-
+only slideshow, unlabeled JS gallery), so they're excluded here, same as
+LZN/Aldén/Yep/Siegel were excluded from the original 10 for their own
+reasons. Reppen Vilson (also from the new sourcing) is ALSO excluded
+here even though it has real project names - they live as same-page
+hash anchors with no separate URL per project, so this page's per-URL
+fetch model can't isolate one project's content from the rest; it would
+need bespoke DOM-scoped extraction, not attempted this pass. ALL_FIRMS
+below is now the new 11, replacing the original 10 (that earlier batch
+already shipped as the previous docs/architects/ roster and is being
+fully replaced, not extended - see the user's own instruction to
+replace, not add to, the old roster).
+
 RUN: python3 scrape_architect_projects.py
 """
 
@@ -29,78 +50,85 @@ import requests
 from dotenv import load_dotenv
 from playwright.sync_api import sync_playwright
 
+from scrape_architects import is_architecture_relevant
+
 SCRAPER_DIR = Path(__file__).parent
 load_dotenv(SCRAPER_DIR.parent / "backend" / ".env")
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 TEXT_MODEL = "claude-haiku-4-5-20251001"
 
-# All 10 firms confirmed 2026-09-19 (real manual browsing this session) to
-# pass the dual bar: real individually-designed houses exist, and the firm's
-# real work is contemporary/modern (not restoration, not large-scale
-# multi-unit/commercial only). Excluded: LZN (no real project data), Aldén
-# Arkitektur (restoration-focused), Yep Arkitekter (institutional/commercial),
-# Siegel (large-scale apartment blocks only) - see project memory
-# (architects_craftspeople_search_gap.md) for the full reasoning.
+# The new 11 (2026-09-20), real-browsed to find each firm's actual project
+# listing page and URL pattern - see the module docstring for why 5 of the
+# 16 new candidates (Metropolis, mba.nu, Jonas Lindvall, GIPP, Reppen Vilson)
+# aren't here. "url" is each firm's real project-listing page, not
+# necessarily its homepage - matches the pattern already established below
+# (e.g. Andersson Arfwedson's old entry pointed straight at /projekt/).
 ALL_FIRMS = [
     {
-        "name": "Björn Lundquist Arkitektur AB",
-        "url": "https://www.bjornlundquist.se/",
+        "name": "Arrhov Frick Arkitektkontor",
+        "url": "http://www.arrhovfrick.se/archive",
+        "nav_click_text": None,
+        "link_prefix": None,  # no shared prefix - real projects are root-level slugs
+    },
+    {
+        "name": "Elding Oscarson",
+        "url": "https://www.eldingoscarson.com/work",
         "nav_click_text": None,
         "link_prefix": "/work/",
     },
     {
-        "name": "Ascape Arkitektur AB",
-        "url": "https://www.ascape.se/",
-        "nav_click_text": "Projekt",  # client-side rendered, needs a real click
-        "link_prefix": None,
+        "name": "Förstberg Ling",
+        "url": "https://www.forstbergling.com/",
+        "nav_click_text": None,
+        "link_prefix": "/work/",
     },
     {
-        "name": "Arkitekt Lotta Lander",
-        "url": "http://www.lottalander.se/",
+        "name": "Murman Arkitekter",
+        "url": "https://www.murman.se/projekt/",
         "nav_click_text": None,
-        "link_prefix": None,
+        "link_prefix": None,  # no shared prefix - real projects are root-level slugs
     },
     {
-        "name": "Malmström Edström Arkitekter Ingenjörer AB",
-        "url": "https://www.malmstromedstrom.se/projekt-arkiv/",
+        "name": "Ateljé Ö",
+        "url": "https://ateljeo.se/archive/",
         "nav_click_text": None,
-        "link_prefix": "/projekt/",
+        "link_prefix": "/archive/",
     },
     {
-        "name": "Arkitektkontor Arén & Yde AB",
-        "url": "https://aren-yde.se/projekt-privatbostader/",
+        "name": "Kolman Boye Architects",
+        "url": "https://kolmanboye.se/works/",
         "nav_click_text": None,
-        "link_prefix": None,
+        "link_prefix": "/project/",
     },
     {
-        "name": "Accent Arkitekter AB",
-        "url": "http://accentarkitekter.se/projekt/",
+        "name": "Jägnefält Milton",
+        "url": "https://jagnefaltmilton.se/selected/",
         "nav_click_text": None,
-        "link_prefix": None,
+        "link_prefix": "/catalogue/",
     },
     {
-        "name": "Andersson Arfwedson arkitekter AB",
-        "url": "https://www.andersson-arfwedson.se/projekt/",
+        "name": "Johan Sundberg Arkitektur",
+        "url": "https://www.johansundberg.com/projekt",
         "nav_click_text": None,
-        "link_prefix": "/projekt/",
+        "link_prefix": "/projekt/alla/privatbostader/",
     },
     {
-        "name": "Dahlberg Busnardo Arkitektur & Landskap AB",
-        "url": "https://dabuark.se/work/",
+        "name": "Tham & Videgård Arkitekter",
+        "url": "https://www.tvark.se/works",
         "nav_click_text": None,
-        "link_prefix": None,
+        "link_prefix": "/work/",
     },
     {
-        "name": "Kontrast AB",
-        "url": "https://kontrastarkitekter.se/projekt",
+        "name": "Karlsson/Lauri Arkitekter",
+        "url": "https://www.karlssonlauri.se/work",
         "nav_click_text": None,
-        "link_prefix": "/projekt/",
+        "link_prefix": None,  # no shared prefix - real projects are root-level slugs
     },
     {
-        "name": "Åbergs Arkitektkontor AB",
-        "url": "https://abergsarkitektkontor.se/privat/",
+        "name": "CAMPUS",
+        "url": "https://www.thecampus.se/buildings",
         "nav_click_text": None,
-        "link_prefix": None,
+        "link_prefix": "/buildings/",
     },
 ]
 
@@ -201,6 +229,36 @@ def extract_page_content(page):
     return "\n\n".join(parts)
 
 
+def candidate_images(page):
+    """Ordered list of real-photo candidates for one project page: og:image
+    first (a portfolio site's own chosen representative image for the
+    page), then every other rendered <img> large enough to not be a logo/
+    icon/nav thumbnail (naturalWidth > 400), largest first. Returns a list,
+    not one answer, because og:image is sometimes a floor plan or process
+    sketch rather than a finished-building photo (confirmed live on Arrhov
+    Frick's site) - main() vision-checks candidates in this order and
+    takes the first that's a real building/interior photo.
+
+    eval_on_selector_all, not eval_on_selector, for the og:image lookup -
+    confirmed live on Murman's site (no og:image tag at all): the single-
+    element version throws when zero elements match instead of returning
+    null, which was silently killing extraction for the whole page, not
+    just the image, since both shared one try/except in main()."""
+    og_images = page.eval_on_selector_all('meta[property="og:image"]', "els => els.map(e => e.content)")
+    other_images = page.eval_on_selector_all(
+        "img",
+        """els => els
+            .filter(e => e.naturalWidth > 400 && e.naturalHeight > 300)
+            .sort((a, b) => (b.naturalWidth * b.naturalHeight) - (a.naturalWidth * a.naturalHeight))
+            .map(e => e.src)""",
+    )
+    seen = []
+    for src in og_images + other_images:
+        if src and src not in seen:
+            seen.append(src)
+    return seen
+
+
 def main():
     results = {}
     with sync_playwright() as p:
@@ -220,11 +278,30 @@ def main():
                     print(f"  fetch error {link}: {e}")
                     continue
                 extracted = call_claude_extract(text)
-                if extracted:
-                    extracted["url"] = link
-                    firm_results.append(extracted)
-                    mark = "HOUSE" if extracted.get("is_house") else "skip"
-                    print(f"  [{mark}] {link} -> {extracted.get('name')}")
+                if not extracted:
+                    continue
+                extracted["url"] = link
+                image = None
+                img_mark = "skip"
+                if extracted.get("is_house"):
+                    # Vision-check candidates in order, cheapest-first
+                    # (skip the check entirely for non-houses - their
+                    # image is never used, so it's not worth the API
+                    # call). Confirmed live on Arrhov Frick: og:image is
+                    # sometimes a floor plan or process sketch, not a
+                    # finished-building photo - the vision check (already
+                    # built for this exact case in scrape_architects.py)
+                    # catches that instead of silently using the wrong
+                    # image or, worse, none at all.
+                    for candidate in candidate_images(page):
+                        if is_architecture_relevant(candidate):
+                            image = candidate
+                            break
+                    img_mark = "img" if image else "NO-REAL-IMG"
+                extracted["image"] = image
+                firm_results.append(extracted)
+                mark = "HOUSE" if extracted.get("is_house") else "skip"
+                print(f"  [{mark}][{img_mark}] {link} -> {extracted.get('name')}")
                 time.sleep(0.3)
             results[firm["name"]] = firm_results
         browser.close()
