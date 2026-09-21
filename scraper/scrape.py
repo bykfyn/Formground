@@ -1196,6 +1196,35 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Mass Productions", "Patch Config. B"): "Sofa",
     ("Mass Productions", "Patch Config. C"): "Sofa",
     ("Mass Productions", "Patch Config. D"): "Sofa",
+    # Editions Midi names every product in Occitan/Provençal (its own
+    # regional-heritage identity - "Midi" is the South of France), so
+    # none give the English keyword list anything to match. Checked
+    # each of the 23 against editions-midi.com's own real English
+    # product descriptions (2026-09-21), which usually translate the
+    # name outright (e.g. "Cadiero, means chair in Provençal").
+    ("Editions Midi", "Ageinouiadou"): "Chair",  # "inspired by the wet nurse's chair... could also serve as Prie-Dieu"
+    ("Editions Midi", "Alòngui pèr dous"): "Chaise",  # "this 2-seater deckchair"
+    ("Editions Midi", "Alòngui pèr un"): "Chaise",  # 1-seater version of the same deckchair
+    ("Editions Midi", "Banc"): "Bench",
+    ("Editions Midi", "Bancoun"): "Bench",  # "Bancoun 2-seater" per Banc's own description
+    ("Editions Midi", "Bancounet"): "Bench",  # "Bancounet 1-seater" per Banc's own description
+    ("Editions Midi", "Bergierio"): "Armchair",  # "Bergerio, shepherdess in Provencal" - a bergère-style low armchair
+    ("Editions Midi", "Bugadiero"): "Bowl",  # "the enamelled bowl resting on a terracotta base"
+    ("Editions Midi", "Burèu"): "Desk",  # "The Burèu desk..."
+    ("Editions Midi", "Cadieras"): "Chair",  # "The Cadieras chair is a reinterpretation of the Provence chair"
+    ("Editions Midi", "Cadiero"): "Chair",  # "Cadiero, means chair in Provençal"
+    ("Editions Midi", "Chaminèio"): "Armchair",  # "nicknamed the fireplace armchair"
+    ("Editions Midi", "Counsciènci"): "Vessel",  # a slender ceramic olive-oil storage/transport vessel
+    ("Editions Midi", "Fautuei"): "Armchair",  # "Fautuei, means armchair in Provençal"
+    ("Editions Midi", "Gargouleto"): "Pitcher",  # "this jug is very emblematic of the South of France... this water jug"
+    ("Editions Midi", "Maloun"): "Tile",  # "these enameled terracotta tiles"
+    ("Editions Midi", "Penequet"): "Sofa",  # "a generously sized sofa" - upholstered version of Radassié
+    ("Editions Midi", "Radassié"): "Sofa",  # the base (non-upholstered) version of Penequet
+    ("Editions Midi", "Ramo"): "Side Table, Stool",  # "used as a side table or a stool"
+    ("Editions Midi", "Roucaio"): "Coffee Table",  # "the table, Roucaio... revisits the concrete faux bois"
+    ("Editions Midi", "Roujo"): "Coffee Table",  # "for this coffee table..."
+    ("Editions Midi", "Tabouret"): "Stool",  # "each MIDI stool is made of..."
+    ("Editions Midi", "Taulo"): "Dining Table",  # "Taulo means table in Provençal... large farm tables"
 }
 
 
