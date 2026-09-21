@@ -1018,7 +1018,8 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("coat rack", "Coat Stand"), ("coat stand", "Coat Stand"), ("winerack", "Wine Rack"),
     ("bookend", "Bookend"), ("candle holder", "Candle Holder"), ("candleholder", "Candle Holder"),
     ("ottoman", "Ottoman"), ("seater", "Sofa"), ("shelf", "Shelving"), ("urn", "Urn"),
-    ("coupe", "Coupe"), ("grinder", "Mill"),
+    ("coupe", "Coupe"), ("grinder", "Mill"), ("bottle opener", "Bottle Opener"),
+    ("runner", "Rug"), ("mat", "Rug"), ("hook", "Coat Hook"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -1031,7 +1032,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 # against ENGLISH_OBJECT_TYPE_KEYWORDS the same way Pinch's were.
 CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
-    "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger",
+    "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
 }
 
 
@@ -2752,8 +2753,10 @@ def extract_grain(brand):
     (unlike other Squarespace brands in this project), so the HTML listing
     is the only option anyway. Excludes anything with "sample" in the name
     (confirmed: 4 real material-swatch listings mixed into the main /shop
-    grid, $1 each - not design objects) since there's no separate category
-    field to filter on generically.
+    grid, $1 each - not design objects), and "utility card" (confirmed
+    live 2026-09-21: a letterpress-printed paper greeting card, not a
+    design object either) since there's no separate category field to
+    filter on generically.
     """
     domain = brand["url"].rstrip("/")
     url = f"{domain}/shop"
@@ -2769,7 +2772,7 @@ def extract_grain(brand):
     seen_urls = set()
     for a in soup.find_all("a", class_="product-list-item-link", href=True):
         name = a.get("aria-label", "").strip()
-        if not name or "sample" in name.lower():
+        if not name or "sample" in name.lower() or "utility card" in name.lower():
             continue
         product_url = f"{domain}{a['href']}" if a["href"].startswith("/") else a["href"]
         if product_url in seen_urls:
@@ -2783,7 +2786,7 @@ def extract_grain(brand):
             "brand_url": brand["url"],
             "product_name": name,
             "product_url": product_url,
-            "category": "",
+            "category": _infer_category_from_name(name, "", brand["name"]),
             "material_options": [],
             "dimensions": "",
             "notes": "",
