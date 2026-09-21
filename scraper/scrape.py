@@ -2800,9 +2800,17 @@ def extract_monsieur_cailloux(brand):
     sibling with the real name and price, plus an <img> in a repeater
     block. No pagination controls found (checked), so the ~28 items on
     this one page are treated as the full catalog for this single-artist
-    ceramics practice. No per-piece category (the site's own categories
-    are color swatches - /category/white, /category/black, etc - not
-    object types), left blank.
+    ceramics practice. The site's own categories are color swatches -
+    /category/white, /category/black, etc - not object types, and every
+    piece is named just "Specimen N°XXX" with no distinguishing word of
+    any kind. But every one really is the same object type - checked
+    several of the real product photos (2026-09-21): small, non-
+    functional decorative ceramic sculptures, not vessels - so
+    hardcoded as "Sculpture" here rather than left blank. Matches
+    neither UMBRELLA_KEYWORDS nor HYPERNYM_WORDS's Ceramics lists (both
+    are vessel-shaped words - vase/bowl/plate/...), so it correctly
+    falls into the Objects catch-all on both brand pages and live
+    search, not Ceramics.
     """
     domain = brand["url"].rstrip("/")
     url = f"{domain}/shop/products"
@@ -2827,7 +2835,7 @@ def extract_monsieur_cailloux(brand):
             "brand_url": brand["url"],
             "product_name": name_el.get_text(strip=True),
             "product_url": f"{domain}{link['href']}" if link["href"].startswith("/") else link["href"],
-            "category": "",
+            "category": "Sculpture",
             "material_options": [],
             "dimensions": "",
             "notes": "",
