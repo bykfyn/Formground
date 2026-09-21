@@ -1036,6 +1036,7 @@ CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
     "New Works DK", "Workstead", "Rubn", "Maruni", "AY Illuminate", "Ghidini 1961",
+    "GATOMIKIO",
 }
 
 
@@ -1367,6 +1368,58 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Rubn", "Lord Diva"): "Chandelier",  # referenced by Lord Ballroom's own description as a sibling design
     ("Rubn", "Lord Ballroom"): "Chandelier",  # "12 glass globes... suspended from a solid metal fixture"
     ("Rubn", "Lord Asymmetric"): "Chandelier",  # "mounts directly to the ceiling... six glass globes"
+    # GATOMIKIO's KARMI collection is named with a single, unrelated
+    # kanji per item and no per-product description - checked its real
+    # collection photo instead (gatomikio-store.com/collections/karmi):
+    # most are tall turned-wood vase/bottle forms (all priced ¥22,000),
+    # with 3 shorter, wider forms priced lower (¥13,200) - "重" is
+    # confirmed a tiered box shape from TSUMUGI's own "丸重" (round
+    # tiered box), so its KARMI namesake gets the same tag; the other
+    # two lower-priced ones read as shallow bowl forms in the photo.
+    ("GATOMIKIO", "KARMI 元"): "Vase",
+    ("GATOMIKIO", "KARMI 樽"): "Vase",
+    ("GATOMIKIO", "KARMI 実"): "Vase",
+    ("GATOMIKIO", "KARMI 帽"): "Vase",
+    ("GATOMIKIO", "KARMI 瓶"): "Vase",
+    ("GATOMIKIO", "KARMI 塔"): "Vase",
+    ("GATOMIKIO", "KARMI 頸"): "Vase",
+    ("GATOMIKIO", "KARMI 菱"): "Vase",
+    ("GATOMIKIO", "KARMI 俵"): "Vase",
+    ("GATOMIKIO", "KARMI 徳"): "Vase",
+    ("GATOMIKIO", "KARMI 釜"): "Vase",
+    ("GATOMIKIO", "KARMI 礎"): "Bowl",
+    ("GATOMIKIO", "KARMI 座"): "Bowl",
+    ("GATOMIKIO", "KARMI 重"): "Box",
+    # AEKA's "Object Round"/"Object Slim" (no Bowl/Vase/Plate suffix,
+    # unlike its siblings) are the two round, bulbous vase-shaped
+    # pieces shown on its own real collection photo, distinct from the
+    # flat plate-shaped pieces also in that collection.
+    ("GATOMIKIO", "AEKA Object  Round（180×90）"): "Vase",
+    ("GATOMIKIO", "AEKA Object  Round（210×110）"): "Vase",
+    ("GATOMIKIO", "AEKA Object Round（240×120）"): "Vase",
+    ("GATOMIKIO", "AEKA Object Slim（150×50）"): "Vase",
+    ("GATOMIKIO", "AEKA Object Slim（210×70）"): "Vase",
+    # TOHKA's other real items are all traditional Japanese sake
+    # vessels (杯/片口/猪口) - Champagne/Cocktail/Wine are the same
+    # collection's Western-style drinkware equivalents.
+    ("GATOMIKIO", "TOHKA Champagne"): "Glass",
+    ("GATOMIKIO", "TOHKA Cocktail"): "Glass",
+    ("GATOMIKIO", "TOHKA WINE"): "Glass",
+    # KOTON's own real description: "a simple wooden container...
+    # 椀・鉢・皿としてもお使い頂けます" ("can also be used as a bowl/
+    # hachi/plate") - U/V/Y are just its shape variants.
+    ("GATOMIKIO", "KOTON U Type"): "Bowl",
+    ("GATOMIKIO", "KOTON V Type"): "Bowl",
+    ("GATOMIKIO", "KOTON Y Type"): "Bowl",
+    # MATEVARI's own real description: "MATEVARI is named as abbreviated
+    # from 'Material Variation.' Choose any bowls you like from five
+    # kinds of wood" - the 5 names are just tree species (zelkova, oak,
+    # beech, maple, cherry), not object types.
+    ("GATOMIKIO", "MATEVARI 欅"): "Bowl",
+    ("GATOMIKIO", "MATEVARI 楢"): "Bowl",
+    ("GATOMIKIO", "MATEVARI 橅"): "Bowl",
+    ("GATOMIKIO", "MATEVARI 楓"): "Bowl",
+    ("GATOMIKIO", "MATEVARI 桜"): "Bowl",
     # Established & Sons: 32 confirmed via the site's own real category
     # pages (/collection/categories/{name}), 7 more checked against
     # their own real "Description:" field since they're current
@@ -1470,6 +1523,31 @@ def _infer_rubn_category(product_name):
     return None
 
 
+# GATOMIKIO names many products in Japanese - kanji/katakana script has
+# no spaces, so the shared keyword matcher's \b-anchored regex (built
+# for English) never matches a CJK term embedded in a longer string
+# (confirmed live 2026-09-21: \b杯\b does NOT match "酒杯", since
+# Python's word-boundary logic treats consecutive CJK characters as one
+# continuous word with no internal boundary) - checked via plain
+# substring search instead, safe here since these are specific,
+# multi-character Japanese ceramics/tea-ware terms, not standalone
+# words that could collide with something unrelated.
+GATOMIKIO_JAPANESE_KEYWORDS = (
+    ("高台盛器", "Bowl"), ("一輪挿し", "Vase"), ("金輪寺", "Tea Caddy"), ("中次", "Tea Caddy"),
+    ("中棗", "Tea Caddy"), ("平棗", "Tea Caddy"), ("茶筒", "Tea Caddy"), ("吹雪", "Tea Caddy"),
+    ("丸重", "Box"), ("chabako", "Box"), ("片口", "Pitcher"), ("猪口", "Cup"), ("湯呑", "Cup"),
+    ("杯", "Cup"), ("椀", "Bowl"), ("鉢", "Bowl"), ("ボウル", "Bowl"), ("皿", "Plate"),
+    ("プレート", "Plate"), ("カップ", "Cup"),
+)
+
+
+def _infer_gatomikio_category(product_name):
+    for phrase, category in GATOMIKIO_JAPANESE_KEYWORDS:
+        if phrase in product_name:
+            return category
+    return None
+
+
 def _infer_category_from_name(product_name, current_category, brand_name=None):
     if current_category.strip().lower() not in UNHELPFUL_CATEGORIES:
         return current_category
@@ -1481,6 +1559,10 @@ def _infer_category_from_name(product_name, current_category, brand_name=None):
         rubn_match = _infer_rubn_category(product_name)
         if rubn_match:
             return rubn_match
+    if brand_name == "GATOMIKIO":
+        gatomikio_match = _infer_gatomikio_category(product_name)
+        if gatomikio_match:
+            return gatomikio_match
     if brand_name in CATEGORY_KEYWORD_FALLBACK_BRANDS:
         keyword_match = _infer_category_from_english_keywords(product_name)
         if keyword_match:
