@@ -1020,6 +1020,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("ottoman", "Ottoman"), ("seater", "Sofa"), ("shelf", "Shelving"), ("urn", "Urn"),
     ("coupe", "Coupe"), ("grinder", "Mill"), ("bottle opener", "Bottle Opener"),
     ("runner", "Rug"), ("mat", "Rug"), ("hook", "Coat Hook"), ("flush mount", "Flush Mount"),
+    ("cushion", "Cushion"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -1033,7 +1034,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
-    "New Works DK", "Workstead", "Rubn",
+    "New Works DK", "Workstead", "Rubn", "Maruni",
 }
 
 
@@ -3375,7 +3376,7 @@ def extract_maruni(brand):
             "brand_url": brand["url"],
             "product_name": name,
             "product_url": url,
-            "category": "",
+            "category": _infer_category_from_name(name, "", brand["name"]),
             "material_options": [],
             "dimensions": "",
             "notes": "",
