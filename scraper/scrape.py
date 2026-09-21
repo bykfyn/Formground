@@ -1320,7 +1320,8 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("La Chambre d'Ami", "Organisateur de Bureau - Petit"): "Desk Organiser",
     ("La Chambre d'Ami", "PROTOTYPE - 013"): "Lamp",  # "cette lampe fait partie d'une recherche..."
     ("La Chambre d'Ami", "PROTOTYPE - 073"): "Lamp",  # same prototype-lamp series as PROTOTYPE - 013
-    ("La Chambre d'Ami", "PROTOTYPE - FLOWER 1"): "Lamp",  # same series, page since retired
+    # "PROTOTYPE - FLOWER 1" removed 2026-09-21 - confirmed retired
+    # (see LA_CHAMBRE_DAMI_SKIP_SLUGS), not a category gap.
     ("La Chambre d'Ami", "Pique-Fleur Séchées"): "Flower Frog",  # "11 trous pour placer vos fleurs séchées"
     ("La Chambre d'Ami", "Porte Savon Classique"): "Soap Dish",
     ("La Chambre d'Ami", "Porte Savon Vertical"): "Soap Dish",
@@ -2435,6 +2436,12 @@ LA_CHAMBRE_DAMI_SKIP_SLUGS = {
     "ampoule-e27",
     "suspension-électrique-e27",
     "tote-bag-cadeau",
+    # A genuinely retired listing, not a category gap - its own sitemap
+    # URL still 200s, but the page itself says "Cet article est
+    # introuvable" (this article can't be found), confirmed live
+    # 2026-09-21 while auditing other brands for Established & Sons'
+    # same "discontinued but still listed" pattern.
+    "prototype-flower-1",
 }
 
 
