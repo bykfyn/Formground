@@ -1013,7 +1013,8 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("mirror", "Mirror"), ("desk", "Desk"), ("chair", "Chair"), ("rug", "Rug"),
     ("sidechair", "Chair"), ("swivel", "Chair"), ("tray", "Tray"), ("mill", "Mill"),
     ("sconce", "Sconce"), ("pouf", "Ottoman"), ("credenza", "Credenza"), ("box", "Box"),
-    ("bowl", "Bowl"), ("vase", "Vase"), ("plate", "Plate"),
+    ("bowl", "Bowl"), ("vase", "Vase"), ("plate", "Plate"), ("boxes", "Box"),
+    ("screen", "Screen"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -1024,7 +1025,9 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 # false positives on other brands (Minimalux, Ingo Maurer - see project
 # memory). Widen only after checking a brand's own real product names
 # against ENGLISH_OBJECT_TYPE_KEYWORDS the same way Pinch's were.
-CATEGORY_KEYWORD_FALLBACK_BRANDS = {"Pinch", "Mater", "H. Bigeleisen", "Jon Goulder"}
+CATEGORY_KEYWORD_FALLBACK_BRANDS = {
+    "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
+}
 
 
 # A handful of real products give the keyword/name-based inference
@@ -1147,6 +1150,7 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Shibui", "O bottle opener"): "Bottle Opener",
     ("Jon Goulder", "Innate - Coffee Table + Side Table"): "Coffee Table, Side Table",
     ("Jon Goulder", "Catalogue - Terrain"): "Table",  # jongoulder.com: a real 3m collaborative table piece, not a downloadable catalogue despite the title
+    ("Mercoeur Editions", "Komorebi Steles"): "Stele",  # a real, specific design term (a standing sculptural panel) - kept as its own word rather than forced into a broader bucket
 }
 
 
@@ -1162,7 +1166,14 @@ def _infer_category_from_english_keywords(product_name):
             # "waste light" never means an actual light fixture
             # anywhere in this catalog.
             continue
-        if re.search(rf"\b{re.escape(phrase)}\b", text):
+        # Optional trailing "s" - confirmed live 2026-09-21: "Ondine
+        # Set of 3 boxes" (Mercoeur Editions) didn't match "box" at all
+        # without this, since a bare \b-anchored pattern requires an
+        # exact word match. Same "s?" approach as query_engine.py's own
+        # _category_matches. Irregular plurals (box -> boxes, not
+        # "boxs") get their own explicit keyword entry instead of a
+        # more complex pluralizer.
+        if re.search(rf"\b{re.escape(phrase)}s?\b", text):
             return category
     return None
 
@@ -2172,10 +2183,17 @@ def extract_mercoeur_editions(brand):
     """
     mercoeur-edition.com (Webflow) server-renders its full 18-item catalog
     on one /all-products listing page - name, link, and image for every
-    product in one fetch, no per-product pages needed. No reliable category
-    signal (slug and display-name word order don't agree, e.g.
-    /products/boxes-ondine is titled "Ondine Set of 3 boxes"), left blank -
-    same tradeoff as B-Line Italia/H. Bigeleisen.
+    product in one fetch, no per-product pages needed. Each name is really
+    two separate text nodes (collection name, then object type, e.g.
+    "Ondine" + "Set of 3 boxes") with no space between them in the
+    markup - get_text(strip=True) was concatenating them straight
+    together ("OndineSet of 3 boxes"), a real display-name bug caught
+    while investigating why this brand had no category data at all, not
+    just a categorization gap (confirmed live 2026-09-21: every one of
+    its 18 products was affected). get_text(" ", strip=True) joins them
+    with the space the markup itself doesn't have, which also makes the
+    object type in each name matchable by the shared English keyword
+    inference below.
     """
     domain = brand["url"].rstrip("/")
     url = f"{domain}/all-products"
@@ -2192,7 +2210,7 @@ def extract_mercoeur_editions(brand):
         if "/products/" not in a["href"]:
             continue
         img = a.find("img")
-        name = a.get_text(strip=True)
+        name = a.get_text(" ", strip=True)
         if not img or not name:
             continue
 
@@ -2201,7 +2219,7 @@ def extract_mercoeur_editions(brand):
             "brand_url": brand["url"],
             "product_name": name,
             "product_url": f"{domain}{a['href']}" if a["href"].startswith("/") else a["href"],
-            "category": "",
+            "category": _infer_category_from_name(name, "", brand["name"]),
             "material_options": [],
             "dimensions": "",
             "notes": "",
