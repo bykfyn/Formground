@@ -1519,6 +1519,32 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Established & Sons", "Quilt"): "Upholstery",
 }
 
+# Same idea as MANUAL_CATEGORY_OVERRIDES above, but for a picked image
+# that's flat wrong rather than a missing category - confirmed by opening
+# the extractor's chosen image_url directly and comparing it against the
+# brand's own real product photos. Sizar Alexis's extract_sizar_alexis()
+# picks each piece's image by walking the page and remembering the most
+# recent <img> src seen before that piece's own <strong> name tag - a
+# heuristic that works for most pieces on the site but fails when a
+# piece's own photo gallery ends with a macro/detail close-up (a joinery
+# corner, a single screw) rather than a straight-on shot, since "most
+# recent before the name" always grabs whichever photo comes last in the
+# gallery regardless of what it actually shows. Confirmed on
+# sizaralexis.se 2026-09-21: BEL's own gallery ends on a tight crop of
+# just its base, and ITOORABA's dining chair/sideboard entries each end
+# on an extreme close-up of a leg or corner joint, with a real full-piece
+# shot sitting earlier in that same per-piece image block every time.
+# Applied in run()'s save loop like MANUAL_CATEGORY_OVERRIDES, so it
+# survives this brand's weekly re-scrape instead of reverting.
+MANUAL_IMAGE_OVERRIDES = {
+    ("Sizar Alexis", "BEL – A Waste Vessel"):
+        "https://sizaralexis.se/wp-content/uploads/2026/08/IMG_1998-scaled.jpg",
+    ("Sizar Alexis", "ITOORABA Dining Chair"):
+        "https://sizaralexis.se/wp-content/uploads/2025/05/IMG_0033-scaled.jpg",
+    ("Sizar Alexis", "ITOORABA Sideboard"):
+        "https://sizaralexis.se/wp-content/uploads/2025/05/ITOORABA-Sideboard-Front1.jpg",
+}
+
 
 def _infer_category_from_english_keywords(product_name):
     text = product_name.lower()
@@ -4410,6 +4436,9 @@ def run(brand_name=None):
                 override = MANUAL_CATEGORY_OVERRIDES.get((brand["name"], product["product_name"]))
                 if override:
                     product["category"] = override
+                image_override = MANUAL_IMAGE_OVERRIDES.get((brand["name"], product["product_name"]))
+                if image_override:
+                    product["image_url"] = image_override
                 save_product(conn, product)
             print(f"  Saved {len(products)} products in {brand_seconds}s.")
             brand_reports.append({
