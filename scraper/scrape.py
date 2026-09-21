@@ -1036,7 +1036,7 @@ CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
     "New Works DK", "Workstead", "Rubn", "Maruni", "AY Illuminate", "Ghidini 1961",
-    "GATOMIKIO", "Raawii",
+    "GATOMIKIO", "Raawii", "Wendelbo",
 }
 
 
@@ -1092,7 +1092,6 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Silcohaus", "Arno Tall"): "Floor Lamp",  # silcohaus.com: "Arno Tall is more than a floor lamp"
     ("Silcohaus", "Arno Short"): "Lamp",  # companion piece to Arno Tall, own tags confirm "Category: Lighting"
     ("Silcohaus", "Luno Side"): "Side Table",  # URL confirms "luna-side-table"
-    ("Wendelbo", "Edge V1 Sofa"): "Sofa",
     ("Birgit Severin", "Alteration"): "Lamp",  # "counter-weight lamp allowing to adjust the light temperature"
     ("Birgit Severin", "Ashes"): "Vase",  # "rubber vases embracing the transience of life"
     ("Birgit Severin", "Heimat"): "Lamp",  # "burned in fire - lampshade exploring memories"
@@ -1662,7 +1661,7 @@ def _base_name(title, brand_name=None):
     """
     title = re.sub(r"<br\s*/?>", " ", title)
     title = re.sub(r"型\s*$", " Type", title.strip())
-    if brand_name == "Raawii":
+    if brand_name in ("Raawii", "Wendelbo"):
         # Raawii's titles are "Designer - Line - Type - Size - Color",
         # several real hierarchy levels, not just "Name - Finish" -
         # splitting on the FIRST separator (the general case below)
@@ -1671,10 +1670,13 @@ def _base_name(title, brand_name=None):
         # live 2026-09-21: "Michael Kvium - Jam - centrepiece" and
         # "Michael Kvium - Jam - candleholder" - two unrelated objects
         # - both collapsed to just "Michael Kvium", taking this
-        # brand's real catalog from 432 products down to 42). Splitting
-        # on the LAST separator instead treats only the trailing
-        # color/finish word as the variant, keeping every other real
-        # distinction (designer, line, type, size) intact.
+        # brand's real catalog from 432 products down to 42). Wendelbo
+        # has the identical shape ("Ridge - Lounge Chair - Baru col.
+        # 0950", "Panorama Dine - Compact Pouf/Compact Chair/Mod. 04 +
+        # 04 - ...") and the identical bug (491 live listings, only 110
+        # kept). Splitting on the LAST separator instead treats only
+        # the trailing color/finish word as the variant, keeping every
+        # other real distinction (designer/line, type, size) intact.
         return title.rsplit(" - ", 1)[0].strip() if " - " in title else title.strip()
     match = re.search(r"\s[/–—-]\s|,\s", title)
     return title[: match.start()].strip() if match else title.strip()
