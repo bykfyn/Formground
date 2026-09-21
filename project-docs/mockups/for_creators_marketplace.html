@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For Creators by Formground — Marketplace (mockup)</title>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
+<!-- Links the REAL shared stylesheet, not a copy - so this mockup can never drift
+     from the live site's actual token values the way a hand-ported inline-style
+     version can (see project memory: the earlier Artifact version of this mockup
+     read "too large" twice over from small copy mistakes in re-typed CSS). -->
+<link rel="stylesheet" href="../../frontend/site.css">
+<style>
+  /* Verbatim from docs/marketplace.html's own <style> block. */
+  main {
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+  }
+  .site-header { margin-bottom: 0; }
+  /* margin-bottom 32px, not marketplace.html's 0 - that page relies on
+     p.lead/p.lead-note sitting after the box to create the gap before
+     its chips; we removed that intro text, so search-wide needs to
+     provide the gap itself instead (same as makers.html's search-wide,
+     which has no chips after it but the same default margin). */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  /* Tight under the header, same override marketplace.html itself uses. */
+  .site-header { margin-bottom: 0; }
+  p.lead { font-size: 15px; line-height: 1.6; color: var(--text-secondary); margin: 32px auto 4px; max-width: 560px; text-align: center; }
+  p.lead-note { font-size: 12.5px; color: var(--text-muted); margin: 0 auto 28px; max-width: 560px; text-align: center; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px; min-height: 57px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  .chips { display: flex; justify-content: center; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
+  .chip {
+    font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 999px;
+    border: 0.5px solid var(--border-strong); background: var(--surface-2);
+    color: var(--text-muted); font-family: inherit; opacity: 0.7; cursor: pointer;
+  }
+  .chip.active { background: var(--surface-1); color: var(--text-secondary); border-color: var(--border-strong); opacity: 1; }
+
+  /* Mobile only (option 1 from the review pass): a 9-category row wraps
+     to 4 lines on a phone, pushing the first card well below the fold -
+     more disruptive there than on desktop, where 2 tidy wrapped lines
+     already read fine. Swap to a single-line, horizontally scrollable
+     row instead of wrapping - no JS, and it scales to any category
+     count without a "which ones matter most" ranking decision. The
+     right-edge fade is the only affordance needed to signal there's
+     more; the left edge stays fully opaque so the first chip is never
+     partially masked at rest. */
+  @media (max-width: 640px) {
+    .chips {
+      flex-wrap: nowrap;
+      justify-content: flex-start;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+      -webkit-mask-image: linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+      mask-image: linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+    }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip { flex-shrink: 0; }
+  }
+
+  .empty-state {
+    border: 1px dashed var(--border-strong); border-radius: 14px;
+    padding: 56px 24px; text-align: center; background: var(--surface-1);
+  }
+  .empty-state .eyebrow {
+    font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-accent); margin: 0 auto 10px;
+  }
+  .empty-state p { font-size: 14px; color: var(--text-secondary); max-width: 420px; margin: 0 auto 22px; line-height: 1.6; }
+  .cta-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 14px; font-weight: 600; color: var(--surface-2);
+    background: var(--text-primary); padding: 12px 22px; border-radius: var(--radius);
+    text-decoration: none;
+  }
+  .cta-btn:hover { background: var(--text-secondary); }
+
+  /* Verbatim from docs/makers.html's own <style> block. */
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* This mockup's own addition only - a verified-partner mark for the
+     established/production-scale tier. */
+  .verified-mark { color: var(--text-accent); font-weight: 700; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="home-link" href="#"><img src="../../frontend/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="#">Work</a>
+  <a href="#">Creators</a>
+  <a href="#">Marketplace</a>
+  <a href="#" class="current">For Creators</a>
+</nav>
+</header>
+
+<main>
+
+  <h1 class="sr-only">For Creators by Formground — Marketplace</h1>
+
+  <div class="search-wide">
+    <div class="ask-box">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input type="text" placeholder="Find production partners, resources and suppliers" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="chips" id="chips"></div>
+
+  <div id="craftspeople-grid" class="maker-grid"></div>
+
+  <div id="empty-state" class="empty-state" style="display: none;">
+    <p class="eyebrow">Coming soon</p>
+    <p id="empty-text"></p>
+    <a class="cta-btn" href="#">Want to be listed here? Get in touch<i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+  </div>
+
+  <p class="foot-note">
+    This list doesn't imply any partnership or endorsement beyond what's stated above. &middot; &copy; 2026 Formground
+  </p>
+
+</main>
+
+<script>
+  // Real Skråhantverkarna + Interior Cluster records (data/sources/*.json),
+  // not placeholder content - see project memory on why that matters here.
+  const craftspeople = [
+    // Föreningen Skråhantverkarna - independent traditional-craft practitioners (free/community tier)
+    { name: "Snickare Peter Dans AB", craft: "Fine Joinery", location: "Vallentuna, Sweden", website: "http://www.snickarepeterdans.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/03/Dans-5-1024x796.jpg", verified: false },
+    { name: "PV Specialmöbler & Inredning", craft: "Furniture Joinery", location: "Björkvik, Sweden", website: "http://www.pekka.biz", image: "https://skrahantverkarna.se/wp-content/uploads/2020/05/Pekka-Virta-4-1024x796.jpg", verified: false },
+    { name: "Lidingö Möbelverkstad", craft: "Furniture Restoration", location: "Lidingö, Sweden", website: "http://www.lidingomobelverkstad.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/02/l2-646x502-1.jpg", verified: false },
+    { name: "Guldsmed Annika Bertilsdotter", craft: "Goldsmithing", location: "Stockholm, Sweden", website: "http://www.bertilsdotter.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/03/Guldsmed-Bertillsdotter-4-1024x796.jpg", verified: false },
+    { name: "Silversmed Josefine Davidsson", craft: "Silversmithing", location: "Stockholm, Sweden", website: "http://www.davidssonsilversmed.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/03/Silversmed-J-D-4-1024x796.jpg", verified: false },
+    { name: "Larsson Korgmakare AB", craft: "Basketmaking", location: "Stockholm, Sweden", website: "http://www.larssonkorgmakare.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/02/lk-646x502-1.jpg", verified: false },
+    { name: "Paul Barter Violinatelje", craft: "Violin Making", location: "Stockholm, Sweden", website: "http://www.violinbarter.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/03/Paul-Barter-4-1024x796.jpg", verified: false },
+    { name: "Wretman Stenmontage", craft: "Stonemasonry", location: "Täby, Sweden", website: "https://skrahantverkarna.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/03/Sten-5-1024x796.jpg", verified: false },
+
+    // Interior Cluster Sweden - established, production-scale partner companies (verified/established tier)
+    { name: "Vadstena Konstgjuteri", craft: "Art Casting & Foundry", location: "Vadstena, Sweden", website: "https://www.vadstenakonstgjuteri.se/", image: "https://skrahantverkarna.se/wp-content/uploads/2022/12/Bild3.jpg", verified: true },
+    { name: "Stockholms Förgyllning & Bildhuggeri AB", craft: "Gilding & Woodcarving", location: "Stockholm, Sweden", website: "http://www.stockholmsf%C3%B6rgyllning.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/03/Fo%CC%88rgy-bildh-6-1024x796.jpg", verified: true },
+    { name: "Bendinggroup", craft: "Wood & Metal Bending", location: "Sweden", website: "http://www.bendinggroup.se", image: "https://dx7phrh2v9esk.cloudfront.net/sites/11/media/1454_original_BendingGroup1080x680.jpg", verified: true },
+    { name: "C & D Snickeri", craft: "Woodworking & Carpentry", location: "Sweden", website: "http://www.cdsnickeri.se", image: "https://dx7phrh2v9esk.cloudfront.net/sites/11/media/1616_medium_C_D_Snickeri_1080x680.jpg", verified: true },
+    { name: "Anderssons Mekaniska", craft: "Metal Fabrication", location: "Sweden", website: "http://www.anderssonsmekaniska.se", image: "https://dx7phrh2v9esk.cloudfront.net/sites/11/media/5482_large_Anderssonsmekaniksa.jpg", verified: true },
+  ];
+
+  // The fuller category taxonomy from auditing today's real for-creators.html
+  // resources list: which entries are real companies/orgs that could become
+  // a Brandvue-style card, grouped by what they actually are - "Guides" is
+  // the one bucket (Google's own tools, schema.org, EU regulation info) with
+  // no brand to feature, so it stays list-only even in the long run.
+  const categories = [
+    { id: "all", label: "All" },
+    { id: "craftspeople", label: "Craftspeople" },
+    { id: "selling", label: "Selling & Distribution", empty: "Selling & Distribution isn't open yet — Shopify, Etsy, Faire, 1stDibs and similar already sit in the “For Creators” resources list as free links; this is where a featured/paid slot among them would live." },
+    { id: "design", label: "Design & Prototyping", empty: "Design & Prototyping isn't open yet — tools like Fusion 360, Shapeways and Material District already sit in the resources list as free links." },
+    { id: "hosting", label: "Hosting", empty: "Hosting isn't open yet — WP Engine, Cloudways and similar already sit in the resources list as free links." },
+    { id: "marketing", label: "Marketing & Fulfillment", empty: "Marketing & Fulfillment isn't open yet — Klaviyo, PhotoRoom, Shippo and similar already sit in the resources list as free links." },
+    { id: "fairs", label: "Fairs & Exhibitions", empty: "Fairs & Exhibitions isn't open yet — Salone del Mobile, Stockholm Furniture Fair and similar already sit in the resources list as free links." },
+    { id: "associations", label: "Associations", empty: "Associations isn't open yet — Interior Cluster Sweden, Föreningen Skråhantverkarna and similar already sit in the resources list as free links." },
+    { id: "guides", label: "Guides", empty: "Guides has no company to feature — this is where the SEO/regulation reference material (Google Search Console, schema.org, the EU's Digital Product Passport) stays a plain list, not a card grid." },
+  ];
+
+  let active = "craftspeople";
+
+  function renderChips() {
+    const el = document.getElementById("chips");
+    el.innerHTML = "";
+    categories.forEach((c) => {
+      const btn = document.createElement("button");
+      btn.className = "chip" + (active === c.id ? " active" : "");
+      btn.textContent = c.label;
+      btn.addEventListener("click", () => { active = c.id; render(); });
+      el.appendChild(btn);
+    });
+  }
+
+  function renderGrid() {
+    const grid = document.getElementById("craftspeople-grid");
+    const showGrid = active === "all" || active === "craftspeople";
+    grid.style.display = showGrid ? "grid" : "none";
+    if (!showGrid) return;
+    grid.innerHTML = craftspeople.map((c) => `
+      <a class="maker-card" href="${c.website}" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="${c.image}" alt="${c.name}" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">${c.name}${c.verified ? ' <span class="verified-mark" title="Verified Partner — established production-scale partner">✓</span>' : ''}</span>
+          <span class="maker-country">${c.location}</span>
+          <span class="maker-categories">${c.craft}</span>
+        </div>
+      </a>
+    `).join("");
+  }
+
+  function renderEmptyState() {
+    const el = document.getElementById("empty-state");
+    const cat = categories.find((c) => c.id === active);
+    const showEmpty = active !== "all" && active !== "craftspeople";
+    el.style.display = showEmpty ? "block" : "none";
+    if (showEmpty) document.getElementById("empty-text").textContent = cat.empty;
+  }
+
+  function render() {
+    renderChips();
+    renderGrid();
+    renderEmptyState();
+  }
+
+  render();
+</script>
+
+</body>
+</html>
