@@ -1020,7 +1020,8 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("ottoman", "Ottoman"), ("seater", "Sofa"), ("shelf", "Shelving"), ("urn", "Urn"),
     ("coupe", "Coupe"), ("grinder", "Mill"), ("bottle opener", "Bottle Opener"),
     ("runner", "Rug"), ("mat", "Rug"), ("hook", "Coat Hook"), ("flush mount", "Flush Mount"),
-    ("cushion", "Cushion"),
+    ("cushion", "Cushion"), ("day bed", "Daybed"), ("bergere", "Armchair"),
+    ("bookshelves", "Shelving"), ("bookshelf", "Shelving"), ("shelves", "Shelving"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -1034,7 +1035,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
-    "New Works DK", "Workstead", "Rubn", "Maruni", "AY Illuminate",
+    "New Works DK", "Workstead", "Rubn", "Maruni", "AY Illuminate", "Ghidini 1961",
 }
 
 
@@ -3910,6 +3911,22 @@ GHIDINI_CATEGORIES = [
     "20-sofas", "21-armchairs", "22-night-collections", "23-rugs",
 ]
 
+# The category this brand's own site already sorts each product into
+# (the slug is right there in GHIDINI_CATEGORIES/each product's own
+# URL) was being fetched and then thrown away - only used as a crawl
+# target, never stored as this project's own category field. Used only
+# as a fallback here, since most real names already carry a specific
+# object-type word the shared English keyword list resolves more
+# precisely (e.g. "Frame Bed" -> Bed, not the coarser "Night
+# Collections" -> Bed a name-less fallback would give it) - confirmed
+# live 2026-09-21: only 11 of 133 products needed this fallback at all.
+GHIDINI_CATEGORY_LABELS = {
+    "13-brass-lamps": "Lamp", "14-chairs-ottoman": "Chair", "15-brass-tables": "Table",
+    "16-brass-complements": "Accessories", "17-brass-furniture-accessories": "Accessories",
+    "18-cabinets-bookshelves": "Cabinet", "19-art-pieces": "Sculpture", "20-sofas": "Sofa",
+    "21-armchairs": "Armchair", "22-night-collections": "Bed", "23-rugs": "Rug",
+}
+
 
 def extract_ghidini_1961(brand):
     """
@@ -3956,13 +3973,18 @@ def extract_ghidini_1961(brand):
 
             designer_p = name_p.find_next_sibling("p", class_="center")
             img = card.find("img")
+            name = name_link.get_text(strip=True)
+            category = (
+                _infer_category_from_name(name, "", brand["name"])
+                or GHIDINI_CATEGORY_LABELS.get(category_slug, "")
+            )
 
             products.append({
                 "brand": brand["name"],
                 "brand_url": brand["url"],
-                "product_name": name_link.get_text(strip=True),
+                "product_name": name,
                 "product_url": name_link["href"],
-                "category": "",
+                "category": category,
                 "material_options": [],
                 "dimensions": "",
                 "notes": "",
