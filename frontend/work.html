@@ -25,11 +25,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
 <style>
+  /* Pins the footer to the bottom of the viewport instead of it
+     sitting mid-page before results are in (during the brief gap
+     before the landing auto-discovery populates the grid, or on a
+     genuine zero-result query) - same technique as designers.html
+     (see project memory): body becomes the full-height flex column,
+     main is the one child that grows to fill it, and the footer's
+     margin-top: auto (overriding site.css's fixed 60px, only on this
+     page) pushes itself to the bottom of that remaining space. */
+  body { min-height: 100vh; display: flex; flex-direction: column; }
   main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
     max-width: 1160px;
     margin: 0 auto;
     padding: 24px 20px 60px;
+    width: 100%;
   }
+  .foot-note { margin-top: auto; }
 
   /* Page-specific override of site.css's shared 40px - matches the
      homepage's own ask-box height exactly (2026-09-20, measured live:
