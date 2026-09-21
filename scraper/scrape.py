@@ -1014,7 +1014,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("sidechair", "Chair"), ("swivel", "Chair"), ("tray", "Tray"), ("mill", "Mill"),
     ("sconce", "Sconce"), ("pouf", "Ottoman"), ("credenza", "Credenza"), ("box", "Box"),
     ("bowl", "Bowl"), ("vase", "Vase"), ("plate", "Plate"), ("boxes", "Box"),
-    ("screen", "Screen"),
+    ("screen", "Screen"), ("cup", "Cup"), ("glass", "Glass"), ("vessel", "Vessel"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -1027,6 +1027,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 # against ENGLISH_OBJECT_TYPE_KEYWORDS the same way Pinch's were.
 CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
+    "Sizar Alexis",
 }
 
 
@@ -1151,6 +1152,35 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Jon Goulder", "Innate - Coffee Table + Side Table"): "Coffee Table, Side Table",
     ("Jon Goulder", "Catalogue - Terrain"): "Table",  # jongoulder.com: a real 3m collaborative table piece, not a downloadable catalogue despite the title
     ("Mercoeur Editions", "Komorebi Steles"): "Stele",  # a real, specific design term (a standing sculptural panel) - kept as its own word rather than forced into a broader bucket
+    ("Sizar Alexis", "Lahmu Low Console/Bench"): "Console, Bench",  # name explicitly names both functions
+    # B-Line Italia's product names are all evocative (Boby, Ring,
+    # Spinny...), giving the English keyword list nothing to match -
+    # b-line.it's own site has 3 real object-type category pages
+    # (/category/complementi-en/, sedute-en, tavoli-en - a "timeless"
+    # 4th category is a collection line, not an object type, confirmed
+    # by cross-checking its members against the other three), which
+    # covered 14 of 20; the other 6 were checked against their own
+    # real product photos.
+    ("B-Line Italia", "Boby"): "Accessories",
+    ("B-Line Italia", "Ring"): "Accessories",
+    ("B-Line Italia", "Spinny"): "Accessories",
+    ("B-Line Italia", "Bix"): "Seating",
+    ("B-Line Italia", "Boomerang"): "Seating",
+    ("B-Line Italia", "Crossed"): "Seating",
+    ("B-Line Italia", "Esa"): "Seating",
+    ("B-Line Italia", "Multichair"): "Seating",
+    ("B-Line Italia", "Supercomfort"): "Seating",
+    ("B-Line Italia", "Toro"): "Seating",
+    ("B-Line Italia", "4/4"): "Table",
+    ("B-Line Italia", "AD.DA"): "Table",
+    ("B-Line Italia", "Fonda"): "Table",
+    ("B-Line Italia", "Tran Tran"): "Table",
+    ("B-Line Italia", "Velasca"): "Mirror",  # checked its real product photo
+    ("B-Line Italia", "Fill"): "Desk Organiser",  # checked its real product photo
+    ("B-Line Italia", "Ping Pong"): "Plate",  # checked its real product photo
+    ("B-Line Italia", "Bob"): "Desk Organiser",  # checked its real product photo
+    ("B-Line Italia", "Aki Jr"): "Container",  # checked its real product photo - a multi-slot holder, no more specific real use confirmed
+    ("B-Line Italia", "Aki"): "Container",
 }
 
 
@@ -2726,7 +2756,7 @@ def extract_sizar_alexis(brand):
                 "brand_url": brand["url"],
                 "product_name": text,
                 "product_url": url,
-                "category": "",
+                "category": _infer_category_from_name(text, "", brand["name"]),
                 "material_options": [],
                 "dimensions": "",
                 "notes": "",
@@ -2747,7 +2777,7 @@ def extract_sizar_alexis(brand):
                 "brand_url": brand["url"],
                 "product_name": name,
                 "product_url": url,
-                "category": "",
+                "category": _infer_category_from_name(name, "", brand["name"]),
                 "material_options": [],
                 "dimensions": "",
                 "notes": "",
