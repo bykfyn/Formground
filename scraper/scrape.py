@@ -1033,6 +1033,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
+    "New Works DK",
 }
 
 
@@ -1323,6 +1324,25 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("La Chambre d'Ami", "Soliflores Figures"): "Vase",  # "soliflore" = a single-stem bud vase
     ("La Chambre d'Ami", "Vide-poche"): "Catchall",  # "déposer vos petites affaires dans l'entrée" - an entryway tray
     ("La Chambre d'Ami", "le-grand-vase-totem"): "Vase",
+    # New Works DK's "Coda Configuration N" names give no furniture word
+    # at all, but each one's own URL slug says "coda-modular-sofa-
+    # configuration-N" - confirmed real. "Shore Dining..." modules are
+    # confirmed live: "The Shore Modular Dining Sofa brings a thoughtful
+    # approach to banquette seating" - a curved modular dining bench/
+    # sofa system, not a table despite "Dining" in the name.
+    ("New Works DK", "Coda Configuration 1"): "Sofa",
+    ("New Works DK", "Coda Configuration 2"): "Sofa",
+    ("New Works DK", "Coda Configuration 3"): "Sofa",
+    ("New Works DK", "Coda Configuration 4"): "Sofa",
+    ("New Works DK", "Coda Configuration 5"): "Sofa",
+    ("New Works DK", "Coda Configuration 6"): "Sofa",
+    ("New Works DK", "Coda Configuration 7"): "Sofa",
+    ("New Works DK", "Coda Configuration 8"): "Sofa",
+    ("New Works DK", "Shore Dining Curved Corner Outward, Plinth, Module 30"): "Sofa",
+    ("New Works DK", "Shore Dining Curved Corner Inward, Plinth, Module 31"): "Sofa",
+    ("New Works DK", "Shore Dining Curved End Left, Plinth, Module 41"): "Sofa",
+    ("New Works DK", "Shore Dining Curved Center, Plinth, Module 40"): "Sofa",
+    ("New Works DK", "Shore Dining Curved End Right, Plinth, Module 42"): "Sofa",
 }
 
 
@@ -2067,7 +2087,7 @@ def extract_new_works_dk(brand):
             "brand_url": brand["url"],
             "product_name": name,
             "product_url": first["product_url"],
-            "category": "",
+            "category": _infer_category_from_name(name, "", brand["name"]),
             "material_options": materials,
             "dimensions": "",
             "notes": "",
