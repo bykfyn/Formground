@@ -2806,11 +2806,17 @@ def extract_monsieur_cailloux(brand):
     any kind. But every one really is the same object type - checked
     several of the real product photos (2026-09-21): small, non-
     functional decorative ceramic sculptures, not vessels - so
-    hardcoded as "Sculpture" here rather than left blank. Matches
-    neither UMBRELLA_KEYWORDS nor HYPERNYM_WORDS's Ceramics lists (both
-    are vessel-shaped words - vase/bowl/plate/...), so it correctly
-    falls into the Objects catch-all on both brand pages and live
-    search, not Ceramics.
+    hardcoded as "Sculpture, Ceramics" here rather than left blank.
+    "Ceramics" is added explicitly since the material itself is real
+    clay even though the form isn't a vessel - neither UMBRELLA_KEYWORDS
+    nor HYPERNYM_WORDS's Ceramics lists would infer that on their own
+    (both are vessel-shaped words - vase/bowl/plate/...). At query time
+    this makes both a "ceramics" and an "objects" search find these
+    (see query_engine.py's own "objects" hypernym, which already
+    includes real ceramics items); the brand-page umbrella pill shows
+    "Ceramics" specifically rather than "Objects" too, since a literal
+    category match short-circuits that logic (see
+    _umbrellas_for_product) - a cosmetic difference, not a search gap.
     """
     domain = brand["url"].rstrip("/")
     url = f"{domain}/shop/products"
@@ -2835,7 +2841,7 @@ def extract_monsieur_cailloux(brand):
             "brand_url": brand["url"],
             "product_name": name_el.get_text(strip=True),
             "product_url": f"{domain}{link['href']}" if link["href"].startswith("/") else link["href"],
-            "category": "Sculpture",
+            "category": "Sculpture, Ceramics",
             "material_options": [],
             "dimensions": "",
             "notes": "",
