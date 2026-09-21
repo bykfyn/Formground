@@ -1225,6 +1225,37 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Editions Midi", "Roujo"): "Coffee Table",  # "for this coffee table..."
     ("Editions Midi", "Tabouret"): "Stool",  # "each MIDI stool is made of..."
     ("Editions Midi", "Taulo"): "Dining Table",  # "Taulo means table in Provençal... large farm tables"
+    # Källemo names every product with a standalone name/word (no
+    # object-type word), giving the English keyword list nothing to
+    # match. Checked each of the 26 against kallemo.se's own real
+    # product descriptions, which name the object type outright
+    # ("The Aluminium armchair was designed in 1986...").
+    ("Källemo", "ALUMINIUM"): "Armchair",
+    ("Källemo", "BRUNO"): "Armchair",
+    ("Källemo", "VILAN"): "Armchair",
+    ("Källemo", "INGO"): "Armchair",
+    ("Källemo", "AVEC"): "Armchair",
+    ("Källemo", "AMBASSAD"): "Armchair",
+    ("Källemo", "STAR"): "Armchair",
+    ("Källemo", "GA-2"): "Armchair",
+    ("Källemo", "CHESTER"): "Armchair",
+    ("Källemo", "CHESTER SOFA"): "Sofa",
+    ("Källemo", "BEATRIX ARMCHAIR"): "Armchair",
+    ("Källemo", "BEATRIX SOFA"): "Sofa",
+    ("Källemo", "SOFA BOTERO"): "Sofa",
+    ("Källemo", "AL DENTE"): "Coat Hook",  # "the Al Dente wall hanger"
+    ("Källemo", "BABE"): "Coat Stand",  # "the Babe clothes hanger" - checked its real photo, a floor-standing tripod stand
+    ("Källemo", "NON bench"): "Bench",
+    ("Källemo", "BRUNO footstool"): "Footstool",
+    ("Källemo", "BJÖRKSKÅPET"): "Cabinet",  # "the Björkskåpet cabinet"
+    ("Källemo", "GRACE"): "Armchair",
+    ("Källemo", "LJUS FÄRG SVART KABEL"): "Light",  # "the illuminating object..."
+    ("Källemo", "NATIONAL GEOGRAPHIC 25TH ANNIVERSARY"): "Cabinet",  # "the yellow cabinet National Geographic"
+    ("Källemo", "NATIONALPALLEN"): "Stool",  # "pallen" = "the stool" in Swedish, confirmed by its own description
+    ("Källemo", "PIMPIM"): "Chair",
+    ("Källemo", "STAR PÄRLEMOR"): "Armchair",  # the same Star armchair's limited mother-of-pearl edition, per Star's own description
+    ("Källemo", "WOWMOM"): "Shelving",  # a pure art piece with no stated function - checked its real photo, a tiered shelf-like tower structure
+    ("Källemo", "ÄNTLIGEN ETT FULLGOTT ALTERNATIV"): "Light",  # "the illuminating object..."
 }
 
 
