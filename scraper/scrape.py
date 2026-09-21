@@ -1012,7 +1012,8 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("shelving", "Shelving"), ("vitrine", "Vitrine"), ("daybed", "Daybed"),
     ("mirror", "Mirror"), ("desk", "Desk"), ("chair", "Chair"), ("rug", "Rug"),
     ("sidechair", "Chair"), ("swivel", "Chair"), ("tray", "Tray"), ("mill", "Mill"),
-    ("sconce", "Sconce"), ("pouf", "Ottoman"),
+    ("sconce", "Sconce"), ("pouf", "Ottoman"), ("credenza", "Credenza"), ("box", "Box"),
+    ("bowl", "Bowl"), ("vase", "Vase"), ("plate", "Plate"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -1023,7 +1024,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 # false positives on other brands (Minimalux, Ingo Maurer - see project
 # memory). Widen only after checking a brand's own real product names
 # against ENGLISH_OBJECT_TYPE_KEYWORDS the same way Pinch's were.
-CATEGORY_KEYWORD_FALLBACK_BRANDS = {"Pinch", "Mater", "H. Bigeleisen"}
+CATEGORY_KEYWORD_FALLBACK_BRANDS = {"Pinch", "Mater", "H. Bigeleisen", "Jon Goulder"}
 
 
 # A handful of real products give the keyword/name-based inference
@@ -1126,6 +1127,26 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Łukasz Korol", "Stolik kawowy z orzecha"): "Coffee Table",  # "walnut coffee table"
     ("Łukasz Korol", "Stolik z orzecha"): "Side Table",  # "walnut small table"
     ("Łukasz Korol", "Kredens z gruszy"): "Sideboard",  # "pear-wood sideboard/cupboard"
+    ("Another Country", "Atlas Works Tall Wine Glass (Set )"): "Glass",
+    ("Another Country", "Winnow Rug by Armadillo"): "Rug",
+    # Shibui's entire catalog is named with one-word evocative product
+    # names (crash, float, spice...) - none give the English keyword
+    # list anything to match, checked one by one against shibui.ch's
+    # own real product descriptions.
+    ("Shibui", "Crash"): "Crusher",  # "palm sized crusher/cracker... mortar and pestle... nutcracker"
+    ("Shibui", "float"): "Shelving",  # "book shelves that appear to float"
+    ("Shibui", "spice"): "Salt and Pepper Set",
+    ("Shibui", "linelight"): "Desk Lamp",  # "led task light for home or office use"
+    ("Shibui", "pinch"): "Container",  # "spice containers with a lid"
+    ("Shibui", "Plume"): "Desk Organiser",
+    ("Shibui", "Pino"): "Crusher",  # same description as Crash, different finish
+    ("Shibui", "bOx"): "Box",  # "modular jewel/watch box"
+    ("Shibui", "iceCube"): "Wine Cooler, Bowl",  # "wine and champagne cooler with a secondary use as a fruit bowl"
+    ("Shibui", "pirouette"): "Toy, Ornament",  # "double function Christmas decorations... great spin tops"
+    ("Shibui", "Apeiro (set of 2)"): "Coat Hook",  # "coat hanger in the shape of infinity"
+    ("Shibui", "O bottle opener"): "Bottle Opener",
+    ("Jon Goulder", "Innate - Coffee Table + Side Table"): "Coffee Table, Side Table",
+    ("Jon Goulder", "Catalogue - Terrain"): "Table",  # jongoulder.com: a real 3m collaborative table piece, not a downloadable catalogue despite the title
 }
 
 
@@ -1205,6 +1226,12 @@ def _looks_like_a_maintenance_item(title):
         # exclude generically without also excluding real design
         # accessories like its coat hooks.
         "filtro polarizador",
+        # Another Country runs a charity checkout item ("Heal
+        # Rewilding Donation") through the same WooCommerce catalog as
+        # its real products, with a real image - unlike its other junk
+        # listings ("test 3", "Product", "AC Catalogue"), which already
+        # have no image and are invisible to search regardless.
+        "donation",
     )
     title_lower = title.lower()
     return any(kw in title_lower for kw in keywords)
@@ -1985,7 +2012,7 @@ def extract_jon_goulder(brand):
             "brand_url": brand["url"],
             "product_name": name,
             "product_url": product_url,
-            "category": "",
+            "category": _infer_category_from_name(name, "", brand["name"]),
             "material_options": [],
             "dimensions": "",
             "notes": "",
