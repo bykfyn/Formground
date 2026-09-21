@@ -1016,8 +1016,9 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("bowl", "Bowl"), ("vase", "Vase"), ("plate", "Plate"), ("boxes", "Box"),
     ("screen", "Screen"), ("cup", "Cup"), ("glass", "Glass"), ("vessel", "Vessel"),
     ("coat rack", "Coat Stand"), ("coat stand", "Coat Stand"), ("winerack", "Wine Rack"),
-    ("bookend", "Bookend"), ("candle holder", "Candle Holder"), ("ottoman", "Ottoman"),
-    ("seater", "Sofa"), ("shelf", "Shelving"), ("urn", "Urn"),
+    ("bookend", "Bookend"), ("candle holder", "Candle Holder"), ("candleholder", "Candle Holder"),
+    ("ottoman", "Ottoman"), ("seater", "Sofa"), ("shelf", "Shelving"), ("urn", "Urn"),
+    ("coupe", "Coupe"), ("grinder", "Mill"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -1030,7 +1031,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 # against ENGLISH_OBJECT_TYPE_KEYWORDS the same way Pinch's were.
 CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
-    "Sizar Alexis", "Mass Productions", "Kin and Co",
+    "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger",
 }
 
 
@@ -1263,6 +1264,7 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Kin and Co", "Step Stair"): "Bench",  # "an ambiguous object to accommodate lounging, seating or display"
     ("Kin and Co", "Thin Tete-a-Tete"): "Bench",  # checked its real photo: a two-seat S-shaped bench, the classic tête-à-tête form
     ("Kin and Co", "Thin Check Double Chaise and Table Set"): "Chaise, Table",  # name explicitly names both
+    ("Buro Berger", "The Crib Nativity Scene"): "Ornament",  # checked live: 14 decorative wooden figurines + stable, "an object to exhibit... during the Christmas season"
 }
 
 
