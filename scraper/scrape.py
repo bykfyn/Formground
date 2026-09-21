@@ -1366,6 +1366,49 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Rubn", "Lord Diva"): "Chandelier",  # referenced by Lord Ballroom's own description as a sibling design
     ("Rubn", "Lord Ballroom"): "Chandelier",  # "12 glass globes... suspended from a solid metal fixture"
     ("Rubn", "Lord Asymmetric"): "Chandelier",  # "mounts directly to the ceiling... six glass globes"
+    # Established & Sons: 32 confirmed via the site's own real category
+    # pages (/collection/categories/{name}), 7 more checked against
+    # their own real "Description:" field since they're current
+    # products the category pages don't happen to list (2026-09-21).
+    ("Established & Sons", "Font Clock"): "Accessories",
+    ("Established & Sons", "Wrongwoods Tray"): "Accessories",
+    ("Established & Sons", "Drift"): "Bench",  # "Description: Bench"
+    ("Established & Sons", "Drift Concrete"): "Bench",  # "Description: Bench"
+    ("Established & Sons", "Drift-In Drift-Out"): "Bench",  # "Description: Flexible seating segments"
+    ("Established & Sons", "Nekton"): "Bench",  # "Description: Flexible seating segments"
+    ("Established & Sons", "Gridwork"): "Flooring",
+    ("Established & Sons", "Wall To Wall"): "Flooring",
+    ("Established & Sons", "Grid"): "Furniture Systems",
+    ("Established & Sons", "Island"): "Furniture Systems",
+    ("Established & Sons", "Aura Light"): "Lighting",
+    ("Established & Sons", "Cho Light"): "Lighting",
+    ("Established & Sons", "Filigrana Light"): "Lighting",
+    ("Established & Sons", "Filigrana Light, Table"): "Lighting",
+    ("Established & Sons", "Filigrana Light, Wall / Ceiling"): "Lighting",
+    ("Established & Sons", "Gelato"): "Lighting",
+    ("Established & Sons", "Medusa"): "Lighting",
+    ("Established & Sons", "The Original Maya"): "Lighting",
+    ("Established & Sons", "Tiki"): "Lighting",
+    ("Established & Sons", "Torch Light"): "Lighting",
+    ("Established & Sons", "Butt"): "Seating",
+    ("Established & Sons", "Heidi"): "Seating",
+    ("Established & Sons", "Layup"): "Seating",
+    ("Established & Sons", "Mauro Chair"): "Seating",
+    ("Established & Sons", "Crate Series"): "Storage",
+    ("Established & Sons", "Plates Shelving"): "Storage",
+    ("Established & Sons", "Side Stack"): "Storage",
+    ("Established & Sons", "Stack"): "Storage",
+    ("Established & Sons", "Wrongwoods"): "Storage",
+    ("Established & Sons", "Aqua Table"): "Table",  # "Description: Display or dining table"
+    ("Established & Sons", "Surface Table"): "Table",  # "Description: Meeting, display or dining table"
+    ("Established & Sons", "Udukuri"): "Table",  # "Description: Meeting, display or dining table"
+    ("Established & Sons", "Beam Table"): "Table",
+    ("Established & Sons", "Bloc"): "Table",
+    ("Established & Sons", "Fez"): "Table",
+    ("Established & Sons", "Crate Daybed"): "Upholstery",
+    ("Established & Sons", "Lucio"): "Upholstery",
+    ("Established & Sons", "Mollo"): "Upholstery",
+    ("Established & Sons", "Quilt"): "Upholstery",
 }
 
 
@@ -3099,10 +3142,23 @@ def extract_established_and_sons(brand):
     multi-line text (line breaks joined with " / ") rather than trying to
     parse per-variant numbers out of it - still far more informative than
     leaving it blank, without guessing which variant a shopper meant.
-    No reliable per-product category signal was found (the sitemap's
-    productType category pages list products, not the other way around,
-    and cross-referencing 9 category pages against 138 products wasn't
-    worth the extra fetches) - left blank, same as several other brands.
+    Category is now hardcoded per product as a manual override (see
+    MANUAL_CATEGORY_OVERRIDES) - checked live 2026-09-21 against the
+    site's own 8 real category pages at /collection/categories/{name}
+    (found via its sitemaps-1-categorygroup-productType sitemap), which
+    together cover only ~40 of the 138 sitemap URLs. The other ~85 are
+    discontinued stub pages that still 200 but carry none of the real
+    <strong>-labeled Design/Description/Dimensions/Materials content
+    every current product has (confirmed live: 0 of 32 category-page-
+    confirmed products lack it, vs. 85 of the remaining 92 that do) -
+    and their real gallery is empty too (og:image is the only image
+    reference left, a stale fallback pointing at an old asset that
+    still resolves but is no longer shown on the live page - confirmed
+    on "Axis," "Bend"). Rather than surface those as a "visit source"
+    link to an empty page, they're skipped entirely here. The 7
+    genuinely current products the category pages don't cover (Drift,
+    Aqua Table, ...) were each checked against their own real
+    "Description:" field instead.
     """
     domain = brand["url"].rstrip("/")
     try:
@@ -3147,15 +3203,25 @@ def extract_established_and_sons(brand):
         if not h1:
             continue
 
+        # A discontinued stub page (confirmed live on "Axis"/"Bend"):
+        # no <strong>-labeled content block at all, and its real
+        # gallery is gone - the only image reference left is a stale
+        # og:image fallback that still resolves as a file but is no
+        # longer shown on the page itself. Skipped entirely rather
+        # than sending a "visit source" link to an empty page.
+        if not soup.find_all("strong"):
+            continue
+
         materials_text = _label_text(soup, "Materials")
         materials = [m.strip() for m in materials_text.split(" / ") if m.strip()] if materials_text else []
+        name = h1.get_text(strip=True).title()
 
         products.append({
             "brand": brand["name"],
             "brand_url": brand["url"],
-            "product_name": h1.get_text(strip=True).title(),
+            "product_name": name,
             "product_url": url,
-            "category": "",
+            "category": MANUAL_CATEGORY_OVERRIDES.get((brand["name"], name), ""),
             "material_options": materials,
             "dimensions": _label_text(soup, "Dimensions"),
             "notes": "",
