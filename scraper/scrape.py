@@ -991,6 +991,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("console", "Console"), ("bench", "Bench"), ("stool", "Stool"),
     ("shelving", "Shelving"), ("vitrine", "Vitrine"), ("daybed", "Daybed"),
     ("mirror", "Mirror"), ("desk", "Desk"), ("chair", "Chair"), ("rug", "Rug"),
+    ("sidechair", "Chair"), ("swivel", "Chair"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -1001,7 +1002,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 # false positives on other brands (Minimalux, Ingo Maurer - see project
 # memory). Widen only after checking a brand's own real product names
 # against ENGLISH_OBJECT_TYPE_KEYWORDS the same way Pinch's were.
-CATEGORY_KEYWORD_FALLBACK_BRANDS = {"Pinch"}
+CATEGORY_KEYWORD_FALLBACK_BRANDS = {"Pinch", "Mater"}
 
 
 # A handful of real products give the keyword/name-based inference
@@ -1021,12 +1022,58 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Pinch", "Nim Copper"): "Coffee Table",
     ("Pinch", "Nim Dune"): "Coffee Table",
     ("Pinch", "Mercier press"): "Cabinet",
+    # A solid cube, no object-type word in the name or anywhere in
+    # Mater's own product data - confirmed by checking its real product
+    # photo (materdesign.com): a simple stool-height block sized/shaped
+    # to work as either, so tagged as both rather than guessing one.
+    ("Mater", "Mater Cube | Wood Waste Grey"): "Stool, Side Table",
+    ("Mater", "Mater Cube | Coffee Waste Black"): "Stool, Side Table",
+    ("Mater", "Mater Cube | Coffee Waste Light"): "Stool, Side Table",
+    # The rest of this dict (added 2026-09-21, part of the broader
+    # "every brand should have real category data" pass) are all
+    # single-straggler brands - extractors that work correctly for
+    # every other product, with one or two names that give the
+    # keyword-based inference nothing to go on. Each checked against
+    # the brand's own real site before being hardcoded here, same
+    # standard as the Pinch/Mater entries above.
+    ("A. Petersen", "Bookkeeper"): "Shelving",  # apetersen.dk: "ideal for books... organizing your vinyl collection"
+    ("Anna Löwenhielm Ceramics", "Ljusstake"): "Candle Holder",  # Swedish for "candle holder"; URL confirms "carol-candle-holder"
+    ("De La Espada", "SIDEKICKS COFFEE TABLE WITH TERRAZZO TOP"): "Coffee Table",
+    ("De La Espada", "SOLO STORAGE TRAY"): "Tray",
+    ("Esther Knopfler", "Strata bench"): "Bench",
+    ("Esther Knopfler", "Strata console"): "Console",
+    ("Esther Knopfler", "Strata stool"): "Stool",
+    ("Esther Knopfler", "Strata coffee table"): "Coffee Table",
+    ("Jonas Lindholm", "Stapelbar kopp av Jonas Lindholm"): "Cup",  # Swedish "stackable cup"
+    ("Joy Objects", "TUBBY TUMBLER"): "Tumbler",
+    ("Joy Objects", "Åsa Jungnelius for JOY OBJECTS"): "Tumbler",  # same listing, designer name scraped as product_name
+    ("Louise Roe", "PISU 15 PITCHER"): "Pitcher",
+    ("Louise Roe", "PISU 14 PITCHER"): "Pitcher",
+    ("Luke Hope", "Craters plate & bowl set in sycamore"): "Plate, Bowl",
+    ("Northern", "Oslo Wood Anniversary Edition"): "Lamp",  # northern.no: "en av Northerns mest gjenkjennelige lamper"
+    ("Northern", "Hifive tambur og glasskapssett 200"): "Sideboard",
+    ("Northern", "Hifive Glass-vitrineskap 200"): "Sideboard",
+    ("Northern", "Tradition gulvlampe"): "Floor Lamp",  # URL confirms "tradition-floor-lamp"
+    ("Raawii", "George Sowden"): "Table",  # product_name is the designer's name; real product is the "Thing Table"
+    ("Silcohaus", "Arno Tall"): "Floor Lamp",  # silcohaus.com: "Arno Tall is more than a floor lamp"
+    ("Silcohaus", "Arno Short"): "Lamp",  # companion piece to Arno Tall, own tags confirm "Category: Lighting"
+    ("Silcohaus", "Luno Side"): "Side Table",  # URL confirms "luna-side-table"
+    ("Wendelbo", "Edge V1 Sofa"): "Sofa",
 }
 
 
 def _infer_category_from_english_keywords(product_name):
     text = product_name.lower()
     for phrase, category in ENGLISH_OBJECT_TYPE_KEYWORDS:
+        if phrase in ("light", "uplight") and "waste light" in text:
+            # Mater's own recycled-material finish name ("Coffee Waste
+            # Light"/"Wood Waste Light", alongside "...Dark"/"...Black")
+            # collides with the generic "light" keyword - confirmed
+            # live 2026-09-21: several chair/stool variants finished in
+            # "Coffee Waste Light" were wrongly tagged as lighting.
+            # "waste light" never means an actual light fixture
+            # anywhere in this catalog.
+            continue
         if re.search(rf"\b{re.escape(phrase)}\b", text):
             return category
     return None
@@ -1074,12 +1121,15 @@ def _looks_like_a_maintenance_item(title):
     "Pulkra assembly kit" and "Pulkra cleaning kit"/"Kit di pulizia
     Pulkra" sit alongside real furniture, tagged "Accessories"/"Accessori"
     - a category too broad to blanket-exclude generically since other
-    brands have genuine design accessories under that same word). These
-    aren't design objects Formground exists to surface, so they're
-    excluded by name instead - harmless no-op for any brand that doesn't
-    happen to sell one.
+    brands have genuine design accessories under that same word). Gift
+    cards are the same shape (confirmed on Minimalux and Raawii: each
+    sells one alongside real products, with no real category value of
+    its own, showing up as an unfixable blank rather than a
+    misclassified one). These aren't design objects Formground exists
+    to surface, so they're excluded by name instead - harmless no-op
+    for any brand that doesn't happen to sell one.
     """
-    keywords = ("assembly kit", "cleaning kit", "kit di pulizia")
+    keywords = ("assembly kit", "cleaning kit", "kit di pulizia", "gift card")
     title_lower = title.lower()
     return any(kw in title_lower for kw in keywords)
 
