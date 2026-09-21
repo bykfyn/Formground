@@ -2717,6 +2717,18 @@ def extract_wastberg(brand):
             image_url = img["src"]
             if image_url.startswith("/"):
                 image_url = f"{domain}{image_url}"
+            # A missing source asset on Wästberg's own PIM (confirmed
+            # live 2026-09-21 on "Alma Ceiling"/asset id 4200 - broke
+            # makers.html's hero thumbnail for the whole brand) doesn't
+            # 404: the URL still 200s and still ends in .png, but the
+            # real response is a tiny placeholder SVG. Checked via a
+            # HEAD request rather than trusting the src attribute alone.
+            try:
+                head = requests.head(image_url, headers=HEADERS, timeout=10)
+                if "svg" in head.headers.get("Content-Type", "").lower():
+                    image_url = ""
+            except requests.RequestException:
+                pass
 
         products.append({
             "brand": brand["name"],
