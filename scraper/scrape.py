@@ -1017,7 +1017,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("screen", "Screen"), ("cup", "Cup"), ("glass", "Glass"), ("vessel", "Vessel"),
     ("coat rack", "Coat Stand"), ("coat stand", "Coat Stand"), ("winerack", "Wine Rack"),
     ("bookend", "Bookend"), ("candle holder", "Candle Holder"), ("ottoman", "Ottoman"),
-    ("seater", "Sofa"),
+    ("seater", "Sofa"), ("shelf", "Shelving"), ("urn", "Urn"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -1030,7 +1030,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 # against ENGLISH_OBJECT_TYPE_KEYWORDS the same way Pinch's were.
 CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
-    "Sizar Alexis", "Mass Productions",
+    "Sizar Alexis", "Mass Productions", "Kin and Co",
 }
 
 
@@ -1256,6 +1256,13 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Källemo", "STAR PÄRLEMOR"): "Armchair",  # the same Star armchair's limited mother-of-pearl edition, per Star's own description
     ("Källemo", "WOWMOM"): "Shelving",  # a pure art piece with no stated function - checked its real photo, a tiered shelf-like tower structure
     ("Källemo", "ÄNTLIGEN ETT FULLGOTT ALTERNATIV"): "Light",  # "the illuminating object..."
+    # Kin and Co's 4 non-obvious names, checked against
+    # kinandcompany.com's own real product descriptions/photos.
+    ("Kin and Co", "Ripple Series"): "Table",  # "a volumetric cylindrical column... gently holding a floating top"
+    ("Kin and Co", "Veil Series"): "Mirror",  # "an evolution of the Drape Series, the Veil Mirrors..."
+    ("Kin and Co", "Step Stair"): "Bench",  # "an ambiguous object to accommodate lounging, seating or display"
+    ("Kin and Co", "Thin Tete-a-Tete"): "Bench",  # checked its real photo: a two-seat S-shaped bench, the classic tête-à-tête form
+    ("Kin and Co", "Thin Check Double Chaise and Table Set"): "Chaise, Table",  # name explicitly names both
 }
 
 
@@ -3525,7 +3532,7 @@ def extract_kin_and_co(brand):
             "brand_url": brand["url"],
             "product_name": name,
             "product_url": url,
-            "category": "",
+            "category": _infer_category_from_name(name, "", brand["name"]),
             "material_options": [],
             "dimensions": "",
             "notes": "",
