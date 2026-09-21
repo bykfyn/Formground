@@ -116,14 +116,6 @@
   }
 
   /* --- browse by category --- */
-  /* Matches work.html's own ask-box -> results rhythm exactly (32px to
-     this label, 20px from label to grid) so browsing by category reads
-     as the same kind of thing as a set of search results, just below
-     the same search box, not a separately-paced section. */
-  .browse-label {
-    text-align: center; font-size: 12px; color: var(--text-muted);
-    margin: 32px 0 20px; text-transform: uppercase; letter-spacing: 0.08em;
-  }
   /* Bento-style asymmetric grid: Houses is a tall hero, Objects/Lighting
      are small squares, Furniture is a wide strip - real visual variety
      instead of 4 identical squares (2026-09-20, replacing the uniform
@@ -206,8 +198,16 @@
   .visit-source i { font-size: 13px; }
 
   /* --- search --- */
+  /* Original filled/bordered box, unchanged from before the "subtle"
+     exploration (2026-09-21) - only the chip and "Or browse by
+     category" label were dropped, and the placeholder swapped to
+     double as the homepage's tagline. Kept because a bordered box is
+     already instantly recognizable as "search here," so it doesn't
+     need tagline-style visual weight to earn its place - see project
+     memory for the fuller exploration (options A-I) this settled
+     from. */
   .ask-box {
-    display: flex; align-items: center; gap: 10px;
+    display: flex; align-items: center; gap: 10px; min-height: 57px;
     background: var(--surface-1); border: 0.5px solid var(--border);
     border-radius: var(--radius); padding: 13px 16px;
   }
@@ -217,16 +217,6 @@
     font-size: 15px; color: var(--text-primary); font-family: inherit;
   }
   .ask-box input::placeholder { color: var(--text-muted); }
-
-  .inline-chip {
-    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
-    font-size: 13px; color: var(--text-secondary); font-family: inherit;
-    background: var(--surface-2); border: 0.5px solid var(--border-strong);
-    padding: 7px 12px; margin: 0;
-    cursor: pointer; border-radius: 8px; white-space: nowrap;
-  }
-  .inline-chip:hover { border-color: var(--text-muted); }
-  .inline-chip i { font-size: 15px; }
 
   /* Stacks full-width, same breakpoint as creators.html's group-grid
      (2026-09-20, see project memory) - the fixed-height bento layout
@@ -238,11 +228,6 @@
     .category-grid { display: flex; flex-direction: column; height: auto; gap: 16px; }
     .cat-tile { aspect-ratio: 4 / 3; }
     .cat-details, .visit-source { opacity: 1; transform: none; pointer-events: auto; }
-  }
-
-  @media (max-width: 480px) {
-    .inline-chip span { display: none; }
-    .inline-chip { padding: 9px; }
   }
 
   /* --- footer --- */
@@ -279,14 +264,12 @@
     <form id="search-form">
       <div class="ask-box">
         <i class="ti ti-search" aria-hidden="true"></i>
-        <input id="query-input" type="text" placeholder="Search through a curated collection of work" autocomplete="off">
-        <button type="button" class="inline-chip" id="discover-chip" aria-label="Surprise me"><i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Surprise me</span></button>
+        <input id="query-input" type="text" placeholder="Discover a curated collection of work and makers" autocomplete="off">
       </div>
     </form>
   </div>
 
-  <p class="browse-label">Or browse by category</p>
-  <section class="category-grid">
+  <section class="category-grid" style="margin-top:66px;">
     <figure class="cat-tile tile-houses">
       <a class="cat-link" href="work.html?q=house" aria-label="Browse Houses"></a>
       <img src="https://static1.squarespace.com/static/68e7d1ef65f5323eae3c3b6c/68fa320b5b04cb318608db95/6981a89900e843417f888e2e/1772734362523/JSA_pinehouse_FINAL_WEB-37.jpg?format=1500w" alt="Pine House by Johan Sundberg Arkitektur" loading="lazy">
