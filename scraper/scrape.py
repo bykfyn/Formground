@@ -1265,6 +1265,63 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Kin and Co", "Thin Tete-a-Tete"): "Bench",  # checked its real photo: a two-seat S-shaped bench, the classic tête-à-tête form
     ("Kin and Co", "Thin Check Double Chaise and Table Set"): "Chaise, Table",  # name explicitly names both
     ("Buro Berger", "The Crib Nativity Scene"): "Ornament",  # checked live: 14 decorative wooden figurines + stable, "an object to exhibit... during the Christmas season"
+    # La Chambre d'Ami names its entire catalog in French, giving the
+    # English keyword list nothing to match at all. Checked against
+    # lachambredami.com's own real French product descriptions
+    # (2026-09-21) - "abat-jour/suspension" is lampshade/pendant,
+    # "lampe" is lamp, both un-matchable by an English-only keyword
+    # list regardless of how many keywords it grows.
+    ("La Chambre d'Ami", "1960 - Abat-jour / Suspension"): "Pendant",
+    ("La Chambre d'Ami", "Abat-jour / Suspension Azote"): "Pendant",
+    ("La Chambre d'Ami", "Abat-jour / Suspension Bob"): "Pendant",
+    ("La Chambre d'Ami", "Abat-jour / Suspension Boudoir"): "Pendant",
+    ("La Chambre d'Ami", "Abat-jour / Suspension Fleur"): "Pendant",
+    ("La Chambre d'Ami", "Abat-jour / Suspension Hélium"): "Pendant",
+    ("La Chambre d'Ami", "Abat-jour / Suspension Moderne"): "Pendant",
+    ("La Chambre d'Ami", "Abat-jour / Suspension Métro"): "Pendant",
+    ("La Chambre d'Ami", "Abat-jour / Suspension Oxygène"): "Pendant",
+    ("La Chambre d'Ami", "Abat-jour / Suspension Rivage"): "Pendant",
+    ("La Chambre d'Ami", "Abat-jour / Suspension Tea-Time"): "Pendant",
+    ("La Chambre d'Ami", "Base de Lampe Classique"): "Lamp",
+    ("La Chambre d'Ami", "Bougeoir Pivoine"): "Candle Holder",  # "bougeoir" = candlestick
+    ("La Chambre d'Ami", "Cache Douille / 1"): "Light",  # a decorative cord/socket cover accessory for an existing pendant
+    ("La Chambre d'Ami", "Cache Douille / 2"): "Light",
+    ("La Chambre d'Ami", "Cache Douille / 3"): "Light",
+    ("La Chambre d'Ami", "Duos de Vases Totem"): "Vase",
+    ("La Chambre d'Ami", "Grande base de Lampe"): "Lamp",
+    ("La Chambre d'Ami", "Lampe 1960"): "Lamp",
+    ("La Chambre d'Ami", "Lampe Azote"): "Lamp",
+    ("La Chambre d'Ami", "Lampe Fleur"): "Lamp",
+    ("La Chambre d'Ami", "Lampe Hélium"): "Lamp",
+    ("La Chambre d'Ami", "Lampe IGLOO - Glacier"): "Lamp",
+    ("La Chambre d'Ami", "Lampe IGLOO - Lavande"): "Lamp",
+    ("La Chambre d'Ami", "Lampe IGLOO - Rose"): "Lamp",
+    ("La Chambre d'Ami", "Lampe Limonade"): "Lamp",
+    ("La Chambre d'Ami", "Lampe Moderne"): "Lamp",
+    ("La Chambre d'Ami", "Lampe Oxygène"): "Lamp",
+    ("La Chambre d'Ami", "Lampe PIVOINE - Lavande"): "Lamp",
+    ("La Chambre d'Ami", "Lampe PIVOINE - Rose"): "Lamp",
+    ("La Chambre d'Ami", "Lampe Rivage"): "Lamp",
+    ("La Chambre d'Ami", "Lampe Tea-Time"): "Lamp",
+    ("La Chambre d'Ami", "Le Porte-Photo"): "Photo Holder",
+    ("La Chambre d'Ami", "MÉDUSE - Blanche"): "Lamp",  # "cette lampe méduse blanche" - "this white jellyfish lamp"
+    ("La Chambre d'Ami", "MÉDUSE - Glacier"): "Lamp",
+    ("La Chambre d'Ami", "MÉDUSE - Lavande"): "Lamp",
+    ("La Chambre d'Ami", "MÉDUSE - Menthe"): "Lamp",
+    ("La Chambre d'Ami", "MÉDUSE - Mimosa"): "Lamp",
+    ("La Chambre d'Ami", "MÉDUSE - Rose"): "Lamp",
+    ("La Chambre d'Ami", "MÉDUSE - noire"): "Lamp",
+    ("La Chambre d'Ami", "Organisateur de Bureau - Grand"): "Desk Organiser",
+    ("La Chambre d'Ami", "Organisateur de Bureau - Petit"): "Desk Organiser",
+    ("La Chambre d'Ami", "PROTOTYPE - 013"): "Lamp",  # "cette lampe fait partie d'une recherche..."
+    ("La Chambre d'Ami", "PROTOTYPE - 073"): "Lamp",  # same prototype-lamp series as PROTOTYPE - 013
+    ("La Chambre d'Ami", "PROTOTYPE - FLOWER 1"): "Lamp",  # same series, page since retired
+    ("La Chambre d'Ami", "Pique-Fleur Séchées"): "Flower Frog",  # "11 trous pour placer vos fleurs séchées"
+    ("La Chambre d'Ami", "Porte Savon Classique"): "Soap Dish",
+    ("La Chambre d'Ami", "Porte Savon Vertical"): "Soap Dish",
+    ("La Chambre d'Ami", "Soliflores Figures"): "Vase",  # "soliflore" = a single-stem bud vase
+    ("La Chambre d'Ami", "Vide-poche"): "Catchall",  # "déposer vos petites affaires dans l'entrée" - an entryway tray
+    ("La Chambre d'Ami", "le-grand-vase-totem"): "Vase",
 }
 
 
