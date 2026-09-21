@@ -77,6 +77,40 @@ MAX_TOTAL_RUNTIME_SECONDS = 20 * 60  # whole run gives up and reports what it ha
 # without needing to touch that ceiling itself.
 MAX_CONCURRENT_BRANDS = 8
 
+# Status codes a site uses to say "I see you're a bot, no" rather than a
+# genuine transient failure - worth surfacing distinctly (see
+# ScrapeBlockedError) instead of quietly retrying and giving up, since
+# retrying a bot-block wastes time and the eventual silent "0 products"
+# looks identical to a real empty catalog page in the scrape report.
+BLOCK_STATUS_CODES = {403, 429, 503}
+
+# Substrings that show up in a block page's own text/error message even
+# when the status code check above doesn't fire (e.g. a site that 200s a
+# "just a moment" JS-challenge page instead of returning a real 403).
+# Checked case-insensitively against exception text and, where cheaply
+# available, response bodies.
+BLOCK_TEXT_SIGNATURES = (
+    "just a moment", "cloudflare", "captcha", "attention required",
+    "access denied", "are you a robot", "unusual traffic", "forbidden",
+)
+
+
+class ScrapeBlockedError(Exception):
+    """
+    Raised when a site responds with a bot-block-style status instead of
+    real data, so it surfaces as a distinguishable error in the scrape
+    report (see run()'s _looks_like_block()) rather than being swallowed
+    as a generic "0 products returned" - which reads identically to a
+    genuinely empty catalog page and gives no signal that a brand's site
+    may have started blocking us. This is expected to become more common
+    as more sites take a defensive stance against scraping generally, not
+    just against us specifically.
+    """
+    def __init__(self, url, status_code):
+        self.url = url
+        self.status_code = status_code
+        super().__init__(f"Blocked ({status_code}) fetching {url}")
+
 
 def _fetch_json(url, retries=2, timeout=30):
     """
@@ -85,11 +119,19 @@ def _fetch_json(url, retries=2, timeout=30):
     API) are slow enough on larger pages that a single 15s attempt isn't
     reliable - a full page of real data shouldn't be dropped over one
     slow response.
+
+    A bot-block status (see BLOCK_STATUS_CODES) is not retried - another
+    attempt won't change a Cloudflare challenge's mind - and is raised as
+    ScrapeBlockedError instead of being swallowed into a plain None return,
+    so callers that want to distinguish "blocked" from "genuinely empty"
+    can do so.
     """
     last_error = None
     for attempt in range(retries + 1):
         try:
             resp = requests.get(url, headers=HEADERS, timeout=timeout)
+            if resp.status_code in BLOCK_STATUS_CODES:
+                raise ScrapeBlockedError(url, resp.status_code)
             resp.raise_for_status()
             return resp.json()
         except requests.RequestException as e:
@@ -98,6 +140,19 @@ def _fetch_json(url, retries=2, timeout=30):
                 time.sleep(2)
     print(f"  Could not fetch {url} after {retries + 1} attempts: {last_error}")
     return None
+
+
+def _looks_like_block(error_text):
+    """
+    Heuristic check on an error string (or any other diagnostic text) for
+    signs a brand's site is blocking scraping rather than failing for some
+    unrelated transient reason. Used to flag brands in the scrape report
+    for a human to look at - see run()'s "likely_blocked" report field.
+    """
+    if not error_text:
+        return False
+    lowered = error_text.lower()
+    return any(sig in lowered for sig in BLOCK_TEXT_SIGNATURES) or "blocked (" in lowered
 
 
 def setup_database():
@@ -4279,8 +4334,13 @@ def run(brand_name=None):
                 brand_reports.append({
                     "brand": brand["name"], "products_saved": 0,
                     "seconds": brand_seconds, "error": error,
+                    "likely_blocked": _looks_like_block(error),
                 })
                 continue
+
+            prev_count = conn.execute(
+                "SELECT COUNT(*) FROM products WHERE brand = ?", (brand["name"],),
+            ).fetchone()[0]
 
             if not products:
                 # A brand's extractor succeeding but returning nothing is more
@@ -4288,10 +4348,35 @@ def run(brand_name=None):
                 # than the brand genuinely having zero products - don't wipe
                 # its existing good data over that; a real "brand pulled every
                 # product" case gets caught the next run this keeps returning 0.
+                # Going from a real, non-empty catalog straight to zero with no
+                # exception at all is itself a signal worth flagging though -
+                # a genuine site-wide catalog wipeout is rare; a site quietly
+                # starting to serve bots an empty/challenge page is not.
                 print(f"  Got 0 products for {brand['name']} - keeping previous data, not overwriting.")
                 brand_reports.append({
                     "brand": brand["name"], "products_saved": 0,
                     "seconds": brand_seconds, "error": "0 products returned - kept previous data",
+                    "likely_blocked": prev_count > 0,
+                })
+                continue
+
+            # A steep drop from what this brand had last time (rather than a
+            # clean zero) is the other shape a soft block takes - a challenge
+            # page or rate-limit response that still yields *some* parseable
+            # data (e.g. one sample product, or a paginated listing that cuts
+            # off after page 1) rather than an outright empty result. Treated
+            # the same conservative way as the zero-products case: don't let a
+            # partial, possibly-blocked scrape overwrite good existing data.
+            suspicious_drop = prev_count >= 10 and len(products) < prev_count * 0.4
+            if suspicious_drop:
+                print(f"  {brand['name']}: only found {len(products)} products vs {prev_count} previously - "
+                      f"looks like a possible block or site change, not a real catalog change. "
+                      f"Keeping previous data, not overwriting.")
+                brand_reports.append({
+                    "brand": brand["name"], "products_saved": 0,
+                    "seconds": brand_seconds,
+                    "error": f"Found only {len(products)} products vs {prev_count} previously - kept previous data",
+                    "likely_blocked": True,
                 })
                 continue
 
@@ -4329,7 +4414,7 @@ def run(brand_name=None):
             print(f"  Saved {len(products)} products in {brand_seconds}s.")
             brand_reports.append({
                 "brand": brand["name"], "products_saved": len(products),
-                "seconds": brand_seconds, "error": None,
+                "seconds": brand_seconds, "error": None, "likely_blocked": False,
             })
 
     conn.close()
@@ -4350,6 +4435,7 @@ def print_summary(brand_reports, total_seconds, stopped_early):
     total_products = sum(b["products_saved"] for b in brand_reports)
     slowest = sorted(brand_reports, key=lambda b: b["seconds"], reverse=True)[:3]
     errors = [b for b in brand_reports if b["error"]]
+    blocked = [b["brand"] for b in brand_reports if b.get("likely_blocked")]
 
     print("\n--- Run summary ---")
     print(f"Total time: {total_seconds}s ({total_seconds / 60:.1f} min)")
@@ -4360,12 +4446,20 @@ def print_summary(brand_reports, total_seconds, stopped_early):
         print("Slowest brands: " + ", ".join(f"{b['brand']} ({b['seconds']}s)" for b in slowest))
     if errors:
         print("Brands with errors: " + ", ".join(b["brand"] for b in errors))
+    if blocked:
+        print("Brands that may be blocking scraping: " + ", ".join(blocked))
 
     report = {
         "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
         "total_seconds": total_seconds,
         "total_products_saved": total_products,
         "stopped_early_due_to_time_limit": stopped_early,
+        # Brands flagged this run as possibly blocking scraping (bot-block
+        # status code, challenge-page text, a real catalog dropping straight
+        # to zero, or a suspiciously steep count drop) - see run()'s handling
+        # above. Surfaced here as its own top-level field so the GitHub
+        # Action can check it directly without walking every brand entry.
+        "blocked_brands": blocked,
         "brands": brand_reports,
     }
     with open(REPORT_PATH, "w") as f:

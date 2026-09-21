@@ -3,6 +3,16 @@
 #   manually run anything. It also saves the updated database back to
 #   the repo so the latest data is always there.
 #
+#   If a brand's site looks like it's blocking scraping (a 403/429/503,
+#   a Cloudflare-style challenge page, or a real catalog suddenly
+#   returning far fewer products than last time - see scrape.py's
+#   "likely_blocked" report field), this also opens or updates a GitHub
+#   issue titled "Scraper access alerts" so it surfaces as a normal
+#   GitHub notification instead of only being visible in a workflow log
+#   nobody is watching. That issue is where you'd decide whether to
+#   reach out to the brand about continued inclusion/scraping permission -
+#   this workflow only detects and reports, it never contacts anyone.
+#
 # HOW TO TRIGGER IT MANUALLY:
 #   Go to the "Actions" tab in GitHub, click "Scrape brand sites" on the
 #   left, then click the "Run workflow" button. That's the same button
@@ -14,6 +24,10 @@ on:
   schedule:
     - cron: "0 6 * * 1"  # every Monday at 6am UTC
   workflow_dispatch: {}    # adds the manual "Run workflow" button in GitHub
+
+permissions:
+  contents: write
+  issues: write
 
 jobs:
   scrape:
@@ -43,3 +57,25 @@ jobs:
           git add data/formground.db data/last_scrape_report.json docs/brands docs/makers.html docs/sitemap.xml
           git diff --quiet --cached || git commit -m "Update scraped data and regenerate brand pages"
           git push
+
+      - name: Alert on brands that may be blocking scraping
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          blocked=$(jq -r '.blocked_brands // [] | join(", ")' data/last_scrape_report.json)
+          if [ -z "$blocked" ]; then
+            echo "No brands flagged this run."
+            exit 0
+          fi
+          echo "Flagged: $blocked"
+
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          body=$(printf '**%s** — flagged during the %s scrape run.\n\nThis usually means the site returned a bot-block response (403/429/503, a Cloudflare-style challenge page) or its catalog suddenly returned far fewer products than last time. Existing data for these brands was left untouched, not overwritten.\n\nWorth checking whether the brand still wants to be included and whether we have a clear go-ahead to keep scraping their site.\n\n[Run details](%s)\n' \
+            "$blocked" "$(date -u +%Y-%m-%d)" "$run_url")
+
+          existing=$(gh issue list --search "Scraper access alerts in:title" --state open --json number --jq '.[0].number')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "Scraper access alerts" --body "$body"
+          fi
