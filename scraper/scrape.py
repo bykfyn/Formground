@@ -1019,7 +1019,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("bookend", "Bookend"), ("candle holder", "Candle Holder"), ("candleholder", "Candle Holder"),
     ("ottoman", "Ottoman"), ("seater", "Sofa"), ("shelf", "Shelving"), ("urn", "Urn"),
     ("coupe", "Coupe"), ("grinder", "Mill"), ("bottle opener", "Bottle Opener"),
-    ("runner", "Rug"), ("mat", "Rug"), ("hook", "Coat Hook"),
+    ("runner", "Rug"), ("mat", "Rug"), ("hook", "Coat Hook"), ("flush mount", "Flush Mount"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -1033,7 +1033,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
-    "New Works DK",
+    "New Works DK", "Workstead",
 }
 
 
@@ -1343,6 +1343,22 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("New Works DK", "Shore Dining Curved End Left, Plinth, Module 41"): "Sofa",
     ("New Works DK", "Shore Dining Curved Center, Plinth, Module 40"): "Sofa",
     ("New Works DK", "Shore Dining Curved End Right, Plinth, Module 42"): "Sofa",
+    # Workstead's abstract product-line names (Brick, Park, Tinsel,
+    # Orbit Solo/Satellite, Signal Solo) give no lighting word at all,
+    # but every one is confirmed a wall/ceiling fixture on its own real
+    # workstead.com product page (e.g. Park I: "usable as a sconce or
+    # flush mount"; Tinsel: "can be used as both a wall sconce and
+    # flush mount").
+    ("Workstead", "Brick I"): "Sconce",
+    ("Workstead", "Brick III"): "Sconce",
+    ("Workstead", "Park I"): "Sconce",
+    ("Workstead", "Park II"): "Sconce",
+    ("Workstead", "Park III"): "Sconce",
+    ("Workstead", "Park IV"): "Sconce",
+    ("Workstead", "Tinsel"): "Sconce",
+    ("Workstead", "Orbit Solo"): "Sconce",
+    ("Workstead", "Orbit Satellite"): "Sconce",
+    ("Workstead", "Signal Solo"): "Sconce",
 }
 
 
@@ -3241,7 +3257,7 @@ def extract_workstead(brand):
             "brand_url": brand["url"],
             "product_name": name,
             "product_url": url,
-            "category": "",
+            "category": _infer_category_from_name(name, "", brand["name"]),
             "material_options": [],
             "dimensions": "",
             "notes": "",
