@@ -1033,7 +1033,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
-    "New Works DK", "Workstead",
+    "New Works DK", "Workstead", "Rubn",
 }
 
 
@@ -1359,6 +1359,12 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Workstead", "Orbit Solo"): "Sconce",
     ("Workstead", "Orbit Satellite"): "Sconce",
     ("Workstead", "Signal Solo"): "Sconce",
+    ("Rubn", "The Palazzo"): "Light",  # "fully dimmable... light that shapes the mood" - no stated mount type
+    ("Rubn", "Ceiling Cup"): "Light",  # a mounting/canopy accessory for pendant lights, not a standalone fixture
+    ("Rubn", "Lord X"): "Chandelier",  # "adjustable rods... change the lamp's appearance", sibling of Lord 3 Chandelier
+    ("Rubn", "Lord Diva"): "Chandelier",  # referenced by Lord Ballroom's own description as a sibling design
+    ("Rubn", "Lord Ballroom"): "Chandelier",  # "12 glass globes... suspended from a solid metal fixture"
+    ("Rubn", "Lord Asymmetric"): "Chandelier",  # "mounts directly to the ceiling... six glass globes"
 }
 
 
@@ -1386,6 +1392,39 @@ def _infer_category_from_english_keywords(product_name):
     return None
 
 
+# Rubn is a pure lighting brand whose product names encode mount type
+# as a bare word (Floor/Table/Wall/Ceiling/Desk) rather than saying
+# "lamp" at all - confirmed live 2026-09-21 by checking several
+# ambiguous-looking names against their own real product descriptions
+# (e.g. "Chairman Table" is a table lamp with "a soft, warm glow, "not
+# a piece of furniture despite the name). Kept brand-scoped rather
+# than added to the shared English keyword list - "table"/"desk"/
+# "wall"/"floor"/"ceiling" as bare words would badly misclassify real
+# furniture at every other brand (a real desk is not a desk lamp).
+RUBN_MOUNT_TYPE_KEYWORDS = (
+    ("floor with table", "Floor Lamp, Table Lamp"),
+    ("tripod table", "Table Lamp"),
+    ("table spot", "Table Lamp"),
+    ("spot with cup", "Light"),
+    ("spot with plate", "Light"),
+    ("suspension", "Pendant"),
+    ("candle", "Candle Holder"),
+    ("floor", "Floor Lamp"),
+    ("wall", "Wall Lamp"),
+    ("ceiling", "Ceiling Lamp"),
+    ("desk", "Desk Lamp"),
+    ("table", "Table Lamp"),
+)
+
+
+def _infer_rubn_category(product_name):
+    text = product_name.lower()
+    for phrase, category in RUBN_MOUNT_TYPE_KEYWORDS:
+        if re.search(rf"\b{re.escape(phrase)}\b", text):
+            return category
+    return None
+
+
 def _infer_category_from_name(product_name, current_category, brand_name=None):
     if current_category.strip().lower() not in UNHELPFUL_CATEGORIES:
         return current_category
@@ -1393,6 +1432,10 @@ def _infer_category_from_name(product_name, current_category, brand_name=None):
     italian = ITALIAN_OBJECT_TYPES.get(first_word)
     if italian:
         return italian
+    if brand_name == "Rubn":
+        rubn_match = _infer_rubn_category(product_name)
+        if rubn_match:
+            return rubn_match
     if brand_name in CATEGORY_KEYWORD_FALLBACK_BRANDS:
         keyword_match = _infer_category_from_english_keywords(product_name)
         if keyword_match:
@@ -1456,6 +1499,10 @@ def _looks_like_a_maintenance_item(title):
         # of the real "4PM" chaise, not a purchasable physical object
         # ("does not include materials or tools", confirmed live).
         "self build",
+        # Rubn's "Sample Set" is a finish/cable swatch set, not a
+        # design object - same shape as the sample-swatch exclusions
+        # already made for other brands.
+        "sample set",
     )
     title_lower = title.lower()
     return any(kw in title_lower for kw in keywords)
