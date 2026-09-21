@@ -2309,14 +2309,50 @@ def extract_gubi(brand):
     return products
 
 
+# The real per-product taxonomy this brand's own site uses (confirmed
+# live 2026-09-21) is already present right on the /product/ listing
+# page, just not where the original version of this extractor looked -
+# each result sits inside an <article> whose class list carries a flat
+# set of "filcat-*" filter tags mixing several different taxonomies
+# together (subfunction/object-type, material, room/use, designer, and
+# collection/family - e.g. "360" or "cyborg-family" name a design line,
+# not an object type). Built by reading every real filcat-* value
+# across the full live catalog (98 distinct values) and keeping only
+# the ones that are genuinely an object type, not a material/room/
+# designer/collection name. "magis-me-too"/"animal-factory" are Magis's
+# own children's lines (confirmed: none of their real products carry
+# any of the object-type tags below either, since a toy isn't a chair
+# or table) - tagged "Toy" rather than left blank or forced into a
+# furniture category that doesn't fit.
+MAGIS_SUBFUNCTION_TO_CATEGORY = {
+    "chairs-and-small-armchairs": "Chair",
+    "armchair-and-lounge": "Armchair",
+    "bar-tables": "Bar Table",
+    "low-tables": "Coffee Table",
+    "tables": "Table",
+    "benches": "Bench",
+    "stools": "Stool",
+    "ottomans": "Ottoman",
+    "sofas-and-modular-sofas": "Sofa",
+    "storage-and-shelving-systems": "Shelving",
+    "coat-stand-hanger": "Coat Stand",
+    "carpets": "Rug",
+    "mirrors": "Mirror",
+    "lighting": "Light",
+    "accessories": "Accessories",
+    "public-seating-system": "Seating",
+    "magis-me-too": "Toy",
+    "animal-factory": "Toy",
+}
+
+
 def extract_magis(brand):
     """
     magisdesign.com (WordPress) server-renders its entire ~250-item catalog
     on one /product/ listing page - name (h2), designer + price (p), and
-    image all inline per card (a.load), no per-product fetch needed. No
-    per-product category (the site's own taxonomy is by function - chairs,
-    tables, etc. - as separate landing pages under /function/, not tagged
-    per item on this listing), left blank.
+    image all inline per card (a.load), no per-product fetch needed. Real
+    category comes from each result's own <article> wrapper (see
+    MAGIS_SUBFUNCTION_TO_CATEGORY), not the <a class="load"> itself.
     """
     domain = brand["url"].rstrip("/")
     url = f"{domain}/product/"
@@ -2329,18 +2365,24 @@ def extract_magis(brand):
 
     soup = BeautifulSoup(resp.text, "html.parser")
     products = []
-    for a in soup.find_all("a", class_="load", href=True):
-        h2 = a.find("h2")
-        img = a.find("img")
-        if not h2 or not img:
+    for article in soup.find_all("article"):
+        a = article.find("a", class_="load", href=True)
+        h2 = article.find("h2")
+        img = article.find("img")
+        if not a or not h2 or not img:
             continue
+
+        filcats = {c[len("filcat-"):] for c in article.get("class", []) if c.startswith("filcat-")}
+        categories = sorted({
+            MAGIS_SUBFUNCTION_TO_CATEGORY[f] for f in filcats if f in MAGIS_SUBFUNCTION_TO_CATEGORY
+        })
 
         products.append({
             "brand": brand["name"],
             "brand_url": brand["url"],
             "product_name": h2.get_text(strip=True),
             "product_url": a["href"],
-            "category": "",
+            "category": ", ".join(categories),
             "material_options": [],
             "dimensions": "",
             "notes": "",

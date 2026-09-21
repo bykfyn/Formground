@@ -14,8 +14,8 @@
 <meta property="og:title" content="Magis on Formground">
 <meta property="og:description" content="Magis's work on Formground - 251 pieces, linked straight to their own site.">
 <meta property="og:url" content="https://formground.com/brands/magis.html">
-<meta property="og:image" content="https://www.magisdesign.com/wp-content/uploads/2015/01/Magis_air-armchair_product_lateral_SD73_dark-green_02_icona-172x300.jpg">
-<meta name="twitter:image" content="https://www.magisdesign.com/wp-content/uploads/2015/01/Magis_air-armchair_product_lateral_SD73_dark-green_02_icona-172x300.jpg">
+<meta property="og:image" content="https://www.magisdesign.com/wp-content/uploads/2015/01/Magis_360_chair_product_lateral_SD1540_01-162x300.png">
+<meta name="twitter:image" content="https://www.magisdesign.com/wp-content/uploads/2015/01/Magis_360_chair_product_lateral_SD1540_01-162x300.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Magis on Formground">
 <meta name="twitter:description" content="Magis's work on Formground - 251 pieces, linked straight to their own site.">
@@ -44,6 +44,7 @@
     border: 0.5px solid var(--border); margin: 0 0 10px;
   }
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
   .card-body { padding: 0; }
   .card-title { font-size: 13px; font-weight: 500; margin: 0; }
   .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
@@ -132,7 +133,7 @@
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">Magis</h1>
-    <div class="tags"><span class="tag">Furniture</span><span class="tag">Objects</span><span class="tag">Italy</span></div>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">Italy</span></div>
     <a class="brand-site-link" href="https://www.magisdesign.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
   <div class="grid">
@@ -1897,6 +1898,23 @@
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
 </main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
