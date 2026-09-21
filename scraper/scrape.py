@@ -1036,7 +1036,7 @@ CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
     "New Works DK", "Workstead", "Rubn", "Maruni", "AY Illuminate", "Ghidini 1961",
-    "GATOMIKIO",
+    "GATOMIKIO", "Raawii",
 }
 
 
@@ -1089,7 +1089,6 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Northern", "Hifive tambur og glasskapssett 200"): "Sideboard",
     ("Northern", "Hifive Glass-vitrineskap 200"): "Sideboard",
     ("Northern", "Tradition gulvlampe"): "Floor Lamp",  # URL confirms "tradition-floor-lamp"
-    ("Raawii", "George Sowden"): "Table",  # product_name is the designer's name; real product is the "Thing Table"
     ("Silcohaus", "Arno Tall"): "Floor Lamp",  # silcohaus.com: "Arno Tall is more than a floor lamp"
     ("Silcohaus", "Arno Short"): "Lamp",  # companion piece to Arno Tall, own tags confirm "Category: Lighting"
     ("Silcohaus", "Luno Side"): "Side Table",  # URL confirms "luna-side-table"
@@ -1636,7 +1635,7 @@ def _looks_like_a_maintenance_item(title):
     return any(kw in title_lower for kw in keywords)
 
 
-def _base_name(title):
+def _base_name(title, brand_name=None):
     """
     Several Shopify and WooCommerce brands don't use real variants - they
     list every finish/size combination as its own separate top-level
@@ -1663,6 +1662,20 @@ def _base_name(title):
     """
     title = re.sub(r"<br\s*/?>", " ", title)
     title = re.sub(r"型\s*$", " Type", title.strip())
+    if brand_name == "Raawii":
+        # Raawii's titles are "Designer - Line - Type - Size - Color",
+        # several real hierarchy levels, not just "Name - Finish" -
+        # splitting on the FIRST separator (the general case below)
+        # collapses every product by the same designer into one row
+        # regardless of how different they actually are (confirmed
+        # live 2026-09-21: "Michael Kvium - Jam - centrepiece" and
+        # "Michael Kvium - Jam - candleholder" - two unrelated objects
+        # - both collapsed to just "Michael Kvium", taking this
+        # brand's real catalog from 432 products down to 42). Splitting
+        # on the LAST separator instead treats only the trailing
+        # color/finish word as the variant, keeping every other real
+        # distinction (designer, line, type, size) intact.
+        return title.rsplit(" - ", 1)[0].strip() if " - " in title else title.strip()
     match = re.search(r"\s[/–—-]\s|,\s", title)
     return title[: match.start()].strip() if match else title.strip()
 
@@ -1721,7 +1734,7 @@ def extract_shopify(brand):
     # contains the Roman letters "b" and "r", which silently satisfied
     # this regex for every title regardless of its real content until
     # this was caught (2026-09-10).
-    raw_products = [p for p in raw_products if re.search(r"[A-Za-z]", _base_name(p["title"]))]
+    raw_products = [p for p in raw_products if re.search(r"[A-Za-z]", _base_name(p["title"], brand["name"]))]
 
     # Group same-design variant-as-separate-product listings back into one
     # entry (see _base_name), merging their distinguishing suffixes into
@@ -1731,7 +1744,7 @@ def extract_shopify(brand):
     # would otherwise wrongly split one real design into duplicates.
     grouped = {}
     for p in raw_products:
-        key = (_clean_product_type(p.get("product_type")), _base_name(p["title"]))
+        key = (_clean_product_type(p.get("product_type")), _base_name(p["title"], brand["name"]))
         grouped.setdefault(key, []).append(p)
 
     products = []
@@ -1744,7 +1757,7 @@ def extract_shopify(brand):
 
         if len(group) > 1:
             for p in group:
-                suffix = p["title"][len(_base_name(p["title"])):].lstrip(" /–—-,")
+                suffix = p["title"][len(_base_name(p["title"], brand["name"])):].lstrip(" /–—-,")
                 if suffix:
                     material_options.add(suffix)
 
