@@ -1015,6 +1015,9 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("sconce", "Sconce"), ("pouf", "Ottoman"), ("credenza", "Credenza"), ("box", "Box"),
     ("bowl", "Bowl"), ("vase", "Vase"), ("plate", "Plate"), ("boxes", "Box"),
     ("screen", "Screen"), ("cup", "Cup"), ("glass", "Glass"), ("vessel", "Vessel"),
+    ("coat rack", "Coat Stand"), ("coat stand", "Coat Stand"), ("winerack", "Wine Rack"),
+    ("bookend", "Bookend"), ("candle holder", "Candle Holder"), ("ottoman", "Ottoman"),
+    ("seater", "Sofa"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -1027,7 +1030,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 # against ENGLISH_OBJECT_TYPE_KEYWORDS the same way Pinch's were.
 CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
-    "Sizar Alexis",
+    "Sizar Alexis", "Mass Productions",
 }
 
 
@@ -1181,6 +1184,18 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("B-Line Italia", "Bob"): "Desk Organiser",  # checked its real product photo
     ("B-Line Italia", "Aki Jr"): "Container",  # checked its real product photo - a multi-slot holder, no more specific real use confirmed
     ("B-Line Italia", "Aki"): "Container",
+    # Evocative Mass Productions names, checked against
+    # massproductions.se's own real product descriptions.
+    ("Mass Productions", "Universal Door Wedge"): "Door Wedge",
+    ("Mass Productions", "Woodi"): "Mill",  # "Woodi - Salt & Pepper Grinder"
+    ("Mass Productions", "Trippy"): "Vase",  # "a large-scale vase, produced with a combination of glassblowing techniques"
+    ("Mass Productions", "Harry"): "Stool",  # "The Harry stool draws its visual language from..."
+    ("Mass Productions", "Hercule"): "Coat Hook",  # URL confirms "hercule-wall-hook"
+    ("Mass Productions", "4PM"): "Chaise",  # "the design language of the chaise..."
+    ("Mass Productions", "Patch Config. A"): "Sofa",  # a configuration of the modular "Patch Sofa System"
+    ("Mass Productions", "Patch Config. B"): "Sofa",
+    ("Mass Productions", "Patch Config. C"): "Sofa",
+    ("Mass Productions", "Patch Config. D"): "Sofa",
 }
 
 
@@ -1273,6 +1288,11 @@ def _looks_like_a_maintenance_item(title):
         # listings ("test 3", "Product", "AC Catalogue"), which already
         # have no image and are invisible to search regardless.
         "donation",
+        # Mass Productions sells "4PM Self Build" for 0 SEK - free
+        # downloadable DIY instructions for building your own version
+        # of the real "4PM" chaise, not a purchasable physical object
+        # ("does not include materials or tools", confirmed live).
+        "self build",
     )
     title_lower = title.lower()
     return any(kw in title_lower for kw in keywords)
