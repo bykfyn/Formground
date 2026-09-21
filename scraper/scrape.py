@@ -403,7 +403,7 @@ def extract_hbigeleisen(brand):
             "brand_url": brand["url"],
             "product_name": name,
             "product_url": f"{brand['url'].rstrip('/')}{a['href']}",
-            "category": "",
+            "category": _infer_category_from_name(name, "", brand["name"]),
             "material_options": [],
             "dimensions": "",
             "notes": "",
@@ -906,6 +906,26 @@ EXCLUDED_CATEGORIES = {
     "care kit", "editorial", "musica", "operativo",
 }
 
+# Utilitario Mexicano's product_type is blank across its entire ~490-
+# item catalog, so EXCLUDED_CATEGORIES above (which only checks
+# product_type) never catches its non-design items - its real
+# taxonomy lives in Shopify `tags` instead, terse Spanish category
+# words: "abarrotes"/"refresco"/"soda" (groceries/drinks - confirmed
+# live: a kombucha, an energy drink, and a "club" soda all carry
+# these), "aseo"/"baño"/"cuidado personal" (personal care - a woven
+# bath scrubber), "editorial"/"libro"/"libros" (a physical book,
+# "musica"/"operativo" above are this same brand's other Spanish
+# category names, just via product_type on different listings).
+# "accesorio"/"accesorios" was deliberately NOT added here - too broad,
+# and one such listing (a wall coat hook, "Gancho / Perchero Peltre")
+# is a genuine design object. Checked as whole-tag membership, not a
+# substring search, so a real product's own tag can't accidentally
+# match a fragment of one of these words.
+EXCLUDED_TAGS = {
+    "abarrotes", "refresco", "soda", "aseo", "baño", "cuidado personal",
+    "editorial", "libro", "libros",
+}
+
 # Some Shopify brands use product_type for something other than a real
 # category - confirmed on Pinch, where it's actually an electrical
 # certification mark or stock/bed-size status ("UL", "CE", "US Ex
@@ -977,7 +997,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("pod pendant light", "Pendant"), ("crown pendant light", "Pendant"),
     ("pendant light", "Pendant"), ("loop pendant", "Pendant"),
     ("table light", "Light"), ("wall light", "Light"), ("wall uplight", "Light"),
-    ("cluster light", "Light"), ("globe light", "Light"),
+    ("cluster light", "Light"), ("globe light", "Light"), ("table lamp", "Table Lamp"),
     ("coffee table", "Coffee Table"), ("dining table", "Dining Table"),
     ("bedside table", "Bedside Table"), ("dressing table", "Dressing Table"),
     ("side table", "Side Table"), ("lamp table", "Side Table"),
@@ -991,7 +1011,8 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("console", "Console"), ("bench", "Bench"), ("stool", "Stool"),
     ("shelving", "Shelving"), ("vitrine", "Vitrine"), ("daybed", "Daybed"),
     ("mirror", "Mirror"), ("desk", "Desk"), ("chair", "Chair"), ("rug", "Rug"),
-    ("sidechair", "Chair"), ("swivel", "Chair"),
+    ("sidechair", "Chair"), ("swivel", "Chair"), ("tray", "Tray"), ("mill", "Mill"),
+    ("sconce", "Sconce"), ("pouf", "Ottoman"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -1002,7 +1023,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 # false positives on other brands (Minimalux, Ingo Maurer - see project
 # memory). Widen only after checking a brand's own real product names
 # against ENGLISH_OBJECT_TYPE_KEYWORDS the same way Pinch's were.
-CATEGORY_KEYWORD_FALLBACK_BRANDS = {"Pinch", "Mater"}
+CATEGORY_KEYWORD_FALLBACK_BRANDS = {"Pinch", "Mater", "H. Bigeleisen"}
 
 
 # A handful of real products give the keyword/name-based inference
@@ -1059,6 +1080,52 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Silcohaus", "Arno Short"): "Lamp",  # companion piece to Arno Tall, own tags confirm "Category: Lighting"
     ("Silcohaus", "Luno Side"): "Side Table",  # URL confirms "luna-side-table"
     ("Wendelbo", "Edge V1 Sofa"): "Sofa",
+    ("Birgit Severin", "Alteration"): "Lamp",  # "counter-weight lamp allowing to adjust the light temperature"
+    ("Birgit Severin", "Ashes"): "Vase",  # "rubber vases embracing the transience of life"
+    ("Birgit Severin", "Heimat"): "Lamp",  # "burned in fire - lampshade exploring memories"
+    ("Birgit Severin", "Vanitas"): "Vase",  # "rubber vases exploring the beauty of decay"
+    # "Design Impressionism" and "Kirei" (a jewelry-cleaning object) left
+    # uncategorized on purpose - checked both live, neither maps to a
+    # real furniture/lighting/ceramics/object type.
+    ("Utilitario Mexicano", "GANCHO"): "Coat Hook",  # "GANCHO / PERCHERO PELTRE" - a pewter wall coat hook
+    ("Utilitario Mexicano", "LLAVERO HOTEL LAS BRISAS"): "Keychain",  # same product line as its other real, categorized keychains
+    # Dutch names giving the English keyword list nothing to go on -
+    # checked against pietheineek.nl's own product photos/descriptions.
+    ("Piet Hein Eek", "Oude buizen zithoek"): "Sofa",  # "old tubes seating corner" - a tube-frame sectional
+    ("Piet Hein Eek", "Enorme balken salonblok"): "Coffee Table",  # checked its real photo: a low block with drawers
+    ("Piet Hein Eek", "Oudetapijtentapijttegeltapijt"): "Rug",  # "old carpets carpet tile carpet"
+    ("Piet Hein Eek", "Keuken Mavaleix"): "Kitchen",
+    ("Piet Hein Eek", "Tray aluminium medium"): "Tray",
+    ("Piet Hein Eek", "Canteen bench in scrapwood"): "Bench",
+    ("Piet Hein Eek", "Kröller-Müller chair"): "Chair",
+    ("Piet Hein Eek", "Keuken voor particulier"): "Kitchen",
+    # Will Choui's own site groups several distinct pieces (a chair, a
+    # lamp, a table...) under one named "collection", and its own
+    # /collections/collectibles gallery already treats each collection
+    # as a single "piece" (see extract_will_choui's docstring) - so a
+    # single-category tag would be inaccurate for a design that's both
+    # e.g. a console and a lamp. Tagged with every real product type in
+    # the collection instead, checked live against willchoui.com's own
+    # per-collection product breakdown.
+    ("Will Choui", "per.for.(H)ated"): "Sofa, Armchair, Coffee Table",
+    ("Will Choui", "1980"): "Pendant",
+    ("Will Choui", "Alu Side Table"): "Side Table",
+    ("Will Choui", "WCL"): "Chair",
+    ("Will Choui", "Squarehead Mirror"): "Mirror",
+    ("Will Choui", "1979"): "Side Table, Pendant, Mirror, Lamp",
+    ("Will Choui", "Solimar"): "Console, Table, Stool",
+    ("Will Choui", "Drum"): "Console, Lamp, Coffee Table",
+    # Polish names, translated and checked against the product photo/
+    # page - the English keyword list has nothing to match here.
+    ("Łukasz Korol", "Kredens z jesionu"): "Sideboard",  # "ash-wood sideboard/cupboard"
+    ("Łukasz Korol", "Biurko z jawora"): "Desk",  # "sycamore desk"
+    ("Łukasz Korol", "Stolik kawowy z jawora"): "Coffee Table",  # "sycamore coffee table"
+    ("Łukasz Korol", "Ławka z jawora"): "Bench",  # "sycamore bench"
+    ("Łukasz Korol", "Komoda z czereśni"): "Chest of Drawers",  # "cherry-wood chest of drawers"
+    ("Łukasz Korol", "Szafka nocna z czereśni"): "Bedside Table",  # "cherry-wood nightstand"
+    ("Łukasz Korol", "Stolik kawowy z orzecha"): "Coffee Table",  # "walnut coffee table"
+    ("Łukasz Korol", "Stolik z orzecha"): "Side Table",  # "walnut small table"
+    ("Łukasz Korol", "Kredens z gruszy"): "Sideboard",  # "pear-wood sideboard/cupboard"
 }
 
 
@@ -1129,7 +1196,16 @@ def _looks_like_a_maintenance_item(title):
     to surface, so they're excluded by name instead - harmless no-op
     for any brand that doesn't happen to sell one.
     """
-    keywords = ("assembly kit", "cleaning kit", "kit di pulizia", "gift card")
+    keywords = (
+        "assembly kit", "cleaning kit", "kit di pulizia", "gift card",
+        # Utilitario Mexicano also sells polarized sunglasses through
+        # this same catalog (confirmed live: "Lentes Filtro
+        # Polarizador") - not a home design object either, and its own
+        # tags ("accesorio"/"accesorios") are too broad a signal to
+        # exclude generically without also excluding real design
+        # accessories like its coat hooks.
+        "filtro polarizador",
+    )
     title_lower = title.lower()
     return any(kw in title_lower for kw in keywords)
 
@@ -1204,6 +1280,10 @@ def extract_shopify(brand):
     raw_products = [
         p for p in raw_products
         if (p.get("product_type") or "").strip().lower() not in EXCLUDED_CATEGORIES
+    ]
+    raw_products = [
+        p for p in raw_products
+        if not {t.strip().lower() for t in (p.get("tags") or [])} & EXCLUDED_TAGS
     ]
     # A product name with zero Roman-alphabet characters (confirmed on
     # GATOMIKIO - 40 of 175 titles are Japanese-only, e.g. "その他の椀
