@@ -1034,7 +1034,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
-    "New Works DK", "Workstead", "Rubn", "Maruni",
+    "New Works DK", "Workstead", "Rubn", "Maruni", "AY Illuminate",
 }
 
 
@@ -3555,10 +3555,23 @@ def extract_ay_illuminate(brand):
     label_order = ["Size", "Reference", "Material", "Color", "Available sizes", "Fitting size"]
 
     def _labeled_fields(text):
+        # For the last label in label_order, the joined lookahead
+        # alternation used to come out empty ("Fitting size:\s*(.*?)
+        # (?=|$)") - an empty alternative in a regex matches
+        # immediately at zero width, so the lazy .*? always stopped
+        # having consumed nothing and "Fitting size" silently came back
+        # blank on every real product (confirmed live 2026-09-21: every
+        # page's own text clearly has "Fitting size: E-27 Max. 60
+        # WATT", but this always parsed to ""). Each product page
+        # reliably repeats the same labels a second time afterward
+        # (with the values shifted, likely a duplicate responsive
+        # layout), immediately followed by "BACK TO AUTHENTICS" - used
+        # as the stop marker for the one label with nothing after it.
         fields = {}
         for i, label in enumerate(label_order):
-            pattern = re.escape(label) + r":\s*(.*?)(?=" + \
-                "|".join(re.escape(l) + ":" for l in label_order[i + 1:]) + r"|$)"
+            next_labels = label_order[i + 1:]
+            lookahead = "|".join(re.escape(l) + ":" for l in next_labels) if next_labels else "BACK TO AUTHENTICS"
+            pattern = re.escape(label) + r":\s*(.*?)(?=" + lookahead + r"|$)"
             m = re.search(pattern, text, re.S)
             if m:
                 fields[label] = m.group(1).strip(" \n\t-")
@@ -3593,12 +3606,33 @@ def extract_ay_illuminate(brand):
         imgs = psoup.find_all("img", attrs={"data-src": re.compile(r"wp-content/uploads/")})
         img = imgs[-1] if imgs else None
 
+        # Names are almost entirely evocative (Figo, Hozuki, Z1 Black...)
+        # with no lighting word to match - but every real lamp's own
+        # page carries a real "Fitting size" (e.g. "E-27 Max. 60 WATT"),
+        # confirmed absent on the one non-lamp item in this catalog
+        # ("Poffer Cushion," a woven rush seat cushion, only 3cm tall -
+        # no light fitting at all). That field is a far more reliable
+        # signal here than the name. Mount type (table/wall) is still
+        # named explicitly on the few pieces that have one ("Twiggy AW
+        # Table", "Pebble white wall") - defaults to Pendant otherwise,
+        # since every fitted piece checked live is a hanging fixture.
+        name_lower = name.lower()
+        if fields.get("Fitting size"):
+            if "table" in name_lower:
+                category = "Table Lamp"
+            elif "wall" in name_lower:
+                category = "Wall Lamp"
+            else:
+                category = "Pendant"
+        else:
+            category = _infer_category_from_name(name, "", brand["name"])
+
         products.append({
             "brand": brand["name"],
             "brand_url": brand["url"],
             "product_name": name,
             "product_url": url,
-            "category": "",
+            "category": category,
             "material_options": materials,
             "dimensions": fields.get("Size", ""),
             "notes": "",
