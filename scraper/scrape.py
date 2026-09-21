@@ -949,12 +949,101 @@ ITALIAN_OBJECT_TYPES = {
 # name-based inference in that case either).
 UNHELPFUL_CATEGORIES = {"classici", "novità", "collezioni", "designers", ""}
 
+# English object-type keyword fallback, for brands whose Shopify
+# product_type carries no real category signal at all (confirmed on
+# Pinch: 148 of 148 products had product_type either blank or one of
+# JUNK_PRODUCT_TYPES, meaning the live search's category filter could
+# never surface a single one of them - "sofa" didn't even return
+# Pinch's own "Boyd sofa" - see project memory). Same idea as
+# ITALIAN_OBJECT_TYPES above, just keyed on the object-type word
+# already present in most English product names instead of a foreign
+# first word.
+#
+# Checked as an ordered list, not a dict, because match order matters:
+# a multi-word phrase has to be tried before any single word it
+# contains, or the wrong single word wins first - confirmed against
+# every real Pinch product name before shipping this (see project
+# memory): "Ewer table light" is a lighting fixture, but checking bare
+# "table" first would tag it furniture; "Clyde lamp table" is a side
+# table (furniture), but checking bare "lamp" first would tag it
+# lighting. Multi-word entries come first for exactly this reason.
+# Left unmatched on purpose rather than guessed where the name gives no
+# real signal (e.g. "Mercier press", "Nim Copper") - same "don't
+# fabricate a taxonomy" standard as the rest of this file.
+ENGLISH_OBJECT_TYPE_KEYWORDS = (
+    ("four poster bed", "Bed"), ("pleated bed", "Bed"),
+    ("sofa system", "Sofa"), ("slipcover sofa", "Sofa"),
+    ("wingback armchair", "Armchair"), ("low back armchair", "Armchair"),
+    ("pod pendant light", "Pendant"), ("crown pendant light", "Pendant"),
+    ("pendant light", "Pendant"), ("loop pendant", "Pendant"),
+    ("table light", "Light"), ("wall light", "Light"), ("wall uplight", "Light"),
+    ("cluster light", "Light"), ("globe light", "Light"),
+    ("coffee table", "Coffee Table"), ("dining table", "Dining Table"),
+    ("bedside table", "Bedside Table"), ("dressing table", "Dressing Table"),
+    ("side table", "Side Table"), ("lamp table", "Side Table"),
+    ("chest of drawers", "Chest of Drawers"), ("drinks cabinet", "Cabinet"),
+    ("counter stool", "Stool"), ("bench with pad", "Bench"),
+    ("cheval mirror", "Mirror"), ("tall mirror", "Mirror"),
+    ("dining chair", "Dining Chair"), ("blanket box", "Storage"),
+    ("sofa", "Sofa"), ("armchair", "Armchair"), ("footstool", "Footstool"),
+    ("chaise", "Chaise"), ("bed", "Bed"), ("sideboard", "Sideboard"),
+    ("dresser", "Dresser"), ("armoire", "Armoire"), ("cabinet", "Cabinet"),
+    ("console", "Console"), ("bench", "Bench"), ("stool", "Stool"),
+    ("shelving", "Shelving"), ("vitrine", "Vitrine"), ("daybed", "Daybed"),
+    ("mirror", "Mirror"), ("desk", "Desk"), ("chair", "Chair"), ("rug", "Rug"),
+    ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
+    ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
+)
 
-def _infer_category_from_name(product_name, current_category):
+# Brands piloting the English keyword fallback above - deliberately an
+# allowlist, not applied to every blank/junk category across the board,
+# since a keyword scan like this has bitten this project before with
+# false positives on other brands (Minimalux, Ingo Maurer - see project
+# memory). Widen only after checking a brand's own real product names
+# against ENGLISH_OBJECT_TYPE_KEYWORDS the same way Pinch's were.
+CATEGORY_KEYWORD_FALLBACK_BRANDS = {"Pinch"}
+
+
+# A handful of real products give the keyword/name-based inference
+# above nothing to work with at all - no object-type word anywhere in
+# the name. Confirmed by checking each one against the brand's own
+# site rather than guessed: Pinch's "Nim Copper"/"Nim Dune" are both
+# cast Jesmonite coffee tables (per pinchdesign.com's own product page,
+# "Copper"/"Dune" are just the two finish names), and "Mercier press"
+# is a press - an older cabinetmaking term for a cupboard, confirmed by
+# its own product description ("full timber exterior... central
+# cupboard"). Applied in run()'s save loop, not in an extractor, so it
+# reaches every brand/extractor the same way and survives a re-scrape
+# instead of reverting to blank every run - add to this as more
+# uncapturable names are found, per-product, only after checking the
+# real thing.
+MANUAL_CATEGORY_OVERRIDES = {
+    ("Pinch", "Nim Copper"): "Coffee Table",
+    ("Pinch", "Nim Dune"): "Coffee Table",
+    ("Pinch", "Mercier press"): "Cabinet",
+}
+
+
+def _infer_category_from_english_keywords(product_name):
+    text = product_name.lower()
+    for phrase, category in ENGLISH_OBJECT_TYPE_KEYWORDS:
+        if re.search(rf"\b{re.escape(phrase)}\b", text):
+            return category
+    return None
+
+
+def _infer_category_from_name(product_name, current_category, brand_name=None):
     if current_category.strip().lower() not in UNHELPFUL_CATEGORIES:
         return current_category
     first_word = product_name.strip().split(" ")[0].lower().rstrip(",.")
-    return ITALIAN_OBJECT_TYPES.get(first_word, current_category)
+    italian = ITALIAN_OBJECT_TYPES.get(first_word)
+    if italian:
+        return italian
+    if brand_name in CATEGORY_KEYWORD_FALLBACK_BRANDS:
+        keyword_match = _infer_category_from_english_keywords(product_name)
+        if keyword_match:
+            return keyword_match
+    return current_category
 
 
 def _looks_like_a_class_listing(title):
@@ -1110,7 +1199,7 @@ def extract_shopify(brand):
             "brand_url": brand["url"],
             "product_name": base_name,
             "product_url": f"{base}/products/{first['handle']}",
-            "category": _infer_category_from_name(base_name, product_type),
+            "category": _infer_category_from_name(base_name, product_type, brand["name"]),
             "material_options": sorted(material_options),
             "dimensions": "",
             # No longer a bare variant count here (2026-09-09) - some
@@ -3501,6 +3590,9 @@ def run(brand_name=None):
             for product in products:
                 url = product["product_url"]
                 product["first_seen"] = old_first_seen[url] if url in old_first_seen else today
+                override = MANUAL_CATEGORY_OVERRIDES.get((brand["name"], product["product_name"]))
+                if override:
+                    product["category"] = override
                 save_product(conn, product)
             print(f"  Saved {len(products)} products in {brand_seconds}s.")
             brand_reports.append({

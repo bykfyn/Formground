@@ -387,28 +387,39 @@ def filter_products(intent: dict) -> list:
 
 def filter_by_name(raw_query: str) -> list:
     """
-    Matches the raw query directly against each product's own name,
-    independent of the category/material hard filter above. Confirmed
-    live: searching "vaso" for Bitossi Ceramiche's own product literally
-    named "Vaso" returned nothing, because filter_products() only ever
-    checks category/material - it never looks at product_name at all.
-    Category mismatches (Bitossi categorizes by collection line, not
-    object type) are a real, separate, harder problem, but a literal
-    name match should never depend on solving that first - if the
-    product is literally called what the user typed, that's as strong a
-    signal as search gets.
+    Matches the raw query against each product's own name, independent
+    of the category/material hard filter above - checked in both
+    directions. The original direction (product_name found inside the
+    query) confirmed live: searching "vaso" surfaced Bitossi Ceramiche's
+    own product literally named "Vaso", since filter_products() only
+    ever checks category/material - it never looks at product_name at
+    all. But that direction alone only works when the query happens to
+    equal (or fully contain) the whole name - a real partial-name
+    search, someone typing "Boyd" for Pinch's "Boyd sofa," matched
+    nothing (confirmed live 2026-09-21), because the longer name was
+    never going to be found inside the shorter query. Also checking the
+    reverse direction (the query found inside the name) fixes that. The
+    length-3 floor keeps that reverse check from firing on short
+    connector words ("a", "or") that the LLM's category/material
+    extraction already handles better on its own.
     """
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     rows = conn.execute("SELECT * FROM products WHERE image_url != ''").fetchall()
     conn.close()
 
+    stripped_query = raw_query.strip()
     matches = []
     for row in rows:
         product = dict(row)
         if product["brand"] in HIDDEN_BRANDS:
             continue
-        if re.search(rf"\b{re.escape(product['product_name'])}\b", raw_query, re.IGNORECASE):
+        name = product["product_name"]
+        name_in_query = re.search(rf"\b{re.escape(name)}\b", raw_query, re.IGNORECASE)
+        query_in_name = len(stripped_query) >= 3 and re.search(
+            rf"\b{re.escape(stripped_query)}\b", name, re.IGNORECASE
+        )
+        if name_in_query or query_in_name:
             product["material_options"] = json.loads(product["material_options"] or "[]")
             product["thin"] = bool(product["thin"])
             matches.append(product)
