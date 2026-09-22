@@ -125,6 +125,16 @@ def _fetch_json(url, retries=2, timeout=30):
     ScrapeBlockedError instead of being swallowed into a plain None return,
     so callers that want to distinguish "blocked" from "genuinely empty"
     can do so.
+
+    A real "API returns 200 + Content-Type: application/json, but the
+    body isn't valid JSON" case exists in the wild (confirmed on
+    Fabrikant, 2026-09-22): a misbehaving plugin/theme leaks raw
+    <style> HTML into the response stream *before* the real JSON
+    payload, which otherwise parses cleanly (X-WP-Total and the
+    trailing bytes both check out as real WooCommerce Store API data).
+    Rather than lose a brand's whole catalog to a server-side output
+    bug outside our control, retry the parse once against just the
+    substring from the first '[' or '{' onward before giving up.
     """
     last_error = None
     for attempt in range(retries + 1):
@@ -133,7 +143,26 @@ def _fetch_json(url, retries=2, timeout=30):
             if resp.status_code in BLOCK_STATUS_CODES:
                 raise ScrapeBlockedError(url, resp.status_code)
             resp.raise_for_status()
-            return resp.json()
+            try:
+                return resp.json()
+            except requests.exceptions.JSONDecodeError:
+                # The leaked junk is itself HTML with its own '{'/'['
+                # (Fabrikant's case: a CSS rule's braces), so the
+                # *first* bracket in the text isn't reliably where the
+                # real payload starts - try every candidate position in
+                # order (capped at 50: this only runs on the rare
+                # malformed-response path, not every request, but a
+                # response full of brackets shouldn't turn into an
+                # unbounded loop). A false start fails its own parse
+                # immediately, so skipping to the next one costs little.
+                text = resp.text
+                candidates = [i for i, ch in enumerate(text) if ch in "[{"][:50]
+                for start in candidates:
+                    try:
+                        return json.loads(text[start:])
+                    except json.JSONDecodeError:
+                        continue
+                raise
         except requests.RequestException as e:
             last_error = e
             if attempt < retries:
@@ -998,7 +1027,20 @@ JUNK_PRODUCT_TYPES = {
 }
 
 
-def _clean_product_type(product_type):
+def _clean_product_type(product_type, brand_name=None):
+    if brand_name == "Asplund":
+        # Asplund Store's product_type is unreliable across the board,
+        # not just a few junk values - confirmed live 2026-09-22: mixes
+        # real-but-untranslated Swedish ("Soffbord"=coffee table,
+        # "Nattduksbord"=nightstand), a flatly wrong assignment ("Tati
+        # Coat Rack" tagged "Soffbord"/coffee table), and at least one
+        # designer name leaking through as if it were a category
+        # ("Paari" tagged "Magnus Berg"). Inconsistent enough (likely
+        # inherited differently per resold vendor - see the vendor
+        # filter above) that translating it isn't safe; always blank so
+        # every product falls through to the name-based English-keyword
+        # fallback instead (see CATEGORY_KEYWORD_FALLBACK_BRANDS).
+        return ""
     value = (product_type or "").strip()
     return "" if value.lower() in JUNK_PRODUCT_TYPES else value
 
@@ -1074,6 +1116,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("bookend", "Bookend"), ("candle holder", "Candle Holder"), ("candleholder", "Candle Holder"),
     ("ottoman", "Ottoman"), ("seater", "Sofa"), ("shelf", "Shelving"), ("urn", "Urn"),
     ("coupe", "Coupe"), ("grinder", "Mill"), ("bottle opener", "Bottle Opener"),
+    ("bottle", "Bottle"),
     ("runner", "Rug"), ("mat", "Rug"), ("hook", "Coat Hook"), ("flush mount", "Flush Mount"),
     ("cushion", "Cushion"), ("day bed", "Daybed"), ("bergere", "Armchair"),
     ("bookshelves", "Shelving"), ("bookshelf", "Shelving"), ("shelves", "Shelving"),
@@ -1091,7 +1134,7 @@ CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
     "New Works DK", "Workstead", "Rubn", "Maruni", "AY Illuminate", "Ghidini 1961",
-    "GATOMIKIO", "Raawii", "Wendelbo",
+    "GATOMIKIO", "Raawii", "Wendelbo", "Asplund",
 }
 
 
@@ -1628,6 +1671,40 @@ def _infer_gatomikio_category(product_name):
     return None
 
 
+# Byarums Bruk names most pieces with a bare model name (Karl, Monolit,
+# Sneckan, ...) that says nothing about what the object is - but a real
+# subset spells out the Swedish object-type word directly (confirmed
+# live 2026-09-22: "Lessebo bord"/"Lessebo bänk"/"Byarum fåtölj" etc.).
+# Kept brand-scoped, not added to the shared English list, since these
+# are plain Swedish words ("bord"=table, "bänk"=bench) that would
+# collide with real English product names at other brands. Compound
+# words ("cafébord", "blomsterurna") get their own entry since a plain
+# \bbord\b/\burna\b won't match inside a word with no internal boundary.
+BYARUMS_BRUK_SWEDISH_KEYWORDS = (
+    ("cafébord", "Café Table"),
+    ("blomsterurna", "Urn"),
+    ("fåtölj", "Armchair"),
+    ("soffa", "Sofa"),
+    ("bänk", "Bench"),
+    ("bord", "Table"),
+    ("pall", "Stool"),
+    ("papperskorg", "Waste Bin"),
+    ("kruka", "Planter"),
+    ("ljusstake", "Candle Holder"),
+    ("askkopp", "Ashtray"),
+    ("fotskrapa", "Boot Scraper"),
+    ("fat", "Plate"),
+)
+
+
+def _infer_byarums_bruk_category(product_name):
+    text = product_name.lower()
+    for phrase, category in BYARUMS_BRUK_SWEDISH_KEYWORDS:
+        if re.search(rf"\b{re.escape(phrase)}\b", text):
+            return category
+    return None
+
+
 def _infer_category_from_name(product_name, current_category, brand_name=None):
     if current_category.strip().lower() not in UNHELPFUL_CATEGORIES:
         return current_category
@@ -1643,6 +1720,10 @@ def _infer_category_from_name(product_name, current_category, brand_name=None):
         gatomikio_match = _infer_gatomikio_category(product_name)
         if gatomikio_match:
             return gatomikio_match
+    if brand_name == "Byarums Bruk":
+        byarums_match = _infer_byarums_bruk_category(product_name)
+        if byarums_match:
+            return byarums_match
     if brand_name in CATEGORY_KEYWORD_FALLBACK_BRANDS:
         keyword_match = _infer_category_from_english_keywords(product_name)
         if keyword_match:
@@ -1710,6 +1791,22 @@ def _looks_like_a_maintenance_item(title):
         # design object - same shape as the sample-swatch exclusions
         # already made for other brands.
         "sample set",
+        # Asplund sells its own furniture-care line (Marble/Wood/Fabric
+        # Care Kit, "Nourishing Wood Oil", "Protecting Marble Wax",
+        # silver-polishing cloth, textile spray, screen cleaner, MDF
+        # colour swatches, and a Swedish gift card) through the same
+        # catalog as its real furniture/rugs/lighting - all confirmed
+        # live, none of them a design object of their own.
+        "care kit", "presentkort", "nourishing wood oil",
+        "protecting marble wax", "silverputsduk", "textilspray",
+        "skärmrengöring", "färgprover i mdf",
+        # Byarums Bruk's "Distansbricka Lessebo soffa" (spacer washer for
+        # the Lessebo sofa) is a replacement component like the "till"
+        # ("for") listings already filtered out in extract_shopify for
+        # this brand specifically, just without that word in the name -
+        # "distansbricka" (spacer/distance washer) is specific and
+        # un-ambiguous enough to exclude generically.
+        "distansbricka",
     )
     title_lower = title.lower()
     return any(kw in title_lower for kw in keywords)
@@ -1799,6 +1896,34 @@ def extract_shopify(brand):
 
     raw_products = [p for p in raw_products if not _looks_like_a_class_listing(p["title"])]
     raw_products = [p for p in raw_products if not _looks_like_a_maintenance_item(p["title"])]
+    if brand["name"] == "Byarums Bruk":
+        # 106 of 183 real catalog entries (58%, confirmed 2026-09-22) are
+        # literally replacement components sold for Byarums Bruk's own
+        # named pieces - "Beslag till Classic bord" (fitting FOR the
+        # Classic table), "Virke till stol Dover" (timber FOR the Dover
+        # chair), "Skruv till Piccolo soffa" (screw FOR the Piccolo
+        # sofa) - not standalone design objects. Swedish "till" ("for")
+        # is the reliable marker here specifically because every one of
+        # this brand's real standalone pieces (Classic bord, Lessebo
+        # bänk, Karl XL, Sneckan, ...) is a bare name with no "till" in
+        # it at all - checked the brand's full catalog before adding
+        # this, not scoped elsewhere since "till" is too common a
+        # Swedish word to safely exclude on generically.
+        raw_products = [p for p in raw_products if " till " not in p["title"].lower()]
+    if brand["name"] == "Asplund":
+        # Asplund Store is a multi-brand boutique, not a single design
+        # house - confirmed live 2026-09-22: of 789 raw listings, only
+        # ~261 carry an Asplund house vendor (ASPLUND Collection/
+        # Carpets/Art/Store/onlineshop, or bare "Asplund"); the rest are
+        # OTHER real, separately-recognizable design brands being
+        # resold - Fredericia, Alessi, New Works, Wästberg, Maruni,
+        # Living Divani, Vibia, Audo, and dozens more, plus third-party
+        # skincare/candles (MALIN+GOETZ). Several of those (Maruni,
+        # Wästberg) are already their own real, independently-triaged
+        # Formground brands - scraping them again here under "Asplund"
+        # would misattribute their work and duplicate them under the
+        # wrong name. Keep only the vendor's own house lines.
+        raw_products = [p for p in raw_products if "asplund" in (p.get("vendor") or "").lower()]
     raw_products = [
         p for p in raw_products
         if (p.get("product_type") or "").strip().lower() not in EXCLUDED_CATEGORIES
@@ -1827,7 +1952,7 @@ def extract_shopify(brand):
     # would otherwise wrongly split one real design into duplicates.
     grouped = {}
     for p in raw_products:
-        key = (_clean_product_type(p.get("product_type")), _base_name(p["title"], brand["name"]))
+        key = (_clean_product_type(p.get("product_type"), brand["name"]), _base_name(p["title"], brand["name"]))
         grouped.setdefault(key, []).append(p)
 
     products = []
@@ -4270,6 +4395,11 @@ EXTRACTORS = {
     "Birgit Severin": extract_birgit_severin,
     "Shibui": extract_shibui,
     "Ghidini 1961": extract_ghidini_1961,
+    "Asplund": extract_shopify,
+    "Byarums Bruk": extract_shopify,
+    "Interesting Times Gang": extract_shopify,
+    "G.A.D": extract_woocommerce,
+    "Fabrikant": extract_woocommerce,
 }
 
 

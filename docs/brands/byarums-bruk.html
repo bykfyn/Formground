@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Byarums Bruk on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Byarums Bruk's work on Formground - 76 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/byarums-bruk.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Byarums Bruk on Formground">
+<meta property="og:description" content="Byarums Bruk's work on Formground - 76 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/byarums-bruk.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarum_bord.jpg?v=1705327499">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarum_bord.jpg?v=1705327499">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Byarums Bruk on Formground">
+<meta name="twitter:description" content="Byarums Bruk's work on Formground - 76 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Byarums Bruk", "item": "https://formground.com/brands/byarums-bruk.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Byarums Bruk</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Ceramics</span><span class="tag">Objects</span><span class="tag">Sweden</span></div>
+    <a class="brand-site-link" href="https://www.byarumsbruk.se" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://www.byarumsbruk.se/products/adventsljusstake-ljusstake" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/adventsstakeljusstake.jpg?v=1705328708" alt="Adventsljusstake &amp; ljusstake by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Adventsljusstake &amp; ljusstake</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/arkus" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/arkus.jpg?v=1705326878" alt="Arkus by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arkus</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/askkopp-no-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/askkoppno1.jpg?v=1705326956" alt="Askkopp No.1 by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Askkopp No.1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/bevattningstankar" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/gruppbild-bevattningstank-scaled.jpg?v=1705329537" alt="Bevattningstankar by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bevattningstankar</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/block" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/blockduo.jpg?v=1705326968" alt="Block by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Block</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/blomsterurna-no-1-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/blomsterurna.jpg?v=1705327091" alt="Blomsterurna No.1 &amp; 2 by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Blomsterurna No.1 &amp; 2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/byarum-bord" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarum_bord.jpg?v=1705327499" alt="Byarum bord by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Byarum bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/byarum-bank" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarum_bank.jpg?v=1705327436" alt="Byarum bänk by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Byarum bänk</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/byarum-fatolj" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarum_fatolj-1.jpg?v=1705327371" alt="Byarum fåtölj by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Byarum fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/byarum-pall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarumpall.jpg?v=1705327307" alt="Byarum pall by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Byarum pall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/byarum" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarumpapperskorg.jpg?v=1705327112" alt="Byarum papperskorg by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Byarum papperskorg</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/byarum-soffa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarumsoffa.jpg?v=1705327150" alt="Byarum soffa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Byarum soffa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/calais" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/calaisbord.jpg?v=1705327563" alt="Calais by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Calais</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/cilla" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/cillamedfat.jpg?v=1705327737" alt="Cilla &amp; Cilla Fat by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cilla &amp; Cilla Fat</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/cirkus" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/circus.jpg?v=1705327752" alt="Cirkus by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cirkus</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/classic-no-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/classicno1grupp_111128-55888-scaled.jpg?v=1705327860" alt="Classic No.1 by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Classic No.1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/classic-no-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/classicno2-1_111128-55870.jpg?v=1705328033" alt="Classic No.2 by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Classic No.2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/classic-bord" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/classicmatbord.jpg?v=1705327793" alt="Classic bord by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Classic bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/classic-cafe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/classiccafebord.jpg?v=1705329142" alt="Classic cafébord by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Classic cafébord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/classic-fatolj" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/classicfatolj.jpg?v=1705328342" alt="Classic fåtölj by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Classic fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/classic-soffa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/classicsoffa.jpg?v=1705328286" alt="Classic soffa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Classic soffa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/cross" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/cross.jpg?v=1705329128" alt="Cross by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cross</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/domino" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/dominobankbord.jpg?v=1705329091" alt="Domino by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Domino</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/dover" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/doverstol.jpg?v=1705329062" alt="Dover by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dover</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/duett" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/duett.jpg?v=1705329050" alt="Duett by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Duett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/fjallsippa-lag-hog" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/files/lag-natur.png?v=1737553086" alt="Fjällsippa Låg &amp; Hög by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fjällsippa Låg &amp; Hög</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/fotskrapa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/fotskrapa.jpg?v=1705329044" alt="Fotskrapa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fotskrapa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/fungi" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/fungi1.jpg?v=1705329031" alt="Fungi by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fungi</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/grasippa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/grasippagrupp_produktbild-1.jpg?v=1705326843" alt="Gråsippa No.1-3 by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gråsippa No.1-3</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/haga" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/hagabank.jpg?v=1705329003" alt="Haga by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Haga</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/hexagon-no-1-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/hexagongrupp5.jpg?v=1705328976" alt="Hexagon No.1-3 by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hexagon No.1-3</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/joy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/joysoffa.jpg?v=1705328953" alt="Joy by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Joy</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/jujol-bank" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/jujolbredsmal.jpg?v=1705328902" alt="Jujol bänk by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Jujol bänk</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/jujol-soffa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/jujol_soffa.jpg?v=1705328874" alt="Jujol soffa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Jujol soffa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/karl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/karl.jpg?v=1705328862" alt="Karl by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Karl</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/karl-xl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/karlxl-1.jpg?v=1705328846" alt="Karl XL by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Karl XL</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/kattsoffa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/kattsoffa.jpg?v=1705328833" alt="Kattsoffa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kattsoffa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/bank-kolonn-vaxtkarl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarums_bruk_kolonn_bank_prodlistbild.jpg?v=1705332219" alt="Kolonn by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kolonn</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/kruka" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/kruka.jpg?v=1705328827" alt="Kruka by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kruka</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/kvadrat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/kvadrat.jpg?v=1705328822" alt="Kvadrat by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kvadrat</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/lessebo-bord" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/lessebobord.jpg?v=1705328794" alt="Lessebo bord by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lessebo bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/lessebo-bank" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/lessebobank.jpg?v=1705328753" alt="Lessebo bänk by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lessebo bänk</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/lessebo-fatolj" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/files/LesseboFatolj_Natur_Olj_Mahogny.jpg?v=1755861934" alt="Lessebo fåtölj by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lessebo fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/lessebo-soffa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/lessebosoffa.jpg?v=1705328720" alt="Lessebo soffa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lessebo soffa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/lund" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/lundbord.jpg?v=1705328536" alt="Lund by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lund</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/soffa-lyon" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/lyon-prod.jpg?v=1705332231" alt="Lyon by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lyon</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/alge" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/alge.jpg?v=1705326943" alt="Låg Alge &amp; Hög Alge by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Låg Alge &amp; Hög Alge</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/lag-blom" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/lagblom.jpg?v=1705327023" alt="Låg Blom by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Låg Blom</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/minior" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/minior.jpg?v=1705328482" alt="Minior by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Minior</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/monolit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/monolit.jpg?v=1705328444" alt="Monolit by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Monolit</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/multior" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/files/Byarum_Multior_E7_Single_Alu_Oak.jpg?v=1732790389" alt="Multior by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Multior</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/naver" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/naver_medium_byarumsbruk.jpg?v=1705328413" alt="Näver No.1-3 by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Näver No.1-3</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/odd" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/oddbord1.jpg?v=1705328397" alt="Odd by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Odd</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/palissad" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/palissad.jpg?v=1705328272" alt="Palissad by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Palissad</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/piccolo-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/piccolo.jpg?v=1705328250" alt="Piccolo fåtölj by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Piccolo fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/piccolo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/piccolo-soffa.jpg?v=1705328228" alt="Piccolo soffa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Piccolo soffa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/planteringsinsatser" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/plantering-viz-vitt-by-jesper-scaled.jpg?v=1705329580" alt="Planteringsinsatser by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Planteringsinsatser</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/pokal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/pokal.jpg?v=1705328223" alt="Pokal by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pokal</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/prakturna" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/prakturna.jpg?v=1705328211" alt="Prakturna by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Prakturna</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/salut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/salut_produktbild.jpg?v=1705328182" alt="Salut by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Salut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/seriff" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/seriff.jpg?v=1705328160" alt="Seriff by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Seriff</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/sigill" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/sigill.jpg?v=1705328155" alt="Sigill by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sigill</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/signe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/signe.jpg?v=1705328148" alt="Signe by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Signe</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/skillinge" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/skillingebank.jpg?v=1705328127" alt="Skillinge by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Skillinge</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/sma-blom-blom" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/blomsmaduo.jpg?v=1705327036" alt="Små Blom &amp; Blom by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Små Blom &amp; Blom</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/sneckan" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/sneckanbank.jpg?v=1705328099" alt="Sneckan by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sneckan</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/snacka" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/snacka.jpg?v=1705328121" alt="Snäcka by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Snäcka</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/sofiero" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/sofiero.jpg?v=1705328020" alt="Sofiero by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sofiero</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/stjarnkruka-lag-hog" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/stjarnkrukagrupp.jpg?v=1705328007" alt="Stjärnkruka låg &amp; hög by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stjärnkruka låg &amp; hög</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/stor-blom-vid-blom" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/blomstorvid.jpg?v=1705327065" alt="Stor Blom &amp; Vid Blom by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stor Blom &amp; Vid Blom</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/relief" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/reliefgrupp.jpg?v=1705328188" alt="Stor Relief &amp; Liten Relief by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stor Relief &amp; Liten Relief</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/uppsala" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/uppsalabord.jpg?v=1705327898" alt="Uppsala by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Uppsala</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/vasa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/vasasoffa.jpg?v=1705327830" alt="Vasa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Vasa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/vilamoura" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/vilamourasoffa.jpg?v=1705326903" alt="Vilamoura by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Vilamoura</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/volt" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/volt.jpg?v=1705327788" alt="Volt by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Volt</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/waterloo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/waterloo_medium_byarumsbruk.jpg?v=1705327766" alt="Waterloo by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Waterloo</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
