@@ -8,9 +8,9 @@
 <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="description" content="A short, curated list of tools and services for architects, designers, and makers - plus shared topics like SEO and being found by AI search.">
+<meta name="description" content="Production partners, resources and suppliers for architects, designers, and makers - real craftspeople and companies, plus friendly starting-point guides for makers earlier in their journey.">
 <meta property="og:title" content="For Creators — Formground">
-<meta property="og:description" content="A short, curated list of tools and services for architects, designers, and makers - plus shared topics like SEO and being found by AI search.">
+<meta property="og:description" content="Production partners, resources and suppliers for architects, designers, and makers - real craftspeople and companies, plus friendly starting-point guides for makers earlier in their journey.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://formground.com/for-creators.html">
 <meta property="og:site_name" content="Formground">
@@ -19,106 +19,101 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://formground.com/favicon-192x192.png">
 <meta name="twitter:title" content="For Creators — Formground">
-<meta name="twitter:description" content="A short, curated list of tools and services for architects, designers, and makers.">
+<meta name="twitter:description" content="Production partners, resources and suppliers for architects, designers, and makers.">
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
 <style>
-  main {
-    max-width: 1160px;
-    margin: 0 auto;
-    padding: 12px 20px 60px;
+  main { max-width: 1160px; margin: 0 auto; padding: 24px 20px 60px; }
+  .site-header { margin-bottom: 0; }
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px; min-height: 57px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  .chips { display: flex; justify-content: center; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
+  .chip {
+    font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 999px;
+    border: 0.5px solid var(--border-strong); background: var(--surface-2);
+    color: var(--text-muted); font-family: inherit; opacity: 0.7; cursor: pointer;
+  }
+  .chip.active { background: var(--surface-1); color: var(--text-secondary); border-color: var(--border-strong); opacity: 1; }
+
+  /* Mobile: a 9-category row wraps to 4 lines on a phone, pushing the
+     first card well below the fold. Single-line, horizontally
+     scrollable row instead of wrapping - no JS, scales to any category
+     count. Right-edge fade signals there's more; left edge stays
+     opaque so the first chip is never masked at rest. */
+  @media (max-width: 640px) {
+    .chips {
+      flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto;
+      -webkit-overflow-scrolling: touch; padding-bottom: 4px; scrollbar-width: none;
+      -webkit-mask-image: linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+      mask-image: linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+    }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip { flex-shrink: 0; }
   }
 
-  /* Two columns per group, not one long single-column list - lets the
-     page use the same 1160px width as every other page without
-     stretching each line of body text past a readable length. Headings
-     and resource entries stay unbroken (Chrome/Safari respect
-     break-inside/break-after inside a column layout the same as in
-     print pagination), so a topic heading never ends up alone at the
-     bottom of one column with its content starting the next. */
-  .group-columns {
-    column-count: 2; column-gap: 56px; margin-top: 8px;
-  }
-  .group-columns h2 { break-after: avoid-column; margin-top: 32px; }
-  .group-columns h2:first-child { margin-top: 0; }
-  .group-columns .resource, .group-columns > p { break-inside: avoid; }
+  /* Fixed-width columns (190px, not makers.html's minmax(190px, 1fr)):
+     a short category (e.g. Hosting's 2 entries) must not stretch its
+     cards bigger than a full category's - that would read as if the
+     bigger ones were paid/featured, contradicting the equal-weight,
+     no-paid-ranking listing this is. */
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fill, 190px); gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero { aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border); margin: 0 0 10px; }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
 
-  @media (max-width: 760px) {
-    .group-columns { column-count: 1; }
-  }
-
-  h2 {
-    font-size: 13px; font-weight: 600; text-transform: uppercase;
-    letter-spacing: 0.04em; color: var(--text-accent);
-    margin: 40px 0 12px; scroll-margin-top: 20px;
-  }
-
-  /* Group headings (For Makers / For Architects / For Designers / Shared)
-     sit a level above the existing small-caps h2 topic headings, which
-     now nest inside each group - kept visually distinct so the page
-     reads as groups-of-topics, not one flat list of topics. */
-  /* Centered, same as .page-intro above - only the heading/intro/topic-
-     chip-row per group, not the actual .group-columns resource list
-     below each (kept left-aligned for the same readability reason). */
-  /* margin-top: 40px, same value the first-of-type override already
-     used - matches the 40px gap between the top intro's chip row and
-     "For Makers" (confirmed live 2026-09-20 as the reference/"good
-     standard" gap - see project memory). Was 56px margin + 32px padding
-     before, a visibly bigger, inconsistent gap above every other
-     section. */
-  .group-heading {
-    font-family: 'Archivo', sans-serif; letter-spacing: -0.005em;
-    font-size: 20px; font-weight: 700; color: var(--text-primary);
-    text-transform: none; text-align: center;
-    margin: 40px 0 18px; padding-top: 0;
-    scroll-margin-top: 20px;
-  }
-  .group-intro { font-size: 14px; color: var(--text-secondary); margin: 0 auto 4px; max-width: 640px; text-align: center; }
-
-  /* Chips, not plain links - matches the .tag pill used one level down
-     for sub-topics (Designing & prototyping, Materials, ...), just
-     bigger/bolder so the top-level group nav still reads as one level
-     above its own sub-nav rather than looking plainer than it. */
-  /* Centered intro (matches about.html/creators.html - see project
-     memory), but only the intro - the resource lists below stay
-     left-aligned, since centering a two-column directory of links and
-     descriptions would make each entry's wrapped lines ragged and
-     harder to scan, unlike a short block of prose. */
-  .page-intro { max-width: 640px; margin: 0 auto; text-align: center; }
-  .group-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 20px 0 0; }
-  .group-nav a {
-    display: inline-flex; align-items: center;
-    font-size: 13.5px; font-weight: 600; color: var(--text-secondary);
-    background: var(--surface-1); border: 0.5px solid var(--border-strong);
-    border-radius: 999px; padding: 8px 16px; text-decoration: none;
-  }
-  .group-nav a:hover { border-color: var(--text-accent); color: var(--text-primary); }
-
-  /* Jump nav for a now fairly long list of sections - reuses the
-     shared .tag pill from site.css rather than a new component, just
-     made clickable/hoverable here since site.css's .tag is normally
-     static text (e.g. brand-page material tags). */
-  .section-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; margin: 4px 0 24px; }
-  .section-nav a.tag { text-decoration: none; }
-  .section-nav a.tag:hover { border-color: var(--border-strong); color: var(--text-primary); }
-
-  .back-to-top { font-size: 12px; }
-
-  p {
-    font-size: 15px; line-height: 1.6; color: var(--text-secondary);
-    margin: 0 0 14px;
+  /* Tool/service/association cards reuse .maker-card, but their image is
+     a square brand mark, not a cropped photo - contain + padding
+     centers the mark instead of cropping it illegibly. */
+  .tool-card-hero { display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; }
+  .tool-card-hero img { width: auto; height: auto; max-width: 72%; max-height: 72%; object-fit: contain; }
+  .tool-card-hero .monogram {
+    width: 56px; height: 56px; border-radius: 50%; background: var(--surface-2);
+    border: 0.5px solid var(--border-strong); display: flex; align-items: center;
+    justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 700;
+    font-size: 18px; color: var(--text-secondary);
   }
 
-  p a { color: var(--text-accent); }
-  p a:hover { text-decoration: none; }
+  /* Guides: editorial write-ups per category, aimed at makers earlier in
+     their journey than the brands already featured elsewhere - not a
+     card grid, since there's no single company/brand behind any of it. */
+  .guides-list { max-width: 640px; margin: 0 auto; }
+  .guide-article { margin-bottom: 40px; }
+  .guide-article:last-of-type { margin-bottom: 0; }
+  .guide-article h2 {
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 17px;
+    letter-spacing: -0.005em; color: var(--text-primary); margin: 0 0 12px;
+    text-transform: none; scroll-margin-top: 0;
+  }
+  .guide-article p { font-size: 14px; line-height: 1.7; color: var(--text-secondary); margin: 0 0 12px; }
+  .guide-article p:last-child { margin-bottom: 0; }
+  .guide-article strong { color: var(--text-primary); font-weight: 600; }
+  .guide-article a { color: var(--text-accent); text-decoration: none; }
+  .guide-article a:hover { text-decoration: underline; }
+  .guide-intro { font-size: 14px; line-height: 1.7; color: var(--text-secondary); margin: 0 0 36px; text-align: center; }
 
-  .resource { margin-bottom: 16px; }
-  .resource-name { font-size: 15px; font-weight: 500; color: var(--text-primary); text-decoration: none; }
-  .resource-name:hover { text-decoration: underline; }
-  .resource-name i { font-size: 14px; margin-left: 4px; vertical-align: 1px; color: var(--text-muted); }
-  .resource p { margin: 2px 0 0; }
+  .guide-links { display: flex; flex-direction: column; gap: 18px; padding-top: 28px; border-top: 0.5px solid var(--border); }
+  .guide-links .resource-name { font-size: 15px; font-weight: 500; color: var(--text-primary); text-decoration: none; }
+  .guide-links .resource-name:hover { text-decoration: underline; }
+  .guide-links .resource-name i { font-size: 14px; margin-left: 4px; vertical-align: 1px; color: var(--text-muted); }
+  .guide-links p { font-size: 13.5px; line-height: 1.6; color: var(--text-secondary); margin: 2px 0 0; }
 </style>
 </head>
 <body>
@@ -133,314 +128,531 @@
 </nav>
 </header>
 
-<main id="top">
+<main>
 
   <h1 class="sr-only">For Creators</h1>
 
-  <div class="page-intro">
-    <p>
-      A short list of tools and services for all creators on Formground
-      — architects, designers, and makers — plus a shared section for
-      topics that cross all three.
-    </p>
-
-    <nav class="group-nav" aria-label="Jump to a group">
-      <a href="#group-makers">For Makers</a>
-      <a href="#group-architects">For Architects</a>
-      <a href="#group-designers">For Designers</a>
-      <a href="#group-shared">Shared</a>
-    </nav>
+  <div class="search-wide">
+    <div class="ask-box">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input type="text" placeholder="Find production partners, resources and suppliers" autocomplete="off">
+    </div>
   </div>
 
-  <h2 class="group-heading" id="group-makers">For Makers</h2>
-
-  <nav class="section-nav" aria-label="Jump to a category">
-    <a class="tag" href="#designing">Designing &amp; prototyping</a>
-    <a class="tag" href="#materials">Materials</a>
-    <a class="tag" href="#branding">Graphic design &amp; branding</a>
-    <a class="tag" href="#hosting">Hosting</a>
-    <a class="tag" href="#selling">Selling online</a>
-    <a class="tag" href="#wholesale">Wholesale &amp; retail</a>
-    <a class="tag" href="#highend">High-end marketplaces</a>
-    <a class="tag" href="#demand">Building demand</a>
-    <a class="tag" href="#photography">Product photography</a>
-    <a class="tag" href="#packaging">Packaging</a>
-    <a class="tag" href="#shipping">Shipping &amp; fulfillment</a>
-    <a class="tag" href="#fairs">Fairs &amp; exhibitions</a>
-    <a class="tag" href="#regulation">Product regulation</a>
-  </nav>
-
-  <div class="group-columns">
-  <h2 id="designing">Designing &amp; prototyping</h2>
-  <div class="resource">
-    <a class="resource-name" href="https://www.autodesk.com/products/fusion-360" target="_blank" rel="noopener noreferrer">Fusion 360<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>CAD software for building and testing a design digitally before committing to materials or tooling.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.shapeways.com" target="_blank" rel="noopener noreferrer">Shapeways<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Upload a digital model, get it 3D printed and shipped — useful for a physical prototype before a full run.</p>
+  <div class="chips">
+    <button class="chip" data-cat="all">All</button>
+    <button class="chip active" data-cat="craftspeople">Craftspeople</button>
+    <button class="chip" data-cat="selling">Selling &amp; Distribution</button>
+    <button class="chip" data-cat="design">Design &amp; Prototyping</button>
+    <button class="chip" data-cat="hosting">Hosting</button>
+    <button class="chip" data-cat="marketing">Marketing &amp; Fulfillment</button>
+    <button class="chip" data-cat="fairs">Fairs &amp; Exhibitions</button>
+    <button class="chip" data-cat="associations">Associations</button>
+    <button class="chip" data-cat="guides">Guides</button>
   </div>
 
-  <h2 id="materials">Materials</h2>
-  <div class="resource">
-    <a class="resource-name" href="https://materialdistrict.com" target="_blank" rel="noopener noreferrer">Material District<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A materials database covering new and sustainable options, built for designers rather than manufacturers.</p>
-  </div>
+    <div class="maker-grid cat-panel" data-cat="craftspeople">
+      <a class="maker-card" href="https://www.kfksnickeri.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://kfksnickeri.se/wp-content/uploads/2017/09/byredo_hemsida.jpg" alt="KFK Snickeri AB" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">KFK Snickeri AB</span>
+          <span class="maker-country">Sollentuna, Sweden</span>
+          <span class="maker-categories">Bespoke Furniture &amp; Fixtures</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ekskogenssnickeri.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://ekskogenssnickeri.com/wp-content/uploads/2025/05/cover6.webp" alt="Ekskogens Snickeri" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ekskogens Snickeri</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">Built-in Carpentry</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.mmfinsnickeri.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://mmfinsnickeri.se/wp-content/uploads/2026/05/B0048936-1.jpg" alt="Måns &amp; Marcus Finsnickeri AB" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Måns &amp; Marcus Finsnickeri AB</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">Custom Cabinetry</span>
+        </div>
+      </a>
+      <a class="maker-card" href="http://www.ludwigberg.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/54c61f45e4b09cfa786d4b45/1486228625944-10698EYCBAR69LCX82PN/Cabinet+Luftig+Nyckelsk%C3%A5p.jpg" alt="Ludwig Berg" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ludwig Berg</span>
+          <span class="maker-country">Bromma, Sweden</span>
+          <span class="maker-categories">Furniture Joinery</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.vadstenakonstgjuteri.se/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://skrahantverkarna.se/wp-content/uploads/2022/12/Bild3.jpg" alt="Vadstena Konstgjuteri" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Vadstena Konstgjuteri</span>
+          <span class="maker-country">Vadstena, Sweden</span>
+          <span class="maker-categories">Art Casting &amp; Foundry</span>
+        </div>
+      </a>
+      <a class="maker-card" href="http://www.stockholmsf%C3%B6rgyllning.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://skrahantverkarna.se/wp-content/uploads/2020/03/Fo%CC%88rgy-bildh-6-1024x796.jpg" alt="Stockholms Förgyllning &amp; Bildhuggeri AB" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Stockholms Förgyllning &amp; Bildhuggeri AB</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">Gilding &amp; Woodcarving</span>
+        </div>
+      </a>
+      <a class="maker-card" href="http://www.bendinggroup.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://dx7phrh2v9esk.cloudfront.net/sites/11/media/1454_original_BendingGroup1080x680.jpg" alt="Bendinggroup" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bendinggroup</span>
+          <span class="maker-country">Sweden</span>
+          <span class="maker-categories">Wood &amp; Metal Bending</span>
+        </div>
+      </a>
+      <a class="maker-card" href="http://www.cdsnickeri.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://dx7phrh2v9esk.cloudfront.net/sites/11/media/1616_medium_C_D_Snickeri_1080x680.jpg" alt="C &amp; D Snickeri" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">C &amp; D Snickeri</span>
+          <span class="maker-country">Sweden</span>
+          <span class="maker-categories">Woodworking &amp; Carpentry</span>
+        </div>
+      </a>
+      <a class="maker-card" href="http://www.anderssonsmekaniska.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://dx7phrh2v9esk.cloudfront.net/sites/11/media/5482_large_Anderssonsmekaniksa.jpg" alt="Anderssons Mekaniska" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Anderssons Mekaniska</span>
+          <span class="maker-country">Sweden</span>
+          <span class="maker-categories">Metal Fabrication</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ackurat.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://dx7phrh2v9esk.cloudfront.net/sites/11/media/1444_original_Ackurat_ICS_2_1080x680.jpg" alt="Ackurat Industriplast" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ackurat Industriplast</span>
+          <span class="maker-country">Sweden</span>
+          <span class="maker-categories">Plastic Fittings &amp; Components</span>
+        </div>
+      </a>
+      <a class="maker-card" href="http://www.carlssonsmide.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://dx7phrh2v9esk.cloudfront.net/sites/11/media/1821_medium_CarlssonsSmide.jpg" alt="Carlsson Smide &amp; Järnaffär" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Carlsson Smide &amp; Järnaffär</span>
+          <span class="maker-country">Sweden</span>
+          <span class="maker-categories">Blacksmithing &amp; Metalwork</span>
+        </div>
+      </a>
+      <a class="maker-card" href="http://www.elmoleather.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://dx7phrh2v9esk.cloudfront.net/sites/11/media/2344_medium_Elmo.jpg" alt="Elmo Läder" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Elmo Läder</span>
+          <span class="maker-country">Sweden</span>
+          <span class="maker-categories">Leather</span>
+        </div>
+      </a>
+      <a class="maker-card" href="http://stolfabriken.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://dx7phrh2v9esk.cloudfront.net/sites/11/media/1816_original_Stolfabriken.png" alt="Stolfabriken i Tibro" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Stolfabriken i Tibro</span>
+          <span class="maker-country">Tibro, Sweden</span>
+          <span class="maker-categories">Chair Manufacturing</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://skrahantverkarna.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://skrahantverkarna.se/wp-content/uploads/2020/03/Dans-5-1024x796.jpg" alt="Snickare Peter Dans AB" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Snickare Peter Dans AB</span>
+          <span class="maker-country">Vallentuna, Sweden</span>
+          <span class="maker-categories">Fine Joinery</span>
+        </div>
+      </a>
+      <a class="maker-card" href="http://www.pekka.biz" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://pekka.biz/uploads/images/172/thumb-soffa_front.jpg" alt="PV Specialmöbler &amp; Inredning" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">PV Specialmöbler &amp; Inredning</span>
+          <span class="maker-country">Björkvik, Sweden</span>
+          <span class="maker-categories">Furniture Joinery</span>
+        </div>
+      </a>
+      <a class="maker-card" href="http://www.lidingomobelverkstad.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://skrahantverkarna.se/wp-content/uploads/2020/02/l2-646x502-1.jpg" alt="Lidingö Möbelverkstad" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Lidingö Möbelverkstad</span>
+          <span class="maker-country">Lidingö, Sweden</span>
+          <span class="maker-categories">Furniture Restoration</span>
+        </div>
+      </a>
+      <a class="maker-card" href="http://www.larssonkorgmakare.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://skrahantverkarna.se/wp-content/uploads/2020/02/lk-646x502-1.jpg" alt="Larsson Korgmakare AB" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Larsson Korgmakare AB</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">Basketmaking</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://skrahantverkarna.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://skrahantverkarna.se/wp-content/uploads/2020/03/Sten-5-1024x796.jpg" alt="Wretman Stenmontage" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Wretman Stenmontage</span>
+          <span class="maker-country">Täby, Sweden</span>
+          <span class="maker-categories">Stonemasonry</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.aspsnickeri.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://i0.wp.com/www.aspsnickeri.se/wp-content/uploads/2019/12/PRIVAT-BIBLIOTEK.jpg?fit=1024%2C768&amp;ssl=1" alt="Asp Snickeri AB" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Asp Snickeri AB</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">Fine Joinery</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.stockholmsfinsnickeri.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://stockholmsfinsnickeri.com/wp-content/uploads/2024/04/vacker-platsbyggd-bokhylla.webp" alt="Stockholms Finsnickeri AB" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Stockholms Finsnickeri AB</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">Furniture Joinery</span>
+        </div>
+      </a>
+    </div>
 
-  <h2 id="branding">Graphic design &amp; branding</h2>
-  <div class="resource">
-    <a class="resource-name" href="https://99designs.com" target="_blank" rel="noopener noreferrer">99designs<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Run a design contest for a logo or brand identity rather than a single quote from one designer.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.fiverr.com" target="_blank" rel="noopener noreferrer">Fiverr<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A freelancer marketplace if you'd rather hire one designer directly for a logotype or brand work.</p>
-  </div>
+    <div class="maker-grid cat-panel" data-cat="selling" style="display: none;">
+      <a class="maker-card" href="https://www.shopify.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://cdn.shopify.com/b/shopify-brochure2-assets/c97c60ca19c64a8b5378d9f9e971f7bd.png" alt="Shopify" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Shopify</span>
+          <span class="maker-country">E-commerce Platform</span>
+          <span class="maker-categories">Canada</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.squarespace.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://media-www.sqspcdn.com/logos/apple-touch-icon-120.png" alt="Squarespace" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Squarespace</span>
+          <span class="maker-country">Website &amp; Store Builder</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://woocommerce.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://woocommerce.com/wp-content/uploads/2024/12/cropped-logo-w-favicon.png?w=180" alt="WooCommerce" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">WooCommerce</span>
+          <span class="maker-country">WordPress Store Plugin</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.bigcartel.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=bigcartel.com&amp;sz=128" alt="Big Cartel" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Big Cartel</span>
+          <span class="maker-country">Store Builder for Independent Makers</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.etsy.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=etsy.com&amp;sz=128" alt="Etsy" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Etsy</span>
+          <span class="maker-country">Handmade &amp; Vintage Marketplace</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.faire.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.faire.com/apple-touch-icon.png" alt="Faire" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Faire</span>
+          <span class="maker-country">Wholesale Marketplace</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ankorstore.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://cdn.ankorstore.com/ankorstore/apple-touch-icon.png" alt="Ankorstore" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ankorstore</span>
+          <span class="maker-country">Wholesale Marketplace</span>
+          <span class="maker-categories">France</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.1stdibs.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://a.1stdibscdn.com/dist/adhoc/logo/monogram-white-120.png" alt="1stDibs" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">1stDibs</span>
+          <span class="maker-country">High-End &amp; Collectible Marketplace</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.pamono.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.pamono.com/skin/frontend/lamono/redesign/images/mobile-icons/pamono-app-icon-512.png" alt="Pamono" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pamono</span>
+          <span class="maker-country">Collectible Design Marketplace</span>
+          <span class="maker-categories">Germany</span>
+        </div>
+      </a>
+    </div>
 
-  <h2 id="hosting">Hosting</h2>
-  <div class="resource">
-    <a class="resource-name" href="https://wpengine.com" target="_blank" rel="noopener noreferrer">WP Engine<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Managed WordPress hosting built specifically for it — pairs well with WooCommerce, and costs more than generic hosting but removes most of the server maintenance a self-hosted store otherwise needs.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.cloudways.com" target="_blank" rel="noopener noreferrer">Cloudways<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A more affordable managed alternative — still handles server upkeep, with a choice of underlying cloud providers.</p>
-  </div>
+    <div class="maker-grid cat-panel" data-cat="design" style="display: none;">
+      <a class="maker-card" href="https://www.autodesk.com/products/fusion-360" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=autodesk.com&amp;sz=128" alt="Fusion 360" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fusion 360</span>
+          <span class="maker-country">CAD Software</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.shapeways.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.shapeways.com/wp-content/uploads/2022/04/favicon.ico" alt="Shapeways" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Shapeways</span>
+          <span class="maker-country">3D Printing Service</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://materialdistrict.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://materialdistrict.com/apple-icon.png" alt="Material District" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Material District</span>
+          <span class="maker-country">Materials Database</span>
+          <span class="maker-categories">Netherlands</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://99designs.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://99designs.com/touch-icon-iphone.png" alt="99designs" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">99designs</span>
+          <span class="maker-country">Design Contest Platform</span>
+          <span class="maker-categories">Australia</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.fiverr.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=fiverr.com&amp;sz=128" alt="Fiverr" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fiverr</span>
+          <span class="maker-country">Freelancer Marketplace</span>
+          <span class="maker-categories">Israel</span>
+        </div>
+      </a>
+    </div>
 
-  <h2 id="selling">Selling online</h2>
-  <div class="resource">
-    <a class="resource-name" href="https://www.shopify.com" target="_blank" rel="noopener noreferrer">Shopify<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>The most common platform among makers already on Formground — a full online store, no coding required.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.squarespace.com" target="_blank" rel="noopener noreferrer">Squarespace<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Popular with makers who want a portfolio-style site alongside a shop — several Formground makers use it already.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://woocommerce.com" target="_blank" rel="noopener noreferrer">WooCommerce<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A WordPress plugin rather than a hosted platform — also well represented among makers already on Formground.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.bigcartel.com" target="_blank" rel="noopener noreferrer">Big Cartel<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Built specifically for independent artists and makers with a small catalog, rather than general retail.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.etsy.com" target="_blank" rel="noopener noreferrer">Etsy<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A marketplace rather than your own store, and a better fit for smaller-ticket handmade craft than the higher-end design found here. Fees and ads can also take close to a third of revenue, so most makers here would treat it as a supplement to their own site at most, if at all.</p>
-  </div>
+    <div class="maker-grid cat-panel" data-cat="hosting" style="display: none;">
+      <a class="maker-card" href="https://wpengine.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://wpengine.com/assets/manifest/apple-touch-icon.png" alt="WP Engine" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">WP Engine</span>
+          <span class="maker-country">Managed WordPress Hosting</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.cloudways.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=cloudways.com&amp;sz=128" alt="Cloudways" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Cloudways</span>
+          <span class="maker-country">Managed Cloud Hosting</span>
+          <span class="maker-categories">Malta</span>
+        </div>
+      </a>
+    </div>
 
-  <h2 id="wholesale">Wholesale &amp; retail distribution</h2>
-  <p>
-    These are wholesale/B2B channels, not a replacement for selling
-    direct — a natural next step once you've proven demand through your
-    own site or Formground, connecting you with retailers rather than
-    end customers.
-  </p>
-  <div class="resource">
-    <a class="resource-name" href="https://www.faire.com" target="_blank" rel="noopener noreferrer">Faire<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A wholesale marketplace connecting independent brands with retailers, without needing your own sales team — strongest in North America.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.ankorstore.com" target="_blank" rel="noopener noreferrer">Ankorstore<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Similar to Faire, but built around European retailers and brands.</p>
-  </div>
+    <div class="maker-grid cat-panel" data-cat="marketing" style="display: none;">
+      <a class="maker-card" href="https://www.klaviyo.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.klaviyo.com/icons/icon-48x48.png" alt="Klaviyo" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Klaviyo</span>
+          <span class="maker-country">Email &amp; SMS Marketing</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.photoroom.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.photoroom.com/favicons/apple-touch-icon.png" alt="PhotoRoom" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">PhotoRoom</span>
+          <span class="maker-country">AI Product Photo Editing</span>
+          <span class="maker-categories">France</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.packhelp.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.packhelp.com/_astro/apple-touch-icon.BrhYexou.png" alt="Packhelp" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Packhelp</span>
+          <span class="maker-country">Custom Packaging</span>
+          <span class="maker-categories">Poland</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://goshippo.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://cdn.prod.website-files.com/6462967bbf70fa5b5b227351/662680002605ee5735982802_img-shipp-favicon-256x256.png" alt="Shippo" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Shippo</span>
+          <span class="maker-country">Shipping Rate Comparison</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.sendcloud.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://framerusercontent.com/images/42cXDspPEL7fiY0Ghw8qS8d6wAc.svg" alt="Sendcloud" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Sendcloud</span>
+          <span class="maker-country">European Shipping Platform</span>
+          <span class="maker-categories">Netherlands</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.uship.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.ushipcdn.cloud/favicons/apple-touch-icon.png" alt="uShip" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">uShip</span>
+          <span class="maker-country">Freight Marketplace</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+    </div>
 
-  <h2 id="highend">High-end &amp; collectible marketplaces</h2>
-  <p>
-    Both below are vetted, application-based marketplaces — generally a
-    better fit once you have an established track record than when
-    you're just starting out. Formground and these serve largely
-    different tiers of maker, not the same audience.
-  </p>
-  <div class="resource">
-    <a class="resource-name" href="https://www.1stdibs.com" target="_blank" rel="noopener noreferrer">1stDibs<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A marketplace for high-end and collectible design, reaching buyers who aren't necessarily searching by brand name.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.pamono.com" target="_blank" rel="noopener noreferrer">Pamono<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A similar collectible-design marketplace, mainly reaching European buyers.</p>
-  </div>
+    <div class="maker-grid cat-panel" data-cat="fairs" style="display: none;">
+      <a class="maker-card" href="https://www.salonemilano.it" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.salonemilano.it/themes/custom/sdm/favicon.ico" alt="Salone del Mobile" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Salone del Mobile</span>
+          <span class="maker-country">Furniture &amp; Design Fair</span>
+          <span class="maker-categories">Italy</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.stockholmfurniturefair.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=stockholmfurniturefair.com&amp;sz=128" alt="Stockholm Furniture Fair" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Stockholm Furniture Fair</span>
+          <span class="maker-country">Furniture &amp; Lighting Fair</span>
+          <span class="maker-categories">Sweden</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.maison-objet.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=maison-objet.com&amp;sz=128" alt="Maison&amp;Objet" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Maison&amp;Objet</span>
+          <span class="maker-country">Home &amp; Design Trade Fair</span>
+          <span class="maker-categories">France</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://icff.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://icff.com/wp-content/uploads/2024/01/ICFF-FAVICON-128X128.png" alt="ICFF" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">ICFF</span>
+          <span class="maker-country">Contemporary Furniture Fair</span>
+          <span class="maker-categories">USA</span>
+        </div>
+      </a>
+    </div>
 
-  <h2 id="demand">Building demand before a drop</h2>
-  <div class="resource">
-    <a class="resource-name" href="https://www.klaviyo.com" target="_blank" rel="noopener noreferrer">Klaviyo<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Email and SMS tools for building a waitlist ahead of a small, limited run — an alternative to relying on social media alone.</p>
-  </div>
+    <div class="maker-grid cat-panel" data-cat="associations" style="display: none;">
+      <a class="maker-card" href="https://interiorcluster.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><div class="monogram" title="Interior Cluster Sweden">IC</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Interior Cluster Sweden</span>
+          <span class="maker-country">Furniture &amp; Interior Industry Cluster</span>
+          <span class="maker-categories">Sweden</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://skrahantverkarna.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://skrahantverkarna.se/wp-content/uploads/2019/12/cropped-favicon512-300x300.png" alt="Föreningen Skråhantverkarna" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Föreningen Skråhantverkarna</span>
+          <span class="maker-country">Traditional Craft Association</span>
+          <span class="maker-categories">Sweden</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.efic.eu" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero"><img src="https://static.wixstatic.com/media/a1d93b_f4079750b5404e9b83fbf168fdf86366~mv2.png" alt="EFIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">EFIC</span>
+          <span class="maker-country">European Furniture Trade Body</span>
+          <span class="maker-categories">Belgium</span>
+        </div>
+      </a>
+    </div>
 
-  <h2 id="photography">Product photography</h2>
-  <div class="resource">
-    <a class="resource-name" href="https://www.photoroom.com" target="_blank" rel="noopener noreferrer">PhotoRoom<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>AI-based background removal and product photo editing — a lower-cost alternative to a full studio shoot.</p>
-  </div>
+    <div class="guides-list cat-panel" data-cat="guides" style="display: none;">
 
-  <h2 id="packaging">Packaging</h2>
-  <div class="resource">
-    <a class="resource-name" href="https://www.packhelp.com" target="_blank" rel="noopener noreferrer">Packhelp<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Custom packaging in small quantities — useful when pieces vary in size and off-the-shelf boxes don't fit well.</p>
-  </div>
+      <p class="guide-intro">Formground exists to help independent designers and makers get found — and a lot of that work happens before anyone searches for you at all. The brands and makers already featured here have their own stores, their own domains, their own way of showing up. If you're earlier in that journey, these are written for you: honest, friendly starting points, not verdicts on the "right" choice — because the right one really does depend on where you are.</p>
 
-  <h2 id="shipping">Shipping &amp; fulfillment</h2>
-  <div class="resource">
-    <a class="resource-name" href="https://goshippo.com" target="_blank" rel="noopener noreferrer">Shippo<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Compares shipping rates across carriers for smaller parcels — strongest carrier coverage in the US and Canada.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.sendcloud.com" target="_blank" rel="noopener noreferrer">Sendcloud<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A similar shipping tool built around European carriers — a better fit than Shippo for makers based in the EU.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.uship.com" target="_blank" rel="noopener noreferrer">uShip<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A freight marketplace built for large, heavy, or fragile items — a better fit for furniture than standard parcel carriers, mainly used in North America and Europe.</p>
-  </div>
+      <div class="guide-article">
+        <h2>Getting Started: Selling &amp; Distribution</h2>
+        <p><strong>Start with something that's yours.</strong> Wherever you sell, having your own site — a domain you control, not just a profile on someone else's platform — is worth prioritizing early, even before your catalog feels "ready." It's the difference between building something that compounds and renting space you could lose access to. It also matters more than it used to: as more shopping starts with an AI assistant reading a page on your behalf rather than a person browsing a marketplace, a real site with clear, structured information about your work is what that assistant actually finds. A marketplace profile mostly isn't.</p>
+        <p><strong>Shopify</strong>, <strong>Squarespace</strong>, and <strong>WooCommerce</strong> are the three most common starting points among makers already here, and honestly, any of the three will get you selling. Shopify tends to suit a growing catalog best; Squarespace is a nice fit if the shop sits alongside a portfolio-style site; WooCommerce makes sense if you're already comfortable with WordPress and want more control over the details. <strong>Big Cartel</strong> is worth a look if your catalog is small and likely to stay that way — it's built for exactly that, not scaled down from something bigger.</p>
+        <p><strong>Etsy</strong> is a genuinely useful place to start if handmade, smaller-ticket work is what you're making — just go in with your eyes open about the trade-off: fees and ad placements can take close to a third of what you earn, so most people treat it as a supplement to their own site rather than a home base.</p>
+        <p><strong>Faire</strong> and <strong>Ankorstore</strong> open up trade — selling to retailers instead of individual customers — once your own site has shown there's real demand. Which one fits often comes down to simple locality: Faire leans North American, Ankorstore European, so start with whichever matches where your interest is actually coming from.</p>
+        <p><strong>1stDibs</strong> and <strong>Pamono</strong> sit at the high end — vetted, application-only marketplaces for collectible design. They're worth keeping in mind for later rather than reaching for now; a track record tends to matter more here than a strong start.</p>
+        <p>A last thought, since it comes up often as you grow: transparency with your customers — where things are made, what they're made of, how they're shipped — isn't just good practice, it's increasingly expected, and regulation is starting to make some of it a requirement rather than a choice (more on that in the regulation note below). Worth building the habit early, while it's still simple to do.</p>
+      </div>
 
-  <h2 id="fairs">Fairs &amp; exhibitions</h2>
-  <div class="resource">
-    <a class="resource-name" href="https://www.salonemilano.it" target="_blank" rel="noopener noreferrer">Salone del Mobile<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>The largest furniture and design fair, held annually in Milan.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.stockholmfurniturefair.com" target="_blank" rel="noopener noreferrer">Stockholm Furniture Fair<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Northern Europe's main furniture and lighting fair.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.maison-objet.com" target="_blank" rel="noopener noreferrer">Maison&amp;Objet<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A major home and design trade fair held in Paris.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://icff.com" target="_blank" rel="noopener noreferrer">ICFF<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>New York's main contemporary furniture and design fair, and a natural first stop in North America.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://interior-lifestyle.jp/en/" target="_blank" rel="noopener noreferrer">Interior Lifestyle Tokyo<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A major design and lifestyle trade fair in Japan.</p>
-  </div>
+      <div class="guide-article">
+        <h2>Getting Started: Design &amp; Prototyping</h2>
+        <p>These five don't really compete with each other — they cover different moments in getting from an idea to a real object, so think of this less as "which one" and more as "which stage are you at." <strong>Fusion 360</strong> is where a design becomes testable before it costs you anything in materials or tooling — worth learning early, even if the curve feels steep at first. Once you've got something worth holding, <strong>Shapeways</strong> turns a digital file into a real, physical prototype without needing your own equipment — a good gut-check before committing to a full production run.</p>
+        <p><strong>Material District</strong> is worth a browse whenever a material choice feels uncertain; it's built for designers rather than manufacturers, and its sustainable-options coverage is a genuinely easy way to make a more considered choice early, while a spec is still easy to change. If branding is the gap rather than the object itself, <strong>99designs</strong> and <strong>Fiverr</strong> offer two different ways to get there — a contest across many designers if you want options to choose from, or a freelancer you hire directly if you already know the look you're after.</p>
+      </div>
 
-  <h2 id="regulation">Product regulation</h2>
-  <p>
-    Product-transparency regulation is on the way in several markets,
-    and the EU is furthest along. Its Ecodesign for Sustainable
-    Products Regulation (ESPR) is gradually introducing a "Digital
-    Product Passport" (DPP) — a standard digital record of a
-    product's materials, durability, and repairability, meant to
-    travel with it. Furniture is one of the categories in scope; the
-    EU's central DPP registry went live in July 2026, and
-    furniture-specific requirements are expected to follow around
-    2028–2029. That's a few years out, but worth knowing about now —
-    wherever you sell from, since other markets are likely to
-    introduce their own versions over time.
-  </p>
-  <p>
-    The regulation is meant to scale with company size, and EU member
-    states are required to offer smaller businesses guidance and
-    support — but tracking a regulation like this alone is still a lot
-    to ask of a one-person studio. This is one area where a trade
-    association can genuinely help: several furniture and textile
-    industry bodies are already building shared Digital Product
-    Passport infrastructure so individual members don't each have to
-    solve it from scratch. The European Furniture Industries
-    Confederation (EFIC), for example, has been directly engaged in
-    shaping how these rules apply to furniture makers. Being part of —
-    or at least following — your national or sector association is a
-    reasonable way to stay ahead of this.
-  </p>
-  <p style="font-size: 13px; color: var(--text-muted);">
-    This is general awareness, not legal advice — exact requirements
-    are still being finalized and vary by product category. Check
-    official sources or your own industry association for guidance
-    specific to your business.
-  </p>
-  <div class="resource">
-    <a class="resource-name" href="https://green-forum.ec.europa.eu/implementing-ecodesign-sustainable-products-regulation_en" target="_blank" rel="noopener noreferrer">European Commission — ESPR &amp; Digital Product Passport<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>The official EU page on ESPR and the Digital Product Passport, including current timelines and how requirements are meant to scale for smaller businesses.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.efic.eu" target="_blank" rel="noopener noreferrer">EFIC — European Furniture Industries Confederation<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>The EU-level furniture trade body, active in shaping how Digital Product Passport rules will apply to furniture makers.</p>
-  </div>
-  </div>
+      <div class="guide-article">
+        <h2>Getting Started: Hosting</h2>
+        <p>A small, practical choice most people only think about once. <strong>WP Engine</strong> is the specialist pick if you're running WooCommerce — it costs more than generic hosting, but it takes server maintenance off your plate entirely, which is worth it once a store is actually your livelihood. <strong>Cloudways</strong> is the friendlier-on-budget alternative — still fully managed, still no server upkeep for you to worry about, just less specialized. Neither is wrong; it mostly comes down to what you can comfortably spend before the store is earning enough to justify the difference.</p>
+      </div>
 
-  <h2 class="group-heading" id="group-architects">For Architects</h2>
-  <p class="group-intro">
-    A short starting list — this section is new and will grow as
-    Formground's Architects directory does.
-  </p>
-  <div class="group-columns">
-  <div class="resource">
-    <a class="resource-name" href="https://www.archiproducts.com" target="_blank" rel="noopener noreferrer">Archiproducts<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A large European product-specification platform for architects and designers — furniture, lighting, and materials organized for sourcing a project, not for a single retail purchase.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://www.archdaily.com" target="_blank" rel="noopener noreferrer">ArchDaily<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Architecture news, projects, and products, updated continuously — a common reference point for staying current on the field.</p>
-  </div>
-  </div>
+      <div class="guide-article">
+        <h2>Getting Started: Marketing &amp; Fulfillment</h2>
+        <p>Three genuinely different jobs live under this one heading, so take them one at a time. For actually reaching people, <strong>Klaviyo</strong> is worth setting up before a launch, not after — building a waitlist through email or SMS gives a small run somewhere to sell to on day one, rather than hoping social media catches it. <strong>PhotoRoom</strong> is a low-cost way to get clean product photography without booking a full studio shoot, which matters more than it sounds like when you're weighing where early budget goes.</p>
+        <p>For packaging, <strong>Packhelp</strong> is worth a look the moment an off-the-shelf box stops fitting what you make — custom packaging in small quantities also tends to mean less wasted material than forcing an odd-shaped piece into a box built for something else.</p>
+        <p>And for getting things to people: <strong>Shippo</strong> and <strong>Sendcloud</strong> do the same job on opposite sides of the Atlantic — Shippo if you're shipping mostly within the US and Canada, Sendcloud if you're in Europe — while <strong>uShip</strong> is the one worth remembering specifically for furniture: large, heavy, or fragile pieces need a freight marketplace built for that, not a standard parcel carrier.</p>
+      </div>
 
-  <h2 class="group-heading" id="group-designers">For Designers</h2>
-  <p class="group-intro">
-    Coming soon — independent product designers are a new category on Formground, and this section will grow alongside it.
-  </p>
+      <div class="guide-article">
+        <h2>Getting Started: Fairs &amp; Exhibitions</h2>
+        <p>Which fair makes sense mostly comes down to where you are and how big a step you're ready to take. <strong>Salone del Mobile</strong> in Milan is the largest furniture and design fair there is — an aspiration for many, not usually a first fair. <strong>Stockholm Furniture Fair</strong> is a friendlier entry point if you're Nordic or Northern European, regional in scale but a real, respected stage. <strong>Maison&amp;Objet</strong> in Paris leans more lifestyle and home than furniture specifically, which can suit certain kinds of work particularly well. And if North America is the goal, <strong>ICFF</strong> in New York is the natural first stop — sized for exactly that kind of first step, rather than requiring one already.</p>
+      </div>
 
-  <h2 class="group-heading" id="group-shared">Shared</h2>
-  <p class="group-intro">Topics that apply regardless of which of the above you are.</p>
+      <div class="guide-article">
+        <h2>Getting Started: Associations</h2>
+        <p>Joining one of these is less about a membership badge and more about not having to figure everything out alone. <strong>Interior Cluster Sweden</strong> connects manufacturers, designers, and subcontractors — useful if you're looking for production partners, not just peers. <strong>Föreningen Skråhantverkarna</strong> exists to keep traditional trades and skills alive, which makes it a genuinely good place to find (or become) the kind of specialist craftsperson a bigger studio would otherwise struggle to source. And bodies like <strong>EFIC</strong> operate a level up again — shaping how regulation actually gets applied to furniture makers, which matters more than it might seem from the outside (more on that below).</p>
+      </div>
 
-  <div class="group-columns">
-  <h2 id="associations">Associations</h2>
-  <p>
-    Trade and craft associations, regardless of which side of the work they represent — a useful
-    place to find peers, references, and shared infrastructure (see Product regulation above for
-    why this matters more every year).
-  </p>
-  <div class="resource">
-    <a class="resource-name" href="https://interiorcluster.se" target="_blank" rel="noopener noreferrer">Interior Cluster Sweden<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A Swedish furniture and interior industry cluster connecting manufacturers, designers, and subcontractors.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://skrahantverkarna.se" target="_blank" rel="noopener noreferrer">Föreningen Skråhantverkarna<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>A Swedish association of traditional craftspeople, formed to preserve trades and skills.</p>
-  </div>
+      <div class="guide-article">
+        <h2>A Macro Note: Regulation &amp; Trade</h2>
+        <p>This part tends to feel intimidating from a distance and much more manageable once you're actually in it — worth reading now, while it's still simple, rather than later under pressure. If you start selling across borders, VAT and customs rules will eventually apply to you, and they're genuinely easier to set up correctly from the start than to untangle after a few hundred orders.</p>
+        <p>On the regulation side, change is coming gradually rather than all at once: the EU's <a href="https://green-forum.ec.europa.eu/implementing-ecodesign-sustainable-products-regulation_en" target="_blank" rel="noopener noreferrer">Ecodesign for Sustainable Products Regulation</a> is introducing a "Digital Product Passport" — a standard record of a product's materials, durability, and repairability that travels with it — and furniture is one of the categories in scope, with the EU's central registry live since mid-2026 and furniture-specific requirements expected around 2028–2029. That's a few years out, but it rewards starting early: transparency about materials and origin is a habit worth building before it's mandatory, not after.</p>
+        <p>This is exactly where a trade association earns its keep — several, including EFIC, are already building shared infrastructure so individual makers don't have to solve this alone. None of this needs to slow you down today. It's just worth knowing it's coming, and worth choosing partners and habits now that won't need to be redone later.</p>
+      </div>
 
-  <h2 id="seo">SEO basics for your own site</h2>
-  <p>
-    A few things make most of the difference: a clear, descriptive title
-    and short description on every page, real alt text on every image,
-    fast-loading photos, and one canonical page per item rather than
-    duplicates. None of it needs an agency — most of it is a platform
-    setting or a few minutes per page, and a general AI assistant can
-    help draft or check things like alt text and page descriptions if
-    writing isn't where you want to spend your time — just read over
-    what it gives you before it goes live.
-  </p>
-  <div class="resource">
-    <a class="resource-name" href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer">Google Search Console<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Free — shows how Google actually sees your site, and lets you submit a sitemap or flag a page for re-indexing.</p>
-  </div>
-  <div class="resource">
-    <a class="resource-name" href="https://developers.google.com/search/docs/fundamentals/seo-starter-guide" target="_blank" rel="noopener noreferrer">Google's SEO Starter Guide<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>Free, written by Google itself, and enough to cover the fundamentals without hiring anyone.</p>
-  </div>
+      <div class="guide-links">
+        <div>
+          <a class="resource-name" href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer">Google Search Console<i class="ti ti-external-link" aria-hidden="true"></i></a>
+          <p>Free — shows how Google actually sees your site, and lets you submit a sitemap or flag a page for re-indexing.</p>
+        </div>
+        <div>
+          <a class="resource-name" href="https://developers.google.com/search/docs/fundamentals/seo-starter-guide" target="_blank" rel="noopener noreferrer">Google's SEO Starter Guide<i class="ti ti-external-link" aria-hidden="true"></i></a>
+          <p>Free, written by Google itself, and enough to cover the fundamentals without hiring anyone.</p>
+        </div>
+        <div>
+          <a class="resource-name" href="https://schema.org/Product" target="_blank" rel="noopener noreferrer">schema.org structured data<i class="ti ti-external-link" aria-hidden="true"></i></a>
+          <p>The structured-data format search engines and AI agents both use to read a page accurately.</p>
+        </div>
+      </div>
 
-  <h2 id="ai-search">Being found by AI search &amp; agentic tools</h2>
-  <p>
-    A growing share of searches now happen through an AI assistant
-    asking on someone's behalf rather than a person typing into
-    Google — the same shift Formground was built around. What helps a
-    human find your work also helps an AI agent do the same: clean,
-    factual pages with real names, materials, and images, plus
-    structured data an assistant can read without guessing. Nothing
-    exotic required — just a well-built page rather than a wall of
-    marketing copy.
-  </p>
-  <div class="resource">
-    <a class="resource-name" href="https://schema.org/Product" target="_blank" rel="noopener noreferrer">schema.org structured data<i class="ti ti-external-link" aria-hidden="true"></i></a>
-    <p>The structured-data format search engines and AI agents both use to read a page accurately - Product for makers, but schema.org covers people, services, and organizations just as well.</p>
-  </div>
-  </div>
+    </div>
 
   <p class="foot-note">
-    This list doesn't imply any partnership or endorsement beyond what's stated above.<br>
-    &copy; 2026 Formground &middot; <a href="/">← Back to Formground</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a> &middot; <a class="back-to-top" href="#top">Back to top ↑</a>
+    This list doesn't imply any partnership or endorsement beyond what's stated above. &middot; &copy; 2026 Formground &middot; <a href="/">← Back to Formground</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a>
   </p>
+
 </main>
+
+<script>
+  // Every category's real content already sits in the page (see the
+  // .cat-panel divs above) - this just shows the one matching the
+  // clicked chip and hides the rest, no data fetching or templating.
+  document.querySelectorAll('.chip').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var cat = btn.dataset.cat;
+      document.querySelectorAll('.chip').forEach(function (b) {
+        b.classList.toggle('active', b === btn);
+      });
+      document.querySelectorAll('.cat-panel').forEach(function (panel) {
+        var show = panel.dataset.cat === cat || (cat === 'all' && panel.dataset.cat === 'craftspeople');
+        panel.style.display = show ? '' : 'none';
+      });
+    });
+  });
+</script>
 
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
