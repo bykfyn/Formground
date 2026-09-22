@@ -1090,6 +1090,7 @@ UNHELPFUL_CATEGORIES = {"classici", "novità", "collezioni", "designers", ""}
 # fabricate a taxonomy" standard as the rest of this file.
 ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("step ladder", "Ladder"), ("ladder", "Ladder"), ("cutlery", "Cutlery"),
+    ("room divider", "Room Divider"), ("coathanger", "Coat Stand"),
     ("four poster bed", "Bed"), ("pleated bed", "Bed"),
     ("sofa system", "Sofa"), ("slipcover sofa", "Sofa"),
     ("wingback armchair", "Armchair"), ("low back armchair", "Armchair"),
@@ -1136,7 +1137,7 @@ CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
     "New Works DK", "Workstead", "Rubn", "Maruni", "AY Illuminate", "Ghidini 1961",
-    "GATOMIKIO", "Raawii", "Wendelbo", "Asplund", "Blå Station", "Davsjö",
+    "GATOMIKIO", "Raawii", "Wendelbo", "Asplund", "Blå Station", "Davsjö", "Ingridsdotter",
 }
 
 
@@ -4779,6 +4780,105 @@ def extract_davsjo(brand):
     return products
 
 
+# Non-product pages that show up as links on Ingridsdotter's own category
+# pages (nav/footer, not part of the actual catalog) - excluded by slug.
+INGRIDSDOTTER_NON_PRODUCT_SLUGS = {
+    "about-jonas-bohlin", "about-us", "book-a-visit", "contact",
+    "interiors", "lamps", "outdoor", "order", "",
+}
+
+
+def extract_ingridsdotter(brand):
+    """
+    Ingridsdotter (Jonas Bohlin's own signature furniture line) has no
+    product API and no semantic HTML at all on its product pages - a
+    Brizy page-builder site where the product name is just the first of
+    8 <strong> tags on the page (the rest are shared footer/contact text,
+    confirmed identical in count and position across every product page
+    checked 2026-09-22) and the hero photo is the first `brz-img` whose
+    src doesn't contain "ingridsdotter-new" (the shared site logo, always
+    the very first image on every page). No per-product category or
+    listing API exists either - the 3 real category pages
+    (/interiors/, /outdoor/, /lamps/) are crawled directly for product
+    links. A couple of slugs are accidental WordPress duplicates of the
+    same real product under two different URLs (confirmed via matching
+    image filenames, e.g. atom-floor-lamp/atom-floorlamp) - deduped by
+    normalized product name, keeping whichever URL is fetched first.
+    """
+    domain = brand["url"].rstrip("/")
+    products = []
+    brand_start = time.monotonic()
+
+    candidate_urls = set()
+    for category in ("interiors", "outdoor", "lamps"):
+        try:
+            resp = requests.get(f"{domain}/{category}/", headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch Ingridsdotter category {category}: {e}")
+            continue
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for a in soup.find_all("a", href=True):
+            href = a["href"].strip()
+            if domain not in href:
+                continue
+            slug = href.rstrip("/").rsplit("/", 1)[-1]
+            if slug in INGRIDSDOTTER_NON_PRODUCT_SLUGS or slug.isdigit():
+                continue
+            candidate_urls.add(f"{domain}/{slug}")
+
+    seen_names = set()
+    for url in candidate_urls:
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"{brand['name']} - stopping early with what was fetched so far.")
+            break
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        page = BeautifulSoup(resp.text, "html.parser")
+        strongs = page.find_all("strong")
+        if not strongs:
+            continue
+        name = strongs[0].get_text(strip=True)
+        if not name:
+            continue
+        # Normalized to bare alphanumerics so "ATOM floor lamp" and its
+        # accidental duplicate "ATOM floorlamp" (see docstring) collide
+        # regardless of the stray space between them.
+        dedup_key = re.sub(r"[^a-z0-9]", "", name.lower())
+        if dedup_key in seen_names:
+            continue
+        seen_names.add(dedup_key)
+
+        image_url = ""
+        for img in page.find_all("img", class_="brz-img"):
+            src = img.get("src", "")
+            if "wp-content" in src and "ingridsdotter-new" not in src:
+                image_url = src
+                break
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": resp.url,
+            "category": _infer_category_from_name(name, "", "Ingridsdotter"),
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+            "designer": "Jonas Bohlin",
+        })
+        time.sleep(0.3)  # be polite - don't hammer the site
+
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -4865,6 +4965,7 @@ EXTRACTORS = {
     "Blå Station": extract_blastation,
     "Gärsnäs": extract_garsnas,
     "Davsjö": extract_davsjo,
+    "Ingridsdotter": extract_ingridsdotter,
 }
 
 
