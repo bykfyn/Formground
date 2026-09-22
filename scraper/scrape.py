@@ -4879,6 +4879,106 @@ def extract_ingridsdotter(brand):
     return products
 
 
+# Blond's Squarespace page tree uses cryptic auto-numbered slugs
+# (/home-2-2-1-1-4-1-1-...) with no descriptive pattern to filter on, so
+# real product pages are told apart from section/index pages (Contact,
+# Sustainability, Bespoke, Profile, Icons, Indoor, Outdoor, Expert
+# Systems, and the homepage itself) by an explicit exclusion list,
+# confirmed 2026-09-22 by fetching and inspecting all 32 real sitemap
+# URLs. One further slug is excluded individually: a second page titled
+# "Note" whose own body text actually describes a *different* real
+# product ("Huilu") - a genuine content mismatch on the brand's own site,
+# not a legitimate second "Note".
+BLOND_NON_PRODUCT_SLUGS = {
+    "", "home", "home-1", "home-2", "home-2-1", "home-2-1-1", "home-2-2",
+    "home-2-2-2", "home-2-2-3", "home-2-2-3-1",
+    "home-2-2-1-1-4-1-1-1-1-1-1-1-1",  # mismatched duplicate "Note" page
+}
+
+
+def extract_blond(brand):
+    """
+    Blond (Squarespace) has no product API, and its sitemap's cryptic
+    slugs carry no reliable structural signal - real product pages are
+    identified by exclusion (see BLOND_NON_PRODUCT_SLUGS) rather than
+    inclusion. Each real product page's <title> is a clean
+    "{Name} — BLOND" string; its designer credit is a "Designed by"
+    paragraph followed immediately by a sibling <p> holding the name
+    (both confirmed 2026-09-22, no delimiter separates them in plain
+    text, hence walking the DOM instead of a regex). The brand makes only
+    architectural/professional lighting, so category is hardcoded to
+    "Light" rather than guessed - the same "one true fact, applied
+    uniformly" approach already used for Paola Paronetto's material.
+    """
+    domain = brand["url"].rstrip("/")
+    products = []
+    brand_start = time.monotonic()
+
+    try:
+        resp = requests.get(f"{domain}/sitemap.xml", headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch Blond's sitemap: {e}")
+        return products
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    urls = []
+    for loc in soup.find_all("loc"):
+        url = loc.get_text(strip=True)
+        slug = url.rstrip("/").rsplit("/", 1)[-1]
+        if slug not in BLOND_NON_PRODUCT_SLUGS:
+            urls.append(url)
+
+    for url in urls:
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"{brand['name']} - stopping early with what was fetched so far.")
+            break
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        page = BeautifulSoup(resp.text, "html.parser")
+        title_tag = page.find("title")
+        name = title_tag.get_text(strip=True).split(" — BLOND")[0].strip() if title_tag else ""
+        if not name:
+            continue
+
+        designer = ""
+        for p in page.find_all("p"):
+            if p.get_text(strip=True) == "Designed by":
+                sib = p.find_next_sibling("p")
+                if sib:
+                    designer = sib.get_text(strip=True)
+                break
+
+        image_url = ""
+        for img in page.find_all("img"):
+            src = img.get("src", "")
+            if "squarespace-cdn.com" in src and "Blond-logo" not in src:
+                image_url = "https:" + src if src.startswith("//") else src
+                break
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": "Light",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+            "designer": designer,
+        })
+        time.sleep(0.3)  # be polite - don't hammer the site
+
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -4966,6 +5066,7 @@ EXTRACTORS = {
     "Gärsnäs": extract_garsnas,
     "Davsjö": extract_davsjo,
     "Ingridsdotter": extract_ingridsdotter,
+    "Blond": extract_blond,
 }
 
 
