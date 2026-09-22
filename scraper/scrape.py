@@ -1089,6 +1089,7 @@ UNHELPFUL_CATEGORIES = {"classici", "novità", "collezioni", "designers", ""}
 # real signal (e.g. "Mercier press", "Nim Copper") - same "don't
 # fabricate a taxonomy" standard as the rest of this file.
 ENGLISH_OBJECT_TYPE_KEYWORDS = (
+    ("step ladder", "Ladder"), ("ladder", "Ladder"), ("cutlery", "Cutlery"),
     ("four poster bed", "Bed"), ("pleated bed", "Bed"),
     ("sofa system", "Sofa"), ("slipcover sofa", "Sofa"),
     ("wingback armchair", "Armchair"), ("low back armchair", "Armchair"),
@@ -1135,7 +1136,7 @@ CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
     "New Works DK", "Workstead", "Rubn", "Maruni", "AY Illuminate", "Ghidini 1961",
-    "GATOMIKIO", "Raawii", "Wendelbo", "Asplund", "Blå Station",
+    "GATOMIKIO", "Raawii", "Wendelbo", "Asplund", "Blå Station", "Davsjö",
 }
 
 
@@ -4700,6 +4701,84 @@ def extract_garsnas(brand):
     return products
 
 
+def extract_davsjo(brand):
+    """
+    Davsjö (Webflow) has no product API, but a real sitemap.xml lists
+    every /product/{slug} page directly - a small, manageable catalog (68
+    real URLs, confirmed 2026-09-22). Each product page's own <h1>
+    (class cg-product-name) is itself a clean, reliable
+    "{code} | {category text} | {finish}" string - a better category
+    signal than guessing from the product name, since it's the same text
+    the brand uses to distinguish e.g. a dining chair from a bar stool
+    that share a model-name prefix.
+    """
+    domain = brand["url"].rstrip("/")
+    products = []
+    brand_start = time.monotonic()
+
+    try:
+        resp = requests.get(f"{domain}/sitemap.xml", headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch Davsjö's sitemap: {e}")
+        return products
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    urls = [
+        loc.get_text(strip=True)
+        for loc in soup.find_all("loc")
+        if "/product/" in loc.get_text(strip=True)
+    ]
+
+    for url in urls:
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"{brand['name']} - stopping early with what was fetched so far.")
+            break
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        page = BeautifulSoup(resp.text, "html.parser")
+        h1 = page.find("h1", class_="cg-product-name")
+        if not h1:
+            continue
+        parts = [p.strip() for p in h1.get_text(strip=True).split("|")]
+
+        if len(parts) == 3:
+            code, category_text, finish = parts
+            name = f"{code} {category_text} {finish}".strip()
+        else:
+            code, category_text, finish = "", "", ""
+            name = h1.get_text(strip=True)
+        if not name:
+            continue
+
+        category = _infer_category_from_name(category_text, "", "Davsjö") if category_text else ""
+
+        image_tag = page.find("img", class_="cg-main-image")
+        image_url = image_tag.get("src", "") if image_tag else ""
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+            "designer": "",
+        })
+        time.sleep(0.3)  # be polite - don't hammer the site
+
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -4785,6 +4864,7 @@ EXTRACTORS = {
     "Fogia": extract_fogia,
     "Blå Station": extract_blastation,
     "Gärsnäs": extract_garsnas,
+    "Davsjö": extract_davsjo,
 }
 
 
