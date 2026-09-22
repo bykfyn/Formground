@@ -32,6 +32,7 @@ import json
 import re
 import sqlite3
 import time
+import urllib.parse
 from pathlib import Path
 
 import requests
@@ -4318,6 +4319,132 @@ def extract_ghidini_1961(brand):
     return products
 
 
+# Fogia's own real product catalog is spread across a dedicated sitemap
+# (https://www.fogia.com/sitemap_products_en_EN_0.xml), listing both
+# each real product's own page (a 2- or 3-segment path, e.g.
+# /shelves-storage/shelf/arch-shelf-high) and one extra URL per finish
+# variant (a 4-segment path, .../arch-shelf-high/black-oak) - only the
+# base URLs are treated as real products here, matching how every other
+# brand in this file treats a finish/color as a variant, not a separate
+# design. The listing pages themselves are a ~4.5MB React app shell with
+# a large, only-partially-complete Algolia search-index dump embedded
+# (confirmed live 2026-09-22: the first page's embedded "hits" array
+# held just 20 of the real ~136 products, and a specific product's own
+# external_id wasn't reliably present event on that exact product's own
+# page) - not a reliable single-fetch source. Each product's own page
+# *is* real and server-rendered even though it's the same size (gzip
+# brings the real wire transfer down to ~260KB, confirmed live - the
+# 4.5MB figure is only the decompressed HTML, not the actual fetch
+# cost), with a clean og:title for the name and real <img> tags
+# (images.fogia.com) for photography, so this fetches each base
+# product's own page individually rather than trying to parse the
+# shared catalog blob.
+FOGIA_CATEGORY_SLUGS = {
+    "sideboard": "Sideboard", "shelving-system": "Shelving", "shelf": "Shelving",
+    "cabinet": "Cabinet", "side-table": "Side Table", "coffee-table": "Coffee Table",
+    "lounge-chair": "Lounge Chair", "ottoman": "Ottoman", "dining-table": "Dining Table",
+    "desk": "Desk", "stool": "Stool", "swivel-chair": "Chair", "armchair": "Armchair",
+    "counter-stool": "Stool", "bar-stool": "Stool", "chair": "Chair", "vase": "Vase",
+    "pendant": "Pendant", "table-lamp": "Table Lamp",
+    # Missed on the first pass (2026-09-22): every /sofas/* subcategory
+    # except these four was mapped, silently leaving 20+ real sofas
+    # blank. The "Alex" line names its own model as the subcategory
+    # segment instead of a generic word - added explicitly rather than
+    # guessed, confirmed live these are real sofas.
+    "sofa-3-seater": "Sofa", "sofa-2-seater": "Sofa", "sofa-25-seater": "Sofa",
+    "modular-sofa": "Sofa", "alex-25-seater-sofa": "Sofa", "alex-3-seater-sofa": "Sofa",
+    "alex-high-25-seater-sofa": "Sofa",
+    # 2-segment URLs (a few "sofas" entries have no subcategory tier at
+    # all) fall back to the top-level segment instead of a subcategory.
+    "sofas": "Sofa", "accessories": "Accessories", "lighting": "Light",
+    "tables": "Table", "chairs-stools": "Chair", "shelves-storage": "Shelving",
+    "coffee-side-tables": "Table", "lounge-chairs-ottomans": "Lounge Chair",
+}
+
+
+def extract_fogia(brand):
+    domain = brand["url"].rstrip("/")
+    products = []
+    brand_start = time.monotonic()
+
+    try:
+        resp = requests.get(f"{domain}/sitemap_products_en_EN_0.xml", headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch Fogia's product sitemap: {e}")
+        return products
+
+    # The "Alex" sofa line is one level shallower than every other real
+    # product (its own base page is 2 segments, e.g. /sofas/alex-3-
+    # seater-sofa, not 3) - confirmed live 2026-09-22 after the naive
+    # "2 or 3 segments = a real product" rule below caught its 3-segment
+    # fabric-variant pages (.../alex-3-seater-sofa/hiro-15-brushed-
+    # aluminium) as 5 separate near-duplicate "products" per model, all
+    # sharing the same name. Excluded by name rather than guessing a
+    # different segment-count rule for them specifically.
+    ALEX_SOFA_MODELS = {"alex-25-seater-sofa", "alex-3-seater-sofa", "alex-high-25-seater-sofa"}
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    base_urls = []
+    for loc in soup.find_all("loc"):
+        url = loc.get_text(strip=True)
+        segments = urllib.parse.urlparse(url).path.strip("/").split("/")
+        if len(segments) == 3 and segments[1] in ALEX_SOFA_MODELS:
+            continue  # a fabric/finish variant of a 2-segment Alex base page, not its own product
+        if len(segments) in (2, 3):
+            base_urls.append((url, segments))
+
+    for url, segments in base_urls:
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"{brand['name']} - stopping early with what was fetched so far.")
+            break
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        page = BeautifulSoup(resp.text, "html.parser")
+        title_tag = page.find("meta", property="og:title")
+        name = title_tag["content"].split(" - Fogia")[0].strip() if title_tag and title_tag.get("content") else ""
+        if not name:
+            continue
+
+        image_url = ""
+        for img in page.find_all("img", src=True):
+            src = img["src"]
+            if "images.fogia.com" in src and "LineDrawings" not in src:
+                image_url = html.unescape(src)
+                break
+
+        designer_match = re.search(r"The designers?\s*/\s*([^<]+)</h2>", resp.text)
+        designer = html.unescape(designer_match.group(1).strip()) if designer_match else ""
+
+        # The subcategory (segment[1]) is the real object-type signal for
+        # a 3-segment URL; a 2-segment URL has no subcategory tier, so
+        # fall back to the top-level category segment instead.
+        slug_key = segments[1] if len(segments) == 3 else segments[0]
+        category = FOGIA_CATEGORY_SLUGS.get(slug_key, "")
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+            "designer": designer,
+        })
+        time.sleep(0.3)  # be polite - don't hammer the site
+
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -4400,6 +4527,7 @@ EXTRACTORS = {
     "Interesting Times Gang": extract_shopify,
     "G.A.D": extract_woocommerce,
     "Fabrikant": extract_woocommerce,
+    "Fogia": extract_fogia,
 }
 
 
