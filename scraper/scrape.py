@@ -1135,7 +1135,7 @@ CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
     "New Works DK", "Workstead", "Rubn", "Maruni", "AY Illuminate", "Ghidini 1961",
-    "GATOMIKIO", "Raawii", "Wendelbo", "Asplund",
+    "GATOMIKIO", "Raawii", "Wendelbo", "Asplund", "Blå Station",
 }
 
 
@@ -4445,6 +4445,153 @@ def extract_fogia(brand):
     return products
 
 
+def _resolve_blastation_image(img_tag):
+    """
+    Blå Station serves every image through a Next.js image proxy
+    (/_next/image?url=<encoded real URL>&w=...&q=...) - the real,
+    permanent asset lives on cms.blastation.com and is recoverable from
+    the proxy URL's own `url` query param, which is what's stored instead
+    of the relative, resize-parameterized proxy path.
+    """
+    if not img_tag:
+        return ""
+    src = img_tag.get("src", "")
+    if not src:
+        return ""
+    parsed = urllib.parse.urlparse(src)
+    real_url = urllib.parse.parse_qs(parsed.query).get("url", [""])[0]
+    return real_url or src
+
+
+def extract_blastation(brand):
+    """
+    Blå Station has no product API; its /products listing page is mostly
+    client-rendered, but the real catalog is reachable as ~60 server-
+    rendered "family"/"product" pages (confirmed 2026-09-22 via
+    c-sub-selection-families__item-title links on /products). A "family"
+    page (e.g. /family/able) can bundle several distinct, differently
+    named and imaged real products under one name (ABLE's own family page
+    lists a B550 chair, an "Able Table Desk", and an "ABLE TABLE Lounge"
+    side table as separate model codes with separate images) - there's no
+    per-model URL, so each member is indexed as its own row on the shared
+    family page URL, following the same "index at the finest real,
+    identifiable unit a brand publishes" principle as Paola Paronetto's
+    collection-level entries.
+    """
+    domain = brand["url"].rstrip("/")
+    products = []
+    brand_start = time.monotonic()
+
+    try:
+        resp = requests.get(f"{domain}/products", headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch Blå Station's products page: {e}")
+        return products
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    seen_hrefs = {}
+    for a in soup.find_all("a", class_="c-sub-selection-families__item-title"):
+        href = a.get("href")
+        if href and href not in seen_hrefs:
+            seen_hrefs[href] = a.get_text(strip=True)
+
+    # A model's own "family members" carousel also surfaces sibling
+    # models from *related* families (confirmed 2026-09-22: /product/
+    # decofunc's own page lists "Arc A44" as a member alongside DecoFunc
+    # itself, and /family/oppo and /product/pucca both list "Oppo O50")
+    # - so the same real model code can legitimately turn up while
+    # fetching two different top-level pages. Deduped globally by model
+    # code (or by name, for the handful of codeless single-model pages)
+    # rather than per-page, keeping whichever page's copy was seen first.
+    seen_keys = set()
+
+    for href, fallback_name in seen_hrefs.items():
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"{brand['name']} - stopping early with what was fetched so far.")
+            break
+        url = f"{domain}{href}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        page = BeautifulSoup(resp.text, "html.parser")
+
+        # A breadcrumb trail is only ever present on /product/ pages
+        # (confirmed 2026-09-22: /family/ pages render none) - the second
+        # -to-last crumb before the current-page name is the real,
+        # specific category ("Chairs", "Coffee Tables"). /family/ pages
+        # fall back to keyword-matching each member's own descriptive
+        # title instead, since one family (e.g. ABLE) can mix chairs and
+        # tables under a single family name.
+        crumb_texts = list(dict.fromkeys(
+            c.get_text(strip=True) for c in page.select(".breadcrumbs__item")
+        ))
+        page_category = crumb_texts[-2] if len(crumb_texts) >= 2 else ""
+
+        family_block = page.find(class_="b-family-products") or page.find(class_="b-product-family")
+
+        if family_block:
+            for card in family_block.find_all(class_="c-product-card"):
+                title_tag = card.find(class_="c-product-card__title")
+                if not title_tag:
+                    continue
+                code_tag = card.find(class_="c-product-card__id")
+                code = code_tag.get_text(strip=True) if code_tag else ""
+                title = title_tag.get_text(strip=True)
+                key = code or title
+                if key in seen_keys:
+                    continue
+                seen_keys.add(key)
+
+                name = f"{title} {code}".strip() if code else title
+                category = page_category or _infer_category_from_name(title, "", "Blå Station")
+
+                products.append({
+                    "brand": brand["name"],
+                    "brand_url": brand["url"],
+                    "product_name": name,
+                    "product_url": url,
+                    "category": category,
+                    "material_options": [],
+                    "dimensions": "",
+                    "notes": "",
+                    "image_url": _resolve_blastation_image(card.find("img")),
+                    "designer": "",
+                })
+        else:
+            h1 = page.find("h1")
+            name = h1.get_text(strip=True) if h1 else fallback_name
+            if name in seen_keys:
+                continue
+            seen_keys.add(name)
+            # /product/ pages use b-page-header-product__media for their
+            # hero image; single-model /family/ pages (e.g. BOB, SOMA)
+            # use the plain b-page-header__media instead.
+            hero_img = page.find(class_="b-page-header-product__media") or page.find(class_="b-page-header__media")
+
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": name,
+                "product_url": url,
+                "category": page_category,
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": _resolve_blastation_image(hero_img),
+                "designer": "",
+            })
+
+        time.sleep(0.3)  # be polite - don't hammer the site
+
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -4528,6 +4675,7 @@ EXTRACTORS = {
     "G.A.D": extract_woocommerce,
     "Fabrikant": extract_woocommerce,
     "Fogia": extract_fogia,
+    "Blå Station": extract_blastation,
 }
 
 
