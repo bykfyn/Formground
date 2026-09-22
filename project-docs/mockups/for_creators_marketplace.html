@@ -91,8 +91,20 @@
   }
   .cta-btn:hover { background: var(--text-secondary); }
 
-  /* Verbatim from docs/makers.html's own <style> block. */
-  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  /* From docs/makers.html's own <style> block, with one deliberate change:
+     real makers.html uses `minmax(190px, 1fr)`, which stretches cards to
+     fill a short last row - fine when every row holds the same kind of
+     thing, but here a category with only 2-3 entries (Hosting) would
+     make those cards visibly larger than one with 9 (Selling &
+     Distribution), reading as if the bigger ones were paid/featured -
+     exactly what Formground's "no paid ranking" promise says isn't
+     happening. Fixed-width columns (190px, not 1fr) keep every card the
+     same size regardless of how full its row is; a short row just ends
+     early instead of stretching. Worth carrying this same fix back to
+     the real site's shared .maker-grid too, since any of its pages could
+     hit a short last row the same way - not done here since that's a
+     shared class touching Makers/Architects, not a mockup-only fix. */
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fill, 190px);
     gap: 16px; align-items: start; }
   .maker-card { display: block; text-decoration: none; color: inherit; }
   .maker-card-hero {
@@ -110,6 +122,50 @@
   /* This mockup's own addition only - a verified-partner mark for the
      established/production-scale tier. */
   .verified-mark { color: var(--text-accent); font-weight: 700; }
+
+  /* Tool/service/association cards reuse .maker-card exactly, but their
+     image is a square brand mark, not a cropped photo - object-fit:cover
+     would crop most logos illegibly. contain + padding centers the mark
+     on the same surface-1 background instead (same idea as the real
+     site's existing .contain-fit class for a logo-only image). */
+  .tool-card-hero { display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box; }
+  .tool-card-hero img { width: auto; height: auto; max-width: 72%; max-height: 72%; object-fit: contain; }
+  /* Fallback for the rare entry with no working icon anywhere (see
+     Interior Cluster Sweden below) - a plain initials monogram instead
+     of a broken image. */
+  .tool-card-hero .monogram {
+    width: 56px; height: 56px; border-radius: 50%; background: var(--surface-2);
+    border: 0.5px solid var(--border-strong); display: flex; align-items: center;
+    justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 700;
+    font-size: 18px; color: var(--text-secondary);
+  }
+
+  /* Guides has no single company/brand to feature (see project memory) -
+     editorial write-ups per category instead of a card grid, aimed at
+     makers earlier in their journey than the brands already featured
+     elsewhere on Formground. */
+  .guides-list { max-width: 640px; margin: 0 auto; }
+  .guide-article { margin-bottom: 40px; }
+  .guide-article:last-of-type { margin-bottom: 0; }
+  .guide-article h2 {
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 17px;
+    letter-spacing: -0.005em; color: var(--text-primary); margin: 0 0 12px;
+  }
+  .guide-article p { font-size: 14px; line-height: 1.7; color: var(--text-secondary); margin: 0 0 12px; }
+  .guide-article p:last-child { margin-bottom: 0; }
+  .guide-article strong { color: var(--text-primary); font-weight: 600; }
+  .guide-article a { color: var(--text-accent); text-decoration: none; }
+  .guide-article a:hover { text-decoration: underline; }
+  .guide-intro { font-size: 14px; line-height: 1.7; color: var(--text-secondary); margin: 0 0 36px; text-align: center; }
+
+  /* Verbatim from docs/for-creators.html's own .resource-name/.resource p -
+     kept for the 3 remaining standalone tool links (Search Console, SEO
+     Starter Guide, schema.org) that don't belong to any one category. */
+  .guide-links { display: flex; flex-direction: column; gap: 18px; padding-top: 28px; border-top: 0.5px solid var(--border); }
+  .guide-links .resource-name { font-size: 15px; font-weight: 500; color: var(--text-primary); text-decoration: none; }
+  .guide-links .resource-name:hover { text-decoration: underline; }
+  .guide-links .resource-name i { font-size: 14px; margin-left: 4px; vertical-align: 1px; color: var(--text-muted); }
+  .guide-links p { font-size: 13.5px; line-height: 1.6; color: var(--text-secondary); margin: 2px 0 0; }
 </style>
 </head>
 <body>
@@ -139,10 +195,72 @@
 
   <div id="craftspeople-grid" class="maker-grid"></div>
 
-  <div id="empty-state" class="empty-state" style="display: none;">
-    <p class="eyebrow">Coming soon</p>
-    <p id="empty-text"></p>
-    <a class="cta-btn" href="#">Want to be listed here? Get in touch<i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+  <div id="tools-grid" class="maker-grid" style="display: none;"></div>
+
+  <div id="guides-list" class="guides-list" style="display: none;">
+
+    <p class="guide-intro">Formground exists to help independent designers and makers get found — and a lot of that work happens before anyone searches for you at all. The brands and makers already featured here have their own stores, their own domains, their own way of showing up. If you're earlier in that journey, these are written for you: honest, friendly starting points, not verdicts on the "right" choice — because the right one really does depend on where you are.</p>
+
+    <div class="guide-article">
+      <h2>Getting Started: Selling &amp; Distribution</h2>
+      <p><strong>Start with something that's yours.</strong> Wherever you sell, having your own site — a domain you control, not just a profile on someone else's platform — is worth prioritizing early, even before your catalog feels "ready." It's the difference between building something that compounds and renting space you could lose access to. It also matters more than it used to: as more shopping starts with an AI assistant reading a page on your behalf rather than a person browsing a marketplace, a real site with clear, structured information about your work is what that assistant actually finds. A marketplace profile mostly isn't.</p>
+      <p><strong>Shopify</strong>, <strong>Squarespace</strong>, and <strong>WooCommerce</strong> are the three most common starting points among makers already here, and honestly, any of the three will get you selling. Shopify tends to suit a growing catalog best; Squarespace is a nice fit if the shop sits alongside a portfolio-style site; WooCommerce makes sense if you're already comfortable with WordPress and want more control over the details. <strong>Big Cartel</strong> is worth a look if your catalog is small and likely to stay that way — it's built for exactly that, not scaled down from something bigger.</p>
+      <p><strong>Etsy</strong> is a genuinely useful place to start if handmade, smaller-ticket work is what you're making — just go in with your eyes open about the trade-off: fees and ad placements can take close to a third of what you earn, so most people treat it as a supplement to their own site rather than a home base.</p>
+      <p><strong>Faire</strong> and <strong>Ankorstore</strong> open up trade — selling to retailers instead of individual customers — once your own site has shown there's real demand. Which one fits often comes down to simple locality: Faire leans North American, Ankorstore European, so start with whichever matches where your interest is actually coming from.</p>
+      <p><strong>1stDibs</strong> and <strong>Pamono</strong> sit at the high end — vetted, application-only marketplaces for collectible design. They're worth keeping in mind for later rather than reaching for now; a track record tends to matter more here than a strong start.</p>
+      <p>A last thought, since it comes up often as you grow: transparency with your customers — where things are made, what they're made of, how they're shipped — isn't just good practice, it's increasingly expected, and regulation is starting to make some of it a requirement rather than a choice (more on that in the regulation note below). Worth building the habit early, while it's still simple to do.</p>
+    </div>
+
+    <div class="guide-article">
+      <h2>Getting Started: Design &amp; Prototyping</h2>
+      <p>These five don't really compete with each other — they cover different moments in getting from an idea to a real object, so think of this less as "which one" and more as "which stage are you at." <strong>Fusion 360</strong> is where a design becomes testable before it costs you anything in materials or tooling — worth learning early, even if the curve feels steep at first. Once you've got something worth holding, <strong>Shapeways</strong> turns a digital file into a real, physical prototype without needing your own equipment — a good gut-check before committing to a full production run.</p>
+      <p><strong>Material District</strong> is worth a browse whenever a material choice feels uncertain; it's built for designers rather than manufacturers, and its sustainable-options coverage is a genuinely easy way to make a more considered choice early, while a spec is still easy to change. If branding is the gap rather than the object itself, <strong>99designs</strong> and <strong>Fiverr</strong> offer two different ways to get there — a contest across many designers if you want options to choose from, or a freelancer you hire directly if you already know the look you're after.</p>
+    </div>
+
+    <div class="guide-article">
+      <h2>Getting Started: Hosting</h2>
+      <p>A small, practical choice most people only think about once. <strong>WP Engine</strong> is the specialist pick if you're running WooCommerce — it costs more than generic hosting, but it takes server maintenance off your plate entirely, which is worth it once a store is actually your livelihood. <strong>Cloudways</strong> is the friendlier-on-budget alternative — still fully managed, still no server upkeep for you to worry about, just less specialized. Neither is wrong; it mostly comes down to what you can comfortably spend before the store is earning enough to justify the difference.</p>
+    </div>
+
+    <div class="guide-article">
+      <h2>Getting Started: Marketing &amp; Fulfillment</h2>
+      <p>Three genuinely different jobs live under this one heading, so take them one at a time. For actually reaching people, <strong>Klaviyo</strong> is worth setting up before a launch, not after — building a waitlist through email or SMS gives a small run somewhere to sell to on day one, rather than hoping social media catches it. <strong>PhotoRoom</strong> is a low-cost way to get clean product photography without booking a full studio shoot, which matters more than it sounds like when you're weighing where early budget goes.</p>
+      <p>For packaging, <strong>Packhelp</strong> is worth a look the moment an off-the-shelf box stops fitting what you make — custom packaging in small quantities also tends to mean less wasted material than forcing an odd-shaped piece into a box built for something else.</p>
+      <p>And for getting things to people: <strong>Shippo</strong> and <strong>Sendcloud</strong> do the same job on opposite sides of the Atlantic — Shippo if you're shipping mostly within the US and Canada, Sendcloud if you're in Europe — while <strong>uShip</strong> is the one worth remembering specifically for furniture: large, heavy, or fragile pieces need a freight marketplace built for that, not a standard parcel carrier.</p>
+    </div>
+
+    <div class="guide-article">
+      <h2>Getting Started: Fairs &amp; Exhibitions</h2>
+      <p>Which fair makes sense mostly comes down to where you are and how big a step you're ready to take. <strong>Salone del Mobile</strong> in Milan is the largest furniture and design fair there is — an aspiration for many, not usually a first fair. <strong>Stockholm Furniture Fair</strong> is a friendlier entry point if you're Nordic or Northern European, regional in scale but a real, respected stage. <strong>Maison&amp;Objet</strong> in Paris leans more lifestyle and home than furniture specifically, which can suit certain kinds of work particularly well. And if North America is the goal, <strong>ICFF</strong> in New York is the natural first stop — sized for exactly that kind of first step, rather than requiring one already.</p>
+    </div>
+
+    <div class="guide-article">
+      <h2>Getting Started: Associations</h2>
+      <p>Joining one of these is less about a membership badge and more about not having to figure everything out alone. <strong>Interior Cluster Sweden</strong> connects manufacturers, designers, and subcontractors — useful if you're looking for production partners, not just peers. <strong>Föreningen Skråhantverkarna</strong> exists to keep traditional trades and skills alive, which makes it a genuinely good place to find (or become) the kind of specialist craftsperson a bigger studio would otherwise struggle to source. And bodies like <strong>EFIC</strong> operate a level up again — shaping how regulation actually gets applied to furniture makers, which matters more than it might seem from the outside (more on that below).</p>
+    </div>
+
+    <div class="guide-article">
+      <h2>A Macro Note: Regulation &amp; Trade</h2>
+      <p>This part tends to feel intimidating from a distance and much more manageable once you're actually in it — worth reading now, while it's still simple, rather than later under pressure. If you start selling across borders, VAT and customs rules will eventually apply to you, and they're genuinely easier to set up correctly from the start than to untangle after a few hundred orders.</p>
+      <p>On the regulation side, change is coming gradually rather than all at once: the EU's <a href="https://green-forum.ec.europa.eu/implementing-ecodesign-sustainable-products-regulation_en" target="_blank" rel="noopener noreferrer">Ecodesign for Sustainable Products Regulation</a> is introducing a "Digital Product Passport" — a standard record of a product's materials, durability, and repairability that travels with it — and furniture is one of the categories in scope, with the EU's central registry live since mid-2026 and furniture-specific requirements expected around 2028–2029. That's a few years out, but it rewards starting early: transparency about materials and origin is a habit worth building before it's mandatory, not after.</p>
+      <p>This is exactly where a trade association earns its keep — several, including EFIC, are already building shared infrastructure so individual makers don't have to solve this alone. None of this needs to slow you down today. It's just worth knowing it's coming, and worth choosing partners and habits now that won't need to be redone later.</p>
+    </div>
+
+    <div class="guide-links">
+      <div>
+        <a class="resource-name" href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer">Google Search Console<i class="ti ti-external-link" aria-hidden="true"></i></a>
+        <p>Free — shows how Google actually sees your site, and lets you submit a sitemap or flag a page for re-indexing.</p>
+      </div>
+      <div>
+        <a class="resource-name" href="https://developers.google.com/search/docs/fundamentals/seo-starter-guide" target="_blank" rel="noopener noreferrer">Google's SEO Starter Guide<i class="ti ti-external-link" aria-hidden="true"></i></a>
+        <p>Free, written by Google itself, and enough to cover the fundamentals without hiring anyone.</p>
+      </div>
+      <div>
+        <a class="resource-name" href="https://schema.org/Product" target="_blank" rel="noopener noreferrer">schema.org structured data<i class="ti ti-external-link" aria-hidden="true"></i></a>
+        <p>The structured-data format search engines and AI agents both use to read a page accurately.</p>
+      </div>
+    </div>
+
   </div>
 
   <p class="foot-note">
@@ -155,14 +273,27 @@
   // Real Skråhantverkarna + Interior Cluster records (data/sources/*.json),
   // not placeholder content - see project memory on why that matters here.
   const craftspeople = [
-    // Föreningen Skråhantverkarna - independent traditional-craft practitioners (free/community tier)
-    { name: "Snickare Peter Dans AB", craft: "Fine Joinery", location: "Vallentuna, Sweden", website: "http://www.snickarepeterdans.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/03/Dans-5-1024x796.jpg", verified: false },
-    { name: "PV Specialmöbler & Inredning", craft: "Furniture Joinery", location: "Björkvik, Sweden", website: "http://www.pekka.biz", image: "https://skrahantverkarna.se/wp-content/uploads/2020/05/Pekka-Virta-4-1024x796.jpg", verified: false },
+    // Föreningen Skråhantverkarna - independent traditional-craft practitioners (free/community tier).
+    // Violin Making and Goldsmithing removed 2026-09-22 (user: doesn't fit
+    // this list - musical instruments and fine jewelry aren't production
+    // partners for architects/designers/makers the way joinery, casting,
+    // basketmaking etc. are).
+    //
+    // Checked each remaining firm's own site for a better image (own
+    // site preferred over the association's, per project memory - and
+    // now specifically: a wordmark/product/interior shot over a photo of
+    // the person, where the firm's own site has one). Snickare Peter
+    // Dans AB's own domain (snickarepeterdans.se) no longer resolves at
+    // all - reverted its link to the association page rather than point
+    // at a dead site. PV Specialmöbler's own site had a real (if small)
+    // product photo of the bench itself, swapped in below. Lidingö/
+    // Silversmed Davidsson/Larsson Korgmakare's own sites had nothing
+    // better (a portrait, an unrelated texture, and a text graphic
+    // respectively) - kept the association's real photos for those.
+    { name: "Snickare Peter Dans AB", craft: "Fine Joinery", location: "Vallentuna, Sweden", website: "https://skrahantverkarna.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/03/Dans-5-1024x796.jpg", verified: false },
+    { name: "PV Specialmöbler & Inredning", craft: "Furniture Joinery", location: "Björkvik, Sweden", website: "http://www.pekka.biz", image: "https://pekka.biz/uploads/images/172/thumb-soffa_front.jpg", verified: false },
     { name: "Lidingö Möbelverkstad", craft: "Furniture Restoration", location: "Lidingö, Sweden", website: "http://www.lidingomobelverkstad.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/02/l2-646x502-1.jpg", verified: false },
-    { name: "Guldsmed Annika Bertilsdotter", craft: "Goldsmithing", location: "Stockholm, Sweden", website: "http://www.bertilsdotter.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/03/Guldsmed-Bertillsdotter-4-1024x796.jpg", verified: false },
-    { name: "Silversmed Josefine Davidsson", craft: "Silversmithing", location: "Stockholm, Sweden", website: "http://www.davidssonsilversmed.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/03/Silversmed-J-D-4-1024x796.jpg", verified: false },
     { name: "Larsson Korgmakare AB", craft: "Basketmaking", location: "Stockholm, Sweden", website: "http://www.larssonkorgmakare.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/02/lk-646x502-1.jpg", verified: false },
-    { name: "Paul Barter Violinatelje", craft: "Violin Making", location: "Stockholm, Sweden", website: "http://www.violinbarter.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/03/Paul-Barter-4-1024x796.jpg", verified: false },
     { name: "Wretman Stenmontage", craft: "Stonemasonry", location: "Täby, Sweden", website: "https://skrahantverkarna.se", image: "https://skrahantverkarna.se/wp-content/uploads/2020/03/Sten-5-1024x796.jpg", verified: false },
 
     // Interior Cluster Sweden - established, production-scale partner companies (verified/established tier)
@@ -189,24 +320,98 @@
     { name: "Måns & Marcus Finsnickeri AB", craft: "Custom Cabinetry", location: "Stockholm, Sweden", website: "https://www.mmfinsnickeri.se", image: "https://mmfinsnickeri.se/wp-content/uploads/2026/05/B0048936-1.jpg", verified: false },
     { name: "KFK Snickeri AB", craft: "Bespoke Furniture & Fixtures", location: "Sollentuna, Sweden", website: "https://www.kfksnickeri.se", image: "https://kfksnickeri.se/wp-content/uploads/2017/09/byredo_hemsida.jpg", verified: false },
     { name: "Ekskogens Snickeri", craft: "Built-in Carpentry", location: "Stockholm, Sweden", website: "https://www.ekskogenssnickeri.com", image: "https://ekskogenssnickeri.com/wp-content/uploads/2025/05/cover6.webp", verified: false },
+
+    // Sourced directly (not via an association): a plain web search for
+    // "möbelsnickeri stockholm" plus a cross-check on Houzz.se (which
+    // independently listed Ludwig Berg too, a good sign this channel
+    // surfaces the same real firms an association roster would). Same
+    // free/community tier, same rule - each links to and is photographed
+    // from its own site. Houzz turned up several more real candidates
+    // (Andreas Furuholm, EmInEss, AugustiBröder, C. Dorthé Möbelsnickeri,
+    // JKfinsnickeri) not yet checked/added - a channel worth returning to.
+    { name: "Ludwig Berg", craft: "Furniture Joinery", location: "Bromma, Sweden", website: "http://www.ludwigberg.com", image: "https://images.squarespace-cdn.com/content/v1/54c61f45e4b09cfa786d4b45/1486228625944-10698EYCBAR69LCX82PN/Cabinet+Luftig+Nyckelsk%C3%A5p.jpg", verified: false },
+    { name: "Asp Snickeri AB", craft: "Fine Joinery", location: "Stockholm, Sweden", website: "https://www.aspsnickeri.se", image: "https://i0.wp.com/www.aspsnickeri.se/wp-content/uploads/2019/12/PRIVAT-BIBLIOTEK.jpg?fit=1024%2C768&ssl=1", verified: false },
+    { name: "Stockholms Finsnickeri AB", craft: "Furniture Joinery", location: "Stockholm, Sweden", website: "https://www.stockholmsfinsnickeri.se", image: "https://stockholmsfinsnickeri.com/wp-content/uploads/2024/04/vacker-platsbyggd-bokhylla.webp", verified: false },
   ];
 
-  // The fuller category taxonomy from auditing today's real for-creators.html
-  // resources list: which entries are real companies/orgs that could become
-  // a Brandvue-style card, grouped by what they actually are - "Guides" is
-  // the one bucket (Google's own tools, schema.org, EU regulation info) with
-  // no brand to feature, so it stays list-only even in the long run.
+  // The fuller category taxonomy from auditing today's real
+  // for-creators.html resources list, now implemented per the split
+  // worked out in that audit: most entries are real companies/orgs with
+  // a real identity - those became cards below (each checked for a
+  // live site and a real, on-topic brand mark, not a stock photo -
+  // image quality/relevance is part of the triage now, see project
+  // memory). "Guides" is the one bucket with no brand to feature
+  // (Google's own tools, schema.org, EU regulation info) - it stays a
+  // plain list, same as it already is on the real page.
   const categories = [
     { id: "all", label: "All" },
     { id: "craftspeople", label: "Craftspeople" },
-    { id: "selling", label: "Selling & Distribution", empty: "Selling & Distribution isn't open yet — Shopify, Etsy, Faire, 1stDibs and similar already sit in the “For Creators” resources list as free links; this is where a featured/paid slot among them would live." },
-    { id: "design", label: "Design & Prototyping", empty: "Design & Prototyping isn't open yet — tools like Fusion 360, Shapeways and Material District already sit in the resources list as free links." },
-    { id: "hosting", label: "Hosting", empty: "Hosting isn't open yet — WP Engine, Cloudways and similar already sit in the resources list as free links." },
-    { id: "marketing", label: "Marketing & Fulfillment", empty: "Marketing & Fulfillment isn't open yet — Klaviyo, PhotoRoom, Shippo and similar already sit in the resources list as free links." },
-    { id: "fairs", label: "Fairs & Exhibitions", empty: "Fairs & Exhibitions isn't open yet — Salone del Mobile, Stockholm Furniture Fair and similar already sit in the resources list as free links." },
-    { id: "associations", label: "Associations", empty: "Associations isn't open yet — Interior Cluster Sweden, Föreningen Skråhantverkarna and similar already sit in the resources list as free links." },
-    { id: "guides", label: "Guides", empty: "Guides has no company to feature — this is where the SEO/regulation reference material (Google Search Console, schema.org, the EU's Digital Product Passport) stays a plain list, not a card grid." },
+    { id: "selling", label: "Selling & Distribution" },
+    { id: "design", label: "Design & Prototyping" },
+    { id: "hosting", label: "Hosting" },
+    { id: "marketing", label: "Marketing & Fulfillment" },
+    { id: "fairs", label: "Fairs & Exhibitions" },
+    { id: "associations", label: "Associations" },
+    { id: "guides", label: "Guides" },
   ];
+
+  // Brand mark for each - mostly each site's own apple-touch-icon
+  // (120-512px, real app-icon quality), a couple via Google's favicon
+  // service where the site blocked a direct fetch (403) or had no
+  // touch-icon of its own (Etsy, Fusion 360, Cloudways - noted since
+  // those render smaller/softer than the rest). Interior Lifestyle
+  // Tokyo was dropped from Fairs & Exhibitions - its real domain
+  // (interior-lifestyle.jp) doesn't resolve at all right now, same
+  // "site currently down" situation as Stockholms Snickarmästareförening
+  // earlier, not chased further tonight.
+  const toolCategories = {
+    selling: [
+      { name: "Shopify", type: "E-commerce Platform", country: "Canada", website: "https://www.shopify.com", icon: "https://cdn.shopify.com/b/shopify-brochure2-assets/c97c60ca19c64a8b5378d9f9e971f7bd.png" },
+      { name: "Squarespace", type: "Website & Store Builder", country: "USA", website: "https://www.squarespace.com", icon: "https://media-www.sqspcdn.com/logos/apple-touch-icon-120.png" },
+      { name: "WooCommerce", type: "WordPress Store Plugin", country: "USA", website: "https://woocommerce.com", icon: "https://woocommerce.com/wp-content/uploads/2024/12/cropped-logo-w-favicon.png?w=180" },
+      { name: "Big Cartel", type: "Store Builder for Independent Makers", country: "USA", website: "https://www.bigcartel.com", icon: "https://www.google.com/s2/favicons?domain=bigcartel.com&sz=128" },
+      { name: "Etsy", type: "Handmade & Vintage Marketplace", country: "USA", website: "https://www.etsy.com", icon: "https://www.google.com/s2/favicons?domain=etsy.com&sz=128" },
+      { name: "Faire", type: "Wholesale Marketplace", country: "USA", website: "https://www.faire.com", icon: "https://www.faire.com/apple-touch-icon.png" },
+      { name: "Ankorstore", type: "Wholesale Marketplace", country: "France", website: "https://www.ankorstore.com", icon: "https://cdn.ankorstore.com/ankorstore/apple-touch-icon.png" },
+      { name: "1stDibs", type: "High-End & Collectible Marketplace", country: "USA", website: "https://www.1stdibs.com", icon: "https://a.1stdibscdn.com/dist/adhoc/logo/monogram-white-120.png" },
+      { name: "Pamono", type: "Collectible Design Marketplace", country: "Germany", website: "https://www.pamono.com", icon: "https://www.pamono.com/skin/frontend/lamono/redesign/images/mobile-icons/pamono-app-icon-512.png" },
+    ],
+    design: [
+      { name: "Fusion 360", type: "CAD Software", country: "USA", website: "https://www.autodesk.com/products/fusion-360", icon: "https://www.google.com/s2/favicons?domain=autodesk.com&sz=128" },
+      { name: "Shapeways", type: "3D Printing Service", country: "USA", website: "https://www.shapeways.com", icon: "https://www.shapeways.com/wp-content/uploads/2022/04/favicon.ico" },
+      { name: "Material District", type: "Materials Database", country: "Netherlands", website: "https://materialdistrict.com", icon: "https://materialdistrict.com/apple-icon.png" },
+      { name: "99designs", type: "Design Contest Platform", country: "Australia", website: "https://99designs.com", icon: "https://99designs.com/touch-icon-iphone.png" },
+      { name: "Fiverr", type: "Freelancer Marketplace", country: "Israel", website: "https://www.fiverr.com", icon: "https://www.google.com/s2/favicons?domain=fiverr.com&sz=128" },
+    ],
+    hosting: [
+      { name: "WP Engine", type: "Managed WordPress Hosting", country: "USA", website: "https://wpengine.com", icon: "https://wpengine.com/assets/manifest/apple-touch-icon.png" },
+      { name: "Cloudways", type: "Managed Cloud Hosting", country: "Malta", website: "https://www.cloudways.com", icon: "https://www.google.com/s2/favicons?domain=cloudways.com&sz=128" },
+    ],
+    marketing: [
+      { name: "Klaviyo", type: "Email & SMS Marketing", country: "USA", website: "https://www.klaviyo.com", icon: "https://www.klaviyo.com/icons/icon-48x48.png" },
+      { name: "PhotoRoom", type: "AI Product Photo Editing", country: "France", website: "https://www.photoroom.com", icon: "https://www.photoroom.com/favicons/apple-touch-icon.png" },
+      { name: "Packhelp", type: "Custom Packaging", country: "Poland", website: "https://www.packhelp.com", icon: "https://www.packhelp.com/_astro/apple-touch-icon.BrhYexou.png" },
+      { name: "Shippo", type: "Shipping Rate Comparison", country: "USA", website: "https://goshippo.com", icon: "https://cdn.prod.website-files.com/6462967bbf70fa5b5b227351/662680002605ee5735982802_img-shipp-favicon-256x256.png" },
+      { name: "Sendcloud", type: "European Shipping Platform", country: "Netherlands", website: "https://www.sendcloud.com", icon: "https://framerusercontent.com/images/42cXDspPEL7fiY0Ghw8qS8d6wAc.svg" },
+      { name: "uShip", type: "Freight Marketplace", country: "USA", website: "https://www.uship.com", icon: "https://www.ushipcdn.cloud/favicons/apple-touch-icon.png" },
+    ],
+    fairs: [
+      { name: "Salone del Mobile", type: "Furniture & Design Fair", country: "Italy", website: "https://www.salonemilano.it", icon: "https://www.salonemilano.it/themes/custom/sdm/favicon.ico" },
+      { name: "Stockholm Furniture Fair", type: "Furniture & Lighting Fair", country: "Sweden", website: "https://www.stockholmfurniturefair.com", icon: "https://www.google.com/s2/favicons?domain=stockholmfurniturefair.com&sz=128" },
+      { name: "Maison&Objet", type: "Home & Design Trade Fair", country: "France", website: "https://www.maison-objet.com", icon: "https://www.google.com/s2/favicons?domain=maison-objet.com&sz=128" },
+      { name: "ICFF", type: "Contemporary Furniture Fair", country: "USA", website: "https://icff.com", icon: "https://icff.com/wp-content/uploads/2024/01/ICFF-FAVICON-128X128.png" },
+    ],
+    associations: [
+      // No working icon found - their own <link rel="icon"> points at a
+      // CloudFront asset that 403s (Access Denied at the origin), and
+      // neither Google's favicon service nor an apple-touch-icon exists
+      // for this domain. Text monogram fallback instead of a broken
+      // image, rather than leaving it unfixed.
+      { name: "Interior Cluster Sweden", type: "Furniture & Interior Industry Cluster", country: "Sweden", website: "https://interiorcluster.se", icon: null },
+      { name: "Föreningen Skråhantverkarna", type: "Traditional Craft Association", country: "Sweden", website: "https://skrahantverkarna.se", icon: "https://skrahantverkarna.se/wp-content/uploads/2019/12/cropped-favicon512-300x300.png" },
+      { name: "EFIC", type: "European Furniture Trade Body", country: "Belgium", website: "https://www.efic.eu", icon: "https://static.wixstatic.com/media/a1d93b_f4079750b5404e9b83fbf168fdf86366~mv2.png" },
+    ],
+  };
 
   let active = "craftspeople";
 
@@ -222,16 +427,34 @@
     });
   }
 
-  function renderGrid() {
+  function renderCraftspeopleGrid() {
     const grid = document.getElementById("craftspeople-grid");
     const showGrid = active === "all" || active === "craftspeople";
     grid.style.display = showGrid ? "grid" : "none";
     if (!showGrid) return;
-    grid.innerHTML = craftspeople.map((c) => `
+    // Top row is hand-picked (2026-09-22): these four have the strongest
+    // real photography in the set (KFK's Byredo store fixtures,
+    // Ekskogens' built-in bookshelf, Måns & Marcus's inlaid cabinet,
+    // Ludwig Berg's backgammon cabinet) - a better "professional
+    // looking" signal than the verified/established flag alone, which
+    // is why they lead ahead of the Interior Cluster tier below them.
+    const topRow = ["KFK Snickeri AB", "Ekskogens Snickeri", "Måns & Marcus Finsnickeri AB", "Ludwig Berg"];
+    const rank = (c) => {
+      const i = topRow.indexOf(c.name);
+      if (i !== -1) return i;
+      return topRow.length + (c.verified ? 0 : 1);
+    };
+    const sorted = [...craftspeople].sort((a, b) => rank(a) - rank(b));
+    grid.innerHTML = sorted.map((c) => `
       <a class="maker-card" href="${c.website}" target="_blank" rel="noopener noreferrer">
         <div class="maker-card-hero"><img src="${c.image}" alt="${c.name}" loading="lazy"></div>
         <div class="maker-card-body">
-          <span class="maker-name">${c.name}${c.verified ? ' <span class="verified-mark" title="Verified Partner — established production-scale partner">✓</span>' : ''}</span>
+          <span class="maker-name">${c.name}</span>
+          <!-- The verified-mark span (see .verified-mark CSS above and each
+               entry's own "verified" field, both kept, not deleted) is
+               parked for a later phase - the hand-picked top row now does
+               the job it was showing here. Reintroduce with something like:
+               c.verified ? ' <span class="verified-mark" title="Verified Partner">✓</span>' : '' -->
           <span class="maker-country">${c.location}</span>
           <span class="maker-categories">${c.craft}</span>
         </div>
@@ -239,18 +462,41 @@
     `).join("");
   }
 
-  function renderEmptyState() {
-    const el = document.getElementById("empty-state");
-    const cat = categories.find((c) => c.id === active);
-    const showEmpty = active !== "all" && active !== "craftspeople";
-    el.style.display = showEmpty ? "block" : "none";
-    if (showEmpty) document.getElementById("empty-text").textContent = cat.empty;
+  function renderToolsGrid() {
+    const grid = document.getElementById("tools-grid");
+    const items = toolCategories[active];
+    const showGrid = active === "all" ? false : !!items;
+    grid.style.display = showGrid ? "grid" : "none";
+    if (!showGrid) return;
+    const initials = (name) => name.split(/\s+/).filter(w => /[A-Za-zÅÄÖåäö]/.test(w[0])).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+    grid.innerHTML = items.map((t) => `
+      <a class="maker-card" href="${t.website}" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero tool-card-hero">${
+          t.icon
+            ? `<img src="${t.icon}" alt="${t.name}" loading="lazy">`
+            : `<div class="monogram" title="${t.name}">${initials(t.name)}</div>`
+        }</div>
+        <div class="maker-card-body">
+          <span class="maker-name">${t.name}</span>
+          <span class="maker-country">${t.type}</span>
+          <span class="maker-categories">${t.country}</span>
+        </div>
+      </a>
+    `).join("");
+  }
+
+  function renderGuidesList() {
+    // Static real content lives directly in the HTML now (editorial
+    // write-ups, not repeated per-card data) - this just toggles it.
+    const el = document.getElementById("guides-list");
+    el.style.display = active === "guides" ? "block" : "none";
   }
 
   function render() {
     renderChips();
-    renderGrid();
-    renderEmptyState();
+    renderCraftspeopleGrid();
+    renderToolsGrid();
+    renderGuidesList();
   }
 
   render();
