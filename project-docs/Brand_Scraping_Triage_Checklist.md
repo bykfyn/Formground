@@ -65,6 +65,22 @@ move on to the next brand than to force a hard one to work.
    pattern immediately and saved several rounds of "found this after the
    fact" fixes.
 
+6. **Is the `vendor` field (Shopify) actually the brand itself on every
+   listing, or does the store resell other brands too?** Confirmed on
+   Asplund (2026-09-22): a real Shopify store, real `products.json`,
+   real robots.txt - but of 789 raw listings, only ~225 carried an
+   Asplund house vendor; the rest were dozens of *other*, separately
+   real design brands being resold (Fredericia, Wästberg, Maruni,
+   Alessi, Living Divani, ...) plus third-party skincare/candles
+   (MALIN+GOETZ). Several of those resold brands are already their own
+   independently-triaged Formground entries - scraping everything under
+   "Asplund" would have misattributed their work and duplicated them
+   under the wrong name. Check the spread of `vendor` values across a
+   sample before building (`Counter(p["vendor"] for p in products)` on
+   one `products.json?limit=250` page is enough to spot it) - a
+   multi-brand boutique needs a vendor filter to its own house line(s)
+   before anything else in this checklist matters.
+
 If a brand fails any of these within a few minutes, mark it
 `"scrapable": false` in `scraper/brands.json` with a one-line reason and
 move to the next brand on the list, rather than sinking more time in.
@@ -94,3 +110,7 @@ publishes. Paola Paronetto is the first case of this - see below.
 | In Common With | #5, discovered after the fact rather than at triage - Finish Samples, Service fees, a Swatches-equivalent, and a certification-mark-as-category bug all needed cleanup. Considered removing the brand entirely (2026-09-08) rather than keep fixing it, but after the fixes above, 220 real results remain and a sample check confirmed the "no category" ones are genuine products (Arundel Orb Pendant, Murano Glass Cosmos Chandelier, etc.), not more junk - kept. This is the case that prompted adding check #5. | **Built (kept after cleanup)** |
 | Made by Choice | #1, discovered after building rather than at triage - `/products.json` returned 200 with valid JSON (3 real products), passing a naive "does the API work" check, but the site's own nav listed 8 more real collections (Airisto, Beebee, Laakso, Cabinets, Seating, Tables, Accessories) with zero of their products in that feed - a headless/composable Shopify setup. Removed after shipping and re-checking, rather than leave a 3-product listing that misrepresents the brand. This is the case that prompted adding the count cross-check to #1 (2026-09-13). | Deferred (needs bespoke work) |
 | De Padova | #4, discovered after building rather than at triage - WooCommerce with the Store API disabled, but real server-rendered category pages and product pages were confirmed live during manual triage (curl with a generic UA). Failed once actually run through `scrape.py`: a live 403 under the scraper's real `FormgroundBot` User-Agent specifically. This is the case that prompted testing check #4 with the real scraper headers, not a generic one (2026-09-13). | Deferred (WAF blocks the scraper's real UA) |
+| Asplund | #6, discovered after building rather than at triage - real Shopify store, but a multi-brand boutique reselling dozens of other real brands (Fredericia, Wästberg, Maruni, ...) plus third-party skincare/candles under the same catalog; also #5, separately - its `product_type` field was unreliable even within its own house lines (untranslated Swedish, a flatly wrong assignment, a designer name leaking through as a category). This is the case that prompted adding check #6 (2026-09-22). | **Built (vendor-filtered to house lines, 225 of 789 raw listings)** |
+| Byarums Bruk | #5 - 106 of 183 real catalog entries (58%) were replacement components ("Beslag till Classic bord" - fitting FOR the Classic table), not standalone objects, caught via the Swedish "till" ("for") construction. | **Built (106 spare-part listings excluded)** |
+| Fabrikant | none at triage - built, but its WooCommerce Store API returned 200 + `Content-Type: application/json` with raw `<style>` HTML leaked into the response before the real JSON payload (a server-side theme/plugin bug, not something triage would catch). `_fetch_json` now retries the parse from every bracket position in the response before giving up. | **Built (after a `_fetch_json` resilience fix)** |
+| Interesting Times Gang, G.A.D | Passed all checks cleanly - real domain needed correcting first for Interesting Times Gang (itg.studio, not the dead interestingtimesgang.com) | **Built** |
