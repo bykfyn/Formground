@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gärsnäs on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Gärsnäs's work on Formground - 110 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/garsnas.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Gärsnäs on Formground">
+<meta property="og:description" content="Gärsnäs's work on Formground - 110 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/garsnas.html">
+<meta property="og:image" content="https://garsnas.se/wp-content/uploads/2016/01/GARSn_0130-810x1080.jpg">
+<meta name="twitter:image" content="https://garsnas.se/wp-content/uploads/2016/01/GARSn_0130-810x1080.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Gärsnäs on Formground">
+<meta name="twitter:description" content="Gärsnäs's work on Formground - 110 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "G\u00e4rsn\u00e4s", "item": "https://formground.com/brands/garsnas.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Gärsnäs</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Sweden</span></div>
+    <a class="brand-site-link" href="https://garsnas.se" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://garsnas.se/product/akustik-barstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARSn_0130-810x1080.jpg" alt="Akustik barstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Akustik barstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/akustikbord/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/M-bord-björk-vit-lamin-1440x1080.jpg" alt="Akustik bord by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Akustik bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/akustik-iii/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/12/Akustik III-721x1080-721x1080.jpg" alt="Akustik karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Akustik karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/akustik-karmstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARe_0126-794x1080.jpg" alt="Akustik karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Akustik karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/akustik-stol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2015/12/GARa__1108-810x1080.jpg" alt="Akustik stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Akustik stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/atelje/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2019/02/LDB6569-1618x1080.jpg" alt="Ateljé bord by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ateljé bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/ballerina/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARSv_0129-1440x1080.jpg" alt="Ballerina bord by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ballerina bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/bistro-modulsoffa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2024/02/Gärsnäs-_BISTRO-modulsoffa_01-1-1620x1080.jpg" alt="Bistro modulsoffa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bistro modulsoffa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/bleck-fatolj/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2017/02/LDC1395_G-1620x1080.jpg" alt="Bleck fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bleck fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/bleck/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2017/02/LDC1464-1620x1080.jpg" alt="Bleck soffa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bleck soffa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/bleck-soffbord-piedestal/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2022/02/Bleck_tables_piedesta20220127_0001-1618x1080.jpg" alt="Bleck soffbord &amp; piedestal by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bleck soffbord &amp; piedestal</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/bond/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/Bond-x-2-500-320-1440x1080.jpg" alt="Bond bord by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bond bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/button-ii-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARSh_0007-810x1080.jpg" alt="Button fåtölj* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Button fåtölj*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/button-karmstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARa__1074-810x1080.jpg" alt="Button karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Button karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/combi/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/Combi-II-170630-1618x1080.jpg" alt="Combi bord by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Combi bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/craft-ii/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARf__0061-810x1080.jpg" alt="Craft karmstol* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Craft karmstol*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/craft-i/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARe_0167-794x1080.jpg" alt="Craft stol* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Craft stol*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/dag/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2022/02/DAG_daybed20220204_01-1618x1080.jpg" alt="Dag dagbädd by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dag dagbädd</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/dandy-fotpall/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2020/01/GARbc_0175_HR-1618x1080.jpg" alt="Dandy fotpall by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dandy fotpall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/dandy/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2017/02/GARbb0396-720x1080.jpg" alt="Dandy fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dandy fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/day-high/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/03/GARbe1008-721x1080.jpg" alt="Day High stol/karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day High stol/karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/day-high-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2026/03/Day-high-render-3-764x1080.jpg" alt="Day High wood karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day High wood karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/day-lite-iv/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/12/Day Lite IV-721x1080-721x1080.jpg" alt="Day Lite karmstol* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day Lite karmstol*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/day-lite/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2026/02/Gärsnäs_Day-Wood-chair_02-1080x1080.jpg" alt="Day Lite stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day Lite stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/day-lite-iii/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/12/Day Lite III-721x1080-721x1080.jpg" alt="Day Lite stol* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day Lite stol*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/day-wood-karmstol-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2026/02/Gärsnäs_Day-Wood-armchair_01-1080x1080.jpg" alt="Day Wood karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day Wood karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/day-wood-karmstol-2-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2026/02/Gärsnäs_Day-Wood-armchair-swivel-base_01-1080x1080.jpg" alt="Day Wood karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day Wood karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/day-wood-stol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2026/02/Gärsnäs_Day-Wood-chair_05-1080x1080.jpg" alt="Day Wood stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day Wood stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/day-karmstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARSv_0020-810x1080.jpg" alt="Day karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/day-lite-ii/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/03/NEWS16_1144-1-721x1080.jpg" alt="Day lite karmstol* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day lite karmstol*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/day-stol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARSv_0051-810x1080.jpg" alt="Day stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/day-stol-karmstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARbe0952-721x1080.jpg" alt="Day stol/karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day stol/karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/dino-karmstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2022/02/Dino_20220125_11-721x1080.jpg" alt="Dino karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dino karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/elin-barstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2020/01/GARbb0377-720x1080.jpg" alt="Elin barstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elin barstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/elin/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2019/01/GARSNab0094-721x1080.jpg" alt="Elin stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elin stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/elin-3/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2019/09/GARSNaa0017_S2-721x1080.jpg" alt="Elin stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elin stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/elna/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARSu_0461-1440x1080.jpg" alt="Elna bord by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elna bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/emily-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/Emily_P_03-721x1080.jpg" alt="Emily karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Emily karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/emily-i/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GRSNa0721-721x1080.jpg" alt="Emily karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Emily karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/emma/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARSu_0034-810x1080.jpg" alt="Emma fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Emma fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/ferdinand-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/DUR1151-723x1080.jpg" alt="Ferdinand fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ferdinand fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/flake/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/NEWS16_1003-721x1080.jpg" alt="Flake stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flake stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/frame-x/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/Frame-X-valnöt-1920x951.jpg" alt="Frame X bord* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Frame X bord*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/greitz/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARf__0012-810x1080.jpg" alt="Greitz barpall by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Greitz barpall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/gastis-bar/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARf__0110-810x1080.jpg" alt="Gästis barstol * by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gästis barstol *</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/gastis/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GRSNa0820-721x1080.jpg" alt="Gästis stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gästis stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/hedda-barstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2023/02/Gärsnäs_-Hedda-barstool_p_01.jpg" alt="Hedda barstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hedda barstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/hedda/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2019/01/garsnaa0168-720x1080.jpg" alt="Hedda karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hedda karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/hedwig/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/03/GRSNb0596-720x1080.jpg" alt="Hedwig fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hedwig fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/hidahida/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2024/11/Garsnas_HidaHida_P_01-720x1080.jpg" alt="HidaHida by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">HidaHida</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/judith-kladhangare/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2025/02/Garsnas_Judith_p_01-1620x1080.jpg" alt="Judith klädhängare by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Judith klädhängare</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/judith-skohylla/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2025/02/Garsnas_Judith_p_07-1620x1080.jpg" alt="Judith skohylla by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Judith skohylla</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/julius-fatolj/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/03/GRSNb0552-720x1080.jpg" alt="Julius fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Julius fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/julius-soffa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/03/GRSNb0530-1-1618x1080.jpg" alt="Julius soffa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Julius soffa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/kb/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/NEWS16_1120-721x1080.jpg" alt="KB karmstol* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">KB karmstol*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/kvilt-fatolj/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARSb0494-721x1080.jpg" alt="Kvilt fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kvilt fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/kvilt-pall/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARSb0507-1618x1080.jpg" alt="Kvilt pall by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kvilt pall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/kvilt/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/6160_Kvilt_Nina-Jobs_1-1440x1080.jpg" alt="Kvilt soffa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kvilt soffa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/light-easy-karmstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/NEWS16_0906-721x1080.jpg" alt="Light &amp; Easy karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Light &amp; Easy karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/light-easy-stol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/NEWS16_0942-721x1080.jpg" alt="Light &amp; Easy stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Light &amp; Easy stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/lina-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2019/09/GARbe1042-721x1080.jpg" alt="Lina karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lina karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/lina-3/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2019/09/GARSNaa0179_S2-720x1080.jpg" alt="Lina karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lina karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/linnea/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARSz_0003-810x1080.jpg" alt="Linnea stol* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Linnea stol*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/loop-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2020/01/loopH-1080x1080.jpg" alt="Loop galge by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Loop galge</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/loop/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/4690_a_natur_GARB_0144-810x1080.jpg" alt="Loop klädhängare by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Loop klädhängare</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/m-bord/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/6312_a_1600_GAR0370.jpg" alt="M-bord by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">M-bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/madonna-karmstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARSNf0003-721x1080.jpg" alt="Madonna karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Madonna karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/madonna-stol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARSNf0044-721x1080.jpg" alt="Madonna stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Madonna stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/mercurius/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/Mercurius-bok-2-810x1080.jpg" alt="Mercurius karmstol* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mercurius karmstol*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/moderna-ii/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARm_0075-810x1080.jpg" alt="Moderna stol* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Moderna stol*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/mr-n-3/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2020/01/GARSb0438-721x1080.jpg" alt="Mr N karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mr N karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/napoleon-vid-nilen/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/napoleon-864x1080.jpg" alt="Napoleon vid Nilen golvlampa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Napoleon vid Nilen golvlampa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/neptunus-i/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/Neptunus-1_1-1064x1080.jpg" alt="Neptunus fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Neptunus fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/neptunus-soffa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARS0400-1350x1080.jpg" alt="Neptunus soffa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Neptunus soffa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/orbit-golvlampa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARm_0315_JOHAN-810x1080.jpg" alt="Orbit golvlampa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Orbit golvlampa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/petite-stol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2018/02/petite_02-721x1080.jpg" alt="Petite stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Petite stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/piamandarin/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2022/02/Pia_Mandarin20220204_10-721x1080.jpg" alt="Pia Mandarin lampa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pia Mandarin lampa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/pia-bord/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/3004_a_GARS0020-1440x1080.jpg" alt="Pia bord by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pia bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/pia-karmstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2020/01/pia_armchair-720x1080.jpg" alt="Pia karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pia karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/pia-lampa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/pia_500-810x1080.jpg" alt="Pia lampa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pia lampa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/pia-stol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARS0035-810x1080.jpg" alt="Pia stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pia stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/riksdagen/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/Riksdagen-björk-810x1080.jpg" alt="Riksdagen stol* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Riksdagen stol*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/ronja-karmstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2023/02/Gärsnäs_-Ronja-chair-short-arm_p_01-720x1080.jpg" alt="Ronja karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ronja karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/ronja-karmstol-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2023/02/Gärsnäs_-Ronja-armchair_01-721x1080.jpg" alt="Ronja karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ronja karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/ronja-stol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2023/02/Gärsnäs_-Ronja-chair_p_01-720x1080.jpg" alt="Ronja stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ronja stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/rotor/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/garsnas-2007-1440x1080.jpg" alt="Rotor bord by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rotor bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/rotor-motesbord/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/6330-1_a_vit_GARc_0033-1435x1080.jpg" alt="Rotor mötesbord by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rotor mötesbord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/s217/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GRSNa0778-721x1080.jpg" alt="S217 stol* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S217 stol*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/s234/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/NEWS16_1027-721x1080.jpg" alt="S234 karmstol* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S234 karmstol*</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/sar/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARbe1050-721x1080.jpg" alt="SAR karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">SAR karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/simris-fatolj/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2024/02/Gärsnäs-_SIMRIS-fåtölj_01-810x1080.jpg" alt="Simris fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Simris fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/simris-soffa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2024/02/Gärsnäs-_SIMRIS-2-sits-soffa_01-1-1620x1080.jpg" alt="Simris soffa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Simris soffa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/sonat/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2017/02/GRSNd1088-1-721x1080.jpg" alt="Sonat karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sonat karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/tak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2017/02/Tak_P_03-1618x1080.jpg" alt="TAK bord by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">TAK bord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/tak-pelarbord/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2017/02/Tak_P_02-1618x1080.jpg" alt="TAK pelarbord by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">TAK pelarbord</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/tati/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/12/Gärsnäs-_Tati-chair_05-810x1080.jpg" alt="Tati stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tati stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/viva-karmstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2020/02/GARbd0042-720x1080.jpg" alt="Viva karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Viva karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/vyn-fatolj/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2024/02/Gärsnäs-_Vyn-Easy-chair_01-810x1080.jpg" alt="Vyn fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Vyn fåtölj</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/vyn-karmstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2024/02/Gärsnäs_Vyn-armchair_30-1080x1080.jpg" alt="Vyn karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Vyn karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/vyn-karmstol-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2026/02/Gärsnäs_Vyn-chair_01-1080x1080.jpg" alt="Vyn stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Vyn stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/wood-stol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/Wood_ÅA_2-794x1080.jpg" alt="Wood stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wood stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/zen-auditorium/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARSj_0163-810x1080.jpg" alt="Zen Auditorium by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zen Auditorium</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/zen-conference-hr-1/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/04/Gärsnäs_Zen-Conference-armchair-swivel-base_01-810x1080.jpg" alt="Zen Conference karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zen Conference karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/zen-conference-hr-iii/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/04/NEWS16_1242-721x1080.jpg" alt="Zen Conference karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zen Conference karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/zen-conference-stol-i/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/04/Gärsnäs_Zen-Conference-chair-swivel-base_01-721x1080.jpg" alt="Zen Conference stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zen Conference stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/zen-conferenceiii/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/Zen-Conf-stol-III_002-721x1080.jpg" alt="Zen Conference stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zen Conference stol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/zen-new-york/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2023/09/GARcc2155_HR-721x1080.jpg" alt="Zen New York karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zen New York karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/zen-new-york-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2023/09/Gärsnäs-_ZEN-NEW-YORK-karmstol-snurrstativ_01-810x1080.jpg" alt="Zen New York karmstol, snurrstativ by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zen New York karmstol, snurrstativ</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/zen-studio-karmstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2020/03/GARSNac0005-721x1080.jpg" alt="Zen studio karmstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zen studio karmstol</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/zen-studio-stol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2020/03/GARbb0349-720x1080.jpg" alt="Zen studio stol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zen studio stol</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

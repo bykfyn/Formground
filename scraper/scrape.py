@@ -4592,6 +4592,114 @@ def extract_blastation(brand):
     return products
 
 
+# Gärsnäs' /product_category/{slug}/ pages are the only real category
+# signal (no REST route is registered for its "product" custom post type,
+# so this can't be read from an API) - one slug ("stolar-pallar") mixes
+# chairs, bar stools, and plain stools together, refined per-product via
+# its own Swedish name below.
+GARSNAS_CATEGORY_SLUGS = {
+    "bord-sv": "Table",
+    "fatoljer": "Armchair",
+    "forvaring-sv": "Storage",
+    "lampor-sv": "Light",
+    "soffor-sv": "Sofa",
+    "stolar-pallar": "Chair",
+}
+
+
+def _refine_garsnas_seating_category(name, category):
+    if category != "Chair":
+        return category
+    name_lower = name.lower()
+    if "barstol" in name_lower:
+        return "Bar Stool"
+    if "pall" in name_lower:
+        return "Stool"
+    return category
+
+
+def extract_garsnas(brand):
+    """
+    Gärsnäs has no product API (no WooCommerce, no REST route for its
+    "product" post type) but a real, server-rendered WordPress catalog:
+    6 /product_category/{slug}/ pages (no pagination - each lists its
+    full category on one page) link to ~110 real /product/{slug}/ pages,
+    each with a real name, a real image gallery (.photo-image, distinct
+    from the low-res og:image meta tag), a "Design {name} {year}" credit
+    line, and a "Mått:" (dimensions) field - all confirmed 2026-09-22.
+    """
+    domain = brand["url"].rstrip("/")
+    products = []
+    brand_start = time.monotonic()
+
+    product_categories = {}  # product url -> category
+    for slug, category in GARSNAS_CATEGORY_SLUGS.items():
+        try:
+            resp = requests.get(f"{domain}/product_category/{slug}/", headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch Gärsnäs category {slug}: {e}")
+            continue
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for a in soup.find_all("a", href=True):
+            href = a["href"]
+            if "/product/" in href and href not in product_categories:
+                product_categories[href] = category
+
+    for url, category in product_categories.items():
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"{brand['name']} - stopping early with what was fetched so far.")
+            break
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        page = BeautifulSoup(resp.text, "html.parser")
+        h1 = page.find("h1")
+        name = h1.get_text(strip=True) if h1 else ""
+        if not name:
+            continue
+
+        image_tag = page.find("img", class_="photo-image")
+        image_url = image_tag.get("src", "") if image_tag else ""
+
+        designer = ""
+        for p in page.find_all("p", class_="p1"):
+            match = re.match(r"Design\s+(.+?)\s+\d{4}", p.get_text(strip=True))
+            if match:
+                designer = match.group(1).strip()
+                break
+
+        dimensions = ""
+        details = page.find("dl", class_="details")
+        if details:
+            for dt in details.find_all("dt"):
+                if dt.get_text(strip=True) == "Mått:":
+                    dd = dt.find_next_sibling("dd")
+                    dimensions = dd.get_text(" ", strip=True) if dd else ""
+                    break
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": _refine_garsnas_seating_category(name, category),
+            "material_options": [],
+            "dimensions": dimensions,
+            "notes": "",
+            "image_url": image_url,
+            "designer": designer,
+        })
+        time.sleep(0.3)  # be polite - don't hammer the site
+
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -4676,6 +4784,7 @@ EXTRACTORS = {
     "Fabrikant": extract_woocommerce,
     "Fogia": extract_fogia,
     "Blå Station": extract_blastation,
+    "Gärsnäs": extract_garsnas,
 }
 
 
