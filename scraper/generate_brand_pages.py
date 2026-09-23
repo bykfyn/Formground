@@ -812,6 +812,34 @@ def _architects_sitemap_slugs():
     return sorted(slugs)
 
 
+def _designers_sitemap_slugs():
+    """Same self-healing rationale as _craftspeople_sitemap_slugs() -
+    reads data/formground.db directly (the real source for
+    generate_designers_pages.py, no separate JSON file) so
+    render_sitemap() stays correct regardless of which generator last
+    ran. A designer gets a page only with 2+ real credited products
+    (see generate_designers_pages.py's MIN_PRODUCTS) - mirrored here so
+    a designer who drops below that bar doesn't stay listed."""
+    if not DB_PATH.exists():
+        return []
+    conn = sqlite3.connect(DB_PATH)
+    rows = conn.execute("""
+        SELECT designer, COUNT(*) as n FROM products
+        WHERE designer IS NOT NULL AND TRIM(designer) != '' AND image_url != ''
+        GROUP BY designer HAVING n >= 2
+    """).fetchall()
+    conn.close()
+    slugs_seen = {}
+    slugs = []
+    for name, _ in rows:
+        slug = slugify(name)
+        if slug in slugs_seen and slugs_seen[slug] != name:
+            slug = f"{slug}-{len(slugs_seen)}"
+        slugs_seen[slug] = name
+        slugs.append(slug)
+    return sorted(slugs)
+
+
 def render_sitemap(brand_slugs):
     # lastmod is only set on the pages this script itself regenerates
     # every run (makers.html, brand pages) - their content can genuinely
@@ -826,7 +854,6 @@ def render_sitemap(brand_slugs):
         ("https://formground.com/", "weekly", "1.0", None),
         ("https://formground.com/work.html", "weekly", "0.8", None),
         ("https://formground.com/creators.html", "weekly", "0.7", None),
-        ("https://formground.com/designers.html", "monthly", "0.5", None),
         ("https://formground.com/about.html", "monthly", "0.6", None),
         ("https://formground.com/contact.html", "monthly", "0.5", None),
         ("https://formground.com/for-creators.html", "monthly", "0.4", None),
@@ -842,6 +869,13 @@ def render_sitemap(brand_slugs):
         urls += [
             (f"https://formground.com/craftspeople/{slug}.html", "weekly", "0.5", today)
             for slug in craftspeople_slugs
+        ]
+    designer_slugs = _designers_sitemap_slugs()
+    if designer_slugs:
+        urls.append(("https://formground.com/designers.html", "weekly", "0.7", today))
+        urls += [
+            (f"https://formground.com/designers/{slug}.html", "weekly", "0.5", today)
+            for slug in designer_slugs
         ]
     architect_slugs = _architects_sitemap_slugs()
     if architect_slugs:

@@ -233,6 +233,30 @@ def setup_database():
     return conn
 
 
+def _normalize_designer_name(name):
+    """
+    Different brands' own sites credit designers in different raw
+    styles - Källemo displays every name in full caps as house style,
+    Baleri Italia's feed concatenates a trailing ", <year>" onto the
+    name - normalized here, at the single point every extractor's
+    designer field passes through, so the same real person doesn't fork
+    into two different-looking "designers" depending on which brand's
+    page it was scraped from. Confirmed live 2026-09-23: Källemo's
+    "PIERRE SINDRE" and Gärsnäs's "Pierre Sindre" are the same person;
+    Baleri Italia stored "Odo Fioravanti, 2026" instead of just the name.
+    A comma-joined co-designer credit (Källemo's "Pierre Sindre, Thomas
+    Sandell") is left as one combined string, not split into two people
+    - splitting is a real future refinement, not needed for this fix.
+    """
+    name = name.strip()
+    if not name:
+        return name
+    name = re.sub(r",\s*\d{4}$", "", name).strip()
+    if name.isupper():
+        name = name.title()
+    return name
+
+
 def save_product(conn, product):
     """
     Inserts or updates a single product record. "thin" marks an entry that
@@ -242,13 +266,15 @@ def save_product(conn, product):
     border "different kind of entry" treatment already decided on, same
     size and prominence either way, never a lesser one.
 
-    "designer" is collected but deliberately not surfaced on cards today
-    (see extract_baleri_italia) - it's the only one of the 16 extractors
-    where this is easy to capture, and showing it there but nowhere else
-    would credit some products' designers by name and not others, purely
-    from scraping convenience. Stored anyway rather than discarded, in
-    case more brands' extractors pick this up later and it can be shown
-    consistently across all of them at once.
+    "designer" is still never shown on a product/brand card - that stays
+    inconsistent across brands' extractors, so showing it there would
+    still credit some products' designers and not others. It IS now the
+    real data source for the separate Designers pages
+    (generate_designers_pages.py), since enough brands (6, as of
+    2026-09-23) capture it for that to be a fair, real feature on its
+    own - normalized via _normalize_designer_name() below so the same
+    person scraped from two different brands' sites merges into one
+    profile.
 
     "first_seen" (the "New" page's data source) must be set by the
     caller before calling this - see run()'s carry-forward-or-stamp-today
@@ -271,7 +297,7 @@ def save_product(conn, product):
         product.get("notes", ""),
         1 if product.get("thin") else 0,
         product.get("image_url", ""),
-        product.get("designer", ""),
+        _normalize_designer_name(product.get("designer", "")),
         product.get("first_seen"),
     ))
     conn.commit()

@@ -8,51 +8,71 @@
 <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="description" content="Independent product designers who design for hire across many maker brands but aren't a maker themselves — coming soon to Formground.">
-<meta property="og:title" content="Designers — Formground">
-<meta property="og:description" content="Independent product designers who design for hire across many maker brands but aren't a maker themselves — coming soon to Formground.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://formground.com/designers.html">
-<meta property="og:site_name" content="Formground">
-<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="description" content="42 independent product designers on Formground, 319 real credited products total - browse the work, credited to the person who designed it.">
 <link rel="canonical" href="https://formground.com/designers.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Designers — Formground">
+<meta property="og:description" content="42 independent product designers on Formground, 319 real credited products total - browse the work, credited to the person who designed it.">
+<meta property="og:url" content="https://formground.com/designers.html">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://formground.com/favicon-192x192.png">
-<meta name="twitter:title" content="Designers — Formground">
-<meta name="twitter:description" content="Independent product designers who design for hire across many maker brands — coming soon to Formground.">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="/site.css">
 <style>
-  /* Pins the footer to the bottom of the viewport even when the page
-     itself is short (no real content yet, just the coming-soon
-     notice) - without this, .foot-note's fixed 60px top margin (see
-     site.css) just sits right under a short page's content instead of
-     reading as a real page foot. body becomes the full-height flex
-     column, main is the one child that grows to fill it, and the
-     footer's margin-top: auto (overriding site.css's fixed 60px, only
-     on this page) pushes itself to the bottom of that remaining
-     space. */
-  body { min-height: 100vh; display: flex; flex-direction: column; }
-  main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    max-width: 1160px;
-    margin: 0 auto;
-    padding: 24px 20px 60px;
-    width: 100%;
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
   }
-  .site-header { margin-bottom: 0; }
-  .foot-note { margin-top: auto; }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
 
-  /* Same ask-box look, width and hero position as architects.html/
-     makers.html - a search box that lands in the identical spot on
-     every directory-style page (see project memory). Disabled rather
-     than wired to a live filter, matching the notify-row below it -
-     there's no real grid to filter yet, so an interactive box would
-     promise something this page can't do. */
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
   .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
   .ask-box {
     display: flex; align-items: center; gap: 10px;
@@ -65,74 +85,429 @@
     font-size: 15px; color: var(--text-primary); font-family: inherit;
   }
   .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
   .ask-box-context {
     flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
     background: var(--surface-2); border: 0.5px solid var(--border-strong);
     padding: 7px 10px; border-radius: 999px;
   }
 
-  /* Stands in for the maker-grid architects.html/makers.html would
-     show here - centered, since there's a single message rather than
-     a scannable list of cards. */
-  .coming-soon-notice { max-width: 480px; margin: 100px auto 0; text-align: center; }
-  .coming-soon-notice p {
-    font-size: 14.5px; color: var(--text-secondary); line-height: 1.65; margin: 0;
-  }
-
-  .notify-row {
-    display: flex; justify-content: center; gap: 10px; margin: 22px auto 0; max-width: 380px;
-  }
-  .notify-row input {
-    flex: 1; border: 0.5px solid var(--border-strong); border-radius: 8px;
-    padding: 10px 14px; font-size: 13.5px; font-family: inherit; background: var(--surface-2);
-  }
-  /* Pill-shaped like every other chip on the site (the ask-box-context
-     chip above, marketplace.html's category chips) - the button here
-     was a squared-off 8px-radius rectangle before, out of step with
-     that shared shape language even though it's a primary action
-     rather than a passive filter. */
-  .notify-row button {
-    font: inherit; font-size: 13.5px; font-weight: 600; color: #fff;
-    background: var(--text-primary); border: none; border-radius: 999px;
-    padding: 10px 20px; cursor: pointer; white-space: nowrap;
-  }
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+<style>
+  main { padding-top: 24px; }
+  .site-header { margin-bottom: 0; }
 </style>
 </head>
 <body>
-
 <header class="site-header">
-  <a class="home-link" href="/"><img src="logo/formground_logotype_RGB.png" alt="Formground"></a>
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
 <nav class="top-nav">
-  <a href="work.html">Work</a>
-  <a href="creators.html">Creators</a>
-  <a href="marketplace.html">Marketplace</a>
-  <a href="for-creators.html">For Creators</a>
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
 </nav>
 </header>
-
-<main>
+<main style="max-width:1160px;">
   <div class="search-wide">
     <div class="ask-box">
       <i class="ti ti-search" aria-hidden="true"></i>
       <span class="ask-box-context">Designers</span>
-      <input type="text" placeholder="Filter by name or category" disabled>
+      <input id="directory-filter" type="text" placeholder="Filter by designer or brand…" autocomplete="off">
     </div>
   </div>
   <h1 class="sr-only">Designers</h1>
-
-  <div class="coming-soon-notice">
-    <p>We're building this out now. Designers will get their own discoverable profiles soon.</p>
-    <div class="notify-row">
-      <input type="text" placeholder="you@email.com" disabled>
-      <button type="button" disabled>Notify me</button>
-    </div>
+  <div class="maker-grid">
+      <a class="maker-card" href="/designers/andreas-engesvik.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/82/d8/70/69/6970d8827991180a249ecae1/FogiaBarba Club Chair Beech lacquered-Vidar 0693Front.png?auto=format&amp;w=2000&amp;q=90" alt="Andreas Engesvik" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Andreas Engesvik</span>
+          <span class="maker-country">Fogia</span>
+          <span class="maker-categories">28 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/andreas-martin-lof.html">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/67e4eb04c0944e34afb2b1e9/9fab6042-d0db-4ff5-a1b6-9a14b6e9dbc7/SGxCasall_15130.jpg" alt="Andreas Martin-Löf" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Andreas Martin-Löf</span>
+          <span class="maker-country">Blond</span>
+          <span class="maker-categories">2 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/andreas-sture-torbjorn-eliasson.html">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/67e4eb04c0944e34afb2b1e9/ce437779-af07-4939-8e51-6a27d530d818/Apoteket_HQ_019.jpg" alt="Andreas Sture / Torbjörn Eliasson" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Andreas Sture / Torbjörn Eliasson</span>
+          <span class="maker-country">Blond</span>
+          <span class="maker-categories">2 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/angelo-mangiarotti.html">
+        <div class="maker-card-hero"><img src="https://www.baleri-italia.com/uploads/media/1400x/08/1538-Baleri-Italia_T-Table_dining-table_MM451RE95_1998_01d.png?v=1-0" alt="Angelo Mangiarotti" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Angelo Mangiarotti</span>
+          <span class="maker-country">Baleri Italia</span>
+          <span class="maker-categories">3 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/anna-kraitz.html">
+        <div class="maker-card-hero"><img src="https://www.kallemo.se/templates/yootheme/cache/0c/beatrix-fa%CC%8Ato%CC%88lj-o%CC%88versikt-0c7c4750.png" alt="Anna Kraitz" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Anna Kraitz</span>
+          <span class="maker-country">Källemo</span>
+          <span class="maker-categories">3 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/anna-von-schewen.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/26/c6/7c/69/697cc626c2b2ec97a835d240/Fogia_Boxlike_2-seater_Green_Packshot_Front.png?auto=format&amp;w=2000&amp;q=90" alt="Anna von Schewen" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Anna von Schewen</span>
+          <span class="maker-country">Fogia</span>
+          <span class="maker-categories">2 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/anton-bjorsing.html">
+        <div class="maker-card-hero"><img src="https://garsnas.se/wp-content/uploads/2024/02/Gärsnäs-_SIMRIS-fåtölj_01-810x1080.jpg" alt="Anton Björsing" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Anton Björsing</span>
+          <span class="maker-country">Gärsnäs</span>
+          <span class="maker-categories">4 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/bjorn-dahlstrom.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/a8/c7/7c/69/697cc7a8230709357eeefd18/Fogia_Winwin_Table_Oak-Clear Glass_Packshot_Front.jpg.png?auto=format&amp;w=2000&amp;q=90" alt="Björn Dahlström" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Björn Dahlström</span>
+          <span class="maker-country">Fogia</span>
+          <span class="maker-categories">2 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/carina-seth-andersson.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/af/45/1d/6a/6a1d45af0b89316b955c3fd4/Fogia_Cube-Vase_Large_Pink_Packshot_Frontside.png?auto=format&amp;w=2000&amp;q=90" alt="Carina Seth Andersson" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Carina Seth Andersson</span>
+          <span class="maker-country">Fogia</span>
+          <span class="maker-categories">3 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/claesson-koivisto-rune.html">
+        <div class="maker-card-hero"><img src="https://www.baleri-italia.com/uploads/media/1400x/06/4116-Baleri-Italia_Tsu_armchair_CKR320_2026_01d.png?v=1-0" alt="Claesson Koivisto Rune" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Claesson Koivisto Rune</span>
+          <span class="maker-country">Baleri Italia</span>
+          <span class="maker-categories">2 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/david-ericsson.html">
+        <div class="maker-card-hero"><img src="https://www.kallemo.se/templates/yootheme/cache/41/Bjo%CC%88rkska%CC%8Apet_frilagd-4193842a.png" alt="David Ericsson" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">David Ericsson</span>
+          <span class="maker-country">2 brands</span>
+          <span class="maker-categories">6 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/david-regestam.html">
+        <div class="maker-card-hero"><img src="https://garsnas.se/wp-content/uploads/2017/02/Tak_P_03-1618x1080.jpg" alt="David Regestam" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">David Regestam</span>
+          <span class="maker-country">2 brands</span>
+          <span class="maker-categories">5 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/enrico-baleri.html">
+        <div class="maker-card-hero"><img src="https://www.baleri-italia.com/uploads/media/1400x/03/1383-Baleri-Italia_Tatino_seat_footrest_ED860_1997_01d.png?v=3-0" alt="Enrico Baleri" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Enrico Baleri</span>
+          <span class="maker-country">Baleri Italia</span>
+          <span class="maker-categories">2 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/form-us-with-love.html">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/67e4eb04c0944e34afb2b1e9/8e5f013a-5e67-4f9c-bf3a-9a1f04a33667/Catena+Hero+Range.jpg" alt="Form Us With Love" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Form Us With Love</span>
+          <span class="maker-country">Blond</span>
+          <span class="maker-categories">2 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/fredrik-farg-emma-marga-blanche.html">
+        <div class="maker-card-hero"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARSu_0034-810x1080.jpg" alt="Fredrik Färg &amp; Emma Marga Blanche" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fredrik Färg &amp; Emma Marga Blanche</span>
+          <span class="maker-country">Gärsnäs</span>
+          <span class="maker-categories">8 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/fredrik-wretman.html">
+        <div class="maker-card-hero"><img src="https://www.kallemo.se/templates/yootheme/cache/39/a%CC%88ntligen_fullgott_alternativ_kategoribild-39f28272.png" alt="Fredrik Wretman" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fredrik Wretman</span>
+          <span class="maker-country">Källemo</span>
+          <span class="maker-categories">2 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/gunnar-asplund.html">
+        <div class="maker-card-hero"><img src="https://www.kallemo.se/templates/yootheme/cache/8a/ga1-1-stol-intro24-2-8a692af1.png" alt="Gunnar Asplund" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Gunnar Asplund</span>
+          <span class="maker-country">2 brands</span>
+          <span class="maker-categories">3 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/hannes-wettstein.html">
+        <div class="maker-card-hero"><img src="https://www.baleri-italia.com/uploads/media/1400x/05/1335-Baleri-Italia_Juliette_stackable-chair_HW601_1987_02d.png?v=1-0" alt="Hannes Wettstein" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Hannes Wettstein</span>
+          <span class="maker-country">Baleri Italia</span>
+          <span class="maker-categories">3 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/john-kandell.html">
+        <div class="maker-card-hero"><img src="https://www.kallemo.se/templates/yootheme/cache/ee/stol-schablon-ee03d685.png" alt="John Kandell" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">John Kandell</span>
+          <span class="maker-country">Källemo</span>
+          <span class="maker-categories">8 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/jonas-bohlin.html">
+        <div class="maker-card-hero"><img src="https://www.kallemo.se/templates/yootheme/cache/45/stol-concrete-c94d8f4a-4555d2aa.webp" alt="Jonas Bohlin" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Jonas Bohlin</span>
+          <span class="maker-country">2 brands</span>
+          <span class="maker-categories">37 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/klenell-sundin.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/b1/af/7c/69/697cafb158064fd611c69db3/Fogia_BigSur_Desk_BlackOak_Anthracite Glass_Packshot_Front.png?auto=format&amp;w=2000&amp;q=90" alt="Klenell &amp; Sundin" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Klenell &amp; Sundin</span>
+          <span class="maker-country">Fogia</span>
+          <span class="maker-categories">3 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/komplot-design.html">
+        <div class="maker-card-hero"><img src="https://www.kallemo.se/templates/yootheme/cache/71/stol-non-71c2fcf8.png" alt="Komplot Design" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Komplot Design</span>
+          <span class="maker-country">Källemo</span>
+          <span class="maker-categories">3 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/luca-nichetto.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/e8/0e/71/69/69710ee88f45f25ab420cb09/FogiaJord 2 seat RAL 1013-Moss 0013-Oak lacqueredFront.png?auto=format&amp;w=2000&amp;q=90" alt="Luca Nichetto" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Luca Nichetto</span>
+          <span class="maker-country">Fogia</span>
+          <span class="maker-categories">4 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/main.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/4e/e3/70/69/6970e34e3ce6ff10937d0329/FogiaBond W103 Lacquered Walnut Front.png?auto=format&amp;w=2000&amp;q=90" alt="Main" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Main</span>
+          <span class="maker-country">Fogia</span>
+          <span class="maker-categories">14 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/marialaura-irvine.html">
+        <div class="maker-card-hero"><img src="https://www.baleri-italia.com/uploads/media/1400x/01/1331-Baleri-Italia_Donna_stackable-chair_IR101_2019_02d.png?v=1-0" alt="Marialaura Irvine" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Marialaura Irvine</span>
+          <span class="maker-country">Baleri Italia</span>
+          <span class="maker-categories">2 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/mats-theselius.html">
+        <div class="maker-card-hero"><img src="https://www.kallemo.se/templates/yootheme/cache/ef/sheriff-stol-kategori-ef9595f5.png" alt="Mats Theselius" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mats Theselius</span>
+          <span class="maker-country">Källemo</span>
+          <span class="maker-categories">14 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/matti-klenell-peter-andersson.html">
+        <div class="maker-card-hero"><img src="https://www.kallemo.se/templates/yootheme/cache/1b/botero-stol-kategori-1b6c2493.png" alt="Matti Klenell, Peter Andersson" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Matti Klenell, Peter Andersson</span>
+          <span class="maker-country">Källemo</span>
+          <span class="maker-categories">3 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/monica-forster.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/3e/e9/70/69/6970e93ea9167a5d3526256b/FogiaKern Coffee table WhiteFront.png?auto=format&amp;w=2000&amp;q=90" alt="Monica Förster" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Monica Förster</span>
+          <span class="maker-country">Fogia</span>
+          <span class="maker-categories">5 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/nina-jobs.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/fb/ca/7c/69/697ccafb6ead00b5cee9f33d/Fogia_Poppy_Big_Remix0126_Packshot_Front.png?auto=format&amp;w=2000&amp;q=90" alt="Nina Jobs" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nina Jobs</span>
+          <span class="maker-country">2 brands</span>
+          <span class="maker-categories">7 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/norm-architects.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/f3/e8/70/69/6970e8f399e7bed9add89a32/FogiaEmbrace Large Oak lacquered-Vintage CognacFront.png?auto=format&amp;w=2000&amp;q=90" alt="Norm Architects" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Norm Architects</span>
+          <span class="maker-country">Fogia</span>
+          <span class="maker-categories">10 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/note-design-studio.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/66/c3/7c/69/697cc366a3362c07c8f64910/Fogia-Arch High-Black-Packshot-Transparent.png?auto=format&amp;w=2000&amp;q=90" alt="Note (design studio)" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Note (design studio)</span>
+          <span class="maker-country">Fogia</span>
+          <span class="maker-categories">30 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/odo-fioravanti.html">
+        <div class="maker-card-hero"><img src="https://www.baleri-italia.com/uploads/media/1400x/04/3514-Baleri-Italia_Spunta_armchair_OF301_2025_03d.png?v=2-0" alt="Odo Fioravanti" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Odo Fioravanti</span>
+          <span class="maker-country">Baleri Italia</span>
+          <span class="maker-categories">5 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/olsson-lyckefors.html">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/67e4eb04c0944e34afb2b1e9/fef57c96-93bc-4662-897f-b071c79d232b/%C3%96lstudion.jpg" alt="Olsson Lyckefors" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Olsson Lyckefors</span>
+          <span class="maker-country">Blond</span>
+          <span class="maker-categories">4 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/philippe-starck.html">
+        <div class="maker-card-hero"><img src="https://www.baleri-italia.com/uploads/media/1400x/08/1658-Baleri-Italia_MacGee_bookcase_composition_PS209_1984_01d.png?v=1-0" alt="Philippe Starck" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Philippe Starck</span>
+          <span class="maker-country">Baleri Italia</span>
+          <span class="maker-categories">2 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/pierre-sindre.html">
+        <div class="maker-card-hero"><img src="https://www.kallemo.se/templates/yootheme/cache/65/sindre-stol-kategori-9431edaf-657cfd45.webp" alt="Pierre Sindre" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pierre Sindre</span>
+          <span class="maker-country">2 brands</span>
+          <span class="maker-categories">14 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/pierre-sindre-thomas-sandell.html">
+        <div class="maker-card-hero"><img src="https://www.kallemo.se/templates/yootheme/cache/16/fa%CC%8Ato%CC%88lj-chester-16643230.png" alt="Pierre Sindre, Thomas Sandell" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pierre Sindre, Thomas Sandell</span>
+          <span class="maker-country">Källemo</span>
+          <span class="maker-categories">2 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/stefan-borselius.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/0b/45/c6/69/69c6450b2bc7c3f5a0d42128/Fogia Myko Chair Elmosoft 99999-RAL 9005 Front.png?auto=format&amp;w=2000&amp;q=90" alt="Stefan Borselius" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Stefan Borselius</span>
+          <span class="maker-country">Fogia</span>
+          <span class="maker-categories">3 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/studio-stockholm.html">
+        <div class="maker-card-hero"><img src="https://garsnas.se/wp-content/uploads/2025/02/Garsnas_Judith_p_01-1620x1080.jpg" alt="Studio Stockholm" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Studio Stockholm</span>
+          <span class="maker-country">Gärsnäs</span>
+          <span class="maker-categories">2 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/taf.html">
+        <div class="maker-card-hero"><img src="https://images.fogia.com/7f/c8/7c/69/697cc87f58064fd611c6a807/Fogia_Niche_Vintage Cognac_Black Legs_Packshot_Front.png?auto=format&amp;w=2000&amp;q=90" alt="Taf" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Taf</span>
+          <span class="maker-country">Fogia</span>
+          <span class="maker-categories">3 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/timo-ripatti.html">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/67e4eb04c0944e34afb2b1e9/f16ad3b8-60da-4c89-b39d-f515ad623bb9/Note+Wall+4.jpg" alt="Timo Ripatti" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Timo Ripatti</span>
+          <span class="maker-country">Blond</span>
+          <span class="maker-categories">3 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/tore-ahlsen.html">
+        <div class="maker-card-hero"><img src="https://garsnas.se/wp-content/uploads/2016/02/napoleon-864x1080.jpg" alt="Tore Ahlsén" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tore Ahlsén</span>
+          <span class="maker-country">Gärsnäs</span>
+          <span class="maker-categories">4 products</span>
+        </div>
+      </a>
+      <a class="maker-card" href="/designers/ake-axelsson.html">
+        <div class="maker-card-hero"><img src="https://garsnas.se/wp-content/uploads/2016/02/Combi-II-170630-1618x1080.jpg" alt="Åke Axelsson" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Åke Axelsson</span>
+          <span class="maker-country">Gärsnäs</span>
+          <span class="maker-categories">29 products</span>
+        </div>
+      </a>
   </div>
-
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">← Back to Formground</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
 </main>
+<script>
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
 
+  (function () {
+    var filterInput = document.getElementById("directory-filter");
+    function applyFilter(q) {
+      q = q.trim().toLowerCase();
+      document.querySelectorAll(".maker-grid > a").forEach(function (card) {
+        var match = !q || card.textContent.toLowerCase().includes(q);
+        card.hidden = !match;
+      });
+    }
+    filterInput.addEventListener("input", function (e) { applyFilter(e.target.value); });
+    // Pre-filled from Creators' own search box (?q=stockholm after it
+    // strips "architects"/"designers"/"makers" off the front and routes
+    // here) - runs the exact same filter immediately, not just on the
+    // next keystroke, so landing here already shows the real results
+    // rather than the unfiltered full list (2026-09-20, see project
+    // memory).
+    var presetQuery = new URLSearchParams(window.location.search).get("q");
+    if (presetQuery) {
+      filterInput.value = presetQuery;
+      applyFilter(presetQuery);
+    }
+  })();
+</script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
