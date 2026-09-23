@@ -74,10 +74,16 @@ def product_card_html(product):
 
 
 def designer_card_html(designer_name, slug, products):
-    hero = next((p["image_url"] for p in products if p.get("image_url")), "")
+    # Named a real brand rather than a bare "N brands" count - and the
+    # SAME brand the hero photo comes from, so the card's image and its
+    # label never point at two different brands.
+    hero_product = next((p for p in products if p.get("image_url")), None)
+    hero = hero_product["image_url"] if hero_product else ""
     image = f'<img src="{html.escape(hero)}" alt="{html.escape(designer_name)}" loading="lazy">' if hero else ""
     brands = sorted({p["brand"] for p in products})
-    brand_line = brands[0] if len(brands) == 1 else f"{len(brands)} brands"
+    primary_brand = hero_product["brand"] if hero_product else brands[0]
+    other_count = len(brands) - 1
+    brand_line = primary_brand if other_count == 0 else f"{primary_brand} +{other_count}"
     count = f"{len(products)} product{'' if len(products) == 1 else 's'}"
     return f"""
       <a class="maker-card" href="/designers/{slug}.html">
