@@ -1015,6 +1015,14 @@ EXCLUDED_CATEGORIES = {
     "finish samples", "swatches", "spare part", "spare parts", "libri fisici",
     "architectuur", "architectuur projecten", "inrichtingen", "horeca",
     "care kit", "editorial", "musica", "operativo",
+    # User-reported 2026-09-25 on Llot Llov: real WooCommerce category
+    # tagging its OSIS terrazzo-surface finish/colorway swatches
+    # ("Berry 07_73", "Chickpea 06_21" - a colour name + a numeric
+    # finish code, no object attached), confirmed live via the site's
+    # own Store API - distinct from real OSIS-material furniture pieces
+    # like "OSIS Table Top ... Hues", which carry no category tag at all
+    # and are unaffected by this exclusion.
+    "osis surface",
 }
 
 # Utilitario Mexicano's product_type is blank across its entire ~490-
@@ -2082,6 +2090,25 @@ def extract_shopify(brand):
         raw_products = [
             p for p in raw_products
             if (p.get("product_type") or "").strip().lower() != "clothing"
+        ]
+    if brand["name"] == "Fine Little Day":
+        # User-reported 2026-09-25 - "only a small percentage of their
+        # catalogue is relevant." Checked the real catalog: 626 raw
+        # listings, no usable product_type (blank or the theme's
+        # generic "simple"), so filtered by name instead. User decided
+        # (asked directly) to exclude the 207 posters/art prints too,
+        # not just the clear non-fits - flat prints aren't a physical
+        # object like the rest of the site. Also excludes clothing
+        # (caps, scarves, aprons), bags (tote/shoulder/gift-wrap, all
+        # confirmed real accessories not home objects), raw fabric sold
+        # by the metre (a material, not a finished piece), and folded-
+        # card-with-envelope stationery sets. NOT excluded: "CUP WITH
+        # EAR" - a real ceramic mug (Swedish for "handle"), not jewelry,
+        # confirmed against the brand's own site before ruling that out.
+        _fld_exclude = ("poster", "cap", "scarf", "apron", "bag", "tote", "fabric", "card", "envelope", "book")
+        raw_products = [
+            p for p in raw_products
+            if not any(kw in p["title"].lower() for kw in _fld_exclude)
         ]
     if brand["name"] == "Utilitario Mexicano":
         # User-reported 2026-09-25: catalog is a real general store (480
