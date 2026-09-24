@@ -203,7 +203,12 @@ function renderCard(r) {
       navigator.share({ title: r.product_name, text: shareText, url: shareUrl })
         .catch((err) => { if (err.name !== "AbortError") console.error(err); });
     } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(shareUrl).then(() => {
+      // Desktop copy-link path had no attribution text, unlike the
+      // mobile share-sheet branch above which already passes shareText
+      // - now both carry the same "Check out X by Y on Formground"
+      // line, just plain text above the link since a clipboard paste
+      // has no separate title/body/url fields to fill.
+      navigator.clipboard.writeText(`${shareText}\n${shareUrl}`).then(() => {
         shareBtn.classList.add("copied");
         setTimeout(() => shareBtn.classList.remove("copied"), 1500);
       }).catch((err) => console.error(err));
