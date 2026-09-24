@@ -375,3 +375,38 @@ if (gridEl) {
     runDiscover();
   }
 }
+
+// Only present on the homepage's category tiles (.cat-tile figures with
+// a "Visit site" link straight to that tile's example maker/architect
+// page) - a no-op everywhere else. Previously fired no event at all,
+// unlike every other click-through to a maker's site on the results
+// page (2026-09-24).
+document.querySelectorAll(".visit-source").forEach((link) => {
+  link.addEventListener("click", () => {
+    const tile = link.closest(".cat-tile");
+    const payload = JSON.stringify({
+      event_type: "click",
+      brand: tile ? tile.querySelector(".product-maker")?.textContent.trim() : null,
+      product_name: tile ? tile.querySelector(".product-name")?.textContent.trim() : null,
+      ...UTM,
+    });
+    navigator.sendBeacon(`${API_BASE}/event`, new Blob([payload], { type: "application/json" }));
+  });
+});
+
+// Which homepage category tile (House/Furniture/Lighting/Objects) got
+// clicked, before it navigates to work.html?q=... - reuses the "query"
+// field to hold the category name (e.g. "house"), the same real
+// signal a typed search would put there, so this needs no new BigQuery
+// column. A no-op everywhere .cat-link doesn't exist (2026-09-24).
+document.querySelectorAll(".cat-link").forEach((link) => {
+  link.addEventListener("click", () => {
+    const category = new URLSearchParams(link.href.split("?")[1]).get("q");
+    const payload = JSON.stringify({
+      event_type: "category_click",
+      query: category,
+      ...UTM,
+    });
+    navigator.sendBeacon(`${API_BASE}/event`, new Blob([payload], { type: "application/json" }));
+  });
+});
