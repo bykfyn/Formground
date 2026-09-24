@@ -1,5 +1,30 @@
 const API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
 
+// Read once per page load from the landing URL (e.g. ?utm_source=google&
+// utm_medium=cpc&utm_campaign=test) - not stored anywhere (no cookie, no
+// sessionStorage), just held in memory for this page view and attached
+// to whatever search/discover/click happens during it, so an ad
+// campaign's traffic can be attributed in aggregate. A UTM value is the
+// same for every visitor who clicked the same ad - it identifies the
+// campaign, not the person.
+const urlParams = new URLSearchParams(window.location.search);
+const UTM = {
+  utm_source: urlParams.get("utm_source"),
+  utm_medium: urlParams.get("utm_medium"),
+  utm_campaign: urlParams.get("utm_campaign"),
+};
+
+// Bare "utm_source=x&utm_medium=y" with no leading separator - callers
+// join it onto their own existing query string with "&" (search) or
+// start a fresh one with "?" (discover).
+function utmQueryString() {
+  const params = new URLSearchParams();
+  for (const key in UTM) {
+    if (UTM[key]) params.set(key, UTM[key]);
+  }
+  return params.toString();
+}
+
 const form = document.getElementById("search-form");
 const input = document.getElementById("query-input");
 const statusEl = document.getElementById("status");
@@ -54,6 +79,7 @@ function renderCard(r) {
       query: input.value.trim() || null,
       brand: r.brand,
       product_name: r.product_name,
+      ...UTM,
     });
     navigator.sendBeacon(`${API_BASE}/event`, new Blob([payload], { type: "application/json" }));
   });
@@ -223,7 +249,8 @@ async function runSearch(query) {
   statusEl.textContent = "Searching…";
 
   try {
-    const resp = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}`);
+    const utmSuffix = utmQueryString();
+    const resp = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}${utmSuffix ? `&${utmSuffix}` : ""}`);
     if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
     const data = await resp.json();
     renderResults(
@@ -247,7 +274,8 @@ async function runDiscover() {
   statusEl.textContent = "Shuffling…";
 
   try {
-    const resp = await fetch(`${API_BASE}/discover`);
+    const utmSuffix = utmQueryString();
+    const resp = await fetch(`${API_BASE}/discover${utmSuffix ? `?${utmSuffix}` : ""}`);
     if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
     const data = await resp.json();
     renderResults(

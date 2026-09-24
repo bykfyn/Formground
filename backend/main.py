@@ -21,6 +21,8 @@ HOW THIS RUNS FOR REAL:
   close to nothing at low traffic).
 """
 
+from typing import Optional
+
 from fastapi import Body, FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -41,10 +43,15 @@ app.add_middleware(
 
 
 @app.get("/search")
-def human_search(q: str = Query(..., description="Natural language search query")):
+def human_search(
+    q: str = Query(..., description="Natural language search query"),
+    utm_source: Optional[str] = None,
+    utm_medium: Optional[str] = None,
+    utm_campaign: Optional[str] = None,
+):
     """Human-facing search. Returns a plain list of matching products."""
     results = search(q)
-    log_event("search", query=q)
+    log_event("search", query=q, utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign)
     return {"query": q, "results": results}
 
 
@@ -72,12 +79,16 @@ def agent_search(q: str = Query(..., description="Structured or natural language
 
 
 @app.get("/discover")
-def discover_random():
+def discover_random(
+    utm_source: Optional[str] = None,
+    utm_medium: Optional[str] = None,
+    utm_campaign: Optional[str] = None,
+):
     """Random browse across the whole catalog - no LLM call, no query,
     just a fair sample across every brand. Doesn't hit the LLM at all,
     so it's also free to call as often as someone hits "surprise me"."""
     results = discover()
-    log_event("discover")
+    log_event("discover", utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign)
     return {"results": results}
 
 
@@ -96,6 +107,9 @@ def track_event(payload: dict = Body(...)):
         query=payload.get("query"),
         brand=payload.get("brand"),
         product_name=payload.get("product_name"),
+        utm_source=payload.get("utm_source"),
+        utm_medium=payload.get("utm_medium"),
+        utm_campaign=payload.get("utm_campaign"),
     )
     return {"status": "ok"}
 

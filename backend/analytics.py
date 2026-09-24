@@ -2,13 +2,20 @@
 Formground analytics logging.
 
 WHAT THIS DOES:
-  Fire-and-forget event logging to BigQuery - two event types:
-  "search" (the query text) and "click" (which brand/product got
-  clicked through, and what query led there). No cookies, no user
-  identifiers - just anonymous aggregate signal, matching the rest of
-  the site's "no accounts, no tracking of individuals" stance. Feeds
-  the eventual Phase 2 "how many people found you" brand-outreach
-  summaries.
+  Fire-and-forget event logging to BigQuery - "search" (the query
+  text), "click" (which brand/product got clicked through, and what
+  query led there), and "discover" (the shuffle chip). No cookies, no
+  user identifiers - just anonymous aggregate signal, matching the
+  rest of the site's "no accounts, no tracking of individuals" stance.
+  Feeds the eventual Phase 2 "how many people found you" brand-
+  outreach summaries.
+
+  Optional utm_source/utm_medium/utm_campaign fields (2026-09-24)
+  attribute an event to an ad campaign, for a paid-traffic test. These
+  aren't a privacy step up from the above: a UTM value is identical
+  for every visitor who clicked the same ad - it describes the
+  campaign, not the person, the same way the query text describes the
+  search, not the searcher. No new identifier, no session concept.
 
 WHY BIGQUERY, NOT THE PRODUCT DATABASE:
   Cloud Run instances are ephemeral and scale to zero - writes to the
@@ -43,6 +50,9 @@ SCHEMA = [
     bigquery.SchemaField("query", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("brand", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("product_name", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("utm_source", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("utm_medium", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("utm_campaign", "STRING", mode="NULLABLE"),
 ]
 
 _client = None
@@ -70,16 +80,36 @@ def _ensure_ready():
 
         _table_id = f"{_client.project}.{DATASET_ID}.{TABLE_ID}"
         try:
-            _client.get_table(_table_id)
+            table = _client.get_table(_table_id)
         except Exception:
+            table = None
+
+        if table is None:
             _client.create_table(bigquery.Table(_table_id, schema=SCHEMA))
+        else:
+            # The real production table already existed before the
+            # utm_* fields were added (2026-09-24) - SCHEMA alone only
+            # governs a freshly created table, so an already-live table
+            # needs its own widen-in-place step, the BigQuery equivalent
+            # of scrape.py's "ALTER TABLE ADD COLUMN, swallow if it's
+            # already there" SQLite migrations. Adding nullable columns
+            # is a safe, backward-compatible change - existing rows just
+            # read back with those fields null. Kept out of the
+            # try/except above so a widen failure can't be mistaken for
+            # a missing table and trigger a bogus create_table call.
+            existing_names = {f.name for f in table.schema}
+            missing = [f for f in SCHEMA if f.name not in existing_names]
+            if missing:
+                table.schema = list(table.schema) + missing
+                _client.update_table(table, ["schema"])
 
         _ready = True
     except Exception as e:
         logger.warning(f"BigQuery not available, skipping analytics: {e}")
 
 
-def log_event(event_type, query=None, brand=None, product_name=None):
+def log_event(event_type, query=None, brand=None, product_name=None,
+              utm_source=None, utm_medium=None, utm_campaign=None):
     """Insert one event row. Never raises - a logging failure should
     never break a search or a click-through."""
     try:
@@ -92,6 +122,9 @@ def log_event(event_type, query=None, brand=None, product_name=None):
             "query": query,
             "brand": brand,
             "product_name": product_name,
+            "utm_source": utm_source,
+            "utm_medium": utm_medium,
+            "utm_campaign": utm_campaign,
         }
         errors = _client.insert_rows_json(_table_id, [row])
         if errors:
