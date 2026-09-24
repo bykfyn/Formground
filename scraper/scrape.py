@@ -1603,6 +1603,25 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Established & Sons", "Lucio"): "Upholstery",
     ("Established & Sons", "Mollo"): "Upholstery",
     ("Established & Sons", "Quilt"): "Upholstery",
+    # Asplund's "Kilt Light" line (see the "kilt light" collision note in
+    # _infer_category_from_english_keywords) is a finish/style variant of
+    # the same storage-cabinet system as "Kilt Cabinet 90", confirmed via
+    # the brand's own raw product_type ("Förvaringsmöbler" = storage
+    # furniture) on asplundstore.se - not a light fixture.
+    ("Asplund", "Kilt Light 90"): "Cabinet",
+    ("Asplund", "Kilt Light 90 Charcoal"): "Cabinet",
+    ("Asplund", "Kilt Light 137 (doors)"): "Cabinet",
+    ("Asplund", "Kilt Light 137 (doors & drawers)"): "Cabinet",
+    ("Asplund", "Kilt Light 180 (doors)"): "Cabinet",
+    ("Asplund", "Kilt Light 180 (doors & drawers)"): "Cabinet",
+    # Seletti's own three raw "CUT 'N PASTE Pendant Lamp..." listings
+    # (see the _base_name collapse for this brand/line) now share one
+    # display name, "CUT 'N PASTE" - one grouped pair carried Seletti's
+    # real "Lighting" product_type through, but the "Pendant Lamp 2"
+    # listing's own raw product_type was blank, so it needs the same
+    # value applied explicitly. Both grouped rows share this exact
+    # name, so one override entry covers both correctly.
+    ("Seletti", "CUT 'N PASTE"): "Lighting",
 }
 
 # Same idea as MANUAL_CATEGORY_OVERRIDES above, but for a picked image
@@ -1635,14 +1654,21 @@ MANUAL_IMAGE_OVERRIDES = {
 def _infer_category_from_english_keywords(product_name):
     text = product_name.lower()
     for phrase, category in ENGLISH_OBJECT_TYPE_KEYWORDS:
-        if phrase in ("light", "uplight") and "waste light" in text:
+        if phrase in ("light", "uplight") and ("waste light" in text or "kilt light" in text):
             # Mater's own recycled-material finish name ("Coffee Waste
             # Light"/"Wood Waste Light", alongside "...Dark"/"...Black")
             # collides with the generic "light" keyword - confirmed
             # live 2026-09-21: several chair/stool variants finished in
             # "Coffee Waste Light" were wrongly tagged as lighting.
             # "waste light" never means an actual light fixture
-            # anywhere in this catalog.
+            # anywhere in this catalog. Same collision on Asplund's own
+            # "Kilt" storage system (confirmed live 2026-09-24 - the
+            # brand's own raw product_type for "Kilt Light 137 (doors &
+            # drawers)" is the Swedish "Förvaringsmöbler", storage
+            # furniture): "Kilt Light"/"Kilt Cabinet"/"Kilt Open"/"Kilt
+            # Sideboard" are sibling finish/style variants of the same
+            # storage-cabinet line, not different object types - "Light"
+            # here names a finish, not a lamp. User-reported 2026-09-24.
             continue
         # Optional trailing "s" - confirmed live 2026-09-21: "Ondine
         # Set of 3 boxes" (Mercoeur Editions) didn't match "box" at all
@@ -1898,6 +1924,20 @@ def _base_name(title, brand_name=None):
     """
     title = re.sub(r"<br\s*/?>", " ", title)
     title = re.sub(r"型\s*$", " Type", title.strip())
+    if brand_name == "Seletti" and re.match(r"cut 'n paste pendant lamp\b", title, re.IGNORECASE):
+        # Seletti's own three raw listings for this one pendant-lamp
+        # design bake size (in mm/inches) and a trailing " 2" straight
+        # into the title instead of using real Shopify variants
+        # ("CUT 'N PASTE Pendant Lamp Ø 27.4 x 20.9cm / Ø 10.79 x
+        # 8.23", "...20.9 cm / Ø 10.24'' x 9.53", "...Pendant Lamp 2") -
+        # confirmed live 2026-09-24, user-reported as a display-name bug
+        # ("the name includes the dimensions... remove 'pendant lamp'
+        # as well"). Collapsing to the bare collection name lets the
+        # existing variant-suffix-into-material_options merge below
+        # keep the size/version distinction without cluttering the
+        # name, same "brand/design is the unit" model as every other
+        # brand this function already handles.
+        return "CUT 'N PASTE"
     if brand_name in ("Raawii", "Wendelbo"):
         # Raawii's titles are "Designer - Line - Type - Size - Color",
         # several real hierarchy levels, not just "Name - Finish" -
