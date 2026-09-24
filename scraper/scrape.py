@@ -1865,7 +1865,7 @@ def _looks_like_a_maintenance_item(title):
     for any brand that doesn't happen to sell one.
     """
     keywords = (
-        "assembly kit", "cleaning kit", "kit di pulizia", "gift card",
+        "assembly kit", "cleaning kit", "kit di pulizia", "gift card", "giftcard",
         # Utilitario Mexicano also sells polarized sunglasses through
         # this same catalog (confirmed live: "Lentes Filtro
         # Polarizador") - not a home design object either, and its own
@@ -2071,6 +2071,17 @@ def extract_shopify(brand):
         raw_products = [
             p for p in raw_products
             if (p.get("product_type") or "").strip().lower() not in ("light source", "spare part")
+        ]
+    if brand["name"] == "Arturel":
+        # User-reported 2026-09-25: sweaters/sleeves showing up as
+        # results - Arturel is a real acoustic-panel/tile design brand
+        # (Acoustic Artwork/Sculpture/Rug), but also sells a real
+        # "Silent Club" apparel + leather-goods line (totebag, keyring,
+        # track pants, hoodie, knits) tagged with its own real
+        # "Clothing" product_type - not a fit for Formground.
+        raw_products = [
+            p for p in raw_products
+            if (p.get("product_type") or "").strip().lower() != "clothing"
         ]
     if brand["name"] == "Utilitario Mexicano":
         # User-reported 2026-09-25: catalog is a real general store (480
