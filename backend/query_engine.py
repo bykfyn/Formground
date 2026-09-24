@@ -617,11 +617,19 @@ def search(raw_query: str) -> list:
     intent = _resolve_intent(raw_query, translate_query(raw_query))
     matches = filter_products(intent)
 
+    # Skipped for a house-intent query (e.g. "house", "villa in Sweden") -
+    # a house search should only ever surface real architect-designed
+    # houses, not a maker's product whose name happens to contain the
+    # same word by coincidence. Confirmed live 2026-09-24: "house"
+    # matched Joy Objects' "HOUSE MUSIC VOLUME 01" (an apparel item)
+    # purely on substring, with no relation to architecture at all.
+    is_house_intent = (intent.get("category") or "").lower() in HOUSE_CATEGORY_WORDS
     seen_ids = {m["id"] for m in matches}
-    for m in filter_by_name(raw_query):
-        if m["id"] not in seen_ids:
-            matches.append(m)
-            seen_ids.add(m["id"])
+    if not is_house_intent:
+        for m in filter_by_name(raw_query):
+            if m["id"] not in seen_ids:
+                matches.append(m)
+                seen_ids.add(m["id"])
 
     for h in filter_houses(intent):
         if h["id"] not in seen_ids:
