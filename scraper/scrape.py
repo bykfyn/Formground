@@ -1023,6 +1023,13 @@ EXCLUDED_CATEGORIES = {
     # like "OSIS Table Top ... Hues", which carry no category tag at all
     # and are unaffected by this exclusion.
     "osis surface",
+    # User-reported 2026-09-25 on Verk: real WooCommerce category
+    # "Fabrics" tagging 4 "Textile V.IR.0X" listings - raw upholstery
+    # swatches, not furniture. Checking other brands turned up the same
+    # pattern on Noah under "N05 Fabric" ("Stoff Mele (Lfm.)" - German
+    # for "fabric ... running metre"), a fabric-by-the-metre swatch for
+    # its sofas, not a real product either.
+    "fabrics", "n05 fabric",
 }
 
 # Utilitario Mexicano's product_type is blank across its entire ~490-
@@ -5670,7 +5677,6 @@ EXTRACTORS = {
     "Avolt": extract_shopify,
     "Dixie": extract_woocommerce,
     "Fine Little Day": extract_shopify,
-    "New Botanic": extract_shopify,
     "No Early Birds": extract_shopify,
     "Paradisverkstaden": extract_shopify,
     # "Sheyn" excluded here - live 403 on the real scraper UA specifically,
