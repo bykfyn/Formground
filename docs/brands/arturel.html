@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arturel on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Arturel's work on Formground - 49 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/arturel.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Arturel on Formground">
+<meta property="og:description" content="Arturel's work on Formground - 49 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/arturel.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Arch_Tile_Set-of-1_Cloudy-Grey_01_Web.jpg?v=1761580725">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Arch_Tile_Set-of-1_Cloudy-Grey_01_Web.jpg?v=1761580725">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Arturel on Formground">
+<meta name="twitter:description" content="Arturel's work on Formground - 49 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Arturel", "item": "https://formground.com/brands/arturel.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Arturel</h1>
+    <div class="tags"><span class="tag">Objects</span><span class="tag">Denmark</span></div>
+    <a class="brand-site-link" href="https://arturel.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://arturel.com/products/arch-tile-cloudy-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Arch_Tile_Set-of-1_Cloudy-Grey_01_Web.jpg?v=1761580725" alt="Arch Tile by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arch Tile</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/arch-rug-soft-olive" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/RUG_PACK_6_a0114f8d-664f-43cc-9b7d-4f9be803a1c8.jpg?v=1734020213" alt="Arch rug by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arch rug</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/arturel-x-cody-hudson-frequency-fold-reddish-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_07-05-26_CodyHudson_45.jpg?v=1789118761" alt="Arturel x Cody Hudson by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arturel x Cody Hudson</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/arturel-x-cody-hudson-spacetime-stack-medium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_07-05-26_CodyHudson_13_de1e2fbc-2772-434b-ac85-0873ff16066e.jpg?v=1789114166" alt="Arturel x Cody Hudson by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arturel x Cody Hudson</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/the-hazy-collection-x-anne-nowak-vibrant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/ARTURELXNOVAK_PACK_WEB_9.jpg?v=1760613341" alt="Arturel x Hazy Original by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arturel x Hazy Original</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/arturel-x-the-hazy-collection-mini-sunset" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_AnneNowak6191_Web_1by1.jpg?v=1771918941" alt="Arturel x Hazy Petite by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arturel x Hazy Petite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/arch-x-kvadrat-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Showroom19818_Web_Web.jpg?v=1764003046" alt="Arturel x Kvadrat by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arturel x Kvadrat</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/arturel-x-mandalaki-halo-evo-2-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel-halo-led-light-art_d8fd2560-3db9-42a8-bd61-47b4102005ff.jpg?v=1761828712" alt="Arturel x Mandalaki by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arturel x Mandalaki</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/arturel-x-mandalaki-bundles" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel-acoustic-artwork_a068dfb5-c565-4003-89a7-89466a26fa88.jpg?v=1764596041" alt="Arturel x Mandalaki by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arturel x Mandalaki</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/arturel-x-the-danish-royal-guards-pants-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Showroom19974_Web_Web.jpg?v=1764152006" alt="Arturel x The Danish Royal Guards by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arturel x The Danish Royal Guards</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/bubble-rug-offwhite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Showroom19674_Web_Web_1.jpg?v=1764176086" alt="Bubble Rug by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bubble Rug</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/casso-tile-sand-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_06-07-26_Casso_Tiles_Set-of_2_Sand-Beige_01.jpg?v=1788504571" alt="Casso Tile by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Casso Tile</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/color-sample" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/IMG_3433.jpg?v=1763489788" alt="Color Samples by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Color Samples</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/curve-tile-reddish-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_27-05-26_Curve_Tile_Set-of-2_Reddish-Brown_01.jpg?v=1786615031" alt="Curve Tile by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Tile</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/curve-tile-cloudy-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_27-05-26_Curve_Tile_Set-of-2_Cloud-Grey_01.jpg?v=1786614959" alt="Curve Tile by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Tile</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/cutone-night-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/CutOne_Black.png?v=1769084218" alt="CutOne by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">CutOne</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/cuttwo-night-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/CutTwo_Black.png?v=1769084136" alt="CutTwo by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">CutTwo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/digital-giftcard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/ARTUREL_DIGITAL_GIFTCARDCropped_0df3c793-7e8b-4c35-8da1-e9ec5daf6f98.jpg?v=1734020213" alt="Digital Giftcard by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Digital Giftcard</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/door-kit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_18-05-26_Kids_Reddish-Brown_10.jpg?v=1779787668" alt="Door Kit by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Door Kit</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/dune-arturel-x-kvadrat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/MRN_7962Cropped_330e97db-2bd6-4437-8de5-86f89389dff5.jpg?v=1760643121" alt="Dune by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dune</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/fisherman-o-neck-knit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/I3A6587.jpg?v=1786971392" alt="Fisherman O-Neck Knit by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fisherman O-Neck Knit</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/forma-tile-warm-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_28-04-26_Forma-Tile_Set-of-8_Warm-Grey_01.jpg?v=1778244804" alt="Forma Tile by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Forma Tile</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/geometric-reddish-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Showroom19934_Web_Web.jpg?v=1763498787" alt="Geometric by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Geometric</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/geometric-tile-cloudy-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Geometric_Tile_Set-of-2_Cloudy-Grey_02_Web.jpg?v=1785826423" alt="Geometric Tile by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Geometric Tile</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/high-gloss-leather-bag" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/I3A6668.jpg?v=1786971729" alt="High Gloss Leather Bag by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">High Gloss Leather Bag</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/high-gloss-leather-jacket" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/I3A6380.jpg?v=1786971536" alt="High Gloss Leather Jacket by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">High Gloss Leather Jacket</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/high-gloss-leather-keyring-moss-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/I3A6655_c2fb1737-96f1-4ae3-babd-987797295da0.jpg?v=1786971698" alt="High Gloss Leather Keyring by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">High Gloss Leather Keyring</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/long-sleeve-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/28.07.26_AvoniProjects_Studie5390.webp?v=1786106656" alt="Long Sleeve by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Long Sleeve</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/merino-o-neck-knit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/28.07.26_AvoniProjects_Studie5544.webp?v=1786106544" alt="Merino O-Neck Knit by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Merino O-Neck Knit</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/mini-arch" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arch-mini-series-acoustic-panel-close-up_6e3f76ce-1838-4162-b13b-c97f023eea07.jpg?v=1761208792" alt="Mini Arch by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mini Arch</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/nordic-bauhaus-x-saskia-hubner-grey-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/BAUHAUS_GRA_FULL_NY_FUGECropped_b9f27aad-aed9-471f-aaaf-6f5c41190e82.jpg?v=1760593748" alt="Nordic Bauhaus by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nordic Bauhaus</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/paintable-store-sign" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_18-05-26_Kids_Accessories_4.jpg?v=1779787448" alt="Paintable Store Sign by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Paintable Store Sign</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/play-icons-set-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_18-05-26_Kids_Accessories_1.jpg?v=1779786935" alt="Play Icons by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Play Icons</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/playhouse-reddish-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_18-05-26_Kids_Reddish-Brown__5.jpg?v=1779871166" alt="Playhouse by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Playhouse</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/short-sleeve-marshmellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/28.07.26_AvoniProjects_Studie5639.webp?v=1786106826" alt="Short Sleeve by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Short Sleeve</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/silent-club-cap-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/28.07.26_AvoniProjects_Studie5714.webp?v=1786106261" alt="Silent Club Cap by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Silent Club Cap</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/silent-club-track-jacket" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/2026_0714_ArturelxAvoni0272-1.jpg?v=1786971640" alt="Silent Club Track Jacket by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Silent Club Track Jacket</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/silent-club-track-pants" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/2026_0714_ArturelxAvoni0049-2.jpg?v=1786971849" alt="Silent Club Track Pants by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Silent Club Track Pants</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/silent-club-zip-hoodie" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/2026_0714_ArturelxAvoni0046-5.jpg?v=1786971768" alt="Silent Club Zip Hoodie by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Silent Club Zip Hoodie</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/stone-green-sand" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Green-sand-stone-acoustic-tile-living-room-2.jpg?v=1763547537" alt="Stone by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stone</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/stone-rug-ivory-cobolt" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/RUG_PACK_4.jpg?v=1734019573" alt="Stone rug by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stone rug</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/the-playhouse-bundle-sand-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_18-05-26_Kids_Sand-Beige__5.jpg?v=1779874484" alt="The Playhouse Bundle by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Playhouse Bundle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/sample-box-professionals" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/DSC9584_Cropped_6fffec45-4279-49d8-a702-a81ab60bfb70.jpg?v=1763770511" alt="The Sample Box by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Sample Box</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/totebag" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/2026_0714_ArturelxAvoni0124-4.jpg?v=1786971896" alt="Totebag by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Totebag</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/wave-long-cloudy-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Wave_Long_Cloudy-Grey_01_Web_bf20e8ba-4b78-440b-b157-826e75afe617.jpg?v=1760819335" alt="Wave Long by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wave Long</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/wave-original-reddish-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Wave_Original_Reddish-Brown_01_Web_b6d581c6-305f-424a-be81-b73cf220890f.jpg?v=1785242002" alt="Wave Original by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wave Original</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/wave-special-edition-night-black-sand-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Showroom20039_Web_Web.jpg?v=1763770356" alt="Wave Special Edition by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wave Special Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/wave-tile-warm-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Wave-Tile-set-of-2-Warm-Grey_02_Web.jpg?v=1761580741" alt="Wave Tile by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wave Tile</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/wave-rug-soft-olive" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/RUG_PACK_1_67a61d53-58cc-42c6-9e18-b598e1eb7808.jpg?v=1734020214" alt="Wave rug by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wave rug</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

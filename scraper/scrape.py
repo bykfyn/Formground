@@ -1068,6 +1068,15 @@ def _clean_product_type(product_type, brand_name=None):
         # every product falls through to the name-based English-keyword
         # fallback instead (see CATEGORY_KEYWORD_FALLBACK_BRANDS).
         return ""
+    if brand_name == "Massimo Copenhagen":
+        # Confirmed live 2026-09-25: this brand's real catalog is ~100%
+        # rugs (8 of 108 raw listings tagged "Rug", 2 care products, the
+        # rest blank) - the blank ones are real rugs too, just missing
+        # the tag (colorway-only names like "Sun"/"Oat" give the name-
+        # based keyword fallback nothing to work with). Safe brand-wide
+        # default rather than leaving them uncategorized.
+        value = (product_type or "").strip()
+        return value if value else "Rug"
     value = (product_type or "").strip()
     return "" if value.lower() in JUNK_PRODUCT_TYPES else value
 
@@ -1144,6 +1153,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("coat rack", "Coat Stand"), ("coat stand", "Coat Stand"), ("winerack", "Wine Rack"),
     ("bookend", "Bookend"), ("candle holder", "Candle Holder"), ("candleholder", "Candle Holder"),
     ("ottoman", "Ottoman"), ("seater", "Sofa"), ("shelf", "Shelving"), ("urn", "Urn"),
+    ("blanket", "Blanket"), ("throw", "Blanket"),
     ("coupe", "Coupe"), ("grinder", "Mill"), ("bottle opener", "Bottle Opener"),
     ("bottle", "Bottle"),
     ("runner", "Rug"), ("mat", "Rug"), ("hook", "Coat Hook"), ("flush mount", "Flush Mount"),
@@ -1178,6 +1188,17 @@ CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Kalmar Werkstätten", "Frangere Studio", "Llot Llov", "Kristina Dam Studio",
     "MOR", "Lambert & Fils", "Calen Knauf", "Seletti", "Artetica", "Wontek",
     "Astraeus Clarke", "Luke Malaney", "Anna Dawson", "Arvo Ray",
+    # 2026-09-24/25 furniture/objects triage - same shop.sightunseen.com
+    # product_type unreliability as above, checked against real names.
+    "Stackelbergs", "Cultivation Objects", "Laun", "Orlando Pippig",
+    "Studio Vraco", "Known Work", "Ceramics Furniture Plants",
+    "Objects & Ideas", "Sunfish", "Michael Felix", "Alexis & Ginger",
+    "Studio Sam Klemick", "Nice Condo", "Nazara Lazaro", "Mike Ruiz-Serra",
+    "YSH Studio", "Clay Brown", "Juntos Projects", "Rest Energy", "LOEHR",
+    "LikeMindedObjects", "Steven Bukowski", "Studio Mignone",
+    "Nicholas Bijan Pourfard", "Ryan Jones Studio", "Jesse Groom", "Lland",
+    "Charles Constantine", "Jackrabbit Studio", "Ian Cochran", "Seer Studio",
+    "David Vu Studio", "Objects for Objects", "Kouros Maghsoudi", "Nifemi Ogunro",
 }
 
 
@@ -5227,6 +5248,70 @@ EXTRACTORS = {
     "Artetica": extract_shopify,
     "Wontek": extract_shopify,
     "Tala": extract_shopify,
+    # 2026-09-24/25 furniture/objects triage - small/independent makers
+    # with clean Shopify/WooCommerce catalogs, built first per user
+    # request (established houses triaged in the same pass are held for
+    # a later build - see brands.json notes).
+    "Cinqpoints": extract_shopify,
+    "Frama": extract_shopify,
+    "Stackelbergs": extract_shopify,
+    "Arturel": extract_shopify,
+    "Massimo Copenhagen": extract_shopify,
+    "Moebe": extract_shopify,
+    "Parachilna": extract_shopify,
+    "Form & Refine": extract_woocommerce,
+    "Tamo": extract_shopify,
+    "TOH-STUDIO": extract_shopify,
+    "Project 213A": extract_shopify,
+    "Marbledworks": extract_woocommerce,
+    "Noah": extract_shopify,
+    # "Act of Caring" excluded here - real catalog is 100% leather/fabric
+    # care products, not design objects; see brands.json note.
+    "Avolt": extract_shopify,
+    "Dixie": extract_woocommerce,
+    "Fine Little Day": extract_shopify,
+    "New Botanic": extract_shopify,
+    "No Early Birds": extract_shopify,
+    "Paradisverkstaden": extract_shopify,
+    # "Sheyn" excluded here - live 403 on the real scraper UA specifically,
+    # see its brands.json note; marked scrapable:false, not routed around.
+    "Tell Me More": extract_shopify,
+    # shop.sightunseen.com vendors - same shared-storefront vendor filter
+    # already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray.
+    "Cultivation Objects": extract_shopify,
+    "Laun": extract_shopify,
+    "Orlando Pippig": extract_shopify,
+    "Studio Vraco": extract_shopify,
+    "Known Work": extract_shopify,
+    "Ceramics Furniture Plants": extract_shopify,
+    "Objects & Ideas": extract_shopify,
+    "Sunfish": extract_shopify,
+    "Michael Felix": extract_shopify,
+    "Alexis & Ginger": extract_shopify,
+    "Studio Sam Klemick": extract_shopify,
+    "Nice Condo": extract_shopify,
+    "Nazara Lazaro": extract_shopify,
+    "Mike Ruiz-Serra": extract_shopify,
+    "YSH Studio": extract_shopify,
+    "Clay Brown": extract_shopify,
+    "Juntos Projects": extract_shopify,
+    "Rest Energy": extract_shopify,
+    "LOEHR": extract_shopify,
+    "LikeMindedObjects": extract_shopify,
+    "Steven Bukowski": extract_shopify,
+    "Studio Mignone": extract_shopify,
+    "Nicholas Bijan Pourfard": extract_shopify,
+    "Ryan Jones Studio": extract_shopify,
+    "Jesse Groom": extract_shopify,
+    "Lland": extract_shopify,
+    "Charles Constantine": extract_shopify,
+    "Jackrabbit Studio": extract_shopify,
+    "Ian Cochran": extract_shopify,
+    "Seer Studio": extract_shopify,
+    "David Vu Studio": extract_shopify,
+    "Objects for Objects": extract_shopify,
+    "Kouros Maghsoudi": extract_shopify,
+    "Nifemi Ogunro": extract_shopify,
 }
 
 

@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parachilna on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Parachilna's work on Formground - 73 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/parachilna.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Parachilna on Formground">
+<meta property="og:description" content="Parachilna's work on Formground - 73 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/parachilna.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSMGRGolden.jpg?v=1620065058">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSMGRGolden.jpg?v=1620065058">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Parachilna on Formground">
+<meta name="twitter:description" content="Parachilna's work on Formground - 73 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Parachilna", "item": "https://formground.com/brands/parachilna.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Parachilna</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Objects</span></div>
+    <a class="brand-site-link" href="https://parachilna.eu" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://parachilna.eu/products/aballs-a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSABlack.jpg?v=1620139516" alt="Aballs A by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aballs A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/aballs-a-ii-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/aballs-a-ii-gr-black-jaime-hayon.jpg?v=1623126666" alt="Aballs A II GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aballs A II GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/aballs-a-ii-me" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSAIIME_black_1.jpg?v=1623126674" alt="Aballs A II ME by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aballs A II ME</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/aballs-a-ii-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSAIIME_black_1_1a07b8b0-bd85-49c5-8978-60f66def2a44.jpg?v=1623126684" alt="Aballs A II PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aballs A II PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/aballs-chandelier-12" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSCHANDELIER12Black.jpg?v=1620066072" alt="Aballs Chandelier 12 by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aballs Chandelier 12</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/aballs-chandelier-4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSCHANDELIER4Black.jpg?v=1620067467" alt="Aballs Chandelier 4 by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aballs Chandelier 4</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/aballs-chandelier-8" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSCHANDELIER8Black.jpg?v=1620066713" alt="Aballs Chandelier 8 by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aballs Chandelier 8</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/aballs-m-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSMGRGolden.jpg?v=1620065058" alt="Aballs M GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aballs M GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/aballs-m-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSMPEGolden.jpg?v=1621719209" alt="Aballs M PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aballs M PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/aballs-t-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSTGRGolden.jpg?v=1709117979" alt="Aballs T GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aballs T GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/aballs-t-me" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSTMEGolden.jpg?v=1709118010" alt="Aballs T ME by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aballs T ME</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/aballs-t-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSTPEGolden.jpg?v=1709117992" alt="Aballs T PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aballs T PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/alistair-m" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/AlistairM.jpg?v=1590698213" alt="Alistair M by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alistair M</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/alistair-p" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/AlistairP.jpg?v=1590698259" alt="Alistair P by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alistair P</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/alta-costura" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/ALTACOSTURA.jpg?v=1719771975" alt="Alta Costura by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alta Costura</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/anwar-t-30" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ANWART30I.jpg?v=1590700269" alt="Anwar T 30 by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Anwar T 30</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/anwar-t-45" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ANWART45I.jpg?v=1590700312" alt="Anwar T 45 by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Anwar T 45</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/anwar-t-90" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ANWART90.jpg?v=1590700341" alt="Anwar T 90 by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Anwar T 90</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/anwar-t-combi-top45-bottom90" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ANWART45_T90I.jpg?v=1590700494" alt="Anwar T Combi. Top 45 by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Anwar T Combi. Top 45</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/b15-t-h-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/PARACHILNA_B15_H_GR.jpg?v=1714651702" alt="B15 T H GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">B15 T H GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/b15-t-h-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/PARACHILNA_B15_H_PE.jpg?v=1714651626" alt="B15 T H PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">B15 T H PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/b15-t-v-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/PARACHILNA_B15_V_GR.jpg?v=1714651539" alt="B15 T V GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">B15 T V GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/b15-t-v-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/PARACHILNA_B15_V_PE.jpg?v=1714651439" alt="B15 T V PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">B15 T V PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/babel-t-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/BABELGRVIII.jpg?v=1623127663" alt="Babel T GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Babel T GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/babel-t-me" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/BABELMEVII.jpg?v=1623127680" alt="Babel T ME by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Babel T ME</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/babel-t-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/BABELPEVI.jpg?v=1590712557" alt="Babel T PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Babel T PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/bai-a-ba-ba" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/BAIABABA_amber.jpg?v=1590713251" alt="Bai A Ba Ba by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bai A Ba Ba</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/bai-a-di-di" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/BAIADIDI_amber.jpg?v=1590713325" alt="Bai A Di Di by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bai A Di Di</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/bai-chandelier-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/BAICHENDELIERII_grey.jpg?v=1590713382" alt="Bai Chandelier II by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bai Chandelier II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/bai-chandelier-iii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/BAICHANDELIERIII_grey.jpg?v=1590713447" alt="Bai Chandelier III by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bai Chandelier III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/bai-t-ba-ba" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/BAI_T_BA_BA_Transparent.jpg?v=1709120025" alt="Bai T Ba Ba by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bai T Ba Ba</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/bai-t-di-di" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/BAITDIDI_transparent.jpg?v=1590713530" alt="Bai T Di Di by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bai T Di Di</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/bai-t-ma-ma" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/BAIAMAMAOUT-Transparent.jpg?v=1709120064" alt="Bai T Ma Ma by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bai T Ma Ma</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/chinoz" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/CHINOZming.jpg?v=1619992072" alt="Chinoz by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chinoz</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/costura" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/COSTURA.jpg?v=1720566602" alt="Costura by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Costura</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/denglong-p-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/DENGLONGPGR.jpg?v=1590762777" alt="Denglong P GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Denglong P GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/denglong-p-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/DENGLONGPPE.jpg?v=1590763756" alt="Denglong P PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Denglong P PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/denglong-t-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/DE0NGLONGTGR.jpg?v=1590763881" alt="Denglong T GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Denglong T GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/denglong-t-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/DE0NGLONGTPE.jpg?v=1590763928" alt="Denglong T PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Denglong T PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/gweilo-han-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/GWEILOHANGR1.jpg?v=1590765210" alt="Gweilo Han GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gweilo Han GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/gweilo-han-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/GWEILOHANPE1.jpg?v=1734257677" alt="Gweilo Han PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gweilo Han PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/gweilo-qin-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/GEWILOQINGR1.jpg?v=1590765263" alt="Gweilo Qin GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gweilo Qin GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/gweilo-qin-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/GWEILOQINPE2.jpg?v=1734257666" alt="Gweilo Qin PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gweilo Qin PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/gweilo-song" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/GWEILOSONG2.jpg?v=1590765310" alt="Gweilo Song by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gweilo Song</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/gweilo-zhou-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/GWEILOZHOUGR.jpg?v=1623806540" alt="Gweilo Zhou GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gweilo Zhou GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/gweilo-zhou-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/GWEILOZHOUPE.jpg?v=1623806583" alt="Gweilo Zhou PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gweilo Zhou PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/lighto-a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/LIGHTOA_Golden__web.jpg?v=1626182420" alt="Lighto A by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lighto A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/lightolight-a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/LIGHTOLIGHTARED1.jpg?v=1590766088" alt="Lighto A II by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lighto A II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/lighto-c-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/LIGHTOCGR_BlackChrome__web.jpg?v=1626181831" alt="Lighto C GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lighto C GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/lighto-c-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/LIGHTOCPE_BlackChrome__web.jpg?v=1626181922" alt="Lighto C PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lighto C PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/lighto-p" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/LIGHTOP_Golden__web.jpg?v=1626182467" alt="Lighto P by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lighto P</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/lighto-t-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/LIGHTOTGR_Golden__web.jpg?v=1626182287" alt="Lighto T GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lighto T GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/lighto-t-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/LIGHTOTPE_Golden__web.jpg?v=1626182372" alt="Lighto T PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lighto T PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/ma-rock-m" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/MA-ROCKM_Golden__web.jpg?v=1626172070" alt="Ma-Rock M by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ma-Rock M</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/ma-rock-t-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/MA-ROCKTGR_Golden__web.jpg?v=1626173918" alt="Ma-Rock T GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ma-Rock T GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/ma-rock-t-me" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/MA-ROCKTME_Golden__web.jpg?v=1626174043" alt="Ma-Rock T ME by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ma-Rock T ME</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/ma-rock-t-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/MA-ROCKTPE_Golden__web.jpg?v=1626174224" alt="Ma-Rock T PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ma-Rock T PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/manila-c-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/MANILACGR_Transparent__web.jpg?v=1626178887" alt="Manila C GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Manila C GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/manila-c-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/MANILACPE_Transparent__web.jpg?v=1626179015" alt="Manila C PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Manila C PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/manila-t-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/MANILATGR_Black__web.jpg?v=1626176542" alt="Manila T GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Manila T GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/manila-t-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/MANILATPE_Black__web.jpg?v=1626178805" alt="Manila T PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Manila T PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/oiphorique-p-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/OiphoriquePGR_02.jpg?v=1732724641" alt="Oïphorique P GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oïphorique P GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/oiphorique-p-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/OiphoriquePPE_02.jpg?v=1732724617" alt="Oïphorique P PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oïphorique P PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/oiphorique-p-pe-still" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/OiphoriquePStill_02.jpg?v=1732724473" alt="Oïphorique P Still (No movement) by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oïphorique P Still (No movement)</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/oiphorique-t-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/OiphoriqueTGR_02.jpg?v=1732724576" alt="Oïphorique T GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oïphorique T GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/oiphorique-t-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/OiphoriqueTPE_02.jpg?v=1732724538" alt="Oïphorique T PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oïphorique T PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/petra-m-gr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/PETRAMGR.jpg?v=1623803785" alt="Petra M GR by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Petra M GR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/petra-m-me" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/PETRAMME.jpg?v=1623803765" alt="Petra M ME by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Petra M ME</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/petra-m-pe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/PETRAMPE.jpg?v=1623803307" alt="Petra M PE by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Petra M PE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/serie-c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/SERIE-C-MEDIUM-PACKSHOT-2.jpg?v=1763638371" alt="Serie C by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Serie C</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/talla-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/TALLA3.jpg?v=1720565945" alt="Talla 3 by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Talla 3</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/topuro-l" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/topuroL-e-comm.jpg?v=1743967953" alt="Topuro L by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Topuro L</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://parachilna.eu/products/topuro-s" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/topuroS-e-comm.jpg?v=1743968184" alt="Topuro S by Parachilna" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Topuro S</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noah on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Noah's work on Formground - 153 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/noah.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Noah on Formground">
+<meta property="og:description" content="Noah's work on Formground - 153 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/noah.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Awa_Sofa_-_Sitzmodul_85x70_cm_Velvet_-_eisblau.webp?v=1789563929">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Awa_Sofa_-_Sitzmodul_85x70_cm_Velvet_-_eisblau.webp?v=1789563929">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Noah on Formground">
+<meta name="twitter:description" content="Noah's work on Formground - 153 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Noah", "item": "https://formground.com/brands/noah.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Noah</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Objects</span></div>
+    <a class="brand-site-link" href="https://noah-living.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://noah-living.com/products/beistelltisch-tischbeine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/coffee-table-tischbeine-klein-bordeaux-1_c7240531-525f-4728-b8a5-75fe01a3e17d.webp?v=1734541213" alt="41S by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">41S</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/beistelltisch-mittelstuck" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/side-table-glas-klein-mittelstuck-bordeaux-1.webp?v=1734541236" alt="42S by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">42S</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/beistelltisch-glasplatte" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/side-table-glas-klein-glasplatte-aubergine-1.webp?v=1734541237" alt="43S by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">43S</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/couchtisch-tischbeine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/coffee-table-glas-gross-tischbeine-bordeaux-1.webp?v=1731595758" alt="44S by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">44S</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/couchtisch-mittelstuck" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/coffee-table-glas-gross-mittelstuck-bordeaux-1.webp?v=1731594611" alt="45S by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">45S</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/couchtisch-mit-glasplatte" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/coffee-table-glas-gross-glasplatte-aubergine-1_bb85ea5c-9d17-41f6-9cb6-04f705532703.webp?v=1731591810" alt="46S by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">46S</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/awa-sofa-sitzmodul-85x70-cm-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Awa_Sofa_-_Sitzmodul_85x70_cm_Velvet_-_eisblau.webp?v=1789563929" alt="Awa Sofa by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Awa Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/combo-kissen-50x50-merit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-kissen-seite-gelb-gelb.webp?v=1718016331" alt="Combo Kissen 50x50 Merit by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Combo Kissen 50x50 Merit</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/combo-nackenrolle-lume" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-nackenrolle-lila.webp?v=1718016331" alt="Combo Nackenrolle Lume by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Combo Nackenrolle Lume</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/combo-verbinder-lume" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-kissen-verbindungsstuck-blau_a77ed9a5-d301-4211-83f7-5d441edac048.webp?v=1718099661" alt="Combo Verbinder Lume by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Combo Verbinder Lume</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/n1-sofa-samples" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/salbei_64bbfc6e-4e18-45f6-98e8-8a656110b6d2.jpg?v=1758202406" alt="F01 Onde Samples by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">F01 Onde Samples</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/n2-bett-muster" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-stoff-beige_94a12b15-70db-4284-92ec-d873e167be8e.jpg?v=1758202438" alt="F03 Linne Samples by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">F03 Linne Samples</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/torio-sofa-samples" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/stoff-karamell.jpg?v=1758202428" alt="F04 Mill Samples by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">F04 Mill Samples</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/n13-bett-samples" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/apricot-4-5.jpg?v=1758202478" alt="F05 Lume Samples by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">F05 Lume Samples</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/f06-mele-samples" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/braungrau-4-5.jpg?v=1758202478" alt="F06 Mele Samples by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">F06 Mele Samples</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/heia-bett-bezug-kopfteil-block-100-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/n13-stoffbezug-Box-Front-100.6.webp?v=1769771372" alt="Heia Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Heia Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/heia-bett-block-90x220-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/90x220_Front_boxen_weiss.8_Kopie.webp?v=1753091593" alt="Heia Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Heia Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/heia-bett-stripes-200x220-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/200x220_Front_stripes_grun.7_copy.webp?v=1753092413" alt="Heia Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Heia Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/heia-bett-soft-200x220-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/200x220_Front_plain_weiss.7_copy.webp?v=1753093096" alt="Heia Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Heia Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/heia-bett-solid-200x220-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/200x220_Front_wood_weiss_copy.webp?v=1753093603" alt="Heia Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Heia Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/heia-bett-frame-200x220-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/200x220_Front_ohne_weiss_copy.webp?v=1753090683" alt="Heia Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Heia Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/heia-bett-ablage-200-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/140x200_seitliche_Ablage_0001_Ablagebrett_200.2_Kopie.webp?v=1758634408" alt="Heia Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Heia Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/spiegel-joy-arc" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-spiegel-joy-arc-front-sonnengelb.webp?v=1720792508" alt="Joy Spiegel by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Joy Spiegel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-40x60-ambra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N03-60x40-Ambra-Jutebeige-Frontal.webp?v=1789555875" alt="Kissen 40x60 Ambra by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 40x60 Ambra</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-40x60-boucle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N03-60x40-Boucle-Felsgrau-Frontal.webp?v=1789555874" alt="Kissen 40x60 Bouclé by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 40x60 Bouclé</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-40x60-mele" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N03-60x40-Mele-Wuestenbeige-Frontal.webp?v=1789555874" alt="Kissen 40x60 Mele by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 40x60 Mele</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-40x60-mill" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-kissen-60x40-torio-liegend-violettblau-rostrot_n3.webp?v=1780045889" alt="Kissen 40x60 Mill by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 40x60 Mill</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-40x60-onde" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-kissen-60x40-noah-liegend-blassrosa.webp?v=1780048815" alt="Kissen 40x60 Onde by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 40x60 Onde</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-40x60-sandis" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N03-60x40-Sandis-Frontal.webp?v=1789555874" alt="Kissen 40x60 Sandis by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 40x60 Sandis</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-40x60-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N03-60x40-Velvet-Puderflieder-Frontal.webp?v=1789555871" alt="Kissen 40x60 Velvet by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 40x60 Velvet</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-50x50-ambra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N03-50x50-Ambra-Leinenweiss-Front.webp?v=1789555874" alt="Kissen 50x50 Ambra by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 50x50 Ambra</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-50x50-boucle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N03-50x50-Boucle-Ziegelrot-Front.webp?v=1789555874" alt="Kissen 50x50 Bouclé by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 50x50 Bouclé</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-50x50-mele" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N03-50x50-Mele-Warmgrau-Front.webp?v=1789555874" alt="Kissen 50x50 Mele by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 50x50 Mele</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-50x50-mill" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-kissen-50x50-torio-liegend-puderrosan3.webp?v=1780047561" alt="Kissen 50x50 Mill by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 50x50 Mill</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-50x50-onde" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-kissen-50x50-noah-frontal-salbei.webp?v=1780049314" alt="Kissen 50x50 Onde by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 50x50 Onde</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-50x50-sandis" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N03-50x50-Sandis-Front.webp?v=1789555875" alt="Kissen 50x50 Sandis by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 50x50 Sandis</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-50x50-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N03-50x50-Velvet-Eisblau-Front.webp?v=1789555872" alt="Kissen 50x50 Velvet by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 50x50 Velvet</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-60x70-ambra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N07-Standart-Ambra-Rost-Frontal.webp?v=1789555875" alt="Kissen 60x70 Ambra by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 60x70 Ambra</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-60x70-boucle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N07-Standart-Boucle-Wollweiss-Frontal.webp?v=1789555875" alt="Kissen 60x70 Bouclé by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 60x70 Bouclé</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-60x70-mele" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N07-Standart-Mele-Leinenbeige-Frontal.webp?v=1789555875" alt="Kissen 60x70 Mele by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 60x70 Mele</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-60x70-sandis" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N07-Standart-Sandis-Frontal.webp?v=1789555875" alt="Kissen 60x70 Sandis by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 60x70 Sandis</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-60x70-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N07-Standart-Velvet-Espresso-Frontal.webp?v=1789555874" alt="Kissen 60x70 Velvet by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 60x70 Velvet</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-90x90-ambra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N07-Riesenkissen-Ambra-Trueffelbraun-Frontal.webp?v=1789555874" alt="Kissen 90x90 Ambra by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 90x90 Ambra</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-90x90-boucle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N07-Riesenkissen-Boucle-Dunkelgruen-Frontal.webp?v=1789555873" alt="Kissen 90x90 Bouclé by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 90x90 Bouclé</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-90x90-mele" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N07-Riesenkissen-Mele-Wuestenbeige-Frontal.webp?v=1789555874" alt="Kissen 90x90 Mele by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 90x90 Mele</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-90x90-sandis" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N07-Riesenkissen-Sandis-Frontal.webp?v=1789555875" alt="Kissen 90x90 Sandis by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 90x90 Sandis</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-90x90-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N07-Riesenkissen-Velvet-Eisblau-Frontal.webp?v=1789555874" alt="Kissen 90x90 Velvet by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen 90x90 Velvet</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-combo-merit-lume" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-combo-start.webp?v=1718104864" alt="Kissen Combo Merit/Lume by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen Combo Merit/Lume</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/kissen-combo-onde" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-kissen-rolle-liegend-himmelblau_1373a2e3-7f20-49db-99da-dd5354454e5a.webp?v=1780049908" alt="Kissen Combo Onde by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kissen Combo Onde</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/lattenrost-100x200-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Lattenrost-90-200.webp?v=1784642619" alt="Lattenrost 100x200 cm by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lattenrost 100x200 cm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/lattenrost-100x220-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Lattenrost-90-200.webp?v=1784642619" alt="Lattenrost 100x220 cm by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lattenrost 100x220 cm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/lattenrost-70x200-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Lattenrost-90-200.webp?v=1784642619" alt="Lattenrost 70x200 cm by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lattenrost 70x200 cm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/lattenrost-70x220-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Lattenrost-90-200.webp?v=1784642619" alt="Lattenrost 70x220 cm by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lattenrost 70x220 cm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/lattenrost-80x200-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Lattenrost-90-200.webp?v=1784642619" alt="Lattenrost 80x200 cm by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lattenrost 80x200 cm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/lattenrost-80x220-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Lattenrost-90-200.webp?v=1784642619" alt="Lattenrost 80x220 cm by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lattenrost 80x220 cm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/lattenrost-90x200-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Lattenrost-90-200.webp?v=1784642619" alt="Lattenrost 90x200 cm by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lattenrost 90x200 cm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/lattenrost-90x220-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Lattenrost-90-200.webp?v=1784642619" alt="Lattenrost 90x220 cm by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lattenrost 90x220 cm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/lino-bett-mittelholm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-lino-mittelholm-eiche-natur.webp?v=1773398703" alt="Lino Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lino Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/lino-bett-block-200x220-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/lino-block-200x220-esche-quarz-leichtgruen-front.webp?v=1761747352" alt="Lino Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lino Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/noah-bett-bezug-kopfteil-soft-flex" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/n2-soft-flex-bezug-90_5.webp?v=1761310446" alt="Lino Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lino Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/noah-bett-soft-200-x-220-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-bett_200x220_frame_cloud_durchgehend_f_schwarz_leichtgrun_508a859d-5b9d-46e3-b491-636701904307.webp?v=1720611734" alt="Lino Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lino Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/noah-bett-solid-90-x-200-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Bett_90x200_minimalist_front_schwarz_burgundy_160202e2-dd68-4635-96d5-e780c9477d4b.webp?v=1768834632" alt="Lino Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lino Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/noah-bett-frame-200-x-220-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Bett_200x220_frame_front_schwarz_21adfaa5-9fc2-4221-9c71-bcae69b080c3.webp?v=1720614572" alt="Lino Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lino Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/sofa-ecklehne-unten-schwarz" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-Ecklehne-95-unten-schwarz-gestell-Image0018_copy.webp?v=1773244532" alt="Noah Sofa by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Noah Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/noah-sofa-tisch-holz" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-sofa-tisch-holz.webp?v=1770388956" alt="Noah Sofa by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Noah Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/sitzmodul-95-beigerot" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-sofa-chaise-95-p-main-image.webp?v=1718122518" alt="Noah Sofa by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Noah Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/obento-beistelltisch" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/n6-Sidetable-Zeichnung.png?v=1734694770" alt="Obento Beistelltisch by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Obento Beistelltisch</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/bento-beistelltisch-basis" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-illustration-coffee-table-glas-klein-tischbeine-lavendel-fuss_f6024fc3-609f-41d4-ba66-ee838fce1833.webp?v=1734541198" alt="Obento Beistelltisch Basis by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Obento Beistelltisch Basis</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/bento-beistelltisch-box" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-illustration-coffee-table-glas-klein-mittelstuek-tiefblau.webp?v=1734541199" alt="Obento Beistelltisch Box by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Obento Beistelltisch Box</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/obento-beistelltisch-edelstahl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Ansicht_4_Edelstahl_RAL280_60_35_ST.webp?v=1760609096" alt="Obento Beistelltisch Edelstahl by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Obento Beistelltisch Edelstahl</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/bento-beistelltisch-glas" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-illustration-coffee-table-glas-klein-glasplatte-hellrosa.webp?v=1734541197" alt="Obento Beistelltisch Glas by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Obento Beistelltisch Glas</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/obento-couchtisch" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/n6-coffeetable-zeichnung.png?v=1734694765" alt="Obento Couchtisch by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Obento Couchtisch</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/bento-couchtisch-basis" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-illustration-coffee-table-glas-gross-tischbeine-vanillegelb.webp?v=1734541200" alt="Obento Couchtisch Basis by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Obento Couchtisch Basis</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/bento-couchtisch-box" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-illustration-coffee-table-glas-gross-mittelstuek-schwarzbraun.webp?v=1734541200" alt="Obento Couchtisch Box by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Obento Couchtisch Box</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/obento-couchtisch-edelstahl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Ansicht_1_Edelstahl_RAL340_20_05_CT.webp?v=1768830931" alt="Obento Couchtisch Edelstahl by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Obento Couchtisch Edelstahl</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/bento-couchtisch-glas" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-illustration-coffee-table-glas-gross-glassolatte-veilchenblau.webp?v=1734541196" alt="Obento Couchtisch Glas by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Obento Couchtisch Glas</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/piet-beistelltisch-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-n4-sidetable-einzelteile-eiche.webp?v=1734541211" alt="Piet Beistelltisch by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Piet Beistelltisch</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/piet-couchtisch-rund-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-coffeetable-piet-round-esche-tiefschwarz-blank-hero.webp?v=1734541202" alt="Piet Couchtisch by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Piet Couchtisch</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-16-lehne-sessel-100x85" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S16-N9-1S-100x85-Lehne-Waldgruen-P1_9835955e-c013-4bda-9d78-314ef15af955.webp?v=1743521979" alt="S 16 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 16</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-17-lehne-sessel-100x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S17-N9-1S-100x100-Lehne-Violettbraun-P1_7a293f82-b491-4337-b4a2-434f849ffdf9.webp?v=1743523191" alt="S 17 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 17</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-18-lehne-sessel-100x120" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S18-N9-1S-100x120-Lehne-Leichtbeige-P1_c6a95015-5001-4efd-a83f-a742cc03ed51.webp?v=1741961314" alt="S 18 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 18</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-19-lehne-sessel-100x150" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S19-N9-1S-100x150-Lehne-Leichtbeige-P1_30258e95-fd5e-4211-8036-7cd657b7df32.webp?v=1741961311" alt="S 19 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 19</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-20-lehne-sessel-85x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S20-N9-1S-85x100-Lehne-Leichtbeige-P1_2bf22fba-b320-4cef-b35a-85dd92cd26f0.webp?v=1741961307" alt="S 20 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 20</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-21-lehne-sessel-120x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S21-N9-1S-120x100-Lehne-Leichtbeige-P1_7fa045f3-e8f7-426f-998b-3f925110d253.webp?v=1741961301" alt="S 21 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 21</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-22-lehne-sessel-150x100-120" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S22-N9-1S-150x100-KI-120-Lehne-Leichtbeige-P1_aa9268d8-c536-4d8c-a55e-093116eb3e7a.webp?v=1741961296" alt="S 22 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 22</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-23-lehne-eckmodul-100x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S23-N9-1EMO-100x100-Lehne-Leichtbeige-P1_1f4d604c-8c86-4bfe-bed1-11ab96d58086.webp?v=1741961290" alt="S 23 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 23</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-24-lehne-eckmodul-100x85-rechts" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S24-N9-1EMO-100x85R-Lehne-Leichtbeige-P1_d3940ec9-638e-4691-ad47-8da8a2598524.webp?v=1741961286" alt="S 24 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 24</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-25-lehne-eckmodul-100x85-links-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S25-N9-1EMO-100x85L-Lehne-Leichtbeige-P1_be6dabe6-f5cd-4cac-9b01-a546e9f5b833.webp?v=1741961087" alt="S 25 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 25</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-25-lehne-eckmodul-100x85-links" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S26-N9-1EMO-100x120R-Lehne-Violettblau-P1_cb9c7fbd-fa70-40bb-ae9b-0a7ece8a9966.webp?v=1743525543" alt="S 26 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 26</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-27-lehne-eckmodul-100x120-links" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S27-N9-1EMO-100x120L-Lehne-Leichtbeige-P1_7aeb3928-3454-4cca-a7c9-eada096d8b3a.webp?v=1785147581" alt="S 27 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 27</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-28-lehne-eckmodul-100x150" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S28-N9-1EMO-100x150-EKI100-Lehne-Leichtbeige-P1_c3bf8f25-f808-4b85-acba-2c7569e4cb53.webp?v=1741961277" alt="S 28 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 28</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-29-lehne-eckmodul-100x150-rechts" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S29-N9-1EMO-100x150-EKI120R-Lehne-Leichtbeige-P1_fddd4163-48af-4868-b455-11acaa56d7a2.webp?v=1741961274" alt="S 29 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 29</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-30-lehne-eckmodul-100x150-links" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S30-N9-1EMO-100x150-EKI120L-Lehne-Leichtbeige-P1_83bf479f-8212-4529-a97a-248b2d45dcdf.webp?v=1741961271" alt="S 30 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 30</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-31-modul-2-sitzer-sofa-200x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N9-2S-200x100-Modul-Leichtbeige-P1_1f3fac51-43dd-493c-a5f4-dd4afec1167f.webp?v=1741961634" alt="S 31 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 31</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-32-lehne-2-sitzer-sofa-200x120" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S32-N9-2S-200x120-Lehne-Leichtbeige-P1_8348c053-d773-440d-b5f4-13ec2dd0e033.webp?v=1741961247" alt="S 32 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 32</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-33-lehne-2-sitzer-sofa-240x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S33-N9-2S-240x100-Lehne-Leichtbeige-P1_702927ae-2353-4b61-96a2-17d4c2838945.webp?v=1741961244" alt="S 33 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 33</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-35-lehne-2-sitzer-sofa-200x85" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S35-N9-2S-200x85-Lehne-Leichtbeige-P1_f3c73c6f-d944-45cd-8e85-bcd4865171a6.webp?v=1741961237" alt="S 35 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 35</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-36-lehne-2-sitzer-sofa-170x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S36-N9-2S-170x100-Lehne-Leichtbeige-P1_56b5a2e2-8aee-4f0f-8fe3-ba0fe17a5548.webp?v=1741961234" alt="S 36 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 36</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-37-lehne-2-sitzer-sofa-200x150" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S37-N9-2S-200x150-Lehne-Leichtbeige-P1_a33ea768-2175-433e-af3d-4a2220df2b65.webp?v=1741961230" alt="S 37 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 37</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-38-lehne-2-sitzer-sofa-220x150" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S38-N9-2S-220x150-Lehne-Leichtbeige-P1_23d7a91a-b5ec-4f97-877a-3ee5169be6ea.webp?v=1741961227" alt="S 38 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 38</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-39-modul-2-sitzer-sofa-220x150-offen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N9-2S-220x150-OF-Modul-Leichtbeige-P1_00358274-60c8-43c6-a98e-9716cfd3d2e9.webp?v=1741961608" alt="S 39 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 39</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-40-lehne-2-sitzer-sofa-250x150-offen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S40-N9-2S-250x150-OF-Lehne-Leichtbeige-P1_9e8e33ee-428a-4fb5-8c93-3c511ae28634.webp?v=1741961218" alt="S 40 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 40</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-41-lehne-2-sitzer-chaise-sofa-200x185" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S41-N9-2SC-200x185-Lehne-Leichtbeige-P1_02f0de7d-6594-4021-b39e-c7d24daf1de7.webp?v=1741961215" alt="S 41 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 41</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-42-lehne-2-sitzer-chaise-sofa-240x200" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S42-N9-2SC-240x200-Lehne-Leichtbeige-P1_d332f78c-4da0-4901-808a-32ea1d146bdf.webp?v=1741961211" alt="S 42 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 42</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-43-lehne-2-sitzer-chaise-sofa-250x185" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S43-N9-2SC-250x185-Lehne-Leichtbeige-P1_b28d0afb-1e10-4248-aa17-767bd209208a.webp?v=1741961207" alt="S 43 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 43</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-44-lehne-3-sitzer-sofa-255x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S44-N9-3S-255x100-Lehne-Leichtbeige-P1_819109aa-f348-4291-9525-a7661038ceec.webp?v=1741961204" alt="S 44 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 44</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-45-lehne-3-sitzer-sofa-300x85" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S45-N9-3S-300x85-Lehne-Leichtbeige-P1_1ccca108-cc10-4350-805c-ed9df813c837.webp?v=1741961201" alt="S 45 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 45</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-46-lehne-3-sitzer-sofa-270x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S46-N9-3S-270x100-Lehne-Leichtbeige-P1_445f49d5-2ec7-459b-83ce-c19c37554073.webp?v=1741961197" alt="S 46 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 46</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-47-lehne-3-sitzer-sofa-285x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S47-N9-3S-285x100-Lehne-Leichtbeige-P1_a0083378-f3e2-49b8-b974-5fc3201c48e1.webp?v=1741961194" alt="S 47 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 47</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-48-lehne-3-sitzer-sofa-300x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S48-N9-3S-300x100-Lehne-Leichtbeige-P1_094ce3a8-3fe5-4f07-80ea-78cdb658f379.webp?v=1741961190" alt="S 48 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 48</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-49-lehne-3-sitzer-sofa-300x100-offen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S49-N9-3S-300x100-OF-Lehne-Leichtbeige-P1_948941eb-0c28-4550-b15e-49d98f304eb9.webp?v=1741961187" alt="S 49 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 49</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-50-lehne-3-sitzer-sofa-300x120" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S50-N9-3S-300x120-Lehne-Leichtbeige-P1_52ccfcf1-c4b1-4941-ba7c-9a653500df17.webp?v=1741961183" alt="S 50 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 50</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-51-lehne-3-sitzer-sofa-320x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S51-N9-3S-320x100-Lehne-Leichtbeige-P1_9d1389f7-1661-40c7-b5ad-f1dd775d8b1d.webp?v=1741961180" alt="S 51 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 51</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-52-lehne-3-sitzer-sofa-340x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S52-N9-3S-340x100-Lehne-Leichtbeige-P1_59588593-8e8d-4d7e-b3ff-5b1726ad3387.webp?v=1741961175" alt="S 52 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 52</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-53-lehne-3-sitzer-sofa-360x100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S53-N9-3S-360x100-Lehne-Leichtbeige-P1_01bae096-5858-4aa9-a735-d650dd1ec984.webp?v=1741961170" alt="S 53 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 53</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-54-lehne-3-sitzer-chaise-sofa-300x150" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N9-3S-300x150-Lehne-Leichtbeige-P1_a400b28e-b5d7-4123-a6b0-b9229c8f61b5.webp?v=1741961163" alt="S 54 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 54</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-55-lehne-3-sitzer-chaise-sofa-340x150" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S55-N9-3S-340x150-Lehne-Leichtbeige-P1_557d8f63-3ecf-431c-b2fa-631c7be1c393.webp?v=1741961159" alt="S 55 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 55</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-56-modul-3-sitzer-350x150-offen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/N9-3S-350x150-OF-Modul__leaf_green_1.webp?v=1741961692" alt="S 56 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 56</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-57-lehne-3-sitzer-chaise-sofa-300x150-offen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S57-N9-3S-300x150-OF-Lehne-Leichtbeige-P1_16a7047e-d8b9-4c62-ac1d-cfc22606d661.webp?v=1741961154" alt="S 57 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 57</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-58-lehne-3-sitzer-chaise-sofa-255x200" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S58-N9-3SC-255x200-Lehne-Leichtbeige-P1_5852d4af-665e-421a-b409-f9c5e7b3e030.webp?v=1741961145" alt="S 58 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 58</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-59-lehne-3-sitzer-chaise-sofa-270x185" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S59-N9-3SC-270x185-Lehne-Leichtbeige-P1_96a9f130-eaac-4430-93a3-491bd63d070c.webp?v=1741961141" alt="S 59 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 59</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-60-lehne-3-sitzer-chaise-sofa-285x185" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S60-N9-3SC-285x185-Lehne-Leichtbeige-P1_876e9021-63fa-4d8a-ad81-5bb08463a8f2.webp?v=1741961136" alt="S 60 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-61-lehne-3-sitzer-chaise-sofa-300x200" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S61-N9-3SC-300x200-Lehne-Leichtbeige-P1_9a02f7cc-23e7-4253-b904-4e186b1f23ed.webp?v=1741961132" alt="S 61 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 61</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-62-lehne-3-sitzer-chaise-sofa-300x220" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S62-N9-3SC-300x220-Lehne-Leichtbeige-P1_f3389215-d732-4f28-a5d6-affa0f754c24.webp?v=1741961127" alt="S 62 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 62</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-63-lehne-3-sitzer-chaise-sofa-320x200" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S63-N9-3SC-320x200-Lehne-Leichtbeige-P1_f3ed1c0f-2d31-40fb-859c-ad5363950246.webp?v=1741961122" alt="S 63 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 63</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-64-lehne-3-sitzer-chaise-sofa-340x200" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S64-N9-3SC-340x200-Lehne-Leichtbeige-P1_890ef7da-4c92-45e5-a7f8-851b22eaefb3.webp?v=1741961115" alt="S 64 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 64</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-65-lehne-3-sitzer-chaise-sofa-360x200" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S65-N9-3SC-360x200-Lehne-Leichtbeige-P1_c41d9e7d-8266-45a5-85df-e36212d0973a.webp?v=1741961108" alt="S 65 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 65</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-66-lehne-4-sitzer-ecksofa-285x185-offen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S66-N9-4S-285x185-OF-Lehne-Leichtbeige-P1_8e5f7948-1984-461f-a2f3-e3316e91e041.webp?v=1741961104" alt="S 66 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 66</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-67-lehne-4-sitzer-ecksofa-300x200" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S67-N9-4S-300x200-Lehne-Leichtbeige-P1_cf16a881-76b0-41fd-92db-ba449d441640.webp?v=1741961099" alt="S 67 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 67</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-68-lehne-5-sitzer-ecksofa-285x285" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S68-N9-5S-285x285-Lehne-Leichtbeige-P1_9082217c-e563-4692-936f-e424aaf338fd.webp?v=1741961095" alt="S 68 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 68</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-69-lehne-5-sitzer-ecksofa-300x300-offen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S69-N9-5S-300x300-OF-Lehne-Leichtbeige-P1_6c369093-6953-4802-9599-d46635b7eece.webp?v=1741961091" alt="S 69 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 69</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-70-lehne-3-sitzer-chaise-sofa-220x220" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S70-N9-3S-220x220-Lehne-Leichtbeige-P1_97eb3abc-7af3-4bd8-babd-8b41918ee785.webp?v=1741961150" alt="S 70 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 70</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-71-lehne-sessel-150x100-100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S71-N9-1S-150x100-KI-100-Lehne-Leichtbeige-P1_f3ab66f0-5c5a-48f7-a2fe-4692b0174156.webp?v=1741961293" alt="S 71 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 71</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-72-lehne-eckmodul-85x100-rechts" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S72-N9-1EMO-85x100R-Lehne-Leichtbeige-P1_04bbafb7-9c2f-43da-be56-550ee558de7b.webp?v=1741961266" alt="S 72 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 72</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-73-lehne-eckmodul-85x100-links" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S73-N9-1EMO-85x100L-Lehne-Leichtbeige-P1_b35b06a0-e12d-4ab1-8cbd-f370d693ad7d.webp?v=1741961263" alt="S 73 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 73</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-74-lehne-eckmodul-120x100-rechts" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S74-N9-1EMO-120x100R-Lehne-Blassgelb-P1_64a52566-49f7-4201-a1c5-33ed3b5d1fbf.webp?v=1785496239" alt="S 74 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 74</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/s-75-lehne-eckmodul-120x100-links" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S75-N9-1EMO-120x100L-Lehne-Waldgruen-P1_d53448e8-51cc-426e-bfe9-cb95e39eb463.webp?v=1785145663" alt="S 75 by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S 75</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/lino-bett-stoff-lfm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-stoff-beige_94a12b15-70db-4284-92ec-d873e167be8e.jpg?v=1758202438" alt="Stoff Linne (Lfm.) by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stoff Linne (Lfm.)</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/heia-bett-stoff-lfm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/apricot-4-5.jpg?v=1758202478" alt="Stoff Lume (Lfm.) by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stoff Lume (Lfm.)</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/stoff-mele-lfm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/braungrau-4-5.jpg?v=1758202478" alt="Stoff Mele (Lfm.) by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stoff Mele (Lfm.)</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/torio-sofa-stoff-lfm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/stoff-kupferbeige.jpg?v=1758202428" alt="Stoff Mill (Lfm.) by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stoff Mill (Lfm.)</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/noah-sofa-stoff" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/salbei_64bbfc6e-4e18-45f6-98e8-8a656110b6d2.jpg?v=1758202406" alt="Stoff Onde (Lfm.) by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stoff Onde (Lfm.)</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/tomo-bett-kopfteil-solid-200-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-n19-headboard-Solid-200er.webp?v=1787821410" alt="Tomo Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tomo Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/tomo-bett-line-140x220-cm-extended-mill" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/140x220_Soft_sml.Perspektive.9_B26.webp?v=1785841137" alt="Tomo Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tomo Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/tomo-bett-block-160x220-cm-extended-mill" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/160x220_Block.Perspektive.9_B26.webp?v=1785844282" alt="Tomo Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tomo Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/tomo-bett-frame-140x200-cm-extended" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/140x200_Frame.Perspektive_B26.webp?v=1785841179" alt="Tomo Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tomo Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/tomo-bett-solid-160x200-cm-extended" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/160x200_Solid.Perspektive_B26.webp?v=1785841220" alt="Tomo Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tomo Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/tomo-bett-kopfteil-block-90-cm-mill" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-n19-headboard-Block-90er-Kupferbeige_7b13c60d-1462-4a97-8ecd-10c19fd35750.webp?v=1783345547" alt="Tomo Bett by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tomo Bett</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/torio-beistelltisch-holz" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/tisch-n9-eiche-natur-kastanienrot.webp?v=1744815388" alt="Torio Beistelltisch by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Torio Beistelltisch</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/torio-sofa-modulverbinder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-torio-modulverbinder-Edelstahl_ad8762ea-1f2b-4bb2-ac61-a505590ffdbb.webp?v=1767954251" alt="Torio Sofa by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Torio Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/husse-lehne-120" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/0000s_0019_S21-N9-1S-120x100-Lehne-Blassgruen-P3.webp?v=1761140562" alt="Torio Sofa by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Torio Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/modul-100x150" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S15-N9-MO-100x150-Modul-Beigeweiss-P1.webp?v=1743671984" alt="Torio Sofa by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Torio Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/wendel-tisch-essential-alu-verlangerbar" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/200-innen-schraeg-ausziehbar.svg?v=1744797536" alt="Wendel Tisch by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wendel Tisch</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>No Early Birds on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="No Early Birds's work on Formground - 86 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/no-early-birds.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="No Early Birds on Formground">
+<meta property="og:description" content="No Early Birds's work on Formground - 86 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/no-early-birds.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/FunkCabinet_180x70cm.png?v=1786913428">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/FunkCabinet_180x70cm.png?v=1786913428">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="No Early Birds on Formground">
+<meta name="twitter:description" content="No Early Birds's work on Formground - 86 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "No Early Birds", "item": "https://formground.com/brands/no-early-birds.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">No Early Birds</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">Sweden</span></div>
+    <a class="brand-site-link" href="https://noearlybirds.se" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://noearlybirds.se/products/funk-bureau" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/FunkCabinet_180x70cm.png?v=1786913428" alt="Funk Bureau by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Funk Bureau</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-6-legged-sofa-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_6legged_sofa_table.jpg?v=1611771301" alt="NEB 6-Legged Sofa Table by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB 6-Legged Sofa Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-bar-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_bar_stool.jpg?v=1611771333" alt="NEB Bar Stool by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Bar Stool</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-bar-unit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_bar_unit.jpg?v=1617095807" alt="NEB Bar Unit by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Bar Unit</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-bar-chair-in-walnut-and-tarnsjo-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEBBarstoolinwalnutandgreenleather.png?v=1786906458" alt="NEB Barstool in Walnut and Tärnsjö leather by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Barstool in Walnut and Tärnsjö leather</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-bedside-tablestorage-box" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_bedside_table.jpg?v=1612388479" alt="NEB Bedside Table by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Bedside Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-bench" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/neb_rosari_001.jpg?v=1740069100" alt="NEB Bench in Stone Top by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Bench in Stone Top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-benck" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEBBenchwithgreentop.png?v=1786915710" alt="NEB Bench with Green Top by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Bench with Green Top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-bench-with-green-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_bench_laminate.jpg?v=1611778564" alt="NEB Bench with Top in Fenix laminate by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Bench with Top in Fenix laminate</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-lampholder-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_brass_lamp_wall.jpg?v=1611693410" alt="NEB Brass Lamp For Mounting on Wall or Ceiling by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Brass Lamp For Mounting on Wall or Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-brasslam-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_brass_lamp_pendant.jpg?v=1611693369" alt="NEB Brass Lamp Pendant by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Brass Lamp Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-brasslamp-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_brass_lamp_table2.jpg?v=1612388555" alt="NEB Brass Table Lamp by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Brass Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-bureau" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_bureau.jpg?v=1611778746" alt="NEB Bureau by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Bureau</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-cabinet-la-pasticceria" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_pasticceria1.jpg?v=1612388630" alt="NEB Cabinet &quot;La Pasticceria&quot; by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Cabinet &quot;La Pasticceria&quot;</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/copy-of-neb-candelabra-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/12161-4d44e177dc854d57a73c3328d0eacd41.jpg?v=1740070561" alt="NEB Candelabra by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Candelabra</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-candlestick-with-tray" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Candlestick3.jpg?v=1612388707" alt="NEB Candlestick With Tray 01 by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Candlestick With Tray 01</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/copy-of-neb-candlestick-with-tray-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Candlestick1.jpg?v=1612388716" alt="NEB Candlestick With Tray 02 by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Candlestick With Tray 02</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/copy-of-neb-candlestick-with-tray-04" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Candlestick2.jpg?v=1612388725" alt="NEB Candlestick With Tray 04 by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Candlestick With Tray 04</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-chair-01" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Chair_01_Black_Brass_Black_Black_052.jpg?v=1740069632" alt="NEB Chair 01 In Vegetably Tanned Tärnsjö Leather by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Chair 01 In Vegetably Tanned Tärnsjö Leather</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-chair-03-in-green-leather-and-massive-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/PSBESPOKECHAIRINWALNUTANDGREENTARNSJOLEATHERBYPERSODERBERG_fd2baf0c-a8a2-42ac-80b4-2df3af0089e3.jpg?v=1632919985" alt="NEB Chair 03 In Walnut and Green Tarnsjö Leather by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Chair 03 In Walnut and Green Tarnsjö Leather</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-chair-03-in-walnut-and-vegetable-tanned-tarnsjo-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/PSBespokearmchairnaturaltarnsjoleatherandwalnut.jpg?v=1634647960" alt="NEB Chair 03 in Walnut and Vegetable Tanned Tärnsjö Leather by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Chair 03 in Walnut and Vegetable Tanned Tärnsjö Leather</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-chair-nsw" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_ChairNSW.jpg?v=1612388771" alt="NEB Chair NSW in Vegetably Tanned Tärnsjö Letaher by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Chair NSW in Vegetably Tanned Tärnsjö Letaher</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-concole-table-02-with-top-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/console1000x600.jpg?v=1642107208" alt="NEB Console Table 02 With Top In Oak by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Console Table 02 With Top In Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-console-table-in-travertine-stone" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/Calacatta_Console-table.jpg?v=1612388373" alt="NEB Console Table In Travertine Stone by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Console Table In Travertine Stone</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-console-table-with-top-in-carrara-marble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Console_table_carrara.jpg?v=1612388804" alt="NEB Console Table With Top In Carrara Marble by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Console Table With Top In Carrara Marble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/copy-of-neb-console-table-in-oak-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/12161-35a3cc9e458248139ebb39ea8215c9f7_8ddee707-f3fe-4a0d-b7b3-95c170c553d1.jpg?v=1558528515" alt="NEB Console Table With Top In Laminate by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Console Table With Top In Laminate</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-console-table-with-top-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Console.jpg?v=1612388823" alt="NEB Console Table With Top In Oak by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Console Table With Top In Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-console-table-in-zinc-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/IMG_1447.jpg?v=1740065065" alt="NEB Console Table in Zinc Top by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Console Table in Zinc Top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-console-table-with-top-in-brass-zinc-or-copper" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Console_brass1.jpg?v=1611779089" alt="NEB Console Table with Top In Brass by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Console Table with Top In Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-console-table-with-top-in-grigio-carnico-marble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Cansole_Table_Grigio_Carnico.jpg?v=1611862310" alt="NEB Console Table with Top In Grigio Carnico Marble by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Console Table with Top In Grigio Carnico Marble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-console-table-with-top-in-verde-italia-granite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Console_table_Noearlybirds_Per_Soderberg_Verde_Italia_l.150.jpg?v=1555065113" alt="NEB Console Table with Top In Verde Italia Granite by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Console Table with Top In Verde Italia Granite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-cube-in-italian-marble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEBCube01_SidetableinVerdeItalia01.png?v=1786862769" alt="NEB Cube 01 by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Cube 01</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-cube-02-in-massive-walnut-and-glass-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Cube_02_fa944de6-04cb-4043-9edb-f3155f867dd8.jpg?v=1611859657" alt="NEB Cube 02 in Walnut base and Glass top by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Cube 02 in Walnut base and Glass top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-cube-03-coffe-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Cube_03_in_Italian_Marble.png?v=1788440017" alt="NEB Cube 03 by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Cube 03</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-cube-03-in-massive-walnut-and-glass-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Cube_03.jpg?v=1611779622" alt="NEB Cube 03 in Walnut base and Glass top by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Cube 03 in Walnut base and Glass top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-desk-chair-in-green-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Desk_Chair_in_green_leather_02.png?v=1786868361" alt="NEB Desk Chair in Green Leather by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Desk Chair in Green Leather</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-double-storage-container" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_double_storage_1.jpg?v=1612388878" alt="NEB Double Storage Cabinet by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Double Storage Cabinet</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-hexagonal-side-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/IMG_4238.png?v=1764865605" alt="NEB Hexagonal Side Table With Top In Brass by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Hexagonal Side Table With Top In Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-hexagonal-side-table-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Hexagonal_sidetable_oak.jpg?v=1612388912" alt="NEB Hexagonal Side Table With Top In Oak by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Hexagonal Side Table With Top In Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-hexagonal-side-table-with-top-in-zinc" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/12.png?v=1731751958" alt="NEB Hexagonal Side Table With Top In Zinc by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Hexagonal Side Table With Top In Zinc</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-hexagonal-sofa-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/IMG_4328.png?v=1765362928" alt="NEB Hexagonal Sofa Table With Top In Brass by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Hexagonal Sofa Table With Top In Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-high-round-side-table-travertine-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_H72_Travertin_04.png?v=1764859559" alt="NEB High Round Side Table by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB High Round Side Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-high-round-side-table-with-top-in-travertine-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/IMG_0831_a37fedcb-0e0e-42bd-bc5e-f049fab9a44f.jpg?v=1737548082" alt="NEB High Round Side Table With Top In Travertine by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB High Round Side Table With Top In Travertine</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-low-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Low_stool.jpg?v=1611779934" alt="NEB Low Stool by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Low Stool</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-rectangular-table-240x100cm-top-in-italian-granite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Rectangular_table_240x100_verde_Italia_NEB_Bench_240_Neb_Chairs_01.jpg?v=1786903783" alt="NEB Rectangular Table by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Rectangular Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-rectangular-table-in-calacatta-marble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Table_Calcatta.jpg?v=1612389116" alt="NEB Rectangular Table With Top In Calacatta Marble by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Rectangular Table With Top In Calacatta Marble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-rectangular-table-with-top-in-carrara-marble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Rektangulart_Matbord_Carrara_Marmor.png?v=1764346913" alt="NEB Rectangular Table With Top In Carrara Marble by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Rectangular Table With Top In Carrara Marble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-rectangular-table-with-top-in-grigio-carnico-marble-180x80-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Table_Grigio.jpg?v=1611780100" alt="NEB Rectangular Table With Top In Grigio Carnico Marble by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Rectangular Table With Top In Grigio Carnico Marble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-rectangular-table-with-top-in-laminate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Table_Laminate.jpg?v=1612389148" alt="NEB Rectangular Table With Top In Laminate by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Rectangular Table With Top In Laminate</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-rectangular-table-with-top-in-natural-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Rectangular_table_i_ljus_ek._Bordsbenen_vita.png?v=1771501090" alt="NEB Rectangular Table With Top In Natural Oak by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Rectangular Table With Top In Natural Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-rectangular-table-with-top-in-black-painted-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Table_Oak.jpg?v=1612389162" alt="NEB Rectangular Table With Top In Oak by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Rectangular Table With Top In Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-rectangular-table-with-top-in-walnut-colored-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Rectangular_table_with_oak_top_Rektangul_rt_matbord_med_kryssben_och_ekskiva_men_valn_ts_rgad_vax.png?v=1769209916" alt="NEB Rectangular Table With Top In Smoked Oak by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Rectangular Table With Top In Smoked Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-rectangular-table-with-top-in-verde-italia-granite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Rectangular_Table_Verde_Italia.jpg?v=1612389175" alt="NEB Rectangular Table With Top In Verde Italia Granite by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Rectangular Table With Top In Verde Italia Granite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-side-table-with-top-in-oak-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Soffbord_H30_Ek_01.png?v=1765192935" alt="NEB Round Coffee Table With Top In Oak by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Coffee Table With Top In Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-sofa-table-brass-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Soffbord_Massing_01.png?v=1764325364" alt="NEB Round Coffee Table with Top In Brass by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Coffee Table with Top In Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-sofa-table-80-cm-carrara-marble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/9.png?v=1731751526" alt="NEB Round Coffee Table with Top In Carrara Marble by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Coffee Table with Top In Carrara Marble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-coffee-table-with-top-in-laminate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Coffee_Table_Laminate.jpg?v=1642090636" alt="NEB Round Coffee Table with Top In Laminate by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Coffee Table with Top In Laminate</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-coffee-table-with-top-in-verde-italia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Coffee_Table_Verde_Italia.jpg?v=1642090783" alt="NEB Round Coffee Table with Top in Verde Italia by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Coffee Table with Top in Verde Italia</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-coffee-table-in-travertine-stone-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Soffbord_H30_Travertin_04.png?v=1764345674" alt="NEB Round Coffee Table with Travertine Top by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Coffee Table with Travertine Top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-dining-table-with-top-in-brass-zinc-or-copper" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Dining_Table_Brass.jpg?v=1611846420" alt="NEB Round Dining Table With Top In Brass by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Dining Table With Top In Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-table-2527221" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Table_Table_Marble.jpg?v=1617609525" alt="NEB Round Dining Table With Top In Italian Marble by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Dining Table With Top In Italian Marble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-large-round-table-with-top-in-grey-laminate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Table_Table_Laminate.jpg?v=1653396554" alt="NEB Round Dining Table With Top In Laminate by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Dining Table With Top In Laminate</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-table-diam80-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/Neb_Round_dining_table_runt_matbord_med_kryssunderrede_och_svartm_lad_ekskiva.png?v=1769209420" alt="NEB Round Dining Table With Top In Oak by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Dining Table With Top In Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-mirror-with-brass-edge" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Mirror.jpg?v=1612389316" alt="NEB Round Mirror With Brass Edge by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Mirror With Brass Edge</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-side-table-with-top-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_Massing_04.png?v=1764860094" alt="NEB Round Side Table With Top In Brass by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Side Table With Top In Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-side-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_H430_Carrara_01.png?v=1764864020" alt="NEB Round Side Table With Top In Carrara Marble by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Side Table With Top In Carrara Marble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-side-table-with-top-in-laminate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Round_side_table_500_White_laminate_black_044.jpg?v=1740070273" alt="NEB Round Side Table With Top In Laminate by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Side Table With Top In Laminate</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-side-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_H42_H72_Travertin_02_3f147aa7-ca55-482b-84a9-8f13f6b8a6ec.png?v=1764863334" alt="NEB Round Side Table With Top In Travertine by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Side Table With Top In Travertine</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-side-table-with-top-in-verde-italia-granite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Side_table_Verde_italia.jpg?v=1611860799" alt="NEB Round Side Table With Top In Verde Italia Granite by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Side Table With Top In Verde Italia Granite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/copy-of-neb-round-side-table-with-top-in-laminate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_Ek.png?v=1764860962" alt="NEB Round Side Table with Top in Oak by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Side Table with Top in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-round-dining-table-in-with-top-in-verde-italia-granite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Round_dining_table_top_in_Verde_Italia_Granite_Stort_runt_matbord_med_skiva_i_granit_kryssunderrede.png?v=1769210223" alt="NEB Round Table by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Round Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-shelving-system-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Shelving_System_1.jpg?v=1611861074" alt="NEB Shelving System by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Shelving System</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-writing-desk-green-leather-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Writing_Desk_Green_leather_top.jpg?v=1786914652" alt="NEB Writing Desk by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Writing Desk</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-writing-table-large-150x45-cm-zinc-front" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Desk_Large_Zink.jpg?v=1612389428" alt="NEB Writing Desk Large by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Writing Desk Large</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-writing-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Desk_Brass.jpg?v=1611861289" alt="NEB Writing Desk Small by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEB Writing Desk Small</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/12161-0bb48cc3281c45408163b304004ea9a6.jpg?v=1740070115" alt="Neb Stool by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Neb Stool</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/per-soderberg-bespoke-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/Calacatta_Soffbord.jpg?v=1612388197" alt="PS Bespoke Coffee Table in Calacatta and Walnut by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PS Bespoke Coffee Table in Calacatta and Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/ps-bespoke-coffee-table-in-travertine-and-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/PSBESPOKECOFFEETABLEINWALNUTANDTRAVERTINBYPERSODERBERGNY2.jpg?v=1642165486" alt="PS Bespoke Coffee Table in Travertine and Walnut by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PS Bespoke Coffee Table in Travertine and Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/ps-bespoke-console-table-in-calacatta-marble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NebConsoletablecalacattakvadrat.jpg?v=1612356030" alt="PS Bespoke Console Table in Calacatta Marble by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PS Bespoke Console Table in Calacatta Marble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/ps-bespoke-cube" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/PSCubeincalacattamarble1.jpg?v=1612182416" alt="PS Bespoke Cube in Calacatta base and Glass top by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PS Bespoke Cube in Calacatta base and Glass top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/bespoke-rectangular-glass-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/PS_Bespoke_Glasstable_Brass_Miljo_3.png?v=1769679207" alt="PS Bespoke Rectangular Glass Table in Brass by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PS Bespoke Rectangular Glass Table in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/ps-bespoke-rectangular-glass-table-in-zinc-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/PS_BESPOKE_GLASS_DINING_TABLE.jpg?v=1675071243" alt="PS Bespoke Rectangular Glass Table in Zinc by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PS Bespoke Rectangular Glass Table in Zinc</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/ps-bespoke-side-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_sidetable_walnut_calacatta.jpg?v=1624483891" alt="PS Bespoke Side Table in Calacatta and Walnut by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PS Bespoke Side Table in Calacatta and Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/ps-bespoke-side-table-in-travertine-and-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/thumbnail_PSBESPOKESIDETABLEINWALNUTANDTRAVERTINBYPERSODERBERG_DETAILNY.jpg?v=1642165537" alt="PS Bespoke Side Table in Travertine and Walnut by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PS Bespoke Side Table in Travertine and Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-rectangular-table-bench-2508253" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Rectangular_Table_bench.jpg?v=1612389478" alt="Set of NEB Rectangular Table and NEB Bench in Laminate by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Set of NEB Rectangular Table and NEB Bench in Laminate</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/set-of-neb-rectangular-table-and-neb-bench-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/neb-oak-1.jpg?v=1766072878" alt="Set of NEB Rectangular Table and NEB Bench in Oak by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Set of NEB Rectangular Table and NEB Bench in Oak</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

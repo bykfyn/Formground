@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Massimo Copenhagen on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Massimo Copenhagen's work on Formground - 90 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/massimo-copenhagen.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Massimo Copenhagen on Formground">
+<meta property="og:description" content="Massimo Copenhagen's work on Formground - 90 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/massimo-copenhagen.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Earth_Light_Beige.jpg?v=1720529135">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Earth_Light_Beige.jpg?v=1720529135">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Massimo Copenhagen on Formground">
+<meta name="twitter:description" content="Massimo Copenhagen's work on Formground - 90 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Massimo Copenhagen", "item": "https://formground.com/brands/massimo-copenhagen.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Massimo Copenhagen</h1>
+    <div class="tags"><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">Denmark</span></div>
+    <a class="brand-site-link" href="https://massimo.dk" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://massimo.dk/products/afternoon-cloud9-by-facne" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Cloud9_Afternoon.jpg?v=1770379125" alt="Afternoon by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Afternoon</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/arctic-green-structures-2-0" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Structures3-scaled.jpg?v=1770379126" alt="Arctic Green by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arctic Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/ash-trellis" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/026_Massimo_LinnenRug_LightGrey.jpg?v=1770379124" alt="Ash by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ash</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/bark-ground" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Ground-rug-bark.jpg?v=1770379128" alt="Bark by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bark</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/beige-rpet-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Repeat_Beige_jpg.jpg?v=1770379126" alt="Beige by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Beige</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/sumace-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/massimo_Sumace_black.jpg?v=1770379127" alt="Black by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/black-with-fringes-sumace" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/massimo_Sumace_black_fringes.jpg?v=1770379125" alt="Black with fringes by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Black with fringes</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/bloom-affinity" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Bloom.jpg?v=1770379125" alt="Bloom by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bloom</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/earth-blush" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Earth_CafeCreme.jpg?v=1770379126" alt="Blush by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Blush</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/dark-brown-atoll" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/dark-brown_9e5c8ed8-ac59-4872-b865-8c4fa1c98cf0.jpg?v=1770379123" alt="Brown by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/earth-bamboo-camel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/EarthBamboo_Camel.jpg?v=1770379126" alt="Camel by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Camel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/earth-bamboo-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/EarthBamboo_Cashmere_10.jpg?v=1770379126" alt="Cashmere by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cashmere</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/chalk-trellis" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/024_Massimo_LinnenRug_Ivory.jpg?v=1770379123" alt="Chalk by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chalk</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/chalk-with-fringes-escape-kelim" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Escape_kelim_chalk_with_Fringes.jpg?v=1770379126" alt="Chalk with fringes by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chalk with fringes</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/rya-charcoal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/RYA_charcoal.png?v=1770379127" alt="Charcoal by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Charcoal</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/cloudy-cloud9-by-facne" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Cloud9-Cloudy.jpg?v=1770379127" alt="Cloudy by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cloudy</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/earth-bamboo-concrete" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/EarthBamboo__ConcreteGrey.jpg?v=1770379125" alt="Concrete by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Concrete</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/bamboo-copper" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/MASSIMO_BAMBOO_COPPER_FRIT-HR.jpg?v=1770379127" alt="Copper by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Copper</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/copper-moon" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Copper-moon-1.png?v=1770379126" alt="Copper Moon by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Copper Moon</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/cream-atoll" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Atoll-Cream.jpg?v=1770379123" alt="Cream by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cream</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/dark-burgundy-karma-wool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/016_Massimo_KarmaWool_Burgundy_17372008-c54b-4e43-b44b-a2d570ad3c41.jpg?v=1770379127" alt="Dark Burgundy by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dark Burgundy</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/dark-grey-earth-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Earth_DarkGrey.jpg?v=1770379125" alt="Dark Grey by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dark Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/dark-brown-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/010_Massimo_Earth_DarkGrey_brown.jpg?v=1770379128" alt="Dark Grey/Brown by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dark Grey/Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/dark-oak-karma-wool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/018_Massimo_KarmaWool_DarkOak_8892121f-a194-45fb-9feb-57ab87be6ce3.jpg?v=1770379127" alt="Dark Oak by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dark Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/day-cloud9-by-facne" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Cloud9-Day.jpg?v=1720529191" alt="Day by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Day</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/earth-bamboo-desert-sand" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/EarthBamboo_DesertSand_10.jpg?v=1720528735" alt="Desert Sand by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Desert Sand</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/dune-ground" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Ground-Rug-Dune.jpg?v=1728028424" alt="Dune by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dune</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/forest-green-drops-surface" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Drops-Forest-Green-scaled.jpg?v=1720529550" alt="Forest Green by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Forest Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/forest-green-vein-surface" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Vein-Forest-Green-scaled.jpg?v=1720529596" alt="Forest Green- Vein- Surface by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Forest Green- Vein- Surface</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/fragment-1-structures-by-oeo-studio-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Fragment1-1.jpg?v=1720528431" alt="Fragment I by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fragment I</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/fragment-2-structures-by-oeo-studio" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Fragment2-1.jpg?v=1720528446" alt="Fragment II by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fragment II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/fragment-3-structures-by-oeo-studio" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Fragment3-1.jpg?v=1720528473" alt="Fragment III by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fragment III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/fragment-4-structures-by-oeo-studio" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Fragment4-1.jpg?v=1720528325" alt="Fragment IV by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fragment IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/golden-brown-earth-handtuft" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/012_Massimo_Earth_GoldenBrown.jpg?v=1738826961" alt="Golden Brown by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Golden Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/graphite-rpet-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Repeat_Grey.jpg?v=1720529269" alt="Graphite by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/light-grey-atoll" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Atoll-Light-grey.jpg?v=1759494190" alt="Grey by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/hay-trellis" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/028_Massimo_LinnenRug_Natural.jpg?v=1751531946" alt="Hay by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hay</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/ivory-earth-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Earth_Ivory.jpg?v=1720529119" alt="Ivory by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/lagoon-affinity" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Lagoon.jpg?v=1720529478" alt="Lagoon by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lagoon</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/light-beige-earth-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Earth_Light_Beige.jpg?v=1720529135" alt="Light Beige by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Light Beige</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/bamboo-light-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/massimo_BAMBOO_light-brown_free_HR.jpg?v=1720528801" alt="Light Brown by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Light Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/light-grey-earth-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Earth_lightgrey.jpg?v=1720529087" alt="Light Grey by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Light Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/light-beige-escape-kelim" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Escape_kelim_lightbeige.jpg?v=1720528953" alt="Light beige by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Light beige</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/light-beige-with-stiches-escape-kelim" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Escape_kelim_lightbeige_with_Stitches.jpg?v=1720528935" alt="Light beige with stiches by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Light beige with stiches</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/marine-karma-wool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/020_Massimo_KarmaWool_Marine.jpg?v=1738827087" alt="Marine by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Marine</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/mocha-affinity" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Mocha.jpg?v=1720529464" alt="Mocha by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mocha</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/moon-night" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/MoonNight-1.png?v=1720007683" alt="Moon Night by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Moon Night</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/morning-cloud9-by-facne" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Cloud9-morning.jpg?v=1720529177" alt="Morning by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Morning</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/earth-moss-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Earth_Mossgreen.jpg?v=1720007595" alt="Moss Green by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Moss Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/multi-hemp-by-tanja-kirst" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Hemp_Multi.jpg?v=1720528503" alt="Multi by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Multi</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/muscat-escape-kelim" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Escape_kelim_muscat.jpg?v=1720528884" alt="Muscat by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Muscat</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/muscat-with-fringes-escape-kelim" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Escape_kelim_muscat_with_fringes.jpg?v=1720528867" alt="Muscat with fringes by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Muscat with fringes</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/earth-bamboo-mustard-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/EarthBamboo_Mustard_Yellow.jpg?v=1720528722" alt="Mustard Yellow by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mustard Yellow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/belize-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Belize_Natural-1.jpg?v=1720528487" alt="Natural by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Natural</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/natural-kelim-handwoven-traditional-kelim" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Natural-kelim1-1.jpg?v=1720007650" alt="Natural Kelims by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Natural Kelims</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/natural-light-vintage" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Vintage-Natural.jpg?v=1720529164" alt="Natural Light by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Natural Light</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/natural-strong-vintage" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Vintage-1.jpg?v=1720529409" alt="Natural Strong by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Natural Strong</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/natural-sumace-with-fringes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/massimo_Sumace_natural_fringes.jpg?v=1720529019" alt="Natural with fringes by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Natural with fringes</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/sumace-navy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/sumace_navyblue.jpg?v=1720528368" alt="Navy by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Navy</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/nougat-brown-karma-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Karma_Nougat.jpg?v=1720528581" alt="Nougat Brown by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nougat Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/earth-bamboo-nougat-rose" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/EarthBamboo_Nougat-Rose.jpg?v=1720528644" alt="Nougat Rose by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nougat Rose</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/oat-symmetry" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Symmetry_Loft_Kolasinski.jpg?v=1753946350" alt="Oat by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oat</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/karma-olive-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Karma_Olivegreen.jpg?v=1720528566" alt="Olive Green by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Olive Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/pale-rose-structures-2-0" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Structures2-scaled.jpg?v=1747045896" alt="Pale Rose by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pale Rose</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/pastel-yellow-rpet-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Repeat_PastelYellow.jpg?v=1720529301" alt="Pastel Yellow by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pastel Yellow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/pistachio-rpet-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Repeat_LightGreen.jpg?v=1720529285" alt="Pistachio by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pistachio</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/rocky-grey-vein-surface" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Vein-Rocky-Grey-scaled.jpg?v=1720529611" alt="Rocky Grey by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rocky Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/bamboo-rose-dust" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/massimo_BAMBOO_rose-dust_free4_HR.jpg?v=1720528835" alt="Rose Dust by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rose Dust</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/rug-underlay" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/underlay-rug.jpg?v=1720529334" alt="Rug Underlay by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rug Underlay</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/sand-ground" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Ground-rug-sand.jpg?v=1728029281" alt="Sand by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sand</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/silver-grey-earth-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Earth_Silver_Grey.jpg?v=1720529103" alt="Silver Grey by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Silver Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/smoked-caramel-vein-surface" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Vein-Smoked-Caramel-scaled.jpg?v=1720529627" alt="Smoked Caramel by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Smoked Caramel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/rya-soft-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/RYA-SOFT-GREY.jpg?v=1720528403" alt="Soft Beige by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Soft Beige</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/earth-bamboo-soft-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/EarthBamboo_Soft-grey.jpg?v=1720528660" alt="Soft Grey by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Soft Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/soil-ground" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/ground-rug-soil.jpg?v=1728029567" alt="Soil by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Soil</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/space-surface" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Space_Surface-1.jpg?v=1720528246" alt="Space Surface by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Space Surface</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/spot-remover" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/massimo-spot-remover.jpg?v=1743753274" alt="Spot Remover Spray by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Spot Remover Spray</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/stardust" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Stardust.jpg?v=1720528260" alt="Stardust by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stardust</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/stiffkey-blue-bamboo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/massimo_BAMBOO_stiffkey-blue_free_HR.jpg?v=1720528851" alt="Stiffkey Blue by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stiffkey Blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/stone-kelim-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Escape_kelim_stone.jpg?v=1720528989" alt="Stone by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stone</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/stone-with-stiches-escape-kelim" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Escape_kelim_stone_with_stitches.jpg?v=1720528971" alt="Stone with stiches by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stone with stiches</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/sun-symmetry" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Symmetry_LoftKolasinski_sun-final.jpg?v=1753779810" alt="Sun by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sun</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/taupe-earth-handtuft" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/014_Massimo_Earth_Taupe.jpg?v=1738826884" alt="Taupe by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Taupe</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/earth-verte-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Earth_Verte-Grey.jpg?v=1720528598" alt="Verte Grey by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Verte Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/earth-bamboo-vibrant-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/EarthBamboo_Vibrant_Blue.jpg?v=1720528627" alt="Vibrant Blue by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Vibrant Blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/volcano-dust-structures-2-0" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Structures1-scaled.jpg?v=1720529536" alt="Volcano dust by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Volcano dust</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/walnut-ground" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/ground-rug-walnut.jpg?v=1728029586" alt="Walnut by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/earth-bamboo-warm-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/EarthBamboo_warm-grey.jpg?v=1720528678" alt="Warm Grey by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Warm Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/warm-oak-ground" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Ground-rug-warm-oak.jpg?v=1728029605" alt="Warm Oak by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Warm Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/karma-washed-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Karma_WashedBlue.jpg?v=1720528294" alt="Washed Blue by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Washed Blue</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stackelbergs on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Stackelbergs's work on Formground - 77 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/stackelbergs.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Stackelbergs on Formground">
+<meta property="og:description" content="Stackelbergs's work on Formground - 77 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/stackelbergs.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9140AURORABoreasLightBlue_Yellow_Pink130x190cmjpg.jpg?v=1753738617">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9140AURORABoreasLightBlue_Yellow_Pink130x190cmjpg.jpg?v=1753738617">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Stackelbergs on Formground">
+<meta name="twitter:description" content="Stackelbergs's work on Formground - 77 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Stackelbergs", "item": "https://formground.com/brands/stackelbergs.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Stackelbergs</h1>
+    <div class="tags"><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">Sweden</span></div>
+    <a class="brand-site-link" href="https://stackelbergs.se" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://stackelbergs.se/products/aurora-australis-wool-blanket-red-orange-burgundy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9141-Aurora-Australis-Design-Hilland-768x768.jpg?v=1749041527" alt="AURORA  Australis Wool Blanket Red by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">AURORA  Australis Wool Blanket Red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/aurora-boreas-wool-blanket-light-blue-yellow-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9140AURORABoreasLightBlue_Yellow_Pink130x190cmjpg.jpg?v=1753738617" alt="AURORA  BoreasWool Blanket Light Blue by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">AURORA  BoreasWool Blanket Light Blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/aurora-dirigente-stella-wool-blanket-antracite-light-grey-pearl-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9142AURORADirigenteStellaAntracite_LightGrey130x190cmjpg.jpg?v=1753738845" alt="AURORA Dirigente Stella Wool Blanket Antracite by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">AURORA Dirigente Stella Wool Blanket Antracite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/aurora-ortis-solis-wool-blanket-orange-light-blue-lime" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9143AURORAOrtisSolisOrange_LightBlue_Lime130x190cmjpg.jpg?v=1753739633" alt="AURORA Ortis Solis Wool Blanket Orange by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">AURORA Ortis Solis Wool Blanket Orange</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/aurora-revontulet-wool-blanket-azur-green-lilac" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9144AURORARevontuletAzur_Green_Lilac130x190cmjpg.jpg?v=1753739846" alt="AURORA Revontulet Wool Blanket Azur by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">AURORA Revontulet Wool Blanket Azur</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/brushed-alpaca-blanket-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/6114StackelbergsBrushedAlpacaBlack140x180cmjpg.jpg?v=1753513364" alt="Brushed Alpaca Blanket Black by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Brushed Alpaca Blanket Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/floral-wool-blanket-blue-lilac" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9172StackelbergsFloralBlue_Lilac140x180cmjpg.jpg?v=1753433608" alt="Floral Wool Blanket Blue &amp; Lilac by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Floral Wool Blanket Blue &amp; Lilac</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/floral-wool-blanket-green-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9170StackelbergsFloralGreen_Brown140x180cmjpg.jpg?v=1753433255" alt="Floral Wool Blanket Green &amp; Brown by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Floral Wool Blanket Green &amp; Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/stackelbergs-four-elements-wool-blanket-multi" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9175Stackelberg_LarssonFourElementsMulticolur140x180cm1995SEKjpg.jpg?v=1785830707" alt="Four Elements Wool Blanket Multi by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Four Elements Wool Blanket Multi</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/luxury-kid-mohair-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4213StackelbergsLuxuryKidBlack140x230cm.jpg?v=1753360610" alt="Luxury Kid Mohair Black by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Luxury Kid Mohair Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/luxury-kid-mohair-brick" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4211StackelbergsLuxuryKidBrick140x230cmjpg.jpg?v=1753360290" alt="Luxury Kid Mohair Brick by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Luxury Kid Mohair Brick</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/luxury-kid-mohair-cedar-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4212StackelbergsLuxuryKidCedarGreen140x230cmjpg.jpg?v=1753360454" alt="Luxury Kid Mohair Cedar Green by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Luxury Kid Mohair Cedar Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/luxury-kid-mohair-charcoal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4108StackelbergsLuxuryKidCharcoal140x230cmjpg.jpg?v=1753297664" alt="Luxury Kid Mohair Charcoal by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Luxury Kid Mohair Charcoal</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/luxury-kid-mohair-green-marble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4208LuxuryKidMohairGreenMarble140x230cmjpg.jpg?v=1753298180" alt="Luxury Kid Mohair Green Marble by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Luxury Kid Mohair Green Marble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/luxury-kid-mohair-lighttaupe-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4107_Stackelbergs_Luxury_Kid_Light_Taupe_140_x_230_cm_jpg.jpg?v=1755200597" alt="Luxury Kid Mohair Light Taupe by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Luxury Kid Mohair Light Taupe</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/luxury-kid-mohair-pure-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4100StackelbergsLuxuryKidPureWhite140x230cmjpg.jpg?v=1753295842" alt="Luxury Kid Mohair Pure White by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Luxury Kid Mohair Pure White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/luxury-kid-mohair-storm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4209StackelbergsLuxuryKidStorm140x230cmjpg.jpg?v=1753298325" alt="Luxury Kid Mohair Storm by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Luxury Kid Mohair Storm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/merino-cashmere-wool-two-tone-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9150StackelbergsTwoToneWoolChocolate140x200cm3jpg.jpg?v=1753512099" alt="Merino &amp; Cashmere Wool Two Tone Chocolate by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Merino &amp; Cashmere Wool Two Tone Chocolate</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/merino-cashmere-wool-two-tone-dark-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9152StackelbergsTwoToneWoolMoss140x200cmcopyjpg.jpg?v=1753432061" alt="Merino &amp; Cashmere Wool Two Tone Dark Blue by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Merino &amp; Cashmere Wool Two Tone Dark Blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/merino-cashmere-wool-two-tone-light-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9131StackelbergsTwoToneWoolLightBlue140x200cmjpg.jpg?v=1753432267" alt="Merino &amp; Cashmere Wool Two Tone Light Blue by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Merino &amp; Cashmere Wool Two Tone Light Blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/merino-cashmere-wool-two-tone-light-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9130StackelbergsTwoToneWoolLightGrey140x200cmjpg.jpg?v=1753361517" alt="Merino &amp; Cashmere Wool Two Tone Light Grey by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Merino &amp; Cashmere Wool Two Tone Light Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/merino-cashmere-wool-two-tone-light-taupe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9132StackelbergsTwoToneWoolLightTaupe140x200cmjpg.jpg?v=1753361796" alt="Merino &amp; Cashmere Wool Two Tone Light Taupe by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Merino &amp; Cashmere Wool Two Tone Light Taupe</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/merino-cashmere-wool-two-tone-moss-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9151StackelbergsTwoToneWoolMoss140x200cmjpg.jpg?v=1753361945" alt="Merino &amp; Cashmere Wool Two Tone Moss Green by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Merino &amp; Cashmere Wool Two Tone Moss Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/merino-cashmere-wool-two-tone-rose" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9133StackelbergsTwoToneWoolRose140x200cmjpg.jpg?v=1753432448" alt="Merino &amp; Cashmere Wool Two Tone Rose by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Merino &amp; Cashmere Wool Two Tone Rose</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-antique-rose" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4174StackelbergsMohairAntiqueRose130x170cmjpg.jpg?v=1752503284" alt="Mohair Blanket Antique Rose by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Antique Rose</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-dusky-blue-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4189StackelbergsMohairAqua139x170cm.jpg?v=1767714657" alt="Mohair Blanket Aqua by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Aqua</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-apple-antiquerose" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4220STACKELBERGS_LarssonsNewSquareBritaApple_AntiqueRose130x170cm2695SEK_1_c35cfa7c-0a54-454f-a520-8b00be48a3ce.jpg?v=1785826234" alt="Mohair Blanket BRITA Apple &amp; Antique Rose by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket BRITA Apple &amp; Antique Rose</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-black-skiffer-white-stripe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4172StackelbergsMohairBack_Skiffer_WhiteStripe130x170cmjpg.jpg?v=1753103102" alt="Mohair Blanket Black by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-black-skiffer-check" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4173StackelbergsMohairBlack_SkifferCheck130x170cmjpg.jpg?v=1753103304" alt="Mohair Blanket Black &amp; Skiffer Check by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Black &amp; Skiffer Check</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-brick-brindle-stripe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4154StackelbergsMohairBrick_BrindleStripe130x170cmjpg.jpg?v=1753103464" alt="Mohair Blanket Brick &amp; Brindle Stripe by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Brick &amp; Brindle Stripe</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-bright-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4142StackelbergsMohairBrightWhite130x170cmjpg.jpg?v=1753101652" alt="Mohair Blanket Bright White by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Bright White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-charcoal-black-melange-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4221STACKELBERGSMohairCharcoal_BlackMelange130x170cm2695SEK_1.jpg?v=1785823819" alt="Mohair Blanket Charcoal &amp; Black Melange by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Charcoal &amp; Black Melange</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-chilli" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4187StackelbergsMohairChilli130x170cmjpg.jpg?v=1752501143" alt="Mohair Blanket Chilli by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Chilli</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-denim-sky-blue-melange" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4190StackelbergsMohairDenim_SlyBlueMelange130x170cmjpg.jpg?v=1752827442" alt="Mohair Blanket Denim &amp; Sky Blue Melange by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Denim &amp; Sky Blue Melange</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-denim-dark-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4192StackelbergsMohairDenimDarkBlue130x170cmjpg_f0a6c34d-85a9-4813-801f-5ff4b2e8fc64.jpg?v=1752828266" alt="Mohair Blanket Denim Dark Blue by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Denim Dark Blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-emerald-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4068_Stackelbergs_Mohair_Emerald_Green_130_x_170_cm_jpg.jpg?v=1753101494" alt="Mohair Blanket Emerald Green by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Emerald Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-lisbet-antique-rose-mahogny" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4226STACKELBERGS_LarssonsMohairNewSquareLisbethAntiqueRose_Mahogny130x170cm2695SEK.jpg?v=1785826573" alt="Mohair Blanket LISBETH Antique Rose &amp; Mahogny by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket LISBETH Antique Rose &amp; Mahogny</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-lighttaupe-brindle-melange-copy-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4141StackelbergsMohairLightTaupe_BrindleMelange130x170cmjpg.jpg?v=1755199342" alt="Mohair Blanket Light Taupe &amp; Brindle Melange by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Light Taupe &amp; Brindle Melange</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-mellow-rose-brick-melange" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4087StackelbergsMohairMellowRose_BrickMelange130x170cmjpg.jpg?v=1752503458" alt="Mohair Blanket Mellow Rose &amp; Brick Melange by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Mellow Rose &amp; Brick Melange</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-sand" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4194StackelbergsMohairMocca130x170cm.jpg?v=1767715778" alt="Mohair Blanket Mocca by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Mocca</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-moss-green-melange" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4117StackelbergsMohairMoss_GreenMelange130x170cmjpg.jpg?v=1752828632" alt="Mohair Blanket Moss &amp; Green Melange by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Moss &amp; Green Melange</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-moss" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4035_Stackelbergs_Mohair_Blanket_Moss_130_x_170_cm_FIXAD_002.jpg?v=1785830207" alt="Mohair Blanket Moss Green by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Moss Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-mustard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4002StackelbergsMohairMustard130x170cmjpg.jpg?v=1752499455" alt="Mohair Blanket Mustard by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Mustard</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-orange-pion-melange" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4006StackelbergsMohairOrange_PionMelange130x170cmjpg.jpg?v=1752501740" alt="Mohair Blanket Orange &amp; Pion Melange by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Orange &amp; Pion Melange</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-pontus-blue-mahogny" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4227STACKELBERGS_LarssonsMohairNewSquarePontusPilster_Mahogny130x170cm2695SEK.jpg?v=1785828697" alt="Mohair Blanket PONTUS Pilaster &amp; Mahogny by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket PONTUS Pilaster &amp; Mahogny</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-pilaster" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4013StackelbergsMohairPilaster130x170cmjpg.jpg?v=1752827613" alt="Mohair Blanket Pilaster by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Pilaster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-reflection-white-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4007StackelbergsMohairPion130x170cmjpg.jpg?v=1767711005" alt="Mohair Blanket Pion by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Pion</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-portabello" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4071StackelbergsMohairPortabello130x170cmjpg.jpg?v=1753101821" alt="Mohair Blanket Portabello by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Portabello</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-rusty-terracotta-melange" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4148StackelbergsMohairRusty_TerracottaMelange130x170cmjpg.jpg?v=1752501408" alt="Mohair Blanket Rusty &amp; Terracotta Melange by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Rusty &amp; Terracotta Melange</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-suzanne-mint-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4228STACKELBERGS_LarssonsNewSquareSuzanneMint_Chocolate130x170cm2695SEK.jpg?v=1785829651" alt="Mohair Blanket SUZANNE Mint &amp; Chocolate by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket SUZANNE Mint &amp; Chocolate</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-sea-foam-green-bay-melange-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4193StackelbergsMohairSand130x170cm.jpg?v=1767716136" alt="Mohair Blanket Sand by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Sand</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-white-skiffer-melange" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4042StackelbergsMohairWhite_SkifferMelange130x170cmjpg.jpg?v=1753102280" alt="Mohair Blanket White &amp; Skiffer Melange by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket White &amp; Skiffer Melange</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-blanket-wine-aubergine-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4197STACKELBERGSMohairWine_AubergineMelange130x170cm2695SEK_1.jpg?v=1785823202" alt="Mohair Blanket Wine &amp; Aubergine Melange by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Blanket Wine &amp; Aubergine Melange</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-cushion-cover-antique-rose" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9306StackelbergsPillowsAntiqueRose50x30cmjpg_7fccbb46-4218-411f-9c0d-e61308885267.jpg?v=1754981615" alt="Mohair Cushion Cover Antique Rose by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Cushion Cover Antique Rose</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-cushion-cover-bright-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9311StackelbergsPillowsBrightWhite50x30cmjpg_f37218f7-ca27-48a2-8502-30b5d5536ec5.jpg?v=1754981582" alt="Mohair Cushion Cover Bright White by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Cushion Cover Bright White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-cushion-cover-denim-dark-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9308StackelbergsPillowsDenimDarkBlue50x30cmjpg_fba013df-0b2b-426d-9e54-995cdef1ee63.jpg?v=1754981604" alt="Mohair Cushion Cover Denim Dark Blue by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Cushion Cover Denim Dark Blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-cushion-cover-denim-green-marble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9309StackelbergsPillowsGreenMarble50x30cmjpg_1b111102-d03c-4b65-aa82-700c76b3fbf0.jpg?v=1754981599" alt="Mohair Cushion Cover Denim Green Marble by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Cushion Cover Denim Green Marble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-cushion-cover-ochra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9307StackelbergsPillowsOcra50x30cmjpg_5b704b89-8e4b-4c20-a871-d12291ae07fe.jpg?v=1754981610" alt="Mohair Cushion Cover Ochra by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Cushion Cover Ochra</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-cushion-cover-portabello" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9310StackelbergsPillowsPortabello50x30cmjpg_32966b93-107b-4f69-8282-147ce2aca32d.jpg?v=1754981591" alt="Mohair Cushion Cover Portabello by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Cushion Cover Portabello</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-dip-dyed-orange-pion" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4186StackelbergsMohairOrange_PionDipDyed130x170cmjpg.jpg?v=1754309187" alt="Mohair Dip Dyed Orange &amp; Pion by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Dip Dyed Orange &amp; Pion</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-stripe-blanket-brown-black-rose" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4181StackelbergsMohairStripeBrown_Black_Rose140x180cmjpg.jpg?v=1753514738" alt="Mohair Stripe Blanket Brown by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Stripe Blanket Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-stripe-blanket-mint-yellow-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4184StackelbergsMohairStripeMint_Yellow_Pink140x180cmjpg.jpg?v=1753519022" alt="Mohair Stripe Blanket Mint by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Stripe Blanket Mint</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/mohair-stripe-blanket-orange-mint-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/4182MohairStripeOrangeMintRed140x180cmFV4A9640jpg.jpg?v=1753518709" alt="Mohair Stripe Blanket Orange by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mohair Stripe Blanket Orange</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/recycled-alpaca-blanket-camel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/6105StackelbergsRecycledAlpacaCamel150x200cmjpg.jpg?v=1753512926" alt="Recycled Alpaca Blanket Camel by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Recycled Alpaca Blanket Camel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/recycled-alpaca-blanket-light-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/6101StackelbergsRecycledAlpacaLightGrey150x200cmjpg.jpg?v=1753512331" alt="Recycled Alpaca Blanket Light Grey by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Recycled Alpaca Blanket Light Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/recycled-alpaca-blanket-offwhite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/6106StackelbergsRecycledAlpacaOffwhite150x200cmjpg.jpg?v=1753513080" alt="Recycled Alpaca Blanket Offwhite by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Recycled Alpaca Blanket Offwhite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/recycled-alpaca-blanket-taupe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/6104StackelbergsRecycledAlpacaTaupe150x200cmjpg.jpg?v=1753512764" alt="Recycled Alpaca Blanket Taupe by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Recycled Alpaca Blanket Taupe</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/the-insight-jaquard-blanket-blue-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9177STACKELBERGS_LarssonsTheinsightIndigo_Lime140x180cm1895SEKjpg.jpg?v=1785831704" alt="The Insight Jaquard Blanket Indigo &amp; Lime by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Insight Jaquard Blanket Indigo &amp; Lime</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/the-view-wool-blanket-orange-turqouise" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9176StackelbergsxLarssonsWoolBlanketTheInsightOrange_Turqouise140x180cm1895SEK.jpg?v=1785831324" alt="The View Jaquard Blanket Orange &amp; Turqouise by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The View Jaquard Blanket Orange &amp; Turqouise</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/wallpaper-wool-blanket-dark-grey-brown-light-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9121StackelbergsJaquardWallpaperDarkGrey_Brown140x180cmjpg.jpg?v=1753434025" alt="Wallpaper Wool Blanket Dark Grey by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wallpaper Wool Blanket Dark Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/wave-wool-blanket-lime-ocra-petrol-wine-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9116StackelbergsJaquardWaveCoral_OcraandLilac140x180cmjpg.jpg?v=1753434296" alt="Wave Wool Blanket Lilac by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wave Wool Blanket Lilac</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/wave-wool-blanket-lime-ocra-petrol-wine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9117StackelbergsJaquardWaveLime_PetrolandWine140x180cm.jpg?v=1753434638" alt="Wave Wool Blanket Lime by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wave Wool Blanket Lime</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/wool-blanket-fishbone-brick-offwhite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9165StackelbergsWoolFishboneBrick130x170cmjpg.jpg?v=1754399201" alt="Wool Blanket Fishbone Brick &amp; Offwhite by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wool Blanket Fishbone Brick &amp; Offwhite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/wool-blanket-fishbone-green-offwhite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9164StackelbergsWoolFishboneGreen130x170cmjpg.jpg?v=1754398929" alt="Wool Blanket Fishbone Green &amp; Offwhite by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wool Blanket Fishbone Green &amp; Offwhite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/wool-blanket-fishbone-light-grey-offwhite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9123StackelbergsWoolFishboneLightGrey130x170cmjpg.jpg?v=1777029921" alt="Wool Blanket Fishbone Light Grey &amp; Offwhite by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wool Blanket Fishbone Light Grey &amp; Offwhite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/wool-blanket-fishbone-light-offwhite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9166WoolBlanketFishboneOffwhite130x170cmjpg.jpg?v=1754400701" alt="Wool Blanket Fishbone Light Offwhite by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wool Blanket Fishbone Light Offwhite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://stackelbergs.se/products/wool-blanket-fishbone-light-taupe-offwhite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9126StackelbergsWoolFishboneLightTaupe130x170cmjpg.jpg?v=1754399627" alt="Wool Blanket Fishbone Light Taupe &amp; Offwhite by Stackelbergs" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wool Blanket Fishbone Light Taupe &amp; Offwhite</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
