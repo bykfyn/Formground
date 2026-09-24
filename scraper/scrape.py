@@ -2045,6 +2045,23 @@ def extract_shopify(brand):
         # would misattribute their work and duplicate them under the
         # wrong name. Keep only the vendor's own house lines.
         raw_products = [p for p in raw_products if "asplund" in (p.get("vendor") or "").lower()]
+    if brand["name"] == "Pholc":
+        # User-reported 2026-09-25: "Airam LED ... G95 830 806lm E27 DIM
+        # OP" - a third-party replacement lightbulb, not a Pholc design.
+        # Confirmed live - Pholc's own Shopify feed mixes in real
+        # third-party bulb manufacturers (Philips, Airam, Osram - vendor
+        # != "Pholc") and 47 of Pholc's own "Pholc spare parts"-vendor
+        # listings (screws, cords, replacement shades) alongside its 136
+        # real vendor="Pholc" fixture designs. Keep only Pholc's own
+        # vendor line, and drop its own "Light source"/"Spare part"
+        # product_type values too (a few of Pholc's own house-brand bulb
+        # SKUs use the real "Pholc" vendor but are still just bulbs, not
+        # design objects).
+        raw_products = [p for p in raw_products if (p.get("vendor") or "") == "Pholc"]
+        raw_products = [
+            p for p in raw_products
+            if (p.get("product_type") or "").strip().lower() not in ("light source", "spare part")
+        ]
     if brand["url"].rstrip("/") == "https://shop.sightunseen.com":
         # shop.sightunseen.com is a shared Shopify storefront for dozens of
         # independent designer-makers (confirmed 2026-09-24: 52 distinct
