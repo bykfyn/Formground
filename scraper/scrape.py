@@ -1089,7 +1089,10 @@ def _clean_product_type(product_type, brand_name=None):
         # rest blank) - the blank ones are real rugs too, just missing
         # the tag (colorway-only names like "Sun"/"Oat" give the name-
         # based keyword fallback nothing to work with). Safe brand-wide
-        # default rather than leaving them uncategorized.
+        # default rather than leaving them uncategorized. Its own real
+        # "Stain Remover" tag (a 200ml care product) is passed through
+        # unchanged rather than defaulted, so it isn't miscounted as a
+        # rug - excluded outright in extract_shopify instead.
         value = (product_type or "").strip()
         return value if value else "Rug"
     if brand_name == "Utilitario Mexicano":
@@ -1985,6 +1988,23 @@ def _base_name(title, brand_name=None):
         # name, same "brand/design is the unit" model as every other
         # brand this function already handles.
         return "CUT 'N PASTE"
+    if brand_name == "Massimo Copenhagen" and " - " in title:
+        # User-reported 2026-09-25 ("results include samples") - the
+        # real bug: titles are "{Colour} - {Collection}" (confirmed
+        # live: "Sun - Symmetry", "Oat - Symmetry", "Grey - Atoll"), the
+        # reverse of every other brand's "{Design} - {Finish}" shape.
+        # The general rule below keeps everything BEFORE the first
+        # separator, so "Sun - Symmetry" and "Oat - Symmetry" both
+        # collapsed to bare "Sun"/"Oat" - and worse, unrelated rugs from
+        # DIFFERENT collections sharing a colour name (a "Grey" from
+        # Atoll, a different "Grey" from Bamboo) silently merged into
+        # one row, showing only one of several real, distinct rugs. A
+        # bare colour word with no collection name attached ("Grey",
+        # "Sun") is also exactly why these looked like anonymous
+        # material samples rather than named products. Keeping the
+        # SECOND segment (the real collection/design name) as the base
+        # groups same-collection colourways together correctly instead.
+        return title.split(" - ", 1)[1].strip()
     if brand_name in ("Raawii", "Wendelbo"):
         # Raawii's titles are "Designer - Line - Type - Size - Color",
         # several real hierarchy levels, not just "Name - Finish" -
@@ -2086,6 +2106,35 @@ def extract_shopify(brand):
         raw_products = [
             p for p in raw_products
             if (p.get("product_type") or "").strip().lower() not in ("light source", "spare part")
+        ]
+    if brand["name"] == "Apparatus":
+        # User-requested 2026-09-25: hide incense from results. Apparatus
+        # (a real lighting brand) also sells a real "INCENSE : ..." scent
+        # line (12 products, no useful product_type/tag - blank type,
+        # tags are just SKU codes) - a different product category
+        # entirely, not a fit for a lighting/furniture/objects site.
+        raw_products = [
+            p for p in raw_products
+            if not p["title"].strip().upper().startswith("INCENSE :")
+        ]
+    if brand["name"] == "Le Klint":
+        # User-reported 2026-09-25 on "900 Hang-up" - confirmed live:
+        # Le Klint's real "Accessories" product_type is entirely cord
+        # adjusters, hang-up electric-conversion kits, a dust buster, and
+        # a Casambi smart-control module - fittings, not design objects
+        # in their own right, unlike this brand's real numbered lamps.
+        raw_products = [
+            p for p in raw_products
+            if (p.get("product_type") or "").strip().lower() != "accessories"
+        ]
+    if brand["name"] == "Massimo Copenhagen":
+        # This brand's own real "Stain Remover" product_type (a 200ml
+        # care product) is excluded outright - not a rug, and would
+        # otherwise be the one item this brand's blank-defaults-to-Rug
+        # rule (see _clean_product_type) doesn't apply to anyway.
+        raw_products = [
+            p for p in raw_products
+            if (p.get("product_type") or "").strip().lower() != "stain remover"
         ]
     if brand["name"] == "Audo":
         # User-reported 2026-09-25: spares/samples/bulbs showing up as
@@ -2214,7 +2263,14 @@ def extract_shopify(brand):
 
         if len(group) > 1:
             for p in group:
-                suffix = p["title"][len(_base_name(p["title"], brand["name"])):].lstrip(" /–—-,")
+                if brand["name"] == "Massimo Copenhagen" and " - " in p["title"]:
+                    # Reversed shape ("{Colour} - {Collection}") - the
+                    # distinguishing part is the FIRST segment here, not
+                    # a trailing suffix after the base name (see
+                    # _base_name's own note on this brand).
+                    suffix = p["title"].split(" - ", 1)[0].strip()
+                else:
+                    suffix = p["title"][len(_base_name(p["title"], brand["name"])):].lstrip(" /–—-,")
                 if suffix:
                     material_options.add(suffix)
 
