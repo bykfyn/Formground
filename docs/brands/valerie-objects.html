@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Valerie Objects on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Valerie Objects's work on Formground - 202 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/valerie-objects.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Valerie Objects on Formground">
+<meta property="og:description" content="Valerie Objects's work on Formground - 202 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/valerie-objects.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035L_01.jpg?v=1753788905">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035L_01.jpg?v=1753788905">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Valerie Objects on Formground">
+<meta name="twitter:description" content="Valerie Objects's work on Formground - 202 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Valerie Objects", "item": "https://formground.com/brands/valerie-objects.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Valerie Objects</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Ceramics</span><span class="tag">Objects</span><span class="tag">Belgium</span></div>
+    <a class="brand-site-link" href="https://www.valerie-objects.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://www.valerie-objects.com/products/lamp-shade" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_T2020100_01.jpg?v=1752559274" alt="Lamp shade by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lamp shade</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-bordeaux-candy-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035L_01.jpg?v=1753788905" alt="alu chair bordeaux candy green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair bordeaux candy green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-bordeaux-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035F_01.jpg?v=1753788979" alt="alu chair bordeaux pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair bordeaux pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-curry-candy-purple" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035M_01.jpg?v=1763558369" alt="alu chair curry candy purple by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair curry candy purple</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-curry-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035E_01.jpg?v=1753788997" alt="alu chair curry red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair curry red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-dark-blue-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035K_01.jpg?v=1753788931" alt="alu chair dark blue green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair dark blue green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-green-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035D_01.jpg?v=1753789018" alt="alu chair green white by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair green white</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-ivory-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035P_01.jpg?v=1753788769" alt="alu chair ivory ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair ivory ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-ivory-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035Q_01.jpg?v=1753788745" alt="alu chair ivory white by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair ivory white</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035U_01.jpg?v=1753789185" alt="alu chair natural by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair natural</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-white-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035G_01.jpg?v=1753788952" alt="alu chair white ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair white ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-white-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035O_01.jpg?v=1753788863" alt="alu chair white white by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair white white</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-white-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035B_01-jpg.jpg?v=1763558281" alt="alu chair white yellow by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair white yellow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-yellow-candy-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035C_01.jpg?v=1753789034" alt="alu chair yellow candy blue by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair yellow candy blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-chair-yellow-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035A_01.jpg?v=1753789122" alt="alu chair yellow pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu chair yellow pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-dining-table-l-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023202-004_01_020626-jpg.jpg?v=1783002708" alt="alu dining table l ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu dining table l ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-dining-table-l-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023202-400_01-jpg.jpg?v=1763036434" alt="alu dining table l pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu dining table l pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-dining-table-m-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023201-004_01.jpg?v=1753788490" alt="alu dining table m ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu dining table m ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-dining-table-m-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023201-200_01-jpg.jpg?v=1763036430" alt="alu dining table m yellow by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu dining table m yellow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-dining-table-s-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023200-500_01-jpg.jpg?v=1763036422" alt="alu dining table s green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu dining table s green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/alu-dining-table-s-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023200-004_01-jpg.jpg?v=1763036423" alt="alu dining table s ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">alu dining table s ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/armchair-black-aligned" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9021330_01-jpg.jpg?v=1761517089" alt="armchair black aligned by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">armchair black aligned</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-l-alu" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025202-800_01.jpg?v=1753787995" alt="bar stool l alu by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">bar stool l alu</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-m-alu" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025201-800_01.jpg?v=1753788029" alt="bar stool m alu by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">bar stool m alu</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-m-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025201-500_01.jpg?v=1753788063" alt="bar stool m green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">bar stool m green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-m-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025201-004_01.jpg?v=1753788103" alt="bar stool m ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">bar stool m ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-m-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025201-400_01.jpg?v=1753788084" alt="bar stool m pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">bar stool m pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bench-alu" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026203-800_01.jpg?v=1789137109" alt="bench alu by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">bench alu</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bench-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026203-500_01.jpg?v=1789137111" alt="bench green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">bench green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bench-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026203-004_01-jpg.jpg?v=1771947063" alt="bench ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">bench ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bench-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026203-400_01-jpg.jpg?v=1772163075" alt="bench pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">bench pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bracket-screw-wall-plug-messing" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/T3022000_01.jpg?v=1767843068" alt="bracket + screw + wall plug 2 sets messing by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">bracket + screw + wall plug 2 sets messing</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/carafe-l-smokey-grey-inner-circle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020204_01-jpg.jpg?v=1761516948" alt="carafe l smokey grey inner circle by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">carafe l smokey grey inner circle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/carafe-xl-smokey-grey-inner-circle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020205_01-jpg.jpg?v=1752559695" alt="carafe xl smokey grey inner circle by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">carafe xl smokey grey inner circle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-1-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018001Z_01-jpg_2c7d14d1-14be-46ba-b5bc-e1d54db28ada.jpg?v=1763122162" alt="ceiling lamp n°1 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°1 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-1-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018001M_01-jpg_daedf0a0-6ad6-4b80-b660-44b513c6e5f2.jpg?v=1763122157" alt="ceiling lamp n°1 brass by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°1 brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-2-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018002Z_01-jpg_8480ebce-ef1f-488b-997a-d2d092265c86.jpg?v=1763122163" alt="ceiling lamp n°2 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°2 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-2-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018002M_01-jpg_14a4964c-a1cb-40c2-a3b5-799e5e27586c.jpg?v=1763122165" alt="ceiling lamp n°2 brass by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°2 brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-3-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018003Z_01-jpg_0a96a54b-eda0-4eec-9a3d-b661f08a1a0e.jpg?v=1763122169" alt="ceiling lamp n°3 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°3 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-3-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018003MD_01-jpg.jpg?v=1763037595" alt="ceiling lamp n°3 brass by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°3 brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-4-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020600Z_01-jpg_ffd542ea-88d8-467c-a78f-f9ac8639b822.jpg?v=1763122151" alt="ceiling lamp n°4 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°4 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-4-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020600M_01-jpg_0fac4026-8026-45d3-9864-63d4e88722ca.jpg?v=1763122142" alt="ceiling lamp n°4 brass by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°4 brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-4-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020600G_01-jpg_d8121c1c-8e26-4645-a304-7c41fe4562d6.jpg?v=1763122142" alt="ceiling lamp n°4 green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°4 green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-4-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020600I_01-jpg_88f6a472-f144-41c5-8b33-1c91230d03d1.jpg?v=1763122142" alt="ceiling lamp n°4 ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°4 ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-4-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020600R_01-jpg_15a6aae7-388c-4dfc-9078-50ed43253960.jpg?v=1763122148" alt="ceiling lamp n°4 red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°4 red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-5-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020601Z_01-jpg_29a5ba6b-5e02-4624-9a48-74a4e6a8d332.jpg?v=1763122159" alt="ceiling lamp n°5 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°5 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-5-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020601M_01-jpg_fb100d09-849c-4229-8d75-55b946509f06.jpg?v=1763122150" alt="ceiling lamp n°5 brass by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°5 brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-5-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020601G_01-jpg_093b7ef2-7cf9-4613-8a86-f2431cea1d1e.jpg?v=1763122156" alt="ceiling lamp n°5 green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°5 green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-5-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020601I_01-jpg_86b3bfbf-87d2-4d15-a159-bbf34153b30b.jpg?v=1763122151" alt="ceiling lamp n°5 ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°5 ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-5-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020601R_01-jpg_ee451149-4a80-45e8-85ed-f7b5a82225dc.jpg?v=1763122162" alt="ceiling lamp n°5 red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ceiling lamp n°5 red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/cup-i-offwhite-artifacts" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9024108-005_01-jpg.jpg?v=1767367850" alt="cup I off-white artifacts by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">cup I off-white artifacts</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/cushion-l-black-aligned" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9022219_01-jpg.jpg?v=1761517155" alt="cushion l black aligned by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">cushion l black aligned</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/cutting-boards-black-brown-pink-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015006A_01.jpg?v=1763609456" alt="cutting boards black brown pink red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">cutting boards black brown pink red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/cutting-boards-brown-blue-white-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015006B_01_020626-jpg.jpg?v=1783002663" alt="cutting boards brown blue white pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">cutting boards brown blue white pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/cutting-boards-green-yellow-brown-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015006C_01-jpg.jpg?v=1752559312" alt="cutting boards green yellow brown pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">cutting boards green yellow brown pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/cutting-boards-green-yellow-white-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015006D_01-jpg.jpg?v=1761516775" alt="cutting boards green yellow white pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">cutting boards green yellow white pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/dining-table-l-yellow-aligned" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9021325_01-jpg.jpg?v=1761517073" alt="dining table l yellow aligned by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">dining table l yellow aligned</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/dining-table-round-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026204-500_01-jpg.jpg?v=1783002722" alt="dining table round green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">dining table round green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/dining-table-round-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026204-004_01-jpg.jpg?v=1783002707" alt="dining table round ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">dining table round ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/dining-table-round-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026204-400_01-jpg.jpg?v=1783002719" alt="dining table round pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">dining table round pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/dining-table-round-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026204-200_01-jpg.jpg?v=1783002718" alt="dining table round yellow by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">dining table round yellow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/dining-table-s-yellow-aligned" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9021322_01-jpg.jpg?v=1761517067" alt="dining table s yellow aligned by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">dining table s yellow aligned</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/duo-seat-blue-green-textile-mustard-frame" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015017BG_01-jpg.jpg?v=1761516792" alt="duo seat blue/green textile mustard frame by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">duo seat blue/green textile mustard frame</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/duo-seat-red-pink-textile-mustard-frame" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015017RP_01-jpg.jpg?v=1752559383" alt="duo seat red/pink textile mustard frame by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">duo seat red/pink textile mustard frame</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/five-circles-set-a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017040_01-jpg.jpg?v=1761516813" alt="five circles set a by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">five circles set a</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/five-circles-set-b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017041_01-jpg.jpg?v=1761516813" alt="five circles set b by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">five circles set b</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/five-circles-set-c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017042_01-jpg.jpg?v=1752559471" alt="five circles set c by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">five circles set c</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/five-circles-set-d" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017043_01-jpg.jpg?v=1761516820" alt="five circles set d by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">five circles set d</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/floor-lamp-aluminium-l1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9022112_01-jpg.jpg?v=1761517123" alt="floor lamp aluminium L1 by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">floor lamp aluminium L1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/floor-lamp-green-la-uno-verde" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026304-500_01-jpg.jpg?v=1771947110" alt="floor lamp green la uno verde by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">floor lamp green la uno verde</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/floor-lamp-red-la-uno-rossa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026304-300_01-jpg.jpg?v=1771947106" alt="floor lamp red la uno rossa by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">floor lamp red la uno rossa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/floor-lamp-white-l1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9022111_01-jpg.jpg?v=1761517131" alt="floor lamp white L1 by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">floor lamp white L1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/floor-lamp-white-la-uno-bianca" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026304-001_01-jpg.jpg?v=1771947104" alt="floor lamp white la uno bianca by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">floor lamp white la uno bianca</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/floor-lamp-yellow-la-uno-gialla" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026304-200_01-jpg.jpg?v=1771947104" alt="floor lamp yellow la uno gialla by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">floor lamp yellow la uno gialla</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/glass-m-smokey-grey-inner-circle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020201_01-jpg.jpg?v=1761516935" alt="glass m smokey grey inner circle by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">glass m smokey grey inner circle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/glass-s-smokey-grey-inner-circle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020200_01-jpg.jpg?v=1761516939" alt="glass s smokey grey inner circle by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">glass s smokey grey inner circle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-1-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015014Z_01-jpg.jpg?v=1752559362" alt="hanging lamp n°1 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°1 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-1-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015014B_01-jpg.jpg?v=1761517278" alt="hanging lamp n°1 blue by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°1 blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-1-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015014M_01-jpg_c426a1a5-f639-4ab8-b2a8-f34084914ee5.jpg?v=1763122111" alt="hanging lamp n°1 brass by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°1 brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-1-curry" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015014C_01-jpg_adca1d1f-63a6-435c-b4bb-6520850ef552.jpg?v=1763122171" alt="hanging lamp n°1 curry by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°1 curry</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanigng-lamp-n-1-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015014G_01-jpg.jpg?v=1752559350" alt="hanging lamp n°1 green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°1 green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n1-unlacquered" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015014U_01-jpg.jpg?v=1731427913" alt="hanging lamp n°1 unlaquered by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°1 unlaquered</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-2-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015015Z_01-jpg_fce404e5-c768-4d0a-96fa-e20c46fcd52f.jpg?v=1763122122" alt="hanging lamp n°2 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°2 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-2-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015015B_01-jpg_0dbd1725-46c8-447e-bea8-7fd7c33b1c12.jpg?v=1763122116" alt="hanging lamp n°2 blue by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°2 blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-2-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015015MD_01.jpg?v=1765294246" alt="hanging lamp n°2 brass by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°2 brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-2-chromed-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015015-806_01-jpg.jpg?v=1761517302" alt="hanging lamp n°2 chromed steel by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°2 chromed steel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-2-curry" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015015C_01-jpg_3c2780ac-24fd-4014-a274-7b8323a309f8.jpg?v=1763122117" alt="hanging lamp n°2 curry by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°2 curry</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-2-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015015G_01-jpg.jpg?v=1752559374" alt="hanging lamp n°2 green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°2 green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-2-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9022015I_01-jpg.jpg?v=1763037546" alt="hanging lamp n°2 ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°2 ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-2-menie-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9022015R_01-jpg.jpg?v=1763037552" alt="hanging lamp n°2 menie red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°2 menie red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n2-mini-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026400-900_221026_01.jpg?v=1790130641" alt="hanging lamp n°2 mini black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°2 mini black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n2-mini-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026400-500_221026_01.jpg?v=1790130641" alt="hanging lamp n°2 mini green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°2 mini green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n2-mini-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026400-004_221026_01.jpg?v=1790130641" alt="hanging lamp n°2 mini ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°2 mini ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n2-mini-menie-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026400-302_221026_01.jpg?v=1790130641" alt="hanging lamp n°2 mini menie red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°2 mini menie red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-3-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015030Z_01-jpg_d4bfde18-0276-4810-841b-44465e103308.jpg?v=1763122124" alt="hanging lamp n°3 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°3 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-3-chromed-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015030-806_01-jpg.jpg?v=1763739061" alt="hanging lamp n°3 chromed steel by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°3 chromed steel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-3-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015030I_01-jpg_e0548da4-03e5-4766-a3f8-249eaa6b2c1d.jpg?v=1763122119" alt="hanging lamp n°3 ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°3 ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-3-menie-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015030R_01-jpg_f133770e-9189-487d-a2d4-740e24f621a5.jpg?v=1763122123" alt="hanging lamp n°3 menie red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°3 menie red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-4-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015031Z_01-jpg_6c645c23-e592-4962-911e-78f8ca2da19a.jpg?v=1763122128" alt="hanging lamp n°4 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°4 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-4-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015031B_01-jpg_be89b7ab-6595-47a2-a2e8-2209702c1bc3.jpg?v=1763122125" alt="hanging lamp n°4 blue by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°4 blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-4-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015031M_01-jpg.jpg?v=1752559405" alt="hanging lamp n°4 brass by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°4 brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-5-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015032Z_01-jpg_c60b2a29-e7df-45f2-9118-7ebd8098a53c.jpg?v=1763122133" alt="hanging lamp n°5 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°5 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-5-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015032B_01-jpg_3fdfb5d3-c3a7-41ef-b484-c6641c9d056c.jpg?v=1763122129" alt="hanging lamp n°5 blue by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°5 blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-5-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015032M_01-jpg.jpg?v=1761517285" alt="hanging lamp n°5 brass by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°5 brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-5-chromed-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015032-806_01-jpg.jpg?v=1761517304" alt="hanging lamp n°5 chromed steel by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°5 chromed steel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-5-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015032G_01-jpg.jpg?v=1763037542" alt="hanging lamp n°5 green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°5 green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-5-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015032I_01-jpg_c92cda64-9b0c-43c8-89af-b61198f5a942.jpg?v=1763122132" alt="hanging lamp n°5 ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°5 ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/hanging-lamp-n-5-menie-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9022032R_01-jpg_1267bc93-d74d-44bd-8cb0-885ac5ef2fb9.jpg?v=1763122136" alt="hanging lamp n°5 menie red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">hanging lamp n°5 menie red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/jug-i-offwhite-artifacts" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9024103-005_01-jpg.jpg?v=1766547044" alt="jug I off-white artifacts by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">jug I off-white artifacts</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/jug-ii-offwhite-artifacts" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9024105-005_01-jpg.jpg?v=1761517296" alt="jug II off-white artifacts by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">jug II off-white artifacts</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/jug-iii-offwhite-artifacts" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9024106-005_01-jpg.jpg?v=1761517304" alt="jug III off-white artifacts by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">jug III off-white artifacts</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/lounge-chair-off-white-aligned" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9021335_01-jpg.jpg?v=1761517103" alt="lounge chair off-white aligned by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">lounge chair off-white aligned</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/pepper-mill-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V8018008_01-jpg.jpg?v=1761515955" alt="pepper mill black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">pepper mill black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/rocking-chair-brass-frame-pink-textile" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015021_01-jpg.jpg?v=1761516799" alt="rocking chair brass frame/ pink textile by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">rocking chair brass frame/ pink textile</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/rocking-chair-green-frame-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015018_01-jpg.jpg?v=1761516795" alt="rocking chair green frame/leather by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">rocking chair green frame/leather</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/rocking-chair-mustard-frame-yellow-textile" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015020_01-jpg.jpg?v=1752559385" alt="rocking chair mustard frame/  yellow textile by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">rocking chair mustard frame/  yellow textile</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/rocking-chair-red-frame-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018020_01-jpg.jpg?v=1761517190" alt="rocking chair red frame/ leather by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">rocking chair red frame/ leather</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/rocking-chair-stainless-steel-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025001-500_01_020626-jpg.jpg?v=1783002709" alt="rocking chair stainless steel/green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">rocking chair stainless steel/green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/rocking-chair-stainless-steel-light-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025001-602_01.jpg?v=1753787860" alt="rocking chair stainless steel/light blue by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">rocking chair stainless steel/light blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/rocking-chair-stainless-steel-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025001-400_01.jpg?v=1753787903" alt="rocking chair stainless steel/pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">rocking chair stainless steel/pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/rocking-chair-stainless-steel-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025001-001_01-jpg.jpg?v=1763122173" alt="rocking chair stainless steel/white by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">rocking chair stainless steel/white</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/rocking-chair-stainless-steel-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025001-200_01.jpg?v=1753787929" alt="rocking chair stainless steel/yellow by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">rocking chair stainless steel/yellow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/rocking-chair-white-frame-red-textile" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015019_01-jpg.jpg?v=1761516796" alt="rocking chair white frame/ red textile by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">rocking chair white frame/ red textile</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/round-table-s" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016034A_260626_01.jpg?v=1782527466" alt="round table s by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">round table s</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n1-light-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017100LG_01-jpg.jpg?v=1761516823" alt="shelf n°1 light grey by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°1 light grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n1-mustard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017100MU_01-jpg.jpg?v=1752559479" alt="shelf n°1 mustard by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°1 mustard</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n1-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017100R_01-jpg.jpg?v=1761516828" alt="shelf n°1 red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°1 red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n1-unlacquered-messing" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018100U_01-jpg.jpg?v=1761517203" alt="shelf n°1 unlacquered by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°1 unlacquered</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n1-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017100W_01-jpg.jpg?v=1761516835" alt="shelf n°1 white by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°1 white</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n2-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017101Z_01-jpg.jpg?v=1761516838" alt="shelf n°2 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°2 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n2-light-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017101LG_01-jpg.jpg?v=1752559488" alt="shelf n°2 light grey by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°2 light grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n2-mustard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017101MU_01-jpg.jpg?v=1761516831" alt="shelf n°2 mustard by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°2 mustard</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n2-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017101R_01-jpg.jpg?v=1761516837" alt="shelf n°2 red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°2 red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n2-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017101W_01-jpg.jpg?v=1752559497" alt="shelf n°2 white by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°2 white</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n3-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017102Z_01-jpg.jpg?v=1761516849" alt="shelf n°3 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°3 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n3-light-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017102LG_01-jpg.jpg?v=1752559503" alt="shelf n°3 light grey by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°3 light grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n3-mustard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017102MU_01-jpg.jpg?v=1761516844" alt="shelf n°3 mustard by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°3 mustard</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n3-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017102R_01-jpg.jpg?v=1761516846" alt="shelf n°3 red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°3 red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n3-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017102W_01-jpg.jpg?v=1761516846" alt="shelf n°3 white by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°3 white</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n4-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017103Z_01-jpg.jpg?v=1761517182" alt="shelf n°4 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°4 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n4-light-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017103LG_01-jpg.jpg?v=1761517182" alt="shelf n°4 light grey by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°4 light grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n4-mustard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017103MU_01-jpg.jpg?v=1761517181" alt="shelf n°4 mustard by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°4 mustard</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n4-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017103R_01-jpg.jpg?v=1761517182" alt="shelf n°4 red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°4 red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n4-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017103W_01-jpg.jpg?v=1761516853" alt="shelf n°4 white by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">shelf n°4 white</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/side-table-aluminum-assemble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020411_260626_01.jpg?v=1782527468" alt="side table aluminum assemble by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">side table aluminum assemble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/solo-seat-red-frame-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018021_01-jpg.jpg?v=1761517193" alt="solo seat red frame/leather by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">solo seat red frame/leather</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/solo-seat-stainless-steel-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025002-500_01.jpg?v=1753787744" alt="solo seat stainless steel/green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">solo seat stainless steel/green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/solo-seat-stainless-steel-light-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025002-602_01.jpg?v=1753787701" alt="solo seat stainless steel/light blue by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">solo seat stainless steel/light blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/solo-seat-stainless-steel-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025002-400_01.jpg?v=1763122219" alt="solo seat stainless steel/pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">solo seat stainless steel/pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/solo-seat-stainless-steel-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025002-001_01_020626-jpg.jpg?v=1783002709" alt="solo seat stainless steel/white by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">solo seat stainless steel/white</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/solo-seat-stainless-steel-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025002-200_01.jpg?v=1753787808" alt="solo seat stainless steel/yellow by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">solo seat stainless steel/yellow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/solo-seat-white-frame-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018022_01_020626-jpg.jpg?v=1783002668" alt="solo seat white frame/leather by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">solo seat white frame/leather</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/square-table-s" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9024200A_260626_01.jpg?v=1782527465" alt="square table S by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">square table S</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-marble-n1-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023001-900_01-jpg.jpg?v=1761517161" alt="standing lamp marble n°1 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp marble n°1 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-marble-n1-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023001-500_01-jpg.jpg?v=1761517160" alt="standing lamp marble n°1 green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp marble n°1 green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-marble-n-1-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023001-004_01-jpg.jpg?v=1761517309" alt="standing lamp marble n°1 ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp marble n°1 ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-marble-n1-menie-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023001-302_01_020626-jpg.jpg?v=1783002669" alt="standing lamp marble n°1 menie red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp marble n°1 menie red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-marble-n1-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023001-300_01-jpg.jpg?v=1761517157" alt="standing lamp marble n°1 red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp marble n°1 red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-marble-n2-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023002-900_01-jpg.jpg?v=1761517168" alt="standing lamp marble n°2 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp marble n°2 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-marble-n2-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023002-500_01-jpg.jpg?v=1761517170" alt="standing lamp marble n°2 green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp marble n°2 green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-marble-n-2-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023002-004_01-jpg.jpg?v=1761517309" alt="standing lamp marble n°2 ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp marble n°2 ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-marble-n2-menie-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023002-302_01-jpg.jpg?v=1761517166" alt="standing lamp marble n°2 menie red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp marble n°2 menie red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-marble-n2-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9023002-300_01_020626-jpg.jpg?v=1783002682" alt="standing lamp marble n°2 red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp marble n°2 red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-n-1-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015013ZD_01.jpg?v=1764148307" alt="standing lamp n°1 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp n°1 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-n-1-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015013BD_01.jpg?v=1764148330" alt="standing lamp n°1 blue by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp n°1 blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-n-1-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015013GD_01.jpg?v=1764148271" alt="standing lamp n°1 green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp n°1 green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/standing-lamp-n-1-light-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015013LGD_01.jpg?v=1764862244" alt="standing lamp n°1 light grey by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">standing lamp n°1 light grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/stool-black-aligned" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9021333_01-jpg.jpg?v=1752559938" alt="stool black aligned by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">stool black aligned</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/stool-off-white-aligned" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9021332_01-jpg.jpg?v=1752559934" alt="stool off-white aligned by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">stool off-white aligned</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-s-alu" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025200-800_01.jpg?v=1753788128" alt="stool s alu by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">stool s alu</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-s-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025200-500_01.jpg?v=1763558148" alt="stool s green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">stool s green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-s-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025200-004_01.jpg?v=1753788194" alt="stool s ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">stool s ivory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-s-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025200-400_01.jpg?v=1753788173" alt="stool s pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">stool s pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/table-lamp-green-la-due-verde" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026303-500_01-jpg.jpg?v=1771947099" alt="table lamp green la due verde by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">table lamp green la due verde</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/table-lamp-green-la-tre-e-mezzo-verde" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026302-500_01-jpg.jpg?v=1771947088" alt="table lamp green la tre e mezzo verde by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">table lamp green la tre e mezzo verde</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/table-lamp-green-la-tre-verde" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026301-500_01-jpg.jpg?v=1771947074" alt="table lamp green la tre verde by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">table lamp green la tre verde</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/table-lamp-red-la-due-rossa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026303-300_01-jpg.jpg?v=1771947095" alt="table lamp red la due rossa by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">table lamp red la due rossa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/table-lamp-red-la-tre-e-mezzo-rossa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026302-300_01-jpg.jpg?v=1771947085" alt="table lamp red la tre e mezzo rossa by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">table lamp red la tre e mezzo rossa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/table-lamp-red-la-tre-rossa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026301-300_01-jpg.jpg?v=1771947073" alt="table lamp red la tre rossa by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">table lamp red la tre rossa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/table-lamp-white-la-due-bianca" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026303-001_01-jpg.jpg?v=1771947095" alt="table lamp white la due bianca by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">table lamp white la due bianca</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/table-lamp-white-la-tre-bianca" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026301-001_01-jpg.jpg?v=1771947074" alt="table lamp white la tre bianca by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">table lamp white la tre bianca</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/table-lamp-white-la-tre-e-mezzo-bianca" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026302-001_01-jpg.jpg?v=1771947084" alt="table lamp white la tre e mezzo bianca by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">table lamp white la tre e mezzo bianca</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/table-lamp-yellow-la-due-gialla" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026303-200_01-jpg.jpg?v=1771947095" alt="table lamp yellow la due gialla by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">table lamp yellow la due gialla</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/table-lamp-yellow-la-tre-e-mezzo-gialla" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026302-200_01-jpg.jpg?v=1771947085" alt="table lamp yellow la tre e mezzo gialla by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">table lamp yellow la tre e mezzo gialla</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/table-lamp-yellow-la-tre-gialla" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026301-200_01-jpg.jpg?v=1771947074" alt="table lamp yellow la tre gialla by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">table lamp yellow la tre gialla</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/three-circles-blue-pink-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025302-999_01.jpg?v=1753788637" alt="three circles blue pink brown by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">three circles blue pink brown</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/three-circles-red-brown-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025300-999_01.jpg?v=1763558114" alt="three circles red brown pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">three circles red brown pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/three-circles-yellow-white-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025301-999_01.jpg?v=1753788655" alt="three circles yellow white blue by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">three circles yellow white blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/tray-aluminum-assemble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020412_01-jpg.jpg?v=1761517217" alt="tray aluminum assemble by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">tray aluminum assemble</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/trivets-black-set-4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015007B_01-jpg_be235990-5769-4136-9941-5700a598bcbd.jpg?v=1763122112" alt="trivets black set/4 by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">trivets black set/4</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/trivets-mix-set-4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9015007A_01_020626-jpg.jpg?v=1783002667" alt="trivets mix set/4 by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">trivets mix set/4</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/trivets-round-black-set-5" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/V9023100-900.jpg?v=1752560038" alt="trivets round black set 5 by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">trivets round black set 5</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/trivets-round-colours-set-5" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/V9023100-999.jpg?v=1752560045" alt="trivets round colors set/5 by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">trivets round colors set/5</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/vase-i-offwhite-artifacts" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9024100-005_01-jpg.jpg?v=1766547051" alt="vase I off-white artifacts by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">vase I off-white artifacts</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/vase-ii-offwhite-artifacts" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9024102-005_01-jpg.jpg?v=1761517295" alt="vase II off-white artifacts by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">vase II off-white artifacts</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/wall-lamp-green-la-quattro-verde" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026305-500_01-jpg.jpg?v=1771947118" alt="wall lamp green la quattro verde by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">wall lamp green la quattro verde</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/wall-lamp-red-la-quattro-rossa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026305-300_01-jpg.jpg?v=1771947117" alt="wall lamp red la quattro rossa by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">wall lamp red la quattro rossa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/wall-lamp-tramonto-01-deep-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9022100_01-jpg.jpg?v=1763558216" alt="wall lamp tramonto 01 deep blue by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">wall lamp tramonto 01 deep blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/wall-lamp-tramonto-03-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9022102_01-jpg.jpg?v=1763558203" alt="wall lamp tramonto 03 black by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">wall lamp tramonto 03 black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/wall-lamp-tramonto-04-dark-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9022103_01-jpg.jpg?v=1763558197" alt="wall lamp tramonto 04 dark red by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">wall lamp tramonto 04 dark red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/wall-lamp-white-la-quattro-bianca" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026305-001_01-jpg.jpg?v=1771947112" alt="wall lamp white la quattro bianca by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">wall lamp white la quattro bianca</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/wall-lamp-yellow-la-quattro-gialla" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026305-200_01-jpg.jpg?v=1771947113" alt="wall lamp yellow la quattro gialla by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">wall lamp yellow la quattro gialla</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

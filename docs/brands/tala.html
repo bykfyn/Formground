@@ -1,0 +1,2623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tala on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Tala's work on Formground - 345 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/tala.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Tala on Formground">
+<meta property="og:description" content="Tala's work on Formground - 345 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/tala.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-Blossom-On-Setof2.png?v=1786461932">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-Blossom-On-Setof2.png?v=1786461932">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Tala on Formground">
+<meta name="twitter:description" content="Tala's work on Formground - 345 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Tala", "item": "https://formground.com/brands/tala.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Tala</h1>
+    <div class="tags"><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">United Kingdom</span></div>
+    <a class="brand-site-link" href="https://eu.tala.co.uk" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://eu.tala.co.uk/products/root-rod" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/RootRod.png?v=1786621805" alt="Accessory by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Accessory</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-multi-use-lamp-in-blossom-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-Blossom-On-Setof2.png?v=1786461932" alt="Alumina Lamp in Blossom by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Lamp in Blossom</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-multi-use-lamp-in-chalk-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-Chalk-On-Setof2.png?v=1786461932" alt="Alumina Lamp in Chalk by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Lamp in Chalk</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-multi-use-lamp-in-charcoal-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-Charcoal-On-Setof2.png?v=1786461933" alt="Alumina Lamp in Charcoal by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Lamp in Charcoal</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-multi-use-lamp-in-sage-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-SageGreen-On-Setof2.png?v=1786461933" alt="Alumina Lamp in Sage by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Lamp in Sage</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-multi-use-lamp-in-sapphire-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-Sapphire-On-Setof2.png?v=1786461987" alt="Alumina Lamp in Sapphire by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Lamp in Sapphire</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-multi-use-lamp-in-blossom" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-Blossom-On_0152ad8f-cd35-4d09-bafe-4a931263cb8e.png?v=1781625606" alt="Alumina Multi-Use Lamp in Blossom by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Multi-Use Lamp in Blossom</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-multi-use-lamp-in-chalk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-Chalk-On_09fa6e39-f349-4713-a6ca-278f1ef109c9.png?v=1781625601" alt="Alumina Multi-Use Lamp in Chalk by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Multi-Use Lamp in Chalk</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-multi-use-lamp-in-charcoal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-Charcoal-On_6fb6b349-71d2-4097-9068-1cfc9fa7f485.png?v=1781625603" alt="Alumina Multi-Use Lamp in Charcoal by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Multi-Use Lamp in Charcoal</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-multi-use-lamp-in-sage" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-Sage-On_67145f27-f8df-49a4-8e73-fb11c5898347.png?v=1781625604" alt="Alumina Multi-Use Lamp in Sage by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Multi-Use Lamp in Sage</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-multi-use-lamp-in-sapphire" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-Sapphire-On_f384c080-e53d-4421-859b-ab19bf129e25.png?v=1781625673" alt="Alumina Multi-Use Lamp in Sapphire by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Multi-Use Lamp in Sapphire</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-nine-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina_Chalk_Nine_Pendant_White_Canopy_Grey_Background_2048x2048_2e261ac8-b978-4113-8c8a-24981ca5107b.jpg?v=1786620820" alt="Alumina Nine Pendant by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Nine Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-nine-pendant-sphere-v" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina_Chalk_Nine_Pendant_Sphere_IV_On_Cool_Close_Grey_Background_2048x2048_7077c700-b9e4-4c85-a198-8e627caa01e0.jpg?v=1786620821" alt="Alumina Nine Pendant + Sphere V by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Nine Pendant + Sphere V</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina_Chalk_Single_Pendant_Neck_Detail_Grey_Background_2048x2048_8766c785-4d8c-4b48-b5c7-f67ce9479ca0.jpg?v=1786620820" alt="Alumina Pendant by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-single-pendant-sphere-v" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina_Chalk_Single_Pendant_On_Cool_Grey_Background_2048x2048_4d2a63a0-52b0-4e09-bb09-4b6da1c7190b.jpg?v=1786620822" alt="Alumina Single Pendant + Sphere V by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Single Pendant + Sphere V</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-triple-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/AluminaTriplePendant-Nobulb.png?v=1786620840" alt="Alumina Triple Pendant by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Triple Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/alumina-triple-pendant-sphere-v" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/AluminaTriplePendant-SphereV-On.png?v=1786620846" alt="Alumina Triple Pendant + Sphere V by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alumina Triple Pendant + Sphere V</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/basalt-replacement-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Basalt.png?v=1781627602" alt="Basalt by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Basalt</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/basalt-nine-pendant-in-stainless-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/BasaltNinePendant-SS-On.png?v=1786620856" alt="Basalt Nine Pendant in Stainless Steel by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Basalt Nine Pendant in Stainless Steel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/basalt-single-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/BasaltSinglePendant-Brass-On.png?v=1786620871" alt="Basalt Single Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Basalt Single Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/basalt-single-pendant-in-stainless-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/BasaltSinglePendant-SS-On.png?v=1786620876" alt="Basalt Single Pendant in Stainless Steel by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Basalt Single Pendant in Stainless Steel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/basalt-triple-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TripleBasalt-Brass-On.png?v=1786620890" alt="Basalt Triple Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Basalt Triple Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/basalt-triple-pendant-in-stainless-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TripleBasalt-StainlessSteel-On.png?v=1786620920" alt="Basalt Triple Pendant in Stainless Steel by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Basalt Triple Pendant in Stainless Steel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-large-in-dark-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Large-Green-Nobulb.jpg?v=1786613911" alt="Bower Pendant Light Large in Dark Green by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Large in Dark Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-large-in-dark-green-oval-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Large-Green-On.jpg?v=1786613957" alt="Bower Pendant Light Large in Dark Green + Oval II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Large in Dark Green + Oval II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-large-in-oyster-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Large-White-Nobulb.jpg?v=1786613910" alt="Bower Pendant Light Large in Oyster White by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Large in Oyster White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-large-in-oyster-white-oval-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Large-White-On.jpg?v=1786613977" alt="Bower Pendant Light Large in Oyster White + Oval II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Large in Oyster White + Oval II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-large-in-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Large-Yellow-Nobulb.jpg?v=1786613932" alt="Bower Pendant Light Large in Yellow by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Large in Yellow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-large-in-yellow-oval-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Large-Yellow-On.jpg?v=1786613979" alt="Bower Pendant Light Large in Yellow + Oval II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Large in Yellow + Oval II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-medium-in-dark-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Medium-Green-Nobulb.jpg?v=1786613886" alt="Bower Pendant Light Medium in Dark Green by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Medium in Dark Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-medium-in-dark-green-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Medium-Green-On.jpg?v=1786613955" alt="Bower Pendant Light Medium in Dark Green + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Medium in Dark Green + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-medium-in-oyster-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Medium-White-Nobulb.jpg?v=1786613910" alt="Bower Pendant Light Medium in Oyster White by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Medium in Oyster White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-medium-in-oyster-white-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Medium-White-On.jpg?v=1786613956" alt="Bower Pendant Light Medium in Oyster White + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Medium in Oyster White + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-medium-in-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Medium-Yellow-Nobulb.jpg?v=1786613910" alt="Bower Pendant Light Medium in Yellow by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Medium in Yellow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-medium-in-yellow-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Medium-Yellow-On.jpg?v=1786613957" alt="Bower Pendant Light Medium in Yellow + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Medium in Yellow + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-small-in-dark-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Small-Green_fcf09343-b02b-4b0a-bcc8-61b2a119385b.jpg?v=1786613887" alt="Bower Pendant Light Small in Dark Green by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Small in Dark Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-small-in-dark-green-sphere-iii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Small-Green.jpg?v=1786613933" alt="Bower Pendant Light Small in Dark Green + Sphere III by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Small in Dark Green + Sphere III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-small-in-oyster-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Small-White_96857fd0-8c62-49ed-8d36-62df07d86e82.jpg?v=1786613886" alt="Bower Pendant Light Small in Oyster White by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Small in Oyster White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-small-in-oyster-white-sphere-iii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Small-White_100ea4e5-b157-4471-8f14-84c16a1af0aa.jpg?v=1786613933" alt="Bower Pendant Light Small in Oyster White + Sphere III by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Small in Oyster White + Sphere III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-small-in-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Small-Yellow_47af6424-9c3f-43d1-a309-28c86f89bccc.jpg?v=1786613887" alt="Bower Pendant Light Small in Yellow by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Small in Yellow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/bower-pendant-light-small-in-yellow-sphere-iii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Bower-Small-Yellow.jpg?v=1786613933" alt="Bower Pendant Light Small in Yellow + Sphere III by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bower Pendant Light Small in Yellow + Sphere III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/brass-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Brass-Nobulb.png?v=1786620923" alt="Brass Pendant by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Brass Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/cable-bracket-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Brassnode.jpg?v=1781625700" alt="Cable Bracket in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cable Bracket in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/cable-bracket-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Graphitenode.png?v=1786620929" alt="Cable Bracket in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cable Bracket in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/candle-e14-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Candle_NT_c283d15d-77c7-407b-8e7c-17fd458a4465.png?v=1781625679" alt="Candle E14 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Candle E14 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/candle-e14-matte-white-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Candle_Matte_15964bc4-0209-4413-adfc-198d1e2de14c.png?v=1781626050" alt="Candle E14 Matte White LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Candle E14 Matte White LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/core-ip65-fire-rated-recessed-downlight-gu10" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Core_DL-White-On_854949d8-67c9-4635-b628-e90fb7dc8fc5.png?v=1781626048" alt="Core IP65 Fire-Rated Recessed Downlight + GU10 by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Core IP65 Fire-Rated Recessed Downlight + GU10</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/core-recessed-downlight-gu10" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Core_DL-White-On.png?v=1781626038" alt="Core Recessed Downlight + GU10 by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Core Recessed Downlight + GU10</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/core-recessed-spotlight-gu10" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Core_SL-White-On.png?v=1781626045" alt="Core Recessed Spotlight + GU10 by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Core Recessed Spotlight + GU10</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/core-trimless-downlight-gu10" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/CoreDL-TL-White-On.jpg?v=1786400990" alt="Core Trimless Downlight + GU10 by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Core Trimless Downlight + GU10</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/core-trimless-spotlight-gu10" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/CoreSL-TL-White-On.jpg?v=1786400997" alt="Core Trimless Spotlight + GU10 by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Core Trimless Spotlight + GU10</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/double-rotary-wall-dimmer-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Dimmertest-7.png?v=1786404636" alt="Double Rotary Wall Dimmer in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Double Rotary Wall Dimmer in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/double-rotary-wall-dimmer-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/DoubleRotaryDimmer-Graphite.png?v=1786404636" alt="Double Rotary Wall Dimmer in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Double Rotary Wall Dimmer in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/echo-chandelier" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Echo-On_80c1c2c3-b99b-45a5-a011-369205820b6b.png?v=1781625438" alt="Echo Chandelier by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Echo Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/elva-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Elva_T_4de2e8db-7e6d-4383-94b9-0a6173b62e45.png?v=1781625475" alt="Elva E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elva E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/elva-e27-non-tinted-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Elva_NT_f2930920-5cbe-4d97-a66f-a55c25daaf02.png?v=1781626050" alt="Elva E27 Non-Tinted LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elva E27 Non-Tinted LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/elva-pendant-light-non-tinted-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Elva_NT-On.png?v=1786620938" alt="Elva Pendant Light Non-Tinted in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elva Pendant Light Non-Tinted in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/elva-pendant-light-non-tinted-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-ElvaNT-On.png?v=1786620939" alt="Elva Pendant Light Non-Tinted in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elva Pendant Light Non-Tinted in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/elva-pendant-light-non-tinted-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Oak-Elva_NT-On.png?v=1786620945" alt="Elva Pendant Light Non-Tinted in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elva Pendant Light Non-Tinted in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/elva-pendant-light-non-tinted-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Elva_NT-On.png?v=1786620947" alt="Elva Pendant Light Non-Tinted in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elva Pendant Light Non-Tinted in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/elva-pendant-light-tinted-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Elva_T-On.png?v=1786620948" alt="Elva Pendant Light Tinted in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elva Pendant Light Tinted in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/elva-pendant-light-tinted-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-ElvaT-On.png?v=1786620956" alt="Elva Pendant Light Tinted in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elva Pendant Light Tinted in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/elva-pendant-light-tinted-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Oak-Elva_T-On.png?v=1786620963" alt="Elva Pendant Light Tinted in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elva Pendant Light Tinted in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/elva-pendant-light-tinted-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Elva_T-On.png?v=1786620964" alt="Elva Pendant Light Tinted in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elva Pendant Light Tinted in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/enno-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Enno.png?v=1781625491" alt="Enno E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Enno E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/enno-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Enno-On.png?v=1786620970" alt="Enno Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Enno Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/enno-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-Enno-On.png?v=1786620973" alt="Enno Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Enno Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/enno-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Oak-Enno-On.png?v=1786620978" alt="Enno Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Enno Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/enno-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Enno-On.png?v=1786620982" alt="Enno Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Enno Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/enno-plug-in-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Brass-Enno-On.png?v=1786620985" alt="Enno Plug-In Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Enno Plug-In Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/enno-plug-in-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Graphite-Enno-On.png?v=1786620987" alt="Enno Plug-In Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Enno Plug-In Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/firth-gx53-7w-replacement-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Firth_replacement_bulb.png?v=1781626069" alt="Firth GX53 7W Replacement Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Firth GX53 7W Replacement Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/firth-wall-light" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Firth-WL-On.png?v=1781626067" alt="Firth Wall Light by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Firth Wall Light</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/g4-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/G4_1f5b6c9a-55cb-47ac-93a8-1fb309bbd41b.png?v=1786408444" alt="G4 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">G4 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/g9-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/G9_9be4622d-0637-4dcd-8acb-e0dd7d2af386.png?v=1781625596" alt="G9 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">G9 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/gu10-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/G9-1.png?v=1781625695" alt="GU10 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">GU10 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/gaia-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Gaia_82453046-fc6c-4b75-b6d3-02a8f5f577cd.png?v=1781625482" alt="Gaia E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gaia E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/gaia-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Gaia-On.png?v=1786621031" alt="Gaia Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gaia Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/gaia-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-Gaia-On.png?v=1786621032" alt="Gaia Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gaia Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/gaia-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Oak-Gaia-On.png?v=1786621039" alt="Gaia Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gaia Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/gaia-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Gaia-On.png?v=1786621042" alt="Gaia Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gaia Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/gaia-plug-in-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Brass-Gaia-On.png?v=1786621054" alt="Gaia Plug-In Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gaia Plug-In Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/gaia-plug-in-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Graphite-Gaia-On.png?v=1786621061" alt="Gaia Plug-In Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gaia Plug-In Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/globe-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Globe_NT_659f39e5-c34d-440f-a077-b89ac7be901f.png?v=1781625687" alt="Globe E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Globe E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/globe-e27-matte-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Globe_Matte_932ee031-d9af-4f4a-ac57-0c13dfcfdf6b.png?v=1781625701" alt="Globe E27 Matte LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Globe E27 Matte LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/graphite-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-Nobulb.png?v=1786621062" alt="Graphite Pendant by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Graphite Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/heath-table-lamp-in-port-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Heath-On.jpg?v=1782820473" alt="Heath Table Lamp in Port Red by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Heath Table Lamp in Port Red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-sconce-in-dark-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter-Black-No_bulbs.png?v=1786464774" alt="Kilter 1.0 Sconce in Dark Grey by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter 1.0 Sconce in Dark Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-sconce-in-solid-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter-Brass-No_bulbs.png?v=1786464779" alt="Kilter 1.0 Sconce in Solid Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter 1.0 Sconce in Solid Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-sconce-in-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter-White-No_bulbs.png?v=1786464785" alt="Kilter 1.0 Sconce in White by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter 1.0 Sconce in White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-wall-light-in-dark-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter-Black-Large2700K-On.jpg?v=1786464793" alt="Kilter 1.0 Wall Light in Dark Grey by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter 1.0 Wall Light in Dark Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-wall-light" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter-Brass-Large2200K-On.jpg?v=1786527436" alt="Kilter 1.0 Wall Light in Solid Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter 1.0 Wall Light in Solid Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-wall-light-in-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter-White-Large_2700K-On.jpg?v=1786464800" alt="Kilter 1.0 Wall Light in White by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter 1.0 Wall Light in White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-2-0-wall-light-in-brushed-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter-Brass_Body-Brushed_Brass_Cap-Large_2200K-On.jpg?v=1785325485" alt="Kilter 2.0 Wall Light in Brushed Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter 2.0 Wall Light in Brushed Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-2-0-wall-light-in-brushed-stainless-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter-StainlessSteelBody-BrushedCap-Large2200K-On.png?v=1785325476" alt="Kilter 2.0 Wall Light in Brushed Stainless Steel by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter 2.0 Wall Light in Brushed Stainless Steel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-2-0-wall-light-in-dark-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter-Black_Body-Black_Cap-Large_2200K-On.jpg?v=1785325476" alt="Kilter 2.0 Wall Light in Dark Grey by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter 2.0 Wall Light in Dark Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-2-0-wall-light-in-polished-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter-Brass_Body-Polished_Brass_Cap-Large_2200K-On.jpg?v=1785325473" alt="Kilter 2.0 Wall Light in Polished Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter 2.0 Wall Light in Polished Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-2-0-wall-light-in-polished-stainless-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter-StainlessSteelBody-PolishedCap-Large2200K-On.png?v=1785325485" alt="Kilter 2.0 Wall Light in Polished Stainless Steel by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter 2.0 Wall Light in Polished Stainless Steel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-2-0-wall-light-in-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter-White_Body-White_Cap-Large_2200K-On.jpg?v=1785325477" alt="Kilter 2.0 Wall Light in White by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter 2.0 Wall Light in White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-i-s14d-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter_Small_197f4e66-4a44-4741-9021-ae56b2a88232.png?v=1781625790" alt="Kilter I S14d LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter I S14d LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-ii-s14d-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Kilter_Large_5c50c9e0-a13e-4ce4-82c0-9279db8a8cfa.png?v=1781625787" alt="Kilter II S14d LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter II S14d LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/kilter-pendant-light-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/KilterPendant-Setof2.png?v=1786621073" alt="Kilter Pendant Light by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kilter Pendant Light</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-pendant-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Oak-Nobulb.png?v=1786621076" alt="Knuckle Pendant in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Pendant in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-pendant-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Walnut-Nobulb.png?v=1786621082" alt="Knuckle Pendant in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Pendant in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-blackened-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Black-Enno-Off-1_aa1ed13d-4e7c-4536-8c6f-e9a658abed57.png?v=1786627417" alt="Knuckle Table Lamp in Blackened Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Blackened Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-blackened-oak-enno" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Black-Enno-On_31ae76b9-9d24-4702-bd17-6036c847fb5f.png?v=1781625984" alt="Knuckle Table Lamp in Blackened Oak + Enno by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Blackened Oak + Enno</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-blackened-oak-noma" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Black-Noma-On_9272d2df-8dd2-49a6-85cc-2ae7da7b7700.png?v=1781625956" alt="Knuckle Table Lamp in Blackened Oak + Noma by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Blackened Oak + Noma</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-blackened-oak-oblo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Black-Oblo-On_8c887655-0559-4ee1-a4be-dd4e1a48dc38.png?v=1781625968" alt="Knuckle Table Lamp in Blackened Oak + Oblo by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Blackened Oak + Oblo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-blackened-oak-oval" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Black-Oval-On_e7aea0b8-4ad9-43a3-aeb4-7a05765fdb47.png?v=1781625978" alt="Knuckle Table Lamp in Blackened Oak + Oval by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Blackened Oak + Oval</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-blackened-oak-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Black-Sphere-On.png?v=1786627335" alt="Knuckle Table Lamp in Blackened Oak + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Blackened Oak + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-blackened-oak-sphere-iv-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Black-Sphere-Setof2.jpg?v=1786621100" alt="Knuckle Table Lamp in Blackened Oak + Sphere IV Set by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Blackened Oak + Sphere IV Set</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-blackened-oak-voronoi-i-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Black-VoronoiI-Setof2.jpg?v=1786621113" alt="Knuckle Table Lamp in Blackened Oak + Voronoi I by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Blackened Oak + Voronoi I</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Oak-No_bulb_282a8b30-97cb-4fe9-8b15-dab4a02e29b7.png?v=1786627397" alt="Knuckle Table Lamp in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-oak-enno" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Oak-Enno-On_4e026b58-2b82-450a-9259-e468a1988574.png?v=1781625980" alt="Knuckle Table Lamp in Oak + Enno by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Oak + Enno</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-oak-noma" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Oak-Noma-On_6418a7a5-a52e-46ab-951c-50b2e3b77a20.png?v=1781625950" alt="Knuckle Table Lamp in Oak + Noma by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Oak + Noma</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-oak-oblo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Oak-Oblo-On_96c22663-7fab-4a89-8e8a-45b235ed9de9.png?v=1781625961" alt="Knuckle Table Lamp in Oak + Oblo by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Oak + Oblo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-oak-oval" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Oak-Oval-On_5a7f779d-8b35-46a9-be55-a2803035fdcc.png?v=1781625973" alt="Knuckle Table Lamp in Oak + Oval by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Oak + Oval</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-oak-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Oak-Sphere-On.png?v=1786627335" alt="Knuckle Table Lamp in Oak + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Oak + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-oak-sphere-iv-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Oak-Sphere-Setof2.jpg?v=1786621139" alt="Knuckle Table Lamp in Oak + Sphere IV Set of 2 by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Oak + Sphere IV Set of 2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-oak-voronoi-i" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Oak-Voronoi_I-On_9b4390c2-a344-4957-b337-27620db1a0c6.png?v=1786627335" alt="Knuckle Table Lamp in Oak + Voronoi I by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Oak + Voronoi I</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-oak-voronoi-i-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Oak-VoronoiI-Setof2.jpg?v=1786621153" alt="Knuckle Table Lamp in Oak + Voronoi I Set of 2 by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Oak + Voronoi I Set of 2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Walnut-No_bulb.png?v=1786627414" alt="Knuckle Table Lamp in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-walnut-enno" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Walnut-Enno-On_d9cc715e-7fcc-4d41-8d6c-7ab08c31f69a.png?v=1781625982" alt="Knuckle Table Lamp in Walnut + Enno by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Walnut + Enno</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-walnut-noma" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Walnut-Noma-On_cf8e80f2-3736-4c8f-a2a2-bb4fc43e6323.png?v=1781625944" alt="Knuckle Table Lamp in Walnut + Noma by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Walnut + Noma</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-walnut-oblo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Walnut-Oblo-On_da8ec434-c3d2-4395-9ca3-c892998869e4.png?v=1781625961" alt="Knuckle Table Lamp in Walnut + Oblo by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Walnut + Oblo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-walnut-oval" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Walnut-Oval-On_dc9ba227-e35b-4005-8133-55d4fc1d0876.png?v=1781625974" alt="Knuckle Table Lamp in Walnut + Oval by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Walnut + Oval</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-walnut-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Walnut-Sphere-On.png?v=1786627369" alt="Knuckle Table Lamp in Walnut + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Walnut + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-walnut-sphere-iv-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Walnut-Sphere-Setof2.jpg?v=1786621183" alt="Knuckle Table Lamp in Walnut + Sphere IV Set by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Walnut + Sphere IV Set</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-walnut-voronoi-i" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Walnut-Voronoi_I-On.png?v=1786627370" alt="Knuckle Table Lamp in Walnut + Voronoi I by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Walnut + Voronoi I</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-walnut-voronoi-i-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Walnut-VoronoiI-Setof2.jpg?v=1786621197" alt="Knuckle Table Lamp in Walnut + Voronoi I Set by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knuckle Table Lamp in Walnut + Voronoi I Set</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/light-engine-i-e14-dim-to-warm-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/LE_I.png?v=1781625591" alt="Light Engine I E14 Dim-to-Warm LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Light Engine I E14 Dim-to-Warm LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/light-engine-ii-e27-dim-to-warm-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/LE_II_10678dff-413d-42de-a17a-271572a4e8a7.png?v=1781625588" alt="Light Engine II E27 Dim-to-Warm LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Light Engine II E27 Dim-to-Warm LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/linear-triple-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Linear-Triple-Pendant-Fixture-1-2048x2048_1bf29629-5c34-4c74-9b83-c7f25b433cb6.jpg?v=1786621208" alt="Linear Triple Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Linear Triple Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/linear-triple-pendant-in-brass-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/LinearPendant-Sphere-On.png?v=1786621224" alt="Linear Triple Pendant in Brass + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Linear Triple Pendant in Brass + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/linear-triple-pendant-in-brass-voronoi-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/LinearPendant-VoronoiII-On.png?v=1786621241" alt="Linear Triple Pendant in Brass + Voronoi II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Linear Triple Pendant in Brass + Voronoi II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/lochan-wall-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Lochan_Wall_Brass-No_bulb.png?v=1781625449" alt="Lochan Wall Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lochan Wall Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/lochan-wall-light-in-brass-oval" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Lochan_Wall_Brass-Oval_I-On.png?v=1781625747" alt="Lochan Wall Light in Brass + Oval by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lochan Wall Light in Brass + Oval</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/lochan-wall-light-in-brass-sphere-iii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Lochan_Wall_Brass-Sphere_III-On.png?v=1781625763" alt="Lochan Wall Light in Brass + Sphere III by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lochan Wall Light in Brass + Sphere III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/lochan-wall-light-in-brass-voronoi-i" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Lochan_Wall_Brass-Voronoi_I-On.png?v=1781625773" alt="Lochan Wall Light in Brass + Voronoi I by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lochan Wall Light in Brass + Voronoi I</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/lochan-wall-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Lochan_Wall_Graphite-No_bulb.png?v=1781625990" alt="Lochan Wall Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lochan Wall Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/lochan-wall-light-in-graphite-oval" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Lochan_Wall_Graphite-Oval_I-On.png?v=1781626006" alt="Lochan Wall Light in Graphite + Oval by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lochan Wall Light in Graphite + Oval</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/lochan-wall-light-in-graphite-sphere-iii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Lochan_Wall_Graphite-Sphere_III-On.png?v=1781625998" alt="Lochan Wall Light in Graphite + Sphere III by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lochan Wall Light in Graphite + Sphere III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/lochan-wall-light-in-graphite-voronoi-i" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Lochan_Wall_Graphite-Voronoi_I-On.png?v=1781625992" alt="Lochan Wall Light in Graphite + Voronoi I by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lochan Wall Light in Graphite + Voronoi I</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/loop-single-pendant-in-dark-grey-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/LoopPendant-Graphite-On.png?v=1786621248" alt="Loop Single Pendant in Dark Grey + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Loop Single Pendant in Dark Grey + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/loop-single-pendant-in-gold-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/LoopPendant-Brass-On.jpg?v=1786621287" alt="Loop Single Pendant in Gold + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Loop Single Pendant in Gold + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/loop-table-lamp-in-dark-grey-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Loop-TL-Graphite-On_57eec22d-155e-4d58-a51b-62f9521d83c5.png?v=1781625935" alt="Loop Table Lamp in Dark Grey + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Loop Table Lamp in Dark Grey + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/loop-table-lamp-in-gold-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Loop-TL-Brass-On.png?v=1781625779" alt="Loop Table Lamp in Gold + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Loop Table Lamp in Gold + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/loop-wall-light-in-dark-grey-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Loop-WL-Black-On_527f7b84-9497-4b2b-93e1-4f12ec5f75d0.png?v=1781625939" alt="Loop Wall Light in Dark Grey + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Loop Wall Light in Dark Grey + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/loop-wall-light-in-gold-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Loop-WL-Brass-On_bb368b46-2c4d-40ce-9339-985920ce5f3c.png?v=1781625780" alt="Loop Wall Light in Gold + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Loop Wall Light in Gold + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/lurra-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Lurra.png?v=1781625465" alt="Lurra E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lurra E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/magma-flush-mount" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Magma-Flush_Mount-On.png?v=1781625991" alt="Magma Flush Mount by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Magma Flush Mount</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/magma-g70-6w-replacement-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Sphere_II_88b51e04-12b0-467b-849a-907beb67d528.png?v=1781626072" alt="Magma G70 6W Replacement Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Magma G70 6W Replacement Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/magma-wall-light" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Magma-WL-On_eb1b3c58-9504-437a-80e7-7aa6cb2a1c20.png?v=1781625989" alt="Magma Wall Light by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Magma Wall Light</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/mantle-replacement-3w-replacement-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Mantle_replacement_bulb.png?v=1781625846" alt="Mantle 3W Replacement Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mantle 3W Replacement Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/mantle-portable-lamp-in-cobalt-blue-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Mantle-BlueOn-Setof2.jpg?v=1786621288" alt="Mantle Portable Lamp in Cobalt Blue by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mantle Portable Lamp in Cobalt Blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/mantle-portable-lamp-in-granite-black-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Mantle-GraniteOn-Setof2.jpg?v=1786621296" alt="Mantle Portable Lamp in Granite Black by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mantle Portable Lamp in Granite Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/mantle-portable-lamp-in-stone-white-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Mantle-StoneWhite-On-Setof2.png?v=1786621321" alt="Mantle Portable Lamp in Stone White by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mantle Portable Lamp in Stone White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/mantle-replacement-battery" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Mantle_replacement_battery.png?v=1781625843" alt="Mantle Replacement Battery by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mantle Replacement Battery</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/mantle-replacement-pcb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/MantlePCB.png?v=1783439102" alt="Mantle Replacement PCB by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mantle Replacement PCB</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Brass-Nobulb.png?v=1786621325" alt="Nine Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-brass-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Brass-SphereIV-On.png?v=1786621331" alt="Nine Pendant in Brass + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Brass + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-brass-voronoi-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Brass-VoronoiII-On.png?v=1786621331" alt="Nine Pendant in Brass + Voronoi II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Brass + Voronoi II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-brass-voronoi-iii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Brass-VoronoiIII-On.png?v=1786621339" alt="Nine Pendant in Brass + Voronoi III by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Brass + Voronoi III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Graphite-Nobulb.png?v=1786621340" alt="Nine Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-graphite-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Graphite-SphereIV-On.png?v=1786621351" alt="Nine Pendant in Graphite + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Graphite + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-graphite-voronoi-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Graphite-VoronoiII-On.png?v=1786621356" alt="Nine Pendant in Graphite + Voronoi II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Graphite + Voronoi II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-graphite-voronoi-iii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Graphite-VoronoiIII-On.png?v=1786621364" alt="Nine Pendant in Graphite + Voronoi III by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Graphite + Voronoi III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Oak-Nobulb.png?v=1786621364" alt="Nine Pendant in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-oak-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Oak-SphereIV-On.png?v=1786621376" alt="Nine Pendant in Oak + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Oak + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-oak-voronoi-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Oak-VoronoiII-On.png?v=1786621383" alt="Nine Pendant in Oak + Voronoi II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Oak + Voronoi II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/New-Nine-Pendant-Fixture-Packshot-1500x1500.jpg?v=1786621386" alt="Nine Pendant in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-walnut-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Walnut-SphereIV-On.png?v=1786621406" alt="Nine Pendant in Walnut + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Walnut + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/nine-pendant-in-walnut-voronoi-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/NinePendant-Walnut-VoronoiII-On.png?v=1786621407" alt="Nine Pendant in Walnut + Voronoi II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nine Pendant in Walnut + Voronoi II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/noma-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Noma.png?v=1781625496" alt="Noma E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Noma E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/noma-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Noma-On.png?v=1786621410" alt="Noma Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Noma Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/noma-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-Noma-On.png?v=1786621419" alt="Noma Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Noma Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/noma-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Oak-Noma-On.png?v=1786621433" alt="Noma Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Noma Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/noma-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Noma-On.png?v=1786621440" alt="Noma Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Noma Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/noma-plug-in-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Brass-Noma-On.png?v=1786621456" alt="Noma Plug-In Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Noma Plug-In Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/noma-plug-in-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Graphite-Noma-On.png?v=1786621456" alt="Noma Plug-In Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Noma Plug-In Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oblo-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Oblo.png?v=1781625496" alt="Oblo E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oblo E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oblo-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Oblo-On.png?v=1786621461" alt="Oblo Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oblo Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oblo-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-Oblo-On.png?v=1786621464" alt="Oblo Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oblo Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oblo-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Oak-Oblo-On.png?v=1786621464" alt="Oblo Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oblo Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oblo-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Oblo-On.png?v=1786621469" alt="Oblo Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oblo Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oblo-plug-in-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Brass-Oblo-On.png?v=1786621487" alt="Oblo Plug-In Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oblo Plug-In Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oblo-plug-in-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Graphite-Oblo-On.png?v=1786621486" alt="Oblo Plug-In Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oblo Plug-In Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Oval_I.png?v=1781625510" alt="Oval E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-e27-led-bulb-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/OvalII_3ae77811-961e-481f-bee3-519ea40cfeb3.png?v=1786613959" alt="Oval II E27 Dim-to-Warm LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval II E27 Dim-to-Warm LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-ii-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Oval_II-On.png?v=1786621517" alt="Oval II Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval II Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-ii-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-OvalII-On.png?v=1786621517" alt="Oval II Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval II Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-ii-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Oak-OvalII-On.png?v=1786621522" alt="Oval II Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval II Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-ii-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Oval_II-On_12b87b07-2759-48a5-a65f-f3c79a1ef862.png?v=1786621526" alt="Oval II Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval II Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-ii-plug-in-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Brass-OvalII-On.png?v=1786621544" alt="Oval II Plug-In Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval II Plug-In Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-ii-plug-in-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Graphite-OvalII-On.png?v=1786621544" alt="Oval II Plug-In Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval II Plug-In Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Oval_I-On_484c2975-5dd3-454b-986e-249bc2cdd9b9.png?v=1786621542" alt="Oval Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-OvalI-On_93cb85df-02c6-4435-b0dd-54df70572c2b.png?v=1786621545" alt="Oval Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Oak-OvalI-On.png?v=1786621552" alt="Oval Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Oval_I-On.png?v=1786621564" alt="Oval Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-plug-in-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Brass-OvalI-On_5c9e68e6-d262-40c7-ba43-2508ae80ce05.png?v=1786621570" alt="Oval Plug-In Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval Plug-In Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/oval-plug-in-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Graphite-OvalI-On_d6d2d011-278c-4c00-bfdc-904e075bdc9a.png?v=1786621574" alt="Oval Plug-In Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oval Plug-In Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/pendant-cable" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Pendantcable.jpg?v=1786621574" alt="Pendant Cable by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pendant Cable</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/plug-in-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Brass-Nobulb.png?v=1786621580" alt="Plug-In Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Plug-In Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/plug-in-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Graphite-Nobulb.png?v=1786621583" alt="Plug-In Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Plug-In Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/pluto-e14-non-tinted-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Pluto_E14_NT_a6c23a03-a026-4d11-ba4f-6a9efcb90e4f.png?v=1781626053" alt="Pluto E14 Non-Tinted LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pluto E14 Non-Tinted LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/pluto-e14-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Pluto_E14_T_b885d49a-38fa-4c87-9641-6c31de8ec967.png?v=1781625466" alt="Pluto E14 Tinted LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pluto E14 Tinted LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/pluto-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Pluto_E27_NT_9db3e511-eec8-4ef1-959a-923fae3767ad.png?v=1781628289" alt="Pluto E27 Non-Tinted LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pluto E27 Non-Tinted LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/pluto-e27-tinted-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Pluto_E27_NT-1_2fcad486-abb7-4d32-824e-b9134baa95dc.png?v=1781628200" alt="Pluto E27 Tinted LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pluto E27 Tinted LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/poise-adjustable-floor-lamp-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Poise-Brass-Long-No_bulb_abac6e0b-5743-45f1-bc99-11cd8c7335d9.png?v=1781625808" alt="Poise Adjustable Floor Lamp in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Poise Adjustable Floor Lamp in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/poise-adjustable-floor-lamp-in-brass-oval-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Poise-Brass-Long-Oval-On.png?v=1781625754" alt="Poise Adjustable Floor Lamp in Brass + Oval II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Poise Adjustable Floor Lamp in Brass + Oval II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/poise-adjustable-floor-lamp-in-brass-sphere-v" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Poise-Brass-Long-Oval-On-1_3be85ea4-833d-4b71-8f43-56c38c71e6d9.png?v=1781625429" alt="Poise Adjustable Floor Lamp in Brass + Sphere V by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Poise Adjustable Floor Lamp in Brass + Sphere V</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/poise-adjustable-floor-lamp-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Poise-Graphite-Detail_3.png?v=1781626018" alt="Poise Adjustable Floor Lamp in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Poise Adjustable Floor Lamp in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/poise-adjustable-floor-lamp-in-graphite-oval-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Poise-Graphite-Long-Oval-On_36297f53-7c17-4416-a331-ee38ab6434fc.png?v=1781626012" alt="Poise Adjustable Floor Lamp in Graphite + Oval II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Poise Adjustable Floor Lamp in Graphite + Oval II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/poise-adjustable-floor-lamp-in-graphite-sphere-v" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Poise-Graphite-Long-Oval-On-1_bdc316cd-724d-420e-a9e3-3806744100f8.png?v=1781626017" alt="Poise Adjustable Floor Lamp in Graphite + Sphere V by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Poise Adjustable Floor Lamp in Graphite + Sphere V</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/porcelain-i-e14-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Porcelain_I_e06f069b-92dc-4042-a679-c2c27e2a14f9.png?v=1781625467" alt="Porcelain I E14 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Porcelain I E14 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/porcelain-ii-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Porcelain_II_ef0ca542-5dab-4dbb-9a6a-ad62373ed71c.png?v=1781625474" alt="Porcelain II E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Porcelain II E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/porcelain-ii-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Porc_II-On.png?v=1786621586" alt="Porcelain II Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Porcelain II Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/porcelain-ii-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-PorcII-On.png?v=1786621585" alt="Porcelain II Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Porcelain II Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/porcelain-ii-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Oak-PorcII-On.png?v=1786621594" alt="Porcelain II Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Porcelain II Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/porcelain-ii-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Porc_II-On.png?v=1786621604" alt="Porcelain II Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Porcelain II Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/porcelain-iii-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Porcelain_III_fbd024c0-f9c4-46e6-a76c-f244b55c800b.png?v=1781625473" alt="Porcelain III E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Porcelain III E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/porcelain-iii-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Porc_III-On.png?v=1786621609" alt="Porcelain III Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Porcelain III Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/porcelain-iii-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-PorcIII-On.png?v=1786621609" alt="Porcelain III Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Porcelain III Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/porcelain-iii-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Oak-PorcIII-On.png?v=1786621658" alt="Porcelain III Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Porcelain III Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/porcelain-iii-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Porc_III-On.png?v=1786621685" alt="Porcelain III Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Porcelain III Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/pygmy-e14-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Pygmy.png?v=1781625457" alt="Pygmy E14 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pygmy E14 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/reflection-enno-table-lamp-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Reflection-Enno-Setof2.png?v=1786621699" alt="Reflection Enno Table Lamp by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Reflection Enno Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/reflection-oval-table-lamp-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Reflection-Oval-Setof2.png?v=1786621763" alt="Reflection Oval Table Lamp by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Reflection Oval Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/root-one-tier-chandelier" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/ROOT_1_tier_Medium-On_755cd74d-c364-435d-ad53-cf010ce1aacc.png?v=1782820931" alt="Root One-Tier Chandelier by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Root One-Tier Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/root-three-tier-chandelier" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/ROOT_3Tier-On_5c190b2c-5c90-47bf-9c81-03289bee675b.png?v=1782820926" alt="Root Three-Tier Chandelier by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Root Three-Tier Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/root-two-tier-chandelier" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/ROOT_2_tier_Medium-On_95cd2819-5a5c-41d4-916c-d706b27d6afd.png?v=1782820919" alt="Root Two-Tier Chandelier by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Root Two-Tier Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/shore-g95-6w-replacement-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Sphere_III_b8e8eff3-4ba0-4d87-8ff1-5baff019c623.png?v=1781625937" alt="Shore G95 6W Replacement Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shore G95 6W Replacement Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/shore-table-lamp-in-bottle-brown-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/ShoreBrownSetof2.jpg?v=1786621803" alt="Shore Table Lamp in Bottle Brown by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shore Table Lamp in Bottle Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/shore-table-lamp-in-sea-green-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/ShoreGreenSetof2.jpg?v=1786621809" alt="Shore Table Lamp in Sea Green by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shore Table Lamp in Sea Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/shore-table-lamp-in-smoke-grey-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/ShoreGreySetof2.jpg?v=1786621815" alt="Shore Table Lamp in Smoke Grey by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shore Table Lamp in Smoke Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/single-rotary-wall-dimmer-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SingleRotaryDimmer-Brass.png?v=1786404637" alt="Single Rotary Wall Dimmer in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Single Rotary Wall Dimmer in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/single-rotary-wall-dimmer-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SingleRotaryDimmer-Graphite.png?v=1786404638" alt="Single Rotary Wall Dimmer in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Single Rotary Wall Dimmer in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-i-e14-dim-to-warm-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Sphere_I_E14_b4e254e7-23ec-46b2-9f9a-852c958d8777.png?v=1781626025" alt="Sphere I E14 Dim-to-Warm LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere I E14 Dim-to-Warm LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-i-e27-dim-to-warm-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Sphere_I_E27_0a013920-932b-47d4-91a2-46a24516a277.png?v=1781625575" alt="Sphere I E27 Dim-to-Warm LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere I E27 Dim-to-Warm LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-ii-e27-dim-to-warm-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Sphere_II_dca518c6-afd2-44b1-a708-71ed1b172b52.png?v=1781625567" alt="Sphere II E27 Dim-to-Warm LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere II E27 Dim-to-Warm LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-ii-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Sphere_II-On.png?v=1786621820" alt="Sphere II Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere II Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-ii-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-SphereII-On.png?v=1786621822" alt="Sphere II Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere II Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-ii-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Oak-SphereII-On.png?v=1786621823" alt="Sphere II Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere II Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-ii-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Sphere_II-On.png?v=1786621823" alt="Sphere II Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere II Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-iii-e27-dim-to-warm-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SphereIII.png?v=1786613935" alt="Sphere III E27 Dim-to-Warm LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere III E27 Dim-to-Warm LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-iii-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Sphere_III-On.png?v=1786621832" alt="Sphere III Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere III Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-iii-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-SphereIII-On.png?v=1786621841" alt="Sphere III Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere III Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-iii-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Oak-Sphere_III-On.png?v=1786621844" alt="Sphere III Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere III Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-iii-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Sphere_III-On.png?v=1786621846" alt="Sphere III Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere III Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-iv-e27-dim-to-warm-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Sphere_IV_52e297b4-fca3-4fd3-abbe-770986167da8.png?v=1781625529" alt="Sphere IV E27 Dim-to-Warm LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere IV E27 Dim-to-Warm LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-iv-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Sphere_IV-On.png?v=1786621859" alt="Sphere IV Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere IV Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-iv-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-SphereIV-On.png?v=1786621868" alt="Sphere IV Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere IV Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-iv-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Oak-SphereIV-On.png?v=1786621868" alt="Sphere IV Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere IV Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-iv-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Sphere_IV-On.png?v=1786621871" alt="Sphere IV Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere IV Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-iv-plug-in-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Brass-SphereIV-On.png?v=1786621904" alt="Sphere IV Plug-In Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere IV Plug-In Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-iv-plug-in-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Graphite-SphereIV-On.png?v=1786621915" alt="Sphere IV Plug-In Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere IV Plug-In Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sphere-v-e27-dim-to-warm-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SphereV.png?v=1786627564" alt="Sphere V E27 Dim-to-Warm LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sphere V E27 Dim-to-Warm LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/squirrel-cage-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Squirrel_8e8e3703-7765-4f56-af83-117afd5c347a.png?v=1781625482" alt="Squirrel Cage E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Squirrel Cage E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/squirrel-cage-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Squirrel-On.png?v=1786621917" alt="Squirrel Cage Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Squirrel Cage Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/squirrel-cage-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-Squirrel-On.png?v=1786621924" alt="Squirrel Cage Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Squirrel Cage Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/squirrel-cage-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Oak-Squirrel-On.png?v=1786621932" alt="Squirrel Cage Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Squirrel Cage Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/squirrel-cage-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Squirrel-On.png?v=1786621932" alt="Squirrel Cage Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Squirrel Cage Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/squirrel-cage-plug-in-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Graphite-SquirrelCage-On.png?v=1786621935" alt="Squirrel Cage Plug-In Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Squirrel Cage Plug-In Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sycamore-chandelier-3-tiers-in-dawn-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Sycamore3Tier-Grey-On.png?v=1786621946" alt="Sycamore Chandelier 3 Tiers in Dawn Grey by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sycamore Chandelier 3 Tiers in Dawn Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sycamore-chandelier-3-tiers-in-dusk-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Sycamore3Tier-Pink-On.png?v=1786621944" alt="Sycamore Chandelier 3 Tiers in Dusk Pink by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sycamore Chandelier 3 Tiers in Dusk Pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sycamore-chandelier-5-tiers-in-dawn-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Sycamore5Tier-Grey-On.png?v=1786621953" alt="Sycamore Chandelier 5 Tiers in Dawn Grey by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sycamore Chandelier 5 Tiers in Dawn Grey</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sycamore-chandelier-5-tiers-in-dusk-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Sycamore5Tier-Pink-On_8e81d3cd-e59c-46bc-a202-edc9a4b35804.png?v=1786621954" alt="Sycamore Chandelier 5 Tiers in Dusk Pink by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sycamore Chandelier 5 Tiers in Dusk Pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/sycamore-rod" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SycamoreRod.png?v=1786621952" alt="Sycamore Rod by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sycamore Rod</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-6w-replacement-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Globe_Matte_932ee031-d9af-4f4a-ac57-0c13dfcfdf6b.png?v=1781625701" alt="The Muse 1.0 6W Replacement Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 6W Replacement Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-candlenut-white-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-CW-On-Setof2_4b4ea566-e6ec-44d7-b6f7-20117b51e390.jpg?v=1786621990" alt="The Muse 1.0 Portable Lamp in Candlenut White by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Candlenut White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-candlenut-white-bundle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Kit-CW_4a925756-e74e-449d-aae7-f55960c4c747.jpg?v=1786621976" alt="The Muse 1.0 Portable Lamp in Candlenut White Bundle by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Candlenut White Bundle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-hackles-black-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-HB-On-Setof2.jpg?v=1786622021" alt="The Muse 1.0 Portable Lamp in Hackles Black by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Hackles Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-hackles-black-bundle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Kit-HB_9d0120a2-5cc4-4097-9894-d17df10836d6.jpg?v=1786622017" alt="The Muse 1.0 Portable Lamp in Hackles Black Bundle by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Hackles Black Bundle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-pleasure-garden-green-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-PGG-On-Setof2.jpg?v=1786622076" alt="The Muse 1.0 Portable Lamp in Pleasure Garden Green by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Pleasure Garden Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-pleasure-garden-green-bundle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Kit-PGG.jpg?v=1786622069" alt="The Muse 1.0 Portable Lamp in Pleasure Garden Green Bundle by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Pleasure Garden Green Bundle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-pomona-red-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-PR-On-Setof2.jpg?v=1786622130" alt="The Muse 1.0 Portable Lamp in Pomona Red by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Pomona Red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-pomona-red-bundle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Kit-PR_fe7523aa-1a6b-49c2-98e1-19f65f0a1ac4.jpg?v=1786622118" alt="The Muse 1.0 Portable Lamp in Pomona Red Bundle by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Pomona Red Bundle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-selvedge-blue-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Selvedge-On-Setof2.jpg?v=1786622144" alt="The Muse 1.0 Portable Lamp in Selvedge Blue by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Selvedge Blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-selvedge-blue-setting-plaster-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-SP-SB-On-Setof2.jpg?v=1786622147" alt="The Muse 1.0 Portable Lamp in Selvedge Blue + Setting Plaster Pink by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Selvedge Blue + Setting Plaster Pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-selvedge-blue-bundle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Kit-Selvedge_4e4fb754-a05c-4b01-86c4-1d15a8d4a3e1.jpg?v=1786622141" alt="The Muse 1.0 Portable Lamp in Selvedge Blue Bundle by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Selvedge Blue Bundle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-setting-plaster-pink-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-SP-On-Setof2.jpg?v=1786622152" alt="The Muse 1.0 Portable Lamp in Setting Plaster Pink by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Setting Plaster Pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-setting-plaster-pink-bundle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Kit-SP_3396e255-1e36-4113-95a0-d0bd29653901.jpg?v=1786622149" alt="The Muse 1.0 Portable Lamp in Setting Plaster Pink Bundle by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Setting Plaster Pink Bundle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-solid-brass-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-SB-On-Setof2.jpg?v=1786622159" alt="The Muse 1.0 Portable Lamp in Solid Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Solid Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-solid-brass-bundle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Kit-SB.jpg?v=1786622159" alt="The Muse 1.0 Portable Lamp in Solid Brass Bundle by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 1.0 Portable Lamp in Solid Brass Bundle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-2-0-5w-replacement-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Globe_Matte_c5888757-d431-40b4-9062-ce8faffb5bae.png?v=1781625400" alt="The Muse 2.0 5W Replacement Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 2.0 5W Replacement Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-2-0-portable-lamp-in-candlenut-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-CW-On_63e63cbc-abd3-4ead-919e-6dd5642ce87f.png?v=1781626081" alt="The Muse 2.0 Portable Lamp in Candlenut White by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 2.0 Portable Lamp in Candlenut White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-2-0-portable-lamp-in-claycourt-orange" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-CO-On_63a98a96-1b17-4f31-b3d8-30c7b57c9a68.png?v=1781626090" alt="The Muse 2.0 Portable Lamp in Claycourt Orange by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 2.0 Portable Lamp in Claycourt Orange</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-2-0-portable-lamp-in-hackles-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-HB-On_6e0b390c-dbfe-4c64-b0a0-4362ccf20eea.png?v=1781626096" alt="The Muse 2.0 Portable Lamp in Hackles Black by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 2.0 Portable Lamp in Hackles Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-2-0-portable-lamp-in-pleasure-garden-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-PGG-On_37463fc7-b711-4f67-80de-d218050d566a.png?v=1781626096" alt="The Muse 2.0 Portable Lamp in Pleasure Garden Green by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 2.0 Portable Lamp in Pleasure Garden Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-2-0-portable-lamp-in-pomona-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-PR-On_e131bfd1-a57e-4485-8ab5-39119012e0a3.png?v=1781626090" alt="The Muse 2.0 Portable Lamp in Pomona Red by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 2.0 Portable Lamp in Pomona Red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-2-0-portable-lamp-in-posset-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-PY-On_4296416c-2bf1-46f9-9ce6-f6dca0dbce49.png?v=1781626080" alt="The Muse 2.0 Portable Lamp in Posset Yellow by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 2.0 Portable Lamp in Posset Yellow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-2-0-portable-lamp-in-selvedge-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Selvedge-On_3574f38d-e4ae-4ce2-93e8-8c52afbdbae6.png?v=1781626108" alt="The Muse 2.0 Portable Lamp in Selvedge Blue by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 2.0 Portable Lamp in Selvedge Blue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-2-0-portable-lamp-in-setting-plaster-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Setting_Plaster-On_9913c87c-091f-41a1-9408-ae4d20262dc1.png?v=1781626102" alt="The Muse 2.0 Portable Lamp in Setting Plaster Pink by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 2.0 Portable Lamp in Setting Plaster Pink</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-2-0-portable-lamp-in-solid-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-SB-On_e1144904-6a56-48d6-8b71-179d4f092e80.png?v=1781626102" alt="The Muse 2.0 Portable Lamp in Solid Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 2.0 Portable Lamp in Solid Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-2-0-replacement-battery" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse_replacement_battery.png?v=1781625403" alt="The Muse 2.0 Replacement Battery by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse 2.0 Replacement Battery</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-canvas-bag" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-CanvasBag_ab7d9d87-5461-422b-a64a-8af382f1fcb9.jpg?v=1786621961" alt="The Muse Canvas Bag by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse Canvas Bag</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-candlenut-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-CW-On_0ba2ce5a-cfb5-469b-8555-7d70c5272cd5.png?v=1786621965" alt="The Muse Portable Lamp in Candlenut White by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse Portable Lamp in Candlenut White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-hackles-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-HB-On_9c793627-4f1c-483f-8452-c582f104f0a3.png?v=1786622010" alt="The Muse Portable Lamp in Hackles Black by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse Portable Lamp in Hackles Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-pleasure-garden-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-PGG-On_53515987-ad40-45b0-8f3f-eb9b301091ac.png?v=1786622054" alt="The Muse Portable Lamp in Pleasure Garden Green by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse Portable Lamp in Pleasure Garden Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-portable-lamp-in-pomona-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-PR-On_2538e571-9389-4835-b855-0c450324e42e.png?v=1786622101" alt="The Muse Portable Lamp in Pomona Red by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse Portable Lamp in Pomona Red</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-replacement-battery" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse_replacement_battery_032ab331-7b40-48cc-b04a-d2c49cd796aa.png?v=1781625745" alt="The Muse Replacement Battery by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse Replacement Battery</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-replacement-glass-tube" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse_glass.png?v=1781625710" alt="The Muse Replacement Glass Tube by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse Replacement Glass Tube</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-wall-light-in-hackles-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-WL-HB-On.png?v=1781625678" alt="The Muse Wall Light in Hackles Black by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse Wall Light in Hackles Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-wall-light-in-pleasure-garden-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-WL-PG-On.png?v=1781625671" alt="The Muse Wall Light in Pleasure Garden Green by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse Wall Light in Pleasure Garden Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-muse-wireless-charger" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse_wireless_charger.png?v=1781625720" alt="The Muse Wireless Charger by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Muse Wireless Charger</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-rugged-muse-portable-lamp-in-raw-aluminium-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Aluminium-On-Setof2.jpg?v=1786622240" alt="The Rugged Muse 1.0 Portable Lamp in Raw Aluminium by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Rugged Muse 1.0 Portable Lamp in Raw Aluminium</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-rugged-muse-portable-lamp-in-raw-aluminium-bundle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Kit-Aluminium.jpg?v=1786622224" alt="The Rugged Muse 1.0 Portable Lamp in Raw Aluminium Bundle by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Rugged Muse 1.0 Portable Lamp in Raw Aluminium Bundle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-rugged-muse-2-0-portable-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Rugged-On_bdd9da4a-dff1-46a1-b52c-2a0c7afd9fcc.png?v=1781625405" alt="The Rugged Muse 2.0 Portable Lamp by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Rugged Muse 2.0 Portable Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/the-rugged-muse-portable-lamp-in-raw-aluminium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Muse-Rugged-On_7703e418-507f-491f-a172-c1d3eb437dd6.png?v=1786622241" alt="The Rugged Muse Portable Lamp in Raw Aluminium by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Rugged Muse Portable Lamp in Raw Aluminium</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Brass-Nobulb_a66da62f-45bc-49c3-a2ad-c6f72331c260.png?v=1786622254" alt="Triple Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-brass-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Brass-SphereV-On_a023e065-1f0d-4b17-afc9-6ac088472441.png?v=1786622255" alt="Triple Pendant in Brass + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Brass + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-brass-voronoi-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Brass-VoronoiII-On_487477ed-15e9-4644-892d-79ab08a91c0f.png?v=1786622263" alt="Triple Pendant in Brass + Voronoi II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Brass + Voronoi II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-brass-voronoi-iii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Brass-SphereV-On-1_2464583f-7fd7-4630-b472-48f22751a86a.png?v=1786622273" alt="Triple Pendant in Brass + Voronoi III by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Brass + Voronoi III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Graphite-Nobulb_9e2e7ab4-51e1-417c-b3e1-eccf1f0c3b48.png?v=1786622285" alt="Triple Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-graphite-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Graphite-SphereV-On_b9efc7ca-384e-406f-8f9e-9de1fe0e409e.png?v=1786622306" alt="Triple Pendant in Graphite + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Graphite + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-graphite-voronoi-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Graphite-VoronoiII-On_8dff0b78-bd2a-4968-814d-d26ffc3db5ae.png?v=1786622310" alt="Triple Pendant in Graphite + Voronoi II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Graphite + Voronoi II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-graphite-voronoi-iii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Graphite-VoronoiII-On-1.png?v=1786622341" alt="Triple Pendant in Graphite + Voronoi III by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Graphite + Voronoi III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Oak-Nobulb_aa168fe4-d412-4331-808d-79879a16a77b.png?v=1786622344" alt="Triple Pendant in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-oak-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Oak-SphereV-On_7de767e4-4f01-451c-87be-d059a820943d.png?v=1786622367" alt="Triple Pendant in Oak + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Oak + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-oak-voronoi-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Black_Oak_Triple_Pendant_Voronoi_II_On_Grey_Background_2048x2048_a0ea3de8-ac5d-4603-acff-d64c0544ad56.jpg?v=1786622369" alt="Triple Pendant in Oak + Voronoi II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Oak + Voronoi II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Walnut-Nobulb_e794b61b-adc7-412d-bb3c-94d030828dba.png?v=1786622379" alt="Triple Pendant in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-walnut-sphere-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Walnut-SphereV-On_0157bb27-9a19-4d5f-9f5b-8feb1e812f85.png?v=1786622398" alt="Triple Pendant in Walnut + Sphere IV by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Walnut + Sphere IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/triple-pendant-in-walnut-voronoi-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/TriplePendant-Walnut-VoronoiII-On_6c48fd3b-e211-4434-b383-f2013e18bb8f.png?v=1786622411" alt="Triple Pendant in Walnut + Voronoi II by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triple Pendant in Walnut + Voronoi II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-i-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Voronoi_I_72d2a29e-f7b3-4678-ba98-ff55c2da6c2b.png?v=1781625505" alt="Voronoi I E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi I E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-i-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Brass-VoronoiI-On.png?v=1786622419" alt="Voronoi I Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi I Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-i-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-VoronoiI-On.png?v=1786622429" alt="Voronoi I Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi I Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-i-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Oak-VoronoiI-On.png?v=1786622453" alt="Voronoi I Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi I Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-i-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Walnut-VoronoiI-On.png?v=1786622455" alt="Voronoi I Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi I Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-i-plug-in-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Brass-VoronoiI-On.png?v=1786622474" alt="Voronoi I Plug-In Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi I Plug-In Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-i-plug-in-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Graphite-VoronoiI-On.png?v=1786622483" alt="Voronoi I Plug-In Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi I Plug-In Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-ii-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Voronoi_II.png?v=1781625501" alt="Voronoi II E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi II E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-ii-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Voronoi_II-On.png?v=1786622509" alt="Voronoi II Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi II Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-ii-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-VoronoiII-On.png?v=1786622516" alt="Voronoi II Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi II Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-ii-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Oak-VoronoiII-On.png?v=1786622577" alt="Voronoi II Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi II Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-ii-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Voronoi_II-On.png?v=1786622578" alt="Voronoi II Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi II Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-ii-plug-in-pendant-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Brass-VoronoiII-On.png?v=1786622584" alt="Voronoi II Plug-In Pendant in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi II Plug-In Pendant in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-ii-plug-in-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Graphite-VoronoiII-On.png?v=1786622605" alt="Voronoi II Plug-In Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi II Plug-In Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-iii-e27-led-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Voronoi_III.png?v=1781625515" alt="Voronoi III E27 LED Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi III E27 LED Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-iii-pendant-light-in-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Brass-Voronoi_III-On.png?v=1786622639" alt="Voronoi III Pendant Light in Brass by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi III Pendant Light in Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-iii-pendant-light-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Graphite-VoronoiIII-On.png?v=1786622657" alt="Voronoi III Pendant Light in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi III Pendant Light in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-iii-pendant-light-in-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/SinglePendant-Oak-VoronoiIII-On.png?v=1786622668" alt="Voronoi III Pendant Light in Oak by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi III Pendant Light in Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-iii-pendant-light-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Single_Pendant-Walnut-Voronoi_III-On.png?v=1786622673" alt="Voronoi III Pendant Light in Walnut by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi III Pendant Light in Walnut</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/voronoi-iii-plug-in-pendant-in-graphite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Plug-In-Pendant-Graphite-VoronoiIII-On.png?v=1786622722" alt="Voronoi III Plug-In Pendant in Graphite by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Voronoi III Plug-In Pendant in Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/wake-sleep-light-g150-replacement-bulb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Wake_replacement_bulb.png?v=1781626074" alt="Wake Sleep Light G150 Replacement Bulb by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wake Sleep Light G150 Replacement Bulb</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://eu.tala.co.uk/products/wake-sleep-light-in-pebble-white-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Wake-Setof2.jpg?v=1786622719" alt="Wake Sleep Light in Pebble White by Tala" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wake Sleep Light in Pebble White</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

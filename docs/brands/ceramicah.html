@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ceramicah on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Ceramicah's work on Formground - 49 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/ceramicah.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ceramicah on Formground">
+<meta property="og:description" content="Ceramicah's work on Formground - 49 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/ceramicah.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CELESTIAL_TERA_30.jpg?v=1759542644">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CELESTIAL_TERA_30.jpg?v=1759542644">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ceramicah on Formground">
+<meta name="twitter:description" content="Ceramicah's work on Formground - 49 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Ceramicah", "item": "https://formground.com/brands/ceramicah.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Ceramicah</h1>
+    <div class="tags"><span class="tag">Lighting</span><span class="tag">Ceramics</span><span class="tag">Objects</span></div>
+    <a class="brand-site-link" href="https://ceramicah.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://ceramicah.com/products/celestial-tera-lamp-xl-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CELESTIAL_TERA_30.jpg?v=1759542644" alt="Celestial Tera Lamp by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Celestial Tera Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/celestial-tera-sconce-i" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CELESTIAL_TERA_36.jpg?v=1759798445" alt="Celestial Tera Sconce I by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Celestial Tera Sconce I</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/celestial-tera-sconce-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CELESTIAL_TERA_37.jpg?v=1759798886" alt="Celestial Tera Sconce II by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Celestial Tera Sconce II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/celestial-tera-sconce-iii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CELESTIAL_TERA_38.jpg?v=1759798936" alt="Celestial Tera Sconce III by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Celestial Tera Sconce III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/celestial-tera-sconce-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CELESTIAL_TERA_39.jpg?v=1759798985" alt="Celestial Tera Sconce IV by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Celestial Tera Sconce IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/chrome-tera-sconce-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/NEW_GLAZES_107.jpg?v=1780361303" alt="Chrome Tera Sconce by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chrome Tera Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/cuadra-floor-lamp-paper-shade" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/Cuadra_Collection_33.jpg?v=1778283190" alt="Cuadra Floor Lamp by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cuadra Floor Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/cuadra-sconce-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CuadraCollection07.jpg?v=1778284237" alt="Cuadra Sconce by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cuadra Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/cuadra-flush-mount" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/Cuadra_Collection_05.jpg?v=1778285415" alt="Cuadra Surface Mount by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cuadra Surface Mount</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/cuadra-table-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CuadraCollection21.jpg?v=1778269763" alt="Cuadra Table Lamp by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cuadra Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/dune-vessel-01" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/DuneVessel_01_Stone.jpg?v=1666777613" alt="Dune Vessel 01 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dune Vessel 01</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/dune-vessel-01-lava-m" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CERAMICAH_SALE_25_40_ca14462e-4757-49d7-8acd-60300b28bf48.jpg?v=1764218398" alt="Dune Vessel 01 Lava by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dune Vessel 01 Lava</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/dune-vessel-01-lava-2-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CERAMICAH_SALE_25_41.jpg?v=1764218050" alt="Dune Vessel 01 Lava 2 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dune Vessel 01 Lava 2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/dune-vessel-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/DuneVessel_02_Stone.jpg?v=1666777702" alt="Dune Vessel 02 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dune Vessel 02</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/dune-vessel-02-lava-xl-second" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CERAMICAH_SALE_25_39.jpg?v=1764219304" alt="Dune Vessel 02 Lava by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dune Vessel 02 Lava</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/dune-vessel-02-sand-medium-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/DROP_1_112.jpg?v=1746136626" alt="Dune Vessel 02 Sand 2 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dune Vessel 02 Sand 2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/dune-vessel-03" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/DuneVessel_03_Stone.jpg?v=1666777781" alt="Dune Vessel 03 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dune Vessel 03</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/dune-vessel-04" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/DuneVessel_04_Stone.jpg?v=1666777873" alt="Dune Vessel 04 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dune Vessel 04</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/dune-vessel-04-sand-l-second" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CERAMICAH_SALE_25_36_ce508b0a-6cb4-4be5-83a7-3939b8789db0.jpg?v=1764219664" alt="Dune Vessel 04 Sand by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dune Vessel 04 Sand</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-sconce-unglazed-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/NEW_GLAZES_113.jpg?v=1780361054" alt="ORCA x CERAMICAH Tera Sconce by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ORCA x CERAMICAH Tera Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/celestial-tera-sconce-raku-i" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CELESTIAL_TERA_40.jpg?v=1759799092" alt="Raku Celestial Tera Sconce I by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Raku Celestial Tera Sconce I</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/celestial-tera-sconce-raku-i-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CELESTIAL_TERA_41.jpg?v=1759799297" alt="Raku Celestial Tera Sconce II by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Raku Celestial Tera Sconce II</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/raku-celestial-tera-sconce-iii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CELESTIAL_TERA_40.jpg?v=1759799092" alt="Raku Celestial Tera Sconce III by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Raku Celestial Tera Sconce III</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/raku-celestial-tera-sconce-iv" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CELESTIAL_TERA_42.jpg?v=1759799486" alt="Raku Celestial Tera Sconce IV by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Raku Celestial Tera Sconce IV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/sample-white-crackle-raku" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/Raku_Drop_2-18.jpg?v=1788989419" alt="Sample by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sample</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-shino-01" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/1_TeraLamp_Shino_XL.jpg?v=1670534456" alt="Shino Tera Lamp by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shino Tera Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-shino-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/TeraLamp_ShinoRibbed_L.jpg?v=1670818574" alt="Shino Tera Lamp with Ribs by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shino Tera Lamp with Ribs</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/shino-vessel-01" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/15_Shino_Vessel01_840ea9bd-382f-4d65-9816-c3056b9142d0.jpg?v=1670358689" alt="Shino Vessel 01 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shino Vessel 01</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/shino-vessel-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/16_Shino_Vessel02.jpg?v=1670358806" alt="Shino Vessel 02 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shino Vessel 02</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/shino-vessel-03" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/17_Shino_Vessel03_e6385a68-1d73-45d0-8ef2-3bf2f84953b5.jpg?v=1670358857" alt="Shino Vessel 03 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shino Vessel 03</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/shino-vessel-04" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/18_Shino_Vessel04.jpg?v=1670358980" alt="Shino Vessel 04 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shino Vessel 04</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-dark-chrome" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/NEW_GLAZE_55.jpg?v=1752622794" alt="Tera Lamp Dark Chrome by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Lamp Dark Chrome</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-glazed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/19_TeraLamp_Toshiko_L.jpg?v=1670810500" alt="Tera Lamp Glazed by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Lamp Glazed</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-lime-plaster" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/29_TeraLamp_LimePlaster_Beige_XL.jpg?v=1670807892" alt="Tera Lamp Lime Plaster by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Lamp Lime Plaster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-stripe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/43_TeraLamp_Stripe_BlackShade_L.jpg?v=1666778389" alt="Tera Lamp Stripe by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Lamp Stripe</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-unglazed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/01_TeraLamp_Stone_XL.jpg?v=1670810560" alt="Tera Lamp Unglazed by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Lamp Unglazed</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-raku-white-crackle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/06_Raku_WhiteCrackle_L_1b4778a9-1afa-4d09-a190-c32c11cdb64c.jpg?v=1788989534" alt="Tera Lamp White Crackle Raku by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Lamp White Crackle Raku</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-in-black-velvet-raku-large-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CERAMICAH_SALE_25_24.jpg?v=1764207133" alt="Tera Lamp in Black Velvet Raku 2 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Lamp in Black Velvet Raku 2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-in-deep-green-lime-plaster-m-second" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CERAMICAH_SALE_25_04.jpg?v=1764213383" alt="Tera Lamp in Deep Green Lime Plaster by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Lamp in Deep Green Lime Plaster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-in-lime-plaster-2-l-second-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CERAMICAH_SALE_25_22.jpg?v=1764211005" alt="Tera Lamp in Lime Plaster 2 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Lamp in Lime Plaster 2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-in-lime-plaster-3-l-second" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CERAMICAH_SALE_25_116.jpg?v=1764211308" alt="Tera Lamp in Lime Plaster 3 by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Lamp in Lime Plaster 3</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-in-sienna-lime-plaster-xl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/DROP_1_121.jpg?v=1759534073" alt="Tera Lamp in Siena Lime Plaster by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Lamp in Siena Lime Plaster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-lamp-in-white-lime-plaster-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/DROP_1_90.jpg?v=1745892783" alt="Tera Lamp in White Lime Plaster by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Lamp in White Lime Plaster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/sample-kit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/products/Samples.png?v=1671100851" alt="Tera Sample Kit by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Sample Kit</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-sconce-dark-chrome-final" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CERAMICAH_SALE_25_109_a22c2966-2025-4c24-a629-1aee0e164891.jpg?v=1770872128" alt="Tera Sconce Dark Chrome by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Sconce Dark Chrome</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/xl-tera-sconce-umber" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/NEW_GLAZES_105.jpg?v=1780358902" alt="Tera Sconce Glazed by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Sconce Glazed</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-sconce-lime-plaster-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/NEW_GLAZES_104.jpg?v=1780358064" alt="Tera Sconce Lime Plaster by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Sconce Lime Plaster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-sconce-raku" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/17_TeraSconce_WhiteCrackleRaku_edit.jpg?v=1693983488" alt="Tera Sconce Raku by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Sconce Raku</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ceramicah.com/products/tera-sconce-unglazed-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/XLTeraSconce78.jpg?v=1780354925" alt="Tera Sconce Unglazed by Ceramicah" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tera Sconce Unglazed</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

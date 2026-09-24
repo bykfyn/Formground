@@ -1147,6 +1147,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("coupe", "Coupe"), ("grinder", "Mill"), ("bottle opener", "Bottle Opener"),
     ("bottle", "Bottle"),
     ("runner", "Rug"), ("mat", "Rug"), ("hook", "Coat Hook"), ("flush mount", "Flush Mount"),
+    ("flush-mount", "Flush Mount"),
     ("cushion", "Cushion"), ("day bed", "Daybed"), ("bergere", "Armchair"),
     ("bookshelves", "Shelving"), ("bookshelf", "Shelving"), ("shelves", "Shelving"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
@@ -1164,6 +1165,19 @@ CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
     "New Works DK", "Workstead", "Rubn", "Maruni", "AY Illuminate", "Ghidini 1961",
     "GATOMIKIO", "Raawii", "Wendelbo", "Asplund", "Blå Station", "Davsjö", "Ingridsdotter",
+    # 2026-09-24 lighting triage batch - checked each brand's own blank-
+    # category product names against the shared English keyword list
+    # before adding (per this dict's own established practice), not
+    # applied blanket. Alessi and Lambert & Fils barely benefit (their
+    # real product names are mostly evocative collection names with no
+    # generic object-type word - "La Cintura di Orione", "Fenestra" -
+    # same accepted partial-coverage tradeoff as Blå Station/In Common
+    # With) but including them is harmless, not actively wrong.
+    "Anour", "Serax", "Audo", "Alessi", "Ferm Living", "Vaarnii", "Dusty Deco",
+    "Valerie Objects", "Oblure", "Hyfer Objects", "Porta Romana", "Oi Soi Oi",
+    "Kalmar Werkstätten", "Frangere Studio", "Llot Llov", "Kristina Dam Studio",
+    "MOR", "Lambert & Fils", "Calen Knauf", "Seletti", "Artetica", "Wontek",
+    "Astraeus Clarke", "Luke Malaney", "Anna Dawson", "Arvo Ray",
 }
 
 
@@ -1836,6 +1850,22 @@ def _looks_like_a_maintenance_item(title):
         # "distansbricka" (spacer/distance washer) is specific and
         # un-ambiguous enough to exclude generically.
         "distansbricka",
+        # 2026-09-24 lighting triage batch, confirmed live on each named
+        # brand: Audo sells "Event ticket: Well-being Retreat at Audo"
+        # and a "Mounting kit for Snaregade" (a fitting FOR a named
+        # lamp, same shape as the Byarums Bruk "till" pattern above,
+        # just in English); Frangere Studio sells a bare "G9 Replacement
+        # Bulb"; Ferm Living and MOR both sell standalone fabric/finish
+        # swatches ("Fabric Sample", "Char Fabric Sample") alongside
+        # real furniture, same shape as Rubn's "Sample Set" above.
+        "event ticket", "mounting kit", "replacement bulb", "fabric sample",
+        # Seletti and Artetica both run a real design-object catalog
+        # alongside a small fashion-jewelry sideline (confirmed live:
+        # Seletti's "SHIT stud earrings"/"SINK PLUNGER dangling
+        # earrings", Artetica's "Moon earrings"/"Duo earrings"/hoop
+        # bangles) - not home design objects, same reasoning as
+        # Utilitario Mexicano's sunglasses exclusion above.
+        "earrings", "bangle",
     )
     title_lower = title.lower()
     return any(kw in title_lower for kw in keywords)
@@ -1953,6 +1983,30 @@ def extract_shopify(brand):
         # would misattribute their work and duplicate them under the
         # wrong name. Keep only the vendor's own house lines.
         raw_products = [p for p in raw_products if "asplund" in (p.get("vendor") or "").lower()]
+    if brand["url"].rstrip("/") == "https://shop.sightunseen.com":
+        # shop.sightunseen.com is a shared Shopify storefront for dozens of
+        # independent designer-makers (confirmed 2026-09-24: 52 distinct
+        # vendors across 159 products) - each Formground brand entry that
+        # points at this URL (Astraeus Clarke, Luke Malaney, Anna Dawson,
+        # Arvo Ray, ...) is really just one vendor's slice of it, not the
+        # whole store. Filter to that vendor's own listings by exact brand
+        # name match, same principle as the Asplund filter above but keyed
+        # off the shared domain instead of one hardcoded brand name, so any
+        # future brand added from this same store gets it for free.
+        raw_products = [
+            p for p in raw_products
+            if (p.get("vendor") or "").strip().lower() == brand["name"].strip().lower()
+        ]
+        # This store's own product_type field is a near-useless umbrella
+        # tag, not a real per-product category - confirmed 2026-09-24:
+        # 145 of 159 listings across every vendor are typed "Furniture"
+        # regardless of what they actually are (Anna Dawson's flush
+        # mounts, Astraeus Clarke's chandeliers/table lamps, and Arvo
+        # Ray's table lamp were all tagged "Furniture" despite being
+        # lighting). Cleared so the real keyword-based name inference
+        # below runs instead of trusting this field.
+        for p in raw_products:
+            p["product_type"] = ""
     raw_products = [
         p for p in raw_products
         if (p.get("product_type") or "").strip().lower() not in EXCLUDED_CATEGORIES
@@ -5093,6 +5147,46 @@ EXTRACTORS = {
     "Davsjö": extract_davsjo,
     "Ingridsdotter": extract_ingridsdotter,
     "Blond": extract_blond,
+    # 2026-09-24 lighting triage - clean Shopify/WooCommerce stores, no
+    # bespoke extractor code needed. See scraper/brands.json for each
+    # brand's triage notes (real URL corrections, vendor-scoping caveats).
+    "Santa & Cole": extract_woocommerce,
+    "Anour": extract_woocommerce,
+    "Serax": extract_shopify,
+    "Audo": extract_shopify,
+    "Graypants": extract_woocommerce,
+    "Motarasu": extract_shopify,
+    "Pulpo": extract_woocommerce,
+    "Alessi": extract_shopify,
+    "Ferm Living": extract_shopify,
+    "Artek": extract_shopify,
+    "Vaarnii": extract_shopify,
+    "Dusty Deco": extract_shopify,
+    "Valerie Objects": extract_shopify,
+    "Verpan": extract_shopify,
+    "Oblure": extract_woocommerce,
+    "Hyfer Objects": extract_shopify,
+    "Porta Romana": extract_shopify,
+    "Oi Soi Oi": extract_shopify,
+    "Kalmar Werkstätten": extract_woocommerce,
+    "Antidark": extract_woocommerce,
+    "Le Klint": extract_shopify,
+    "Frangere Studio": extract_shopify,
+    "Astraeus Clarke": extract_shopify,
+    "Luke Malaney": extract_shopify,
+    "Llot Llov": extract_woocommerce,
+    "Anna Dawson": extract_shopify,
+    "Arvo Ray": extract_shopify,
+    "Ceramicah": extract_shopify,
+    "Palefire Studio": extract_shopify,
+    "Kristina Dam Studio": extract_shopify,
+    "MOR": extract_shopify,
+    "Lambert & Fils": extract_shopify,
+    "Calen Knauf": extract_shopify,
+    "Seletti": extract_shopify,
+    "Artetica": extract_shopify,
+    "Wontek": extract_shopify,
+    "Tala": extract_shopify,
 }
 
 

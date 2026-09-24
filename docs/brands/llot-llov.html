@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Llot Llov on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Llot Llov's work on Formground - 179 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/llot-llov.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Llot Llov on Formground">
+<meta property="og:description" content="Llot Llov's work on Formground - 179 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/llot-llov.html">
+<meta property="og:image" content="https://llotllov.com/files/02_osis_brutal_llot_llov_top-600x281.jpg">
+<meta name="twitter:image" content="https://llotllov.com/files/02_osis_brutal_llot_llov_top-600x281.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Llot Llov on Formground">
+<meta name="twitter:description" content="Llot Llov's work on Formground - 179 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Llot Llov", "item": "https://formground.com/brands/llot-llov.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Llot Llov</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Ceramics</span><span class="tag">Objects</span><span class="tag">Germany</span></div>
+    <a class="brand-site-link" href="https://llotllov.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://llotllov.com/object/alir-surface/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/img_7688-copy-2-600x281.jpg" alt="ALIR Surface by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ALIR Surface</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/ada-big-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/05_ada_raw_big-1920x900-1-600x281.jpg" alt="Ada Big by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ada Big</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/ada-bold/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_ada_bold_black_crop-600x600.jpg" alt="Ada Bold by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ada Bold</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/ada-large/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/rec-tri-cut-llot-llov-crop-600x600.jpg" alt="Ada Large by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ada Large</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/ada-midi/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/cir-tri-cut-llot-llov-crop-600x600.jpg" alt="Ada Midi by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ada Midi</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/ada-rock/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_ada_rock_top-600x281.jpg" alt="Ada Rock by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ada Rock</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/ada-small-raw/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_ada_small_crop-600x600.jpg" alt="Ada Small by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ada Small</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/algae/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_07_43_algae_dot_top-600x281.jpg" alt="Algae 07_43 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Algae 07_43</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/aqua/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/toposis-aqua-600x281.jpg" alt="Aqua 01_72 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aqua 01_72</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/aubergine/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01_44_aubergine_llot_llov-top-600x281.jpg" alt="Aubergine 01_44 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aubergine 01_44</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/aubergine-06-44/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_44_aubergine__llot_llov-top-600x281.jpg" alt="Aubergine 06_44 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aubergine 06_44</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/bear-06_30/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_bear-06-30-600x281.jpg" alt="Bear 06_30 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bear 06_30</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/berry-01_07/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_09_berry__top-600x281.jpg" alt="Berry 01_09 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Berry 01_09</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/berry-07-73/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/07_72_berry_dot_top-600x281.jpg" alt="Berry 07_73 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Berry 07_73</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/bill/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01billllot-llov-600x281.jpg" alt="Bill by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bill</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/black-panther/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_04_16_black_panther_sprinkle_top-600x281.jpg" alt="Black Panther 04_16 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Black Panther 04_16</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/black-yeti/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_06_40_black_yeti_rock_top-600x281.jpg" alt="Black Yeti 06_40 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Black Yeti 06_40</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/bo-light/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/bo_wall_and_table_light_llot_llov_top-copy-600x281.jpg" alt="Bo Osis light by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bo Osis light</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/bordeux-02-45/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_02_45_bordeux_stripe_top-600x281.jpg" alt="Bordeaux 02_45 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bordeaux 02_45</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/bordeux-06-45/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_06_45_bordeux_rock_top-600x281.jpg" alt="Bordeaux 06_45 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bordeaux 06_45</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/brutal-sideboard/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/02_osis_brutal_llot_llov_top-600x281.jpg" alt="Brutal Sideboard by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Brutal Sideboard</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/brutal-sideboard-s/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_brutal_s_top-600x281.jpg" alt="Brutal Sideboard Double by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Brutal Sideboard Double</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/brutal-sideboard-m/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_brutal_m_top-600x281.jpg" alt="Brutal Sideboard Triple by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Brutal Sideboard Triple</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/burned-06-23/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_23_burned_llot_llov_top-600x281.jpg" alt="Burned 06_23 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Burned 06_23</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-surface-01_03/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/toposis-candy-600x281.jpg" alt="Candy 01_03 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Candy 01_03</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/chickpea-06-21/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_21_chickpea_rock_top-600x281.jpg" alt="Chickpea 06_21 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chickpea 06_21</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/circus-couches/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/07circuscouchesllot-llov-600x281.jpg" alt="Circus Bench by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Circus Bench</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/circus-chaiselongue/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/02circuscouchesllot-llov-600x281.jpg" alt="Circus Chaiselongue by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Circus Chaiselongue</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/circus-couch/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/12circuscouchesllot-llov-600x281.jpg" alt="Circus Couch by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Circus Couch</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/clark-grand/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/09clarkgrandllot-llov-600x281.jpg" alt="Clark by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Clark</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/coal-06-17/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_17_panther_llot_llov_top-600x281.jpg" alt="Coal 06_17 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Coal 06_17</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/creamlight-cloud/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/cream_light_llot-llov-00-600x281.jpg" alt="Cream Light Cloud by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cream Light Cloud</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/cream-light-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01_creamlight_pendant_llot_llov_top-600x281.jpg" alt="Cream Light Pendant by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cream Light Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/dark-terracotta/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_07_39_dark_terrracotta_dot_arne_top-600x297.jpg" alt="Dark Terracotta 07_39 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dark Terracotta 07_39</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/et/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/03etllot-llov1top-600x281.jpg" alt="ET by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">ET</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/earl/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/earlllot-llov-1-600x281.jpg" alt="Earl by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Earl</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/ebony/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_37_ebony_osis_top-600x281.jpg" alt="Ebony 06_37 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ebony 06_37</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/eugen/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/00eugenllot-llov-600x281.jpg" alt="Eugen by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Eugen</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-floor/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/17_fran_table_llot_llov_top3-600x281.jpg" alt="FRAN FLOOR by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">FRAN FLOOR</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-l-with-brushed-aluminium/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/20_fran_l_alu_beige_w_top-600x281.jpg" alt="FRAN L with brushed aluminium by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">FRAN L with brushed aluminium</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-m-with-brushed-aluminium/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/19_fran_m_alu_beige_w_top-600x281.jpg" alt="FRAN M with brushed aluminium by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">FRAN M with brushed aluminium</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-s-with-brushed-aluminium/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/18_fran_s_alu_beige_w_top-600x281.jpg" alt="FRAN S with brushed aluminium by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">FRAN S with brushed aluminium</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-table/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/17_fran_table_llot_llov_top3-600x281.jpg" alt="FRAN TABLE by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">FRAN TABLE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-brushed-aluminium/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/20_fran_l_alu_beige_w_top-600x281.jpg" alt="FRAN with brushed aluminium by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">FRAN with brushed aluminium</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fango-04-24/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/04_24_fango_sprinkle_top-600x281.jpg" alt="Fango 04_24 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fango 04_24</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/flow-06-11/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_11_flow_rock_top-600x281.jpg" alt="Flow 06_11 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flow 06_11</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-as/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/fran-edition-as-beige-top2-600x281.jpg" alt="Fran AS by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran AS</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-cluster/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_cluster_s-s-m-l_w_top-600x281.jpg" alt="Fran Cluster by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Cluster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-cluster-s-m/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/03_cluster_s_m_w_top-600x281.jpg" alt="Fran Cluster S-M by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Cluster S-M</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-cluster-s-m-l/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/05_cluster_s-m-l_w_top-600x281.jpg" alt="Fran Cluster S-M-L by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Cluster S-M-L</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-cluster-s-s/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01_cluster_s-s_w_top-600x281.jpg" alt="Fran Cluster S-S by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Cluster S-S</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-cluster-s-s-m/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/04_cluster_s-s-m_w_top-600x281.jpg" alt="Fran Cluster S-S-M by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Cluster S-S-M</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-cluster-s-s-m-l/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_cluster_s-s-m-l_w_top-600x281.jpg" alt="Fran Cluster S-S-M-L by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Cluster S-S-M-L</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-drum/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/44a_fran_drum_llot_llov_top-600x281.jpg" alt="Fran Drum by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Drum</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-floor-grey/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/02_fran_floor_llot_llov_crop-600x600.jpg" alt="Fran Floor by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-hive/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/43a_fran_hive_llot_llov_top-600x281.jpg" alt="Fran Hive by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Hive</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-m/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01fran-mllot-llov-1-600x281.jpg" alt="Fran M by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran M</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-rs/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/fran-edition-as-beige-top2-600x281.jpg" alt="Fran RS by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran RS</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-s/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/03fran-xsllot-llov2newtop5-600x281.jpg" alt="Fran S by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran S</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-stand/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/2021_08_04_llotllov_fran_stand_beige_l_top-600x281.jpg" alt="Fran Stand by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Stand</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-table-large-grey/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/05_fran_floor_llot_llov_crop-600x600.jpg" alt="Fran Table Large by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Table Large</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-table-midi-grey/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_fran_table_llot_llov_crop-600x600.jpg" alt="Fran Table Midi by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Table Midi</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-table-small-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/04_fran_table_llot_llov_top-copy-top2-600x281.jpg" alt="Fran Table Small by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Table Small</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-tower-beige/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/fran_tower_beige_top_llot-llov-600x297.jpg" alt="Fran Tower by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran Tower</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/fran-xl/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/fran_xl_black_llot_llov_topp-600x297.jpg" alt="Fran XL by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fran XL</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/glacier-dark-edition/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/18_glacier_console_llot_llov_top-600x281.jpg" alt="GLACIER DARK EDITION by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">GLACIER DARK EDITION</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/giraffe/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_06_28_giraffe_rock_top-600x281.jpg" alt="Giraffe 06_28 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Giraffe 06_28</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/glacier-block-vase/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/14_glacier_vase_llot_llov_top-600x281.jpg" alt="Glacier Block Vase by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Glacier Block Vase</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/glacier-dark-edition-material/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/16_glacier_console_llot_llov-600x900.jpg" alt="Glacier Dark Edition by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Glacier Dark Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/glacier-stand-console/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/15_glacier_console_llot_llov_top-600x281.jpg" alt="Glacier Stand by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Glacier Stand</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/gritt-stool-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/gritblackllot-llovcender-suenni-darkcork-600x281.jpg" alt="Grit Stool by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Grit Stool</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/gritt-table/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/grit-tablellot-llovcender-suenni-600x281.jpg" alt="Grit Table by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Grit Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/gur-pillow-blue/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/gur-pillow-llotllov9852top-600x281.jpg" alt="Gur Pillow by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Gur Pillow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/hank/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/hankllot-llovcender-suenni-2black-600x281.jpg" alt="Hank Large by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hank Large</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/hay-01-82a/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_82_hay_random_top-600x281.jpg" alt="Hay 01_82 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hay 01_82</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/hazel/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_07_29_hazel_dot_top-600x281.jpg" alt="Hazel 07_29 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hazel 07_29</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/hold/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/alt-holdllot-llovcender-suenni-3-600x281.jpg" alt="Hold by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hold</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/hook-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06hookllotllovtop2-600x281.jpg" alt="Hook Black by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hook Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/hook/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01hookllotllovtop2-600x281.jpg" alt="Hook Natural by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hook Natural</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/james/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/02jamesllot-llov-600x281.jpg" alt="James by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">James</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/kambo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/toposis-shrek-600x281.jpg" alt="Kambo 01_GG by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kambo 01_GG</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/lemonade-06-20/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_20_lemonade_llot_llov_top-600x281.jpg" alt="Lemonade 06_20 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lemonade 06_20</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/light-terracotta/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_07_38_light_terracotta_dot_top-600x281.jpg" alt="Light Terracotta 07_38 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Light Terracotta 07_38</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/lime/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_07_35_lime_top-600x281.jpg" alt="Lime 07_35 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lime 07_35</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/lucille-bold/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/00lucilleboldllot-llovcendersuennitop-600x288.jpg" alt="Lucille Bold by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lucille Bold</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/lucille-grand/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/00lucillellot-llovcendersuennigreytop-600x288.jpg" alt="Lucille Grand by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lucille Grand</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/lucille-petit/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/lucillepetitllot-llovcendersuenni-2-600x750.jpg" alt="Lucille Petit by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lucille Petit</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/mak-vase/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01_mak_vase_llot_llov_web-600x281.jpg" alt="Mak Vase by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mak Vase</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/matt-cotton-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/1mattstopllot-llov-2-600x281.jpg" alt="Matt Cotton by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Matt Cotton</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/matt-merino/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/05mattmousellot-llov-2-600x281.jpg" alt="Matt Merino by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Matt Merino</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/medeia-bold/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/00cir-cut-vaseblackllot-llov-600x281.jpg" alt="Medeia Bold by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Medeia Bold</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/medeia-midi/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_medeia_waisted_black_crop-600x600.jpg" alt="Medeia Midi by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Medeia Midi</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/medeia-slim/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_medeia_slim_black_crop-600x600.jpg" alt="Medeia Slim by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Medeia Slim</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/midnight/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/toposis-midnight-600x281.jpg" alt="Midnight 01_57 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Midnight 01_57</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/mist-01-62/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_ice-01-60-600x281.jpg" alt="Mist 01_62 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mist 01_62</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/mold/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_13_mold_top-600x281.jpg" alt="Mold 01_13 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mold 01_13</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/mouse/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_02_mouse_random_top-600x281.jpg" alt="Mouse 01_02 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mouse 01_02</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/new-cycle/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/lpmohnfjbgoioblj-600x417.jpg" alt="NEW CYCLE by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">NEW CYCLE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/nap/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/tedtop-600x281.jpg" alt="Nap by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nap</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/night-02-14/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_02_14_night_stripe_top-600x281.jpg" alt="Night 02_14 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Night 02_14</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/night-04-14/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_04_12_night_sprinkle_top-600x281.jpg" alt="Night 04_14 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Night 04_14</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-block/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_milan_21_osis_block_800x800-600x600.jpg" alt="OSIS BLOCK by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS BLOCK</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-bench-zieta-edition/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/03osis-pakiet-zieta-llot-llov-1-600x281.jpg" alt="OSIS Bench by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Bench</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-bold/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osisllot-llovcender-suenni-14-600x281.jpg" alt="OSIS Block Bold by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Block Bold</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-block-cube/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osisllot-llovcender-suenni-10n-600x281.jpg" alt="OSIS Block Cube by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Block Cube</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-block-desk/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_milan_21_osis_block_desk_top-600x281.jpg" alt="OSIS Block Desk by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Block Desk</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-block-flat/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_milan_21_osis_block_flat_top-600x281.jpg" alt="OSIS Block Flat by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Block Flat</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-block-quadrat/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_milan_21_osis_block_quadrat_top-600x281.jpg" alt="OSIS Block Quadrat by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Block Quadrat</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-block-quadrat-high/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_milan_21_osis_block_quadrat_high_top-600x281.jpg" alt="OSIS Block Quadrat High by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Block Quadrat High</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-block-squared/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osisllot-llovcender-suenni-6-600x281.jpg" alt="OSIS Block Squared by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Block Squared</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-console/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/03osisbensimonllot-llov-600x281.jpg" alt="OSIS Console by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Console</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-cross-table/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/top_osis_pressehaus_llot-llov-600x297.jpg" alt="OSIS Cross Table by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Cross Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-hexagon-base/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/001-1-600x281.jpg" alt="OSIS Hexagon Base by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Hexagon Base</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/inga/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/ingallotllov0520191825top-600x281.jpg" alt="OSIS Inga by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Inga</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-karla/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01osiskarlallot-llov-1-600x281.jpg" alt="OSIS Karla by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Karla</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-low-table-gallinule/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/mg0069-top2-600x281.jpg" alt="OSIS Low Table by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Low Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-pila/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_milan_21_osis_pila_group_800x800-600x600.jpg" alt="OSIS PILA by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS PILA</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-paravent/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/07osisparaventllot-llov-600x281.jpg" alt="OSIS Paravent by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Paravent</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-pentagon-base/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis5pebarosl-600x281.jpg" alt="OSIS Pentagon Base by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Pentagon Base</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-pila-high/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_milan_21_osis_pila_high_top-600x281.jpg" alt="OSIS Pila High by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Pila High</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-pila-low/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_milan_21_osis_pila_low_top-600x281.jpg" alt="OSIS Pila Low by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Pila Low</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-pila-midi/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_milan_21_osis_pila_midi_top-600x281.jpg" alt="OSIS Pila Midi by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Pila Midi</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-rectangle-base/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis5rebarosl-600x281.jpg" alt="OSIS Rectangle Base by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Rectangle Base</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-septagon-base/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/007-q-600x281.jpg" alt="OSIS Septagon Base by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Septagon Base</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-shelving-small/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_osis_shelving_small_pale_berry_top-600x281.jpg" alt="OSIS Shelving Small by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Shelving Small</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-side-table/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/04osisbensimonllot-llov-600x281.jpg" alt="OSIS Side Table by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Side Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-sprinkle/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis-table-sprinkle-top-600x281.jpg" alt="OSIS Table by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-raspberry/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01_osis_table_berry_2_topphoto-600x297.jpg" alt="OSIS Table Raspberry by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Raspberry</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-top-small-candy/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_03_candy_seitlich-600x282.jpg" alt="OSIS Table Top Beige Hues by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Top Beige Hues</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-top-copy/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_60_ice_seitlich-600x282.jpg" alt="OSIS Table Top Blue Hues by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Top Blue Hues</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-top-small-sunflower/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/23_09_26_bistrotisch_13_sunflower_ecke-600x600.jpg" alt="OSIS Table Top Brown Hues by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Top Brown Hues</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-top-small-mold/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_13_mold_seitlich-600x282.jpg" alt="OSIS Table Top Green Hues by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Top Green Hues</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-top-small-snow/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/23_09_26_bistrotisch_01_snow_ecke-600x600.jpg" alt="OSIS Table Top Grey Hues by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Top Grey Hues</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-top-large-candy/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_03_candy_seitlich-600x282.jpg" alt="OSIS Table Top Large Beige Hues by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Top Large Beige Hues</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-top-large-ice/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_60_ice_seitlich-600x282.jpg" alt="OSIS Table Top Large Blue Hues by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Top Large Blue Hues</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-top-large-brown-hues/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_04_snow_seitlich-kopie-600x282.jpg" alt="OSIS Table Top Large Brown Hues by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Top Large Brown Hues</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-top-mold/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_13_mold_seitlich-600x282.jpg" alt="OSIS Table Top Large Green Hues by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Top Large Green Hues</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-top-snow/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_04_snow_seitlich-kopie-600x282.jpg" alt="OSIS Table Top Large Grey Hues by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Top Large Grey Hues</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-top-large-red-hues/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_04_snow_seitlich-kopie-600x282.jpg" alt="OSIS Table Top Large Red Hues by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Top Large Red Hues</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-table-top-salmon/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/23_09_26_bistrotisch_37_salmon_ecke-600x600.jpg" alt="OSIS Table Top Red Hues by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Table Top Red Hues</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-triangle-base/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis5trbarosl-600x281.jpg" alt="OSIS Triangle Base by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">OSIS Triangle Base</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-complete-table/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/03_complete_osis_table_llot_llov-600x281.jpg" alt="Osis Complete Table by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Osis Complete Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-stella-chair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/02_stella_osis_llot_llov_top_web-600x281.jpg" alt="Osis Stella Chair by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Osis Stella Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/peg/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/pegllot-llovcender-suenni-600x281.jpg" alt="PEG by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PEG</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/pin/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/pinllot-llovcender-suennitop-600x281.jpg" alt="PIN by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PIN</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/pale-berry/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_77_pale_berry_random_top-600x281.jpg" alt="Pale Berry 01_77 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pale Berry 01_77</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/pale-grey/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_05_32_pale_grey_grid_top-600x281.jpg" alt="Pale Grey 05_32 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pale Grey 05_32</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/pale-plum/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_03_33_pale_plum_cluster_top-600x281.jpg" alt="Pale Plum 03_33 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pale Plum 03_33</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/peacock/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_03_12_peacock_cluster_top-600x281.jpg" alt="Peacock 03_12 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Peacock 03_12</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/pipe/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01pipellot-llov-2-600x281.jpg" alt="Pipe by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pipe</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/plank/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/00plankllot-llov-2-600x281.jpg" alt="Plank by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Plank</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/plum-01-46/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01_46_plum_random_top-600x281.jpg" alt="Plum 01_46 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Plum 01_46</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/rank/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/22_08_22_rankhilfe_config.-02-600x281.jpg" alt="Rank by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rank</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/raspberry-07-51/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/07_51_raspberry_llot_llov_top-600x281.jpg" alt="Raspberry 07_51 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Raspberry 07_51</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/ray-merino/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/raymouse-600x281.jpg" alt="Ray Merino by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ray Merino</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/red-finch-06_25/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_red_finch-06-25-600x281.jpg" alt="Red Finch 06_25 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Red Finch 06_25</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/reptile-04-75/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_04_75_dark_green_sprinkle_top-600x281.jpg" alt="Reptile 04_75 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Reptile 04_75</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/reptile-05-75/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_05_75_reptile_grid_top-600x281.jpg" alt="Reptile 05_75 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Reptile 05_75</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/reptile-06-75/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_06_75_dark_green_rock_top-600x281.jpg" alt="Reptile 06_75 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Reptile 06_75</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/rust/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_04_08_rust_sprinkle_top-600x281.jpg" alt="Rust 04_08 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rust 04_08</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/rust-06_08/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_08_rust_llot_llov_top-600x281.jpg" alt="Rust 06_08 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rust 06_08</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/salmon-07-47/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_07_45_salmon_top-600x281.jpg" alt="Salmon 07_47 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Salmon 07_47</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/snake-02-07/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/03_07_snake_osis_top-600x281.jpg" alt="Snake 02_07 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Snake 02_07</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/snake/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/03_07_snake_osis_llot_llov_top-600x281.jpg" alt="Snake 03_07 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Snake 03_07</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/snake-05-07/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/05_07_snake_osis_llot_llov_top-600x281.jpg" alt="Snake 05_07 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Snake 05_07</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/snake-06_07/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_07_snake_osis_llot_llov-600x304.jpg" alt="Snake 06_07 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Snake 06_07</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/snow/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/osis_01_04_snow_random_top-600x281.jpg" alt="Snow 01_04 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Snow 01_04</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/sofa-rosa-karl/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/rkcouch_llot-llov-top-600x281.jpg" alt="Sofa Rosa Karl by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sofa Rosa Karl</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/sofa-snow-white/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_sofa_snow_white_top-600x281.jpg" alt="Sofa Snow White by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sofa Snow White</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/sunflower/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/toposis-sunflower-600x281.jpg" alt="Sunflower 01_YV by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sunflower 01_YV</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/teint-luminaire/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_teint_llot_llov__top-600x281.jpg" alt="TEINT LUMINAIRE by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">TEINT LUMINAIRE</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/ted/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/kids6887-2-600x281.jpg" alt="Ted by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ted</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/teint-luminaire-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/05_teint_llot_llov_top2-600x281.jpg" alt="Teint  Pendant by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Teint  Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/teint-luminaire-chandelier/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/04_teint_llot_llov_top2-600x281.jpg" alt="Teint Chandelier by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Teint Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/theo-triangle/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/08theotrianglellot-llov-copynew-600x281.jpg" alt="Theo by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Theo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/throw-light/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/06_throw_light_llot_llov2-copy-600x281.jpg" alt="Throw Light by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Throw Light</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/todd/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01toddllot-llov-600x281.jpg" alt="Todd by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Todd</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/warm-grey/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/warm-grey_top-600x281.jpg" alt="Warm Grey 06_31 by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Warm Grey 06_31</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/zoe/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/01zoellot-llov-1-1-600x281.jpg" alt="Zoe by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zoe</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

@@ -1,0 +1,2056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Artek on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Artek's work on Formground - 264 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/artek.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Artek on Formground">
+<meta property="og:description" content="Artek's work on Formground - 264 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/artek.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-armchair-401-zebra.gif?v=1728463236">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-armchair-401-zebra.gif?v=1728463236">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Artek on Formground">
+<meta name="twitter:description" content="Artek's work on Formground - 264 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Artek", "item": "https://formground.com/brands/artek.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Artek</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Ceramics</span><span class="tag">Objects</span><span class="tag">Finland</span></div>
+    <a class="brand-site-link" href="https://shop.artek.fi" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://shop.artek.fi/products/armchair-35-401-zebra-upholstery-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-armchair-401-zebra.gif?v=1728463236" alt="#001 Armchair 35/401 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#001 Armchair 35/401</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-46-light-grey-leather-upholstery-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Armchair-46-high-back-beige_web.jpg?v=1749127911" alt="#002 Armchair 46 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#002 Armchair 46</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-402-black-and-white-upholstery-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Armchair-402-back-white_web.jpg?v=1728466724" alt="#003 Armchair 402 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#003 Armchair 402</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-406-burgundy-leather-4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-A406-burgundy-leather-1980s_web.jpg?v=1728470829" alt="#004 Armchair 406 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#004 Armchair 406</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-45-cognac-leather-5" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Armchair-45-cogniac_web.jpg?v=1728472903" alt="#005 Armchair 45 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#005 Armchair 45</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/chair-69-jg-nereus-yellow-9" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Chair-69-JG-Nereus_web.jpg?v=1728555047" alt="#009 Chair 69 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#009 Chair 69</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/chair-62-light-grey-upholstery-11" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Chair-62-light-gray_web.jpg?v=1728556018" alt="#011 Chair 62 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#011 Chair 62</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/tale-stool-14" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Tapiovaara-Ilmari-Tale-stool-2011_web.jpg?v=1728636417" alt="#014 Tale Stool by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#014 Tale Stool</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/stool-60-brown-and-black-upholstery-15" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Stool60-brown-stripe-set_web_8e72d8c2-747c-4ac1-8bae-207ee8d8e144.jpg?v=1728561805" alt="#015 Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#015 Stool 60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/stool-60-black-and-white-upholstery-17" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/AlvarAalto-Stool60-Stripe-Upholstery_web.jpg?v=1730904581" alt="#017 Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#017 Stool 60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/stool-60-red-lacquered-19" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-stool-60-red-paitn.jpg?v=1730121925" alt="#019 Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#019 Stool 60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/a-set-of-chair-68-yellow-linoleum-25" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Chair-68-yellow-lino-1960_4-set_web.jpg?v=1730971037" alt="#025 A Set of Chair 68 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#025 A Set of Chair 68</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-45-natural-white-leather-30" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-armchair-45-cream_web.jpg?v=1731325503" alt="#030 Armchair 45 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#030 Armchair 45</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/table-mx800a-31" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Fan-leg-table-135cm.jpg?v=1732004690" alt="#031 Table MX800A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#031 Table MX800A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-46-polo-upholstery-33" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Armchair-46-Polo-fabric.jpg?v=1732606541" alt="#033 Armchair 46 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#033 Armchair 46</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/stool-e60-white-laminate-36" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Stool-E60-white-laminate-2005.jpg?v=1733217076" alt="#036 Stool E60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#036 Stool E60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/chair-69-wool-upholstery-37" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Chair-69-beige-wool-set_solo.jpg?v=1733219711" alt="#037 Chair 69 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#037 Chair 69</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/40-vanity-table-mirror" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Heikinheimo-Maija-Vanity-table-mirror.jpg?v=1736768096" alt="#040 Vanity Table Mirror by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#040 Vanity Table Mirror</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/41-poster-galerie-artek-sam-vanni" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Vanni-Sam-galerie-artek-exhibiton-poster.jpg?v=1736769495" alt="#041 Poster Galerie Artek Sam Vanni by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#041 Poster Galerie Artek Sam Vanni</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/44-stool-x601" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/2ndcycle_X601_sidetable_main.jpg?v=1736780896" alt="#044 Stool X601 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#044 Stool X601</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/47-chair-611-natural-red-webbing" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Chair-611-natural-red-webbing_web.jpg?v=1737117205" alt="#047 Chair 611 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#047 Chair 611</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/49-stool-e60-peach-color-paint" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-StoolE60-Painted-Peach.webp?v=1738659247" alt="#049 Stool E60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#049 Stool E60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/50-stool-60-dark-red-linoleum" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-stool60redlinoleum1950.jpg?v=1781781233" alt="#050 Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#050 Stool 60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/51-stool-60-black-linoleum" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Stool60blacklinoleum-three.jpg?v=1746537766" alt="#051 Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#051 Stool 60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/52-stool-e60-blue-paint" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-stoolE60-bluepaint.jpg?v=1746537667" alt="#052 Stool E60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#052 Stool E60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/055-domus-chair-leather-seat-upholstery" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Tapiovaara-Ilmar-Domuschair-stainedlegs.jpg?v=1746537209" alt="#055 Domus Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#055 Domus Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/057-high-chair-k65-black-linoleum" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-K65blacklinopair.jpg?v=1746536759" alt="#057 High Chair K65 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#057 High Chair K65</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/058-chair-69-stripe-fabric-upholstery" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Chair69stripe.jpg?v=1746536608" alt="#058 Chair 69 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#058 Chair 69</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/062-chair-611-linen-webbing-and-fabric-upholstery-seat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Chair611-JG.jpg?v=1746535997" alt="#062 Chair 611 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#062 Chair 611</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/062-stool-x601-leather-upholstery" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-StoolX602-blackleather-pair.jpg?v=1742370053" alt="#064 Stool X601 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#064 Stool X601</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/065-chair-611-natural-linen-webbing" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Chair611birhch-naturalwebbing_solo.jpg?v=1781776721" alt="#065 Chair 611 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#065 Chair 611</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/068-bench-153b-slatted-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-153B-bench-birch.jpg?v=1746535136" alt="#068 Bench 153B slatted top by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#068 Bench 153B slatted top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/073-alvar-aalto-100th-birthday-anniversary-poster" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Anonymous-Alvar_Aalto_anniversary_poster_1990_s_67d4d7e1-656e-4687-b9da-50bed3cce5e3.jpg?v=1781776250" alt="#073 Alvar Aalto 100th Birthday Anniversary Poster by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#073 Alvar Aalto 100th Birthday Anniversary Poster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/077-chair-n65-red-linoleum" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-N65redlinoleum.jpg?v=1782194844" alt="#077 Children&#x27;s Chair N65 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#077 Children&#x27;s Chair N65</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/078-special-order-wall-shelf" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Wallshelf112bspecialorder.jpg?v=1781778828" alt="#078 Special-order Wall Shelf by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#078 Special-order Wall Shelf</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/080-stool-e60-birch" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-StoolE60birch_c1970.jpg?v=1781780752" alt="#080 Stool E60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#080 Stool E60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/081-stool-60-painted-birch" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Stool60-redxblack_1930-40s.jpg?v=1781780648" alt="#081 Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#081 Stool 60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/082-armchair-401-moss-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-armchair401-mossgreenfabric.jpg?v=1781784930" alt="#082 Armchair 401 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#082 Armchair 401</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/085-g-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Gardberg-Bertel-Gstool.jpg?v=1772025013" alt="#085 G-stool by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#085 G-stool</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/086-armchair-406" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-armchair406-natural-red-linenwebbing.jpg?v=1777033277" alt="#086 Armchair 406 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#086 Armchair 406</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/087-armchair-46-jg-kronos-straw" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Armchair46_JGkronosstraw.jpg?v=1781777498" alt="#087 Armchair 46 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#087 Armchair 46</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/088-umbrella-stand-115" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-unbrellastand114_birch_brass.jpg?v=1782194760" alt="#088 Umbrella Stand 115 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#088 Umbrella Stand 115</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/090-y-legged-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Yleggedcoffeetable.jpg?v=1777038247" alt="#090 Y-legged Coffee Table by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#090 Y-legged Coffee Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/092-kiki-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Tapiovaara-Kiki-Chairs-Yellow.webp?v=1773687431" alt="#092 Kiki Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#092 Kiki Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/093-hotel-olympia-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Tapiovaala-Ilmari-Armchair-JohannaG.jpg?v=1777291643" alt="#093 Hotel Olympia Armchair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#093 Hotel Olympia Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/095-chair-611" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Chair611_paintedcreamyellow.jpg?v=1773991418" alt="#095 Chair 611 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#095 Chair 611</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/098-chair-69" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/AlvarAalto-69chairs-Zebra-Set.webp?v=1773688082" alt="#098 Chair 69 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#098 Chair 69</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/099-copper-vase" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Tynell-Paavo-Copper-Vase-Brass-Cup_detail1_b1fb515a-31db-4c2e-bb84-2e381a1db910.jpg?v=1773931274" alt="#099 Copper Vase by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#099 Copper Vase</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/100-stool-y61" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-StoolY61_leather_camel.jpg?v=1774853802" alt="#100 Stool Y61 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#100 Stool Y61</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/101-stool-y61" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-StoolY61_leather_burgundi.jpg?v=1774854027" alt="#101 Stool Y61 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#101 Stool Y61</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/102-stool-x601" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-X601.jpg?v=1776165942" alt="#102 Stool X601 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#102 Stool X601</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/105-aalto-glazed-tile-rod" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-tile-whitematt.jpg?v=1777037944" alt="#105 Aalto Glazed Tile Rod by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#105 Aalto Glazed Tile Rod</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/106-sirkus-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kukkapuro-Yrjo-Sirkuschair-avarte.jpg?v=1777037899" alt="#106 Sirkus Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#106 Sirkus Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/107-chair-a500" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kukkapuro-Yrjo-ChairA-500-green.jpg?v=1777037538" alt="#107 Chair A500 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#107 Chair A500</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/108-chair-611" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Chair611-Terracotta.webp?v=1775587272" alt="#108 Chair 611 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#108 Chair 611</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/111-armchair-406" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Armchair-406-congac-leather.jpg?v=1777037172" alt="#111 Armchair 406 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#111 Armchair 406</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/114-armchair-46" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Armchair46-JGHelios_leather.jpg?v=1777036705" alt="#114 Armchair 46 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#114 Armchair 46</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/115-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Toivonen-Eevert-Archair-White-Lam.jpg?v=1777036503" alt="#115 Armchair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#115 Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/116-restaurant-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Korhonen-Otto_restaurant_chair.jpg?v=1777036221" alt="#116 Restaurant Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#116 Restaurant Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/119-a509-rocking-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kukkapuro-Avarte-A509-1980s.webp?v=1776794540" alt="#119 A509 Rocking Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#119 A509 Rocking Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/120-diamond-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Bertoia-Harry-Diamond-chair-new-seat.webp?v=1776794645" alt="#120 Diamond Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#120 Diamond Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/121-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Erik-Bryggman-Caneweave-Armchairs.webp?v=1776794835" alt="#121 Armchair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#121 Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/122-chair-611" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-2nd-cycle-chair-611-stained.jpg?v=1779866183" alt="#122 Chair 611 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#122 Chair 611</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/124-wall-shelf-112b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-2nd-cycle-wall-shelf-112-pair.jpg?v=1779866379" alt="#124 Wall Shelf 112B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#124 Wall Shelf 112B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/125-high-chair-k65" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-2nd-cycle-chair-K65-red.jpg?v=1779866456" alt="#125 High Chair K65 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#125 High Chair K65</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/126-hallway-chair-403" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Hallway-chair-painted-orange-birch_a97d5cc5-3eef-4319-aafb-d4888f89a047.jpg?v=1781589280" alt="#126 Hallway Chair 403 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#126 Hallway Chair 403</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/127-early-edition-side-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-side-table-with-drawer.jpg?v=1781589699" alt="#127 Early Edition Side Table by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#127 Early Edition Side Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/r128-stool-60" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar_Stool-60_stained_nailed_1930.jpg?v=1781162879" alt="#2002 Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#2002 Stool 60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/2004-stool-y61" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-stool-y61-artek-2nd-cycle.jpg?v=1781683474" alt="#2004 Stool Y61 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#2004 Stool Y61</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/2005-stool-y61-black-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-stool-y61-2nd-cycle.jpg?v=1781683934" alt="#2005 Stool Y61 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#2005 Stool Y61</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/2006-pirkka-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Tapiovaara-pirkkastool-2nd-cycle.jpg?v=1782210764" alt="#2006 Pirkka Stool by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#2006 Pirkka Stool</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/2007-stool-60" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-stool-60-zebra-2nd-cycle.jpg?v=1782211377" alt="#2007 Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#2007 Stool 60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/2008-stool-e60" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-stool-e60-green-linoleum-2nd-cycle.jpg?v=1782211643" alt="#2008 Stool E60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#2008 Stool E60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/2009-a-set-of-bolgeblik-schnapps-glasses" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Aino-Bolgebrick-shot-glasses.jpg?v=1782282780" alt="#2009 A set of Bölgeblick Schnapps Glasses by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#2009 A set of Bölgeblick Schnapps Glasses</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/2010-cast-iron-book-ends" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Anonymous-Paper-weight.jpg?v=1782283565" alt="#2010 Cast Iron Bookends by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#2010 Cast Iron Bookends</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/2011-porcelain-vase-seinajoki-town-hall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar_Arabia_vase_Seinajoen_kaupunkitalo_high-res.webp?v=1782284285" alt="#2011 Porcelain Vase by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#2011 Porcelain Vase</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/2012-artek-hand-mirror" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Heikinheimo-Maija-hand-mirror-leather-handle.jpg?v=1782285002" alt="#2012 Artek Hand Mirror by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#2012 Artek Hand Mirror</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/2015-a-set-of-bolgeblik-glass-items" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/bolgeblick-set-2nd-cycle_a1dce919-66c1-4c71-bf6c-219d95cfec8e.jpg?v=1782903344" alt="#2015 A set of Bölgeblick Glass Items by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">#2015 A set of Bölgeblick Glass Items</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-childrens-table-80a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Children_s-Table-rectangular-80A-legs-and-edge-band-birch-top-birch_web_66baf660-c431-4f65-b35d-f8a9e7785e64.jpg?v=1736941470" alt="Aalto Children&#x27;s Table 80A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Children&#x27;s Table 80A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-childrens-table-80b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Children_s-Table-rectangular-80B_-legs-and-edge-band-birch_-top-white-HPL_cut-out_web.jpg?v=1736941468" alt="Aalto Children&#x27;s Table 80B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Children&#x27;s Table 80B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-childrens-table-80c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Children_s-Table-square-80C_-legs-and-endge-band-birch_-top-birch_cut-out_web.jpg?v=1735804392" alt="Aalto Children&#x27;s Table 80C by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Children&#x27;s Table 80C</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-childrens-table-81a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Children_s-Table-rectangular-81A_-legs-and-ede-band-birch_-top-white-HPL_cut-out_web.jpg?v=1736941467" alt="Aalto Children&#x27;s Table 81A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Children&#x27;s Table 81A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-childrens-table-81b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Children_s-Table-rectangular-81B-legs-and-edge-band-birch-top-black-linoleum_webjpg_27f67e2d-fbd4-4a8a-a4f2-9c1f5fe3a3d1.jpg?v=1736941465" alt="Aalto Children&#x27;s Table 81B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Children&#x27;s Table 81B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-childrens-table-81c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Children_s-Table-square-81C_-legs-and-edge-band-birch_-top-birch_cut-out_web.jpg?v=1736941463" alt="Aalto Children&#x27;s Table 81C by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Children&#x27;s Table 81C</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-childrens-table-90a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Children_s-Table-round-90A-legs-and-edge-band-birch-top-black-linoleum_web.jpg?v=1744895913" alt="Aalto Children&#x27;s Table 90A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Children&#x27;s Table 90A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-80a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-80a-rectangular-birch-legs-edge-band-black-linoleum-top.jpg?v=1779109674" alt="Aalto Table 80A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 80A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-80b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-80b-rectangular-birch-legs-edge-band-birch-top-cut-out.jpg?v=1779110380" alt="Aalto Table 80B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 80B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-80c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-80c-square-birch-legs-edge-band-birch-black-linoleum-top-cut-out.jpg?v=1779111094" alt="Aalto Table 80C by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 80C</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-81a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-81a-rectangular-birch-legs-edge-band-white-hpl-top-cut-out.jpg?v=1779111186" alt="Aalto Table 81A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 81A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-81b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-81b-rectangular-wild-birch-natural-lacquered-cut-out.jpg?v=1779704889" alt="Aalto Table 81B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 81B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-81c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-81c-square-birch-legs-edge-band-white-hpl-top-cut-out.jpg?v=1779704741" alt="Aalto Table 81C by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 81C</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-82a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-82a-rectangular-clear-lacquer-white-laminate-top.jpg?v=1779704846" alt="Aalto Table 82A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 82A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-82b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-82b-clear-lacquer-black-linoleum-top.jpg?v=1779704965" alt="Aalto Table 82B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 82B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-83-walnut-stained" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Table-83_-legs-walnut-stained--top-oak-walnut-stained_Cut-out_web.jpg?v=1745327056" alt="Aalto Table 83 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 83</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-84" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-84-square-birch-legs-edge-band-black-linoleum-top.jpg?v=1779705177" alt="Aalto Table 84 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 84</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-86" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-86-rectangular-birch-legs-edge-band-white-hpl-laminate-top-cut-out.jpg?v=1779705587" alt="Aalto Table 86 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 86</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-86a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-86a-rectangular-birch-legs-edge-band-birch-top-cut-out.jpg?v=1779705941" alt="Aalto Table 86A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 86A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-90a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-90a-round-wild-birch-natural-lacquered-cut-out.jpg?v=1779706477" alt="Aalto Table 90A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 90A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-90b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-90b-round-wild-birch-natural-lacquered-cut-out.jpg?v=1779706640" alt="Aalto Table 90B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 90B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-90d-walnut-stained" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aalto-table-90d-walnut-stained-cut-out.jpg?v=1784197388" alt="Aalto Table 90D by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 90D</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-90d-seireeni" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Table-90D-Seireeni-cut-out_web.jpg?v=1756385940" alt="Aalto Table 90D Seireeni by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 90D Seireeni</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-91-walnut-stained" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Table-91_-legs-walnut-stained-top.jpg?v=1745326697" alt="Aalto Table 91 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 91</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-95" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Table-half-round-95-birch-veneer_web.pg.jpg?v=1736941620" alt="Aalto Table 95 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 95</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-96" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Table-half-round-96-legs-natural-lacquered_-top-black-linoleum_cut-out_web.jpg?v=1736941619" alt="Aalto Table 96 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 96</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-97-extendable" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Table-extendable-97-white-laminate_web.jpg?v=1736941617" alt="Aalto Table 97 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table 97</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aalto-table-foldable-dl81c-special-colour-ways" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Table-foldable-DL81C-folded_-legs-natural-lacquered_-top-pistachio-linoleum_-drop-leaf-olive-linoleum_cut-out_web.jpg?v=1745327089" alt="Aalto Table Foldable DL81C by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aalto Table Foldable DL81C</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/architects-scale-20-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Architect_s-Scale_web.jpg?v=1745327628" alt="Architect&#x27;s Scale 20 cm by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Architect&#x27;s Scale 20 cm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-400" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-armchair-400-walnut-stained-zebra-brown.jpg?v=1787567029" alt="Armchair 400 &quot;Tank&quot; by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Armchair 400 &quot;Tank&quot;</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-401" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-401_birch_natural_Pol_cut-out_web.jpg?v=1744893786" alt="Armchair 401 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Armchair 401</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-402-sheepskin" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Armchair_402_sheepskin_front.jpg?v=1781012584" alt="Armchair 402 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Armchair 402</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-406" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Armchair-406-natural_-blackbrown-webbing_web.jpg?v=1771408779" alt="Armchair 406 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Armchair 406</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-41-paimio" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Armchair-41-_Paimio_-black-lacquer_web.jpg?v=1744895640" alt="Armchair 41 &quot;Paimio&quot; by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Armchair 41 &quot;Paimio&quot;</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-42" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Armchair-42-white-lacquer_web.jpg?v=1744895393" alt="Armchair 42 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Armchair 42</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-45-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Armchair-45-honey-stained_-quilted-leather-leaf_-rattan-armrests-cut-out_web.jpg?v=1736941474" alt="Armchair 45 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Armchair 45</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/artek-heath-tile-table-rectangular" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Tile-Table-rectangular-in-Green_-Artek-_-Heath-2026_-cutout_web.jpg?v=1776950347" alt="Artek + Heath Tile Table Rectangular by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Artek + Heath Tile Table Rectangular</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/artek-heath-tile-table-square" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Tile-table-square-in-White_-Artek-_-heath-2026-cut-out_web_a1455fd4-bf4a-4226-a62e-9f6e1dfd67d7.jpg?v=1776950265" alt="Artek + Heath Tile Table Square by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Artek + Heath Tile Table Square</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/artek-hender-scheme-low-table-90c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-_-Hender-Scheme-Table-90C-Low.jpg?v=1789398361" alt="Artek + Hender Scheme Aalto Low Table 90C by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Artek + Hender Scheme Aalto Low Table 90C</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/artek-hender-scheme-table-90c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-_-Hender-Scheme-Table-90C-Natural-cut-out.jpg?v=1784014966" alt="Artek + Hender Scheme Aalto Table 90C by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Artek + Hender Scheme Aalto Table 90C</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/artek-hender-scheme-pendant-light-a330" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Hender-Scheme-_-Artek-Pendant-Light-A330-Natural-cut-out.jpg?v=1784015699" alt="Artek + Hender Scheme Pendant Light A330 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Artek + Hender Scheme Pendant Light A330</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/artek-hender-scheme-stool-60" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-_-Hender-Scheme-Stool-60-Natural-cut-out.jpg?v=1789735238" alt="Artek + Hender Scheme Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Artek + Hender Scheme Stool 60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/poster-artek-75-years" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-75-Anniversary-Poster-Kustaa-Saksi_web.jpg?v=1736941535" alt="Artek 75 Anniversary Poster by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Artek 75 Anniversary Poster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/poster-artek-80-years" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek_poster_80.jpg?v=1736941530" alt="Artek 80 Anniversary Poster by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Artek 80 Anniversary Poster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/poster-artek-85-years" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek_85_Anniversary_Poster_Karoliina_Hellberg_web_5c82fe66-3790-4354-b97b-44947af747d1.jpg?v=1736941533" alt="Artek 85 Anniversary Poster by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Artek 85 Anniversary Poster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/artek-90th-anniversary-poster" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/9378868_Artek-90-Anniversary-Poster_-Inka-Bell_web.jpg?v=1776952379" alt="Artek 90 Anniversary Poster by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Artek 90 Anniversary Poster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/artek-icons-postcards-5-pieces" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-Icons-Post-Cards_web.jpg?v=1736941531" alt="Artek Icons postcards 5 pieces by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Artek Icons postcards 5 pieces</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/aslak-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-aslak-chair-white-lacquered.jpg?v=1777548804" alt="Aslak Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Aslak Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/atelier-bar-stool-75-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Atelier-Bar-Stool-75-cm-beech-black_web.jpg?v=1736941584" alt="Atelier Bar Stool by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Atelier Bar Stool</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/atelier-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-atelier-chair-green-lacquered-beech.jpg?v=1777549198" alt="Atelier Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Atelier Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/bar-stool-65-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Bar-Stool-64-65cm-legs-birch_top-black-linoleum_web.jpg?v=1736941577" alt="Bar Stool 64 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bar Stool 64</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/bench-153a-slatted" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-bench-153a-slatted-top-wild-birch-natural-lacquered.jpg?v=1779109238" alt="Bench 153A slatted top by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bench 153A slatted top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/bench-153a-solid-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-bench-153a-solid-top-white-lacquer.jpg?v=1777891433" alt="Bench 153A solid top by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bench 153A solid top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/bench-153b-kivet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Bench-153B-Kivet-cut-out_web.jpg?v=1756385937" alt="Bench 153B Kivet by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bench 153B Kivet</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/bench-153b-seireeni" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Bench-153B-Seireeni-cut-out_web.jpg?v=1756385937" alt="Bench 153B Seireeni by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bench 153B Seireeni</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/bench-153b-slatted-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-bench-153b-slatted-top-wild-birch-natural-lacquered.jpg?v=1779109287" alt="Bench 153B slatted top by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bench 153B slatted top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/bench-153b-solid-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-bench-153b-solid-top-black-lacquer.jpg?v=1777891710" alt="Bench 153B solid top by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bench 153B solid top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/bench-167" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Bench-167-legs-clear-lacquered_-upholstered-leather_cut-out_web.jpg?v=1736941479" alt="Bench 167 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bench 167</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/bench-168b-seat-upholstered" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-bench-168B-legs-honey-stained-zebra-brown-upholstered.jpg?v=1787562170" alt="Bench 168B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bench 168B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/cabinet-250" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/9283210_Cabinet-250-Celebration-side-view-cut-out_web_72a1eb39-3ed7-4952-93c0-b9eac0812a55.jpg?v=1756385930" alt="Cabinet 250 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cabinet 250</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/ceiling-light-a622a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-ceiling-light-a622a-white-off.jpg?v=1777550313" alt="Ceiling Light A622A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ceiling Light A622A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/ceiling-light-a622b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-ceiling-light-a622b-white.jpg?v=1777550358" alt="Ceiling Light A622B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ceiling Light A622B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/chair-611" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-chair-611-clear-lacquered-birch-natural-black-webbing.jpg?v=1777548298" alt="Chair 611 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chair 611</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/chair-65" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-chair-65-birch-legs-black-linoleum-top.jpg?v=1777547185" alt="Chair 65 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chair 65</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/chair-66" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-chair-66-wild-birch-natural-lacquered.jpg?v=1779109123" alt="Chair 66 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chair 66</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/chair-68" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-chair-68-black-lacquer.jpg?v=1777547647" alt="Chair 68 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chair 68</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/chair-69-zebra-upholstery" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-chair-69-birch-zebra-black.jpg?v=1787905245" alt="Chair 69 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chair 69</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/childrens-chair-n65" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Children_s-Chair-N65-legs-birch_seat-black-linoleum_web.jpg?v=1736941471" alt="Children&#x27;s Chair N65 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Children&#x27;s Chair N65</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/childrens-stool-ne60" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Children_s-Stool-NE60-white-laminate_web.jpg?v=1736941473" alt="Children&#x27;s Stool NE60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Children&#x27;s Stool NE60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/clothes-tree-160" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Clothes-tree-160-clear-lacquer-black-foot_web.jpg?v=1734680744" alt="Clothes Tree 160 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Clothes Tree 160</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/domus-chair-seat-and-back-upholstered-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Domus-Chair-oak-natural-lacquered_-upholstered-fabric-Wow-Re-creamwhite-_6511_-leather-piping-Prestige-nougat-cut-out_web.jpg?v=1776950022" alt="Domus Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Domus Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/domus-lounge-chair-upholstered" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/2561116_Domus-Lounge-Chair-clear-laquered-birch_leather-upholstery_webjpg.jpg?v=1744892871" alt="Domus Lounge Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Domus Lounge Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/easter-dog-vase" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-secrets-of-finland-easter-dog-vase.jpg?v=1777550928" alt="Easter Dog Vase by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Easter Dog Vase</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/easter-witch-vase" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-secrets-of-finland-easter-witch-vase.jpg?v=1777550892" alt="Easter Witch Vase by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Easter Witch Vase</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/felt-glides" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-felt-glides.jpg?v=1777892668" alt="Felt glides by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Felt glides</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/floor-light-a805-angel-wing" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Floor-Light-A805-_Angel-Wing_-brass_on_web.jpg?v=1745328896" alt="Floor Light A805 &quot;Angel Wing&quot; by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Floor Light A805 &quot;Angel Wing&quot;</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/floor-light-a808" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Floor-Light-A808-white_web.jpg?v=1745329302" alt="Floor Light A808 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Floor Light A808</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/floor-light-a810-special-colour-ways" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Floor-light-A810_artek-helsinki-special_ruby_web_8dc280a7-e7b7-41bd-b5ff-837186211a50.jpg?v=1765461181" alt="Floor Light A810 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Floor Light A810</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/floor-light-a811" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Floor-Light-A811-brass-tube_on_web.jpg?v=1736941592" alt="Floor Light A811 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Floor Light A811</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/folding-ruler-2-m" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Folding_Ruler_web.jpg?v=1745327697" alt="Folding Ruler 2 m by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Folding Ruler 2 m</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/hender-scheme-artek-clock" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Hender-Scheme-_-Artek-Clock-Black-cut-out.jpg?v=1784019272" alt="Hender Scheme + Artek Clock by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hender Scheme + Artek Clock</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/artek-hender-scheme-coasters" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Hender-Scheme-_-Artek-Coasters-Natural-cut-out.jpg?v=1784018950" alt="Hender Scheme + Artek Coasters by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hender Scheme + Artek Coasters</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/hender-scheme-artek-key-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Hender-Scheme-_-Artek-Circle-Natural-cut-out.jpg?v=1784023608" alt="Hender Scheme + Artek Key Holder by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hender Scheme + Artek Key Holder</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/artek-hender-scheme-shoes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Hender-Scheme-_-Artek-Stool-60-Shoes-Natural-cut-out.jpg?v=1784017976" alt="Hender Scheme + Artek Stool 60/E60 Shoes by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hender Scheme + Artek Stool 60/E60 Shoes</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/high-chair-k65" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/High-Chair-K65-legs-birch_seat-white-HPL_web.jpg?v=1736941581" alt="High Chair K65 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">High Chair K65</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/inner-cushion-40-x-60-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-inner-cushion-40x60-cm.png?v=1789731066" alt="Inner Cushion by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Inner Cushion</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/inner-cushion-40-x-40-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Inner_Cushion_40x40_web.jpg?v=1736941487" alt="Inner cushion by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Inner cushion</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-desk-reb-005" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kaari-Desk-REB005-natural-oak-black-HPL_web.jpg?v=1736941421" alt="Kaari Desk REB 005 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Desk REB 005</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-table-reb-001" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kaari-Table-rectangular-REB001-black-oak-black-HPL_web.jpg?v=1736941430" alt="Kaari Table REB 001 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Table REB 001</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-table-reb-002" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kaari-Table-rectangular-REB002-natural-oak-white-HPL_web.jpg?v=1736941428" alt="Kaari Table REB 002 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Table REB 002</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-table-reb-003" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/1849562_Kaari-Table-round-REB003-natural-oak-white-HPL_master.jpg?v=1736941425" alt="Kaari Table REB 003 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Table REB 003</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-table-reb-004" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kaari-Table-round-REB004-natural-oak-black-HPL_web.jpg?v=1744892147" alt="Kaari Table REB 004 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Table REB 004</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-table-reb-011" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kaari_Table_square_legs-black-lacquered-oak_top-black-linoleum_web.jpg?v=1736941426" alt="Kaari Table REB 011 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Table REB 011</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-table-reb-012" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kaari-Table-rectangular-REB012-natural-oak-black-HPL_web.jpg?v=1736941432" alt="Kaari Table REB 012 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Table REB 012</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-wall-console-reb-006" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kaari-Wall-Console-REB006-natural-oak-black-Linoleum_web.jpg?v=1736941543" alt="Kaari Wall Console REB 006 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Wall Console REB 006</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-wall-hook-reb-014" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kaari-Wall-Hook-clear-protective-varnish_web.jpg?v=1736941554" alt="Kaari Wall Hook REB 014 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Wall Hook REB 014</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-wall-shelf-reb-007" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kaari-Wall-Shelf-round-REB007-clear-varnish_black-linoleum_web.jpg?v=1736941551" alt="Kaari Wall Shelf REB 007 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Wall Shelf REB 007</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-wall-shelf-reb-008" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kaari-Wall-Shelf-REB008-black-oak_web.jpg?v=1736941545" alt="Kaari Wall Shelf REB 008 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Wall Shelf REB 008</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-wall-shelf-reb-009" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kaari-Wall-Shelf-REB009-black-oak_web.jpg?v=1736941546" alt="Kaari Wall Shelf REB 009 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Wall Shelf REB 009</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-wall-shelf-with-desk-reb-010" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/1846760_Kaari-Wall-Shelf-with-desk-REB010-black-oak_web.jpg?v=1736941548" alt="Kaari Wall Shelf with Desk REB 010 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Wall Shelf with Desk REB 010</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kaari-wall-shelf-with-desk-reb-013" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kaari-Wall-Shelf-with-Desk-REB013-clear-varnish_web.jpg?v=1736941549" alt="Kaari Wall Shelf with Desk REB 013 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kaari Wall Shelf with Desk REB 013</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kanto-magazine-firewood-rack-walnut-stained" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-kanto-walnut-stained-cut-out.jpg?v=1784196245" alt="Kanto Magazine-/Firewood Rack by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kanto Magazine-/Firewood Rack</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/karuselli-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Karuselli-Lounge-Chair-black-leather_web.jpg?v=1736941439" alt="Karuselli Lounge Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Karuselli Lounge Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/karuselli-ottoman" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Karuselli-Ottoman-black-leather_web.jpg?v=1736941437" alt="Karuselli Ottoman by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Karuselli Ottoman</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kiila-coat-stand" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kiila-Coat-Stand-Natural_Black_web.jpg?v=1736941557" alt="Kiila Coat Stand by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kiila Coat Stand</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kiki-low-table-60-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kiki_Low_Table_black-linoleum-60_web.jpg?v=1736941567" alt="Kiki Low Table by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kiki Low Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kirsikankukka-paper-napkin-24x24-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kirsikankukka-napkins-24x24-pink-white_web_8d341a0a-ee9b-42d6-8662-22f545dd502b.jpg?v=1749043739" alt="Kirsikankukka paper napkin by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kirsikankukka paper napkin</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kori-floor-light" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Kori-Floor-Light_white_web.jpg?v=1736941590" alt="Kori Floor Light by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kori Floor Light</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kori-pendant-light" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-kori-pendant-light-white.jpg?v=1777549993" alt="Kori Pendant Light by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kori Pendant Light</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kori-pendant-light-with-disc-shade" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-kori-pendant-light-with-disc-shade-white.jpg?v=1777550028" alt="Kori Pendant Light with Disc Shade by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kori Pendant Light with Disc Shade</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kori-pendant-light-with-dune-shade" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-kori-pendant-light-with-dune-shade-white.jpg?v=1777550059" alt="Kori Pendant Light with Dune Shade by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kori Pendant Light with Dune Shade</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/kori-table-light" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-kori-table-light-white.jpg?v=1777550391" alt="Kori Table Light by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Kori Table Light</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/level-40-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Level_web.jpg?v=1736941603" alt="Level 40 cm by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Level 40 cm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/lounge-chair-43" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Lounge-Chair-43-natural_-naturalblack-webbing_web.jpg?v=1736941453" alt="Lounge Chair 43 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lounge Chair 43</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/lucia-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-secrets-of-finland-lucia-candleholder.jpg?v=1777551005" alt="Lucia Candleholder by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lucia Candleholder</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/lucius-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-secrets-of-finland-lucius-candleholder.jpg?v=1777551026" alt="Lucius Candleholder by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lucius Candleholder</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/lukki-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-lukki-chair-black-lacquer.jpg?v=1777549071" alt="Lukki Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lukki Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/mademoiselle-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Mademoiselle-Lounge-Chair-black-lacquer_web.jpg?v=1736941442" alt="Mademoiselle Lounge Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mademoiselle Lounge Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/mademoiselle-rocking-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Mademoiselle-Rocking-Chair-white-lacquer_1_web.jpg?v=1744892753" alt="Mademoiselle Rocking Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mademoiselle Rocking Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/midsummer-dream-vase" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-secrets-of-finland-midsummer-dream-vase.jpg?v=1777550968" alt="Midsummer Dream Vase by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Midsummer Dream Vase</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/outline-postcards-3-pieces" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Outline-Postcard_-Tsto-Set-of-3_web.jpg?v=1736941532" alt="Outline postcards 3 pieces by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Outline postcards 3 pieces</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/ovalette-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-ovalette-table-oak.jpg?v=1778839673" alt="Ovalette Table by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ovalette Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/pauper-coin-collector" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-secrets-of-finland-pauper-coin-collector.jpg?v=1777550862" alt="Pauper Coin Collector by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pauper Coin Collector</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/pendant-light-a110-duotone" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-pendant-light-a110-hand-grenade-duo-tone.jpg?v=1779109491" alt="Pendant Light A110 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pendant Light A110</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/pendant-light-a110" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-pendant-light-a110-hand-grenade-black-brass.jpg?v=1777549314" alt="Pendant Light A110 “Hand Grenade” by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pendant Light A110 “Hand Grenade”</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/pendant-light-a201" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-pendant-light-a201-white-brass.jpg?v=1777549654" alt="Pendant Light A201 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pendant Light A201</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/pendant-light-a330s" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-pendant-light-a330s-golden-bell-savoy.jpg?v=1777549405" alt="Pendant Light A330S “Golden Bell“ by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pendant Light A330S “Golden Bell“</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/pendant-light-a331-beehive" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-pendant-light-a331-beehive-white-brass.jpg?v=1777891860" alt="Pendant Light A331 &quot;Beehive&quot; by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pendant Light A331 &quot;Beehive&quot;</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/pendant-light-a333-turnip" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-pendant-light-a333-turnip-white-brass.jpg?v=1777549583" alt="Pendant Light A333 “Turnip“ by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pendant Light A333 “Turnip“</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/pendant-light-a440" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-pendant-light-a440-white.jpg?v=1777549805" alt="Pendant Light A440 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pendant Light A440</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/pendant-light-ama500" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-pendant-light-ama500-white-brass.jpg?v=1777549959" alt="Pendant Light AMA500 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pendant Light AMA500</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/pendant-light-jl341" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-pendant-light-jl341-white-brass.jpg?v=1777549923" alt="Pendant Light JL341 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pendant Light JL341</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/polo-fabric" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Polo-fabric_web.jpg?v=1765352708" alt="Polo Fabric by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Polo Fabric</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/poster-aalto-chronology" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Chronology-Poster-1848507_web.jpg?v=1736941537" alt="Poster Aalto Chronology by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Poster Aalto Chronology</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/poster-beehive" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-Icons-Greige-Pendant-Light-A331-Beehive-1843106_web_f5712634-f3ca-4813-a66b-e79315b6a50f.jpg?v=1782195305" alt="Poster Beehive by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Poster Beehive</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/poster-paimio" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-Icons-Greige-Armchair-41-Paimio_web.jpg?v=1781779119" alt="Poster Paimio by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Poster Paimio</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/poster-stool-60" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-Icons-Greige-Stool-60_web.jpg?v=1781779606" alt="Poster Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Poster Stool 60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/riihitie-plant-pot-large-a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-riihitie-plant-pot-a-large-white.jpg?v=1777550750" alt="Riihitie Plant Pot large A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Riihitie Plant Pot large A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/riihitie-plant-pot-medium-b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-riihitie-plant-pot-b-medium-blue.jpg?v=1777550695" alt="Riihitie Plant Pot medium B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Riihitie Plant Pot medium B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/riihitie-plant-pot-small-a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-riihitie-plant-pot-a-small-white.jpg?v=1777550454" alt="Riihitie Plant Pot small A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Riihitie Plant Pot small A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/riihitie-plant-pot-small-b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-riihitie-plant-pot-b-small-light-grey.jpg?v=1777550634" alt="Riihitie Plant Pot small B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Riihitie Plant Pot small B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/rival-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Rival-Chair-KG002-Legs-and-backrest-natural-lacquered-seat-upholstery-3D-knit-light-grey-cream_web.jpg?v=1736941480" alt="Rival Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rival Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/rivi-canvas-bag" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Rivi-Canvas-Bag-blue_web.jpg?v=1781785730" alt="Rivi Canvas Bag by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rivi Canvas Bag</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/rivi-cushion-cover-50-x-50-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Rivi-Cushion-Cover-black-_-white-large_web_12b69638-403b-4ac6-aedc-2657e0074156.jpg?v=1781776621" alt="Rivi Cushion Cover by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rivi Cushion Cover</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/rivi-fabrik-acrylic-coated-cotton-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Rivi-Fabric-pre-cut-blue_white_web.jpg?v=1782194377" alt="Rivi Fabric by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rivi Fabric</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/rivi-pouch" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Rivi-Pouch-small-white-blue_web_70bbb892-1008-44d5-b70e-421a54d5338d.jpg?v=1736941528" alt="Rivi Pouch by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rivi Pouch</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/rivi-tray-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Rivi-Tray-large-white-blue_web.jpg?v=1736941520" alt="Rivi Tray by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rivi Tray</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/rocket-bar-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Rocket-Bar-Stool-soaped_web.jpg?v=1736941583" alt="Rocket Bar Stool by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rocket Bar Stool</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/rope-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-rope-chair-light-grey.jpg?v=1777548999" alt="Rope Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rope Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/ruler-20-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Ruler_20cm_web.jpg?v=1745327512" alt="Ruler 20 cm by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ruler 20 cm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/ruler-30-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Ruler_30cm_web.jpg?v=1745327560" alt="Ruler 30 cm by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ruler 30 cm</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/screen-100a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Screen-100A_-180-cm_-shape-1-cut-out_web.png?v=1755870944" alt="Screen 100A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Screen 100A</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/screen-100b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Screen-100B_-150-cm_-shape-1-cut-out_web.png?v=1755499716" alt="Screen 100B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Screen 100B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/screen-100c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Screen-100C_-130-cm_-shape-1-cut-out_web.png?v=1755610322" alt="Screen 100C by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Screen 100C</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/screen-100d" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Screen-100D_-100-cm_-shape-1-cut-out_web.png?v=1755499716" alt="Screen 100D by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Screen 100D</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/side-table-606" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Side-Table-606_black_web.jpg?v=1736941571" alt="Side Table 606 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Side Table 606</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/side-table-915" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Side-Table-915-birch-clear-laquer_trays-white-laquer_web.jpg?v=1736941570" alt="Side Table 915 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Side Table 915</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/siena-canvas-bag" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Siena-Canvas-Bag-white--black_web.jpg?v=1736941502" alt="Siena Canvas Bag by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Siena Canvas Bag</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/siena-cushion-cover-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Siena-Cushion-Cover-Cotton-Canvas-large-50-x-50-cm-sand--white_web.jpg?v=1736941508" alt="Siena Cushion Cover by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Siena Cushion Cover</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/siena-fabric-canvas-cotton" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Siena-Fabric-pre-cut-white_black_web.jpg?v=1736941501" alt="Siena Fabric by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Siena Fabric</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/siena-pouch" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Siena-Pouch-small_white--black_web.jpg?v=1739781505" alt="Siena Pouch by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Siena Pouch</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/siena-tray-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Siena-Tray-large-brick--sand-shadow_web.jpg?v=1736941504" alt="Siena Tray by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Siena Tray</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/stool-60-zebra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-stool-60-clear-lacquered-zebra-brown.jpg?v=1781175052" alt="Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stool 60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/stool-60-kivet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Stool-60-Kivet-cut-out_web.jpg?v=1756385933" alt="Stool 60 Kivet by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stool 60 Kivet</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/stool-60-lokki" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Stool-60-Lokki-cut-out_web.jpg?v=1776952344" alt="Stool 60 Lokki by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stool 60 Lokki</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/stool-60-seireeni" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Stool-60-Seireeni-cut-out_web.jpg?v=1756385936" alt="Stool 60 Seireeni by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stool 60 Seireeni</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/stool-e60-zebra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-stool-e60-honey-stained-zebra-brown.jpg?v=1781179144" alt="Stool E60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Stool E60</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/tape-measure-3-m" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Tape_Measure_web.jpg?v=1745327766" alt="Tape Measure 3 m by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tape Measure 3 m</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/tea-trolley-900" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Tea-Trolley-900-black-tiles_web.jpg?v=1736941574" alt="Tea Trolley 900 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tea Trolley 900</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/tea-trolley-901" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Tea-Trolley-901-white-laminate_web.jpg?v=1736941573" alt="Tea Trolley 901 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tea Trolley 901</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/the-making-of-modern-living-poster" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-2nd-cycle-the-making-of-modern-living-poster-b4.jpg?v=1785843348" alt="The Making of Modern Living Poster by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">The Making of Modern Living Poster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/tiili-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-tiili-candleholder-green-gloss.jpg?v=1777890708" alt="Tiili Candleholder by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tiili Candleholder</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/tiili-vase" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-tiili-vase-white-gloss.jpg?v=1777890894" alt="Tiili Vase by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tiili Vase</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/tiili-wall-hook" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-tiili-wall-hook-blue-gloss.jpg?v=1777890824" alt="Tiili Wall Hook by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tiili Wall Hook</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/trienna-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Trienna-Table-oak_web.jpg?v=1736941568" alt="Trienna Table by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Trienna Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/tupla-wall-hook" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Tupla-Wall-Hook-black_web.jpg?v=1736941555" alt="Tupla Wall Hook by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tupla Wall Hook</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/umbrella-stand-115" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Umbrella-Stand-115-clear-lacquer_webjpg.jpg?v=1736941560" alt="Umbrella Stand 115 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Umbrella Stand 115</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/wall-light-a330s" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-wall-light-a330s-golden-bell-brass.jpg?v=1777550098" alt="Wall Light A330S &quot;Golden Bell&quot; by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wall Light A330S &quot;Golden Bell&quot;</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/wall-light-a910" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Wall-Light-A910-white_web.jpg?v=1736941680" alt="Wall Light A910 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wall Light A910</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/wall-shelf-112b-special-colour-ways" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Wall-Shelf-112B_helsinki-specials_walnut.jpg?v=1773994559" alt="Wall Shelf 112B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wall Shelf 112B</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/linen-webbing" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-Webbing-natural_white_web.jpg?v=1736941419" alt="Webbing by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Webbing</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/zebra-cushion-cover-50x50-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-zebra-cushion-cover-50x50cm-brown-cut-out.jpg?v=1784205193" alt="Zebra Cushion Cover by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zebra Cushion Cover</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/zebra-fabric" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-zebra-fabric-brown-white.jpg?v=1789732229" alt="Zebra Fabric by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zebra Fabric</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/zebra-pouch-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-zebra-pouch-large-brown-cut-out.jpg?v=1784275071" alt="Zebra Pouch by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zebra Pouch</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/zebra-seat-cushion" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-zebra-seat-cushion-34cm-brown-cut-out.jpg?v=1784205554" alt="Zebra Seat Cushion by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zebra Seat Cushion</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/zebra-tote-bag" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-zebra-tote-bag-brown-cut-out.jpg?v=1789732869" alt="Zebra Tote Bag by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zebra Tote Bag</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

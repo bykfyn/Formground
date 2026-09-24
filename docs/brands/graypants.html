@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graypants on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Graypants's work on Formground - 77 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/graypants.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Graypants on Formground">
+<meta property="og:description" content="Graypants's work on Formground - 77 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/graypants.html">
+<meta property="og:image" content="https://graypants.com/app/uploads/2026/04/product2Falkiparent2FGraypantsAlkiPendantNatural-12-247x247.jpg">
+<meta name="twitter:image" content="https://graypants.com/app/uploads/2026/04/product2Falkiparent2FGraypantsAlkiPendantNatural-12-247x247.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Graypants on Formground">
+<meta name="twitter:description" content="Graypants's work on Formground - 77 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Graypants", "item": "https://formground.com/brands/graypants.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Graypants</h1>
+    <div class="tags"><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">United States</span></div>
+    <a class="brand-site-link" href="https://www.graypants.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://graypants.com/product/alki-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/04/product2Falkiparent2FGraypantsAlkiPendantNatural-12-247x247.jpg" alt="Alki Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Alki Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/allyn-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/04/product2Fallynparent2FGraypantsAllynPendantNatural-3-247x247.jpg" alt="Allyn Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Allyn Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/arcturus-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/04/product2Farcturusparent2FArcturusPendantNatural-2-247x247.jpg" alt="Arcturus Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arcturus Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/ausi-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/04/product2Fausiparent2FGraypantsAusi8PendantNatural-14-247x247.jpg" alt="Ausi Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ausi Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/ausi-table-lamp/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fausitableparent2FGraypantsAusiTableLampNatural-3-247x247.jpg" alt="Ausi Table Lamp by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ausi Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/barro/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/06/product2Fbarroparent2FGraypants-Barro-naturualclear-01-247x247.jpg" alt="Barro by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Barro</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/bell-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/04/product2Fbellparent2FGraypantsBell16PendantNatural-6-247x247.jpg" alt="Bell Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bell Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/dish10h-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-2822FGraypantsDish10hPendantBrass-247x247.jpg" alt="Chrona Dish10h Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chrona Dish10h Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/dish10v-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-2852FGraypantsChronaDish10vPendantBrass-247x247.jpg" alt="Chrona Dish10v Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chrona Dish10v Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/dish17h-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-2832FGraypantsDish17hPendantBrass-247x247.jpg" alt="Chrona Dish17h Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chrona Dish17h Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/dish17v-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-2862FGraypantsDish17vPendantBrass-247x247.jpg" alt="Chrona Dish17v Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chrona Dish17v Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/dish6h-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-2812FGraypantsDish6hPendantBrass-247x247.jpg" alt="Chrona Dish6h Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chrona Dish6h Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/dish6v-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-2842FGraypantsDish6vPendantBrass-247x247.jpg" alt="Chrona Dish6v Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chrona Dish6v Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/sconce10-brass/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp2010-b2FGraypantsSconce10Brass-247x247.jpg" alt="Chrona Sconce10 Brass by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chrona Sconce10 Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/table10-brass/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp2011-b2FGraypantsTable10Brass-247x247.jpg" alt="Chrona Table10 Brass by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chrona Table10 Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/d6-drum-felt/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/05/product2Fd6feltparent2FGraypants_D6-DG_On_FF-4-247x247.jpg" alt="D6 Drum Felt by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">D6 Drum Felt</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/d6-drum-pendant-wood/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fd6woodparent2FGraypants_D6-Walnut_On_FF-5-247x247.jpg" alt="D6 Drum Pendant Wood by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">D6 Drum Pendant Wood</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/d9-drum-felt/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/05/product2Fd9feltparent2FGraypants_D9-DG_On_FF-5-247x247.jpg" alt="D9 Drum Felt by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">D9 Drum Felt</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/d9-drum-pendant-wood/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fd9woodparent2FGraypants_D9-WO_On_FF-5-247x247.jpg" alt="D9 Drum Pendant Wood by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">D9 Drum Pendant Wood</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/denny-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/04/product2Fdennyparent2FGraypantsDennyPendantNatural-3-247x247.jpg" alt="Denny Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Denny Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/disc-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/04/product2Fdiscparent2FGrayPants-Disc-32_Scraplicht-Natural-Main-On-NBF-12-247x247.jpg" alt="Disc Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Disc Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/disc48-linear-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/07/product2Fdisc48linearparent2FGraypants_Disc_Lin_Nat_Side_On_linear_series-247x247.jpg" alt="Disc48 Linear Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Disc48 Linear Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/dome-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fdomeparent2FDome36PendantNatural-7-247x247.jpg" alt="Dome Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dome Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/drop-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/04/product2Fdropparent2FGraypantsDrop26PendantNatural-6-247x247.jpg" alt="Drop Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Drop Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/drop48-linear-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/07/product2Fdrop48linearparent2FGraypants_Drop_Linear-Natural_Side_On_FF_linear_series-247x247.jpg" alt="Drop48 Linear Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Drop48 Linear Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/drum-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fdrumparent2FDrum24PendantNatural-20-247x247.jpg" alt="Drum Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Drum Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/ebey-table-lamp/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Febeytableparent2FGraypantsEbeyNatural2-3-247x247.jpg" alt="Ebey Table Lamp by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ebey Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/float-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/03/Graypants_Float-60_Natural-Main-FNB-247x247.jpg" alt="Float Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/galaxy36-fixture/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-ga362FGraypants_galaxy_overmauve_black-247x247.jpg" alt="Galaxy36 Fixture by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Galaxy36 Fixture</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/geo72-fixture/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-ge722FGraypants_geo_overmauve_white-247x247.jpg" alt="Geo72 Fixture by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Geo72 Fixture</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/hive-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/04/product2Fhiveparent2FGraypantsHive12PendantNatural-2-247x247.jpg" alt="Hive Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hive Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/madison-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fmadisonparent2FGraypantsMadisonPendantNatural-7-247x247.jpg" alt="Madison Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Madison Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/mobius36-fixture/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-mo362FGraypants_mobius_overmauve_black-247x247.jpg" alt="Mobius36 Fixture by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mobius36 Fixture</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/moon-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/06/product2Fmoonparent2FGraypantsMoon18PendantNatural-247x247.jpg" alt="Moon Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Moon Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/moon-table-lamp/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fmoontableparent2FGraypants-Scraplight-Moon-Table-Lamp-Natural-3-247x247.jpg" alt="Moon Table Lamp by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Moon Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/nest-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fnestparent2FGraypantsNest32PendantNatural-13-247x247.jpg" alt="Nest Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nest Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/ohio-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fohioparent2FOhio32PendantNatural-13-247x247.jpg" alt="Ohio Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ohio Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/oliv-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/04/product2Folivparent2FGraypantsOlivPendantNatural-3-247x247.jpg" alt="Oliv Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oliv Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/oliv48-linear-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/07/product2Foliv48linearparent2FGraypants_Olive-Nat_Side_On_FF_linear_series-247x247.jpg" alt="Oliv48 Linear Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Oliv48 Linear Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/p2-pendant-felt/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fp2feltparent2FGraypants_Kerf_Pendant-DG_On_FF-5-247x247.jpg" alt="P2 Pendant Felt by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">P2 Pendant Felt</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/p2-pendant-wood/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fp2woodparent2FGraypants_Kerf_Pendant-WO_On_FF-5-247x247.jpg" alt="P2 Pendant Wood by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">P2 Pendant Wood</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/rain24-fixture/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-ra242FGraypants_rain_globe_overmauve_white-247x247.jpg" alt="Rain24 Fixture by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rain24 Fixture</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/rain36-fixture/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-ra362FGraypants_reed_rain_over_mauve_-_black-247x247.jpg" alt="Rain36 Fixture by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rain36 Fixture</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/ring48-fixture/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-ri482FGraypants_ring_overmauve_black-247x247.jpg" alt="Ring48 Fixture by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ring48 Fixture</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/roest-15v-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Froest15vparent2FGraypants15VPendantNatural-3-247x247.jpg" alt="Roest 15v Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Roest 15v Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/roest-30v-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Froest30vparent2FGraypantsRoest30VPendantNatural-5-247x247.jpg" alt="Roest 30v Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Roest 30v Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/roest-45v-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Froest45vparent2FGraypantsRoest45VPendantNatural-4-247x247.jpg" alt="Roest 45v Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Roest 45v Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/roest-75h-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Froet75hparent2FGraypants-Roest-75H-Pendant-Natural-2-247x247.jpg" alt="Roest 75h Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Roest 75h Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/sconce30-rust/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp2052-n2FGraypants_Sconce30_Rust-Main-1024x1024-1-247x247.jpg" alt="Roest Sconce30 by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Roest Sconce30</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/s2-sconce/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fs2sconceparent2FGraypants_Kerf_Sconce_WO-On_FF-5-247x247.jpg" alt="S2 Sconce by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">S2 Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/skew-sconce/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fskewparent2FSKEW15-Natural_2458-3-247x247.jpg" alt="Skew Sconce by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Skew Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/sun-pendant/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fsunparent2FSun32PendantNatural-10-247x247.jpg" alt="Sun Pendant by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sun Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/swirl72-fixture/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/01/product2Fgp-sw722FGraypants_swirl_overmauve_black-247x247.jpg" alt="Swirl72 Fixture by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Swirl72 Fixture</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-bali-limited-series/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/03/product2Fgp2043-bali2FWickBali-Main-2048x2048-1-247x247.jpg" alt="Wick Bali Limited Series by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick Bali Limited Series</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/03/product2Fgp2043-blk2FWICK-zwart-white-1080x1080-0-3-247x247.jpg" alt="Wick Black by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-brass/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/03/product2Fgp2043-b2FGraypants-Wick-Main-3-247x247.jpg" alt="Wick Brass by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-graphite/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/03/product2Fgp2043-g2FGraypants-Wick-Main-3-247x247.jpg" alt="Wick Graphite by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-mist-gray/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/07/product2Fgp2043-mg2FWick_mist_gray_main-2-247x247.jpg" alt="Wick Mist Gray by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick Mist Gray</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-pro-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/08/product2Fgp2043-blk2FWICK-zwart-white-1080x1080-0-1-247x247.jpg" alt="Wick PRO Black by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick PRO Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-pro-brass/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/06/product2Fgp2043-b2FGraypants-Wick-Main-7-247x247.jpg" alt="Wick PRO Brass by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick PRO Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-pro-graphite/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/06/product2Fgp2043-g2FGraypants-Wick-Main-4-247x247.jpg" alt="Wick PRO Graphite by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick PRO Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-pro-mist-gray/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/06/product2Fgp2043-mg2FWick_mist_gray_main-4-247x247.jpg" alt="Wick PRO Mist Gray by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick PRO Mist Gray</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-pro-remote-control/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/08/product2fgp-2098-rc-blk2fgraypants-wick-pro-remote-control-black-17-1-247x247.jpg" alt="Wick PRO Remote Control by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick PRO Remote Control</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-pro-wireless-charging-pad-single/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/08/product2fgp-2099-cp-blk2fgraypants-wick-pro-wireless-charging-pad-single-black-14-1-247x247.jpg" alt="Wick PRO Wireless Charging Pad Single by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick PRO Wireless Charging Pad Single</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-pro-wireless-charging-tray-16-pcs/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/08/product2fgp-2099-cp16-blk2fgraypants-wick-pro-wireless-charging-pad-16-pcs-black-4-247x247.jpg" alt="Wick PRO Wireless Charging Tray 16 pcs by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick PRO Wireless Charging Tray 16 pcs</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-pro-wireless-charging-tray-24-pcs/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/08/product2fgp-2099-cp24-blk2fgraypants-wick-pro-wireless-charging-pad-24-pcs-black-hr-3-247x247.jpg" alt="Wick PRO Wireless Charging Tray 24 pcs by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick PRO Wireless Charging Tray 24 pcs</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-pro-wireless-charging-tray-8-pcs/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/08/product2fgp-2099-cp8-blk2fgraypants-wick-pro-wireless-charging-pad-8-pcs-black-9-247x247.jpg" alt="Wick PRO Wireless Charging Tray 8 pcs by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick PRO Wireless Charging Tray 8 pcs</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-s-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/03/product2Fgp2044-blk2FGraypantsWICK-S-Zwart-0-3-247x247.jpg" alt="Wick S Black by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick S Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-s-brass/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/05/product2Fgp2044-b2FGraypantsWickS-MainBrass-247x247.jpg" alt="Wick S Brass by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick S Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-s-graphite/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/06/product2Fgp2044-g2FGraypants-WickSGraphite-Main-1-247x247.jpg" alt="Wick S Graphite by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick S Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-s-mist-gray/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/03/product2Fgp2044-mg2FWick_S_mist_gray_main-2-247x247.jpg" alt="Wick S Mist Gray by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick S Mist Gray</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-s-pro-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/06/product2Fgp2044-blk2FGraypantsWICK-S-Zwart-0-1-247x247.jpg" alt="Wick S PRO Black by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick S PRO Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-s-pro-brass/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/06/product2Fgp2044-b2FGraypantsWickS-MainBrass-3-247x247.jpg" alt="Wick S PRO Brass by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick S PRO Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-s-pro-graphite/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/06/product2Fgp2044-g2FGraypants-WickSGraphite-Main-2-247x247.jpg" alt="Wick S PRO Graphite by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick S PRO Graphite</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-s-pro-mist-gray/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/06/product2Fgp2043-mg2FWick_mist_gray_main-5-247x247.jpg" alt="Wick S PRO Mist Gray by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick S PRO Mist Gray</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-s-sage-green/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/03/product2Fgp2044-sg2FWick-S-sage-green-main-3-247x247.jpg" alt="Wick S Sage Green by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick S Sage Green</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://graypants.com/product/wick-sage-green/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://graypants.com/app/uploads/2026/03/product2Fgp2043-sg2FWick_sage_green_main-3-247x247.jpg" alt="Wick Sage Green by Graypants" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Wick Sage Green</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
