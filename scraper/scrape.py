@@ -1199,6 +1199,7 @@ CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Nicholas Bijan Pourfard", "Ryan Jones Studio", "Jesse Groom", "Lland",
     "Charles Constantine", "Jackrabbit Studio", "Ian Cochran", "Seer Studio",
     "David Vu Studio", "Objects for Objects", "Kouros Maghsoudi", "Nifemi Ogunro",
+    "HAY",
 }
 
 
@@ -3255,6 +3256,184 @@ def extract_gubi(brand):
     return products
 
 
+# hay.com's own top-level category/sub-category nav (from its homepage,
+# confirmed live 2026-09-25) - the real starting set for extract_hay's
+# crawl. hay.com has no bulk product API and its own sitemap-products.xml
+# lists 1,414 individual product-page URLs, far past this project's fetch
+# budget - but every one of these listing pages already server-renders a
+# full card (name, image, price, real /hay/... link) for each real product
+# with no need to visit that product's own page at all.
+HAY_CATEGORY_PATHS = (
+    "/products/furniture/beds",
+    "/products/furniture/outdoor",
+    "/products/furniture/outdoor/balcony-collection",
+    "/products/furniture/outdoor/crate-collection",
+    "/products/furniture/outdoor/deville-collection",
+    "/products/furniture/outdoor/hee-collection",
+    "/products/furniture/outdoor/palissade",
+    "/products/furniture/outdoor/palissade-cantilever-collection",
+    "/products/furniture/outdoor/palissade-cord-collection",
+    "/products/furniture/outdoor/seating",
+    "/products/furniture/outdoor/tables",
+    "/products/furniture/outdoor/traverse-collection",
+    "/products/furniture/outdoor/weekday-collection",
+    "/products/furniture/seating",
+    "/products/furniture/seating/bar-stools",
+    "/products/furniture/seating/benches",
+    "/products/furniture/seating/chairs",
+    "/products/furniture/seating/lounge",
+    "/products/furniture/seating/seat-pads-cushions",
+    "/products/furniture/seating/sofas",
+    "/products/furniture/seating/stools",
+    "/products/furniture/shelves",
+    "/products/furniture/storage",
+    "/products/furniture/tables",
+    "/products/furniture/tables/coffee-tables-side-tables",
+    "/products/furniture/tables/conference-high-tables",
+    "/products/furniture/tables/desks",
+    "/products/furniture/tables/dining-tables",
+    "/products/accessories/bathroom",
+    "/products/accessories/bedroom",
+    "/products/accessories/colour-crate",
+    "/products/accessories/dogs",
+    "/products/accessories/flooring",
+    "/products/accessories/indoor-living",
+    "/products/accessories/indoor-living/candles-and-candleholders",
+    "/products/accessories/indoor-living/cushions-and-throws",
+    "/products/accessories/indoor-living/home-decor",
+    "/products/accessories/indoor-living/mirrors",
+    "/products/accessories/indoor-living/office",
+    "/products/accessories/indoor-living/storage",
+    "/products/accessories/indoor-living/vases-and-plant-pots",
+    "/products/accessories/indoor-living/wardrobe",
+    "/products/accessories/kitchen-and-dining",
+    "/products/accessories/kitchen-and-dining/cleaning",
+    "/products/accessories/kitchen-and-dining/coffee-and-tea",
+    "/products/accessories/kitchen-and-dining/cooking",
+    "/products/accessories/kitchen-and-dining/drinkware",
+    "/products/accessories/kitchen-and-dining/food-storage",
+    "/products/accessories/kitchen-and-dining/kitchen-textiles",
+    "/products/accessories/kitchen-and-dining/tableware",
+    "/products/accessories/outdoor-living",
+    "/products/accessories/outdoor-living/outdoor-market-by-jasper-morrison",
+    "/products/accessories/outdoor-living/terrazza-collection",
+    "/products/accessories/travel",
+    "/products/lighting/ceiling",
+    "/products/lighting/floor",
+    "/products/lighting/portable-lamps",
+    "/products/lighting/shade",
+    "/products/lighting/table",
+    "/products/lighting/wall",
+)
+
+
+def _hay_display_name(raw_name):
+    """
+    Cards are all-caps ("PACK CHAIR 10", "AAC 11") - .title()'d for
+    readability, but that would mangle HAY's own "AAC" model prefix
+    (About A Chair) into "Aac", which anyone who knows the line would
+    read as a typo. Kept uppercase specifically, everything else titled.
+    """
+    # HAY names several real model lines with a short all-caps prefix -
+    # AAC/AAS/AAL/AAT ("About A ..." chair/stool/lounge/table), CPH
+    # ("Copenhague"), and PC (Pierre Charpin's lighting line) - confirmed
+    # live 2026-09-25 against real product names ("AAS 38", "CPH 20
+    # Table", "PC Pendant").
+    acronyms = {"AAC", "AAS", "AAL", "AAT", "CPH", "PC"}
+    words = raw_name.title().split(" ")
+    return " ".join(w.upper() if w.upper() in acronyms else w for w in words)
+
+
+def extract_hay(brand):
+    """
+    See HAY_CATEGORY_PATHS above for why this crawls listing pages
+    instead of hitting a product API or per-product pages. Each listing
+    page's real product cards live in a `.mix-item` container; a card
+    with a `.box-pricing` element is a real, individually-priced product
+    (its `.name` + `img[src]` + the enclosing `<a href>` under /hay/...
+    are all used directly, no further fetch needed). A card WITHOUT a
+    price whose link starts with /products/ is one of HAY's own
+    "COLLECTION" pages (e.g. "ABOUT A CHAIR COLLECTION") - a pure
+    navigational grouping layer on HAY's own site, not a merge of
+    otherwise-identical products: confirmed live 2026-09-25 that About A
+    Chair's own numbered members (AAC 11, AAC 121, AAC 212, ...) each
+    carry a real, distinct price (3,449-11,699 SEK) for a genuinely
+    different base/upholstery configuration, not a colour swatch - so
+    these collection pages are recursed into for their real priced
+    members instead of being treated as one blended product themselves.
+    Deduplicated by product URL, since more than one listing page can
+    legitimately surface the same real product (e.g. a chair shown under
+    both "Seating" and "New").
+    """
+    base = brand["url"].rstrip("/")
+    to_visit = list(HAY_CATEGORY_PATHS)
+    seen_pages = set()
+    products_by_url = {}
+    brand_start = time.monotonic()
+    MAX_PAGES = 220  # real nav has ~65 top-level pages + collection sub-pages
+
+    pages_fetched = 0
+    while to_visit and pages_fetched < MAX_PAGES:
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"{brand['name']} - stopping early with {len(products_by_url)} products found.")
+            break
+        path = to_visit.pop(0)
+        if path in seen_pages:
+            continue
+        seen_pages.add(path)
+
+        url = f"{base}{path}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        pages_fetched += 1
+        time.sleep(1)  # be polite - don't hammer the site
+        if resp.status_code != 200:
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for card in soup.select(".mix-item"):
+            a = card.find("a", href=True)
+            name_el = card.select_one(".name")
+            if not a or not name_el:
+                continue
+            href = a["href"]
+            name = name_el.get_text(strip=True)
+            if not name:
+                continue
+            price_el = card.select_one(".box-pricing")
+
+            if not price_el and href.startswith("/products/"):
+                if href not in seen_pages:
+                    to_visit.append(href)
+                continue
+            if not href.startswith("/hay/") or href in products_by_url:
+                continue
+
+            img = card.find("img")
+            image_url = img["src"] if img and img.get("src") else ""
+            if image_url.startswith("/"):
+                image_url = base + image_url
+
+            display_name = _hay_display_name(name)
+            products_by_url[href] = {
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": display_name,
+                "product_url": base + href,
+                "category": _infer_category_from_name(display_name, "", brand["name"]),
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": image_url,
+            }
+
+    return list(products_by_url.values())
+
+
 # The real per-product taxonomy this brand's own site uses (confirmed
 # live 2026-09-21) is already present right on the /product/ listing
 # page, just not where the original version of this extractor looked -
@@ -5208,6 +5387,7 @@ EXTRACTORS = {
     "Davsjö": extract_davsjo,
     "Ingridsdotter": extract_ingridsdotter,
     "Blond": extract_blond,
+    "HAY": extract_hay,
     # 2026-09-24 lighting triage - clean Shopify/WooCommerce stores, no
     # bespoke extractor code needed. See scraper/brands.json for each
     # brand's triage notes (real URL corrections, vendor-scoping caveats).
