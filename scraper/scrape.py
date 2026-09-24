@@ -1884,10 +1884,14 @@ def _looks_like_a_maintenance_item(title):
         # of the real "4PM" chaise, not a purchasable physical object
         # ("does not include materials or tools", confirmed live).
         "self build",
-        # Rubn's "Sample Set" is a finish/cable swatch set, not a
-        # design object - same shape as the sample-swatch exclusions
-        # already made for other brands.
-        "sample set",
+        # User-reported 2026-09-25 on MOR's "Camel Leather Sample" -
+        # checked every "sample" listing site-wide before generalizing
+        # (33 across MOR, Ceramicah, Palefire Studio, Anour, Ferm
+        # Living, Arturel, Tamo, and Noah): every single one is a
+        # material/finish swatch, never a real design object, so a bare
+        # "sample" is safe generically rather than needing a per-brand
+        # rule (this also covers Rubn's earlier "Sample Set" case).
+        "sample",
         # Asplund sells its own furniture-care line (Marble/Wood/Fabric
         # Care Kit, "Nourishing Wood Oil", "Protecting Marble Wax",
         # silver-polishing cloth, textile spray, screen cleaner, MDF
