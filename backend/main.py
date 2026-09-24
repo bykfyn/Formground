@@ -95,15 +95,18 @@ def discover_random(
 @app.post("/event")
 def track_event(payload: dict = Body(...)):
     """
-    Click-tracking beacon - the frontend fires this (via
+    Click/share-tracking beacon - the frontend fires this (via
     navigator.sendBeacon, so it doesn't block the navigation to the
-    maker's site) when a result card is clicked. No cookies, no
-    per-visitor identifier - just which brand/product got clicked and
-    what query led there, the same anonymous-aggregate shape as the
-    search-event logging in /search.
+    maker's site) when a result card is clicked or its share button is
+    used. event_type defaults to "click" (the original, only use of
+    this endpoint) so existing callers keep working unchanged; the
+    share button (2026-09-24) is the first caller to pass "share"
+    explicitly. No cookies, no per-visitor identifier - just which
+    brand/product and what query led there, the same anonymous-
+    aggregate shape as the search-event logging in /search.
     """
     log_event(
-        "click",
+        payload.get("event_type") or "click",
         query=payload.get("query"),
         brand=payload.get("brand"),
         product_name=payload.get("product_name"),

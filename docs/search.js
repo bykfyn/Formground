@@ -181,6 +181,20 @@ function renderCard(r) {
     e.stopPropagation();
     const shareUrl = a.href;
     const shareText = `Check out ${r.product_name} by ${r.brand} on Formground`;
+    // Its own event, not the same "click" beacon a card navigation
+    // fires (stopPropagation above means that one never fires here) -
+    // sharing and clicking through are different actions worth telling
+    // apart later.
+    navigator.sendBeacon(
+      `${API_BASE}/event`,
+      new Blob([JSON.stringify({
+        event_type: "share",
+        query: input.value.trim() || null,
+        brand: r.brand,
+        product_name: r.product_name,
+        ...UTM,
+      })], { type: "application/json" }),
+    );
     if (navigator.share) {
       // Native share sheet (mobile mostly) - a real OS-level standard,
       // not something to build a custom picker for. AbortError just
