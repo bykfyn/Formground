@@ -2087,6 +2087,27 @@ def extract_shopify(brand):
             p for p in raw_products
             if (p.get("product_type") or "").strip().lower() not in ("light source", "spare part")
         ]
+    if brand["name"] == "Audo":
+        # User-reported 2026-09-25: spares/samples/bulbs showing up as
+        # results. Confirmed live - Audo tags every spare part, mount/
+        # dimmer kit, and replacement bulb with a real "Sparepart" tag
+        # (mount kits, spare chair legs, rug swatches, most bulbs), a
+        # much more precise signal than name-matching would be: "TR
+        # Bulb, Suspended Wall Lamp" is a real wall lamp that happens to
+        # have "Bulb" in its name and carries no Sparepart tag, so a
+        # naive "bulb" keyword filter would have wrongly dropped it.
+        raw_products = [
+            p for p in raw_products
+            if "sparepart" not in {t.strip().lower() for t in (p.get("tags") or [])}
+        ]
+        # A second, separate real catalog of finish/material swatches
+        # (marble names, powder-coated metal colours, oak finishes, rug
+        # swatches) all share product_type "Materials" - not tagged
+        # Sparepart at all, so needed its own check.
+        raw_products = [
+            p for p in raw_products
+            if (p.get("product_type") or "").strip().lower() != "materials"
+        ]
     if brand["name"] == "Arturel":
         # User-reported 2026-09-25: sweaters/sleeves showing up as
         # results - Arturel is a real acoustic-panel/tile design brand
