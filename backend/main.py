@@ -76,7 +76,9 @@ def discover_random():
     """Random browse across the whole catalog - no LLM call, no query,
     just a fair sample across every brand. Doesn't hit the LLM at all,
     so it's also free to call as often as someone hits "surprise me"."""
-    return {"results": discover()}
+    results = discover()
+    log_event("discover")
+    return {"results": results}
 
 
 @app.post("/event")
