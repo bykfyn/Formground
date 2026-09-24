@@ -74,14 +74,22 @@ def house_card_html(house):
 def architect_card_html(firm_name, slug, meta, houses):
     hero = houses[0]["image"] if houses and houses[0].get("image") else ""
     image = f'<img src="{html.escape(hero)}" alt="{html.escape(firm_name)}" loading="lazy">' if hero else ""
-    city_html = html.escape(meta["city"]) if meta and meta.get("city") else "&nbsp;"
+    # City AND country, not just city - the existing directory filter
+    # (generate_brand_pages.py's DIRECTORY_FILTER_JS) matches on a
+    # card's own visible text, so a visitor typing "Norway" only finds
+    # anything once the country is actually part of what's shown here,
+    # even though architects.json has always carried a real country
+    # field (2026-09-24, prompted by a user question about country
+    # search - the data existed, it just wasn't surfaced).
+    location_bits = [b for b in [meta.get("city") if meta else None, meta.get("country") if meta else None] if b]
+    location_html = html.escape(", ".join(location_bits)) if location_bits else "&nbsp;"
     count = f"{len(houses)} house{'' if len(houses) == 1 else 's'}"
     return f"""
       <a class="maker-card" href="/architects/{slug}.html">
         <div class="maker-card-hero">{image}</div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(firm_name)}</span>
-          <span class="maker-country">{city_html}</span>
+          <span class="maker-country">{location_html}</span>
           <span class="maker-categories">{count}</span>
         </div>
       </a>"""
