@@ -1077,6 +1077,12 @@ def _clean_product_type(product_type, brand_name=None):
         # default rather than leaving them uncategorized.
         value = (product_type or "").strip()
         return value if value else "Rug"
+    if brand_name == "Utilitario Mexicano":
+        # Every surviving product for this brand (see the raw_products
+        # filter above) is already restricted to its real "CERAMICAS"
+        # line - translated to English here rather than left as the raw
+        # Spanish value.
+        return "Ceramic"
     value = (product_type or "").strip()
     return "" if value.lower() in JUNK_PRODUCT_TYPES else value
 
@@ -2061,6 +2067,17 @@ def extract_shopify(brand):
         raw_products = [
             p for p in raw_products
             if (p.get("product_type") or "").strip().lower() not in ("light source", "spare part")
+        ]
+    if brand["name"] == "Utilitario Mexicano":
+        # User-reported 2026-09-25: catalog is a real general store (480
+        # raw listings across tools, clothing, food/mezcal, stickers,
+        # office supplies, keychains, leather goods - only its real
+        # "CERAMICAS" line, 16 items, is a genuine design-object fit for
+        # Formground). Limited to that one real, coherent category
+        # rather than hiding the brand entirely.
+        raw_products = [
+            p for p in raw_products
+            if (p.get("product_type") or "").strip().upper() == "CERAMICAS"
         ]
     if brand["url"].rstrip("/") == "https://shop.sightunseen.com":
         # shop.sightunseen.com is a shared Shopify storefront for dozens of
@@ -3344,6 +3361,23 @@ HAY_CATEGORY_PATHS = (
 )
 
 
+def _looks_like_hay_apparel(name):
+    """
+    User-reported 2026-09-25: "Outline Pyjama Shorts" showing up as a
+    result - HAY sells a small real clothing/loungewear line (pyjamas,
+    bathrobes, a nightshirt) alongside its furniture/lighting/objects,
+    not a fit for Formground's design-object focus. Matched on whole
+    words (\\b-anchored) rather than bare substrings - a naive "robe"
+    check would wrongly catch the real "Loop Stand Wardrobe" furniture
+    piece, confirmed live while building this filter. Tote bags are
+    deliberately not included here - those are real design objects, not
+    apparel, despite living in the same "accessories" section.
+    """
+    keywords = ("pyjama", "bathrobe", "nightshirt", "underwear")
+    text = name.lower()
+    return any(re.search(rf"\b{kw}\b", text) for kw in keywords)
+
+
 def _hay_display_name(raw_name):
     """
     Cards are all-caps ("PACK CHAIR 10", "AAC 11") - .title()'d for
@@ -3419,7 +3453,7 @@ def extract_hay(brand):
                 continue
             href = a["href"]
             name = name_el.get_text(strip=True)
-            if not name:
+            if not name or _looks_like_hay_apparel(name):
                 continue
             price_el = card.select_one(".box-pricing")
 
