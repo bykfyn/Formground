@@ -1140,7 +1140,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("counter stool", "Stool"), ("bench with pad", "Bench"),
     ("cheval mirror", "Mirror"), ("tall mirror", "Mirror"),
     ("dining chair", "Dining Chair"), ("blanket box", "Storage"),
-    ("sofa", "Sofa"), ("armchair", "Armchair"), ("footstool", "Footstool"),
+    ("sofa", "Sofa"), ("settee", "Sofa"), ("armchair", "Armchair"), ("footstool", "Footstool"),
     ("chaise", "Chaise"), ("bed", "Bed"), ("sideboard", "Sideboard"),
     ("dresser", "Dresser"), ("armoire", "Armoire"), ("cabinet", "Cabinet"),
     ("console", "Console"), ("bench", "Bench"), ("stool", "Stool"),
@@ -1199,7 +1199,7 @@ CATEGORY_KEYWORD_FALLBACK_BRANDS = {
     "Nicholas Bijan Pourfard", "Ryan Jones Studio", "Jesse Groom", "Lland",
     "Charles Constantine", "Jackrabbit Studio", "Ian Cochran", "Seer Studio",
     "David Vu Studio", "Objects for Objects", "Kouros Maghsoudi", "Nifemi Ogunro",
-    "HAY",
+    "HAY", "Ligne Roset",
 }
 
 
@@ -3434,6 +3434,132 @@ def extract_hay(brand):
     return list(products_by_url.values())
 
 
+# ligne-roset.com's own top-level category nav (confirmed live
+# 2026-09-25) - the real starting set for extract_ligne_roset's crawl,
+# same reasoning as HAY_CATEGORY_PATHS: no bulk product API, 3,051
+# individual product-page URLs in its own sitemap (too many to fetch
+# one by one), but every category page already server-renders full
+# product cards (name, image, real /en/p/... link) with real server-
+# side pagination via ?page=2, ?page=3, ... (confirmed live - each page
+# returns a genuinely different batch, not a repeat).
+LIGNE_ROSET_CATEGORY_PATHS = (
+    "/en/c/accessories",
+    "/en/c/armchairs",
+    "/en/c/audio-video-units",
+    "/en/c/bedroom-units",
+    "/en/c/beds-and-bedding",
+    "/en/c/ceiling-lighting-and-wall-lighting",
+    "/en/c/chairs-carver-chairs-and-stools",
+    "/en/c/cushions-and-plaids",
+    "/en/c/desks-and-secretaires",
+    "/en/c/floor-lighting-and-reading-lighting",
+    "/en/c/hallway-units",
+    "/en/c/living-room-units",
+    "/en/c/mirrors",
+    "/en/c/modular-settees",
+    "/en/c/occasional-tables-and-sofa-end-tables",
+    "/en/c/outdoor",
+    "/en/c/rugs",
+    "/en/c/shelving-units",
+    "/en/c/sideboards",
+    "/en/c/sofa-beds",
+    "/en/c/table-lighting",
+    "/en/c/tables",
+    "/en/c/upholstery",
+    "/en/c/vases-and-bowls",
+)
+
+
+def _ligne_roset_display_name(raw_text):
+    """
+    Each card's name is one text node combining the collection name and
+    the specific piece, split across a literal newline + indentation
+    whitespace ("Togo BOSS | LIGNE ROSET\n    Fireside chair in grège"),
+    with the brand name redundantly baked into some collection names
+    ("... | LIGNE ROSET") for the site's own SEO purposes - stripped
+    here since Formground already shows the brand separately.
+    """
+    lines = [line.strip() for line in raw_text.split("\n") if line.strip()]
+    if not lines:
+        return ""
+    collection = re.sub(r"\s*\|\s*LIGNE ROSET\s*$", "", lines[0], flags=re.IGNORECASE).strip()
+    piece = lines[1] if len(lines) > 1 else ""
+    return f"{collection} {piece}".strip()
+
+
+def extract_ligne_roset(brand):
+    """
+    See LIGNE_ROSET_CATEGORY_PATHS above. Each category page's product
+    cards live in `div.lnk-js[data-lnk]`, paginated 50-at-a-time via a
+    real `?page=N` query param - paged until a page returns no cards
+    (past the last real page) or MAX_PAGES_PER_CATEGORY is hit, per
+    category, well under this brand's real per-category counts (the
+    largest categories run ~100-150 products). Deduplicated by product
+    URL, since the same real product can appear under more than one
+    category page.
+    """
+    base = brand["url"].rstrip("/")
+    products_by_url = {}
+    brand_start = time.monotonic()
+    MAX_PAGES_PER_CATEGORY = 8  # 8 x 50 = 400 products - real categories top out far below this
+
+    for path in LIGNE_ROSET_CATEGORY_PATHS:
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"{brand['name']} - stopping early with {len(products_by_url)} products found.")
+            break
+        for page in range(1, MAX_PAGES_PER_CATEGORY + 1):
+            url = f"{base}{path}" if page == 1 else f"{base}{path}?page={page}"
+            try:
+                resp = requests.get(url, headers=HEADERS, timeout=15)
+            except requests.RequestException as e:
+                print(f"  Could not fetch {url}: {e}")
+                break
+            time.sleep(1)  # be polite - don't hammer the site
+            if resp.status_code != 200:
+                break
+
+            soup = BeautifulSoup(resp.text, "html.parser")
+            cards = soup.select("div.lnk-js[data-lnk]")
+            if not cards:
+                break
+
+            new_on_this_page = 0
+            for card in cards:
+                href = card.get("data-lnk", "")
+                if not href.startswith("/en/p/") or href in products_by_url:
+                    continue
+                new_on_this_page += 1
+                name_el = card.find_parent("article").select_one("h3.product-item__name") \
+                    if card.find_parent("article") else None
+                name = _ligne_roset_display_name(name_el.get_text()) if name_el else ""
+                if not name:
+                    continue
+                img = card.find("img")
+                image_url = img["src"] if img and img.get("src") else ""
+                if image_url.startswith("/"):
+                    image_url = base + image_url
+
+                products_by_url[href] = {
+                    "brand": brand["name"],
+                    "brand_url": brand["url"],
+                    "product_name": name,
+                    "product_url": base + href,
+                    "category": _infer_category_from_name(name, "", brand["name"]),
+                    "material_options": [],
+                    "dimensions": "",
+                    "notes": "",
+                    "image_url": image_url,
+                }
+
+            if new_on_this_page == 0:
+                # Every card on this page was already seen - real last
+                # page reached (or a repeat), no point paging further.
+                break
+
+    return list(products_by_url.values())
+
+
 # The real per-product taxonomy this brand's own site uses (confirmed
 # live 2026-09-21) is already present right on the /product/ listing
 # page, just not where the original version of this extractor looked -
@@ -5388,6 +5514,7 @@ EXTRACTORS = {
     "Ingridsdotter": extract_ingridsdotter,
     "Blond": extract_blond,
     "HAY": extract_hay,
+    "Ligne Roset": extract_ligne_roset,
     # 2026-09-24 lighting triage - clean Shopify/WooCommerce stores, no
     # bespoke extractor code needed. See scraper/brands.json for each
     # brand's triage notes (real URL corrections, vendor-scoping caveats).
