@@ -32,6 +32,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from generate_brand_pages import (
+    CARD_CLICK_TRACKING_JS,
     CLOUDFLARE_ANALYTICS,
     DIRECTORY_FILTER_JS,
     FAVICON_TAGS,
@@ -172,6 +173,7 @@ def render_architect_page(firm_name, slug, meta, houses):
     }});
   }});
 </script>
+<script>{CARD_CLICK_TRACKING_JS}</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -228,6 +230,7 @@ def render_architects_index(firms_with_slugs, meta_by_name, houses_by_firm):
     }});
   }});
 {DIRECTORY_FILTER_JS}</script>
+<script>{CARD_CLICK_TRACKING_JS}</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>

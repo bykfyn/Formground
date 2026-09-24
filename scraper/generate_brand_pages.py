@@ -452,6 +452,87 @@ DIRECTORY_FILTER_JS = """
 """
 
 
+# One shared click-tracking script, included on every generated page
+# that has any of these three link shapes, so a brand-new page type
+# gets real analytics for free just by importing this constant the same
+# way it already imports PAGE_CSS/CLOUDFLARE_ANALYTICS - no per-page
+# tracking code to remember to write (2026-09-24, prompted by an audit
+# finding almost none of the site's cards were tracked at all: every
+# product card on every one of the ~9,300-product brand/new pages,
+# every architect/designer/craftsperson card, every "Visit site" link).
+#
+# Only fires for a genuinely EXTERNAL destination (a different hostname
+# than formground.com) - a card linking to another page on this same
+# site (an index card to a profile page, say) is not a new signal,
+# Cloudflare's own pageview analytics already sees that page load.
+#
+# Brand/product-name extraction has to handle two real, different card
+# shapes rather than one:
+#   .card (product cards - brand pages, new.html): .card-title is
+#     always the product; .card-brand is only present when the grid
+#     mixes brands (new.html) - a single-brand page's own product grid
+#     has no .card-brand at all, so it falls back to the page's own
+#     .maker-header .maker-name heading (the brand this whole page IS).
+#   .maker-card (entity cards - every index page, AND the sub-item
+#     grids inside an individual firm/designer's own page) - .maker-name
+#     means something different depending on which of those two it is:
+#     on an index page it's the entity's own name (the "brand"); inside
+#     an individual page's sub-item grid (a firm's houses, a designer's
+#     credited products) it's that specific item's name (the "product"),
+#     with the real brand living at the page level instead. Checking for
+#     a page-level .maker-header first is what tells these two apart -
+#     an index page never has one (see generate_*_pages.py's own
+#     sr-only <h1> on those), so its presence/absence is a reliable
+#     signal for which shape a given .maker-card click actually is.
+#   .brand-site-link (a bare "Visit site" link, no inner name/meta of
+#     its own) - always attributed to the page-level brand, if any.
+CARD_CLICK_TRACKING_JS = """
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+"""
+
+
 def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None):
     tag_list = list(umbrellas) + ([country] if country else [])
     tags = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
@@ -541,6 +622,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
     }});
   }});
 </script>
+<script>{CARD_CLICK_TRACKING_JS}</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -626,6 +708,7 @@ def render_makers_index(brands_data):
     }});
   }});
 {DIRECTORY_FILTER_JS}</script>
+<script>{CARD_CLICK_TRACKING_JS}</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -755,6 +838,7 @@ def render_new_page(products):
     }});
   }});
 </script>
+<script>{CARD_CLICK_TRACKING_JS}</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>

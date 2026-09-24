@@ -665,12 +665,8 @@
       });
     });
   });
-
-  // Every craftsperson/tool card here was an untracked plain link
-  // (2026-09-24) - same "click" event and same UTM-capture pattern as
-  // the results page and homepage tiles use, so a click straight out
-  // to one of these sites is visible in analytics like every other
-  // click-through on the site.
+</script>
+<script>
   (function () {
     var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
     var utmParams = new URLSearchParams(window.location.search);
@@ -679,12 +675,36 @@
       utm_medium: utmParams.get("utm_medium"),
       utm_campaign: utmParams.get("utm_campaign"),
     };
-    document.querySelectorAll(".maker-card").forEach(function (card) {
-      card.addEventListener("click", function () {
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
         var payload = JSON.stringify(Object.assign({
           event_type: "click",
-          brand: card.querySelector(".maker-name") ? card.querySelector(".maker-name").textContent.trim() : null,
-          product_name: card.querySelector(".maker-categories") ? card.querySelector(".maker-categories").textContent.trim() : null,
+          brand: brand,
+          product_name: productName,
         }, UTM));
         navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
       });

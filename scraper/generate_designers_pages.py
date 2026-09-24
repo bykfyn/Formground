@@ -36,6 +36,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from generate_brand_pages import (
+    CARD_CLICK_TRACKING_JS,
     CLOUDFLARE_ANALYTICS,
     DIRECTORY_FILTER_JS,
     FAVICON_TAGS,
@@ -161,6 +162,7 @@ def render_designer_page(designer_name, slug, products):
     }});
   }});
 </script>
+<script>{CARD_CLICK_TRACKING_JS}</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -217,6 +219,7 @@ def render_designers_index(designers_with_slugs, products_by_designer):
     }});
   }});
 {DIRECTORY_FILTER_JS}</script>
+<script>{CARD_CLICK_TRACKING_JS}</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>

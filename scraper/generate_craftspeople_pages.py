@@ -34,6 +34,7 @@ import json
 from pathlib import Path
 
 from generate_brand_pages import (
+    CARD_CLICK_TRACKING_JS,
     CLOUDFLARE_ANALYTICS,
     FAVICON_TAGS,
     PAGE_CSS,
@@ -146,6 +147,7 @@ def render_craftsperson_page(person, slug, associations):
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
 </main>
+<script>{CARD_CLICK_TRACKING_JS}</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -205,6 +207,7 @@ def render_craftspeople_index(people_with_slugs):
     }});
   }});
 </script>
+<script>{CARD_CLICK_TRACKING_JS}</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
