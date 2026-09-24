@@ -229,7 +229,7 @@ def extract_page_content(page):
     return "\n\n".join(parts)
 
 
-def candidate_images(page):
+def candidate_images(page, skip_og=False):
     """Ordered list of real-photo candidates for one project page: og:image
     first (a portfolio site's own chosen representative image for the
     page), then every other rendered <img> large enough to not be a logo/
@@ -244,7 +244,28 @@ def candidate_images(page):
     element version throws when zero elements match instead of returning
     null, which was silently killing extraction for the whole page, not
     just the image, since both shared one try/except in main()."""
-    og_images = page.eval_on_selector_all('meta[property="og:image"]', "els => els.map(e => e.content)")
+    # new URL(..., document.baseURI) resolves a relative og:image value
+    # against the real page - confirmed live 2026-09-24 on
+    # sandenhodnekvam.no: its og:image content is a bare
+    # "/uploads/..." path, and reading .content directly (the raw
+    # attribute string, not a browser-resolved URL the way img.src is)
+    # stored that unresolvable relative path straight into houses.json.
+    # is_architecture_relevant() then fails on it with MissingSchema and
+    # fails open (keeps it anyway - see its own docstring for why), so
+    # the bad URL made it all the way to production undetected.
+    # skip_og: sandenhodnekvam.no emits several og:image tags per page,
+    # and the first one is often the SAME shared photo across many
+    # different project pages (confirmed live 2026-09-24: 8 of 10 real
+    # houses all resolved to the identical DSC_9138.jpg) - a real,
+    # good photo, just not specific to that project. og:image is
+    # normally the right first choice (a site's own chosen
+    # representative image), but not reliable on this one site, so its
+    # re-extraction skips straight to the actually-rendered gallery
+    # photos below instead.
+    og_images = [] if skip_og else page.eval_on_selector_all(
+        'meta[property="og:image"]',
+        "els => els.map(e => e.content ? new URL(e.content, document.baseURI).href : e.content)",
+    )
     other_images = page.eval_on_selector_all(
         "img",
         """els => els
