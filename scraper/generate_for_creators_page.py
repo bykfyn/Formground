@@ -410,6 +410,31 @@ PAGE_SCRIPT = """
       });
     });
   });
+
+  // Every craftsperson/tool card here was an untracked plain link
+  // (2026-09-24) - same "click" event and same UTM-capture pattern as
+  // the results page and homepage tiles use, so a click straight out
+  // to one of these sites is visible in analytics like every other
+  // click-through on the site.
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    document.querySelectorAll(".maker-card").forEach(function (card) {
+      card.addEventListener("click", function () {
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: card.querySelector(".maker-name") ? card.querySelector(".maker-name").textContent.trim() : null,
+          product_name: card.querySelector(".maker-categories") ? card.querySelector(".maker-categories").textContent.trim() : null,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
 """
 
 
