@@ -5312,6 +5312,15 @@ EXTRACTORS = {
     "Objects for Objects": extract_shopify,
     "Kouros Maghsoudi": extract_shopify,
     "Nifemi Ogunro": extract_shopify,
+    # "TAKT" excluded here - confirmed 2026-09-25: the WooCommerce Store
+    # API returns HTTP 200 but a 0-byte body for the scraper's real UA
+    # specifically, while a generic UA gets the full real response - a
+    # soft block, same shape as Sheyn/De Padova, not routed around.
+    # "KARST" excluded here - user-corrected 2026-09-25: karstgoods.com
+    # (Shopify, 75 real products) was an unrelated Australian stationery
+    # brand sharing the name by coincidence, not the intended candidate.
+    # The real KARST is karstberlin.com, a Berlin carpentry/design studio -
+    # but that site is portfolio-only with no shop at all (see brands.json).
 }
 
 

@@ -2077,9 +2077,9 @@
     "name": "TAKT",
     "url": "https://taktcph.com",
     "platform": "woocommerce",
-    "scrapable": true,
+    "scrapable": false,
     "country": "Denmark",
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Clean WooCommerce Store API confirmed (X-WP-Total: 126). Established house - held back deliberately to build the smaller/independent makers first."
+    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Clean WooCommerce Store API confirmed (X-WP-Total: 126). Established house - held back deliberately to build the smaller/independent makers first. UPDATE 2026-09-25: confirmed at real-build time - the scraper's actual UA gets HTTP 200 with a 0-byte body on the WooCommerce Store API, while a generic curl UA gets the full real response - a soft block on this bot specifically (same shape as Sheyn/De Padova), not routed around."
   },
   {
     "name": "Aarke",
@@ -2418,10 +2418,11 @@
   },
   {
     "name": "HAY",
-    "url": "https://hay.com",
+    "url": "https://www.hay.com",
     "platform": "custom",
     "scrapable": false,
-    "country": "Denmark"
+    "country": "Denmark",
+    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push. UPDATE 2026-09-25 - real server-rendered content confirmed (product pages have real prices/titles, e.g. /hay/accessories/indoor-living/vases--plant-pots/arcs-vase), so this is not a rendering problem. But it is Episerver (per robots.txt), no bulk product API, and its own sitemap-products.xml lists 1,414 individual product URLs - well over the project's ~30-40 fetch budget at this stage. Deferred as too large, same shape as Muuto/Artemide/Foscarini/Fontana Arte."
   },
   {
     "name": "Håg",
@@ -2611,11 +2612,11 @@
   },
   {
     "name": "Ligne Roset",
-    "url": "https://www.ligne-roset.com",
+    "url": "https://www.ligne-roset.com/en/",
     "platform": "custom",
     "scrapable": false,
     "country": "France",
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Real catalog almost certainly exists (major established house) but the correct URL structure/rendering needs a follow-up check - raw fetch of tested product paths didn't confirm content."
+    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push. UPDATE 2026-09-25 - real server-rendered content confirmed (product pages have real titles/prices, e.g. /en/p/armchairs/footstool-mobidec-199), not a rendering problem. But no bulk product API, and its own sitemap-products.xml lists 3,051 individual product URLs - far over the ~30-40 fetch budget at this stage. Deferred as too large, same shape as HAY/Muuto/Artemide."
   },
   {
     "name": "Abyss & Habidecor",
@@ -2772,17 +2773,18 @@
   },
   {
     "name": "KARST",
-    "url": "https://karstgoods.com",
-    "platform": "custom",
+    "url": "https://karstberlin.com",
+    "platform": "wordpress",
     "scrapable": false,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Repeated 429 rate-limiting hit during this check (likely the check's own request pattern, not a deliberate block) - needs a slower, isolated re-check."
+    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push. User-corrected 2026-09-25: karstgoods.com (an unrelated Australian stone-paper stationery brand sharing the name by coincidence) was wrongly built and scraped as this entry - removed. The real KARST is karstberlin.com, a Berlin carpentry/design studio (\"modern design and fine craftsmanship\") - but that site is a pure About/Projects/Contact portfolio with no shop or product catalog at all. Defer until/unless a real e-commerce presence exists.",
+    "country": "Germany"
   },
   {
     "name": "Hem",
-    "url": "https://hem.com",
+    "url": "https://hem.com/en-eu/",
     "platform": "custom",
     "scrapable": false,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Gatsby static-site generator, no /products.json; real \"All products\" content confirmed server-side but pagination/structure needs a follow-up check before a bespoke extractor is worth building."
+    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push. UPDATE 2026-09-25 - real content confirmed once past the region-picker gate (hem.com itself is just a country-selector; the real site is at /en-eu/, /en-us/, /en-ca/). Real product pages confirmed (e.g. /en-eu/furniture/chairs-and-stools/puffy/32041, \"Design by Faye [Toogood]\"). But Gatsby static site with no bulk product API, and its own sitemap-0.xml lists 1,632 individual product URLs for the EU region alone - far over the ~30-40 fetch budget. Deferred as too large, same shape as HAY/Ligne Roset."
   },
   {
     "name": "Tecta",
