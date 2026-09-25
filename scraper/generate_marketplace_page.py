@@ -32,7 +32,7 @@ import sys
 
 from pathlib import Path
 
-from generate_brand_pages import CARD_CLICK_TRACKING_JS
+from generate_brand_pages import CARD_CLICK_TRACKING_JS, DIRECTORY_FILTER_JS, directory_filter_html
 
 SCRAPER_DIR = Path(__file__).parent
 REPO_ROOT = SCRAPER_DIR.parent
@@ -72,8 +72,14 @@ PAGE_CSS = """
   main { max-width: 1160px; margin: 0 auto; padding: 24px 20px 60px; }
   .site-header { margin-bottom: 0; }
   .search-wide { width: 100%; max-width: 900px; margin: 0 auto; }
-  p.lead { font-size: 15px; line-height: 1.6; color: var(--text-secondary); margin: 32px auto 4px; max-width: 600px; text-align: center; }
-  p.lead-note { font-size: 12.5px; color: var(--text-muted); margin: 0 auto 28px; max-width: 600px; text-align: center; }
+  /* No above-the-fold lead paragraph (2026-09-25, user: "a user will
+     understand the concepts of promotion and stockist" - the chip
+     labels plus each panel's own intro already carry that context
+     where it's actually needed). A condensed version lives in the
+     footer instead - real body text still reads for SEO/crawlers even
+     when visually de-emphasized, same reasoning as the Guides content
+     on For Creators. */
+  p.footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 0 auto 20px; line-height: 1.6; text-align: center; }
 
   .ask-box {
     display: flex; align-items: center; gap: 10px; min-height: 57px;
@@ -154,6 +160,14 @@ PAGE_CSS = """
     justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 700;
     font-size: 18px; color: var(--text-secondary);
   }
+
+  /* Stockists' own directory filter (same live substring-match pattern
+     as makers.html/architects.html, see generate_brand_pages.py) - a
+     second .search-wide box, this one inside the panel rather than at
+     the page's top, since the top ask-box is the future promoted-
+     listing search, a different thing. */
+  .cat-panel .search-wide { margin: 0 auto 28px; }
+  [hidden] { display: none !important; }
 """
 
 PAGE_SCRIPT = """
@@ -228,7 +242,8 @@ def render_stockists_panel(retailers):
         "found via their own published stockist lists - not a paid placement. "
         "Something outdated or missing? <a href=\"contact.html\">Let us know</a>.</p>"
     )
-    return f'    <div class="cat-panel" data-cat="stockists">\n{intro}\n    <div class="maker-grid">\n{cards}\n    </div>\n    </div>'
+    filter_box = directory_filter_html("Filter by name, city, brand, or country…", "Stockists")
+    return f'    <div class="cat-panel" data-cat="stockists">\n{intro}\n{filter_box}\n    <div class="maker-grid">\n{cards}\n    </div>\n    </div>'
 
 
 def render_promotions_panel():
@@ -308,9 +323,6 @@ def render_page(retailers):
     </div>
   </div>
 
-  <p class="lead">Real stockists who carry work from Formground's makers, live promotions, and a paid space for architects, designers, and makers to feature something specific.</p>
-  <p class="lead-note">Stockist listings are free and unpaid, sourced the same transparent way as the rest of Formground. Paid features are always clearly marked.</p>
-
   <div class="chips">
 {chips_html}
   </div>
@@ -321,12 +333,15 @@ def render_page(retailers):
     Already on Formground as an architect, designer, or maker? Reach out if you'd like in early.
   </p>
 
+  <p class="footer-description">Real stockists who carry work from Formground's makers, live promotions, and a paid space for architects, designers, and makers to feature something specific. Stockist listings are free and unpaid, sourced the same transparent way as the rest of Formground - paid features are always clearly marked.</p>
+
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">← Back to Formground</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a>
   </p>
 </main>
 
 <script>{PAGE_SCRIPT}</script>
+<script>{DIRECTORY_FILTER_JS}</script>
 <script>{CARD_CLICK_TRACKING_JS}</script>
 
 {CLOUDFLARE_BEACON}

@@ -28,8 +28,14 @@
   main { max-width: 1160px; margin: 0 auto; padding: 24px 20px 60px; }
   .site-header { margin-bottom: 0; }
   .search-wide { width: 100%; max-width: 900px; margin: 0 auto; }
-  p.lead { font-size: 15px; line-height: 1.6; color: var(--text-secondary); margin: 32px auto 4px; max-width: 600px; text-align: center; }
-  p.lead-note { font-size: 12.5px; color: var(--text-muted); margin: 0 auto 28px; max-width: 600px; text-align: center; }
+  /* No above-the-fold lead paragraph (2026-09-25, user: "a user will
+     understand the concepts of promotion and stockist" - the chip
+     labels plus each panel's own intro already carry that context
+     where it's actually needed). A condensed version lives in the
+     footer instead - real body text still reads for SEO/crawlers even
+     when visually de-emphasized, same reasoning as the Guides content
+     on For Creators. */
+  p.footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 0 auto 20px; line-height: 1.6; text-align: center; }
 
   .ask-box {
     display: flex; align-items: center; gap: 10px; min-height: 57px;
@@ -110,6 +116,14 @@
     justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 700;
     font-size: 18px; color: var(--text-secondary);
   }
+
+  /* Stockists' own directory filter (same live substring-match pattern
+     as makers.html/architects.html, see generate_brand_pages.py) - a
+     second .search-wide box, this one inside the panel rather than at
+     the page's top, since the top ask-box is the future promoted-
+     listing search, a different thing. */
+  .cat-panel .search-wide { margin: 0 auto 28px; }
+  [hidden] { display: none !important; }
 </style>
 </head>
 <body>
@@ -135,9 +149,6 @@
     </div>
   </div>
 
-  <p class="lead">Real stockists who carry work from Formground's makers, live promotions, and a paid space for architects, designers, and makers to feature something specific.</p>
-  <p class="lead-note">Stockist listings are free and unpaid, sourced the same transparent way as the rest of Formground. Paid features are always clearly marked.</p>
-
   <div class="chips">
     <button class="chip active" data-cat="stockists">Stockists</button>
     <button class="chip" data-cat="promotions">Promotions</button>
@@ -145,6 +156,14 @@
 
     <div class="cat-panel" data-cat="stockists">
     <p class="panel-intro">Real retailers who carry work from Formground's makers, found via their own published stockist lists - not a paid placement. Something outdated or missing? <a href="contact.html">Let us know</a>.</p>
+
+  <div class="search-wide">
+    <div class="ask-box">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <span class="ask-box-context">Stockists</span>
+      <input id="directory-filter" type="text" placeholder="Filter by name, city, brand, or country…" autocomplete="off">
+    </div>
+  </div>
     <div class="maker-grid">
       <a class="maker-card" href="https://quatuordesign.be" target="_blank" rel="noopener noreferrer">
         <div class="maker-card-hero"><div class="monogram" title="Quatuor Design">QD</div></div>
@@ -1264,6 +1283,8 @@
     Already on Formground as an architect, designer, or maker? Reach out if you'd like in early.
   </p>
 
+  <p class="footer-description">Real stockists who carry work from Formground's makers, live promotions, and a paid space for architects, designers, and makers to feature something specific. Stockist listings are free and unpaid, sourced the same transparent way as the rest of Formground - paid features are always clearly marked.</p>
+
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">← Back to Formground</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a>
   </p>
@@ -1295,6 +1316,30 @@
       });
     });
   });
+</script>
+<script>
+  (function () {
+    var filterInput = document.getElementById("directory-filter");
+    function applyFilter(q) {
+      q = q.trim().toLowerCase();
+      document.querySelectorAll(".maker-grid > a").forEach(function (card) {
+        var match = !q || card.textContent.toLowerCase().includes(q);
+        card.hidden = !match;
+      });
+    }
+    filterInput.addEventListener("input", function (e) { applyFilter(e.target.value); });
+    // Pre-filled from Creators' own search box (?q=stockholm after it
+    // strips "architects"/"designers"/"makers" off the front and routes
+    // here) - runs the exact same filter immediately, not just on the
+    // next keystroke, so landing here already shows the real results
+    // rather than the unfiltered full list (2026-09-20, see project
+    // memory).
+    var presetQuery = new URLSearchParams(window.location.search).get("q");
+    if (presetQuery) {
+      filterInput.value = presetQuery;
+      applyFilter(presetQuery);
+    }
+  })();
 </script>
 <script>
   (function () {
