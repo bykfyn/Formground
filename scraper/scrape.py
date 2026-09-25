@@ -3762,6 +3762,61 @@ def extract_ligne_roset(brand):
     return list(products_by_url.values())
 
 
+def extract_miniforms(brand):
+    """
+    miniforms.com's /en/products/all/ listing page looked JS-rendered
+    at first glance (a "you might like" search-widget snippet nearby is
+    genuinely client-populated with no name, just image+link) - but the
+    REAL product grid (`div.grid-prodotti > div.grid-item`) sits right
+    alongside it in the same server-rendered HTML, with a real name,
+    image, and link per product (confirmed live 2026-09-25: 117 items,
+    one fetch, no pagination or per-product visit needed). Category
+    comes from the URL's own first segment (e.g. "/products/11_desks/
+    232_jumbo/" -> "desks") - clean English on every item checked, no
+    translation needed.
+    """
+    base = brand["url"].rstrip("/")
+    url = f"{base}/en/products/all/"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products = []
+    for item in soup.select("div.grid-prodotti > div.grid-item"):
+        a = item.find("a", href=True)
+        name_el = item.select_one("span.titolo")
+        if not a or not name_el:
+            continue
+        name = name_el.get_text(strip=True)
+        if not name:
+            continue
+        href = a["href"]
+        match = re.search(r"/products/\d+_([a-zA-Z0-9-]+)/\d+_", href)
+        category = match.group(1).replace("-", " ").title() if match else ""
+        img = item.select_one(".interno img")
+        image_url = img["src"] if img and img.get("src") else ""
+        if image_url.startswith("/"):
+            image_url = base + image_url
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": base + href if href.startswith("/") else href,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+
+    return products
+
+
 # The real per-product taxonomy this brand's own site uses (confirmed
 # live 2026-09-21) is already present right on the /product/ listing
 # page, just not where the original version of this extractor looked -
@@ -5717,6 +5772,7 @@ EXTRACTORS = {
     "Blond": extract_blond,
     "HAY": extract_hay,
     "Ligne Roset": extract_ligne_roset,
+    "Miniforms": extract_miniforms,
     # 2026-09-24 lighting triage - clean Shopify/WooCommerce stores, no
     # bespoke extractor code needed. See scraper/brands.json for each
     # brand's triage notes (real URL corrections, vendor-scoping caveats).
