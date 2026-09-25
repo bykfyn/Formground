@@ -8,9 +8,9 @@
 <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="description" content="Coming soon: a paid space where architects, designers, and makers can feature something specific — a limited run, a new piece, a course, or a project.">
+<meta name="description" content="Stockists who carry work from Formground's makers, live promotions, and a paid space for architects, designers, and makers to feature something specific.">
 <meta property="og:title" content="Marketplace — Formground">
-<meta property="og:description" content="Coming soon: a paid space where architects, designers, and makers can feature something specific — a limited run, a new piece, a course, or a project.">
+<meta property="og:description" content="Stockists who carry work from Formground's makers, live promotions, and a paid space for architects, designers, and makers to feature something specific.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://formground.com/marketplace.html">
 <meta property="og:site_name" content="Formground">
@@ -19,31 +19,18 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://formground.com/favicon-192x192.png">
 <meta name="twitter:title" content="Marketplace — Formground">
-<meta name="twitter:description" content="Coming soon: a paid space for architects, designers, and makers to feature something specific.">
+<meta name="twitter:description" content="Stockists, promotions, and a paid space for architects, designers, and makers.">
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
 <style>
-  main {
-    max-width: 1160px;
-    margin: 0 auto;
-    padding: 24px 20px 60px;
-  }
-  /* Same hero position/size as the rest of the site (2026-09-20, see
-     project memory): tight under the header, 900px wide, 57px tall. */
+  main { max-width: 1160px; margin: 0 auto; padding: 24px 20px 60px; }
   .site-header { margin-bottom: 0; }
   .search-wide { width: 100%; max-width: 900px; margin: 0 auto; }
-  p.lead { font-size: 15px; line-height: 1.6; color: var(--text-secondary); margin: 32px auto 4px; max-width: 560px; text-align: center; }
-  p.lead-note { font-size: 12.5px; color: var(--text-muted); margin: 0 auto 28px; max-width: 560px; text-align: center; }
+  p.lead { font-size: 15px; line-height: 1.6; color: var(--text-secondary); margin: 32px auto 4px; max-width: 600px; text-align: center; }
+  p.lead-note { font-size: 12.5px; color: var(--text-muted); margin: 0 auto 28px; max-width: 600px; text-align: center; }
 
-  /* No opacity here, unlike before - it washed out the background/
-     border/icon color compared to every other page's ask-box (confirmed
-     live 2026-09-20: rgb(241,239,236) at 0.7 opacity reads as visibly
-     duller than the same real color everywhere else - see project
-     memory). Readonly + pointer-events:none on the input already
-     convey "not a real search yet" functionally; the .chips row still
-     carries its own dimmed look separately. */
   .ask-box {
     display: flex; align-items: center; gap: 10px; min-height: 57px;
     background: var(--surface-1); border: 0.5px solid var(--border);
@@ -54,32 +41,40 @@
     border: none; background: none; outline: none; flex: 1;
     font-size: 15px; color: var(--text-muted); font-family: inherit; pointer-events: none;
   }
-  /* Without this, the browser ignores the input's own `color` for
-     placeholder text entirely and falls back to its own default gray
-     (confirmed live 2026-09-20: rendered as rgb(117,117,117), not
-     --text-muted's rgb(148,141,133) - see project memory) - work.html/
-     the homepage already set this explicitly for exactly that reason. */
   .ask-box input::placeholder { color: var(--text-muted); }
 
   .chips { display: flex; justify-content: center; gap: 8px; margin-bottom: 32px; flex-wrap: wrap; }
   .chip {
     font-size: 13px; font-weight: 500; padding: 8px 14px; border-radius: 999px;
     border: 0.5px solid var(--border-strong); background: var(--surface-2);
-    color: var(--text-muted); font-family: inherit; opacity: 0.7;
+    color: var(--text-muted); font-family: inherit; opacity: 0.7; cursor: pointer;
   }
   .chip.active { background: var(--surface-1); color: var(--text-secondary); border-color: var(--border-strong); opacity: 1; }
+
+  @media (max-width: 640px) {
+    .chips {
+      flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto;
+      -webkit-overflow-scrolling: touch; padding-bottom: 4px; scrollbar-width: none;
+      -webkit-mask-image: linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+      mask-image: linear-gradient(to right, black calc(100% - 28px), transparent 100%);
+    }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip { flex-shrink: 0; }
+  }
+
+  .panel-intro { font-size: 13px; color: var(--text-muted); text-align: center; max-width: 560px; margin: 0 auto 24px; line-height: 1.6; }
+
+  /* Sub-filter within a panel (e.g. Promotions' Architects/Designers/
+     Makers creator-type filter) - same chip look, smaller and no
+     bottom margin since it sits directly above that panel's own
+     content rather than the page-level chip row. */
+  .sub-chips { display: flex; justify-content: center; gap: 6px; margin: 0 0 28px; flex-wrap: wrap; }
+  .sub-chips .chip { font-size: 12px; padding: 6px 12px; }
 
   .empty-state {
     border: 1px dashed var(--border-strong); border-radius: 14px;
     padding: 56px 24px; text-align: center; background: var(--surface-1);
   }
-  /* margin: auto 0 auto (horizontal), not just 0 - .eyebrow's own
-     selector (.empty-state .eyebrow) is more specific than the general
-     .empty-state p rule that gives it its 420px max-width, so its own
-     margin here was overriding that rule's margin: 0 auto and pinning
-     the box to the left instead of centering it, even though the text
-     inside read as centered (confirmed live 2026-09-20 - see project
-     memory). */
   .empty-state .eyebrow {
     font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
     color: var(--text-accent); margin: 0 auto 10px;
@@ -96,6 +91,24 @@
   .who-for {
     margin-top: 36px; padding-top: 24px; border-top: 0.5px solid var(--border);
     font-size: 13px; color: var(--text-muted); line-height: 1.7; text-align: center;
+  }
+
+  /* Stockist cards reuse for-creators.html's maker-card/tool-card-hero
+     pattern (see project memory) - a monogram stands in for a photo
+     since we don't have a real storefront image per retailer. */
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, 190px); justify-content: center; gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero { aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border); margin: 0 0 10px; display: flex; align-items: center; justify-content: center; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  .monogram {
+    width: 56px; height: 56px; border-radius: 50%; background: var(--surface-2);
+    border: 0.5px solid var(--border-strong); display: flex; align-items: center;
+    justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 700;
+    font-size: 18px; color: var(--text-secondary);
   }
 </style>
 </head>
@@ -122,21 +135,1130 @@
     </div>
   </div>
 
-  <p class="lead">A paid space where architects, designers, and makers can feature something specific — a limited run, a new piece, a course, or a project.</p>
-  <p class="lead-note">Every listing here is a paid promotion, clearly marked, and separate from Formground's free search results.</p>
+  <p class="lead">Real stockists who carry work from Formground's makers, live promotions, and a paid space for architects, designers, and makers to feature something specific.</p>
+  <p class="lead-note">Stockist listings are free and unpaid, sourced the same transparent way as the rest of Formground. Paid features are always clearly marked.</p>
 
   <div class="chips">
-    <button class="chip active">All</button>
-    <button class="chip">Architects</button>
-    <button class="chip">Designers</button>
-    <button class="chip">Makers</button>
+    <button class="chip active" data-cat="stockists">Stockists</button>
+    <button class="chip" data-cat="promotions">Promotions</button>
   </div>
 
-  <div class="empty-state">
-    <p class="eyebrow">Coming soon</p>
-    <p>This is where listings will appear once the Marketplace opens — a small first group, by invitation, before it's open to everyone.</p>
-    <a class="cta-btn" href="contact.html">Want to be featured here? Get in touch<i class="ti ti-arrow-right" aria-hidden="true"></i></a>
-  </div>
+    <div class="cat-panel" data-cat="stockists">
+    <p class="panel-intro">Real retailers who carry work from Formground's makers, found via their own published stockist lists - not a paid placement. Something outdated or missing? <a href="contact.html">Let us know</a>.</p>
+    <div class="maker-grid">
+      <a class="maker-card" href="https://quatuordesign.be" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Quatuor Design">QD</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Quatuor Design</span>
+          <span class="maker-country">Belgium</span>
+          <span class="maker-categories">HAY, Ethnicraft</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://homepagebrussels.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Homepage Furniture &amp; More">HF</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Homepage Furniture &amp; More</span>
+          <span class="maker-country">Brussels, Belgium</span>
+          <span class="maker-categories">HAY, String Furniture, Umage +1 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://homepagebrussels.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Homepage2 More Furniture">HM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Homepage2 More Furniture</span>
+          <span class="maker-country">Brussels, Belgium</span>
+          <span class="maker-categories">HAY, String Furniture, Umage +1 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designspot.cz" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Designspot">D</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Designspot</span>
+          <span class="maker-country">Czech Republic</span>
+          <span class="maker-categories">HAY, Muuto, Ferm Living +5 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://ingvardchristensen.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Ingvard Christensen Møbelhuse">IC</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ingvard Christensen Møbelhuse</span>
+          <span class="maker-country">Denmark</span>
+          <span class="maker-categories">HAY, &amp;Tradition, Audo Copenhagen +6 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.drejerdesign.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Drejer Designcenter">DD</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drejer Designcenter</span>
+          <span class="maker-country">Aars, Denmark</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://bo-bedre.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Bo•Bedre">B</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bo•Bedre</span>
+          <span class="maker-country">Esbjerg, Denmark</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.heile.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Heile">H</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Heile</span>
+          <span class="maker-country">Frederikshavn, Denmark</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.schmidthuset.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Schmidt Møbler">SM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Schmidt Møbler</span>
+          <span class="maker-country">Grenaa, Denmark</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://illum.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Illum A/S">IA</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Illum A/S</span>
+          <span class="maker-country">København K, Denmark</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.jacobsenplus.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Jacobsen Plus">JP</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Jacobsen Plus</span>
+          <span class="maker-country">København K, Denmark</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.bahne.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Bahne">B</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bahne</span>
+          <span class="maker-country">København V, Denmark</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.rhode-design.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Rohde-Design">R</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rohde-Design</span>
+          <span class="maker-country">Køge, Denmark</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://slotmoebler.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Slot Møbler">SM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Slot Møbler</span>
+          <span class="maker-country">Lem St., Denmark</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.kjeps.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Kjeps Bolighus">KB</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Kjeps Bolighus</span>
+          <span class="maker-country">Næstved, Denmark</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.centralmoebler.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Central Møbler">CM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Central Møbler</span>
+          <span class="maker-country">Odense SV, Denmark</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ting-shop.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="T.i.n.g.">T</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">T.i.n.g.</span>
+          <span class="maker-country">Silkeborg, Denmark</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.momentummobler.dk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Momentum Møbler ApS">MM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Momentum Møbler ApS</span>
+          <span class="maker-country">Vanløse, Denmark</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.elkemoobel.ee" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Elke Mööbel">EM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Elke Mööbel</span>
+          <span class="maker-country">Tallinn, Estonia</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://nomart.fi/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Nomart Oy">NO</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nomart Oy</span>
+          <span class="maker-country">Helsinki, Finland</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.plusminus.fi" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Plusminus Partners Oy">PP</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Plusminus Partners Oy</span>
+          <span class="maker-country">Helsinki, Finland</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://restatop.fi/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Restatop OY">RO</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Restatop OY</span>
+          <span class="maker-country">Helsinki, Finland</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.tavaratrading.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="TAVARA TRADING TTR Oy">TT</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">TAVARA TRADING TTR Oy</span>
+          <span class="maker-country">Kuopio, Finland</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.strukturadesign.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Struktura Design Ab">SD</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Struktura Design Ab</span>
+          <span class="maker-country">Mariehamn, Finland</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://restatop.fi" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Restatop OY">RO</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Restatop OY</span>
+          <span class="maker-country">TURKU, Finland</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.tavaratrading.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="TAVARA TRADING TTR Oy">TT</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">TAVARA TRADING TTR Oy</span>
+          <span class="maker-country">Tampere, Finland</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.tavaratrading.com/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="TAVARA TRADING TTR Oy">TT</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">TAVARA TRADING TTR Oy</span>
+          <span class="maker-country">Vantaa, Finland</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://finnishdesignshop.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Finnish Design Shop">FD</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Finnish Design Shop</span>
+          <span class="maker-country">Åbo (Turku), Finland</span>
+          <span class="maker-categories">&amp;Tradition, Artek, GUBI +6 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://connox.de" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Connox">C</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Connox</span>
+          <span class="maker-country">Germany</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://koti-ahrensburg.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Koti Ahrensburg">KA</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Koti Ahrensburg</span>
+          <span class="maker-country">Ahrensburg, Germany</span>
+          <span class="maker-categories">HAY, Artek, HOUE +4 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://einraum.berlin" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Einraum.Berlin">E</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Einraum.Berlin</span>
+          <span class="maker-country">Berlin (Neukölln), Germany</span>
+          <span class="maker-categories">HAY, &amp;Tradition, Montana +6 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.roomsbylindabruns.de/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Rooms by Linda Bruns">RB</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rooms by Linda Bruns</span>
+          <span class="maker-country">Dortmund, Germany</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://raumideen.net/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="raumideen Dortmund Möbel + Design GmbH &amp; Co. KG">RD</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">raumideen Dortmund Möbel + Design GmbH &amp; Co. KG</span>
+          <span class="maker-country">Dortmund, Germany</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://lys-vintage.com/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="LYS Vintage GmbH">LV</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LYS Vintage GmbH</span>
+          <span class="maker-country">Hamburg, Germany</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.le-courtier.com/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Le Courtier">LC</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Le Courtier</span>
+          <span class="maker-country">Hamburg, Germany</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://smow.de" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="smow Hamburg">SH</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">smow Hamburg</span>
+          <span class="maker-country">Hamburg, Germany</span>
+          <span class="maker-categories">HAY, Vitra, Fritz Hansen +15 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.aarhus80.de" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Aarhus 80">A</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Aarhus 80</span>
+          <span class="maker-country">Herford, Germany</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pappsalon.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Pappsalon">P</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pappsalon</span>
+          <span class="maker-country">Itzehoe, Germany</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.roomkiel.com/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="ROOM – Elisabeth Laudien">RE</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">ROOM – Elisabeth Laudien</span>
+          <span class="maker-country">Kiel, Germany</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.roomandlight.de" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Room &amp; Light">RL</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Room &amp; Light</span>
+          <span class="maker-country">Rietberg, Germany</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.interiorkontor.de/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Interiorkontor Hottendorf">IH</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Interiorkontor Hottendorf</span>
+          <span class="maker-country">Wenningstedt auf Sylt, Germany</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.atelier1907.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Atelier 1907">A</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Atelier 1907</span>
+          <span class="maker-country">Wuppertal, Germany</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://spaziomatteotti5.it" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Spazio Matteotti 5">SM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Spazio Matteotti 5</span>
+          <span class="maker-country">Italy</span>
+          <span class="maker-categories">HAY, Muuto, Normann Copenhagen +6 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://moroarredamenti.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Moro Arredamenti (Gallarate)">MA</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Moro Arredamenti (Gallarate)</span>
+          <span class="maker-country">Gallarate (VA), Italy</span>
+          <span class="maker-categories">HAY, Vitra</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://moroarredamenti.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Moro Arredamenti (Malpensa)">MA</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Moro Arredamenti (Malpensa)</span>
+          <span class="maker-country">Lonate Pozzolo (VA), Italy</span>
+          <span class="maker-categories">HAY, Vitra</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designrepublic.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Design Republic Tricolore">DR</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Design Republic Tricolore</span>
+          <span class="maker-country">Milano, Italy</span>
+          <span class="maker-categories">HAY, &amp;Tradition, Normann Copenhagen +7 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designrepublic.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Design Republic Vetra">DR</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Design Republic Vetra</span>
+          <span class="maker-country">Milano, Italy</span>
+          <span class="maker-categories">HAY, &amp;Tradition, Normann Copenhagen +7 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://franzelli.it" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Franzelli Concept Store">FC</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Franzelli Concept Store</span>
+          <span class="maker-country">Sassuolo (MO), Italy</span>
+          <span class="maker-categories">Seletti</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://tomdesign.it" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Tomdesign">T</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tomdesign</span>
+          <span class="maker-country">Torino, Italy</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://empro.lt" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="EMPRO interjerai">EI</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">EMPRO interjerai</span>
+          <span class="maker-country">Klaipėda, Lithuania</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://skandinaviskiinterjerai.lt" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Skandinaviški interjerai">SI</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Skandinaviški interjerai</span>
+          <span class="maker-country">Vilnius, Lithuania</span>
+          <span class="maker-categories">HAY, And Tradition, Muuto</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://berlebergen.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Berle Møbler &amp; Interiør">BM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Berle Møbler &amp; Interiør</span>
+          <span class="maker-country">Bergen, Norway</span>
+          <span class="maker-categories">HAY, L.K Hjelle, Fritz Hansen</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galleril.no/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Galleri L">GL</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Galleri L</span>
+          <span class="maker-country">Bergen, Norway</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Glass Thomsen">GT</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Glass Thomsen</span>
+          <span class="maker-country">Bergen, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Glassmagasinet Øgrey">GØ</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Glassmagasinet Øgrey</span>
+          <span class="maker-country">Egersund, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.dominointerior.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Domino Interiør">DI</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Domino Interiør</span>
+          <span class="maker-country">Fredrikstad, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Prydkunst">P</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Prydkunst</span>
+          <span class="maker-country">Gjøvik, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Hamar Glasmagasin">HG</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Hamar Glasmagasin</span>
+          <span class="maker-country">Hamar, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Galleriet Glassmagasin">GG</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Galleriet Glassmagasin</span>
+          <span class="maker-country">Jørpeland, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="OE Strande">OS</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">OE Strande</span>
+          <span class="maker-country">Molde, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.flowinterior.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Flow Interiør">FI</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Flow Interiør</span>
+          <span class="maker-country">Oslo, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nordiskagalleriet.no/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Nordiska Galleriet Oslo">NG</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nordiska Galleriet Oslo</span>
+          <span class="maker-country">Oslo, Norway</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Brødrene Pedersen Kvadrat">BP</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Brødrene Pedersen Kvadrat</span>
+          <span class="maker-country">Sandnes, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Brødrene Pedersen Sandnes">BP</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Brødrene Pedersen Sandnes</span>
+          <span class="maker-country">Sandnes, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://dfu.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="DFU - Design Furniture Unlimited">DD</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">DFU - Design Furniture Unlimited</span>
+          <span class="maker-country">Sandnes, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.lightup.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Lightup As">LA</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Lightup As</span>
+          <span class="maker-country">Skien, Norway</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://kolstadlys.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Brødrene Kolstad AS">BK</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Brødrene Kolstad AS</span>
+          <span class="maker-country">Stabekk, Norway</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Brødrene Pedersen Breigata">BP</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Brødrene Pedersen Breigata</span>
+          <span class="maker-country">Stavanger, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Brødrene Pedersen Tvedt">BP</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Brødrene Pedersen Tvedt</span>
+          <span class="maker-country">Stavanger, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.creolight.no/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Creolight AS">CA</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Creolight AS</span>
+          <span class="maker-country">Stavanger, Norway</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.moebelgalleriet.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Møbelgalleriet">M</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Møbelgalleriet</span>
+          <span class="maker-country">Stavanger, Norway</span>
+          <span class="maker-categories">HAY, Fritz Hansen, Vitra +4 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="CI Pedersen">CP</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">CI Pedersen</span>
+          <span class="maker-country">Trondheim, Norway</span>
+          <span class="maker-categories">HAY</span>
+        </div>
+      </a>
+      <a class="maker-card" href="http://vaerness.no" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Værness Elektriske AS">VE</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Værness Elektriske AS</span>
+          <span class="maker-country">Trondheim, Norway</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://fabrykaform.pl" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Fabryka Form (Warszawa)">FF</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fabryka Form (Warszawa)</span>
+          <span class="maker-country">Warsaw, Poland</span>
+          <span class="maker-categories">HAY, Muuto, Villeroy &amp; Boch +5 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://anotherdesign.pl" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="AnOther Design">AD</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">AnOther Design</span>
+          <span class="maker-country">Warsaw (Żoliborz), Poland</span>
+          <span class="maker-categories">HAY, &amp;Tradition, Bolia +1 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thescandinavianshowroom.com/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Hus no17 / The Scandinavian Showroom">HN</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Hus no17 / The Scandinavian Showroom</span>
+          <span class="maker-country">Malaga, Spain</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.bredarydsmobler.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Bredaryds Möbler">BM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bredaryds Möbler</span>
+          <span class="maker-country">Bredaryd, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.levellight.se/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Level Light AB">LL</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Level Light AB</span>
+          <span class="maker-country">Danderyd, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.emmabodamobler.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Emmaboda Möbler AB">EM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Emmaboda Möbler AB</span>
+          <span class="maker-country">Emmaboda, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.artilleriet.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Artilleriet Interiors AB">AI</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Artilleriet Interiors AB</span>
+          <span class="maker-country">Göteborg, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nordiskagalleriet.se/orsjo-belysning" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Nordiska Galleriet">NG</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nordiska Galleriet</span>
+          <span class="maker-country">Göteborg, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://svenssons.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Svenssons Göteborg">SG</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Svenssons Göteborg</span>
+          <span class="maker-country">Göteborg, Sweden</span>
+          <span class="maker-categories">HAY, Louis Poulsen, Swedese +11 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.svenssons.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Svenssons i Lammhult">SI</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Svenssons i Lammhult</span>
+          <span class="maker-country">Göteborg, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nordiskmobelkonst.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Nordisk Möbelkonst">NM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nordisk Möbelkonst</span>
+          <span class="maker-country">Jönköping, Sweden</span>
+          <span class="maker-categories">PP Møbler, Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.magasinseverin.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Magasin Severin">MS</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Magasin Severin</span>
+          <span class="maker-country">Kalmar, Sweden</span>
+          <span class="maker-categories">&amp;Tradition, Carl Hansen &amp; Søn, DUX +11 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://nordicnest.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Nordic Nest">NN</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nordic Nest</span>
+          <span class="maker-country">Kalmar, Sweden</span>
+          <span class="maker-categories">HAY, Louis Poulsen, Gubi +6 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.thimarform.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Thimar Form">TF</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Thimar Form</span>
+          <span class="maker-country">Karlstad, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.visionofhome.se/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Vision of Home AB">VO</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Vision of Home AB</span>
+          <span class="maker-country">Kristianstad, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://svenssons.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Svenssons Lammhult">SL</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Svenssons Lammhult</span>
+          <span class="maker-country">Lammhult, Sweden</span>
+          <span class="maker-categories">HAY, Louis Poulsen, Swedese +11 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.svenssons.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Svenssons i Lammhult">SI</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Svenssons i Lammhult</span>
+          <span class="maker-country">Lammhult, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.lindholms.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Lindholms Interiörhuset">LI</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Lindholms Interiörhuset</span>
+          <span class="maker-country">Linköping, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.miljogarden.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Miljögården AB">MA</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Miljögården AB</span>
+          <span class="maker-country">Lund, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.glashusetmalmo.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Glashuset">G</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Glashuset</span>
+          <span class="maker-country">Malmö, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://glashusetmalmo.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Glashuset i Malmö">GI</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Glashuset i Malmö</span>
+          <span class="maker-country">Malmö, Sweden</span>
+          <span class="maker-categories">DUX, Stolab, Fritz Hansen +9 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ljusmiljo.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Ljusmiljö">L</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ljusmiljö</span>
+          <span class="maker-country">Malmö, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nordiskagalleriet.se/malmo" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Nordiska Galleriet">NG</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nordiska Galleriet</span>
+          <span class="maker-country">Malmö, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://svenssons.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Svenssons Malmö">SM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Svenssons Malmö</span>
+          <span class="maker-country">Malmö, Sweden</span>
+          <span class="maker-categories">HAY, Louis Poulsen, Swedese +11 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.svenssons.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Svenssons i Lammhult">SI</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Svenssons i Lammhult</span>
+          <span class="maker-country">Malmö, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.bright123.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Bright 1-2-3">B</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bright 1-2-3</span>
+          <span class="maker-country">Nacka, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.kontorett.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Kontor Ett">KE</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Kontor Ett</span>
+          <span class="maker-country">Norrköping, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://royaldesign.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="RoyalDesign.se">R</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RoyalDesign.se</span>
+          <span class="maker-country">Nybro, Sweden</span>
+          <span class="maker-categories">HAY, &amp;Tradition, Fritz Hansen +22 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.lannamobler.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Länna möbler">LM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Länna möbler</span>
+          <span class="maker-country">Skogås, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.sparsmakat.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Sparsmakat">S</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Sparsmakat</span>
+          <span class="maker-country">Skövde, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.interiorbutiken.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Interiörbutiken">I</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Interiörbutiken</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://ljusgrossisten.se/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Ljusgrossisten">L</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ljusgrossisten</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nordiskagalleriet.se/orsjo-belysning" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Nordiska Galleriet">NG</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nordiska Galleriet</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.norrmalmsel.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Norrmalms El">NE</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Norrmalms El</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ljusbutik.se/sv/trademarks/orsjo" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Stockholms Ljusbutik">SL</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Stockholms Ljusbutik</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://svenssons.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Svenssons Stockholm City Sergel">SS</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Svenssons Stockholm City Sergel</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">HAY, Louis Poulsen, Swedese +11 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://svenssons.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Svenssons Stockholm Sickla">SS</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Svenssons Stockholm Sickla</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">HAY, Louis Poulsen, Swedese +11 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.svenssons.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Svenssons i Lammhult">SI</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Svenssons i Lammhult</span>
+          <span class="maker-country">Stockholm, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.rummet.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Rummet">R</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rummet</span>
+          <span class="maker-country">Sundsvall, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.savedalensbelysning.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Sävedalens Belysning">SB</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Sävedalens Belysning</span>
+          <span class="maker-country">Sävedalen, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.elon.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Elon Ljus &amp; Design">EL</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Elon Ljus &amp; Design</span>
+          <span class="maker-country">Umeå, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.valamagasinet.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Våla Magasinet">VM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Våla Magasinet</span>
+          <span class="maker-country">Uppsala, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://valamagasinet.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Vålamagasinet">V</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Vålamagasinet</span>
+          <span class="maker-country">Uppsala, Sweden</span>
+          <span class="maker-categories">Vipp, Örsjö, Stolab +1 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.vaxjoelektriska.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Växjö Elektriska">VE</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Växjö Elektriska</span>
+          <span class="maker-country">Växjö, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://hanssonsmobler.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Hanssons Möbler">HM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Hanssons Möbler</span>
+          <span class="maker-country">Ängelholm, Sweden</span>
+          <span class="maker-categories">HAY, Fredericia, String Furniture +4 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.indainterior.se" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Inda Interiör AB">II</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Inda Interiör AB</span>
+          <span class="maker-country">Örebro, Sweden</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pfister.ch" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Pfister">P</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pfister</span>
+          <span class="maker-country">Switzerland</span>
+          <span class="maker-categories">HAY, Cane-line, Houe +3 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://goodform.ch" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Goodform AG">GA</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Goodform AG</span>
+          <span class="maker-country">Baar, Switzerland</span>
+          <span class="maker-categories">HAY, Carl Hansen &amp; Søn, Louis Poulsen +8 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.holmsweetholm.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Holm AG">HA</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Holm AG</span>
+          <span class="maker-country">Zürich, Switzerland</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.hollowaysofludlow.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Holloways of Ludlow">HO</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Holloways of Ludlow</span>
+          <span class="maker-country">Bath, United Kingdom</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.moletamunro.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Moleta Munro">MM</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Moleta Munro</span>
+          <span class="maker-country">Edinburgh, United Kingdom</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.utilitydesign.co.uk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Utility">U</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Utility</span>
+          <span class="maker-country">Liverpool, United Kingdom</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://heals.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Heal&#x27;s">H</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Heal&#x27;s</span>
+          <span class="maker-country">London, United Kingdom</span>
+          <span class="maker-categories">HAY, Ligne Roset</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.hollowaysofludlow.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Holloways of Ludlow">HO</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Holloways of Ludlow</span>
+          <span class="maker-country">London, United Kingdom</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.skandium.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Skandium">S</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Skandium</span>
+          <span class="maker-country">London, United Kingdom</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.twentytwentyone.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Twentytwentyone">T</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Twentytwentyone</span>
+          <span class="maker-country">London, United Kingdom</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.viaduct.co.uk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Viaduct">V</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Viaduct</span>
+          <span class="maker-country">London, United Kingdom</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ferrious.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Ferrious">F</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ferrious</span>
+          <span class="maker-country">Manchester, United Kingdom</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.davidvillagelighting.co.uk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="David Village Lighting">DV</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">David Village Lighting</span>
+          <span class="maker-country">Sheffield, United Kingdom</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://nest.co.uk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Nest">N</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nest</span>
+          <span class="maker-country">Sheffield, United Kingdom</span>
+          <span class="maker-categories">&amp;Tradition, HAY, Karup Design +2 more</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.cameronpeters.co.uk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Cameron Peters">CP</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Cameron Peters</span>
+          <span class="maker-country">Wantage, United Kingdom</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.hollowaysofludlow.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Holloways of Ludlow,">HO</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Holloways of Ludlow,</span>
+          <span class="maker-country">Wimbledon Village, United Kingdom</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://twoenlighten.com/" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Two Enlighten">TE</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Two Enlighten</span>
+          <span class="maker-country">Glendale, CA, United States</span>
+          <span class="maker-categories">Örsjö</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://nordicurban.com" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="monogram" title="Nordic Urban">NU</div></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nordic Urban</span>
+          <span class="maker-country">Online retailer</span>
+          <span class="maker-categories">Carl Hansen &amp; Søn, Fredericia, House of Finn Juhl +5 more</span>
+        </div>
+      </a>
+    </div>
+    </div>
+
+    <div class="cat-panel" data-cat="promotions" style="display: none;">
+    <p class="panel-intro">A mix of paid feature listings from Creators - filterable by type below - and free, basic promotions pulled from stockists' own live sales pages, sourced the same transparent, attributed, remove-on-request way as the rest of Formground.</p>
+    <div class="sub-chips">
+      <button class="chip active" data-subcat="all">All</button>
+      <button class="chip" data-subcat="furniture">Furniture</button>
+      <button class="chip" data-subcat="lighting">Lighting</button>
+      <button class="chip" data-subcat="objects">Objects</button>
+    </div>
+    <div class="empty-state">
+      <p class="eyebrow">Coming soon</p>
+      <p>This is where listings will appear once the Marketplace opens — a small first group, by invitation, before it's open to everyone.</p>
+      <a class="cta-btn" href="contact.html">Want to be featured here? Get in touch<i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+    </div>
+    </div>
 
   <p class="who-for">
     Already on Formground as an architect, designer, or maker? Reach out if you'd like in early.
@@ -146,6 +1268,79 @@
     &copy; 2026 Formground &middot; <a href="/">← Back to Formground</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a>
   </p>
 </main>
+
+<script>
+  // Top-level chips: every panel's real content already sits in the
+  // page - this just shows the one matching the clicked chip and hides
+  // the rest.
+  document.querySelectorAll('.chips > .chip').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var cat = btn.dataset.cat;
+      document.querySelectorAll('.chips > .chip').forEach(function (b) {
+        b.classList.toggle('active', b === btn);
+      });
+      document.querySelectorAll('.cat-panel').forEach(function (panel) {
+        panel.style.display = panel.dataset.cat === cat ? '' : 'none';
+      });
+    });
+  });
+
+  // Promotions' Furniture/Lighting/Objects sub-filter: purely visual
+  // for now (no real promotions to filter yet), but wired so it's
+  // ready the moment there's something to filter.
+  document.querySelectorAll('.sub-chips .chip').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.sub-chips .chip').forEach(function (b) {
+        b.classList.toggle('active', b === btn);
+      });
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
 
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
