@@ -160,6 +160,7 @@ PAGE_CSS = """
   .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 0 3px; }
   .maker-card:hover .maker-name { text-decoration: underline; }
   .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .match-hint { display: block; font-size: 10.5px; color: var(--text-accent); margin: 3px 0 0; font-style: italic; }
   /* Fixed-size circular badge, shared by a real favicon and the
      monogram fallback alike (user, 2026-09-25: favicons "minuscule" vs
      "larger" - real favicons bake wildly different amounts of their own
@@ -208,6 +209,44 @@ PAGE_SCRIPT = """
       });
     });
   });
+"""
+
+# "Matched: X" hint (user, 2026-09-25) - DIRECTORY_FILTER_JS already
+# hides/shows cards by a plain substring match against everything in
+# them, brand names and locations included, so a search for a city can
+# surface a card via a brand name that happens to contain it (Homepage
+# carries the real brand "Design House Stockholm" - a true match, just
+# a confusing one without saying why). Its own script tag has to load
+# *after* DIRECTORY_FILTER_JS's - it reads card.hidden, which that
+# script's own listener is what actually sets on each input event, and
+# listeners run in registration order. Only labels a card when the
+# query isn't already visible in its name or location, so the hint
+# appears exactly when it's needed to explain the match.
+MATCH_HINT_JS = """
+  (function () {
+    var filterInput = document.getElementById("directory-filter");
+    if (!filterInput) return;
+    function updateHints(q) {
+      q = q.trim().toLowerCase();
+      document.querySelectorAll(".maker-card").forEach(function (card) {
+        var hint = card.querySelector(".match-hint");
+        if (!hint) return;
+        if (!q || card.hidden) { hint.hidden = true; hint.textContent = ""; return; }
+        var visible = (card.querySelector(".maker-name").textContent + " " +
+                       card.querySelector(".maker-country").textContent).toLowerCase();
+        if (visible.includes(q)) { hint.hidden = true; hint.textContent = ""; return; }
+        var brands = (card.dataset.brands || "").split("|").filter(Boolean);
+        var locations = (card.dataset.locations || "").split("|").filter(Boolean);
+        var match = brands.concat(locations).find(function (item) {
+          return item.toLowerCase().includes(q);
+        });
+        hint.hidden = !match;
+        hint.textContent = match ? "Matched: " + match : "";
+      });
+    }
+    filterInput.addEventListener("input", function (e) { updateHints(e.target.value); });
+    updateHints(filterInput.value);
+  })();
 """
 
 
@@ -333,11 +372,23 @@ def _stockist_card(name, locations):
         f'<span class="monogram" style="display:none;" title="{html.escape(name)}">{_initials(name)}</span>'
         if favicon else monogram_span
     )
-    return f"""      <a class="maker-card" href="{html.escape(website)}" target="_blank" rel="noopener noreferrer">
+    # data-brands/data-locations back the "Matched: X" hint (user,
+    # 2026-09-25: searching "Stockholm" surfaced Homepage in Belgium,
+    # because it carries the real brand "Design House Stockholm" - a
+    # true match, just a confusing one without saying why). Kept
+    # separate from the sr-only spans above (which just need to *be*
+    # searchable text) since this needs each brand/location as its own
+    # clean item, not one blob to guess how to split apart again.
+    match_data = (
+        f' data-brands="{html.escape("|".join(brands))}"'
+        f' data-locations="{html.escape("|".join(_location(loc) for loc in locations))}"'
+    )
+    return f"""      <a class="maker-card" href="{html.escape(website)}" target="_blank" rel="noopener noreferrer"{match_data}>
         <div class="maker-card-hero"><div class="icon-badge">{badge}</div></div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(name)}</span>
-          <span class="maker-country">{html.escape(_grouped_location_line(locations))}</span>{locations_sr}{brands_sr}
+          <span class="maker-country">{html.escape(_grouped_location_line(locations))}</span>
+          <span class="match-hint" hidden></span>{locations_sr}{brands_sr}
         </div>
       </a>"""
 
@@ -449,6 +500,7 @@ def render_page(retailers):
 
 <script>{PAGE_SCRIPT}</script>
 <script>{DIRECTORY_FILTER_JS}</script>
+<script>{MATCH_HINT_JS}</script>
 <script>{CARD_CLICK_TRACKING_JS}</script>
 
 {CLOUDFLARE_BEACON}
