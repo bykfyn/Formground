@@ -274,7 +274,27 @@ def _favicon_url(website):
 # photo of a person (user, 2026-09-25). Google's favicon service almost
 # never actually fails to return *something*, so onerror doesn't catch
 # this; force the monogram instead for the rare flagged case.
-FORCE_MONOGRAM = {"Creolight AS"}
+# Computed 2026-09-25 by fetching every card's favicon URL and checking
+# its actual pixel size: Google's favicon service silently returns a
+# generic 16x16 "no icon found" placeholder - stretched blurry across
+# the (now much larger) badge - instead of erroring, regardless of the
+# sz=128 requested; a real favicon comes back at the requested size.
+# See scraper/find_generic_favicons.py to re-run this check later.
+FORCE_MONOGRAM = {
+    "Creolight AS",  # real favicon, but a photo of a person - flagged by the user directly
+    "Drejer Designcenter", "Schmidt Møbler", "Rohde-Design", "Slot Møbler",
+    "Kjeps Bolighus", "Central Møbler", "Plusminus Partners Oy", "Restatop OY",
+    "Struktura Design Ab", "Pappsalon", "Interiorkontor Hottendorf", "Atelier 1907",
+    "Moro Arredamenti", "Design Republic", "EMPRO interjerai", "Glass Thomsen",
+    "Glassmagasinet Øgrey", "Domino Interiør", "Prydkunst", "Hamar Glasmagasin",
+    "Galleriet Glassmagasin", "OE Strande", "Brødrene Pedersen", "Lightup As",
+    "Brødrene Kolstad AS", "CI Pedersen", "Fabryka Form (Warszawa)",
+    "Artilleriet Interiors AB", "Svenssons", "Nordisk Möbelkonst", "Nordic Nest",
+    "Vision of Home AB", "Lindholms Interiörhuset", "Ljusmiljö", "Bright 1-2-3",
+    "Kontor Ett", "Interiörbutiken", "Stockholms Ljusbutik", "Sävedalens Belysning",
+    "Vålamagasinet", "Växjö Elektriska", "Moleta Munro", "Utility", "Heal's",
+    "Skandium", "Twentytwentyone", "Ferrious", "Cameron Peters", "Two Enlighten",
+}
 
 
 def _stockist_card(name, locations):
