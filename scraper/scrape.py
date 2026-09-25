@@ -1030,6 +1030,11 @@ EXCLUDED_CATEGORIES = {
     # for "fabric ... running metre"), a fabric-by-the-metre swatch for
     # its sofas, not a real product either.
     "fabrics", "n05 fabric",
+    # User-reported 2026-09-25 on Anour: "Wire Gripper for Sloped
+    # Ceiling (2 pcs.)" - confirmed live, its real "Extras" category
+    # tags exactly this kind of accessory (mounting brackets, a
+    # replacement bulb), not standalone lamps.
+    "extras",
 }
 
 # Utilitario Mexicano's product_type is blank across its entire ~490-
@@ -1888,6 +1893,10 @@ def _looks_like_a_maintenance_item(title):
         # Incense" listings, confirmed live 2026-09-25 - replacement
         # components for its real Ashtray/Burner Incense products.
         "spare parts:",
+        # User-reported 2026-09-25 on Graypants' "Wick PRO Remote
+        # Control" - a real lamp-control accessory, not a lamp; no
+        # object name is ever legitimately just "remote control".
+        "remote control",
         # Unico Milano's "Campionario colori" (Italian for "colour
         # sample range/catalogue") - a swatch reference, not furniture.
         "campionario",
@@ -2169,6 +2178,42 @@ def extract_shopify(brand):
         # the saved product_name - all see the same already-clean text.
         for p in raw_products:
             p["title"] = re.sub(r"^\(new\)\s*", "", p["title"], flags=re.IGNORECASE).strip()
+    if brand["name"] == "Avolt":
+        # User-reported 2026-09-25: "Square 1 | 3-Pack Oak Green USB-C" -
+        # confirmed live, this brand sells bulk-quantity bundles of its
+        # own cables/adapters as separate top-level listings (real
+        # product_type values literally say "3 pack"/"3-pack"), not
+        # distinct products - "buy three of one item", not a design
+        # variant. Also catches "2-Pack - Extra Iron Plate" (a spare
+        # part multi-pack).
+        raw_products = [
+            p for p in raw_products
+            if not re.search(r"\b\d+[\s-]?pack\b", p["title"], re.IGNORECASE)
+        ]
+    if brand["name"] == "Ferm Living":
+        # User-reported 2026-09-25: "Rico Sofa Armrest Right" - a
+        # component of the modular Rico sofa system, not a standalone
+        # piece. Confirmed live: Ferm Living tags its real modular
+        # building blocks (Armrest, Open End, Corner, Center) with a
+        # real "RICOMODULAR" tag; complete standalone pieces in the
+        # same line (3-Seater, Divan Left/Right - real daybeds sold on
+        # their own) don't carry it, so this is a precise signal rather
+        # than a name-based guess.
+        raw_products = [
+            p for p in raw_products
+            if "ricomodular" not in {t.strip().lower() for t in (p.get("tags") or [])}
+        ]
+        # The same modular-component shape recurs on other sofa lines
+        # (Catena, Dase) without a consistent tag to key off (their own
+        # "CONFIGURABLE" tag is inconsistently applied even across
+        # colourways of the same real component) - the naming pattern
+        # itself is reliable instead: every modular building block seen
+        # is named "{Line} Sofa {Armrest/Open End/Corner/Connect Corner/
+        # Center} ...", never a real complete, standalone piece.
+        raw_products = [
+            p for p in raw_products
+            if not re.search(r"sofa (armrest|open end|corner|center)\b", p["title"], re.IGNORECASE)
+        ]
     if brand["name"] == "Massimo Copenhagen":
         # This brand's own real "Stain Remover" product_type (a 200ml
         # care product) is excluded outright - not a rug, and would
