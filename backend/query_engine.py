@@ -12,8 +12,9 @@ HOW IT WORKS:
   1. Send the raw query to an LLM, asking it to extract structured intent
      (category, material, style descriptors) as JSON.
   2. Filter stored products on the hard facts: category + material.
-  3. Among that filtered set, do a live pass for style descriptors
-     (e.g. "minimalist", "linear") - these are judgment calls, so they're
+  3. Among that filtered set, narrow further by style descriptors
+     (e.g. "globe", "round") when doing so still leaves real matches
+     (see _narrow_by_style) - these are judgment calls, so they're
      never stored as permanent tags, only matched at query time.
 
 SWAPPING THE LLM PROVIDER/MODEL (e.g. to cut cost):
@@ -202,16 +203,22 @@ def translate_query(raw_query: str) -> dict:
         "lighting/ceramics/objects, or an architect-designed house - into "
         "structured JSON with these fields: "
         "category (string or null - the object type, e.g. 'chair', 'lamp', "
-        "'house'. If the query names a specific subtype with its own modifier "
-        "word, keep the full two-word phrase instead of reducing it to the "
-        "bare noun - e.g. 'table lamp' stays 'table lamp', not 'lamp'; "
+        "'house'. If the query names a specific PLACEMENT OR FUNCTION "
+        "subtype, keep the full two-word phrase instead of reducing it to "
+        "the bare noun - e.g. 'table lamp' stays 'table lamp', not 'lamp'; "
         "'floor lamp' stays 'floor lamp', not 'lamp'; 'dining chair' stays "
         "'dining chair', not 'chair'; 'coffee table' stays 'coffee table', "
-        "not 'table'. Only use the bare noun when the query itself doesn't "
-        "specify a subtype, e.g. a query that's just 'lamp' or 'chair' with "
-        "no modifier), "
+        "not 'table'. But if the modifier instead describes SHAPE, "
+        "MATERIAL, or another style trait (e.g. 'ball lamp', 'round table', "
+        "'globe lamp', 'oval table'), use only the bare noun for category "
+        "('lamp', 'table') and put the shape/material word in "
+        "style_descriptors instead - do NOT invent a compound category "
+        "that isn't a real placement/function subtype. Only use the bare "
+        "noun with no style_descriptors when the query has no modifier at "
+        "all, e.g. a query that's just 'lamp' or 'chair'), "
         "material (string or null), "
-        "style_descriptors (list of strings, e.g. ['minimalist', 'linear']), "
+        "style_descriptors (list of strings, e.g. ['minimalist', 'linear', "
+        "'ball', 'round', 'globe']), "
         "color (string or null), "
         "location (string or null, e.g. 'Sweden', 'Stockholm' - only set this "
         "when the query names a real place, mainly relevant for house queries). "
@@ -326,6 +333,39 @@ def _category_matches(category_field: str, wanted: str) -> bool:
     return False
 
 
+def _narrow_by_style(products: list, style_descriptors: list) -> list:
+    """
+    Among an already category/material/color-filtered set, prefers
+    products whose own name contains one of the requested style/shape
+    words (e.g. "globe", "round") - confirmed live 2026-09-25: "globe
+    table lamp" and "round table" both had translate_query() correctly
+    extract a real style descriptor, but it was captured into the intent
+    dict and then never applied anywhere, so a shape-specific search
+    quietly fell back to the same results as the bare object-type search.
+
+    Deliberately a narrow-if-possible pass, not a hard filter or a
+    numeric score - this file's whole matching model treats a result as
+    either in or out, with no per-item ranking (see cap_per_brand's own
+    "capping should never quietly become a new de facto ranking
+    signal"). A hard filter here would also risk emptying a search
+    whenever a real matching product doesn't happen to spell the shape
+    word out in its own name - most product names aren't rigid taxonomy
+    strings - so this only narrows when doing so still leaves real
+    matches, and returns the unnarrowed set otherwise.
+    """
+    if not style_descriptors:
+        return products
+
+    def _name_matches_any(name: str) -> bool:
+        return any(
+            re.search(rf"\b{re.escape(d)}\b", name, re.IGNORECASE)
+            for d in style_descriptors
+        )
+
+    narrowed = [p for p in products if _name_matches_any(p["product_name"])]
+    return narrowed if narrowed else products
+
+
 def filter_products(intent: dict) -> list:
     """
     Filters stored products on the hard facts: category + material + has
@@ -356,6 +396,11 @@ def filter_products(intent: dict) -> list:
     # way material is - color names are already embedded in the same
     # compound material_options strings (e.g. "Black / Bone / Hardwire").
     wanted_color = (intent.get("color") or "").strip().lower()
+    raw_style_descriptors = intent.get("style_descriptors") or []
+    wanted_style_descriptors = [
+        d.strip().lower() for d in raw_style_descriptors
+        if isinstance(d, str) and d.strip()
+    ]
 
     products = []
     for row in rows:
@@ -390,7 +435,7 @@ def filter_products(intent: dict) -> list:
         product["material_options"] = json.loads(product["material_options"] or "[]")
         product["thin"] = bool(product["thin"])
         products.append(product)
-    return products
+    return _narrow_by_style(products, wanted_style_descriptors)
 
 
 def filter_by_name(raw_query: str) -> list:
@@ -610,9 +655,8 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
 
 def search(raw_query: str) -> list:
     """The full pipeline: translate, then filter (category/material hard
-    facts, plus a direct name match - see filter_by_name), then cap per
-    brand. Style-matching over the filtered set is a future step, once
-    there's enough real product data to make it meaningful.
+    facts, a style-descriptor narrow-if-possible pass, plus a direct
+    name match - see filter_by_name), then cap per brand.
 
     Houses (see filter_houses) are folded into the same matches list
     before capping, not returned separately - "two surfaces, one
