@@ -2102,6 +2102,14 @@ def extract_shopify(brand):
         # would misattribute their work and duplicate them under the
         # wrong name. Keep only the vendor's own house lines.
         raw_products = [p for p in raw_products if "asplund" in (p.get("vendor") or "").lower()]
+        # User-reported 2026-09-25: "Tati Skrivbordslåda" - confirmed
+        # live, its own real product_type is literally "Skrivbordslåda"
+        # (Swedish for "desk drawer"), a drawer component sold for the
+        # Tati desk, not a standalone piece.
+        raw_products = [
+            p for p in raw_products
+            if (p.get("product_type") or "").strip().lower() != "skrivbordslåda"
+        ]
     if brand["name"] == "Pholc":
         # User-reported 2026-09-25: "Airam LED ... G95 830 806lm E27 DIM
         # OP" - a third-party replacement lightbulb, not a Pholc design.
