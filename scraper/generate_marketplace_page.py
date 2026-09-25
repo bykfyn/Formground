@@ -158,7 +158,6 @@ PAGE_CSS = """
   .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 0 3px; }
   .maker-card:hover .maker-name { text-decoration: underline; }
   .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
-  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
   .monogram {
     width: 56px; height: 56px; border-radius: 50%; background: var(--surface-2);
     border: 0.5px solid var(--border-strong); display: flex; align-items: center;
@@ -210,25 +209,20 @@ def _location(r):
     return city or country or "Online retailer"
 
 
-def _brands_line(r):
-    brands = r.get("brands") or []
-    if not brands:
-        return ""
-    shown = brands[:3]
-    line = ", ".join(shown)
-    if len(brands) > 3:
-        line += f" +{len(brands) - 3} more"
-    return line
-
-
 def _stockist_card(r):
     name = r["name"]
+    brands = r.get("brands") or []
+    # Full brand list stays in the DOM for the search box to match
+    # against, just not rendered - many stockists carry 15-20+ brands,
+    # and a truncated "X, Y, Z +17 more" reads badly on a card (user,
+    # 2026-09-25). sr-only, not display:none, so it's still real content
+    # a screen reader and a crawler both see, just not painted.
+    brands_sr = f'<span class="sr-only">{html.escape(", ".join(brands))}</span>' if brands else ""
     return f"""      <a class="maker-card" href="{html.escape(r['website'])}" target="_blank" rel="noopener noreferrer">
         <div class="maker-card-hero"><div class="monogram" title="{html.escape(name)}">{_initials(name)}</div></div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(name)}</span>
-          <span class="maker-country">{html.escape(_location(r))}</span>
-          <span class="maker-categories">{html.escape(_brands_line(r))}</span>
+          <span class="maker-country">{html.escape(_location(r))}</span>{brands_sr}
         </div>
       </a>"""
 
