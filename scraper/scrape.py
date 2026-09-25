@@ -5758,7 +5758,6 @@ EXTRACTORS = {
     # with clean Shopify/WooCommerce catalogs, built first per user
     # request (established houses triaged in the same pass are held for
     # a later build - see brands.json notes).
-    "Cinqpoints": extract_shopify,
     "Frama": extract_shopify,
     "Stackelbergs": extract_shopify,
     "Arturel": extract_shopify,
