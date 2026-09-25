@@ -38,6 +38,7 @@ from generate_brand_pages import CARD_CLICK_TRACKING_JS, DIRECTORY_FILTER_JS
 SCRAPER_DIR = Path(__file__).parent
 REPO_ROOT = SCRAPER_DIR.parent
 RETAILERS_PATH = REPO_ROOT / "data" / "retailers.json"
+PROMOTIONS_PATH = REPO_ROOT / "data" / "promotions.json"
 
 CLOUDFLARE_BEACON = (
     "<!-- Cloudflare Web Analytics -->"
@@ -180,6 +181,27 @@ PAGE_CSS = """
     font-size: 34px; color: var(--text-secondary);
   }
 
+  /* Promotions grid (pilot, 2026-09-25) - a real product photo, not a
+     favicon/monogram badge, since a promotion is about one specific
+     item, not a company. */
+  .promo-grid { display: grid; grid-template-columns: repeat(auto-fit, 220px); justify-content: center; gap: 20px; margin-bottom: 32px; }
+  .promo-card { display: block; text-decoration: none; color: inherit; }
+  .promo-card-hero { position: relative; aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border); margin: 0 0 10px; overflow: hidden; }
+  .promo-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .promo-card:hover .promo-card-hero img { transform: scale(1.02); }
+  .promo-badge {
+    position: absolute; top: 10px; left: 10px; background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 999px;
+  }
+  .promo-card-body { padding: 0; }
+  .promo-brand { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 2px; }
+  .promo-name { display: block; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 0 4px; }
+  .promo-card:hover .promo-name { text-decoration: underline; }
+  .promo-price { display: block; font-size: 13px; margin: 0 0 4px; }
+  .promo-price-was { color: var(--text-muted); text-decoration: line-through; margin-right: 6px; }
+  .promo-price-now { color: var(--text-primary); font-weight: 600; }
+  .promo-retailer { display: block; font-size: 11px; color: var(--text-muted); }
+
   [hidden] { display: none !important; }
 """
 
@@ -199,13 +221,17 @@ PAGE_SCRIPT = """
     });
   });
 
-  // Promotions' Furniture/Lighting/Objects sub-filter: purely visual
-  // for now (no real promotions to filter yet), but wired so it's
-  // ready the moment there's something to filter.
+  // Promotions' Furniture/Lighting/Objects sub-filter - real once there
+  // are real promo-cards to filter (pilot, 2026-09-25); a no-op when
+  // the grid is empty, since there's nothing yet for it to hide.
   document.querySelectorAll('.sub-chips .chip').forEach(function (btn) {
     btn.addEventListener('click', function () {
+      var subcat = btn.dataset.subcat;
       document.querySelectorAll('.sub-chips .chip').forEach(function (b) {
         b.classList.toggle('active', b === btn);
+      });
+      document.querySelectorAll('.promo-card').forEach(function (card) {
+        card.hidden = subcat !== 'all' && card.dataset.subcat !== subcat;
       });
     });
   });
@@ -404,24 +430,58 @@ def render_stockists_panel(retailers):
     return f'    <div class="cat-panel" data-cat="stockists">\n{intro}\n    <div class="maker-grid">\n{cards}\n    </div>\n    </div>'
 
 
-def render_promotions_panel():
+def _promo_card(p):
+    discount = p.get("discount_pct")
+    badge = f'<span class="promo-badge">-{discount}%</span>' if discount else ""
+    return f"""      <a class="promo-card" href="{html.escape(p['product_url'])}" target="_blank" rel="noopener noreferrer" data-subcat="{html.escape(p['category'].lower())}">
+        <div class="promo-card-hero">
+          <img src="{html.escape(p['image'])}" alt="{html.escape(p['product_name'])}" loading="lazy">
+          {badge}
+        </div>
+        <div class="promo-card-body">
+          <span class="promo-brand">{html.escape(p['brand'])}</span>
+          <span class="promo-name">{html.escape(p['product_name'])}</span>
+          <span class="promo-price"><span class="promo-price-was">{html.escape(p['price_was'])}</span> <span class="promo-price-now">{html.escape(p['price_now'])}</span></span>
+          <span class="promo-retailer">via {html.escape(p['retailer'])}</span>
+        </div>
+      </a>"""
+
+
+def render_promotions_panel(promotions):
     subchips_html = "\n".join(
         f'      <button class="chip{" active" if cat_id == "all" else ""}" data-subcat="{cat_id}">{html.escape(label)}</button>'
         for cat_id, label in PROMOTIONS_SUBCHIPS
     )
-    return f"""    <div class="cat-panel" data-cat="promotions" style="display: none;">
-    <div class="sub-chips">
-{subchips_html}
-    </div>
-    <div class="empty-state">
+    # Pilot (2026-09-25): one real, live sale scraped directly from a
+    # stockist's own product page (data/promotions.json), proving the
+    # free/scraped half of the Promotions concept works before scaling
+    # to the other tier-2 candidates (see project memory) or building
+    # anything for paid Creator listings, which still has no real data
+    # behind it at all.
+    if promotions:
+        intro = (
+            '    <p class="panel-intro">A pilot: real, live sales scraped directly from '
+            "stockists' own product pages - free, attributed, and removed on request.</p>"
+        )
+        cards = "\n".join(_promo_card(p) for p in promotions)
+        grid = f'    <div class="promo-grid">\n{cards}\n    </div>'
+        coming_soon = """    <div class="empty-state">
+      <p class="eyebrow">Coming soon</p>
+      <p>Paid feature listings from Creators - a small first group, by invitation, before it's open to everyone.</p>
+      <a class="cta-btn" href="contact.html">Want to be featured here? Get in touch<i class="ti ti-arrow-right" aria-hidden="true"></i></a>
+    </div>"""
+    else:
+        intro = ""
+        grid = ""
+        coming_soon = """    <div class="empty-state">
       <p class="eyebrow">Coming soon</p>
       <p>A mix of paid Creator listings and free, basic promotions pulled from stockists' own live sales pages — sourced the same transparent, attributed, remove-on-request way as the rest of Formground.</p>
       <a class="cta-btn" href="contact.html">Want to be featured here? Get in touch<i class="ti ti-arrow-right" aria-hidden="true"></i></a>
-    </div>
     </div>"""
+    return f'    <div class="cat-panel" data-cat="promotions" style="display: none;">\n{intro}\n    <div class="sub-chips">\n{subchips_html}\n    </div>\n{grid}\n{coming_soon}\n    </div>'
 
 
-def render_page(retailers):
+def render_page(retailers, promotions):
     chips_html = "\n".join(
         f'    <button class="chip{" active" if cat_id == "stockists" else ""}" data-cat="{cat_id}">{html.escape(label)}</button>'
         for cat_id, label in CHIPS
@@ -429,7 +489,7 @@ def render_page(retailers):
 
     panels_html = "\n\n".join([
         render_stockists_panel(retailers),
-        render_promotions_panel(),
+        render_promotions_panel(promotions),
     ])
 
     return f"""<!DOCTYPE html>
@@ -510,9 +570,10 @@ def render_page(retailers):
 
 def main():
     retailers = json.loads(RETAILERS_PATH.read_text(encoding="utf-8"))
-    page = render_page(retailers)
+    promotions = json.loads(PROMOTIONS_PATH.read_text(encoding="utf-8")) if PROMOTIONS_PATH.exists() else []
+    page = render_page(retailers, promotions)
     n_cards = len(_group_stockists(retailers))
-    summary = f"{n_cards} cards ({len(retailers)} locations)"
+    summary = f"{n_cards} cards ({len(retailers)} locations), {len(promotions)} promotions"
 
     if "--mockup" in sys.argv:
         out_path = REPO_ROOT / "project-docs" / "mockups" / "marketplace_stockists_promotions.html"

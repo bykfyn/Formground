@@ -135,6 +135,27 @@
     font-size: 34px; color: var(--text-secondary);
   }
 
+  /* Promotions grid (pilot, 2026-09-25) - a real product photo, not a
+     favicon/monogram badge, since a promotion is about one specific
+     item, not a company. */
+  .promo-grid { display: grid; grid-template-columns: repeat(auto-fit, 220px); justify-content: center; gap: 20px; margin-bottom: 32px; }
+  .promo-card { display: block; text-decoration: none; color: inherit; }
+  .promo-card-hero { position: relative; aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border); margin: 0 0 10px; overflow: hidden; }
+  .promo-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .promo-card:hover .promo-card-hero img { transform: scale(1.02); }
+  .promo-badge {
+    position: absolute; top: 10px; left: 10px; background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 999px;
+  }
+  .promo-card-body { padding: 0; }
+  .promo-brand { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 2px; }
+  .promo-name { display: block; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 0 4px; }
+  .promo-card:hover .promo-name { text-decoration: underline; }
+  .promo-price { display: block; font-size: 13px; margin: 0 0 4px; }
+  .promo-price-was { color: var(--text-muted); text-decoration: line-through; margin-right: 6px; }
+  .promo-price-now { color: var(--text-primary); font-weight: 600; }
+  .promo-retailer { display: block; font-size: 11px; color: var(--text-muted); }
+
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -1077,15 +1098,30 @@
     </div>
 
     <div class="cat-panel" data-cat="promotions" style="display: none;">
+    <p class="panel-intro">A pilot: real, live sales scraped directly from stockists' own product pages - free, attributed, and removed on request.</p>
     <div class="sub-chips">
       <button class="chip active" data-subcat="all">All</button>
       <button class="chip" data-subcat="furniture">Furniture</button>
       <button class="chip" data-subcat="lighting">Lighting</button>
       <button class="chip" data-subcat="objects">Objects</button>
     </div>
+    <div class="promo-grid">
+      <a class="promo-card" href="https://glashusetmalmo.se/mobler/bord/matbord/superellips-b611/" target="_blank" rel="noopener noreferrer" data-subcat="furniture">
+        <div class="promo-card-hero">
+          <img src="https://glashusetmalmo.se/wp-content/uploads/2024/10/superellips-B611-walnut-chrome.jpg" alt="Superellips B611" loading="lazy">
+          <span class="promo-badge">-20%</span>
+        </div>
+        <div class="promo-card-body">
+          <span class="promo-brand">Fritz Hansen</span>
+          <span class="promo-name">Superellips B611</span>
+          <span class="promo-price"><span class="promo-price-was">25 499 kr</span> <span class="promo-price-now">20 399 kr</span></span>
+          <span class="promo-retailer">via Glashuset i Malmö</span>
+        </div>
+      </a>
+    </div>
     <div class="empty-state">
       <p class="eyebrow">Coming soon</p>
-      <p>A mix of paid Creator listings and free, basic promotions pulled from stockists' own live sales pages — sourced the same transparent, attributed, remove-on-request way as the rest of Formground.</p>
+      <p>Paid feature listings from Creators - a small first group, by invitation, before it's open to everyone.</p>
       <a class="cta-btn" href="contact.html">Want to be featured here? Get in touch<i class="ti ti-arrow-right" aria-hidden="true"></i></a>
     </div>
     </div>
@@ -1117,13 +1153,17 @@
     });
   });
 
-  // Promotions' Furniture/Lighting/Objects sub-filter: purely visual
-  // for now (no real promotions to filter yet), but wired so it's
-  // ready the moment there's something to filter.
+  // Promotions' Furniture/Lighting/Objects sub-filter - real once there
+  // are real promo-cards to filter (pilot, 2026-09-25); a no-op when
+  // the grid is empty, since there's nothing yet for it to hide.
   document.querySelectorAll('.sub-chips .chip').forEach(function (btn) {
     btn.addEventListener('click', function () {
+      var subcat = btn.dataset.subcat;
       document.querySelectorAll('.sub-chips .chip').forEach(function (b) {
         b.classList.toggle('active', b === btn);
+      });
+      document.querySelectorAll('.promo-card').forEach(function (card) {
+        card.hidden = subcat !== 'all' && card.dataset.subcat !== subcat;
       });
     });
   });
