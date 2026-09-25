@@ -2160,6 +2160,15 @@ def extract_shopify(brand):
             p for p in raw_products
             if (p.get("product_type") or "").strip().lower() != "accessories"
         ]
+    if brand["name"] == "Galvin Brothers":
+        # User-reported 2026-09-25: "(New) Footlight Bedside Drawers" -
+        # a "(New)"/"(NEW)" marketing badge this brand prefixes onto
+        # many of its own real titles, not part of the product's name.
+        # Stripped on the raw title itself (not inside _base_name) so
+        # every downstream step - grouping, the variant-suffix slice,
+        # the saved product_name - all see the same already-clean text.
+        for p in raw_products:
+            p["title"] = re.sub(r"^\(new\)\s*", "", p["title"], flags=re.IGNORECASE).strip()
     if brand["name"] == "Massimo Copenhagen":
         # This brand's own real "Stain Remover" product_type (a 200ml
         # care product) is excluded outright - not a rug, and would
@@ -2215,7 +2224,7 @@ def extract_shopify(brand):
         # card-with-envelope stationery sets. NOT excluded: "CUP WITH
         # EAR" - a real ceramic mug (Swedish for "handle"), not jewelry,
         # confirmed against the brand's own site before ruling that out.
-        _fld_exclude = ("poster", "cap", "scarf", "apron", "bag", "tote", "fabric", "card", "envelope", "book")
+        _fld_exclude = ("poster", "cap", "scarf", "shawl", "apron", "bag", "tote", "fabric", "card", "envelope", "book")
         raw_products = [
             p for p in raw_products
             if not any(kw in p["title"].lower() for kw in _fld_exclude)
