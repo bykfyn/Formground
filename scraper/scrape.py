@@ -1033,6 +1033,10 @@ EXCLUDED_CATEGORIES = {
     # for "fabric ... running metre"), a fabric-by-the-metre swatch for
     # its sofas, not a real product either.
     "fabrics", "n05 fabric",
+    # Cozmo's own "Jackets" category (confirmed live 2026-09-25) -
+    # replacement fabric covers for its modular sofa system, not a
+    # standalone piece.
+    "jackets",
     # User-reported 2026-09-25 on Anour: "Wire Gripper for Sloped
     # Ceiling (2 pcs.)" - confirmed live, its real "Extras" category
     # tags exactly this kind of accessory (mounting brackets, a
@@ -2172,6 +2176,16 @@ def extract_shopify(brand):
             p for p in raw_products
             if (p.get("product_type") or "").strip().lower() != "accessories"
         ]
+    if brand["name"] == "Cozmo":
+        # Confirmed live 2026-09-25: titles use " | " as their fabric/
+        # colourway variant separator ("Float 4 Seater LH Open Chaise
+        # Sofa | Blue & Brown Textured Weave"), not one of the
+        # separators the shared _base_name regex recognizes (" - ", " / ",
+        # ", ") - normalized to " - " here so the existing variant-
+        # grouping logic works unmodified, rather than touching the
+        # shared regex for every other brand.
+        for p in raw_products:
+            p["title"] = p["title"].replace(" | ", " - ")
     if brand["name"] == "Galvin Brothers":
         # User-reported 2026-09-25: "(New) Footlight Bedside Drawers" -
         # a "(New)"/"(NEW)" marketing badge this brand prefixes onto
@@ -6010,6 +6024,7 @@ EXTRACTORS = {
     "Ruka Studio": extract_shopify,
     "Rihouse": extract_woocommerce,
     "Pode": extract_pode,
+    "Cozmo": extract_shopify,
     # "TAKT" excluded here - confirmed 2026-09-25: the WooCommerce Store
     # API returns HTTP 200 but a 0-byte body for the scraper's real UA
     # specifically, while a generic UA gets the full real response - a

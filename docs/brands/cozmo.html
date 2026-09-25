@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cozmo on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Cozmo's work on Formground - 67 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/cozmo.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cozmo on Formground">
+<meta property="og:description" content="Cozmo's work on Formground - 67 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/cozmo.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-1_5-Seater-Chaise-Sofa-Ecru-Boucle.jpg?v=1737551502">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-1_5-Seater-Chaise-Sofa-Ecru-Boucle.jpg?v=1737551502">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cozmo on Formground">
+<meta name="twitter:description" content="Cozmo's work on Formground - 67 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Cozmo", "item": "https://formground.com/brands/cozmo.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Cozmo</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Objects</span><span class="tag">United Kingdom</span></div>
+    <a class="brand-site-link" href="https://www.mycozmo.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://www.mycozmo.com/products/1-5-seater-chaise-sofa-boucle-ecru" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-1_5-Seater-Chaise-Sofa-Ecru-Boucle.jpg?v=1737551502" alt="Cozy 1.5 Seater Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy 1.5 Seater Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/cozy-1-5-seater-sofa-midnight-blue-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-1_5-Seater-Sofa-Midnight-Blue-Velvet.jpg?v=1737373152" alt="Cozy 1.5 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy 1.5 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/cozy-2-seater-sofa-dark-green-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-2-Seater-Sofa-Dark-Green-Velvet.jpg?v=1738232649" alt="Cozy 2 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy 2 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/3-seater-chaise-corner-left-hand-sofa-boucle-ecru" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-3-Seater-LH-Chaise-Sofa-Ecru-Boucle.jpg?v=1738064367" alt="Cozy 3 Seater LH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy 3 Seater LH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/3-seater-chaise-corner-right-hand-sofa-boucle-ecru" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-3-Seater-RH-Chaise-Sofa-Ecru-Boucle.jpg?v=1738064392" alt="Cozy 3 Seater RH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy 3 Seater RH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/cozy-3-seater-sofa-blue-brown-textured-weave" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/CozyFront_bc4df340-71b3-40fc-811c-7706ae59faf9.png?v=1782912768" alt="Cozy 3 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy 3 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/4-seater-chaise-corner-left-hand-sofa-boucle-ecru" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-4-Seater-LH-Chaise-Sofa-Ecru-Boucle.jpg?v=1737984493" alt="Cozy 4 Seater LH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy 4 Seater LH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/4-seater-chaise-corner-right-hand-sofa-boucle-ecru" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-4-Seater-RH-Chaise-Sofa-Ecru-Boucle.jpg?v=1738011150" alt="Cozy 4 Seater RH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy 4 Seater RH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/5-seater-chaise-corner-left-hand-sofa-boucle-ecru" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-5-Seater-LH-Chaise-Sofa-Ecru-Boucle.jpg?v=1738068398" alt="Cozy 5 Seater LH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy 5 Seater LH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/5-seater-chaise-corner-right-hand-sofa-boucle-ecru" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-5-Seater-RH-Chaise-Sofa-Ecru-Boucle.jpg?v=1738068432" alt="Cozy 5 Seater RH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy 5 Seater RH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/5-seater-sofa-boucle-ecru" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-5-Seater-Sofa-Ecru-Boucle.jpg?v=1738068457" alt="Cozy 5 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy 5 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/cozmo-cozy-armchair-midnight-blue-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-Armchair-Midnight-Blue-Velvet.jpg?v=1738928306" alt="Cozy Armchair by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/cozy-bed-super-king-ecru-boucle-frame-ecru-boucle-headboard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-Bed-Super-King-Ecru-Boucle-Frame-Ecru-Boucle-Headboard.jpg?v=1738933585" alt="Cozy Bed by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy Bed</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/cozy-bed-king-ecru-boucle-frame-ecru-boucle-headboard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-Bed-King-Ecru-Boucle-Frame-Ecru-Boucle-Headboard.jpg?v=1738933527" alt="Cozy Bed by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy Bed</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/cozy-bed-double-ecru-boucle-frame-ecru-boucle-headboard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-Bed-Double-Ecru-Boucle-Frame-Ecru-Boucle-Headboard.jpg?v=1738932033" alt="Cozy Bed by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy Bed</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/cozy-pouffe-mustard-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/spice_2.jpg?v=1753191950" alt="Cozy Pouffe by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cozy Pouffe</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/cutout-nesting-tables-cobalt-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cutout-Nesting-Tables-Cobalt-Blue.jpg?v=1738935334" alt="Cutout Nesting Tables by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Cutout Nesting Tables</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-1-5-seater-chaise-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500jpg_0000s_0006_FLOAT2_011.jpg?v=1749340378" alt="Float 1.5 Seater Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 1.5 Seater Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-1-5-seater-sofa-mustard-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/float_dijon_32.jpg?v=1749634350" alt="Float 1.5 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 1.5 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-2-seater-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500jpg_0000s_0012_FLOAT2_005.jpg?v=1749340223" alt="Float 2 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 2 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-3-seater-lh-chaise-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500jpg_0000s_0003_FLOAT2_014_3f5ee920-cbc2-4ff0-be01-1dc902a41b46.jpg?v=1749340351" alt="Float 3 Seater LH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 3 Seater LH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-3-seater-rh-chaise-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500jpg_0000s_0003_FLOAT2_014.jpg?v=1749340397" alt="Float 3 Seater RH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 3 Seater RH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-3-seater-sofa-blue-brown-textured-weave" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Float_Front_09c62c4f-cf18-4aa8-98b8-68869609a0bc.png?v=1784638270" alt="Float 3 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 3 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-4-seater-lh-chaise-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500jpg_0000s_0004_FLOAT2_013.jpg?v=1749340432" alt="Float 4 Seater LH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 4 Seater LH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-4-seater-lh-open-chaise-sofa-blue-brown-textured-weave" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Blue_Brown_3_4_47eb92f4-3c89-4feb-9601-977acc124dc0.png?v=1789401312" alt="Float 4 Seater LH Open Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 4 Seater LH Open Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-4-seater-rh-chaise-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500jpg_0000s_0004_FLOAT2_013_77856f2e-68f2-4927-9054-e4ec06838268.jpg?v=1749340460" alt="Float 4 Seater RH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 4 Seater RH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-4-seater-rh-open-chaise-sofa-blue-brown-textured-weave" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Blue_Brown_RH_3_4_2f3a1046-2cc1-4586-aeec-c1aaf7cd89c6.jpg?v=1789401305" alt="Float 4 Seater RH Open Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 4 Seater RH Open Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-5-seater-lh-chaise-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500jpg_0000s_0002_FLOAT2_015.jpg?v=1749340498" alt="Float 5 Seater LH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 5 Seater LH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-5-seater-rh-chaise-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500jpg_0000s_0002_FLOAT2_015_18c59e3a-802a-4e75-b3a7-478c7b3c2a2a.jpg?v=1749340528" alt="Float 5 Seater RH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 5 Seater RH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-5-seater-sofa-mustard-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/float_dijon_28.jpg?v=1749634475" alt="Float 5 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float 5 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-extra-large-even-sided-corner-sofa-cream-textured-weave" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500w_0000s_0015_036LLView01_15.jpg?v=1752167819" alt="Float Extra Large Even-Sided Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float Extra Large Even-Sided Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-extra-large-lh-facing-corner-sofa-cream-textured-weave" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500w_0000s_0016_036LLView01_14_5ca7ecea-4f6b-4b22-95d4-dd4ca6a827bc.jpg?v=1752167950" alt="Float Extra Large LH Facing Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float Extra Large LH Facing Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-extra-large-rh-facing-corner-sofa-cream-textured-weave" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500w_0000s_0016_036LLView01_14.jpg?v=1752167800" alt="Float Extra Large RH Facing Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float Extra Large RH Facing Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-large-even-sided-corner-sofa-mustard-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500jpg_0000s_0084_036LLView01_12.jpg?v=1752182024" alt="Float Large Even-Sided Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float Large Even-Sided Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-large-lh-facing-corner-sofa-cream-textured-weave" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500w_0000s_0017_036LLView01_13_9dab111c-f8aa-47e7-815e-45569b00bc4a.jpg?v=1752167851" alt="Float Large LH Facing Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float Large LH Facing Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-large-rh-facing-corner-sofa-cream-textured-weave" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500w_0000s_0017_036LLView01_13.jpg?v=1752167786" alt="Float Large RH Facing Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float Large RH Facing Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-medium-lh-facing-corner-sofa-cream-textured-weave" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500wM_0000s_0000s_0011_036LLView01_11.jpg?v=1752015330" alt="Float Medium LH Facing Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float Medium LH Facing Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-medium-rh-facing-corner-sofa-cream-textured-weave" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500w_0000s_0019_036LLView01_11.jpg?v=1752015249" alt="Float Medium RH Facing Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float Medium RH Facing Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-rectangular-ottoman-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500jpg_0000s_0001_FLOAT2_016.jpg?v=1749340759" alt="Float Rectangular Ottoman by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float Rectangular Ottoman</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/float-square-ottoman-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/2500jpg_0000s_0000_FLOAT2_017.jpg?v=1749340754" alt="Float Square Ottoman by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Float Square Ottoman</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/gingko-oak-chair-shaggy-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/gingko_chair_oak_dusty_pink_front.jpg?v=1789123506" alt="Ginkgo Oak Chair by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ginkgo Oak Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/gingko-walnut-chair-shaggy-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/gingko_chair_walnut_dusty_pink_front.jpg?v=1789123506" alt="Ginkgo Walnut Chair by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ginkgo Walnut Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/hug-1-5-seater-sofa-wide-cream-textured-weave-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/white_linen_brick_3.jpg?v=1773499495" alt="Hug 1.5 Seater Sofa (wide) by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hug 1.5 Seater Sofa (wide)</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/hug-3-seater-sofa-regular-cream-textured-weave-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/white_linen_brick_5.jpg?v=1773499519" alt="Hug 3 Seater Sofa (regular) by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hug 3 Seater Sofa (regular)</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/hug-3-seater-sofa-wide-cream-textured-weave-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/white_linen_brick_7.jpg?v=1773499543" alt="Hug 3 Seater Sofa (wide) by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hug 3 Seater Sofa (wide)</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/hug-armchair-regular-ecru-boucle-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/white_boucle_blue_13.jpg?v=1773498355" alt="Hug Armchair (regular) by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hug Armchair (regular)</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/lumbar-cushions-green-boucle-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Lumber-Cushions-Green-Boucle.jpg?v=1743209038" alt="Lumbar Cushions by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lumbar Cushions</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/pillow-1-5-seater-sofa-black-boucle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Pillow-1_5-Seater-Sofa-Black-Boucle.jpg?v=1738149221" alt="Pillow 1.5 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pillow 1.5 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/pillow-2-seater-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/pillow_fern_6.jpg?v=1753259515" alt="Pillow 2 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pillow 2 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/pillow-3-seater-sofa-blue-brown-textured-weave" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/PillowFront.png?v=1782909053" alt="Pillow 3 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pillow 3 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/pillow-5-seater-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/pillow_fern_8.jpg?v=1753259585" alt="Pillow 5 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pillow 5 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/pillow-extra-large-even-sided-corner-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/pillow_fern_9_8da34af2-9daf-4602-9f26-bbcfed10731d.jpg?v=1753274672" alt="Pillow Extra Large Even-Sided Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pillow Extra Large Even-Sided Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/pillow-extra-large-lh-facing-corner-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/pillow_fern_10_8abe37fc-b200-46ec-9826-f910c368b256.jpg?v=1753275057" alt="Pillow Extra Large LH Facing Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pillow Extra Large LH Facing Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/pillow-extra-large-rh-facing-corner-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/pillow_fern_10_711e4f3c-9aa3-4c76-8082-714f59a8d130.jpg?v=1753275007" alt="Pillow Extra Large RH Facing Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pillow Extra Large RH Facing Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/pillow-large-even-sided-corner-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/pillow_fern_7_e9de1c85-1a98-45bc-aaa5-bac56b9e1298.jpg?v=1753274576" alt="Pillow Large Even-Sided Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pillow Large Even-Sided Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/pillow-large-lh-facing-corner-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/pillow_fern_6_e3230af0-dc0d-4f19-98dc-23faa819abcf.jpg?v=1753274411" alt="Pillow Large LH Facing Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pillow Large LH Facing Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/pillow-large-rh-facing-corner-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/pillow_fern_6_cc081acb-ec82-4f58-8a3c-83de5991a566.jpg?v=1753274370" alt="Pillow Large RH Facing Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pillow Large RH Facing Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/pillow-medium-lh-facing-corner-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/pillow_fern_8_2f600440-99fd-4b42-a750-cc9dc89d9784.jpg?v=1753274063" alt="Pillow Medium LH Facing Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pillow Medium LH Facing Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/pillow-medium-rh-facing-corner-sofa-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/pillow_fern_8_4c4c980d-40ea-4cbc-8176-767a65c712c4.jpg?v=1753273994" alt="Pillow Medium RH Facing Corner Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pillow Medium RH Facing Corner Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/rest-3-seater-chaise-sofa-rust-velvet-left-hand-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Rust_LH_3_4_38765d3e-f955-4671-9f1a-5def28496349.png?v=1789146667" alt="Rest 3 Seater LH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rest 3 Seater LH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/rest-4-seater-chaise-sofa-rust-velvet-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Rust3_4.png?v=1789139116" alt="Rest 3 Seater RH Chaise Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rest 3 Seater RH Chaise Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/rest-3-seater-sofa-rust-velvet-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/rest_brick_rust_2.jpg?v=1752710826" alt="Rest 3 Seater Sofa by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Rest 3 Seater Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/scatter-cushions-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/cozy_fern_31.jpg?v=1753277840" alt="Scatter Cushions by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Scatter Cushions</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/side-cushions-green-boucle-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/cozy_fern_6_d383e75c-6b4e-4113-9256-d74d7254f68b.jpg?v=1769182905" alt="Side Cushions by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Side Cushions</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/squarish-2-seater-oak-dining-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Oak_2_Seater_2.jpg?v=1789133888" alt="Squarish 2 Seater Dining Table by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Squarish 2 Seater Dining Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/squarish-4-seater-oak-dining-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Oak_4_Seater_1.jpg?v=1789133694" alt="Squarish 4 Seater Dining Table by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Squarish 4 Seater Dining Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/squarish-walnut-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Walnut_3_4.jpg?v=1789130114" alt="Squarish Coffee Table by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Squarish Coffee Table</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
