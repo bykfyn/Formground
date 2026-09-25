@@ -31,6 +31,7 @@ import json
 import sys
 
 from pathlib import Path
+from urllib.parse import urlparse
 
 from generate_brand_pages import CARD_CLICK_TRACKING_JS, DIRECTORY_FILTER_JS
 
@@ -149,11 +150,14 @@ PAGE_CSS = """
   }
 
   /* Stockist cards reuse for-creators.html's maker-card/tool-card-hero
-     pattern (see project memory) - a monogram stands in for a photo
-     since we don't have a real storefront image per retailer. */
+     pattern (see project memory) - a retailer's own real favicon over a
+     bare monogram (user, 2026-09-25), since we don't have a real
+     storefront photo per retailer. */
   .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, 190px); justify-content: center; gap: 16px; align-items: start; }
   .maker-card { display: block; text-decoration: none; color: inherit; }
   .maker-card-hero { aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border); margin: 0 0 10px; display: flex; align-items: center; justify-content: center; }
+  .tool-card-hero { padding: 24px; box-sizing: border-box; }
+  .tool-card-hero img { width: auto; height: auto; max-width: 56%; max-height: 56%; object-fit: contain; }
   .maker-card-body { padding: 0; text-align: center; }
   .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 0 3px; }
   .maker-card:hover .maker-name { text-decoration: underline; }
@@ -209,6 +213,11 @@ def _location(r):
     return city or country or "Online retailer"
 
 
+def _favicon_url(website):
+    domain = urlparse(website).netloc.removeprefix("www.")
+    return f"https://www.google.com/s2/favicons?domain={domain}&sz=128" if domain else None
+
+
 def _stockist_card(r):
     name = r["name"]
     brands = r.get("brands") or []
@@ -218,8 +227,21 @@ def _stockist_card(r):
     # 2026-09-25). sr-only, not display:none, so it's still real content
     # a screen reader and a crawler both see, just not painted.
     brands_sr = f'<span class="sr-only">{html.escape(", ".join(brands))}</span>' if brands else ""
+    # Real favicon over a bare monogram (user, 2026-09-25) - same
+    # icon-with-monogram-fallback pattern as for-creators.html's tool
+    # cards, just fetched live via Google's favicon service instead of
+    # hand-checked per entry (137 sites, not a handful of known tools).
+    # onerror swaps to the monogram on the rare genuine load failure.
+    favicon = _favicon_url(r["website"])
+    hero = (
+        f'<img src="{html.escape(favicon)}" alt="{html.escape(name)}" loading="lazy" '
+        f'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">'
+        f'<div class="monogram" style="display:none;" title="{html.escape(name)}">{_initials(name)}</div>'
+        if favicon else
+        f'<div class="monogram" title="{html.escape(name)}">{_initials(name)}</div>'
+    )
     return f"""      <a class="maker-card" href="{html.escape(r['website'])}" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero"><div class="monogram" title="{html.escape(name)}">{_initials(name)}</div></div>
+        <div class="maker-card-hero tool-card-hero">{hero}</div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(name)}</span>
           <span class="maker-country">{html.escape(_location(r))}</span>{brands_sr}
