@@ -2014,6 +2014,78 @@ def _looks_like_a_maintenance_item(title):
     return False
 
 
+# Categories that mean "not a furniture/lighting/ceramics/object design
+# product Formground exists to surface" - confirmed live 2026-09-25 by
+# checking exactly which real, already-scraped listings fall under each
+# one: Frama's Body Care/Hand Care/Hair Care/Roll On Perfume range (a
+# skincare line sold through the same catalog as its real furniture/
+# lighting), and Tala/In Common With's standalone light-bulb listings.
+# User's own framing: a bulb sold on its own is a component, not a
+# design object in its own right, even a genuinely well-designed one
+# (Tala's own "Decorative Light Bulbs" line included) - the actual lamp
+# fixtures that use these bulbs (e.g. "Knuckle Table Lamp in Walnut +
+# Sphere IV") are unaffected, since those are separate, real product
+# listings of their own, not this category.
+OUT_OF_SCOPE_CATEGORIES = {
+    "hand care", "body care", "hair care", "roll on perfume",
+    "decorative light bulbs", "technical light bulbs", "led light bulbs",
+    # 101cph's own bulb-only category (checked live: all 5 rows are
+    # Tala-made Pygmy/Porcelain bulbs resold as their own listings, same
+    # "component, not a design object" reasoning as the bulb categories
+    # above - no other brand uses this category name).
+    "light source",
+    # Noah's own raw, un-mapped internal product-type code (confirmed
+    # live 2026-09-25, user-reported: every one of these 59 rows loads a
+    # real title server-side but silently redirects to Noah's homepage
+    # in a real browser - a discontinued/unavailable configuration of a
+    # modular sofa system, not a real navigable listing. Distinctive
+    # enough a category name that no other brand could collide with it.
+    "n09 subproduct",
+}
+
+# Unlike OUT_OF_SCOPE_CATEGORIES above, "Upholstery" isn't safe to
+# exclude globally - checked live 2026-09-25: Established & Sons uses
+# the exact same category name for real furniture ("Mollo" is a real
+# Philippe Malouin sofa, "Crate Daybed" a real Jasper Morrison design),
+# while Audo uses it purely for Kvadrat/other textile-mill fabric
+# swatches sold as their own listings (confirmed on every one of
+# Audo's 32 real "Upholstery" rows, e.g. "Vidar 4" -> "Vidar 4, 0146
+# Beige Upholstery Fabric by Kvadrat" on Audo's own page - a fabric
+# swatch, not a design object). Same category name, opposite meaning
+# per brand, so this is scoped to (brand, category) pairs instead of
+# a bare category set.
+OUT_OF_SCOPE_CATEGORIES_BY_BRAND = {
+    ("Audo", "upholstery"),
+}
+
+
+def _is_out_of_scope_product(name, category, brand=None):
+    """
+    A final, post-category-resolution check (called once per product,
+    right before save_product - see run()) for real listings that are
+    neither a maintenance/upkeep accessory (_looks_like_a_maintenance_item
+    above, which runs earlier, before category is resolved, since not
+    every extractor has a category yet at that point) nor a design object
+    at all - see OUT_OF_SCOPE_CATEGORIES and OUT_OF_SCOPE_CATEGORIES_BY_BRAND
+    for the category-based cases. Also catches two confirmed-live,
+    name-only cases that don't have their own reliable category: Coco
+    Flip's own literal "Test product" scraper artifact, and Massimo
+    Copenhagen's "Rug Underlay" - a pad sold to go under a real rug, not
+    a rug itself, despite inheriting the brand's own "Rug" category tag.
+    """
+    category_lower = category.strip().lower()
+    if category_lower in OUT_OF_SCOPE_CATEGORIES:
+        return True
+    if brand and (brand, category_lower) in OUT_OF_SCOPE_CATEGORIES_BY_BRAND:
+        return True
+    name_lower = name.strip().lower()
+    if name_lower == "test product":
+        return True
+    if "underlay" in name_lower:
+        return True
+    return False
+
+
 def _base_name(title, brand_name=None):
     """
     Several Shopify and WooCommerce brands don't use real variants - they
@@ -6609,6 +6681,7 @@ def run(brand_name=None):
             # brands not yet reached untouched.
             conn.execute("DELETE FROM products WHERE brand = ?", (brand["name"],))
             conn.commit()
+            products_saved = 0
             for product in products:
                 url = product["product_url"]
                 product["first_seen"] = old_first_seen[url] if url in old_first_seen else today
@@ -6618,10 +6691,13 @@ def run(brand_name=None):
                 image_override = MANUAL_IMAGE_OVERRIDES.get((brand["name"], product["product_name"]))
                 if image_override:
                     product["image_url"] = image_override
+                if _is_out_of_scope_product(product["product_name"], product["category"], brand["name"]):
+                    continue
                 save_product(conn, product)
-            print(f"  Saved {len(products)} products in {brand_seconds}s.")
+                products_saved += 1
+            print(f"  Saved {products_saved} products in {brand_seconds}s.")
             brand_reports.append({
-                "brand": brand["name"], "products_saved": len(products),
+                "brand": brand["name"], "products_saved": products_saved,
                 "seconds": brand_seconds, "error": None, "likely_blocked": False,
             })
 
