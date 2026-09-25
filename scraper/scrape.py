@@ -2003,6 +2003,13 @@ def _looks_like_a_maintenance_item(title):
         # jewelry collaboration) - a necklace pendant, not a lighting
         # pendant, despite the ambiguous name.
         "loop pendant",
+        # Anour's own bare wiring accessories (confirmed live 2026-09-25,
+        # user-reported: "1,6m Textile Cord with ON/OFF Switch") - a
+        # cord/plug listing describes electrical wiring, never a design
+        # object, unlike its named lamp/shade/reflector components under
+        # the same "Building parts" category (which do have their own
+        # real product identity and aren't excluded here).
+        "textile cord", "plug adaptor",
     )
     title_lower = title.lower()
     if any(kw in title_lower for kw in keywords):
