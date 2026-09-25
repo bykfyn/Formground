@@ -1888,6 +1888,9 @@ def _looks_like_a_maintenance_item(title):
         # Incense" listings, confirmed live 2026-09-25 - replacement
         # components for its real Ashtray/Burner Incense products.
         "spare parts:",
+        # Unico Milano's "Campionario colori" (Italian for "colour
+        # sample range/catalogue") - a swatch reference, not furniture.
+        "campionario",
         # Utilitario Mexicano also sells polarized sunglasses through
         # this same catalog (confirmed live: "Lentes Filtro
         # Polarizador") - not a home design object either, and its own
@@ -5816,6 +5819,8 @@ EXTRACTORS = {
     "Objects for Objects": extract_shopify,
     "Kouros Maghsoudi": extract_shopify,
     "Nifemi Ogunro": extract_shopify,
+    "Unico Milano": extract_shopify,
+    "Ruka Studio": extract_shopify,
     # "TAKT" excluded here - confirmed 2026-09-25: the WooCommerce Store
     # API returns HTTP 200 but a 0-byte body for the scraper's real UA
     # specifically, while a generic UA gets the full real response - a
