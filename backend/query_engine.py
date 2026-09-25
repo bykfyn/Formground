@@ -388,19 +388,8 @@ def _narrow_by_style(products: list, style_descriptors: list) -> list:
     expanded_descriptors = _expand_style_synonyms(style_descriptors)
 
     def _name_matches_any(name: str) -> bool:
-        # A "+" in a product name joins on a bundled accessory, most
-        # commonly Tala's own named bulb line ("+ Sphere IV", "+ Oval
-        # II") - confirmed live 2026-09-25: "Knuckle Table Lamp in
-        # Walnut + Sphere IV" is an articulated-arm lamp, not a globe,
-        # and matched "globe table lamp" purely because of its bundled
-        # bulb's model name. Checked every real "+"-containing product
-        # name that has a shape word at all: the shape word describing
-        # the actual product always sits before the "+" (e.g. Minimalux's
-        # "Round Pendant + Bangle", Frama's "Sphere Oil Diffuser + Oil") -
-        # never only after it - so only that part is checked here.
-        primary_name = name.split("+")[0]
         return any(
-            re.search(rf"\b{re.escape(d)}\b", primary_name, re.IGNORECASE)
+            re.search(rf"\b{re.escape(d)}\b", name, re.IGNORECASE)
             for d in expanded_descriptors
         )
 
