@@ -458,6 +458,9 @@ def render_promotions_panel(promotions):
     # to the other tier-2 candidates (see project memory) or building
     # anything for paid Creator listings, which still has no real data
     # behind it at all.
+    # No separate "coming soon" box (2026-09-25, user: duplicated the
+    # footer's own "want to be featured?" CTA, which already covers
+    # this) - paid Creator listings just aren't part of the grid yet.
     if promotions:
         intro = (
             '    <p class="panel-intro">A pilot: real, live sales scraped directly from '
@@ -465,20 +468,15 @@ def render_promotions_panel(promotions):
         )
         cards = "\n".join(_promo_card(p) for p in promotions)
         grid = f'    <div class="promo-grid">\n{cards}\n    </div>'
-        coming_soon = """    <div class="empty-state">
-      <p class="eyebrow">Coming soon</p>
-      <p>Paid feature listings from Creators - a small first group, by invitation, before it's open to everyone.</p>
-      <a class="cta-btn" href="contact.html">Want to be featured here? Get in touch<i class="ti ti-arrow-right" aria-hidden="true"></i></a>
-    </div>"""
     else:
-        intro = ""
+        intro = (
+            '    <p class="panel-intro">A mix of paid Creator listings and free, basic '
+            "promotions pulled from stockists' own live sales pages — sourced the same "
+            "transparent, attributed, remove-on-request way as the rest of Formground. "
+            'Coming soon.</p>'
+        )
         grid = ""
-        coming_soon = """    <div class="empty-state">
-      <p class="eyebrow">Coming soon</p>
-      <p>A mix of paid Creator listings and free, basic promotions pulled from stockists' own live sales pages — sourced the same transparent, attributed, remove-on-request way as the rest of Formground.</p>
-      <a class="cta-btn" href="contact.html">Want to be featured here? Get in touch<i class="ti ti-arrow-right" aria-hidden="true"></i></a>
-    </div>"""
-    return f'    <div class="cat-panel" data-cat="promotions" style="display: none;">\n{intro}\n    <div class="sub-chips">\n{subchips_html}\n    </div>\n{grid}\n{coming_soon}\n    </div>'
+    return f'    <div class="cat-panel" data-cat="promotions" style="display: none;">\n{intro}\n    <div class="sub-chips">\n{subchips_html}\n    </div>\n{grid}\n    </div>'
 
 
 def render_page(retailers, promotions):
