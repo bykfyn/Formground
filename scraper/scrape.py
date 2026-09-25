@@ -1728,7 +1728,9 @@ MANUAL_IMAGE_OVERRIDES = {
 def _infer_category_from_english_keywords(product_name):
     text = product_name.lower()
     for phrase, category in ENGLISH_OBJECT_TYPE_KEYWORDS:
-        if phrase in ("light", "uplight") and ("waste light" in text or "kilt light" in text):
+        if phrase in ("light", "uplight") and (
+            "waste light" in text or "kilt light" in text or "light & easy" in text
+        ):
             # Mater's own recycled-material finish name ("Coffee Waste
             # Light"/"Wood Waste Light", alongside "...Dark"/"...Black")
             # collides with the generic "light" keyword - confirmed
@@ -1743,6 +1745,11 @@ def _infer_category_from_english_keywords(product_name):
             # Sideboard" are sibling finish/style variants of the same
             # storage-cabinet line, not different object types - "Light"
             # here names a finish, not a lamp. User-reported 2026-09-24.
+            # Same collision on Gärsnäs's own "Light & Easy" chair
+            # collection (confirmed live 2026-09-25, user-reported: "Light
+            # & Easy stol"/"Light & Easy karmstol" are real chairs -
+            # "stol"/"karmstol" are Swedish for chair/armchair - "Light"
+            # here names the collection, not a lamp).
             continue
         # Optional trailing "s" - confirmed live 2026-09-21: "Ondine
         # Set of 3 boxes" (Mercoeur Editions) didn't match "box" at all
@@ -2059,7 +2066,87 @@ OUT_OF_SCOPE_CATEGORIES_BY_BRAND = {
 }
 
 
-def _is_out_of_scope_product(name, category, brand=None):
+# Real, commercial light-bulb base/socket codes (E12/E14/E26/E27 =
+# Edison screw sizes, G4/G9/G70/G95/G150 = capsule/globe diameter+base
+# codes, GU10/GU24 = twist-lock bases, GX53 = a push-lock base, S14d =
+# a festoon-bulb base) - confirmed live 2026-09-25 (user-reported,
+# across Tala and Seletti): checked every real design-named lamp/object
+# in the whole DB that has "bulb" in its own name (Ingo Maurer's
+# "Bulb", MOR's "BULB Ceiling Lamp" line, Audo's "TR Bulb", AY
+# Illuminate's "Buri Bulb"/"Rattan Bulb", Minimalux's "Bulb", etc.) -
+# none use any of these codes, since a real creative model name doesn't
+# include a bureaucratic electrical fitting code, only an actual bulb
+# SKU's own listing does.
+BULB_BASE_CODES = {
+    "e12", "e14", "e26", "e27", "g4", "g9", "g70", "g95", "g150",
+    "gu10", "gu24", "gx53", "s14d",
+}
+
+# A trailing "... Bulb"/"... Light Bulb"/"... Replacement Bulb" is the
+# separate accessory bulb FOR another of the same brand's real fixtures,
+# not a design object of its own - confirmed live 2026-09-25 across
+# Seletti's animal-lamp lines (e.g. "Monkey Lamp Light Bulb" next to the
+# real "The Monkey Lamp Ceiling Version" etc.) and Tala's own portable-
+# lamp lines (e.g. "Shore G95 6W Replacement Bulb" next to Tala's real
+# "Shore" lamp collection). Matched by stripping this suffix and
+# checking the remaining name shares its first real word with another
+# product from the same brand that ISN'T itself a bulb - the shared
+# first word (the animal name, the collection name) is what ties an
+# accessory bulb back to its own real fixture line.
+_BULB_SUFFIX_PATTERNS = [
+    re.compile(r"\s+replacement\s+(light\s+)?bulb\s*$", re.IGNORECASE),
+    re.compile(r"\s+(light\s+)?bulb(\s+usb)?(\s+(indoor|outdoor))?\s*$", re.IGNORECASE),
+]
+
+
+def _strip_bulb_suffix(name_lower):
+    for pattern in _BULB_SUFFIX_PATTERNS:
+        m = pattern.search(name_lower)
+        if m:
+            return name_lower[:m.start()].strip()
+    return None
+
+
+def _first_word(name_lower):
+    words = name_lower.split()
+    if words and words[0] in ("the", '"the'):
+        words = words[1:]
+    return words[0].strip('"') if words else None
+
+
+def _is_sibling_accessory_bulb(name_lower, sibling_names_lower):
+    """
+    The shared-first-word check alone isn't enough - checked live
+    2026-09-25 and found two real false positives: Eric Schmitt
+    Studio's "Table Bulb" (a real design object) shares "table" with
+    dozens of unrelated real tables, and Ingo Maurer's "I Ricchi Poveri
+    - Monument for a Bulb" (a real, named art piece) shares "i" with
+    other real "I Ricchi Poveri" pieces that are their own designs, not
+    a fixture this is the bulb for. What every CONFIRMED real case has
+    in common (Seletti's animal lamps, Tala's Muse/Shore/Magma/Mantle
+    lines) is that the matching sibling is itself a real lighting
+    fixture - so this also requires the sibling to contain "lamp" or
+    "light" as a whole word, which correctly excludes both false
+    positives above (neither "Table Bulb"'s nor "Monument for a Bulb"'s
+    matching siblings are lighting fixtures) without losing any real case.
+    """
+    base = _strip_bulb_suffix(name_lower)
+    if not base:
+        return False
+    target_word = _first_word(base)
+    if not target_word:
+        return False
+    for sibling_lower in sibling_names_lower:
+        if sibling_lower == name_lower or _strip_bulb_suffix(sibling_lower):
+            continue
+        if not re.search(r"\b(lamp|light)\b", sibling_lower):
+            continue
+        if _first_word(sibling_lower) == target_word:
+            return True
+    return False
+
+
+def _is_out_of_scope_product(name, category, brand=None, sibling_names_lower=()):
     """
     A final, post-category-resolution check (called once per product,
     right before save_product - see run()) for real listings that are
@@ -2067,11 +2154,18 @@ def _is_out_of_scope_product(name, category, brand=None):
     above, which runs earlier, before category is resolved, since not
     every extractor has a category yet at that point) nor a design object
     at all - see OUT_OF_SCOPE_CATEGORIES and OUT_OF_SCOPE_CATEGORIES_BY_BRAND
-    for the category-based cases. Also catches two confirmed-live,
-    name-only cases that don't have their own reliable category: Coco
-    Flip's own literal "Test product" scraper artifact, and Massimo
-    Copenhagen's "Rug Underlay" - a pad sold to go under a real rug, not
-    a rug itself, despite inheriting the brand's own "Rug" category tag.
+    for the category-based cases, and BULB_BASE_CODES/
+    _is_sibling_accessory_bulb for the two name-based bulb cases (a bare
+    bulb-model SKU with no fixture of its own, and an accessory bulb for
+    a real sibling fixture) - category is unreliable for bulbs
+    specifically, since it varies wildly even within one brand (Tala
+    alone uses "Decorative Light Bulbs", "Functional", "Technical",
+    "Accessories", and "Replacement Parts" for different bulb rows).
+    Also catches two confirmed-live, name-only cases that don't have
+    their own reliable category: Coco Flip's own literal "Test product"
+    scraper artifact, and Massimo Copenhagen's "Rug Underlay" - a pad
+    sold to go under a real rug, not a rug itself, despite inheriting
+    the brand's own "Rug" category tag.
     """
     category_lower = category.strip().lower()
     if category_lower in OUT_OF_SCOPE_CATEGORIES:
@@ -2083,6 +2177,19 @@ def _is_out_of_scope_product(name, category, brand=None):
         return True
     if "underlay" in name_lower:
         return True
+    # Seletti's own listing for this exact one confirms it directly
+    # ("Wonder Light Bulb Spare part") - doesn't fit the general sibling
+    # check below since its sibling ("Wonder Cloud") isn't itself a
+    # lighting product, so this is a one-off confirmed exception rather
+    # than a broader rule change.
+    if brand == "Seletti" and name_lower == "wonder bulb":
+        return True
+    if "bulb" in name_lower:
+        words = re.findall(r"[a-z0-9]+", name_lower)
+        if any(w in BULB_BASE_CODES for w in words):
+            return True
+        if _is_sibling_accessory_bulb(name_lower, sibling_names_lower):
+            return True
     return False
 
 
@@ -6684,6 +6791,7 @@ def run(brand_name=None):
             conn.execute("DELETE FROM products WHERE brand = ?", (brand["name"],))
             conn.commit()
             products_saved = 0
+            sibling_names_lower = {p["product_name"].strip().lower() for p in products}
             for product in products:
                 url = product["product_url"]
                 product["first_seen"] = old_first_seen[url] if url in old_first_seen else today
@@ -6693,7 +6801,7 @@ def run(brand_name=None):
                 image_override = MANUAL_IMAGE_OVERRIDES.get((brand["name"], product["product_name"]))
                 if image_override:
                     product["image_url"] = image_override
-                if _is_out_of_scope_product(product["product_name"], product["category"], brand["name"]):
+                if _is_out_of_scope_product(product["product_name"], product["category"], brand["name"], sibling_names_lower):
                     continue
                 save_product(conn, product)
                 products_saved += 1
