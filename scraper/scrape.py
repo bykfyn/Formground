@@ -1023,6 +1023,9 @@ EXCLUDED_CATEGORIES = {
     # like "OSIS Table Top ... Hues", which carry no category tag at all
     # and are unaffected by this exclusion.
     "osis surface",
+    # Rihouse's own "Libros" (books) category, confirmed live 2026-09-25 -
+    # 5 design/interior monographs, not design objects.
+    "libros",
     # User-reported 2026-09-25 on Verk: real WooCommerce category
     # "Fabrics" tagging 4 "Textile V.IR.0X" listings - raw upholstery
     # swatches, not furniture. Checking other brands turned up the same
@@ -5939,6 +5942,7 @@ EXTRACTORS = {
     "Nifemi Ogunro": extract_shopify,
     "Unico Milano": extract_shopify,
     "Ruka Studio": extract_shopify,
+    "Rihouse": extract_woocommerce,
     # "TAKT" excluded here - confirmed 2026-09-25: the WooCommerce Store
     # API returns HTTP 200 but a 0-byte body for the scraper's real UA
     # specifically, while a generic UA gets the full real response - a

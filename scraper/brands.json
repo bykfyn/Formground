@@ -2022,11 +2022,11 @@
   },
   {
     "name": "Fredericia",
-    "url": "https://fredericia.com",
-    "platform": "shopify",
+    "url": "https://www.fredericia.com",
+    "platform": "custom",
     "scrapable": true,
     "country": "Denmark",
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Clean Shopify /products.json confirmed (~170 products). Established house - held back deliberately to build the smaller/independent makers first."
+    "notes": "UPDATE 2026-09-25: the earlier 'Clean Shopify /products.json confirmed' triage note was wrong - products.json 404s (real UA test). This is a custom Next.js site (Netlify-hosted, Algolia-backed product data), not Shopify. Real product pages exist (/product/{slug}, confirmed live) but the /products listing page is client-rendered with no server-side product cards - no HAY-style single-fetch shortcut available. Its own sitemap.xml lists 289 real /product/ URLs, over the fetch budget for per-product visits. Would need a bespoke extractor (or an Algolia API key, if one can be found client-side) - moved to the 'needs bespoke work' bucket, not a quick win."
   },
   {
     "name": "Röshults",
@@ -2890,5 +2890,13 @@
     "platform": "custom",
     "scrapable": false,
     "notes": "User-requested 2026-09-25. Pure client-rendered React SPA (create-react-app boilerplate) - raw HTML has zero real content, just a JS bootstrap shell. Fails checklist #2; not worth a headless-browser workaround for one brand."
+  },
+  {
+    "name": "Rihouse",
+    "url": "https://rihouse.shop",
+    "platform": "woocommerce",
+    "scrapable": true,
+    "country": "Spain",
+    "notes": "User-requested 2026-09-25. Clean WooCommerce Store API confirmed (293 products, real Spanish furniture/lighting/objects brand by designer Francesc Rife). Excludes its own 'Libros' (books) category - 5 design/interior monographs, not design objects."
   }
 ]
