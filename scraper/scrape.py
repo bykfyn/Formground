@@ -1972,7 +1972,20 @@ def _looks_like_a_maintenance_item(title):
         "loop pendant",
     )
     title_lower = title.lower()
-    return any(kw in title_lower for kw in keywords)
+    if any(kw in title_lower for kw in keywords):
+        return True
+    # User-reported 2026-09-25 on MOR's "6x FRAME" - a multi-chair
+    # package deal ("Collection (6 Chairs)" on the product page itself),
+    # not a single object; checked every "{N}x " title site-wide before
+    # generalizing (6 across the whole DB: MOR's "2x Lisboa", "2x Trave
+    # set", "4x Cast", "6x Cast", "4x Frame", "6x Frame" - all genuine
+    # bundles, no false positives on any other brand's real product
+    # names). A real single-unit alternative already exists in the
+    # catalog for MOR's chairs (e.g. "CAST", "FRAME" on their own), so
+    # nothing is lost by excluding the bundle SKU.
+    if re.match(r"^\d+x\s", title_lower):
+        return True
+    return False
 
 
 def _base_name(title, brand_name=None):
@@ -3839,6 +3852,375 @@ def extract_ligne_roset(brand):
                 break
 
     return list(products_by_url.values())
+
+
+# zerolighting.com's own real category pages (confirmed live 2026-09-25).
+# robots.txt disallows Squarespace's usual ?format=json shortcut for
+# every crawler, not just named AI bots, so this uses the plain HTML
+# instead - a real, server-rendered `a.project` grid sits further down
+# each category page (an earlier "Will be fetched on-demand" block
+# higher up is an unused legacy placeholder, not the real content).
+# Sitemap URLs ending in "-pl" looked like product pages at first
+# glance but are actually real installation/project case studies, not
+# products - the real catalog lives only on these 11 category pages.
+ZERO_CATEGORIES = {
+    "floor-fixtures": "Floor Lamp",
+    "table-fixtures": "Table Lamp",
+    "wall-fixtures": "Wall Lamp",
+    "pendants": "Pendant Lamp",
+    "ceiling-fixtures": "Ceiling Lamp",
+    "coastal-lighting": "Coastal Lighting",
+    "outdoorpendant": "Outdoor Pendant",
+    "outdoorpole": "Outdoor Pole Lamp",
+    "outdoorwall": "Outdoor Wall Lamp",
+    "outdoorbollard": "Outdoor Bollard",
+    "outdoorceiling": "Outdoor Ceiling Lamp",
+}
+
+
+# Squarespace Commerce (a real e-commerce feature, distinct from the
+# portfolio/gallery blocks Zero and Sekt use) embeds a genuinely clean
+# product payload right in a collection page's HTML: a
+# `data-controller="ProductList"` element carries a `data-context`
+# attribute whose JSON has each product's real title, description,
+# image, and page URL - confirmed live 2026-09-25 on joearmitage.com.
+# Shared here since the same real feature likely backs other
+# Squarespace stores in this batch, not just one site's own markup.
+def _extract_squarespace_commerce_page(url):
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    match = re.search(r'data-controller="ProductList"\s+data-context="([^"]+)"', resp.text)
+    if not match:
+        return []
+    try:
+        data = json.loads(html.unescape(match.group(1)))
+    except (json.JSONDecodeError, ValueError):
+        return []
+
+    return data.get("items", [])
+
+
+def extract_muhly(brand):
+    """
+    muhly.studio's /shop and /furniture pages (confirmed live
+    2026-09-25) are two genuinely separate, non-overlapping real
+    catalogs (planters/lighting/fireplace goods vs. chairs/tables/
+    consoles) - each product is a real `a.sqs-block-image-link[href]`
+    image block, hand-placed alongside a *separate* caption text block
+    rather than a repeatable template, so there's no safe way to pair
+    an image with its real written name; the display name is derived
+    from the product's own URL slug instead (e.g. "/dekko-chair" ->
+    "Dekko Chair") - real, just occasionally missing a descriptive
+    suffix word a human caption would include.
+    """
+    base = brand["url"].rstrip("/")
+    products = []
+    seen_urls = set()
+    for path in ("shop", "furniture"):
+        url = f"{base}/{path}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for a in soup.select("a.sqs-block-image-link[href]"):
+            href = a.get("href", "")
+            if not href.startswith("/") or href.count("/") > 1:
+                continue
+            slug = href.strip("/")
+            # "hat" is real branded merch ("MUHLY HAT", confirmed live),
+            # not a home design object - out of scope like the apparel/
+            # jewelry exclusions elsewhere in this file.
+            if not slug or slug in ("shop", "furniture", "lighting", "accessories", "planters", "hat"):
+                continue
+            product_url = base + href
+            if product_url in seen_urls:
+                continue
+            seen_urls.add(product_url)
+            name = slug.replace("-", " ").title()
+            if _looks_like_a_maintenance_item(name):
+                continue
+            img = a.select_one("img")
+            image_url = (img.get("data-src") or img.get("src") or "") if img else ""
+
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": name,
+                "product_url": product_url,
+                "category": "",
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": image_url,
+            })
+        time.sleep(0.3)  # be polite - don't hammer the site
+
+    return products
+
+
+def extract_farrah_sit(brand):
+    """
+    farrahsit.com's /lighting (15 items) and /objects (6 items) pages
+    (confirmed live 2026-09-25) - plain server-rendered `<li><a
+    href="/lighting/..."><img>...<h3>Name</h3><p>type</p></a></li>`
+    markup (Next.js CSS-module classnames, but real static HTML, no
+    hydration needed), one fetch per section.
+    """
+    base = brand["url"].rstrip("/")
+    products = []
+    for path, category in (("lighting", "Lighting"), ("objects", "Objects")):
+        url = f"{base}/{path}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for a in soup.select("li a[href]"):
+            name_el = a.select_one("h3")
+            if not name_el:
+                continue
+            href = a.get("href", "")
+            img = a.select_one("img")
+            image_url = img.get("src", "") if img else ""
+            name = name_el.get_text(strip=True)
+            if not name or not href:
+                continue
+
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": name,
+                "product_url": base + href if href.startswith("/") else href,
+                "category": category,
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": image_url,
+            })
+        time.sleep(0.3)  # be polite - don't hammer the site
+
+    return products
+
+
+def extract_coco_flip(brand):
+    """
+    cocoflip.com.au is a Nuxt frontend over a headless-Shopify-via-
+    Sanity setup (confirmed live 2026-09-25) - its Sanity project
+    (a2q6x6h0, dataset "production") has a genuinely public,
+    unauthenticated GROQ query API exposing the full Shopify-synced
+    product catalog (142 real products), cleaner and more complete
+    than scraping the rendered page would be.
+    """
+    url = (
+        "https://a2q6x6h0.apicdn.sanity.io/v2024-10-20/data/query/production"
+        '?query=*%5B_type%3D%3D%22product%22%5D%7Bstore%7D'
+    )
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+        items = resp.json().get("result", [])
+    except (requests.RequestException, ValueError) as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    products = []
+    for item in items:
+        store = item.get("store") or {}
+        name = (store.get("title") or "").strip()
+        handle = store.get("handle") or ""
+        image_url = (store.get("featuredImage") or {}).get("src", "")
+        if not name or not handle:
+            continue
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": f"{brand['url'].rstrip('/')}/products/{handle}",
+            "category": "",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+
+    return products
+
+
+def extract_danny_kaplan_studio(brand):
+    """
+    dannykaplanstudio.com/collections/all (confirmed live 2026-09-25) -
+    a headless-Shopify storefront on a custom Next.js frontend
+    (/products.json 404s, but the collection page is genuinely SSR'd
+    with the real Shopify product data embedded in __NEXT_DATA__ -
+    109 real products, one fetch, no pagination needed).
+    """
+    base = brand["url"].rstrip("/")
+    url = f"{base}/collections/all"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    match = re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', resp.text, re.DOTALL)
+    if not match:
+        return []
+    try:
+        data = json.loads(match.group(1))
+        items = data["props"]["pageProps"]["collection"]["products"]
+    except (json.JSONDecodeError, KeyError, TypeError):
+        return []
+
+    products = []
+    for item in items:
+        name = (item.get("title") or "").strip()
+        handle = item.get("handle") or ""
+        images = item.get("images") or []
+        image_url = images[0].get("src", "") if images else ""
+        if not name or not handle:
+            continue
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": f"{base}/products/{handle}",
+            "category": item.get("productType", ""),
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+
+    return products
+
+
+def extract_squarespace_commerce(brand):
+    base = brand["url"].rstrip("/")
+    items = _extract_squarespace_commerce_page(f"{base}/shop")
+    products = []
+    for item in items:
+        name = item.get("title", "").strip()
+        full_url = item.get("fullUrl", "")
+        image_url = (item.get("mainImage") or {}).get("assetUrl", "")
+        if not name or not full_url:
+            continue
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": base + full_url if full_url.startswith("/") else full_url,
+            "category": "",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+
+    return products
+
+
+def extract_sekt(brand):
+    """
+    sekterism.com's /products page (confirmed live 2026-09-25) - a
+    different Squarespace portfolio-grid template than Zero's (`a.grid-
+    item` with `.portfolio-title`/`.grid-image img`, not `a.project`),
+    but the same underlying pattern: one real, server-rendered page,
+    ~20 products, no per-product visit needed.
+    """
+    base = brand["url"].rstrip("/")
+    url = f"{base}/products"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products = []
+    for a in soup.select("a.grid-item"):
+        href = a.get("href", "")
+        title_el = a.select_one(".portfolio-title")
+        img = a.select_one(".grid-image img")
+        if not href or not title_el or not img:
+            continue
+        name = title_el.get_text(strip=True)
+        image_url = img.get("data-src") or img.get("src") or ""
+        if not name:
+            continue
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": base + href if href.startswith("/") else href,
+            "category": "",
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+
+    return products
+
+
+def extract_zero(brand):
+    base = brand["url"].rstrip("/")
+    products = []
+    seen_urls = set()
+    for path, category in ZERO_CATEGORIES.items():
+        url = f"{base}/{path}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        time.sleep(0.5)  # be polite - don't hammer the site
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for a in soup.select("a.project"):
+            href = a.get("href", "")
+            title_el = a.select_one(".project-title")
+            img = a.select_one(".project-image img")
+            if not href or not title_el or not img:
+                continue
+            name = title_el.get_text(strip=True)
+            image_url = img.get("data-src") or img.get("src") or ""
+            product_url = base + href if href.startswith("/") else href
+            if not name or product_url in seen_urls:
+                continue
+            seen_urls.add(product_url)
+
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": name,
+                "product_url": product_url,
+                "category": category,
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": image_url,
+            })
+
+    return products
 
 
 def extract_miniforms(brand):
@@ -5830,6 +6212,13 @@ def extract_blond(brand):
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
+    "Zero": extract_zero,
+    "Sekt": extract_sekt,
+    "Joe Armitage": extract_squarespace_commerce,
+    "Danny Kaplan Studio": extract_danny_kaplan_studio,
+    "Coco Flip": extract_coco_flip,
+    "Farrah Sit": extract_farrah_sit,
+    "Muhly": extract_muhly,
     "Kieran Kinsella": extract_kieran_kinsella,
     "H. Bigeleisen": extract_hbigeleisen,
     "Yird Ceramics": extract_yird_ceramics,

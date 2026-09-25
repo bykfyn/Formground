@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Muhly on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Muhly's work on Formground - 28 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/muhly.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Muhly on Formground">
+<meta property="og:description" content="Muhly's work on Formground - 28 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/muhly.html">
+<meta property="og:image" content="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/050a4f58-c456-47e6-b014-49dce6c7087a/AxelConsole.jpg">
+<meta name="twitter:image" content="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/050a4f58-c456-47e6-b014-49dce6c7087a/AxelConsole.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Muhly on Formground">
+<meta name="twitter:description" content="Muhly's work on Formground - 28 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Muhly", "item": "https://formground.com/brands/muhly.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Muhly</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Objects</span></div>
+    <a class="brand-site-link" href="https://muhly.studio" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://muhly.studio/andirons" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/8db105d7-1594-4b8e-8f1d-f408944b1698/MuhlyStudio11350+copy+2.jpg" alt="Andirons by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Andirons</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/axel-console" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/050a4f58-c456-47e6-b014-49dce6c7087a/AxelConsole.jpg" alt="Axel Console by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Axel Console</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/bon-console" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/30b7080b-8e3b-4d78-adf8-9cb18ad3435c/MuhlyConsole4678.jpg" alt="Bon Console by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bon Console</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/dekko-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/1764886777853-EJI86CEMBCOEJX5R15Z6/Muhly_256438.jpg" alt="Dekko Chair by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dekko Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/dekko-counter-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/1764869086920-ZX3PW3738ACVL4OHXP82/Muhly_256427.jpg" alt="Dekko Counter Stool by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dekko Counter Stool</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/dekko-dining-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/1764884537699-LMQFQNA9CSXKNTLLSOB2/Muhly_256402.jpg" alt="Dekko Dining Stool by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dekko Dining Stool</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/ferrum-mirror" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/3630a0e7-2cf1-4a8c-a0f5-d3dcf347d6a8/Muhly_February2024-37.jpg" alt="Ferrum Mirror by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ferrum Mirror</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/fire-pit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/40eaac50-9874-41f2-9e9c-0309bbfaf24a/MUHLY2023-000092830005.jpg" alt="Fire Pit by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fire Pit</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/fireplace-tools" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/1700001782360-WMBVYJZRFRFO3TROKS6Z/MuhlyStudio11321+copy.jpg" alt="Fireplace Tools by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fireplace Tools</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/first-light-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/980ce9d0-5a1f-418e-9e40-0fca7765de3d/MuhlyStudio0061+copy+2.jpg" alt="First Light Table by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">First Light Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/hale-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/1764867597491-ELLDE109EIZUWUYOIOPT/Muhly_256455.jpg" alt="Hale Coffee Table by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hale Coffee Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/lin-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/26437bfc-7927-458c-95da-dce7405e1320/MuhlyStudio11398+copy+2.jpg" alt="Lin Pendant by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lin Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/lin-sconce" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/1700873867425-JZEAO19DXM1ZL31IHLFZ/MuhlyStudio25751+copy.jpg" alt="Lin Sconce by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lin Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/lin-table-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/27f203f8-9b89-4572-be2c-17042b5f31e2/MuhlyStudio0030+copy.jpg" alt="Lin Table Lamp by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lin Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/lindheimer" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/86760754-9aee-4f2d-8292-865b5ddb467d/411092_0011.jpg" alt="Lindheimer by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lindheimer</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/lineage-cedar" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/23baca4f-b5de-4d54-b856-2330b5853b8a/4-MUHLY.jpg" alt="Lineage Cedar by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lineage Cedar</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/lineage-plywood" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/affc4063-fd85-41af-bfdc-de2f4af75af8/LineageBench.jpg" alt="Lineage Plywood by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lineage Plywood</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/lineage-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/44769c08-12c1-4bb2-a5ed-c1ff749f6a0b/2-MUHLY.jpg" alt="Lineage Steel by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lineage Steel</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/lineage-storage-bench" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/1768412137504-FLVLSPRU55XEK4YE2499/Muhly_256501.jpg" alt="Lineage Storage Bench by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lineage Storage Bench</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/mica-planter" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/9e9eb2d7-b67c-4cb9-aa90-ae513321a4ce/MuhlyxPS%2813%29.jpg" alt="Mica Planter by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mica Planter</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/orion" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/4b7b5cad-fccb-430f-b93c-5b756d994416/OrionTable.jpg" alt="Orion by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Orion</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/phone-box" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/944a4584-8170-4007-8df0-d54af807edd6/000085150023.jpg" alt="Phone Box by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Phone Box</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/pokal-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/1765210115612-FGAPL7VSHIAGQJM0UNX9/Muhly_256536.jpg" alt="Pokal Table by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pokal Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/selene-planter-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/10752de8-1101-4a52-8312-f6be23092699/MuhlyxPS%288%29+%281%29.jpg" alt="Selene Planter Large by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Selene Planter Large</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/selene-planter-medium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/e19f69d5-5131-45b2-a9fb-a9e582155de5/MuhlyxPS%2840%29+%283%29.jpg" alt="Selene Planter Medium by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Selene Planter Medium</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/selene-planter-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/c7cda007-488f-425a-9ea4-36807f05a0e4/MuhlyxPS%2821%29+%281%29.jpg" alt="Selene Planter Small by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Selene Planter Small</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/table-wine-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/2754503d-b4c8-4955-90a7-ff109c2217af/muhly-tablewinetable.jpg" alt="Table Wine Table by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Table Wine Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/zephyr-planter" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/3522f342-40f3-45e6-8f9a-296d84883b2a/MuhlyxPS%2831%29.jpg" alt="Zephyr Planter by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Zephyr Planter</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

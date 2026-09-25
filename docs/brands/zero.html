@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zero on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Zero's work on Formground - 136 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/zero.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Zero on Formground">
+<meta property="og:description" content="Zero's work on Formground - 136 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/zero.html">
+<meta property="og:image" content="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499784339151-MCMVTB6UPMF6M0CH7H2C/a01gra.jpg">
+<meta name="twitter:image" content="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499784339151-MCMVTB6UPMF6M0CH7H2C/a01gra.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Zero on Formground">
+<meta name="twitter:description" content="Zero's work on Formground - 136 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Zero", "item": "https://formground.com/brands/zero.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Zero</h1>
+    <div class="tags"><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">Sweden</span></div>
+    <a class="brand-site-link" href="https://www.zerolighting.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://www.zerolighting.com/a01-utomku" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499776116011-SETXBQP7TX5V65RFALYZ/a01-galv.jpg" alt="A.01 - Coastline by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">A.01 - Coastline</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/a01-utomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499784339151-MCMVTB6UPMF6M0CH7H2C/a01gra.jpg" alt="A.01 - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">A.01 - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/allright-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741185734479-9ASS1S63EA66S8G8XNG2/Allright%2B-%2Bpendel%2B-%2Bbox.jpg" alt="Allright by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Allright</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/allrightstor-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/3fcdd4a4-a291-4485-8acd-63ce1e0e65c4/Allright-Ceiling-Box.png" alt="Allright - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Allright - Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/allright-utomku" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499777030603-16BDJ0T2TUROHUURDQFN/allright-wall-galv.jpg" alt="Allright - Coastline by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Allright - Coastline</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/allright-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/cf494228-1e17-4a2d-82b5-0f5bd08569fe/Allright-Wall-Box.jpg" alt="Allright - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Allright - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/allright-utomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499858162241-E62F0OX2FTTU444NPTZO/allright7413-1.jpg" alt="Allright - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Allright - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/arcad-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/a717b74e-25ea-4716-a79f-ed6128ffb389/Arcad-Wall-Box.png" alt="Arcad - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Arcad - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/attic-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/27c05b60-02f6-4a1c-bd06-30ea64812b2f/_Attic_Studio.jpg" alt="Attic by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Attic</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/berzeli-utomst" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499859009550-S35HGZGNLD74LG5HXC3I/berzeli.jpg" alt="Berzeli by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Berzeli</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/bob-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741187022286-9O4VP3QDRNDHRIPIDV4R/Bob%2Bbox.jpg" alt="Bob by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bob</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/bob-inomgo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741859056087-BSV4DCMCEW0JHFUUDJ11/BOB-floor-white.JPG" alt="Bob - Floor by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bob - Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/bob-bow-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741186120136-ZAV8EKN9S3RXOYR0SZJV/BOB-Bow-Black.jpg" alt="Bob Bow by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bob Bow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/bob-mini" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/7a265ecf-0301-4323-82e1-cd51d14a0618/Bob_mini.jpg" alt="Bob Mini by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bob Mini</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/bob-xl-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/19c06030-8908-40a9-9b08-c2c569f9e03c/Bob-XL-+Pendant-Box.jpg" alt="Bob XL by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bob XL</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/brass-utomst" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499862298679-8H2U9L3JZDYZE6ELBQEE/brass-stolpe1.jpg" alt="Brass by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Brass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/brass-utompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499863935663-GMUHRHBYGCWGJ8UT9H0O/brass-wire1.jpg" alt="Brass - Catenary by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Brass - Catenary</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/camouflage800-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741187611856-X9OCLHSF2VU5S2HXJ27S/Camouflage+box.jpg" alt="Camouflage by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Camouflage</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/camouflage-utompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499865467824-71VGDHUBIL3CFR8NXA6D/camouflageuteliten.jpg" alt="Camouflage - Catenary by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Camouflage - Catenary</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/citypendel-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741185390966-UL5ZIDYG1SL6I1FKCEUV/City-pendant-box.jpg" alt="City by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">City</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/cityvajer-utompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1742540669922-78U9JC6MJYX1MBG0XZOL/City-1-vajer-svart-2025.jpg" alt="City - Catenary by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">City - Catenary</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/city-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1535982276261-ELVQJIRREGEVRB8D2JZ9/City-wall-Kalmar-2.JPG" alt="City - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">City - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/city-globe-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741185437840-XUK70ZCHP1QDCTNREAGP/City-Globe-box.jpg" alt="City Globe by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">City Globe</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/cityglobe-utomst" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1548075237291-IO5AX9VRPP44TYKWSMOD/City-Globe-Pole-1.jpg" alt="City Globe by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">City Globe</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/city-globe-utompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1742541682400-Y6F862PLNBINDGQLKFKZ/City+Globe-2-vajer-2025.jpg" alt="City Globe - Catenary by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">City Globe - Catenary</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/city-globe-utomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1587116169419-TT05W6D7JT1JH8K8H3IT/CityGlobe-wall-cognac.jpg" alt="City Globe - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">City Globe - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/city-utomst" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499867685729-PO96FT8ISML0IOOMA4X4/city-polefixture-black1.jpg" alt="City Pole by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">City Pole</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/colonn-utomst" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499869494270-LUGSF81IK9FG3ULXS11X/colonnmedtak.jpg" alt="Colonn by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Colonn</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/compose-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741337415986-XJWP1KWHHLHNL6S2LQR3/Compose-single-black-metal-large.jpg" alt="Compose by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Compose</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/compose-inomgo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741869912553-1CARJ7IMO9LJSF7BP1QT/Compose+Floor+Box.png" alt="Compose - Floor by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Compose - Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/compose-inombo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/a111b8bc-f52e-4804-ba2b-5b00a1c7910e/Compose-table-white-zerolighting.jpg" alt="Compose - Table by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Compose - Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/compose-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/086f4ae8-5084-4bea-b952-06dc140bc8b2/Compose-Wall-Box.png" alt="Compose - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Compose - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/compose-rail-circle-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1614866001252-5LUZUOLJ9001MFV6K5E9/Compose-rail-3-Zerolighting.jpg" alt="Compose Rail Circle by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Compose Rail Circle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/composerail-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1614868909984-4Q0LKQ4TOBI14HH0L2Z7/Compose-rail-1-black-Zerolighting.jpg" alt="Compose Rail Linear by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Compose Rail Linear</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convex-utomst" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499870494635-WO6TSV3ZIV5TK9A185YE/convex-pole-black.jpg" alt="Convex by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convex-utompo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499871058670-KQJXZR56W4YSRCHWUZ25/convex-box-bollard-black-liggande.jpg" alt="Convex by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convex-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1506516890839-QLYTPG087NLJWCMAGP04/Convex-spotlight-group.jpg" alt="Convex - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex - Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convex3phase-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/e054081c-4896-4f5f-a56d-a651917c485b/Convex-Spotlight-3phase-Box.png" alt="Convex - Track by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex - Track</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convex-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/7cf032ed-b85d-486b-9f14-011d4ddce459/Convex-Wall-Box.png" alt="Convex - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convex-utomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499869960347-CPJDAW83HGDCVVL364LR/convex-wall-black.jpg" alt="Convex - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convexcircle-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741338374659-M43TMCDXTM9OEQKMR080/Convex-circle-white-D800.JPG" alt="Convex Circle by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex Circle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convexstor-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741098647360-E947QMFS6MCPU8FCK1OC/convex-big-box.jpg" alt="Convex Large by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex Large</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convexmini-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741338903037-ODD6JYSXWY1RJ7558P8U/Convex%2Bmini%2Bgalv%2Bbox.jpg" alt="Convex Mini by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex Mini</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convexstolpe-utomku" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499778217895-YGBVCN6QXLZSBHDSL8R5/convex-pole-galv.jpg" alt="Convex Pole - Coastline by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex Pole - Coastline</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convexliten-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741263930542-996R2YI1SGCKY5P5ROH4/convex-small-box.jpg" alt="Convex Small by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex Small</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convexvagg-utomku" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1501609251317-BQ6XH96L7KZEBR1Q5RAV/convex-wall-galv.jpg" alt="Convex Wall - Coastline by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex Wall - Coastline</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convexspotlight-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1498463231011-3M9D2TRWSP5JO2SKRSOT/convex-spotlight-box.jpg" alt="Convex spotlight - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Convex spotlight - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/corka-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1739792056275-1UG6WIVIBWUVA9PYTGLK/Corka-studio.jpg" alt="Corka by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Corka</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/corka-linear" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/9b85e0e6-9e19-4a18-8254-59ad3ba47d7b/Corka+Linear+Studio.jpg" alt="Corka Linear by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Corka Linear</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/curve-throug-table-inombo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/6b0d2ddb-392e-4e7b-bc53-38149193f945/Sprinkle-Throughtable-Box.png" alt="Curve - Through Table by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve - Through Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/curve-cluster-inomp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1710324351494-D2VBO7GKYFKT6SACEA8D/Curve_04_Setup-03_glas.jpg" alt="Curve Cluster Glass by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Cluster Glass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/curve-cluster-metal-inomp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1710419467858-6HZKHJELZEJ5TQRJMKWN/Curve_04_Setup-03_metall.jpg" alt="Curve Cluster Metal by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Cluster Metal</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/curve-cluster-single-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1709115619500-XLWYJKQ02S36S38CA4L3/Curve_Cluster-glass-copper.jpg" alt="Curve Cluster Single by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Cluster Single</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/curve-cluster-xl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/9224cfa9-02e5-4821-96e9-31700e2726d1/Curve+Cluster+Studio.jpg" alt="Curve Cluster XL by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Cluster XL</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/curvecrown-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741338292011-X8CR0AGOIS8XLHWQX65H/Curve-8shades-conference-1.jpg" alt="Curve Crown by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Crown</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/curveglas-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1742559381751-ZS3DYEYYL47DU111Z864/Curve+Pendant+Green+Box.png" alt="Curve Glass by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Glass</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/curveglas-inomgo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741868176436-T3G8S0LDCA672G81XFLY/Curve+Floor+Glass+Box.png" alt="Curve Glass - Floor by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Glass - Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/curveglas-inombo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/9d799c91-bae5-4d37-9922-eb104e557302/Curve-Table-Green-Glass-Box.png" alt="Curve Glass - Table by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Glass - Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/curvemetal-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741339797558-YG4JUHFCWN385HWB19Z2/Curve-pendants-mixed-ny.jpg" alt="Curve Metal by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Metal</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/curvemetal-inomgo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741866435484-YOKGL4BPYH2BFCS6MYW6/Curve+Floor+Metal+Box.png" alt="Curve Metal - Floor by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Metal - Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/curvemetal-inombo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/514b4fc6-782a-4311-88be-3cf0dfd50643/Curve-Table-Metal-Box.png" alt="Curve Metal - Table by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Curve Metal - Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/daikanyamapendel-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741265618201-5P6SXFTBWBH8JAQR7LBQ/Daikanyama%252Bpendant%252Bbox.jpg" alt="Daikanyama by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Daikanyama</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/droppen-utomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499872656263-P35PN080REVD3LHCHVF5/droppen-opal.jpg" alt="Droppen - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Droppen - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/elements-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741268570946-V9PKV13X19K0LZ3PY9N5/Elements+pendants+box.jpg" alt="Elements by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elements</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/elements-inomgo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/d4b25c4e-c878-4456-9c73-25e72a7a7d98/Elements-Floor-Standard-Box.png" alt="Elements - Floor by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elements - Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/elements-inombo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/05e2cef2-ad49-4543-978b-4efd7e1b9a4d/Elements-Table-Box.png" alt="Elements - Table by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elements - Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/elements-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/65b8ce1f-ee46-4320-809c-35489f20356c/elements-wall-gallery-2.jpg" alt="Elements - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elements - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/elementsxl-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741272646625-C4JJNP2NQPGFCA00X63Y/Elements+XL+box.jpg" alt="Elements XL by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elements XL</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/elementsxl-inomgo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/784437da-5bd7-4d63-a432-07563e2ca6e1/Elements-Floor-Box.png" alt="Elements XL - Floor by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elements XL - Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/elements-xs-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741099645029-912VTKX2RLW1TTP9GTBX/Elements-grey-box-v2.JPG" alt="Elements XS by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Elements XS</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/evy-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741610065843-5532MUSM2WX9YKLQ6Z88/Evy_Studio.jpg" alt="Evy by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Evy</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/fisherman-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741331976417-YHOWZP78O16NMMOY4WV9/Fisherman+Pendant+Box.jpg" alt="Fisherman by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fisherman</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/fog-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741334414601-4I1QL2BMMVMR8Q03RWY8/Fog+Pendant+Box.jpg" alt="Fog by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fog</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/grid-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/2e47e7d9-1118-40cd-9e1b-5917c2453c96/Gird-Pendant-Orange-Box.JPG" alt="Grid by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Grid</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/grid-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499440079220-JU2V72XCC4K8QDI3CHKG/gridtakguldgra.jpg" alt="Grid - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Grid - Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/grid-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/50b1a538-2e68-454e-97a9-de58700b1dd6/Gird-Wall-Box.jpg" alt="Grid - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Grid - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/haze-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741337667486-RX2AE90YA0JPQUVV6N16/HAZE-Petrol-single-ny.jpg" alt="Haze by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Haze</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/haze-inomgo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741854324533-OYEBM9DVD2PHPIO4G9YM/Haze+Golv+Box.png" alt="Haze - Floor by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Haze - Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/hidestor-inomgo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741855440968-3WSSCZ9CDIXEJMMO3R5F/Hide+Large+Golv+Box.png" alt="Hide Large - Floor by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hide Large - Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/hoop-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741099099494-Z6FLVJWUH39HNYHJA4EV/Hoop-blue-box-v2.JPG" alt="Hoop by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hoop</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/karo-utompo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499946678817-PQH66EQNQLZ41WD5T48O/karo.jpg" alt="Karo by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Karo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/karo-utomku" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499781431593-ZGO8AZ5Y05MSV5MGJ2ZW/karo.jpg" alt="Karo - Coastline by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Karo - Coastline</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/landscape-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741690869097-JPEWHNZZQJAYX794H3UB/Landscape+Box.jpg" alt="Landscape by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Landscape</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/lensstor-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741271805121-6WMGUK4IB4WO2SBX51NP/Lens+Large+Pendant+Box.jpg" alt="Lens Large by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lens Large</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/lensliten-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741271775563-5G9A35831UV4YS1XSE7O/Lens+Small+Pendant+Box.jpg" alt="Lens Small by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lens Small</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/loud-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1742305812830-M68BVKE7QWOIHFOLZECB/Loud+Box+2.png" alt="Loud by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Loud</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/lumo-pendant-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741267436956-EFCHSSIF2AY8PGS869W2/Lumo%2Bpendant%2Bbox.jpg" alt="Lumo by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lumo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/lumo-catenary-utomp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1684313276902-MRHDSRN34ZC107DL8FWZ/Lumo-vajer-utomhus-svart-1.jpg" alt="Lumo - Catenary by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lumo - Catenary</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/lumo-utomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1709197143478-PNVRUYW3MWZXR27AEQEQ/Lumo-ceiling-black-single.jpg" alt="Lumo - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lumo - Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/lumo-utomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1685450450093-28QZFGK1AGC786OVJFK7/Lumo-wall-black-2.jpg" alt="Lumo - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lumo - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/lyx-utomst" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1714396358732-644LMCPU5JGY56TDE5ZD/Lyx-6-cmyk.jpg" alt="Lyx by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Lyx</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/mist-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741099060360-9YZ4PFJSFKWXZCWE4VVQ/Mist-pink-box.jpg" alt="Mist by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mist</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/mist-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/c4b19d56-d04d-4c81-8e62-e4ecddc2fe94/Mist-Ceiling-Box.png" alt="Mist - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mist - Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/mist-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/b81efe17-0bf8-41c3-a7fd-5c180d1907ca/Mist-Wall-Box.png" alt="Mist - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mist - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/pxl-utomku" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1500907527169-41MLOCPRF4PIV69C1YUB/pxl1.jpg" alt="PXL - Coastline by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PXL - Coastline</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/pxl-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/7689d67f-c221-43fd-b0a1-3df38ad4ddf6/Pxl-Wall-Box.png" alt="PXL - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PXL - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/pxl-utomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1500907527169-41MLOCPRF4PIV69C1YUB/pxl1.jpg" alt="PXL - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PXL - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/par-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741099181179-I8IM3BZIM13FPWDW5YFQ/Par-grey-box.jpg" alt="Par by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Par</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/pathfinder-utomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1548857928557-YYJA6I6FZMQVC2W9SDFV/PATHFINDER-Ceiling-black-cut.JPG" alt="Pathfinder - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pathfinder - Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/pathfinder-utomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1548941433602-U4GAM96DY04LYQF191AN/PATHFINDER+WALL-black-cut.JPG" alt="Pathfinder - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pathfinder - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/pathfinder-utompo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1548860190772-IIGLN50J06JN1ELSN26R/PATHFINDER-Bollard-Black-cut.JPG" alt="Pathfinder Bollard by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pathfinder Bollard</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/plant-bollard-utompo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1700138579586-NYLVKEFCXWT6VT80CD8R/PLANT-pollare-Eriksberg-2.jpg" alt="Plant by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Plant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/plant-wall-utomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1700138865229-TJ0LSSNTMS65D7FMPVOV/Plant-wall-Jkpng-2.jpg" alt="Plant - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Plant - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/poker-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741271287768-FDHHHRT8JKD2T5PIUZUF/Poker%2Bpendant%2Bbox.jpg" alt="Poker by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Poker</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/poster-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741271047170-VBXKUDVOTE64QIKD8Q5Z/Poster%2Bpendant%2Bbox.jpg" alt="Poster by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Poster</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/puck-utomst" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1500905295459-CBJ0AN8JJTL1YQBI168B/Puck1.jpg" alt="Puck by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Puck</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/puck-utomku" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499782663681-RQY9LPT3X29D5I2DJZT3/puck-galv.jpg" alt="Puck - Coastline by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Puck - Coastline</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/puck-utomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1500907564237-2QHZDVIN4OS1CMFZD498/puckvaigg01.jpg" alt="Puck - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Puck - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/pukebergorginal-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741269975853-JMHE234VPCFVAO879LH1/Pukeberg+pendant+box.jpg" alt="Pukeberg Original by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pukeberg Original</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/shibuya-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/3b291115-cf23-4513-83ec-2a6be92267eb/Shibuya-Ceiling-Box.png" alt="Shibuya - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shibuya - Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/shibuya-inombo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/6b88ee71-d9f6-430d-924d-82bdc67835f5/Shibuya-wall-cognac-single-Box.png" alt="Shibuya - Table by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shibuya - Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/shibuya-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1587381855388-7CXPDLV6KBYO3NN0JOL2/Shibuya-wall-cognac-single.jpg" alt="Shibuya - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shibuya - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/shibuyasingle-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741266423261-S7OMBHO4M27AMFNP06FX/Shibuya%2Bpendant%2Bbox.jpg" alt="Shibuya Single by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Shibuya Single</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/silo-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741098921134-SFTBJDA49PCJCQURES28/Silo-ivory-box.jpg" alt="Silo by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Silo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/silo-inomgo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741852387757-966N3VKB05JKJUXIDT1S/Silo-floor-apricot-box.jpg" alt="Silo - Floor by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Silo - Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/silo-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1588159587651-6K1R7PQC5VQA6DLWOZXU/Silo_Wall-ivory.jpg" alt="Silo - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Silo - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/silotrio-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741098954410-V830MY8JOO0BM45VNULB/Silo-Trio-grey-box.jpg" alt="Silo Trio by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Silo Trio</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/slice-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741268987355-4CHQ5NYX2MTAV6KG7P2U/Slizes+pendant+box.jpg" alt="Slizes by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Slizes</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/sprinkle-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741270696533-OQKYNCDFBBMEVE746O2H/Sprinkle+pendant+box.jpg" alt="Sprinkle by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sprinkle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/sprinkle-ceiling-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/00b37d07-0dbd-428c-9421-afcc79a81fd9/Sprinkle-ceiling-large.jpg" alt="Sprinkle - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sprinkle - Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/sprinkle-downlight-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/14f2d502-7a3a-4e5f-abba-a01591d1d979/Sprinkle-Downlight1.jpg" alt="Sprinkle - Downlight by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sprinkle - Downlight</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/sprinkle-inomgo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741858723206-TRY98TZ6R2JX4T8GH8YS/Sprinkle+Golv+Box.png" alt="Sprinkle - Floor by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sprinkle - Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/sprinkle-inombo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741772887569-3LPTFOJTUQ1NF3CWQOD4/Sprinkle-throughtable-studio.jpg" alt="Sprinkle - Table by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sprinkle - Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/sprinkle-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/91c3dfbb-8658-466d-9308-a7cd5da629ff/studio3d_Sprinkle_v%C3%A4gg_liten_123061_studio_final.jpg" alt="Sprinkle - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sprinkle - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/sprinkle-linear-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741270292797-4AHWA4J3Z24M2A3G552C/Sprinkle-Pendel-linear-XL-RAL1013-001.jpg" alt="Sprinkle Linear by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sprinkle Linear</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/swell" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/b1a2d7f9-cccc-4472-aa2a-d1a53c8b158c/Swell+Pendel+Studio+Stor.jpg" alt="Swell Large by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Swell Large</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/swell-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/9965cfba-e1b0-44fb-8f1b-a03396a9965c/Swell+Pendel+Studio+Liten.jpg" alt="Swell Small by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Swell Small</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/thirty-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499700635465-5MMIXDYJ881WMPCBQZ6T/thirty-2.jpg" alt="Thirty - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Thirty - Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/thirty-inomva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/3828420e-8159-4770-9842-5e0f1c9544bd/Thirty-Wall-Box.png" alt="Thirty - Wall by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Thirty - Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/top-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741097320316-CE2P5ZV5NPSE2I1LVTYV/397be6d6-002a-4a49-bd61-f906b13e1009.jpg" alt="Top by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Top</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/trapets-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741100649566-B3OE3WU75S64W6JL8BKV/Trapets_173.jpg" alt="Trapets by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Trapets</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/trepuck-utomst" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1502265330969-J82E8MXGV4EZRLDHYS79/trepuck.jpg" alt="Trepuck by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Trepuck</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/triad" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/986dac1f-cc53-4bd6-857a-41a94ae52e44/Triad+Pollare+Studio.jpg" alt="Triad by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Triad</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/tvapuck-utomst" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1502262138527-FQEG4OYAOICBADG2CEKD/puckii02.jpg" alt="Tvåpuck by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Tvåpuck</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/umbrella-inompe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1741269627085-0WQO95BIUA4285QQ02RT/Umbrella+pendant+box.jpg" alt="Umbrella by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Umbrella</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/umbrella-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/b2a611e0-44aa-41a1-904c-f96a03340f87/Umbrella-Ceiling-Box.png" alt="Umbrella - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Umbrella - Ceiling</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
