@@ -347,9 +347,8 @@ def render_stockists_panel(retailers):
     ordered = sorted(groups, key=lambda g: (g[1][0].get("country") or "zzz", g[1][0].get("city") or "", g[0]))
     cards = "\n".join(_stockist_card(name, locations) for name, locations in ordered)
     intro = (
-        "    <p class=\"panel-intro\">Real retailers who carry work from Formground's makers, "
-        "found via their own published stockist lists - not a paid placement. "
-        "Something outdated or missing? <a href=\"contact.html\">Let us know</a>.</p>"
+        "    <p class=\"panel-intro\">A selection of stockists found via makers' own "
+        "published stockist lists - no paid placement.</p>"
     )
     return f'    <div class="cat-panel" data-cat="stockists">\n{intro}\n    <div class="maker-grid">\n{cards}\n    </div>\n    </div>'
 
@@ -441,7 +440,7 @@ def render_page(retailers):
     Already on Formground as an architect, designer, or maker? Reach out if you'd like in early.
   </p>
 
-  <p class="footer-description">Real stockists who carry work from Formground's makers, live promotions, and a paid space for architects, designers, and makers to feature something specific. Stockist listings are free and unpaid, sourced the same transparent way as the rest of Formground - paid features are always clearly marked.</p>
+  <p class="footer-description">Real stockists who carry work from Formground's makers, live promotions, and a paid space for architects, designers, and makers to feature something specific. Stockist listings are free and unpaid, sourced the same transparent way as the rest of Formground - paid features are always clearly marked. Something outdated or missing? <a href="contact.html">Let us know</a>.</p>
 
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">← Back to Formground</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a>
