@@ -464,7 +464,8 @@ def render_promotions_panel(promotions):
     if promotions:
         intro = (
             '    <p class="panel-intro">A pilot: real, live sales scraped directly from '
-            "stockists' own product pages - free, attributed, and removed on request.</p>"
+            "makers' and stockists' own product pages - free, attributed, and removed on "
+            "request.</p>"
         )
         cards = "\n".join(_promo_card(p) for p in promotions)
         grid = f'    <div class="promo-grid">\n{cards}\n    </div>'
