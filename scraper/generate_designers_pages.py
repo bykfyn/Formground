@@ -207,6 +207,7 @@ def render_designers_index(designers_with_slugs, products_by_designer):
   <h1 class="sr-only">Designers</h1>
   <div class="maker-grid">{items}
   </div>
+  <p class="footer-description">Formground promotes a curated selection of designers, new and established, to be discovered. If you'd like to be featured, <a href="/contact.html">get in touch here</a>.</p>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>

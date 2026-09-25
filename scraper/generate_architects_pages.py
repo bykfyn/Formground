@@ -218,6 +218,7 @@ def render_architects_index(firms_with_slugs, meta_by_name, houses_by_firm):
   <h1 class="sr-only">Architects</h1>
   <div class="maker-grid">{items}
   </div>
+  <p class="footer-description">Formground promotes a curated selection of architects, new and established, to be discovered. If you'd like to be featured, <a href="/contact.html">get in touch here</a>.</p>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
