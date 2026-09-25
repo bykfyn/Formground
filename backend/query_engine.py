@@ -469,6 +469,25 @@ def filter_products(intent: dict) -> list:
     return _narrow_by_style(products, wanted_style_descriptors)
 
 
+# A product whose entire name is nothing but a bare object-type word
+# carries no more information than its own category field already does
+# - so letting it match the forward name_in_query direction below is
+# pure noise, not a real name match: it fires for ANY query that
+# happens to contain that one common word, no matter how much other,
+# unrelated content the rest of the query has. Confirmed live 2026-09-25:
+# Moebe's product literally named "Table" matched the query "globe table
+# lamp" in full, surfacing a sofa-system side table for a lamp search -
+# category filtering alone couldn't catch it either, since Moebe's own
+# site had mistakenly grouped that product under its "Modular Sofa"
+# collection (fixed directly in the data). Built from the real bare
+# object-type names that exist in the DB today (see project memory),
+# not a general English word list - a name that's actually descriptive
+# ("Boyd sofa", "Vaso") is unaffected either way.
+GENERIC_PRODUCT_NAMES = {
+    "table", "lamp", "chair", "stool", "vase", "bench", "sofa", "bowl",
+}
+
+
 def filter_by_name(raw_query: str) -> list:
     """
     Matches the raw query against each product's own name, independent
@@ -485,7 +504,9 @@ def filter_by_name(raw_query: str) -> list:
     reverse direction (the query found inside the name) fixes that. The
     length-3 floor keeps that reverse check from firing on short
     connector words ("a", "or") that the LLM's category/material
-    extraction already handles better on its own.
+    extraction already handles better on its own. See
+    GENERIC_PRODUCT_NAMES above for why the forward direction is
+    additionally skipped for a bare object-type name.
     """
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -499,7 +520,10 @@ def filter_by_name(raw_query: str) -> list:
         if product["brand"] in HIDDEN_BRANDS:
             continue
         name = product["product_name"]
-        name_in_query = re.search(rf"\b{re.escape(name)}\b", raw_query, re.IGNORECASE)
+        name_in_query = (
+            name.strip().lower() not in GENERIC_PRODUCT_NAMES
+            and re.search(rf"\b{re.escape(name)}\b", raw_query, re.IGNORECASE)
+        )
         query_in_name = len(stripped_query) >= 3 and re.search(
             rf"\b{re.escape(stripped_query)}\b", name, re.IGNORECASE
         )
