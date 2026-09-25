@@ -333,6 +333,35 @@ def _category_matches(category_field: str, wanted: str) -> bool:
     return False
 
 
+# Real product names describe the same shape with different words -
+# confirmed live 2026-09-25: a search for "ball lamp" found nothing to
+# narrow to on its own, even though the DB has real "Globe ... Table
+# lamp" products - "ball" and "globe" mean the same shape, but a plain
+# word match only ever catches whichever single word the query itself
+# used. Each group below is real synonyms for ONE shape, not merely
+# related shapes - "round" and "oval" are deliberately kept as separate
+# groups, since conflating them would match the wrong shape entirely.
+STYLE_SYNONYMS = {
+    "ball": ("ball", "globe", "sphere", "orb"),
+    "globe": ("ball", "globe", "sphere", "orb"),
+    "sphere": ("ball", "globe", "sphere", "orb"),
+    "orb": ("ball", "globe", "sphere", "orb"),
+    "round": ("round", "circular"),
+    "circular": ("round", "circular"),
+    "oval": ("oval", "elliptical"),
+    "elliptical": ("oval", "elliptical"),
+    "rectangular": ("rectangular", "rectangle"),
+    "rectangle": ("rectangular", "rectangle"),
+}
+
+
+def _expand_style_synonyms(style_descriptors: list) -> set:
+    expanded = set()
+    for d in style_descriptors:
+        expanded.update(STYLE_SYNONYMS.get(d.lower(), (d,)))
+    return expanded
+
+
 def _narrow_by_style(products: list, style_descriptors: list) -> list:
     """
     Among an already category/material/color-filtered set, prefers
@@ -356,10 +385,12 @@ def _narrow_by_style(products: list, style_descriptors: list) -> list:
     if not style_descriptors:
         return products
 
+    expanded_descriptors = _expand_style_synonyms(style_descriptors)
+
     def _name_matches_any(name: str) -> bool:
         return any(
             re.search(rf"\b{re.escape(d)}\b", name, re.IGNORECASE)
-            for d in style_descriptors
+            for d in expanded_descriptors
         )
 
     narrowed = [p for p in products if _name_matches_any(p["product_name"])]
