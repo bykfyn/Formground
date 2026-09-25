@@ -222,6 +222,47 @@ def _location(r):
     return city or country or "Online retailer"
 
 
+def _group_stockists(retailers):
+    """
+    One real retail brand with several physical locations gets one
+    card, not one per city (user, 2026-09-25) - grouped by the raw
+    entry's own "brand" field where one is set (see BRAND_MAP in the
+    data-cleanup script that tagged it), falling back to the entry's
+    own name for everyone else, since most stockists really are just
+    one location.
+    """
+    groups = {}
+    order = []
+    for r in retailers:
+        key = r.get("brand") or r["name"]
+        if key not in groups:
+            groups[key] = []
+            order.append(key)
+        groups[key].append(r)
+    return [(key, groups[key]) for key in order]
+
+
+def _grouped_location_line(locations):
+    if len(locations) == 1:
+        return _location(locations[0])
+    countries = {loc.get("country", "") for loc in locations if loc.get("country")}
+    if len(countries) == 1:
+        return f"{len(locations)} locations in {countries.pop()}"
+    return f"{len(locations)} locations across {len(countries)} countries"
+
+
+def _grouped_location_sr(locations):
+    # Every location's own city/country/address stays real, searchable
+    # content, even when only a summary count is shown (see
+    # _grouped_location_line) - "Malmö" still has to find Svenssons.
+    parts = []
+    for loc in locations:
+        bits = [b for b in (loc.get("address"), loc.get("city"), loc.get("country")) if b]
+        if bits:
+            parts.append(", ".join(bits))
+    return "; ".join(parts)
+
+
 def _favicon_url(website):
     domain = urlparse(website).netloc.removeprefix("www.")
     return f"https://www.google.com/s2/favicons?domain={domain}&sz=128" if domain else None
@@ -235,21 +276,35 @@ def _favicon_url(website):
 FORCE_MONOGRAM = {"Creolight AS"}
 
 
-def _stockist_card(r):
-    name = r["name"]
-    brands = r.get("brands") or []
-    # Full brand list stays in the DOM for the search box to match
-    # against, just not rendered - many stockists carry 15-20+ brands,
-    # and a truncated "X, Y, Z +17 more" reads badly on a card (user,
-    # 2026-09-25). sr-only, not display:none, so it's still real content
-    # a screen reader and a crawler both see, just not painted.
+def _stockist_card(name, locations):
+    website = locations[0]["website"]
+    # Union of every location's brands, order preserved, dedup by
+    # first occurrence - a chain like Svenssons doesn't necessarily
+    # carry the identical lineup in every store.
+    seen = set()
+    brands = []
+    for loc in locations:
+        for b in loc.get("brands") or []:
+            if b not in seen:
+                seen.add(b)
+                brands.append(b)
+    # Full brand list, and every location's own city/country/address,
+    # stay in the DOM for the search box to match against, just not
+    # rendered - many stockists carry 15-20+ brands, and a truncated
+    # "X, Y, Z +17 more" reads badly on a card (user, 2026-09-25).
+    # sr-only, not display:none, so it's still real content a screen
+    # reader and a crawler both see, just not painted.
     brands_sr = f'<span class="sr-only">{html.escape(", ".join(brands))}</span>' if brands else ""
+    locations_sr = (
+        f'<span class="sr-only">{html.escape(_grouped_location_sr(locations))}</span>'
+        if len(locations) > 1 else ""
+    )
     # Real favicon over a bare monogram (user, 2026-09-25) - same
     # icon-with-monogram-fallback pattern as for-creators.html's tool
     # cards, just fetched live via Google's favicon service instead of
     # hand-checked per entry (137 sites, not a handful of known tools).
     # onerror swaps to the monogram on the rare genuine load failure.
-    favicon = None if name in FORCE_MONOGRAM else _favicon_url(r["website"])
+    favicon = None if name in FORCE_MONOGRAM else _favicon_url(website)
     monogram_span = f'<span class="monogram" title="{html.escape(name)}">{_initials(name)}</span>'
     badge = (
         f'<img src="{html.escape(favicon)}" alt="{html.escape(name)}" loading="lazy" '
@@ -257,18 +312,19 @@ def _stockist_card(r):
         f'<span class="monogram" style="display:none;" title="{html.escape(name)}">{_initials(name)}</span>'
         if favicon else monogram_span
     )
-    return f"""      <a class="maker-card" href="{html.escape(r['website'])}" target="_blank" rel="noopener noreferrer">
+    return f"""      <a class="maker-card" href="{html.escape(website)}" target="_blank" rel="noopener noreferrer">
         <div class="maker-card-hero"><div class="icon-badge">{badge}</div></div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(name)}</span>
-          <span class="maker-country">{html.escape(_location(r))}</span>{brands_sr}
+          <span class="maker-country">{html.escape(_grouped_location_line(locations))}</span>{locations_sr}{brands_sr}
         </div>
       </a>"""
 
 
 def render_stockists_panel(retailers):
-    ordered = sorted(retailers, key=lambda r: (r.get("country") or "zzz", r.get("city") or "", r["name"]))
-    cards = "\n".join(_stockist_card(r) for r in ordered)
+    groups = _group_stockists(retailers)
+    ordered = sorted(groups, key=lambda g: (g[1][0].get("country") or "zzz", g[1][0].get("city") or "", g[0]))
+    cards = "\n".join(_stockist_card(name, locations) for name, locations in ordered)
     intro = (
         "    <p class=\"panel-intro\">Real retailers who carry work from Formground's makers, "
         "found via their own published stockist lists - not a paid placement. "
@@ -384,16 +440,18 @@ def render_page(retailers):
 def main():
     retailers = json.loads(RETAILERS_PATH.read_text(encoding="utf-8"))
     page = render_page(retailers)
+    n_cards = len(_group_stockists(retailers))
+    summary = f"{n_cards} cards ({len(retailers)} locations)"
 
     if "--mockup" in sys.argv:
         out_path = REPO_ROOT / "project-docs" / "mockups" / "marketplace_stockists_promotions.html"
         out_path.write_text(page)
-        print(f"Wrote mockup: {out_path} ({len(retailers)} stockists)")
+        print(f"Wrote mockup: {out_path} ({summary})")
     else:
         for target_dir in ("docs", "frontend"):
             out_path = REPO_ROOT / target_dir / "marketplace.html"
             out_path.write_text(page)
-            print(f"Wrote {out_path} ({len(retailers)} stockists)")
+            print(f"Wrote {out_path} ({summary})")
 
 
 if __name__ == "__main__":
