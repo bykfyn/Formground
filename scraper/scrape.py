@@ -3882,6 +3882,72 @@ def extract_miniforms(brand):
     return products
 
 
+# pode.eu's own top-level category nav (confirmed live 2026-09-25) -
+# a small, real Dutch furniture brand. Each category page's real
+# product cards are server-rendered (Storyblok CMS, despite an
+# animated fade-in effect via inline style="opacity:0" - the real
+# src/name/designer are already in the raw HTML, no JS needed), so one
+# fetch per category covers the whole real ~35-product catalog with no
+# pagination or per-product visit required.
+PODE_CATEGORY_PATHS = (
+    "armchairs", "sofas", "corner-sofas", "tables", "lighting", "accessories",
+)
+
+
+def extract_pode(brand):
+    """
+    See PODE_CATEGORY_PATHS above. Each card is `a[href*="/collection/
+    {category}/"]` with a real `h3` (name), `p` (designer credit), and
+    the first `img[src]` (a real product photo; a second, larger
+    hover-state image sits alongside it in the same card, skipped by
+    taking the first one only).
+    """
+    base = brand["url"].rstrip("/")
+    products = []
+    for category in PODE_CATEGORY_PATHS:
+        url = f"{base}/collection/{category}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        time.sleep(1)  # be polite - don't hammer the site
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for card in soup.select(f'a[href*="/collection/{category}/"]'):
+            href = card.get("href", "")
+            name_el = card.select_one("h3")
+            if not name_el:
+                continue
+            name = name_el.get_text(strip=True)
+            if not name:
+                continue
+            designer_el = card.select_one("p")
+            designer = designer_el.get_text(strip=True) if designer_el else ""
+            img = card.select_one("img")
+            image_url = img["src"] if img and img.get("src") else ""
+            if image_url.startswith("//"):
+                image_url = "https:" + image_url
+            elif image_url.startswith("/"):
+                image_url = base + image_url
+
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": name,
+                "product_url": base + href if href.startswith("/") else href,
+                "category": category.replace("-", " ").title(),
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "designer": designer,
+                "image_url": image_url,
+            })
+
+    return products
+
+
 # The real per-product taxonomy this brand's own site uses (confirmed
 # live 2026-09-21) is already present right on the /product/ listing
 # page, just not where the original version of this extractor looked -
@@ -5943,6 +6009,7 @@ EXTRACTORS = {
     "Unico Milano": extract_shopify,
     "Ruka Studio": extract_shopify,
     "Rihouse": extract_woocommerce,
+    "Pode": extract_pode,
     # "TAKT" excluded here - confirmed 2026-09-25: the WooCommerce Store
     # API returns HTTP 200 but a 0-byte body for the scraper's real UA
     # specifically, while a generic UA gets the full real response - a
