@@ -1093,7 +1093,7 @@ def _clean_product_type(product_type, brand_name=None):
         # inherited differently per resold vendor - see the vendor
         # filter above) that translating it isn't safe; always blank so
         # every product falls through to the name-based English-keyword
-        # fallback instead (see CATEGORY_KEYWORD_FALLBACK_BRANDS).
+        # fallback instead (see _infer_category_from_name).
         return ""
     if brand_name == "Massimo Copenhagen":
         # Confirmed live 2026-09-25: this brand's real catalog is ~100%
@@ -1136,7 +1136,21 @@ ITALIAN_OBJECT_TYPES = {
 # Bitossi's known collection-line labels, which aren't a real object-type
 # category - a blank category also qualifies (nothing to lose by trying
 # name-based inference in that case either).
-UNHELPFUL_CATEGORIES = {"classici", "novità", "collezioni", "designers", ""}
+UNHELPFUL_CATEGORIES = {
+    "classici", "novità", "collezioni", "designers", "",
+    # Widened 2026-09-25 (user: "we need any solution to correctly tag
+    # each existing product so that search results are accurate") - a
+    # real audit of the live DB found these broad English umbrella
+    # values sitting on 8,809 products (36% of the catalog), the same
+    # shape of problem as the Italian junk words above: too generic for
+    # search to distinguish "table lamp" from "floor lamp" from "wall
+    # lamp". "simple" is a confirmed scraper bug specific to Fine Little
+    # Day (a leaked template/variant name, not a real category) that
+    # happens to be fixed by the same keyword re-inference.
+    "lighting", "furniture", "objects", "accessories", "tableware",
+    "seating", "chair", "table", "lamp", "light", "glass", "simple",
+    "ceramics",
+}
 
 # English object-type keyword fallback, for brands whose Shopify
 # product_type carries no real category signal at all (confirmed on
@@ -1166,16 +1180,41 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("sofa system", "Sofa"), ("slipcover sofa", "Sofa"),
     ("wingback armchair", "Armchair"), ("low back armchair", "Armchair"),
     ("pod pendant light", "Pendant"), ("crown pendant light", "Pendant"),
-    ("pendant light", "Pendant"), ("loop pendant", "Pendant"),
-    ("table light", "Light"), ("wall light", "Light"), ("wall uplight", "Light"),
+    ("pendant light", "Pendant"), ("loop pendant", "Pendant"), ("pendant lamp", "Pendant"),
+    ("table light", "Light"), ("wall light", "Wall Lamp"), ("wall uplight", "Light"),
+    ("wall lamp", "Wall Lamp"), ("wall sconce", "Sconce"),
     ("cluster light", "Light"), ("globe light", "Light"), ("table lamp", "Table Lamp"),
+    # User-reported 2026-09-25 (Kansas Floor Lamp surfacing under "table
+    # lamp" search): the list had "table lamp" but no floor/desk/ceiling/
+    # outdoor counterpart, so those all fell through to the generic
+    # "Lamp"/"Light" catch-all at the end of this list instead of a
+    # distinguishing tag - checked, these five modifiers cover the real
+    # gap without any of the ambiguity a bare "floor"/"wall"/"ceiling"
+    # keyword alone would risk (those words show up on plenty of
+    # non-lighting products - a floor rug, a wall mirror, a ceiling fan).
+    ("floor lamp", "Floor Lamp"), ("floor light", "Floor Lamp"),
+    ("desk lamp", "Desk Lamp"), ("desk light", "Desk Lamp"),
+    ("reading lamp", "Table Lamp"), ("ceiling lamp", "Ceiling Lamp"),
+    ("ceiling light", "Ceiling Lamp"), ("outdoor lamp", "Outdoor Lamp"),
     ("coffee table", "Coffee Table"), ("dining table", "Dining Table"),
     ("bedside table", "Bedside Table"), ("dressing table", "Dressing Table"),
     ("side table", "Side Table"), ("lamp table", "Side Table"),
+    ("end table", "Side Table"), ("night stand", "Bedside Table"),
+    ("nightstand", "Bedside Table"), ("console table", "Console Table"),
+    ("bar table", "Bar Table"),
     ("chest of drawers", "Chest of Drawers"), ("drinks cabinet", "Cabinet"),
-    ("counter stool", "Stool"), ("bench with pad", "Bench"),
+    ("counter stool", "Counter Stool"), ("bar stool", "Bar Stool"), ("bar chair", "Bar Stool"),
+    ("bench with pad", "Bench"),
     ("cheval mirror", "Mirror"), ("tall mirror", "Mirror"),
     ("dining chair", "Dining Chair"), ("blanket box", "Storage"),
+    # Common seating modifiers, otherwise all falling into the bare
+    # "chair"/"sofa" catch-alls further down - added alongside the
+    # lamp/table fixes above for the same reason (a search for "lounge
+    # chair" or "office chair" deserves an actual match, not just "any
+    # chair").
+    ("lounge chair", "Lounge Chair"), ("office chair", "Office Chair"),
+    ("task chair", "Office Chair"), ("accent chair", "Armchair"),
+    ("recliner", "Armchair"), ("loveseat", "Sofa"), ("sectional sofa", "Sofa"),
     ("sofa", "Sofa"), ("settee", "Sofa"), ("armchair", "Armchair"), ("footstool", "Footstool"),
     ("chaise", "Chaise"), ("bed", "Bed"), ("sideboard", "Sideboard"),
     ("dresser", "Dresser"), ("armoire", "Armoire"), ("cabinet", "Cabinet"),
@@ -1188,7 +1227,23 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("screen", "Screen"), ("cup", "Cup"), ("glass", "Glass"), ("vessel", "Vessel"),
     ("coat rack", "Coat Stand"), ("coat stand", "Coat Stand"), ("winerack", "Wine Rack"),
     ("bookend", "Bookend"), ("candle holder", "Candle Holder"), ("candleholder", "Candle Holder"),
+    ("tealight holder", "Candle Holder"), ("candlestick", "Candle Holder"),
+    ("scented candle", "Candle"), ("candle", "Candle"),
     ("ottoman", "Ottoman"), ("seater", "Sofa"), ("shelf", "Shelving"), ("urn", "Urn"),
+    # Kitchen/table textiles and small tabletop objects - added
+    # 2026-09-25 alongside the lamp/table/chair fixes above, from real
+    # names seen in the blank-category audit (HAY's "Canteen Dish
+    # Cloth", Serax's "Tealight holder"/"Scented candle").
+    ("dish cloth", "Kitchen Textile"), ("dishcloth", "Kitchen Textile"),
+    ("tea towel", "Kitchen Textile"), ("apron", "Kitchen Textile"),
+    ("napkin", "Table Linen"), ("tablecloth", "Table Linen"),
+    ("place mat", "Table Linen"), ("placemat", "Table Linen"),
+    ("planter", "Planter"), ("plant pot", "Planter"), ("basket", "Basket"),
+    ("mug", "Cup"), ("carafe", "Carafe"), ("pitcher", "Carafe"), ("jug", "Carafe"),
+    ("coaster", "Coaster"), ("wall art", "Wall Art"), ("poster", "Wall Art"),
+    ("sculpture", "Sculpture"), ("figurine", "Sculpture"), ("clock", "Clock"),
+    ("cutting board", "Cutting Board"), ("chopping board", "Cutting Board"),
+    ("serving board", "Serving Board"),
     ("blanket", "Blanket"), ("throw", "Blanket"),
     ("coupe", "Coupe"), ("grinder", "Mill"), ("bottle opener", "Bottle Opener"),
     ("bottle", "Bottle"),
@@ -1199,45 +1254,6 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
-
-# Brands piloting the English keyword fallback above - deliberately an
-# allowlist, not applied to every blank/junk category across the board,
-# since a keyword scan like this has bitten this project before with
-# false positives on other brands (Minimalux, Ingo Maurer - see project
-# memory). Widen only after checking a brand's own real product names
-# against ENGLISH_OBJECT_TYPE_KEYWORDS the same way Pinch's were.
-CATEGORY_KEYWORD_FALLBACK_BRANDS = {
-    "Pinch", "Mater", "H. Bigeleisen", "Jon Goulder", "Oven Editions", "Mercoeur Editions",
-    "Sizar Alexis", "Mass Productions", "Kin and Co", "Buro Berger", "Grain",
-    "New Works DK", "Workstead", "Rubn", "Maruni", "AY Illuminate", "Ghidini 1961",
-    "GATOMIKIO", "Raawii", "Wendelbo", "Asplund", "Blå Station", "Davsjö", "Ingridsdotter",
-    # 2026-09-24 lighting triage batch - checked each brand's own blank-
-    # category product names against the shared English keyword list
-    # before adding (per this dict's own established practice), not
-    # applied blanket. Alessi and Lambert & Fils barely benefit (their
-    # real product names are mostly evocative collection names with no
-    # generic object-type word - "La Cintura di Orione", "Fenestra" -
-    # same accepted partial-coverage tradeoff as Blå Station/In Common
-    # With) but including them is harmless, not actively wrong.
-    "Anour", "Serax", "Audo", "Alessi", "Ferm Living", "Vaarnii", "Dusty Deco",
-    "Valerie Objects", "Oblure", "Hyfer Objects", "Porta Romana", "Oi Soi Oi",
-    "Kalmar Werkstätten", "Frangere Studio", "Llot Llov", "Kristina Dam Studio",
-    "MOR", "Lambert & Fils", "Calen Knauf", "Seletti", "Artetica", "Wontek",
-    "Astraeus Clarke", "Luke Malaney", "Anna Dawson", "Arvo Ray",
-    # 2026-09-24/25 furniture/objects triage - same shop.sightunseen.com
-    # product_type unreliability as above, checked against real names.
-    "Stackelbergs", "Cultivation Objects", "Laun", "Orlando Pippig",
-    "Studio Vraco", "Known Work", "Ceramics Furniture Plants",
-    "Objects & Ideas", "Sunfish", "Michael Felix", "Alexis & Ginger",
-    "Studio Sam Klemick", "Nice Condo", "Nazara Lazaro", "Mike Ruiz-Serra",
-    "YSH Studio", "Clay Brown", "Juntos Projects", "Rest Energy", "LOEHR",
-    "LikeMindedObjects", "Steven Bukowski", "Studio Mignone",
-    "Nicholas Bijan Pourfard", "Ryan Jones Studio", "Jesse Groom", "Lland",
-    "Charles Constantine", "Jackrabbit Studio", "Ian Cochran", "Seer Studio",
-    "David Vu Studio", "Objects for Objects", "Kouros Maghsoudi", "Nifemi Ogunro",
-    "HAY", "Ligne Roset",
-}
-
 
 # A handful of real products give the keyword/name-based inference
 # above nothing to work with at all - no object-type word anywhere in
@@ -1851,10 +1867,20 @@ def _infer_category_from_name(product_name, current_category, brand_name=None):
         byarums_match = _infer_byarums_bruk_category(product_name)
         if byarums_match:
             return byarums_match
-    if brand_name in CATEGORY_KEYWORD_FALLBACK_BRANDS:
-        keyword_match = _infer_category_from_english_keywords(product_name)
-        if keyword_match:
-            return keyword_match
+    # Widened 2026-09-25 alongside UNHELPFUL_CATEGORIES above - this
+    # allowlist existed because running the keyword scan unconditionally
+    # once bit the project with false positives (Minimalux, Ingo Maurer),
+    # but the actual failure mode there was overriding a brand's own
+    # *specific* existing category (e.g. Minimalux's real "Jewellery"
+    # tag on "Drum Pendant" - a real necklace, not a light fixture) with
+    # a keyword meant for something else. That can't happen here: this
+    # whole function already returns early above unless current_category
+    # is already in UNHELPFUL_CATEGORIES, so by the time this line runs
+    # there's no specific category left to accidentally clobber - only
+    # ever a generic placeholder becoming more specific, for any brand.
+    keyword_match = _infer_category_from_english_keywords(product_name)
+    if keyword_match:
+        return keyword_match
     return current_category
 
 
