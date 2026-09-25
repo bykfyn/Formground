@@ -27,7 +27,7 @@
 <style>
   main { max-width: 1160px; margin: 0 auto; padding: 24px 20px 60px; }
   .site-header { margin-bottom: 0; }
-  .search-wide { width: 100%; max-width: 900px; margin: 0 auto; }
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
   /* No above-the-fold lead paragraph (2026-09-25, user: "a user will
      understand the concepts of promotion and stockist" - the chip
      labels plus each panel's own intro already carry that context
@@ -37,6 +37,11 @@
      on For Creators. */
   p.footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 0 auto 20px; line-height: 1.6; text-align: center; }
 
+  /* One real search box (2026-09-25, user: "there are two search boxes,
+     we should only have the main one" - typing here filters whichever
+     panel is currently showing, live, same substring-match pattern as
+     makers.html/architects.html; the chips act as the category filter
+     on top of that query, not a separate search of their own). */
   .ask-box {
     display: flex; align-items: center; gap: 10px; min-height: 57px;
     background: var(--surface-1); border: 0.5px solid var(--border);
@@ -45,7 +50,7 @@
   .ask-box i { font-size: 18px; color: var(--text-muted); }
   .ask-box input {
     border: none; background: none; outline: none; flex: 1;
-    font-size: 15px; color: var(--text-muted); font-family: inherit; pointer-events: none;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
   }
   .ask-box input::placeholder { color: var(--text-muted); }
 
@@ -117,12 +122,6 @@
     font-size: 18px; color: var(--text-secondary);
   }
 
-  /* Stockists' own directory filter (same live substring-match pattern
-     as makers.html/architects.html, see generate_brand_pages.py) - a
-     second .search-wide box, this one inside the panel rather than at
-     the page's top, since the top ask-box is the future promoted-
-     listing search, a different thing. */
-  .cat-panel .search-wide { margin: 0 auto 28px; }
   [hidden] { display: none !important; }
 </style>
 </head>
@@ -145,7 +144,7 @@
   <div class="search-wide">
     <div class="ask-box">
       <i class="ti ti-search" aria-hidden="true"></i>
-      <input type="text" placeholder="a new piece, an upcoming course, a design service…" readonly>
+      <input id="directory-filter" type="text" placeholder="Search stockists and promotions — a brand, a city, a product…" autocomplete="off">
     </div>
   </div>
 
@@ -156,14 +155,6 @@
 
     <div class="cat-panel" data-cat="stockists">
     <p class="panel-intro">Real retailers who carry work from Formground's makers, found via their own published stockist lists - not a paid placement. Something outdated or missing? <a href="contact.html">Let us know</a>.</p>
-
-  <div class="search-wide">
-    <div class="ask-box">
-      <i class="ti ti-search" aria-hidden="true"></i>
-      <span class="ask-box-context">Stockists</span>
-      <input id="directory-filter" type="text" placeholder="Filter by name, city, brand, or country…" autocomplete="off">
-    </div>
-  </div>
     <div class="maker-grid">
       <a class="maker-card" href="https://quatuordesign.be" target="_blank" rel="noopener noreferrer">
         <div class="maker-card-hero"><div class="monogram" title="Quatuor Design">QD</div></div>
