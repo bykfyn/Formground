@@ -156,16 +156,25 @@ PAGE_CSS = """
   .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, 190px); justify-content: center; gap: 16px; align-items: start; }
   .maker-card { display: block; text-decoration: none; color: inherit; }
   .maker-card-hero { aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border); margin: 0 0 10px; display: flex; align-items: center; justify-content: center; }
-  .tool-card-hero { padding: 24px; box-sizing: border-box; }
-  .tool-card-hero img { width: auto; height: auto; max-width: 56%; max-height: 56%; object-fit: contain; }
   .maker-card-body { padding: 0; text-align: center; }
   .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 0 3px; }
   .maker-card:hover .maker-name { text-decoration: underline; }
   .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
-  .monogram {
+  /* Fixed-size circular badge, shared by a real favicon and the
+     monogram fallback alike (user, 2026-09-25: favicons "minuscule" vs
+     "larger" - real favicons bake wildly different amounts of their own
+     internal padding into the image, so even identical CSS bounds leave
+     them looking inconsistent; normalizing every icon into the same
+     56px circle, favicon or not, fixes that instead of chasing each
+     image's own whitespace). */
+  .icon-badge {
     width: 56px; height: 56px; border-radius: 50%; background: var(--surface-2);
     border: 0.5px solid var(--border-strong); display: flex; align-items: center;
-    justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 700;
+    justify-content: center; overflow: hidden;
+  }
+  .icon-badge img { width: 65%; height: 65%; object-fit: contain; }
+  .monogram {
+    font-family: 'Archivo', sans-serif; font-weight: 700;
     font-size: 18px; color: var(--text-secondary);
   }
 
@@ -218,6 +227,14 @@ def _favicon_url(website):
     return f"https://www.google.com/s2/favicons?domain={domain}&sz=128" if domain else None
 
 
+# A site's own real favicon is occasionally something that shouldn't
+# stand in for the business on a directory card - Creolight AS's is a
+# photo of a person (user, 2026-09-25). Google's favicon service almost
+# never actually fails to return *something*, so onerror doesn't catch
+# this; force the monogram instead for the rare flagged case.
+FORCE_MONOGRAM = {"Creolight AS"}
+
+
 def _stockist_card(r):
     name = r["name"]
     brands = r.get("brands") or []
@@ -232,16 +249,16 @@ def _stockist_card(r):
     # cards, just fetched live via Google's favicon service instead of
     # hand-checked per entry (137 sites, not a handful of known tools).
     # onerror swaps to the monogram on the rare genuine load failure.
-    favicon = _favicon_url(r["website"])
-    hero = (
+    favicon = None if name in FORCE_MONOGRAM else _favicon_url(r["website"])
+    monogram_span = f'<span class="monogram" title="{html.escape(name)}">{_initials(name)}</span>'
+    badge = (
         f'<img src="{html.escape(favicon)}" alt="{html.escape(name)}" loading="lazy" '
-        f'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';">'
-        f'<div class="monogram" style="display:none;" title="{html.escape(name)}">{_initials(name)}</div>'
-        if favicon else
-        f'<div class="monogram" title="{html.escape(name)}">{_initials(name)}</div>'
+        f'onerror="this.remove();this.parentElement.querySelector(\'.monogram\').style.display=\'\';">'
+        f'<span class="monogram" style="display:none;" title="{html.escape(name)}">{_initials(name)}</span>'
+        if favicon else monogram_span
     )
     return f"""      <a class="maker-card" href="{html.escape(r['website'])}" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero">{hero}</div>
+        <div class="maker-card-hero"><div class="icon-badge">{badge}</div></div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(name)}</span>
           <span class="maker-country">{html.escape(_location(r))}</span>{brands_sr}

@@ -111,16 +111,25 @@
   .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, 190px); justify-content: center; gap: 16px; align-items: start; }
   .maker-card { display: block; text-decoration: none; color: inherit; }
   .maker-card-hero { aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border); margin: 0 0 10px; display: flex; align-items: center; justify-content: center; }
-  .tool-card-hero { padding: 24px; box-sizing: border-box; }
-  .tool-card-hero img { width: auto; height: auto; max-width: 56%; max-height: 56%; object-fit: contain; }
   .maker-card-body { padding: 0; text-align: center; }
   .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 0 3px; }
   .maker-card:hover .maker-name { text-decoration: underline; }
   .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
-  .monogram {
+  /* Fixed-size circular badge, shared by a real favicon and the
+     monogram fallback alike (user, 2026-09-25: favicons "minuscule" vs
+     "larger" - real favicons bake wildly different amounts of their own
+     internal padding into the image, so even identical CSS bounds leave
+     them looking inconsistent; normalizing every icon into the same
+     56px circle, favicon or not, fixes that instead of chasing each
+     image's own whitespace). */
+  .icon-badge {
     width: 56px; height: 56px; border-radius: 50%; background: var(--surface-2);
     border: 0.5px solid var(--border-strong); display: flex; align-items: center;
-    justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 700;
+    justify-content: center; overflow: hidden;
+  }
+  .icon-badge img { width: 65%; height: 65%; object-fit: contain; }
+  .monogram {
+    font-family: 'Archivo', sans-serif; font-weight: 700;
     font-size: 18px; color: var(--text-secondary);
   }
 
@@ -159,959 +168,917 @@
     <p class="panel-intro">Real retailers who carry work from Formground's makers, found via their own published stockist lists - not a paid placement. Something outdated or missing? <a href="contact.html">Let us know</a>.</p>
     <div class="maker-grid">
       <a class="maker-card" href="https://quatuordesign.be" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=quatuordesign.be&amp;sz=128" alt="Quatuor Design" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Quatuor Design">QD</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=quatuordesign.be&amp;sz=128" alt="Quatuor Design" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Quatuor Design">QD</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Quatuor Design</span>
           <span class="maker-country">Belgium</span><span class="sr-only">HAY, Ethnicraft</span>
         </div>
       </a>
       <a class="maker-card" href="https://homepagebrussels.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=homepagebrussels.com&amp;sz=128" alt="Homepage Furniture &amp; More" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Homepage Furniture &amp; More">HF</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=homepagebrussels.com&amp;sz=128" alt="Homepage Furniture &amp; More" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Homepage Furniture &amp; More">HF</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Homepage Furniture &amp; More</span>
           <span class="maker-country">Brussels, Belgium</span><span class="sr-only">HAY, String Furniture, Umage, Design House Stockholm</span>
         </div>
       </a>
       <a class="maker-card" href="https://homepagebrussels.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=homepagebrussels.com&amp;sz=128" alt="Homepage2 More Furniture" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Homepage2 More Furniture">HM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=homepagebrussels.com&amp;sz=128" alt="Homepage2 More Furniture" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Homepage2 More Furniture">HM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Homepage2 More Furniture</span>
           <span class="maker-country">Brussels, Belgium</span><span class="sr-only">HAY, String Furniture, Umage, Design House Stockholm</span>
         </div>
       </a>
       <a class="maker-card" href="https://designspot.cz" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designspot.cz&amp;sz=128" alt="Designspot" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Designspot">D</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designspot.cz&amp;sz=128" alt="Designspot" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Designspot">D</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Designspot</span>
           <span class="maker-country">Czech Republic</span><span class="sr-only">HAY, Muuto, Ferm Living, String, Louis Poulsen, New Works, HEM, Audo Copenhagen</span>
         </div>
       </a>
       <a class="maker-card" href="https://ingvardchristensen.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=ingvardchristensen.dk&amp;sz=128" alt="Ingvard Christensen Møbelhuse" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Ingvard Christensen Møbelhuse">IC</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=ingvardchristensen.dk&amp;sz=128" alt="Ingvard Christensen Møbelhuse" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Ingvard Christensen Møbelhuse">IC</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Ingvard Christensen Møbelhuse</span>
           <span class="maker-country">Denmark</span><span class="sr-only">HAY, &amp;Tradition, Audo Copenhagen, Carl Hansen &amp; Søn, Fredericia, Fritz Hansen, Louis Poulsen, Montana, Vipp</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.drejerdesign.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=drejerdesign.dk&amp;sz=128" alt="Drejer Designcenter" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Drejer Designcenter">DD</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=drejerdesign.dk&amp;sz=128" alt="Drejer Designcenter" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Drejer Designcenter">DD</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Drejer Designcenter</span>
           <span class="maker-country">Aars, Denmark</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://bo-bedre.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=bo-bedre.com&amp;sz=128" alt="Bo•Bedre" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Bo•Bedre">B</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=bo-bedre.com&amp;sz=128" alt="Bo•Bedre" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Bo•Bedre">B</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Bo•Bedre</span>
           <span class="maker-country">Esbjerg, Denmark</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.heile.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=heile.dk&amp;sz=128" alt="Heile" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Heile">H</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=heile.dk&amp;sz=128" alt="Heile" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Heile">H</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Heile</span>
           <span class="maker-country">Frederikshavn, Denmark</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.schmidthuset.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=schmidthuset.dk&amp;sz=128" alt="Schmidt Møbler" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Schmidt Møbler">SM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=schmidthuset.dk&amp;sz=128" alt="Schmidt Møbler" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Schmidt Møbler">SM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Schmidt Møbler</span>
           <span class="maker-country">Grenaa, Denmark</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://illum.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=illum.dk&amp;sz=128" alt="Illum A/S" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Illum A/S">IA</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=illum.dk&amp;sz=128" alt="Illum A/S" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Illum A/S">IA</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Illum A/S</span>
           <span class="maker-country">København K, Denmark</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.jacobsenplus.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=jacobsenplus.dk&amp;sz=128" alt="Jacobsen Plus" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Jacobsen Plus">JP</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=jacobsenplus.dk&amp;sz=128" alt="Jacobsen Plus" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Jacobsen Plus">JP</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Jacobsen Plus</span>
           <span class="maker-country">København K, Denmark</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.bahne.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=bahne.dk&amp;sz=128" alt="Bahne" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Bahne">B</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=bahne.dk&amp;sz=128" alt="Bahne" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Bahne">B</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Bahne</span>
           <span class="maker-country">København V, Denmark</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.rhode-design.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=rhode-design.dk&amp;sz=128" alt="Rohde-Design" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Rohde-Design">R</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=rhode-design.dk&amp;sz=128" alt="Rohde-Design" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Rohde-Design">R</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Rohde-Design</span>
           <span class="maker-country">Køge, Denmark</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://slotmoebler.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=slotmoebler.dk&amp;sz=128" alt="Slot Møbler" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Slot Møbler">SM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=slotmoebler.dk&amp;sz=128" alt="Slot Møbler" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Slot Møbler">SM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Slot Møbler</span>
           <span class="maker-country">Lem St., Denmark</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.kjeps.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=kjeps.dk&amp;sz=128" alt="Kjeps Bolighus" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Kjeps Bolighus">KB</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=kjeps.dk&amp;sz=128" alt="Kjeps Bolighus" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Kjeps Bolighus">KB</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Kjeps Bolighus</span>
           <span class="maker-country">Næstved, Denmark</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.centralmoebler.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=centralmoebler.dk&amp;sz=128" alt="Central Møbler" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Central Møbler">CM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=centralmoebler.dk&amp;sz=128" alt="Central Møbler" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Central Møbler">CM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Central Møbler</span>
           <span class="maker-country">Odense SV, Denmark</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.ting-shop.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=ting-shop.dk&amp;sz=128" alt="T.i.n.g." loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="T.i.n.g.">T</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=ting-shop.dk&amp;sz=128" alt="T.i.n.g." loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="T.i.n.g.">T</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">T.i.n.g.</span>
           <span class="maker-country">Silkeborg, Denmark</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.momentummobler.dk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=momentummobler.dk&amp;sz=128" alt="Momentum Møbler ApS" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Momentum Møbler ApS">MM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=momentummobler.dk&amp;sz=128" alt="Momentum Møbler ApS" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Momentum Møbler ApS">MM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Momentum Møbler ApS</span>
           <span class="maker-country">Vanløse, Denmark</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.elkemoobel.ee" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=elkemoobel.ee&amp;sz=128" alt="Elke Mööbel" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Elke Mööbel">EM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=elkemoobel.ee&amp;sz=128" alt="Elke Mööbel" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Elke Mööbel">EM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Elke Mööbel</span>
           <span class="maker-country">Tallinn, Estonia</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://nomart.fi/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=nomart.fi&amp;sz=128" alt="Nomart Oy" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Nomart Oy">NO</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=nomart.fi&amp;sz=128" alt="Nomart Oy" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Nomart Oy">NO</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Nomart Oy</span>
           <span class="maker-country">Helsinki, Finland</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.plusminus.fi" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=plusminus.fi&amp;sz=128" alt="Plusminus Partners Oy" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Plusminus Partners Oy">PP</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=plusminus.fi&amp;sz=128" alt="Plusminus Partners Oy" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Plusminus Partners Oy">PP</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Plusminus Partners Oy</span>
           <span class="maker-country">Helsinki, Finland</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://restatop.fi/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=restatop.fi&amp;sz=128" alt="Restatop OY" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Restatop OY">RO</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=restatop.fi&amp;sz=128" alt="Restatop OY" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Restatop OY">RO</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Restatop OY</span>
           <span class="maker-country">Helsinki, Finland</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.tavaratrading.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=tavaratrading.com&amp;sz=128" alt="TAVARA TRADING TTR Oy" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="TAVARA TRADING TTR Oy">TT</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=tavaratrading.com&amp;sz=128" alt="TAVARA TRADING TTR Oy" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="TAVARA TRADING TTR Oy">TT</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">TAVARA TRADING TTR Oy</span>
           <span class="maker-country">Kuopio, Finland</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.strukturadesign.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=strukturadesign.com&amp;sz=128" alt="Struktura Design Ab" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Struktura Design Ab">SD</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=strukturadesign.com&amp;sz=128" alt="Struktura Design Ab" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Struktura Design Ab">SD</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Struktura Design Ab</span>
           <span class="maker-country">Mariehamn, Finland</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://restatop.fi" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=restatop.fi&amp;sz=128" alt="Restatop OY" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Restatop OY">RO</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=restatop.fi&amp;sz=128" alt="Restatop OY" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Restatop OY">RO</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Restatop OY</span>
           <span class="maker-country">TURKU, Finland</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.tavaratrading.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=tavaratrading.com&amp;sz=128" alt="TAVARA TRADING TTR Oy" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="TAVARA TRADING TTR Oy">TT</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=tavaratrading.com&amp;sz=128" alt="TAVARA TRADING TTR Oy" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="TAVARA TRADING TTR Oy">TT</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">TAVARA TRADING TTR Oy</span>
           <span class="maker-country">Tampere, Finland</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.tavaratrading.com/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=tavaratrading.com&amp;sz=128" alt="TAVARA TRADING TTR Oy" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="TAVARA TRADING TTR Oy">TT</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=tavaratrading.com&amp;sz=128" alt="TAVARA TRADING TTR Oy" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="TAVARA TRADING TTR Oy">TT</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">TAVARA TRADING TTR Oy</span>
           <span class="maker-country">Vantaa, Finland</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://finnishdesignshop.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=finnishdesignshop.com&amp;sz=128" alt="Finnish Design Shop" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Finnish Design Shop">FD</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=finnishdesignshop.com&amp;sz=128" alt="Finnish Design Shop" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Finnish Design Shop">FD</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Finnish Design Shop</span>
           <span class="maker-country">Åbo (Turku), Finland</span><span class="sr-only">&amp;Tradition, Artek, GUBI, HAY, Iittala, Louis Poulsen, Marimekko, Muuto, Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://connox.de" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=connox.de&amp;sz=128" alt="Connox" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Connox">C</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=connox.de&amp;sz=128" alt="Connox" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Connox">C</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Connox</span>
           <span class="maker-country">Germany</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://koti-ahrensburg.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=koti-ahrensburg.com&amp;sz=128" alt="Koti Ahrensburg" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Koti Ahrensburg">KA</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=koti-ahrensburg.com&amp;sz=128" alt="Koti Ahrensburg" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Koti Ahrensburg">KA</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Koti Ahrensburg</span>
           <span class="maker-country">Ahrensburg, Germany</span><span class="sr-only">HAY, Artek, HOUE, Iittala, Klippan, Marimekko, String</span>
         </div>
       </a>
       <a class="maker-card" href="https://einraum.berlin" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=einraum.berlin&amp;sz=128" alt="Einraum.Berlin" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Einraum.Berlin">E</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=einraum.berlin&amp;sz=128" alt="Einraum.Berlin" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Einraum.Berlin">E</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Einraum.Berlin</span>
           <span class="maker-country">Berlin (Neukölln), Germany</span><span class="sr-only">HAY, &amp;Tradition, Montana, String, New Tendency, Kartell, Nils Holger Moormann, Massproductions, Petite Friture</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.roomsbylindabruns.de/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=roomsbylindabruns.de&amp;sz=128" alt="Rooms by Linda Bruns" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Rooms by Linda Bruns">RB</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=roomsbylindabruns.de&amp;sz=128" alt="Rooms by Linda Bruns" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Rooms by Linda Bruns">RB</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Rooms by Linda Bruns</span>
           <span class="maker-country">Dortmund, Germany</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://raumideen.net/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=raumideen.net&amp;sz=128" alt="raumideen Dortmund Möbel + Design GmbH &amp; Co. KG" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="raumideen Dortmund Möbel + Design GmbH &amp; Co. KG">RD</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=raumideen.net&amp;sz=128" alt="raumideen Dortmund Möbel + Design GmbH &amp; Co. KG" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="raumideen Dortmund Möbel + Design GmbH &amp; Co. KG">RD</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">raumideen Dortmund Möbel + Design GmbH &amp; Co. KG</span>
           <span class="maker-country">Dortmund, Germany</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://lys-vintage.com/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=lys-vintage.com&amp;sz=128" alt="LYS Vintage GmbH" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="LYS Vintage GmbH">LV</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=lys-vintage.com&amp;sz=128" alt="LYS Vintage GmbH" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="LYS Vintage GmbH">LV</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">LYS Vintage GmbH</span>
           <span class="maker-country">Hamburg, Germany</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.le-courtier.com/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=le-courtier.com&amp;sz=128" alt="Le Courtier" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Le Courtier">LC</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=le-courtier.com&amp;sz=128" alt="Le Courtier" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Le Courtier">LC</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Le Courtier</span>
           <span class="maker-country">Hamburg, Germany</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://smow.de" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=smow.de&amp;sz=128" alt="smow Hamburg" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="smow Hamburg">SH</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=smow.de&amp;sz=128" alt="smow Hamburg" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="smow Hamburg">SH</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">smow Hamburg</span>
           <span class="maker-country">Hamburg, Germany</span><span class="sr-only">HAY, Vitra, Fritz Hansen, Muuto, Louis Poulsen, USM Haller, Carl Hansen &amp; Søn, &amp;Tradition, Artek, Kartell, Cassina, Thonet, Ferm Living, String Furniture, Gubi, Moooi, Northern, Umage</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.aarhus80.de" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=aarhus80.de&amp;sz=128" alt="Aarhus 80" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Aarhus 80">A</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=aarhus80.de&amp;sz=128" alt="Aarhus 80" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Aarhus 80">A</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Aarhus 80</span>
           <span class="maker-country">Herford, Germany</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://pappsalon.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=pappsalon.com&amp;sz=128" alt="Pappsalon" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Pappsalon">P</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=pappsalon.com&amp;sz=128" alt="Pappsalon" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Pappsalon">P</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Pappsalon</span>
           <span class="maker-country">Itzehoe, Germany</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.roomkiel.com/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=roomkiel.com&amp;sz=128" alt="ROOM – Elisabeth Laudien" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="ROOM – Elisabeth Laudien">RE</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=roomkiel.com&amp;sz=128" alt="ROOM – Elisabeth Laudien" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="ROOM – Elisabeth Laudien">RE</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">ROOM – Elisabeth Laudien</span>
           <span class="maker-country">Kiel, Germany</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.roomandlight.de" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=roomandlight.de&amp;sz=128" alt="Room &amp; Light" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Room &amp; Light">RL</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=roomandlight.de&amp;sz=128" alt="Room &amp; Light" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Room &amp; Light">RL</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Room &amp; Light</span>
           <span class="maker-country">Rietberg, Germany</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.interiorkontor.de/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=interiorkontor.de&amp;sz=128" alt="Interiorkontor Hottendorf" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Interiorkontor Hottendorf">IH</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=interiorkontor.de&amp;sz=128" alt="Interiorkontor Hottendorf" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Interiorkontor Hottendorf">IH</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Interiorkontor Hottendorf</span>
           <span class="maker-country">Wenningstedt auf Sylt, Germany</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.atelier1907.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=atelier1907.com&amp;sz=128" alt="Atelier 1907" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Atelier 1907">A</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=atelier1907.com&amp;sz=128" alt="Atelier 1907" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Atelier 1907">A</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Atelier 1907</span>
           <span class="maker-country">Wuppertal, Germany</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://spaziomatteotti5.it" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=spaziomatteotti5.it&amp;sz=128" alt="Spazio Matteotti 5" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Spazio Matteotti 5">SM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=spaziomatteotti5.it&amp;sz=128" alt="Spazio Matteotti 5" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Spazio Matteotti 5">SM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Spazio Matteotti 5</span>
           <span class="maker-country">Italy</span><span class="sr-only">HAY, Muuto, Normann Copenhagen, &amp;Tradition, Ferm Living, Umage, Klippan, Serax, Petite Friture</span>
         </div>
       </a>
       <a class="maker-card" href="https://moroarredamenti.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=moroarredamenti.com&amp;sz=128" alt="Moro Arredamenti (Gallarate)" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Moro Arredamenti (Gallarate)">MA</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=moroarredamenti.com&amp;sz=128" alt="Moro Arredamenti (Gallarate)" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Moro Arredamenti (Gallarate)">MA</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Moro Arredamenti (Gallarate)</span>
           <span class="maker-country">Gallarate (VA), Italy</span><span class="sr-only">HAY, Vitra</span>
         </div>
       </a>
       <a class="maker-card" href="https://moroarredamenti.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=moroarredamenti.com&amp;sz=128" alt="Moro Arredamenti (Malpensa)" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Moro Arredamenti (Malpensa)">MA</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=moroarredamenti.com&amp;sz=128" alt="Moro Arredamenti (Malpensa)" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Moro Arredamenti (Malpensa)">MA</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Moro Arredamenti (Malpensa)</span>
           <span class="maker-country">Lonate Pozzolo (VA), Italy</span><span class="sr-only">HAY, Vitra</span>
         </div>
       </a>
       <a class="maker-card" href="https://designrepublic.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designrepublic.com&amp;sz=128" alt="Design Republic Tricolore" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Design Republic Tricolore">DR</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designrepublic.com&amp;sz=128" alt="Design Republic Tricolore" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Design Republic Tricolore">DR</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Design Republic Tricolore</span>
           <span class="maker-country">Milano, Italy</span><span class="sr-only">HAY, &amp;Tradition, Normann Copenhagen, String Furniture, Innovation Living, Montana, USM, Magis, Valerie Objects, HEM</span>
         </div>
       </a>
       <a class="maker-card" href="https://designrepublic.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designrepublic.com&amp;sz=128" alt="Design Republic Vetra" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Design Republic Vetra">DR</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designrepublic.com&amp;sz=128" alt="Design Republic Vetra" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Design Republic Vetra">DR</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Design Republic Vetra</span>
           <span class="maker-country">Milano, Italy</span><span class="sr-only">HAY, &amp;Tradition, Normann Copenhagen, String Furniture, Innovation Living, Montana, USM, Magis, Valerie Objects, HEM</span>
         </div>
       </a>
       <a class="maker-card" href="https://franzelli.it" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=franzelli.it&amp;sz=128" alt="Franzelli Concept Store" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Franzelli Concept Store">FC</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=franzelli.it&amp;sz=128" alt="Franzelli Concept Store" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Franzelli Concept Store">FC</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Franzelli Concept Store</span>
           <span class="maker-country">Sassuolo (MO), Italy</span><span class="sr-only">Seletti</span>
         </div>
       </a>
       <a class="maker-card" href="https://tomdesign.it" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=tomdesign.it&amp;sz=128" alt="Tomdesign" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Tomdesign">T</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=tomdesign.it&amp;sz=128" alt="Tomdesign" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Tomdesign">T</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Tomdesign</span>
           <span class="maker-country">Torino, Italy</span><span class="sr-only">&amp;Tradition, Andersen, Anglepoise, Arco, Audo Copenhagen, BD Barcelona Design, Bocci, Case Furniture, ClassiCon, De La Espada, dk3, Established &amp; Sons, Fredericia, Fundamental.Berlin, GUBI, HAY, Heerenhuis, Imperfetto Lab, Innovation Living, LCE, Lyfa, Massimo Copenhagen, Mater, Montana, NaniMarquina, Nils Holger Moormann, noom, NORR11, Poiat, raawii, Sancal, Serax, Valerie Objects, Sits, Sovet, Timorous Beasties, Treku, Verpan, Woodnotes, Zeitraum, ZERO</span>
         </div>
       </a>
       <a class="maker-card" href="https://empro.lt" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=empro.lt&amp;sz=128" alt="EMPRO interjerai" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="EMPRO interjerai">EI</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=empro.lt&amp;sz=128" alt="EMPRO interjerai" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="EMPRO interjerai">EI</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">EMPRO interjerai</span>
           <span class="maker-country">Klaipėda, Lithuania</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://skandinaviskiinterjerai.lt" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=skandinaviskiinterjerai.lt&amp;sz=128" alt="Skandinaviški interjerai" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Skandinaviški interjerai">SI</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=skandinaviskiinterjerai.lt&amp;sz=128" alt="Skandinaviški interjerai" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Skandinaviški interjerai">SI</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Skandinaviški interjerai</span>
           <span class="maker-country">Vilnius, Lithuania</span><span class="sr-only">HAY, And Tradition, Muuto</span>
         </div>
       </a>
       <a class="maker-card" href="https://berlebergen.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=berlebergen.no&amp;sz=128" alt="Berle Møbler &amp; Interiør" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Berle Møbler &amp; Interiør">BM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=berlebergen.no&amp;sz=128" alt="Berle Møbler &amp; Interiør" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Berle Møbler &amp; Interiør">BM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Berle Møbler &amp; Interiør</span>
           <span class="maker-country">Bergen, Norway</span><span class="sr-only">HAY, L.K Hjelle, Fritz Hansen</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.galleril.no/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=galleril.no&amp;sz=128" alt="Galleri L" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Galleri L">GL</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=galleril.no&amp;sz=128" alt="Galleri L" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Galleri L">GL</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Galleri L</span>
           <span class="maker-country">Bergen, Norway</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Glass Thomsen" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Glass Thomsen">GT</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Glass Thomsen" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Glass Thomsen">GT</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Glass Thomsen</span>
           <span class="maker-country">Bergen, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Glassmagasinet Øgrey" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Glassmagasinet Øgrey">GØ</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Glassmagasinet Øgrey" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Glassmagasinet Øgrey">GØ</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Glassmagasinet Øgrey</span>
           <span class="maker-country">Egersund, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.dominointerior.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=dominointerior.no&amp;sz=128" alt="Domino Interiør" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Domino Interiør">DI</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=dominointerior.no&amp;sz=128" alt="Domino Interiør" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Domino Interiør">DI</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Domino Interiør</span>
           <span class="maker-country">Fredrikstad, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Prydkunst" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Prydkunst">P</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Prydkunst" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Prydkunst">P</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Prydkunst</span>
           <span class="maker-country">Gjøvik, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Hamar Glasmagasin" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Hamar Glasmagasin">HG</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Hamar Glasmagasin" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Hamar Glasmagasin">HG</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Hamar Glasmagasin</span>
           <span class="maker-country">Hamar, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Galleriet Glassmagasin" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Galleriet Glassmagasin">GG</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Galleriet Glassmagasin" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Galleriet Glassmagasin">GG</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Galleriet Glassmagasin</span>
           <span class="maker-country">Jørpeland, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="OE Strande" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="OE Strande">OS</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="OE Strande" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="OE Strande">OS</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">OE Strande</span>
           <span class="maker-country">Molde, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.flowinterior.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=flowinterior.no&amp;sz=128" alt="Flow Interiør" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Flow Interiør">FI</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=flowinterior.no&amp;sz=128" alt="Flow Interiør" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Flow Interiør">FI</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Flow Interiør</span>
           <span class="maker-country">Oslo, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.nordiskagalleriet.no/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=nordiskagalleriet.no&amp;sz=128" alt="Nordiska Galleriet Oslo" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Nordiska Galleriet Oslo">NG</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=nordiskagalleriet.no&amp;sz=128" alt="Nordiska Galleriet Oslo" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Nordiska Galleriet Oslo">NG</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Nordiska Galleriet Oslo</span>
           <span class="maker-country">Oslo, Norway</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Brødrene Pedersen Kvadrat" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Brødrene Pedersen Kvadrat">BP</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Brødrene Pedersen Kvadrat" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Brødrene Pedersen Kvadrat">BP</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Brødrene Pedersen Kvadrat</span>
           <span class="maker-country">Sandnes, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Brødrene Pedersen Sandnes" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Brødrene Pedersen Sandnes">BP</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Brødrene Pedersen Sandnes" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Brødrene Pedersen Sandnes">BP</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Brødrene Pedersen Sandnes</span>
           <span class="maker-country">Sandnes, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
-      <a class="maker-card" href="https://dfu.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=dfu.no&amp;sz=128" alt="DFU - Design Furniture Unlimited" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="DFU - Design Furniture Unlimited">DD</div></div>
+      <a class="maker-card" href="https://www.facebook.com/DesignFurnitureUnlimited" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=facebook.com&amp;sz=128" alt="DFU - Design Furniture Unlimited" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="DFU - Design Furniture Unlimited">DD</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">DFU - Design Furniture Unlimited</span>
           <span class="maker-country">Sandnes, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.lightup.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=lightup.no&amp;sz=128" alt="Lightup As" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Lightup As">LA</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=lightup.no&amp;sz=128" alt="Lightup As" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Lightup As">LA</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Lightup As</span>
           <span class="maker-country">Skien, Norway</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://kolstadlys.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=kolstadlys.no&amp;sz=128" alt="Brødrene Kolstad AS" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Brødrene Kolstad AS">BK</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=kolstadlys.no&amp;sz=128" alt="Brødrene Kolstad AS" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Brødrene Kolstad AS">BK</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Brødrene Kolstad AS</span>
           <span class="maker-country">Stabekk, Norway</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Brødrene Pedersen Breigata" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Brødrene Pedersen Breigata">BP</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Brødrene Pedersen Breigata" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Brødrene Pedersen Breigata">BP</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Brødrene Pedersen Breigata</span>
           <span class="maker-country">Stavanger, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Brødrene Pedersen Tvedt" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Brødrene Pedersen Tvedt">BP</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="Brødrene Pedersen Tvedt" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Brødrene Pedersen Tvedt">BP</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Brødrene Pedersen Tvedt</span>
           <span class="maker-country">Stavanger, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.creolight.no/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=creolight.no&amp;sz=128" alt="Creolight AS" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Creolight AS">CA</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><span class="monogram" title="Creolight AS">CA</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Creolight AS</span>
           <span class="maker-country">Stavanger, Norway</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.moebelgalleriet.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=moebelgalleriet.no&amp;sz=128" alt="Møbelgalleriet" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Møbelgalleriet">M</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=moebelgalleriet.no&amp;sz=128" alt="Møbelgalleriet" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Møbelgalleriet">M</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Møbelgalleriet</span>
           <span class="maker-country">Stavanger, Norway</span><span class="sr-only">HAY, Fritz Hansen, Vitra, DUX, Montana, Fredericia, Occhio</span>
         </div>
       </a>
       <a class="maker-card" href="https://designforevig.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="CI Pedersen" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="CI Pedersen">CP</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designforevig.no&amp;sz=128" alt="CI Pedersen" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="CI Pedersen">CP</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">CI Pedersen</span>
           <span class="maker-country">Trondheim, Norway</span><span class="sr-only">HAY</span>
         </div>
       </a>
       <a class="maker-card" href="http://vaerness.no" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=vaerness.no&amp;sz=128" alt="Værness Elektriske AS" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Værness Elektriske AS">VE</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=vaerness.no&amp;sz=128" alt="Værness Elektriske AS" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Værness Elektriske AS">VE</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Værness Elektriske AS</span>
           <span class="maker-country">Trondheim, Norway</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://fabrykaform.pl" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=fabrykaform.pl&amp;sz=128" alt="Fabryka Form (Warszawa)" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Fabryka Form (Warszawa)">FF</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=fabrykaform.pl&amp;sz=128" alt="Fabryka Form (Warszawa)" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Fabryka Form (Warszawa)">FF</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Fabryka Form (Warszawa)</span>
           <span class="maker-country">Warsaw, Poland</span><span class="sr-only">HAY, Muuto, Villeroy &amp; Boch, Le Creuset, Smeg, Brabantia, Eva Solo, KitchenAid</span>
         </div>
       </a>
       <a class="maker-card" href="https://anotherdesign.pl" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=anotherdesign.pl&amp;sz=128" alt="AnOther Design" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="AnOther Design">AD</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=anotherdesign.pl&amp;sz=128" alt="AnOther Design" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="AnOther Design">AD</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">AnOther Design</span>
           <span class="maker-country">Warsaw (Żoliborz), Poland</span><span class="sr-only">HAY, &amp;Tradition, Bolia, Ferm Living</span>
         </div>
       </a>
       <a class="maker-card" href="https://thescandinavianshowroom.com/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=thescandinavianshowroom.com&amp;sz=128" alt="Hus no17 / The Scandinavian Showroom" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Hus no17 / The Scandinavian Showroom">HN</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=thescandinavianshowroom.com&amp;sz=128" alt="Hus no17 / The Scandinavian Showroom" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Hus no17 / The Scandinavian Showroom">HN</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Hus no17 / The Scandinavian Showroom</span>
           <span class="maker-country">Malaga, Spain</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.bredarydsmobler.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=bredarydsmobler.se&amp;sz=128" alt="Bredaryds Möbler" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Bredaryds Möbler">BM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=bredarydsmobler.se&amp;sz=128" alt="Bredaryds Möbler" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Bredaryds Möbler">BM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Bredaryds Möbler</span>
           <span class="maker-country">Bredaryd, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.levellight.se/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=levellight.se&amp;sz=128" alt="Level Light AB" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Level Light AB">LL</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=levellight.se&amp;sz=128" alt="Level Light AB" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Level Light AB">LL</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Level Light AB</span>
           <span class="maker-country">Danderyd, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.emmabodamobler.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=emmabodamobler.se&amp;sz=128" alt="Emmaboda Möbler AB" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Emmaboda Möbler AB">EM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=emmabodamobler.se&amp;sz=128" alt="Emmaboda Möbler AB" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Emmaboda Möbler AB">EM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Emmaboda Möbler AB</span>
           <span class="maker-country">Emmaboda, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.artilleriet.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=artilleriet.se&amp;sz=128" alt="Artilleriet Interiors AB" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Artilleriet Interiors AB">AI</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=artilleriet.se&amp;sz=128" alt="Artilleriet Interiors AB" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Artilleriet Interiors AB">AI</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Artilleriet Interiors AB</span>
           <span class="maker-country">Göteborg, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.nordiskagalleriet.se/orsjo-belysning" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=nordiskagalleriet.se&amp;sz=128" alt="Nordiska Galleriet" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Nordiska Galleriet">NG</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=nordiskagalleriet.se&amp;sz=128" alt="Nordiska Galleriet" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Nordiska Galleriet">NG</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Nordiska Galleriet</span>
           <span class="maker-country">Göteborg, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://svenssons.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons Göteborg" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Svenssons Göteborg">SG</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons Göteborg" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Svenssons Göteborg">SG</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Svenssons Göteborg</span>
           <span class="maker-country">Göteborg, Sweden</span><span class="sr-only">HAY, Louis Poulsen, Swedese, &amp;Tradition, Stolab, Fritz Hansen, Audo Copenhagen, String Furniture, Carl Hansen &amp; Søn, Ferm Living, Fermob, Artek, Flos, Eilersen</span>
         </div>
       </a>
-      <a class="maker-card" href="https://www.svenssons.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons i Lammhult" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Svenssons i Lammhult">SI</div></div>
-        <div class="maker-card-body">
-          <span class="maker-name">Svenssons i Lammhult</span>
-          <span class="maker-country">Göteborg, Sweden</span><span class="sr-only">Örsjö</span>
-        </div>
-      </a>
       <a class="maker-card" href="https://www.nordiskmobelkonst.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=nordiskmobelkonst.se&amp;sz=128" alt="Nordisk Möbelkonst" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Nordisk Möbelkonst">NM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=nordiskmobelkonst.se&amp;sz=128" alt="Nordisk Möbelkonst" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Nordisk Möbelkonst">NM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Nordisk Möbelkonst</span>
           <span class="maker-country">Jönköping, Sweden</span><span class="sr-only">PP Møbler, Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.magasinseverin.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=magasinseverin.se&amp;sz=128" alt="Magasin Severin" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Magasin Severin">MS</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=magasinseverin.se&amp;sz=128" alt="Magasin Severin" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Magasin Severin">MS</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Magasin Severin</span>
           <span class="maker-country">Kalmar, Sweden</span><span class="sr-only">&amp;Tradition, Carl Hansen &amp; Søn, DUX, Design House Stockholm, Eilersen, Flos, Källemo, Louis Poulsen, Naver Collection, Stolab, String, Swedese, Vipp, Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://nordicnest.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=nordicnest.se&amp;sz=128" alt="Nordic Nest" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Nordic Nest">NN</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=nordicnest.se&amp;sz=128" alt="Nordic Nest" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Nordic Nest">NN</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Nordic Nest</span>
           <span class="maker-country">Kalmar, Sweden</span><span class="sr-only">HAY, Louis Poulsen, Gubi, Marimekko, Ferm Living, Audo Copenhagen, Georg Jensen, &amp;Tradition, String Furniture</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.thimarform.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=thimarform.se&amp;sz=128" alt="Thimar Form" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Thimar Form">TF</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=thimarform.se&amp;sz=128" alt="Thimar Form" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Thimar Form">TF</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Thimar Form</span>
           <span class="maker-country">Karlstad, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.visionofhome.se/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=visionofhome.se&amp;sz=128" alt="Vision of Home AB" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Vision of Home AB">VO</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=visionofhome.se&amp;sz=128" alt="Vision of Home AB" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Vision of Home AB">VO</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Vision of Home AB</span>
           <span class="maker-country">Kristianstad, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://svenssons.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons Lammhult" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Svenssons Lammhult">SL</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons Lammhult" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Svenssons Lammhult">SL</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Svenssons Lammhult</span>
           <span class="maker-country">Lammhult, Sweden</span><span class="sr-only">HAY, Louis Poulsen, Swedese, &amp;Tradition, Stolab, Fritz Hansen, Audo Copenhagen, String Furniture, Carl Hansen &amp; Søn, Ferm Living, Fermob, Artek, Flos, Eilersen</span>
         </div>
       </a>
-      <a class="maker-card" href="https://www.svenssons.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons i Lammhult" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Svenssons i Lammhult">SI</div></div>
-        <div class="maker-card-body">
-          <span class="maker-name">Svenssons i Lammhult</span>
-          <span class="maker-country">Lammhult, Sweden</span><span class="sr-only">Örsjö</span>
-        </div>
-      </a>
       <a class="maker-card" href="https://www.lindholms.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=lindholms.com&amp;sz=128" alt="Lindholms Interiörhuset" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Lindholms Interiörhuset">LI</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=lindholms.com&amp;sz=128" alt="Lindholms Interiörhuset" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Lindholms Interiörhuset">LI</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Lindholms Interiörhuset</span>
           <span class="maker-country">Linköping, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.miljogarden.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=miljogarden.se&amp;sz=128" alt="Miljögården AB" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Miljögården AB">MA</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=miljogarden.se&amp;sz=128" alt="Miljögården AB" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Miljögården AB">MA</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Miljögården AB</span>
           <span class="maker-country">Lund, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
-      <a class="maker-card" href="https://www.glashusetmalmo.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=glashusetmalmo.se&amp;sz=128" alt="Glashuset" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Glashuset">G</div></div>
-        <div class="maker-card-body">
-          <span class="maker-name">Glashuset</span>
-          <span class="maker-country">Malmö, Sweden</span><span class="sr-only">Örsjö</span>
-        </div>
-      </a>
       <a class="maker-card" href="https://glashusetmalmo.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=glashusetmalmo.se&amp;sz=128" alt="Glashuset i Malmö" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Glashuset i Malmö">GI</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=glashusetmalmo.se&amp;sz=128" alt="Glashuset i Malmö" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Glashuset i Malmö">GI</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Glashuset i Malmö</span>
           <span class="maker-country">Malmö, Sweden</span><span class="sr-only">DUX, Stolab, Fritz Hansen, String, Vitra, Eilersen, Moooi, Audo Copenhagen, Louis Poulsen, Fredericia, Montana, Gubi</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.ljusmiljo.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=ljusmiljo.com&amp;sz=128" alt="Ljusmiljö" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Ljusmiljö">L</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=ljusmiljo.com&amp;sz=128" alt="Ljusmiljö" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Ljusmiljö">L</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Ljusmiljö</span>
           <span class="maker-country">Malmö, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.nordiskagalleriet.se/malmo" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=nordiskagalleriet.se&amp;sz=128" alt="Nordiska Galleriet" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Nordiska Galleriet">NG</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=nordiskagalleriet.se&amp;sz=128" alt="Nordiska Galleriet" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Nordiska Galleriet">NG</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Nordiska Galleriet</span>
           <span class="maker-country">Malmö, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://svenssons.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons Malmö" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Svenssons Malmö">SM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons Malmö" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Svenssons Malmö">SM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Svenssons Malmö</span>
           <span class="maker-country">Malmö, Sweden</span><span class="sr-only">HAY, Louis Poulsen, Swedese, &amp;Tradition, Stolab, Fritz Hansen, Audo Copenhagen, String Furniture, Carl Hansen &amp; Søn, Ferm Living, Fermob, Artek, Flos, Eilersen</span>
         </div>
       </a>
-      <a class="maker-card" href="https://www.svenssons.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons i Lammhult" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Svenssons i Lammhult">SI</div></div>
-        <div class="maker-card-body">
-          <span class="maker-name">Svenssons i Lammhult</span>
-          <span class="maker-country">Malmö, Sweden</span><span class="sr-only">Örsjö</span>
-        </div>
-      </a>
       <a class="maker-card" href="https://www.bright123.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=bright123.se&amp;sz=128" alt="Bright 1-2-3" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Bright 1-2-3">B</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=bright123.se&amp;sz=128" alt="Bright 1-2-3" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Bright 1-2-3">B</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Bright 1-2-3</span>
           <span class="maker-country">Nacka, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.kontorett.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=kontorett.se&amp;sz=128" alt="Kontor Ett" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Kontor Ett">KE</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=kontorett.se&amp;sz=128" alt="Kontor Ett" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Kontor Ett">KE</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Kontor Ett</span>
           <span class="maker-country">Norrköping, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://royaldesign.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=royaldesign.se&amp;sz=128" alt="RoyalDesign.se" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="RoyalDesign.se">R</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=royaldesign.se&amp;sz=128" alt="RoyalDesign.se" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="RoyalDesign.se">R</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">RoyalDesign.se</span>
           <span class="maker-country">Nybro, Sweden</span><span class="sr-only">HAY, &amp;Tradition, Fritz Hansen, GUBI, Muuto, Ferm Living, String, Artek, Vitra, Louis Poulsen, Marimekko, Iittala, Georg Jensen, Örsjö Belysning, Normann Copenhagen, Fermob, Kartell, Vipp, Stolab, Frama, Northern, Form &amp; Refine, Serax, Cane-line, New Works</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.lannamobler.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=lannamobler.se&amp;sz=128" alt="Länna möbler" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Länna möbler">LM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=lannamobler.se&amp;sz=128" alt="Länna möbler" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Länna möbler">LM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Länna möbler</span>
           <span class="maker-country">Skogås, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.sparsmakat.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=sparsmakat.se&amp;sz=128" alt="Sparsmakat" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Sparsmakat">S</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=sparsmakat.se&amp;sz=128" alt="Sparsmakat" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Sparsmakat">S</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Sparsmakat</span>
           <span class="maker-country">Skövde, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.interiorbutiken.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=interiorbutiken.se&amp;sz=128" alt="Interiörbutiken" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Interiörbutiken">I</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=interiorbutiken.se&amp;sz=128" alt="Interiörbutiken" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Interiörbutiken">I</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Interiörbutiken</span>
           <span class="maker-country">Stockholm, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://ljusgrossisten.se/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=ljusgrossisten.se&amp;sz=128" alt="Ljusgrossisten" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Ljusgrossisten">L</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=ljusgrossisten.se&amp;sz=128" alt="Ljusgrossisten" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Ljusgrossisten">L</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Ljusgrossisten</span>
           <span class="maker-country">Stockholm, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.nordiskagalleriet.se/orsjo-belysning" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=nordiskagalleriet.se&amp;sz=128" alt="Nordiska Galleriet" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Nordiska Galleriet">NG</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=nordiskagalleriet.se&amp;sz=128" alt="Nordiska Galleriet" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Nordiska Galleriet">NG</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Nordiska Galleriet</span>
           <span class="maker-country">Stockholm, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.norrmalmsel.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=norrmalmsel.se&amp;sz=128" alt="Norrmalms El" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Norrmalms El">NE</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=norrmalmsel.se&amp;sz=128" alt="Norrmalms El" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Norrmalms El">NE</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Norrmalms El</span>
           <span class="maker-country">Stockholm, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.ljusbutik.se/sv/trademarks/orsjo" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=ljusbutik.se&amp;sz=128" alt="Stockholms Ljusbutik" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Stockholms Ljusbutik">SL</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=ljusbutik.se&amp;sz=128" alt="Stockholms Ljusbutik" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Stockholms Ljusbutik">SL</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Stockholms Ljusbutik</span>
           <span class="maker-country">Stockholm, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://svenssons.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons Stockholm City Sergel" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Svenssons Stockholm City Sergel">SS</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons Stockholm City Sergel" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Svenssons Stockholm City Sergel">SS</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Svenssons Stockholm City Sergel</span>
           <span class="maker-country">Stockholm, Sweden</span><span class="sr-only">HAY, Louis Poulsen, Swedese, &amp;Tradition, Stolab, Fritz Hansen, Audo Copenhagen, String Furniture, Carl Hansen &amp; Søn, Ferm Living, Fermob, Artek, Flos, Eilersen</span>
         </div>
       </a>
       <a class="maker-card" href="https://svenssons.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons Stockholm Sickla" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Svenssons Stockholm Sickla">SS</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons Stockholm Sickla" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Svenssons Stockholm Sickla">SS</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Svenssons Stockholm Sickla</span>
           <span class="maker-country">Stockholm, Sweden</span><span class="sr-only">HAY, Louis Poulsen, Swedese, &amp;Tradition, Stolab, Fritz Hansen, Audo Copenhagen, String Furniture, Carl Hansen &amp; Søn, Ferm Living, Fermob, Artek, Flos, Eilersen</span>
         </div>
       </a>
-      <a class="maker-card" href="https://www.svenssons.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=svenssons.se&amp;sz=128" alt="Svenssons i Lammhult" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Svenssons i Lammhult">SI</div></div>
-        <div class="maker-card-body">
-          <span class="maker-name">Svenssons i Lammhult</span>
-          <span class="maker-country">Stockholm, Sweden</span><span class="sr-only">Örsjö</span>
-        </div>
-      </a>
       <a class="maker-card" href="https://www.rummet.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=rummet.se&amp;sz=128" alt="Rummet" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Rummet">R</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=rummet.se&amp;sz=128" alt="Rummet" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Rummet">R</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Rummet</span>
           <span class="maker-country">Sundsvall, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.savedalensbelysning.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=savedalensbelysning.se&amp;sz=128" alt="Sävedalens Belysning" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Sävedalens Belysning">SB</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=savedalensbelysning.se&amp;sz=128" alt="Sävedalens Belysning" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Sävedalens Belysning">SB</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Sävedalens Belysning</span>
           <span class="maker-country">Sävedalen, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.elon.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=elon.se&amp;sz=128" alt="Elon Ljus &amp; Design" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Elon Ljus &amp; Design">EL</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=elon.se&amp;sz=128" alt="Elon Ljus &amp; Design" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Elon Ljus &amp; Design">EL</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Elon Ljus &amp; Design</span>
           <span class="maker-country">Umeå, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
-      <a class="maker-card" href="https://www.valamagasinet.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=valamagasinet.se&amp;sz=128" alt="Våla Magasinet" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Våla Magasinet">VM</div></div>
-        <div class="maker-card-body">
-          <span class="maker-name">Våla Magasinet</span>
-          <span class="maker-country">Uppsala, Sweden</span><span class="sr-only">Örsjö</span>
-        </div>
-      </a>
       <a class="maker-card" href="https://valamagasinet.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=valamagasinet.se&amp;sz=128" alt="Vålamagasinet" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Vålamagasinet">V</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=valamagasinet.se&amp;sz=128" alt="Vålamagasinet" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Vålamagasinet">V</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Vålamagasinet</span>
           <span class="maker-country">Uppsala, Sweden</span><span class="sr-only">Vipp, Örsjö, Stolab, Gong</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.vaxjoelektriska.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=vaxjoelektriska.se&amp;sz=128" alt="Växjö Elektriska" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Växjö Elektriska">VE</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=vaxjoelektriska.se&amp;sz=128" alt="Växjö Elektriska" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Växjö Elektriska">VE</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Växjö Elektriska</span>
           <span class="maker-country">Växjö, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://hanssonsmobler.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=hanssonsmobler.se&amp;sz=128" alt="Hanssons Möbler" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Hanssons Möbler">HM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=hanssonsmobler.se&amp;sz=128" alt="Hanssons Möbler" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Hanssons Möbler">HM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Hanssons Möbler</span>
           <span class="maker-country">Ängelholm, Sweden</span><span class="sr-only">HAY, Fredericia, String Furniture, Normann Copenhagen, Swedese, Secto Design, Naver Collection</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.indainterior.se" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=indainterior.se&amp;sz=128" alt="Inda Interiör AB" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Inda Interiör AB">II</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=indainterior.se&amp;sz=128" alt="Inda Interiör AB" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Inda Interiör AB">II</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Inda Interiör AB</span>
           <span class="maker-country">Örebro, Sweden</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://pfister.ch" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=pfister.ch&amp;sz=128" alt="Pfister" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Pfister">P</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=pfister.ch&amp;sz=128" alt="Pfister" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Pfister">P</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Pfister</span>
           <span class="maker-country">Switzerland</span><span class="sr-only">HAY, Cane-line, Houe, Flos, Foscarini, Ethnicraft</span>
         </div>
       </a>
       <a class="maker-card" href="https://goodform.ch" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=goodform.ch&amp;sz=128" alt="Goodform AG" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Goodform AG">GA</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=goodform.ch&amp;sz=128" alt="Goodform AG" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Goodform AG">GA</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Goodform AG</span>
           <span class="maker-country">Baar, Switzerland</span><span class="sr-only">HAY, Carl Hansen &amp; Søn, Louis Poulsen, Umage, Knoll International, Artemide, Normann Copenhagen, Ethnicraft, Nanimarquina, Fermob, Flos</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.holmsweetholm.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=holmsweetholm.com&amp;sz=128" alt="Holm AG" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Holm AG">HA</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=holmsweetholm.com&amp;sz=128" alt="Holm AG" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Holm AG">HA</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Holm AG</span>
           <span class="maker-country">Zürich, Switzerland</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.hollowaysofludlow.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=hollowaysofludlow.com&amp;sz=128" alt="Holloways of Ludlow" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Holloways of Ludlow">HO</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=hollowaysofludlow.com&amp;sz=128" alt="Holloways of Ludlow" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Holloways of Ludlow">HO</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Holloways of Ludlow</span>
           <span class="maker-country">Bath, United Kingdom</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.moletamunro.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=moletamunro.com&amp;sz=128" alt="Moleta Munro" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Moleta Munro">MM</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=moletamunro.com&amp;sz=128" alt="Moleta Munro" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Moleta Munro">MM</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Moleta Munro</span>
           <span class="maker-country">Edinburgh, United Kingdom</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.utilitydesign.co.uk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=utilitydesign.co.uk&amp;sz=128" alt="Utility" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Utility">U</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=utilitydesign.co.uk&amp;sz=128" alt="Utility" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Utility">U</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Utility</span>
           <span class="maker-country">Liverpool, United Kingdom</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://heals.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=heals.com&amp;sz=128" alt="Heal&#x27;s" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Heal&#x27;s">H</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=heals.com&amp;sz=128" alt="Heal&#x27;s" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Heal&#x27;s">H</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Heal&#x27;s</span>
           <span class="maker-country">London, United Kingdom</span><span class="sr-only">HAY, Ligne Roset</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.hollowaysofludlow.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=hollowaysofludlow.com&amp;sz=128" alt="Holloways of Ludlow" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Holloways of Ludlow">HO</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=hollowaysofludlow.com&amp;sz=128" alt="Holloways of Ludlow" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Holloways of Ludlow">HO</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Holloways of Ludlow</span>
           <span class="maker-country">London, United Kingdom</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.skandium.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=skandium.com&amp;sz=128" alt="Skandium" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Skandium">S</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=skandium.com&amp;sz=128" alt="Skandium" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Skandium">S</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Skandium</span>
           <span class="maker-country">London, United Kingdom</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.twentytwentyone.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=twentytwentyone.com&amp;sz=128" alt="Twentytwentyone" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Twentytwentyone">T</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=twentytwentyone.com&amp;sz=128" alt="Twentytwentyone" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Twentytwentyone">T</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Twentytwentyone</span>
           <span class="maker-country">London, United Kingdom</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.viaduct.co.uk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=viaduct.co.uk&amp;sz=128" alt="Viaduct" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Viaduct">V</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=viaduct.co.uk&amp;sz=128" alt="Viaduct" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Viaduct">V</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Viaduct</span>
           <span class="maker-country">London, United Kingdom</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.ferrious.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=ferrious.com&amp;sz=128" alt="Ferrious" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Ferrious">F</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=ferrious.com&amp;sz=128" alt="Ferrious" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Ferrious">F</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Ferrious</span>
           <span class="maker-country">Manchester, United Kingdom</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.davidvillagelighting.co.uk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=davidvillagelighting.co.uk&amp;sz=128" alt="David Village Lighting" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="David Village Lighting">DV</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=davidvillagelighting.co.uk&amp;sz=128" alt="David Village Lighting" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="David Village Lighting">DV</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">David Village Lighting</span>
           <span class="maker-country">Sheffield, United Kingdom</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://nest.co.uk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=nest.co.uk&amp;sz=128" alt="Nest" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Nest">N</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=nest.co.uk&amp;sz=128" alt="Nest" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Nest">N</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Nest</span>
           <span class="maker-country">Sheffield, United Kingdom</span><span class="sr-only">&amp;Tradition, HAY, Karup Design, Muuto, Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.cameronpeters.co.uk" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=cameronpeters.co.uk&amp;sz=128" alt="Cameron Peters" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Cameron Peters">CP</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=cameronpeters.co.uk&amp;sz=128" alt="Cameron Peters" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Cameron Peters">CP</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Cameron Peters</span>
           <span class="maker-country">Wantage, United Kingdom</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.hollowaysofludlow.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=hollowaysofludlow.com&amp;sz=128" alt="Holloways of Ludlow," loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Holloways of Ludlow,">HO</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=hollowaysofludlow.com&amp;sz=128" alt="Holloways of Ludlow," loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Holloways of Ludlow,">HO</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Holloways of Ludlow,</span>
           <span class="maker-country">Wimbledon Village, United Kingdom</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://twoenlighten.com/" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=twoenlighten.com&amp;sz=128" alt="Two Enlighten" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Two Enlighten">TE</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=twoenlighten.com&amp;sz=128" alt="Two Enlighten" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Two Enlighten">TE</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Two Enlighten</span>
           <span class="maker-country">Glendale, CA, United States</span><span class="sr-only">Örsjö</span>
         </div>
       </a>
       <a class="maker-card" href="https://nordicurban.com" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=nordicurban.com&amp;sz=128" alt="Nordic Urban" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="monogram" style="display:none;" title="Nordic Urban">NU</div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=nordicurban.com&amp;sz=128" alt="Nordic Urban" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Nordic Urban">NU</span></div></div>
         <div class="maker-card-body">
           <span class="maker-name">Nordic Urban</span>
           <span class="maker-country">Online retailer</span><span class="sr-only">Carl Hansen &amp; Søn, Fredericia, House of Finn Juhl, Le Klint, PP Møbler, dk3, &amp;Tradition, J.L. Møller</span>
