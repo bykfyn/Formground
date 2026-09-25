@@ -6488,6 +6488,7 @@ EXTRACTORS = {
     "Monsieur Cailloux": extract_monsieur_cailloux,
     "Jonas Lindholm": extract_woocommerce,
     "Northern": extract_shopify,
+    "Made by Hand": extract_shopify,
     "Louise Roe": extract_shopify,
     "Tolix": extract_shopify,
     "Rubn": extract_shopify,

@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Made by Hand on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Made by Hand's work on Formground - 71 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/made-by-hand.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Made by Hand on Formground">
+<meta property="og:description" content="Made by Hand's work on Formground - 71 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/made-by-hand.html">
+<meta property="og:image" content="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_core_table-pendant_light_E27_2609.jpg?v=1715683810">
+<meta name="twitter:image" content="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_core_table-pendant_light_E27_2609.jpg?v=1715683810">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Made by Hand on Formground">
+<meta name="twitter:description" content="Made by Hand's work on Formground - 71 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Made by Hand", "item": "https://formground.com/brands/made-by-hand.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Made by Hand</h1>
+    <div class="tags"><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">Denmark</span></div>
+    <a class="brand-site-link" href="https://madebyhand.dk" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://madebyhand.dk/products/core-pendant-nero-marquina-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_core_table-pendant_light_E27_2609.jpg?v=1715683810" alt="Core Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Core Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/core-pendant-spot" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_core_pendant_dark_GU10_2573.jpg?v=1709814825" alt="Core Pendant Spot by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Core Pendant Spot</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/core-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_core_table-pendant_light_E27_2603.jpg?v=1715683547" alt="Core Table by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Core Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/fuse-single-wall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_fuse_wall_singel_10212.jpg?v=1758790631" alt="FUSE Single Wall by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">FUSE Single Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/flying" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_flying_lamp_o58cm_golden-sand_1149.jpg?v=1709809471" alt="Flying Ø58 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flying Ø58</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/flying-o78" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_flying_lamp_o78cm_golden-sand_1143.jpg?v=1709812656" alt="Flying Ø78 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flying Ø78</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/flying-o96" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_flying_o96_golden-sand_44790.jpg?v=1716881553" alt="Flying Ø96 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flying Ø96</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/fuse-double-wall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_fuse_wall_double_10273.jpg?v=1758791190" alt="Fuse Double Wall by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fuse Double Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/fuse-portable" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_fuse_portabel_10180.jpg?v=1758789150" alt="Fuse Portable by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fuse Portable</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/fuse-triple-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_fuse_pendant_10163.jpg?v=1758791857" alt="Fuse Triple Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Fuse Triple Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-anniversary-o45-pendant-led" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_45cm_gold_2602_b1ac3c69-12fc-459b-8ccb-97284f4e87b5.jpg?v=1740485535" alt="Knit-Wit Anniversary Ø45 Pendant LED by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Anniversary Ø45 Pendant LED</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-anniversary-o57-pendant-led" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_57cm_gold_2658_e99710b9-aa56-4410-9110-bbdfc583837e.jpg?v=1740569165" alt="Knit-Wit Anniversary Ø57 Pendant LED by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Anniversary Ø57 Pendant LED</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o45-floor-high" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_floor-lamp-high_o45_black_220062.jpg?v=1710928576" alt="Knit-Wit Ø45 Floor High by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø45 Floor High</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o45-oval-ceiling" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_ceiling_o45cm_black_0882.jpg?v=1710923551" alt="Knit-Wit Ø45 Oval Ceiling by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø45 Oval Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o45-cm-oval-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_o45cm_black_0709.jpg?v=1710335196" alt="Knit-Wit Ø45 Oval Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø45 Oval Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o45-oval-pendant-led" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_o45cm_black_LED_1578.jpg?v=1710932725" alt="Knit-Wit Ø45 Oval Pendant LED by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø45 Oval Pendant LED</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o45-cm-oval-wall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_ceiling_o45cm_black_0882_936be690-c769-4287-a933-01208139ad6b.jpg?v=1715688374" alt="Knit-Wit Ø45 Oval Wall by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø45 Oval Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o45-round-ceiling" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_round_ceiling_o45cm_black_40105.jpg?v=1710926166" alt="Knit-Wit Ø45 Round Ceiling by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø45 Round Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o45-cm-round-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_45cm_black_E27_OFF.jpg?v=1715687206" alt="Knit-Wit Ø45 Round Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø45 Round Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o45-round-pendant-led" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_o45cm_black_LED_1984.jpg?v=1710930842" alt="Knit-Wit Ø45 Round Pendant LED by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø45 Round Pendant LED</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o57-oval-ceiling" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_ceiling_o57cm_black_0887.jpg?v=1710924509" alt="Knit-Wit Ø57 Oval Ceiling by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø57 Oval Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o57-cm-oval-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_o57cm_black_0720.jpg?v=1710336002" alt="Knit-Wit Ø57 Oval Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø57 Oval Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o57-oval-pendant-led" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_o57cm_black_LED_1388.jpg?v=1710933147" alt="Knit-Wit Ø57 Oval Pendant LED by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø57 Oval Pendant LED</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o57-cm-oval-wall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_ceiling_o57cm_black_0887_6a873145-35f1-4a1e-8005-9fa1627ca5bd.jpg?v=1715689104" alt="Knit-Wit Ø57 Oval Wall by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø57 Oval Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o60-floor-high" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_floor-lamp-high_o60cm_black_39977.jpg?v=1710929087" alt="Knit-Wit Ø60 Floor High by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø60 Floor High</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o60-floor-level" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_floor_o60cm_black_39898.jpg?v=1710930204" alt="Knit-Wit Ø60 Floor Level by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø60 Floor Level</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o60-floor-medium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_floor-lamp-medium_o60_black_220035.jpg?v=1710927542" alt="Knit-Wit Ø60 Floor Medium by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø60 Floor Medium</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o60-cm-round-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_60cm_black_40048.jpg?v=1710338882" alt="Knit-Wit Ø60 Round Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø60 Round Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o60-round-pendant-led" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_o60cm_black_LED_1715.jpg?v=1710931377" alt="Knit-Wit Ø60 Round Pendant LED by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø60 Round Pendant LED</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o65-floor-level" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_floor_o65cm_black_40170.jpg?v=1710929718" alt="Knit-Wit Ø65 Floor Level by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø65 Floor Level</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o65-floor-medium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_floor-lamp-medium_o65_black_38694.jpg?v=1710928122" alt="Knit-Wit Ø65 Floor Medium by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø65 Floor Medium</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o65-cm-high-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_o65cm_black_E27_OFF_ce4872aa-855a-4b8f-be03-69dccbfdd5e6.jpg?v=1715686688" alt="Knit-Wit Ø65 High Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø65 High Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o65-high-pendant-led" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_o65cm_black_LED_2453.jpg?v=1710932289" alt="Knit-Wit Ø65 High Pendant LED by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø65 High Pendant LED</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o75-cm-round-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_75cm_black_E27_OFF.jpg?v=1715687760" alt="Knit-Wit Ø75 Round Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø75 Round Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o75-round-pendant-led" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_o75cm_black_LED_2179.jpg?v=1710931755" alt="Knit-Wit Ø75 Round Pendant LED by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø75 Round Pendant LED</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o76-oval-ceiling" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_ceiling_o76cm_black_0869.jpg?v=1710925086" alt="Knit-Wit Ø76 Oval Ceiling by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø76 Oval Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o76-cm-oval-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_o76cm_black_0847.jpg?v=1710336699" alt="Knit-Wit Ø76 Oval Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø76 Oval Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o76-oval-pendant-led" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_pendant_o76cm_black_LED_2466.jpg?v=1710933508" alt="Knit-Wit Ø76 Oval Pendant LED by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø76 Oval Pendant LED</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/knit-wit-o76-cm-oval-wall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_knit-wit_ceiling_o76cm_black_0869_28d8ccbd-15ec-4098-b7d8-be5a3cf6ada8.jpg?v=1715689739" alt="Knit-Wit Ø76 Oval Wall by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Knit-Wit Ø76 Oval Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/mollis-o50" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/Made-by-hand_mollis_O50_pearlwhite_LED_0103_e4402e07-d6f4-4d35-a41c-2b99b228fa23.jpg?v=1727252891" alt="Mollis Ø50 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mollis Ø50</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/mollis-o65" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/Made-by-hand_mollis_O65_pearlwhite_LED_0105.jpg?v=1727254075" alt="Mollis Ø65 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Mollis Ø65</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/nabla-140-x-200" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/Nabla_Closeup_02_lowres_2443b67a-bc02-4cd5-9c3c-28b090d7f05c.jpg?v=1710326595" alt="Nabla 140 x 200 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nabla 140 x 200</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/nabla-170-x-240" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/Nabla_Closeup_02_lowres_5be5a1b4-73e1-44cf-aa5e-41018d8288a3.jpg?v=1710326764" alt="Nabla 170 x 240 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nabla 170 x 240</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/nabla-200-x-300" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/Nabla_Closeup_02_lowres_72ccb077-58ac-443e-b78e-63b2ac91ad7c.jpg?v=1710327038" alt="Nabla 200 x 300 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nabla 200 x 300</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/nabla-300-x-400" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/Nabla_Closeup_02_lowres_02e660a3-acfe-400d-b23d-f84bab892c3f.jpg?v=1710328538" alt="Nabla 300 x 400 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Nabla 300 x 400</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/papier-double-o30-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_papier_floor_white_0629.jpg?v=1710334334" alt="Papier Double Ø30 Table by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Papier Double Ø30 Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/papier-double-o40" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_papier_white_0607.jpg?v=1710333388" alt="Papier Double Ø40 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Papier Double Ø40</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/papier-single-o40" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_papier_white_0602.jpg?v=1710332371" alt="Papier Single Ø40 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Papier Single Ø40</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/papier-single-o52" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_papier_white_0617.jpg?v=1710332810" alt="Papier Single Ø52 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Papier Single Ø52</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/papier-single-o80" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_papier_white_0596.jpg?v=1710333052" alt="Papier Single Ø80 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Papier Single Ø80</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/pepo-o20" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_pepo_brass_small_38764.jpg?v=1715683926" alt="PePo Ø20 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PePo Ø20</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/pepo-o30" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_pepo_brass_large_38773.jpg?v=1715684136" alt="PePo Ø30 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">PePo Ø30</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/petite-machine-floor" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/PetiteMachine_Floor_RoyalBlue_square.jpg?v=1716279350" alt="Petite Machine Floor by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Petite Machine Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/petite-machine-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/PetiteMachine_Table_RoyalBlue_square.jpg?v=1716279123" alt="Petite Machine Table by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Petite Machine Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/pinstripe-throw" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/THROW_BLACK_BOTH_COLORS.jpg?v=1710159082" alt="Pinstripe Throw by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Pinstripe Throw</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/ro-o15-cm-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/RO_PENDANT_O15_68756586-73f7-48bb-a0f3-5cab7fae9ea9.jpg?v=1715678883" alt="Ro Ø15 Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ro Ø15 Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/ro-o15-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/RO_TABLE_O15.jpg?v=1715679623" alt="Ro Ø15 Table by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ro Ø15 Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/ro-o15-23-wall-open" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_ro_lamp_wall_profile_0563.jpg?v=1715680930" alt="Ro Ø15/23 Wall Open by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ro Ø15/23 Wall Open</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/ro-o23-high-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/RO_PENDANT_O23_LONG_01c8cfd5-44fd-4c74-8486-14ac762bb872.jpg?v=1715678994" alt="Ro Ø23 High Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ro Ø23 High Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/ro-o23-low-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/RO_PENDANT_O23_SHORT_b0e957c8-91a6-4f00-9221-2bf21cc60392.jpg?v=1715679444" alt="Ro Ø23 Low Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ro Ø23 Low Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/ro-o23-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/RO_TABLE_O23_52c44f19-9f13-43eb-a36d-d84e8f6868a1.jpg?v=1715680061" alt="Ro Ø23 Table by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ro Ø23 Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/ro-o23-15-wall-closed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_ro_lamp_wall_profile_0558.jpg?v=1715681115" alt="Ro Ø23/15 Wall Closed by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ro Ø23/15 Wall Closed</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/ro-o23-23-wall-straight" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_ro_lamp_wall_profile_0561.jpg?v=1715680740" alt="Ro Ø23/23 Wall Straight by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ro Ø23/23 Wall Straight</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/ro-o30-floor" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/RO_FLOOR_O30.jpg?v=1715680526" alt="Ro Ø30 Floor by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ro Ø30 Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/ro-o30-pendant" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/RO_PENDANT_O30_d0824024-1b8c-4cf1-acfa-aec9f5a79e73.jpg?v=1715679550" alt="Ro Ø30 Pendant by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Ro Ø30 Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/workshop-w1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/W1packshotWineRedinclBrassTop_de3c0a30-976f-440e-b34b-311f7367fa99.jpg?v=1781783896" alt="Workshop W1 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Workshop W1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/workshop-w2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/W2packshotMatteBlackinclBrassTop.jpg?v=1781784096" alt="Workshop W2 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Workshop W2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/workshop-w3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/W3packshotWineRedinclBrassTop_jpg.jpg?v=1781784353" alt="Workshop W3 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Workshop W3</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/workshop-w3-anniversary" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/W3ChocolateBrowninklBrassTop.jpg?v=1772180976" alt="Workshop W3 Anniversary by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Workshop W3 Anniversary</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/workshop-w4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/W4packshotWineRedinclBrassTop.jpg?v=1781784784" alt="Workshop W4 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Workshop W4</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/workshop-w4-anniversary" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/W4EarthClayinclBrassTop.jpg?v=1772114368" alt="Workshop W4 Anniversary by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Workshop W4 Anniversary</p>
+          
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
