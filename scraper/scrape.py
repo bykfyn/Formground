@@ -4141,6 +4141,8 @@ def extract_coco_flip(brand):
         image_url = (store.get("featuredImage") or {}).get("src", "")
         if not name or not handle:
             continue
+        if _looks_like_a_maintenance_item(name):
+            continue
 
         products.append({
             "brand": brand["name"],
