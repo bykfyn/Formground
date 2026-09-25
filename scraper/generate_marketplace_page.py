@@ -169,14 +169,14 @@ PAGE_CSS = """
      own whitespace). 88px, not the original 56px (user, 2026-09-25:
      "make the circle... larger"). */
   .icon-badge {
-    width: 88px; height: 88px; border-radius: 50%; background: var(--surface-2);
+    width: 112px; height: 112px; border-radius: 50%; background: var(--surface-2);
     border: 0.5px solid var(--border-strong); display: flex; align-items: center;
     justify-content: center; overflow: hidden;
   }
   .icon-badge img { width: 65%; height: 65%; object-fit: contain; }
   .monogram {
     font-family: 'Archivo', sans-serif; font-weight: 700;
-    font-size: 26px; color: var(--text-secondary);
+    font-size: 34px; color: var(--text-secondary);
   }
 
   [hidden] { display: none !important; }
