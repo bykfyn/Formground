@@ -1884,6 +1884,10 @@ def _looks_like_a_maintenance_item(title):
     """
     keywords = (
         "assembly kit", "cleaning kit", "kit di pulizia", "gift card", "giftcard",
+        # Artetica's own "Spare Parts: Ashtray"/"Spare Parts: Burner
+        # Incense" listings, confirmed live 2026-09-25 - replacement
+        # components for its real Ashtray/Burner Incense products.
+        "spare parts:",
         # Utilitario Mexicano also sells polarized sunglasses through
         # this same catalog (confirmed live: "Lentes Filtro
         # Polarizador") - not a home design object either, and its own
@@ -1942,6 +1946,11 @@ def _looks_like_a_maintenance_item(title):
         # bangles) - not home design objects, same reasoning as
         # Utilitario Mexicano's sunglasses exclusion above.
         "earrings", "bangle",
+        # Artetica's "Loop pendant" (confirmed live 2026-09-25: "suspended
+        # from an adjustable black cord", part of a "rivêt × artetica"
+        # jewelry collaboration) - a necklace pendant, not a lighting
+        # pendant, despite the ambiguous name.
+        "loop pendant",
     )
     title_lower = title.lower()
     return any(kw in title_lower for kw in keywords)
@@ -2116,6 +2125,19 @@ def extract_shopify(brand):
         raw_products = [
             p for p in raw_products
             if not p["title"].strip().upper().startswith("INCENSE :")
+        ]
+    if brand["name"] == "Artetica":
+        # User-reported 2026-09-25: "four Plia chairs by Giancarlo
+        # Piretti" and similar - real secondhand/vintage pieces, not
+        # Artetica's own production. Confirmed live: its whole
+        # "Design" product_type (60 items) is vendor "Selected by
+        # artetica", a curated vintage-design resale section (vintage
+        # Kartell, 60s ashtrays, vintage Carlo Moretti glass) separate
+        # from Artetica's own manufactured glassware line - excluded
+        # outright, not just the flagged item.
+        raw_products = [
+            p for p in raw_products
+            if (p.get("product_type") or "").strip().lower() != "design"
         ]
     if brand["name"] == "Le Klint":
         # User-reported 2026-09-25 on "900 Hang-up" - confirmed live:
