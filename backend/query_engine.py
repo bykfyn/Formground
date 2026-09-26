@@ -286,12 +286,41 @@ def _category_matches(category_field: str, wanted: str) -> bool:
     # and "furniture" deliberately excludes tableware/decor words some
     # brands mix into the same tag set (e.g. 101cph's Vase/Bowl/Cutlery).
     HYPERNYM_WORDS = {
+        # Nordic-language words added 2026-09-26 after auditing every
+        # distinct category tag in the DB for real lighting/furniture
+        # products hiding under the "Objects" catch-all (~680 products
+        # found): most were the brand's own real category, just in
+        # Danish/Swedish/Polish rather than English - "Belysning"
+        # (Swedish "lighting"), "lampa"/"Lampy" (Swedish/Polish "lamp"),
+        # and compound words like "Gulvlamper"/"Loftlamper"/"Væglamper"/
+        # "Bordlamper"/"Sengelamper" (Danish "floor/ceiling/wall/table/
+        # bed lamps" - one word, so still a real suffix match) and
+        # "Pendler" (Danish "pendants"). These are added as their own
+        # hyponym strings, matched the same end-anchored way as the
+        # English ones - safe because they're distinctive foreign words
+        # with no unrelated English collision risk, unlike a generic
+        # word such as "light" would be if matched as a bare substring.
         "lighting": ("lamp", "light", "sconce", "pendant", "chandelier",
-                     "surface mount", "flush mount", "wall mount"),
-        "furniture": ("chair", "table", "stool", "bench", "sofa", "armchair",
-                      "ottoman", "console", "bookcase", "modular unit",
-                      "seat", "seating", "screen", "desk", "storage",
-                      "shelving", "furniture"),
+                     "surface mount", "flush mount", "wall mount",
+                     "belysning", "lampa", "lampy", "lamper", "gulvlamper",
+                     "loftlamper", "væglamper", "bordlamper", "sengelamper",
+                     "projektbelysning", "pendler"),
+        # cabinet/sideboard/footstool/daybed/wardrobe/drawers/shelf added
+        # 2026-09-26, same audit as above - all real, common furniture
+        # words that were simply missing from this list (e.g. Cabinet:
+        # 99 products, Sideboard: 73, Footstool: 52, all invisible to a
+        # "furniture" search before this). "benches"/"shelves" are each
+        # added as their OWN string (not just relying on the trailing
+        # "s?" appended to "bench"/"shelf") since both pluralize
+        # irregularly (bench->benches, shelf->shelves, not "benchs"/
+        # "shelfs") - the existing "s?" suffix can't produce either.
+        "furniture": ("chair", "table", "stool", "bench", "benches", "sofa",
+                      "armchair", "ottoman", "console", "bookcase",
+                      "modular unit", "seat", "seating", "screen", "desk",
+                      "storage", "shelving", "shelving system", "shelf",
+                      "shelf library", "shelves", "cabinet", "sideboard",
+                      "footstool", "daybed", "wardrobe", "drawers",
+                      "furniture"),
         # Built the same way as furniture/lighting above - pulled every
         # real category tag across brands the site's own umbrella
         # classifier (generate_brand_pages.py) already calls Ceramics,
@@ -312,6 +341,20 @@ def _category_matches(category_field: str, wanted: str) -> bool:
             pattern = re.compile(rf"\b{re.escape(h)}s?$", re.IGNORECASE)
             if any(pattern.search(tag) for tag in tags):
                 return True
+
+    # A real Danish tag shape the suffix check above can't reach: "Lamper
+    # til badeværelset" ("Lamps for the bathroom"), "Lamper til entré",
+    # etc. - confirmed live 2026-09-26, ~15 real tag variants across
+    # ~60 products, all genuine lighting. Danish's "noun til noun"
+    # phrasing puts the real object-type word FIRST and a room name
+    # LAST, the opposite of the "modifier then noun" order every other
+    # hyponym check in this function assumes (e.g. "Coffee Table") - a
+    # trailing-word match can never catch this shape, so this checks the
+    # tag's own first word instead, scoped to exactly this one real
+    # prefix rather than a general "contains anywhere" rule.
+    if wanted.lower() in ("lighting", "lightings"):
+        if any(tag.lower().startswith("lamper ") for tag in tags):
+            return True
 
     # "Objects" isn't a real taxonomy word anyone's tags use - it's this
     # site's own catch-all for whatever doesn't match Furniture/Lighting
