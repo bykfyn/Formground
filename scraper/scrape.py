@@ -1855,6 +1855,72 @@ def _infer_byarums_bruk_category(product_name):
     return None
 
 
+# A last-resort fallback for a brand whose ENTIRE real catalog is one
+# object type, used only when every other check above already failed -
+# confirmed live 2026-09-26 for DCW editions: their own Shopify
+# product_type is blank for 234 of 248 products, and most real
+# collection names are abstract ("In Fine", "Acrobate de Gras", "My
+# best Enemy") with no lighting word in them at all, even though every
+# one of them (checked by spot-checking the ones with no obvious
+# keyword) is a real lighting fixture - DCW's whole site is lighting
+# only. Keep this narrow: only for a brand confirmed single-category,
+# never a general-purpose guess.
+SINGLE_CATEGORY_BRANDS = {
+    "DCW éditions": "Light",
+}
+
+# DCW editions organizes its real catalog by typology collection - a far
+# more reliable category source than guessing from often-abstract names
+# (user-pointed 2026-09-26). Each of these is a real Shopify collection
+# on their own site (confirmed live), including a "10 HEURES 10" sub-line
+# that mirrors the same typologies under its own collection handles.
+# "Miroirs" (mirrors) is real but isn't lighting at all - kept here since
+# it's still a typology collection, just mapped to its own real category.
+DCW_TYPOLOGY_COLLECTIONS = {
+    "appliques": "Wall Light",
+    "appliques-10-heures-10": "Wall Light",
+    "lampadaires": "Floor Lamp",
+    "lampadaires-10-heures-10": "Floor Lamp",
+    "lampes-de-table": "Table Lamp",
+    "lampes-de-table-10-heures-10": "Table Lamp",
+    "suspensions": "Pendant",
+    "suspensions-10-heures-10": "Pendant",
+    "plafonniers": "Ceiling Light",
+    "plafonniers-10-heures-10": "Ceiling Light",
+    "lustres": "Chandelier",
+    "lampes-nomades": "Portable Lamp",
+    "miroirs": "Mirror",
+}
+
+
+def _fetch_dcw_category_overrides(base_url):
+    """
+    Fetches each real typology collection's product list (see
+    DCW_TYPOLOGY_COLLECTIONS) plus the real "Exterieur" collection, and
+    returns (handle -> category, set of outdoor handles). A handle
+    appearing in more than one typology collection keeps whichever is
+    found first - not observed live, but the typology collections are
+    specific enough (Wall Light vs Floor Lamp vs Pendant, etc.) that a
+    genuine overlap would mean the product is sold in more than one
+    physical form, which isn't this schema's problem to resolve.
+    """
+    category_by_handle = {}
+    for handle, category in DCW_TYPOLOGY_COLLECTIONS.items():
+        data = _fetch_json(f"{base_url}/collections/{handle}/products.json?limit=250")
+        if not data:
+            continue
+        for p in data.get("products", []):
+            category_by_handle.setdefault(p["handle"], category)
+        time.sleep(1)
+
+    outdoor_handles = set()
+    data = _fetch_json(f"{base_url}/collections/exterieur/products.json?limit=250")
+    if data:
+        outdoor_handles = {p["handle"] for p in data.get("products", [])}
+
+    return category_by_handle, outdoor_handles
+
+
 def _infer_category_from_name(product_name, current_category, brand_name=None):
     if current_category.strip().lower() not in UNHELPFUL_CATEGORIES:
         return current_category
@@ -1887,7 +1953,17 @@ def _infer_category_from_name(product_name, current_category, brand_name=None):
     # ever a generic placeholder becoming more specific, for any brand.
     keyword_match = _infer_category_from_english_keywords(product_name)
     if keyword_match:
+        # DCW editions' own naming shorthand for a table LAMP is just
+        # "... Table" (French lighting-industry "a poser" convention,
+        # e.g. "Biny Table", "Aaro Table") - confirmed live 2026-09-26,
+        # this brand sells lighting exclusively, never furniture, so the
+        # bare "Table" keyword match (meant for furniture) is always
+        # wrong here specifically.
+        if brand_name == "DCW éditions" and keyword_match == "Table":
+            return "Table Lamp"
         return keyword_match
+    if brand_name in SINGLE_CATEGORY_BRANDS:
+        return SINGLE_CATEGORY_BRANDS[brand_name]
     return current_category
 
 
@@ -2633,6 +2709,30 @@ def extract_shopify(brand):
     # also carries "CREATE YOUR OWN" plus real ones like "Daybed"/"No
     # Arms" - those are real configurations, kept).
     products = [p for p in products if p["material_options"] != ["CREATE YOUR OWN"]]
+
+    if brand["name"] == "DCW éditions":
+        # Real typology/outdoor collections (see DCW_TYPOLOGY_COLLECTIONS
+        # and _fetch_dcw_category_overrides) are a far more reliable
+        # category source than the name-based inference above, which
+        # mostly falls back to a bare "Light" for this brand's often-
+        # abstract collection names (user-pointed 2026-09-26).
+        category_by_handle, outdoor_handles = _fetch_dcw_category_overrides(base)
+        for p in products:
+            handle = p["product_url"].rsplit("/", 1)[-1]
+            typology_category = category_by_handle.get(handle)
+            if typology_category:
+                p["category"] = typology_category
+            elif p["category"].strip().lower() in DCW_TYPOLOGY_COLLECTIONS:
+                # A handful of real products (confirmed live 2026-09-26:
+                # US-market "-etl" certified variant handles, e.g.
+                # "in-the-tube-360-700-wall-etl") aren't listed in the
+                # typology collection itself, but Shopify's own raw
+                # product_type already carries the bare French typology
+                # word untranslated - same lookup, just keyed by that
+                # word instead of by collection membership.
+                p["category"] = DCW_TYPOLOGY_COLLECTIONS[p["category"].strip().lower()]
+            if handle in outdoor_handles:
+                p["category"] = f"{p['category']}, Outdoor" if p["category"] else "Outdoor"
 
     return products
 
@@ -6489,6 +6589,7 @@ EXTRACTORS = {
     "Jonas Lindholm": extract_woocommerce,
     "Northern": extract_shopify,
     "Made by Hand": extract_shopify,
+    "DCW éditions": extract_shopify,
     "Louise Roe": extract_shopify,
     "Tolix": extract_shopify,
     "Rubn": extract_shopify,
