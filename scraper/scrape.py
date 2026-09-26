@@ -2131,6 +2131,13 @@ OUT_OF_SCOPE_CATEGORIES = {
     # modular sofa system, not a real navigable listing. Distinctive
     # enough a category name that no other brand could collide with it.
     "n09 subproduct",
+    # The Conran Shop's own categories for a fabric/finish swatch and a
+    # bar of soap (confirmed live 2026-09-26, both exclusive to this
+    # brand): 64 "Fabric Sample" rows are real colourway names with no
+    # "sample" word in the name itself (e.g. "Linen: Dahlia"), so the
+    # existing name-based _looks_like_a_maintenance_item check never
+    # caught them - the category field is the only real signal here.
+    "fabric sample", "bar soap",
 }
 
 # Unlike OUT_OF_SCOPE_CATEGORIES above, "Upholstery" isn't safe to
@@ -6590,6 +6597,7 @@ EXTRACTORS = {
     "Northern": extract_shopify,
     "Made by Hand": extract_shopify,
     "DCW éditions": extract_shopify,
+    "The Conran Shop": extract_shopify,
     "Louise Roe": extract_shopify,
     "Tolix": extract_shopify,
     "Rubn": extract_shopify,
