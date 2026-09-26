@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pierre Charpin — Designers — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Pierre Charpin - 92 real products credited across 2 brands: Alessi, Galerie Kreo.">
+<link rel="canonical" href="https://formground.com/designers/pierre-charpin.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pierre Charpin — Formground">
+<meta property="og:description" content="Pierre Charpin - 92 real products credited across 2 brands: Alessi, Galerie Kreo.">
+<meta property="og:url" content="https://formground.com/designers/pierre-charpin.html">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Designers", "item": "https://formground.com/designers.html"},
+        {"@type": "ListItem", "position": 3, "name": "Pierre Charpin", "item": "https://formground.com/designers/pierre-charpin.html"}
+      ]
+    }</script>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Designer</p>
+    <h1 class="maker-name">Pierre Charpin</h1>
+  </div>
+  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">92 real products credited to Pierre Charpin, each linked straight to its maker's own page.</p>
+  <div class="maker-grid">
+      <a class="maker-card" href="https://www.alessi.com/products/pch02-basket" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01_PCH02.jpg?v=1680621635" alt="PCH02" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">PCH02</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/pch05-fruit-holder" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01_PCH05.jpg?v=1680621639" alt="PCH05" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">PCH05</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/pch06-oval-basket" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01_PCH06.jpg?v=1599876655" alt="PCH06" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">PCH06</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/allaperto-coffee-table-grand-model" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/19CBB21002790943AEF4706CEB206BFA.jpg.webp" alt="All&#x27;aperto Coffee Table - grand model" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">All&#x27;aperto Coffee Table - grand model</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/crescendo-black-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/C89D65AB4833BB4E9DBF99005F9BC484.jpg.webp" alt="Crescendo Black Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Crescendo Black Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/crescendo-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/CE5143D9371E8D42B9A8828A24E19B50.jpg.webp" alt="Crescendo Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Crescendo Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/crescendo-table-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/5605CF9A9FE0D34F978868B3EC89B99A.jpg.webp" alt="Crescendo Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Crescendo Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/crescendo-white-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/167B97E6C08D6C448AF0EC37F9B3B9C2.jpg.webp" alt="Crescendo White Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Crescendo White Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/cubes-drawings" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/AF83A29BDC91AB4DB89F11C9522DF1A0.jpg.webp" alt="Cubes Drawings" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Cubes Drawings</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/cubes-drawings-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F62171FC0E6C3244B608B0A3F9227927.jpg.webp" alt="Cubes Drawings" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Cubes Drawings</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/cubes-drawings-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/325CE285AF40694C9B6B7D6EF1E7B332.jpg.webp" alt="Cubes Drawings" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Cubes Drawings</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/fraction-monochromatic-side-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/18E2E4F982F25C449B7B0D9448271B2D.jpg.webp" alt="Fraction - monochromatic Side Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fraction - monochromatic Side Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/fraction-multicolor-side-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/4F6B005E0DCB6D43B4DCB7F8F29A9EAC.jpg.webp" alt="Fraction - multicolor Side Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fraction - multicolor Side Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/fraction-multicolor-side-table-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/1F2D2DE84CDF8D41B374ADFF364D428E.jpg.webp" alt="Fraction - multicolor Side Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fraction - multicolor Side Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/fraction-multicolor-side-table-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/FB6DF9B1FE4AFC42AAC973418AEBBACB.jpg.webp" alt="Fraction - multicolor Side Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fraction - multicolor Side Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/fraction-multicolor-side-table-4" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/1B5794BD1A81F8488760EBA63CA0C4E4.jpg.webp" alt="Fraction - multicolor Side Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fraction - multicolor Side Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/fraction-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F08CFA1FBF35E54A8B840D7633928E52.jpg.webp" alt="Fraction Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fraction Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/fraction-coffee-table-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F002B004AD0EAE428319A83A28398ACE.jpg.webp" alt="Fraction Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fraction Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/fraction-coffee-table-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/8523D9A591A7BB4BACB3C17E715BB306.jpg.webp" alt="Fraction Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fraction Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/fraction-coffee-table-4" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/253FCCC2EF0C264FB3E8C0C1B48D162D.jpg.webp" alt="Fraction Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fraction Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/fraction-dining-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/B31BF30CA1775A44BB39A295F9B2D56E.jpg.webp" alt="Fraction Dining Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fraction Dining Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ignotus-nomen-bench" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/8F609F283F86894AA10F0FAAAFA8B2F6.jpg.webp" alt="Ignotus Nomen Bench" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ignotus Nomen Bench</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ignotus-nomen-box" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/E1959B3D4B676F4D90026D59DEB5DDCB.jpg.webp" alt="Ignotus Nomen Box" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ignotus Nomen Box</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ignotus-nomen-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/AD5DE5A3D68DCD4D93B0312527385021.jpg.webp" alt="Ignotus Nomen Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ignotus Nomen Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ignotus-nomen-console" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/D3DE44FBF732F9418EF025EAD3678F3B.jpg.webp" alt="Ignotus Nomen Console" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ignotus Nomen Console</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ignotus-nomen-desk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/A6BBBF8E899DAF4388AE4B210788FF2E.jpg.webp" alt="Ignotus Nomen Desk" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ignotus Nomen Desk</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ignotus-nomen-form" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/2588DEA401590448B43EE38EB4FECC3B.jpg.webp" alt="Ignotus Nomen Form" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ignotus Nomen Form</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ignotus-nomen-shelf" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/DB076E5598F90B46A7BE94B98111FFB0.jpg.webp" alt="Ignotus Nomen Shelf" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ignotus Nomen Shelf</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ignotus-nomen-vase" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/4C9BBA59C1E4AB4DAAE23508E7471021.jpg.webp" alt="Ignotus Nomen Vase" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ignotus Nomen Vase</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/jardiniere" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/105D78432357364492CB3DCE71669C0D.jpg.webp" alt="Jardinière" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Jardinière</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/lao-large-model" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/5762F3387A1D9F4691636A6C5A07ABAA.jpg.webp" alt="Lao large model" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Lao large model</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/lao-large-model-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/B693F90D7852BB4B8BAD5D35DADCF06A.jpg.webp" alt="Lao large model" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Lao large model</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/large-c-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/AC41BB19D67251499EE2CC3FFAED50FA.jpg.webp" alt="Large C Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Large C Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/large-db-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/4B74455C51771B40A96765D63DCAA573.jpg.webp" alt="Large DB Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Large DB Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/large-db-coffee-table-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/41778CE78A90D0498251745612F83FE2.jpg.webp" alt="Large DB Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Large DB Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/large-r-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/C194BD4E40A41A46B989B5A49C94DA9B.jpg.webp" alt="Large R Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Large R Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/lassu" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/7F038C9996F91A48B56F22A360A4A97C.jpg.webp" alt="Lassù" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Lassù</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/lunettes-1-vase" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/DFC70F6443A3264E937DA58FB9CF7EC1.jpg.webp" alt="Lunettes - 1 Vase" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Lunettes - 1 Vase</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/lunettes-2-vase" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/E0BA048D6DE8134D86F3266AE976F276.jpg.webp" alt="Lunettes - 2 Vase" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Lunettes - 2 Vase</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/lunettes-3-vase" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/23A10D06ADCEB74786987B879C9663DD.jpg.webp" alt="Lunettes - 3 Vase" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Lunettes - 3 Vase</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/m-c-side-table-multicolor" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/BDEA45E1DFB95447BB664847BFF2026C.jpg.webp" alt="M.C Side Table Multicolor" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">M.C Side Table Multicolor</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/m-c-side-table-multicolor-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/73818754CB823A43875098E7C49540C9.jpg.webp" alt="M.C Side Table Multicolor" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">M.C Side Table Multicolor</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/medium-t-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/8598AEE0D2D79441A35177B776DF5DE3.jpg.webp" alt="Medium T Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Medium T Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/medium-w-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/B6B5545DD9065940A60EDA40C231EA88.jpg.webp" alt="Medium W Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Medium W Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/mini-satellite-3-mirror" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/3D438C2544C8714A8077167B679274A5.jpg.webp" alt="Mini Satellite 3 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mini Satellite 3 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/mini-satellite-4-mirror" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/199F11734BD74449BEEC2DB5B71A835E.jpg.webp" alt="Mini Satellite 4 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mini Satellite 4 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/mini-satellite-4-mirror-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/4D378E0D138B8545AFD3E33761613B33.jpg.webp" alt="Mini Satellite 4 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mini Satellite 4 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/mini-satellite-5-mirror" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/EAB2E23517FE3C4F838776C10FE239FA.jpg.webp" alt="Mini Satellite 5 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mini Satellite 5 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/mini-satellite-5-mirror-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/933B896B46564B419A5806D055BAD8E5.jpg.webp" alt="Mini Satellite 5 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mini Satellite 5 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/monolithe" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/91A584D751B3DC40992BC37F89C9E5F5.jpg.webp" alt="Monolithe" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Monolithe</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/occasional-stool" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/72528D21366C0A45BB454E5B560C560F.jpg.webp" alt="Occasional Stool" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Occasional Stool</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/oggetti-lenti-serie" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/DAD8C1E5B4C9924EA62C52C16F365ADF.jpg.webp" alt="Oggetti lenti Serie" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Oggetti lenti Serie</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/oval-drawings" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/2D8ABAF50C459B4784A9E10DB478C587.jpg.webp" alt="Oval Drawings" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Oval Drawings</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/oval-drawings-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/6402934D184C5C43B116AFE4609265B8.jpg.webp" alt="Oval Drawings" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Oval Drawings</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/plump-1-vase" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/B1D50A5EA202BC4D9EA1151BEEE06923.jpg.webp" alt="Plump - 1 Vase" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Plump - 1 Vase</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/plump-2-vase" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/15EF6BCB3FD1E647AB9F8F6F74D4BCCD.jpg.webp" alt="Plump - 2 Vase" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Plump - 2 Vase</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/plump-3-vase" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/C18361B3B3006D4295E795E8BB792723.jpg.webp" alt="Plump - 3 Vase" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Plump - 3 Vase</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/plump-4-vase" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/E7ADA93DAE986E41935E0CD17BA3F40C.jpg.webp" alt="Plump - 4 Vase" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Plump - 4 Vase</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ruban-vase-black" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/B22B73D6F88F1B4B8763DA1CF47FCC78.jpg.webp" alt="Ruban Vase Black" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ruban Vase Black</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ruban-vase-green" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/D09060842AE5B943975F055821595584.jpg.webp" alt="Ruban Vase Green" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ruban Vase Green</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ruban-vase-red" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/9D5860862A25B94F874FF05028CA8DD0.jpg.webp" alt="Ruban Vase Red" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ruban Vase Red</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/satellite-3-mirror" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/860467EBBDAC654A9DD3F30A0F1D9C42.jpg.webp" alt="Satellite 3 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Satellite 3 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/satellite-3-mirror-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/9E6AC3E6D423F5468C7440F49F805A17.jpg.webp" alt="Satellite 3 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Satellite 3 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/satellite-3-mirror-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/9513A989DB9A8A4A98F8DE71343928E5.jpg.webp" alt="Satellite 3 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Satellite 3 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/satellite-4-mirror" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/FB5A74231D7EB547B5E2FE2EB4137719.jpg.webp" alt="Satellite 4 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Satellite 4 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/satellite-4-mirror-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/AF51E2810E18D24D928E4F657EFF0EB0.jpg.webp" alt="Satellite 4 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Satellite 4 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/satellite-4-mirror-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/38C3AB0A4ACD60478C186B228D021362.jpg.webp" alt="Satellite 4 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Satellite 4 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/satellite-5-mirror" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/55C53CF90F33BA4BAEB0AC2793057C30.jpg.webp" alt="Satellite 5 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Satellite 5 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/satellite-5-mirror-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/349ACE906240A444A7BF1F8130A014E8.jpg.webp" alt="Satellite 5 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Satellite 5 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/satellite-5-mirror-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F178EF9C2D65AE48AD0C03F76665195F.jpg.webp" alt="Satellite 5 Mirror" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Satellite 5 Mirror</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/storage-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/4CC2E265DC37AD4FBEB5EF0A3167D05A.jpg.webp" alt="Storage" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Storage</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/storage-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/DFEFD3AA55A3344EB68C55968050CB1A.jpg.webp" alt="Storage" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Storage</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/table-basse-rotondo" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/CEECAFD2A1DB724F8B4998A6DDE3BC88.jpg.webp" alt="Table basse Rotondo" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Table basse Rotondo</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/traits-drawings" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/69A620FE4182C14EB61DABDB3ADCE361.jpg.webp" alt="Traits Drawings" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Traits Drawings</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/traits-drawings-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/9204998DB10186458FFDBC63D302F3F5.jpg.webp" alt="Traits Drawings" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Traits Drawings</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/traits-drawings-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/37B01A2D6E352842A76907DF111488A1.jpg.webp" alt="Traits Drawings" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Traits Drawings</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/traits-drawings-4" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/39FC46C90C6EFF449260AC2BCD4E67C5.jpg.webp" alt="Traits Drawings" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Traits Drawings</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/traits-drawings-5" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/A6EFB448BDF03A438BB400222DBF645A.jpg.webp" alt="Traits Drawings" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Traits Drawings</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/traits-drawings-6" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/50183CF11F670640AA3B0B0A1A6D0C7B.jpg.webp" alt="Traits Drawings" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Traits Drawings</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-capsula-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/A3F4E140DB6DF0448864FB99758BC789.jpg.webp" alt="Translation Capsula Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Translation Capsula Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-capsula-coffee-table-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/87E5EA9E479CAB448F578621C8C2E302.jpg.webp" alt="Translation Capsula Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Translation Capsula Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-discolo-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F918C902FBADD54EBAAA787DAF5AB153.jpg.webp" alt="Translation Discolo Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Translation Discolo Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-discolo-coffee-table-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F8FF93E02917F841AD039F2F421E603C.jpg.webp" alt="Translation Discolo Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Translation Discolo Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-poligono-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/647C03243C2C47408823E5F0CEE362D0.jpg.webp" alt="Translation Poligono Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Translation Poligono Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-quadro-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/1C2BE5D368EBB2488A73BC86FAD4F90A.jpg.webp" alt="Translation Quadro Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Translation Quadro Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-quadro-coffee-table-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/FAFF2831B650B94D89C1348B92212306.jpg.webp" alt="Translation Quadro Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Translation Quadro Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-triangolo-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F79B2958C2F10A43BAA4CED0B0780883.jpg.webp" alt="Translation Triangolo Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Translation Triangolo Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-triangolo-coffee-table-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/883AAB00797A054FBAA6EC6F46D5A3AF.jpg.webp" alt="Translation Triangolo Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Translation Triangolo Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-triangolo-coffee-table-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/A6655B304D196249B4D31AECCEE8F343.jpg.webp" alt="Translation Triangolo Coffee Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Translation Triangolo Coffee Table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/trapeze-1-ceiling-light" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/E5B26F8A1B74A4459D7E81EB236663E1.jpg.webp" alt="Trapeze 1 Ceiling light" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Trapeze 1 Ceiling light</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/trapeze-2-ceiling-light" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/EE4AE4D1A1B38C4C87A9511420DC6BA1.jpg.webp" alt="Trapeze 2 Ceiling light" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Trapeze 2 Ceiling light</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/vase-dalle-black-tube-clear-blue-flagstone" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/EE429BF99A0A1141873C61EDB27E0F19.jpg.webp" alt="Vase Dalle (Black Tube/Clear blue Flagstone)" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Vase Dalle (Black Tube/Clear blue Flagstone)</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+  </div>
+  <p class="page-tagline">Looking for who made it? <a href="/makers.html">Browse Makers &rarr;</a></p>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

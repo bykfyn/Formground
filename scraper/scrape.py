@@ -2688,6 +2688,45 @@ def extract_shopify(brand):
 
         images = first.get("images", [])
 
+        # A few Shopify brands' own body_html reliably names the designer
+        # in prose (checked live 2026-09-26 while closing the designer-
+        # credit coverage gap) - one regex per brand since the phrasing
+        # differs and a generic one risks false positives across brands
+        # that don't use this shape at all. Deliberately narrow/best-
+        # effort: a missed credit is safer than a wrong one.
+        designer = ""
+        body_html_plain = re.sub(r"<[^>]+>", " ", first.get("body_html") or "")
+        if brand["name"] == "Artek":
+            # "Designed by Alvar Aalto in 1933..." or "..., designed by
+            # Alvar Aalto in 1934, is..." - confirmed live on multiple
+            # classic pieces.
+            m = re.search(r"designed by ([A-Z][A-Za-z'.\- ]+?) in \d{4}", body_html_plain, re.IGNORECASE)
+            if m:
+                designer = m.group(1).strip()
+        elif brand["name"] == "Serax":
+            # "...by Maurice Harris for Serax" / "...by architect Thijs
+            # Prinsen of Lens°ass Architects for Serax" - confirmed live.
+            # Other real phrasings (possessive "X's...", "X gives this...")
+            # exist too but aren't safely regex-able without more false
+            # positives, so only this reliable shape is captured.
+            m = re.search(r"\bby (?:architect |designer )?([A-Z][A-Za-z'.\-]+(?:\s+[A-Z][A-Za-z'.\-]+){0,3})(?:\s+of\s+[^,.]+)?\s+for Serax\b", body_html_plain)
+            if m:
+                designer = m.group(1).strip()
+        if not designer:
+            # Some Shopify stores (confirmed on Alessi) tag every product
+            # with a structured "Designer: <name>" tag - or "Designers: X
+            # | Y" already combined for co-designed pieces - free, no
+            # extra fetch, and safe generically since it only fires when
+            # the tag is literally present.
+            all_tags = first.get("tags") or []
+            combined_tag = next((t for t in all_tags if t.lower().startswith("designers:")), None)
+            if combined_tag:
+                designer = combined_tag.split(":", 1)[1].strip().replace(" | ", ", ")
+            else:
+                names = [t.split(":", 1)[1].strip() for t in all_tags if t.lower().startswith("designer:")]
+                if names:
+                    designer = ", ".join(dict.fromkeys(names))
+
         products.append({
             "brand": brand["name"],
             "brand_url": brand["url"],
@@ -2704,6 +2743,7 @@ def extract_shopify(brand):
             # query time (see filter_products()'s matched_material).
             "notes": "",
             "image_url": images[0]["src"] if images else "",
+            "designer": designer,
         })
 
     # A few brands sell a "build your own" configurator as its own listing
@@ -3672,6 +3712,17 @@ def extract_wastberg(brand):
         }
         category = WASTBERG_CATEGORY_SUFFIX.get(mount_type.title(), f"{mount_type.title()} Lamp")
 
+        # Each product page has a "Design: <name>" line in a plain <p>
+        # with no stable class (Tailwind utility classes, not semantic) -
+        # find it by text content instead. Confirmed live 2026-09-26 on
+        # Faro Table ("Design: David Chipperfield").
+        designer = ""
+        for p in page_soup.find_all("p"):
+            p_text = p.get_text(" ", strip=True)
+            if p_text.startswith("Design:"):
+                designer = p_text[len("Design:"):].strip()
+                break
+
         base_key = re.sub(r"-w\d+[a-z0-9]*$", "", slug)
         image_url = ""
         img = page_soup.find("img", src=re.compile(rf"/pim/.*{re.escape(base_key)}", re.IGNORECASE))
@@ -3702,6 +3753,7 @@ def extract_wastberg(brand):
             "dimensions": "",
             "notes": "",
             "image_url": image_url,
+            "designer": designer,
         })
         time.sleep(0.5)  # be polite - don't hammer the site
 
@@ -5171,13 +5223,14 @@ def extract_galerie_kreo(brand):
         products.append({
             "brand": brand["name"],
             "brand_url": brand["url"],
-            "product_name": f"{name} ({designer})" if designer else name,
+            "product_name": name,
             "product_url": f"{domain}{href}",
             "category": "",
             "material_options": [],
             "dimensions": "",
             "notes": "",
             "image_url": img_src,
+            "designer": designer,
         })
 
     return products
@@ -5865,6 +5918,7 @@ def extract_ghidini_1961(brand):
                 "dimensions": "",
                 "notes": "",
                 "image_url": img.get("data-src", "") if img else "",
+                "designer": designer_p.get_text(strip=True) if designer_p else "",
             })
 
         time.sleep(1)  # be polite - don't hammer the site

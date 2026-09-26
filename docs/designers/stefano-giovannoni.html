@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stefano Giovannoni — Designers — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Stefano Giovannoni - 47 real products credited across 2 brands: Alessi, Ghidini 1961.">
+<link rel="canonical" href="https://formground.com/designers/stefano-giovannoni.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Stefano Giovannoni — Formground">
+<meta property="og:description" content="Stefano Giovannoni - 47 real products credited across 2 brands: Alessi, Ghidini 1961.">
+<meta property="og:url" content="https://formground.com/designers/stefano-giovannoni.html">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Designers", "item": "https://formground.com/designers.html"},
+        {"@type": "ListItem", "position": 3, "name": "Stefano Giovannoni", "item": "https://formground.com/designers/stefano-giovannoni.html"}
+      ]
+    }</script>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Designer</p>
+    <h1 class="maker-name">Stefano Giovannoni</h1>
+  </div>
+  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">47 real products credited to Stefano Giovannoni, each linked straight to its maker's own page.</p>
+  <div class="maker-grid">
+      <a class="maker-card" href="https://www.alessi.com/products/baba-stool-laundry-basket" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_SG74.jpg?v=1762335449" alt="Babà" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Babà</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/bunny-carrot-kitchen-roll-holder" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/SG42-01-new.jpg?v=1680619470" alt="Bunny &amp; Carrot" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bunny &amp; Carrot</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/cico-egg-cup" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/ASG23-01-1.jpg?v=1680619497" alt="Cico" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Cico</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/lilliput-salt-and-pepper-set" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/ASG02-01_7b879d6e-201c-4652-9901-005984106ae3.jpg?v=1599878320" alt="Lilliput" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Lilliput</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/magic-bunny-toothpick-holder" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/ASG16-B-SL-frontside-1.jpg?v=1680619472" alt="Magic Bunny" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Magic Bunny</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-baking-dish" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_SG305-30-B.jpg?v=1786013636" alt="Mami" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-turning-tray-for-fondue" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01_SG61_115c7ce9-918c-426d-a142-b6ec5e8ac453.jpg?v=1657891910" alt="Mami" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-bourguignonne-casserole" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_SG55-PEN.jpg?v=1721835415" alt="Mami" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-cutlery-set-3-pieces" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_SG38S3-CO.jpg?v=1754408883" alt="Mami" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-colander" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01_SG300.jpg?v=1657891721" alt="Mami" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-serving-fork-1" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/SG38-12-1.jpg?v=1719309358" alt="Mami" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-pierced-basket-for-pasta-set" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01-1_SG306_0696ef34-4eda-4d89-b3e6-f7b4820501ac.jpg?v=1657891524" alt="Mami" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-low-casserole-with-two-handles-1" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/FCD-01_SG102-28C.jpg?v=1758816420" alt="Mami" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-cheese-cutter" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_SG507.jpg?v=1760005201" alt="Mami" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-bread-knife" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01-1_SG503.jpg?v=1637238037" alt="Mami" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-oil-cruet" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_SG64.jpg?v=1719309067" alt="Mami" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-xl-4-glasses-for-red-wine" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01_SG119-0S4_d00283aa-05d6-4aef-8fd2-ad8a5ec1824e.jpg?v=1666366249" alt="Mami XL" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami XL</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mami-xl-4-champagne-flutes" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_SG119-9S4.jpg?v=1758816438" alt="Mami XL" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mami XL</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/mary-biscuit-biscuit-box" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/ASG07-01_0a8bb086-2bd0-4b58-a680-81fad489bedc.jpg?v=1618303372" alt="Mary Biscuit" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mary Biscuit</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/merdolino-toilet-brush" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/03_ASG04.jpg?v=1680619605" alt="Merdolino" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Merdolino</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/merdolino-gold-toilet-brush" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_SG04-100.jpg?v=1711463801" alt="Merdolino Gold" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Merdolino Gold</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/sg43-placemat" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01-1_SG43_89bd2cd2-3de5-48d0-a42c-3db6cbac31b3.jpg?v=1643879439" alt="SG43" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SG43</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/sg63-electric-citrus-juicer-european-plug" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/SG63-01.jpg?v=1676459926" alt="SG63" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SG63</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/sg67-handheld-vacuum-cleaner-european-plug" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/SG67-01.jpg?v=1669989581" alt="SG67" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SG67</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.alessi.com/products/sg68-toaster-rack" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/SG68-rack-01.jpg?v=1599876367" alt="SG68" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SG68</span>
+          <span class="maker-country">Alessi</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/sofas/bridge-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/203/Bridge_Sofa_1100x550.jpg" alt="Bridge Sofa" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bridge Sofa</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/armchairs/dodo-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/169/Dodo_Armchair_1100x550.jpg" alt="Dodo Armchair" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Dodo Armchair</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/sofas/dodo-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/168/Dodo_Sofa_1100x550_new.jpg" alt="Dodo Sofa" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Dodo Sofa</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/armchairs/elephant-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/206/elephant_armchair_1100x550.jpg" alt="Elephant Armchair" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Elephant Armchair</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/sofas/elephant-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/202/Elephant_Sofa_1100x550.jpg" alt="Elephant Sofa" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Elephant Sofa</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/armchairs/frame-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/112/Frame_Armchair_1100x550.jpg" alt="Frame Armchair" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Frame Armchair</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/beds-and-night-cabinets/frame-bed" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/233/frame_bed_1100x550.jpg" alt="Frame Bed" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Frame Bed</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/beds-and-night-cabinets/frame-bed-four-posters" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/234/frame_bed_baldacchino_1100x550.jpg" alt="Frame Bed Four Posters" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Frame Bed Four Posters</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/beds-and-night-cabinets/frame-bedside-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/218/frame_badside_table_1100x550.jpg" alt="Frame Bedside Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Frame Bedside Table</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/cabinets-and-bookshelves/frame-bookshelves" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/142/frame_libreria_1100x550.jpg" alt="Frame Bookshelves" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Frame Bookshelves</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/beds-and-night-cabinets/frame-chest-of-drawers" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/219/Cassettiera-Frame_1100x550.jpg" alt="Frame Chest of Drawers" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Frame Chest of Drawers</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/armchairs/frame-dormeuse" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/176/Frame_Dormeuse_1100x5501.jpg" alt="Frame Day Bed" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Frame Day Bed</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/cabinets-and-bookshelves/frame-dining-cabinet" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/139/frame_dining_cabinet_1100x550.jpg" alt="Frame Dining Cabinet" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Frame Dining Cabinet</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/brass-tables/frame-dining-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/124/frame-dining-table_1100x550_new1.jpg" alt="Frame Dining Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Frame Dining Table</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/cabinets-and-bookshelves/frame-living-cabinet" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/140/frame_living_cabinet_1100x550.jpg" alt="Frame Living Cabinet" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Frame Living Cabinet</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/sofas/frame-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/111/Frame_Sofa_1100x5501.jpg" alt="Frame Sofa" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Frame Sofa</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/armchairs/milo-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/167/Milo_Armchair_1100x550.jpg" alt="Milo Armchair" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Milo Armchair</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/sofas/milo-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/166/Milo_Sofa_1100x550_copertina.jpg" alt="Milo Sofa" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Milo Sofa</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/brass-tables/native-rectangular-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/174/native_rectangular_table_1100x550_new.jpg" alt="Native Rectangular Dining Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Native Rectangular Dining Table</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/brass-tables/native-round-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/178/native_round_table_1100x550_.jpg" alt="Native Round Dining Table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Native Round Dining Table</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/armchairs/shaker-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/204/Shaker_Armchair_1100x550.jpg" alt="Shaker Armchair" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Shaker Armchair</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.ghidini1961.com/sofas/shaker-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/201/Shaker_Sofa_1100x550_new.jpg" alt="Shaker Sofa" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Shaker Sofa</span>
+          <span class="maker-country">Ghidini 1961</span>
+        </div>
+      </a>
+  </div>
+  <p class="page-tagline">Looking for who made it? <a href="/makers.html">Browse Makers &rarr;</a></p>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

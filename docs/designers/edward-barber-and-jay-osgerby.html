@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edward Barber and Jay Osgerby — Designers — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Edward Barber and Jay Osgerby - 41 real products credited across Galerie Kreo.">
+<link rel="canonical" href="https://formground.com/designers/edward-barber-and-jay-osgerby.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Edward Barber and Jay Osgerby — Formground">
+<meta property="og:description" content="Edward Barber and Jay Osgerby - 41 real products credited across Galerie Kreo.">
+<meta property="og:url" content="https://formground.com/designers/edward-barber-and-jay-osgerby.html">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Designers", "item": "https://formground.com/designers.html"},
+        {"@type": "ListItem", "position": 3, "name": "Edward Barber and Jay Osgerby", "item": "https://formground.com/designers/edward-barber-and-jay-osgerby.html"}
+      ]
+    }</script>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Designer</p>
+    <h1 class="maker-name">Edward Barber and Jay Osgerby</h1>
+  </div>
+  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">41 real products credited to Edward Barber and Jay Osgerby, each linked straight to its maker's own page.</p>
+  <div class="maker-grid">
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/hakone-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/647C2FDDB4083847A5F1606A750E4FD2.jpg.webp" alt="Hakone Coffee table" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Hakone Coffee table</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/hakone-desk" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/0C3FCD93193AAE47880DE9865320E3DC.jpg.webp" alt="Hakone Desk" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Hakone Desk</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/hakone-desk-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F9A2340E19A72B42A628B63817C938AE.jpg.webp" alt="Hakone Desk" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Hakone Desk</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c1-monochromatic" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/E24BCE613E2896408DEC5E3302947FBB.jpg.webp" alt="Signal C1 MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C1 MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c1-monochromatic-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/3BEFDD75C6C7FE48A5E99C3BFAC68E0B.jpg.webp" alt="Signal C1 MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C1 MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c1-monochromatic-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/DB0717E4A95D1847898B8B99BF16549B.jpg.webp" alt="Signal C1 MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C1 MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c1-monochromatic-4" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/48E10B959DC89148BD7047C271A9A50F.jpg.webp" alt="Signal C1 MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C1 MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c1-monochromatic-5" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/3F950374B1ADB848A9100EAA05017405.jpg.webp" alt="Signal C1 MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C1 MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c1-monochromatic-6" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/D0F071193F0C8C45919035E4D22A0687.jpg.webp" alt="Signal C1 MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C1 MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c1-monochromatic-7" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/8D03B475AF84DD498007CF8E8FA31E02.jpg.webp" alt="Signal C1 MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C1 MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c4-monochromatic" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/FA6D97CD32E88C41AF44356CC6B9ADE1.jpg.webp" alt="Signal C4 MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C4 MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c4-monochromatic-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/CE49A14CA0BB294E97651B30E4C96788.jpg.webp" alt="Signal C4 MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C4 MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c4-monochromatic-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/7B483798BE31924093D87A3F954165BC.jpg.webp" alt="Signal C4 MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C4 MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c4-polychromatic" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/E15E8A2DBCC7DC4397E96790F7EBD3EC.jpg.webp" alt="Signal C4 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C4 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c4-polychromatic-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/786461494FF0E74CBA7F0C164F047D0D.jpg.webp" alt="Signal C4 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C4 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c4-polychromatic-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/6A93891CE95A0C479C27ED6B94A6AE89.jpg.webp" alt="Signal C4 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C4 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c4-polychromatic-4" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/8FB72D139080B44EAE9290F917042D9D.jpg.webp" alt="Signal C4 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C4 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c4s-monochromatic" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/7B61FFD7E60C354889F763C4707DBD93.jpg.webp" alt="Signal C4S MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C4S MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c4s-monochromatic-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/2E745A7B48A92E47BEA6A1F36BEE11A4.jpg.webp" alt="Signal C4S MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C4S MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c4s-polychromatic" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/88463FDE75E1F043A5B9204C769AE34E.jpg.webp" alt="Signal C4S POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C4S POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c4s-polychromatic-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/3BD19FA687168D44BCBDF43BA7FEF63A.jpg.webp" alt="Signal C4S POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C4S POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c4s-polychromatic-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/28D7E89689591E42A1CAE61F069A944F.jpg.webp" alt="Signal C4S POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C4S POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c6-monochromatic" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/6A17C492D70E5848B8E403F6915D6BC7.jpg.webp" alt="Signal C6 MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C6 MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c6-polychromatic" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/797CB98D9F0F66488BF70047FEFB5A6C.jpg.webp" alt="Signal C6 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C6 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c6-polychromatic-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/2ADD0E968A544841B4483A3483FE4D39.jpg.webp" alt="Signal C6 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C6 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c6-polychromatic-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/9EDB8EB1A1626A4ABDEB10F98FA83FB1.jpg.webp" alt="Signal C6 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C6 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-c6-polychromatic-4" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/C729ACD4DF65BF4FAE85C712661A69EB.jpg.webp" alt="Signal C6 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal C6 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-f2-polychromatic" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/2F061B6828DA5E4E92E04007F7959D49.jpg.webp" alt="Signal F2 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal F2 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-f2-polychromatic-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/004A0522B85758478D04001C415B2F3E.jpg.webp" alt="Signal F2 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal F2 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-f2-polychromatic-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/ED318DEA3156BA4395F6E7747FE373F1.jpg.webp" alt="Signal F2 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal F2 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-f2-polychromatic-4" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F75E45BC4E6264459DC087B83C4C03F6.jpg.webp" alt="Signal F2 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal F2 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-f2-polychromatic-5" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/3A814A8A892AEF46B83261554907F59A.jpg.webp" alt="Signal F2 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal F2 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-f2-polychromatic-6" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/ACE2385CDC82BA4A9F9DE567585CF2B0.jpg.webp" alt="Signal F2 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal F2 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-f2-polychromatic-7" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/C739F2A9B708D94EBE0F9D51CE7E73CC.jpg.webp" alt="Signal F2 POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal F2 POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-w-monochromatic" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/E12F86D0E4B38745BDBDB655DBF51213.jpg.webp" alt="Signal W MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal W MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-w-monochromatic-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/57B548145C841A4F99BAB213560B7B16.jpg.webp" alt="Signal W MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal W MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-w-monochromatic-3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/423DA2F5DCA4444296EB01883B518CB0.jpg.webp" alt="Signal W MONOCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal W MONOCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-w-polychromatic" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/28AE01B12E82CC45BC7525641177062A.jpg.webp" alt="Signal W POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal W POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/signal-w-polychromatic-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/0459C109AA5D814FA0838D52B60F3862.jpg.webp" alt="Signal W POLYCHROMATIC" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Signal W POLYCHROMATIC</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/skypoint" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/432FCFE541C1A84AB22587B0AD2CE565.jpg.webp" alt="Skypoint" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Skypoint</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/yo-yo" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/104717D6D2B8F34AA8A4DAB889C5D85A.jpg.webp" alt="Yo Yo" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Yo Yo</span>
+          <span class="maker-country">Galerie Kreo</span>
+        </div>
+      </a>
+  </div>
+  <p class="page-tagline">Looking for who made it? <a href="/makers.html">Browse Makers &rarr;</a></p>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
