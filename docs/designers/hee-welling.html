@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hee Welling — Designers — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Hee Welling - 43 real products credited across &Tradition.">
+<link rel="canonical" href="https://formground.com/designers/hee-welling.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Hee Welling — Formground">
+<meta property="og:description" content="Hee Welling - 43 real products credited across &Tradition.">
+<meta property="og:url" content="https://formground.com/designers/hee-welling.html">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Designers", "item": "https://formground.com/designers.html"},
+        {"@type": "ListItem", "position": 3, "name": "Hee Welling", "item": "https://formground.com/designers/hee-welling.html"}
+      ]
+    }</script>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Designer</p>
+    <h1 class="maker-name">Hee Welling</h1>
+  </div>
+  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">43 real products credited to Hee Welling, each linked straight to its maker's own page.</p>
+  <div class="maker-grid">
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw111-new-colours" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/09/ATD_Contract_2023_Drip-HW59_Loafer-SC24_Flowerpot-VP4-1-600x800.jpg" alt="Drip HW111" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW111</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw112-new-colours" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2023/01/Drip-HW112-Bronzed-Base-w.-Black-Fenix-Nano-Laminate-0720_side-600x800.jpg" alt="Drip HW112" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW112</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw113-new-colours" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2023/01/Drip-HW113-Bronzed-Base-w.-Black-Fenix-Nano-Laminate-0720_side-600x800.jpg" alt="Drip HW113" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW113</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw114" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2023/01/Drip-HW114-Bronzed-Base-w.-Black-Fenix-Nano-Laminate-0720_side-600x800.jpg" alt="Drip HW114" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW114</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw115" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Drip-Dining-Table-HW115_Veneer-Clear-Lacquered-Oak-w.-Black-Frame_Angled-Front-600x800.jpg" alt="Drip HW115" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW115</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw116" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Drip-Dining-Table-HW116_Veneer-Clear-Lacquered-Oak-w.-Black-Frame_Angled-Front-600x800.jpg" alt="Drip HW116" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW116</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw117" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Drip-Dining-Table-HW117_Veneer-Lacquered-Walnut-w.-Black-Frame_Angled-Front-600x800.jpg" alt="Drip HW117" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW117</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw58-new-colours" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/HW5800-600x800.png" alt="Drip HW58" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW58</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw59-new-colours" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Drip-HW59_Bronzed-w.-Black-Fenix-Nano-Laminate-0720_front-view-600x800.jpg" alt="Drip HW59" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW59</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw60-new-colours" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/ATD_Retail_2021_Drip-HW60_Rely-HW35_Collect-_-Plate-SC55-600x800.jpg" alt="Drip HW60" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW60</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw61-new-colours" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Drip-HW61_Bronzed-w.-Black-Fenix-Nano-Laminate_0720_-600x800.png" alt="Drip HW61" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW61</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw62-new-colours" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Drip-HW62_Black-w.-Burgundy-Forbo-Linoleum-4154-600x800.png" alt="Drip HW62" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW62</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw63-new-colours" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Drip-HW63_Black-w.-Black-Fenix-Nano-Laminate-0720-600x800.jpg" alt="Drip HW63" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW63</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-hw64-new-colours" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Drip-HW64_Black-w.-Walnut-Wood-Veneer-600x800.png" alt="Drip HW64" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip HW64</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/drip-mto" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/12/ATD_Retail_2021_Drip-600x800.jpg" alt="Drip Made to order" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Drip Made to order</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/patch-hw1-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2020/02/02-600x800.png" alt="Patch HW1" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Patch HW1</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/patch-hw2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2020/02/01-600x800.png" alt="Patch HW2" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Patch HW2</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw11-hw20" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2020/09/ATD_Packshots_133971A612A014A297_Rely-HW17_Midnight-w-Gentle-0673-w-Aluminium-Base_Angled-Front-600x800.jpg" alt="Rely HW11-HW20" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW11-HW20</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw118-hw122" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2025/11/155743A061_Rely-Counter-Stool-HW118-Low-back-Lacquered-oak-base-Plastic-gliders-White-shell-600x800.jpg" alt="Rely HW118-HW122" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW118-HW122</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw123-hw127" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2025/11/155763_Rely-Bar-Stool-HW123-Low-back-Lacquered-oak-base-Plastic-gliders-Stone-Grey-shell-600x800.jpg" alt="Rely HW123-HW127" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW123-HW127</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw128-hw132" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2025/11/155783A064_Rely-Counter-Chair-HW128-High-back-Lacquered-oak-base-Plastic-gliders-Light-Blue-shell-600x800.jpg" alt="Rely HW128-HW132" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW128-HW132</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw133-hw137" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2025/11/155803A063_Rely-HW133_Red-Brown-w.-Oak-base-600x800.jpg" alt="Rely HW133-HW137" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW133-HW137</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw138" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2025/11/155823A064_Rely-Outdoor-Side-Chair-HW138-Black-stacking-tube-base-Plastic-gliders-Light-Blue-shell-600x800.jpg" alt="Rely HW138" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW138</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw139" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2025/02/ATD_Packshots_159918A235A006A110_Rely-HW139_Clay-0009-w-Black-4-Star-Swivel_Angled-Front-600x800.jpg" alt="Rely HW139" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW139</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw140" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2025/02/ATD_Packshots_159924A235A033A581_Rely-HW140_Re-Wool-0218-w-Black-Tube_Angled-Front-600x800.jpg" alt="Rely HW140" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW140</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw21-hw24" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2020/09/Rely-HW21_Bronze-Green-w.-Polished-Aluminium-base-600x800.jpg" alt="Rely HW21-HW24" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW21-HW24</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw28-hw32" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/01/ATD_Packshots_134014A611_Rely-HW28_Midnight-w.-Black-5-Star-Base_Angled-Front-600x800.jpg" alt="Rely HW28-HW32" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW28-HW32</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw33-hw34" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/02/ATD_Packshots_134026A615_Rely-HW33_Burnt-Umber-w.-Bronzed-base_Angled-Front-600x800.jpg" alt="Rely HW33-HW34" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW33-HW34</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw35-hw37" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Rely-HW35_Chrome-w.-Hallingdal-103-600x800.png" alt="Rely HW35-HW37" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW35-HW37</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw38-hw44" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/01/ATD_Packshots_134062A616A622D905_Rely-HW39_Burnt-Umber-w-Saxion-0397-w-Aluminium-4-Star-Swivel_Angled-Front-600x800.jpg" alt="Rely HW38-HW44" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW38-HW44</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw40-hw47" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Rely-HW41HW46_Bronzed-Swivel-Base-w.-Vidar-542-600x800.png" alt="Rely HW40-HW47" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW40-HW47</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw48-hw49" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/01/ATD_Packshots_134116A611_Rely-HW48_Midnight-w.-4-Star-Polished-Aluminium-base_Angled-Front-600x800.jpg" alt="Rely HW48-HW49" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW48-HW49</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw50-hw52" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/ATD_Packshots_134125A235A622D791_Rely-HW51_Saxion-0927-w-4-Star-Aluminium-Base_Angled-Front-600x800.jpg" alt="Rely HW50-HW52" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW50-HW52</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw53-hw54" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/01/ATD_Packshots_134132A612A012A271_Rely-HW54_Midnight-w-Fiord-0672-w-5-Star-Aluminium-Base_Angled-Front-600x800.jpg" alt="Rely HW53-HW54" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW53-HW54</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw55-hw57" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Rely-HW57_Black-w.-Karakorum-003-Karakorum-001-600x800.png" alt="Rely HW55-HW57" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW55-HW57</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw6-hw10" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2023/08/ATD_Lifestyle-Images_Collection-2026.02_Rely-HW6_01-600x800.jpg" alt="Rely HW6-HW10" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW6-HW10</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw65-hw69" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2020/09/Rely-HW66_-Vermillion-red-Vidar-556-w.-Chrome-600x800.jpg" alt="Rely HW65-HW69" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW65-HW69</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw71-hw75" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/ATD_Packshots_134151A615_Rely-HW71_Burnt-Umber-w.-Walnut-base_Angled-Front-600x800.jpg" alt="Rely HW71-HW75" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW71-HW75</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw76-hw80-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Rely-HW77_Bronze-Green-Vidar-0972-w.-Oak-base-600x800.jpg" alt="Rely HW76-HW80" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW76-HW80</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw81-hw90" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/08/ATD_Retail_2022_Rotate-SC73_Colette-ATD6_Journey-SHY1_Rely-HW89_In-Between-SK21-600x800.jpg" alt="Rely HW81-HW85" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW81-HW85</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw86-hw90" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/08/ATD_Retail_2022_Rotate-SC73_Colette-ATD6_Journey-SHY1_Rely-HW89_In-Between-SK21-600x800.jpg" alt="Rely HW86-HW90" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW86-HW90</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw91-hw100" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/08/Rely-HW93_Karakorum-003-w.-Black-base-600x800.png" alt="Rely HW91-HW95" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW91-HW95</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/rely-hw96-hw100" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/08/Rely-HW93_Karakorum-003-w.-Black-base-600x800.png" alt="Rely HW96-HW100" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rely HW96-HW100</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+  </div>
+  <p class="page-tagline">Looking for who made it? <a href="/makers.html">Browse Makers &rarr;</a></p>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

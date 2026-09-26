@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anderssen &amp; Voll — Designers — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Anderssen &amp; Voll - 59 real products credited across &Tradition.">
+<link rel="canonical" href="https://formground.com/designers/anderssen-voll.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Anderssen &amp; Voll — Formground">
+<meta property="og:description" content="Anderssen &amp; Voll - 59 real products credited across &Tradition.">
+<meta property="og:url" content="https://formground.com/designers/anderssen-voll.html">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"},
+        {"@type": "ListItem", "position": 2, "name": "Designers", "item": "https://formground.com/designers.html"},
+        {"@type": "ListItem", "position": 3, "name": "Anderssen &amp; Voll", "item": "https://formground.com/designers/anderssen-voll.html"}
+      ]
+    }</script>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
+  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Designer</p>
+    <h1 class="maker-name">Anderssen &amp; Voll</h1>
+  </div>
+  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">59 real products credited to Anderssen &amp; Voll, each linked straight to its maker's own page.</p>
+  <div class="maker-grid">
+      <a class="maker-card" href="https://www.andtradition.com/products/allwood-av35" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2020/09/Allwood-AV35_Oak-1-600x800.jpg" alt="Allwood AV35" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Allwood AV35</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/allwood-av35-trolley" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Allwood-Stacking-Trolley-AV35-1-600x800.jpg" alt="Allwood Trolley AV35" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Allwood Trolley AV35</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/hi-lo-av54" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2025/04/146473A236A014A299_Hi-Lo-AV54-Single-Module-Gentle-0733-600x800.jpg" alt="Hi Lo AV54" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Hi Lo AV54</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/hi-lo-av55" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2025/05/ATD_Retail_2025_Hi-Lo-AV54_Hi-Lo-AV55_Formakami-JH5_Mist-AP17_Wire-Stool-VP11_Table-Top-Wire-Stool-VP11_Ita-OS4_Collect-SC63_Collect-SC78_Mnemonic-MNC5_Loafer-SC107_The-Moor-AP18-600x800.jpg" alt="Hi Lo AV55" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Hi Lo AV55</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/hi-lo-av56" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2025/02/ATD_Packshots_159783A235A178D402_Hi-Lo-Pouf-AV56_Grain-61229_Angled-Front-600x800.jpg" alt="Hi Lo AV56" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Hi Lo AV56</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/inland-av21" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/ATD_Retail_2023_Inland-AV21_Tung-JA3_Colette-ATD6_Collect-Glass-SC78-600x800.jpg" alt="Inland AV21" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Inland AV21</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/inland-av22" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/08/Inland-AV22_Clay-0014_Front-600x800.png" alt="Inland AV22" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Inland AV22</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/inland-av23" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/08/ATD_Retail_2022_Inland-AV23_Tung-JA3_Collect-Glass-SC78-600x800.jpg" alt="Inland AV23" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Inland AV23</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/inland-av32" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Inland-AV32_Noble-Aniline-leather-Cognac-w.-Polished-aluminium-base-600x800.jpg" alt="Inland AV32" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Inland AV32</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/inland-av41" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Inland-Corner-Sofa-AV41_Polished-Aluminium-w.-Vidar-733_Angled-Front-600x800.png" alt="Inland AV41" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Inland AV41</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/inland-av42" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Inland-Left-Chaise-Longue-Sofa-AV42_Polished-Aluminium-w.-Ecriture-240_Angled-Front-600x800.png" alt="Inland AV42" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Inland AV42</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/massif-av39" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/04/Massif-AV39-Counter-Stool_Ember_Front-600x800.jpg" alt="Massif AV39" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Massif AV39</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/massif-av40" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Massif-AV40-Bar-Stool_Oak-and-Grey-Beige_Front-600x800.png" alt="Massif AV40" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Massif AV40</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/meantime-av29" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/ATD_Retail_2025_Meantime-AV29_Flowerpot-VP12-600x800.jpg" alt="Meantime AV29" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Meantime AV29</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/meantime-av30" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Meantime-Sofa-AV30_Polished-Aluminium-Base-w.-Ecriture-0210_Angled-Front-600x800.jpg" alt="Meantime AV30" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Meantime AV30</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/meantime-av31" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Meantime-Sofa-AV31_Warm-Black-Base-w.-Fiord-0571_Angled-Front-600x800.jpg" alt="Meantime AV31" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Meantime AV31</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av1" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/07/Pavilion-AV1_Chrome-w.-Lacquered-Walnut-600x800.png" alt="Pavilion AV1" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV1</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/11/Pavilion-AV10-front-600x800.png" alt="Pavilion AV10" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV10</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av11" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/07/Tradition-hover-av11-600x800.jpg" alt="Pavilion AV11" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV11</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av12" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2025/01/Pavillion-AV12_Chrome-w.-Sisu-0105-600x800.jpg" alt="Pavilion AV12" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV12</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av13" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/01/ATD_Retail_2021_Pavilion-AV17_Pavilion-AV13-2-600x800.jpg" alt="Pavilion AV13" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV13</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av14" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/07/Pavilion-AV14_front_2-600x800.png" alt="Pavilion AV14" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV14</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av15" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/07/Pavilion-AV15_front_2-600x800.png" alt="Pavilion AV15" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV15</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av16" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Pavilion-AV17-600x800.png" alt="Pavilion AV16" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV16</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av17" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/ATD_Retail_2021_Pavilion-AV17_Rely-HW41HW46-600x800.jpg" alt="Pavilion AV17" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV17</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av18" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/08/Pavilion-AV18_Clear-Lacquered-Oak-w.-Black-600x800.png" alt="Pavilion AV18" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV18</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av19" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/08/Pavilion-AV19_Lacquered-Walnut-Oak-w.-Chrome-600x800.png" alt="Pavilion AV19" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV19</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/11/AV2_Walnut_side-600x800.png" alt="Pavilion AV2" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV2</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av24" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/08/Pavilion-AV24_Lacquered-Walnut-w.-Black-600x800.png" alt="Pavilion AV24" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV24</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av3" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/11/AV3_black-side-600x800.png" alt="Pavilion AV3" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV3</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av36" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Pavilion-Stool-AV36_Black-Frame_Lacquered-Walnut_Angled-Front-600x800.jpg" alt="Pavilion AV36" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV36</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av37" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Pavilion-Counter-Stool-AV37_Black-frame_Black-Lacquered-Oak_Angled-front-600x800.jpg" alt="Pavilion AV37" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV37</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av38" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Pavilion-Bar-Stool-AV38_Black-frame_Lacquered-Oak_Angled-Front-600x800.jpg" alt="Pavilion AV38" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV38</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av4" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2025/01/Pavilion-AV4_Chrome-w.-Fiord-0581-600x800.jpg" alt="Pavilion AV4" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV4</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av5" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/11/Pavilion-AV5_oak-front-600x800.png" alt="Pavilion AV5" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV5</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av51" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Pavilion-Side-Chair-AV51_Black-Sled-Frame_Lacquered-Oak_Angled-Front-600x800.jpg" alt="Pavilion AV51" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV51</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av52" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Pavilion-Side-Chair-AV52_Black-Sled-Frame_Lacquered-Oak-w.-Hallingdal-0753_Angled-Front-600x800.jpg" alt="Pavilion AV52" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV52</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av53" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/ATD_Contract_2025_Pavillion-AV53-600x800.jpg" alt="Pavilion AV53" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV53</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av6" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/11/Pavilion-AV6-walnut-dark-600x800.png" alt="Pavilion AV6" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV6</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av7" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/11/Pavilion-AV7_black-front-600x800.png" alt="Pavilion AV7" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV7</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av8" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/11/Pavilion-AV8_front-600x800.png" alt="Pavilion AV8" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV8</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/pavilion-av9" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/11/Pavilion-AV9_oak-side-600x800.png" alt="Pavilion AV9" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pavilion AV9</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-av25" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/08/Ville-AV25_Bronze-Green-w.-Teak-600x800.jpg" alt="Ville AV25" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV25</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-av26" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/08/Ville-AV26_Bronze-Green-w.-Teak-600x800.jpg" alt="Ville AV26" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV26</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-av27" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/08/ATD_Retail_2024_Ville-AV27_Ville-AV26_Ville-AV34_Como-SC53_Collect-Glass-SC78-600x800.jpg" alt="Ville AV27" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV27</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-av28" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/08/Ville-AV28_Bronze-Green-w.-Teak-600x800.jpg" alt="Ville AV28" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV28</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-av33" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/08/Ville-AV33_Bronze-Green-600x800.jpg" alt="Ville AV33" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV33</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-av34" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2019/08/Ville-AV34_Bronze-Green-w.-Teak-600x800.jpg" alt="Ville AV34" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV34</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-av44" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Ville_Outdoor_Lounge_Chair_AV44_Bronze_Green_Angled_Front-600x800.jpg" alt="Ville AV44" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV44</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-cushion-av44-av45" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/ATD_Retail_2025_Ville-AV44_Ville-AV44-Cushion_01-600x800.jpg" alt="Ville AV44-AV45" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV44-AV45</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-av45" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/ATD_Retail_2025_Ville-AV45_Ville-AV46-600x800.jpg" alt="Ville AV45" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV45</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-seat-pad-av46" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/10/Ville-Seat-Pad-AV46_Heritage-Papyrus_Up-600x800.jpg" alt="Ville AV46" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV46</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-av46" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/ATD_Retail_2025_Ville-AV50_Ville-AV46-600x800.jpg" alt="Ville AV46" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV46</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-av47" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/ATD_Retail_2025_Ville-AV47_02-600x800.jpg" alt="Ville AV47" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV47</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-seat-pad-av47" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/10/Ville-Seat-Pad-AV47_Heritage-Papyrus_Up-600x800.jpg" alt="Ville AV47" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV47</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-av50" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Ville_Outdoor_Coffee_Table_AV50_Warm_Black_Base_w._Teak_Angled_Front-600x800.jpg" alt="Ville AV50" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville AV50</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-cushion-av33-av34-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/04/Ville-Chair-AV33-AV34-Cushion_Heritage-Charcoal_Up-600x800.jpg" alt="Ville Cushion AV33 &amp; AV34" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville Cushion AV33 &amp; AV34</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/ville-seat-pad-av27-av28-2" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2024/04/Ville-Bench-AV27-Cushion_Heritage-Charcoal_Up-600x800.jpg" alt="Ville Seat Pad AV27 &amp; AV28" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ville Seat Pad AV27 &amp; AV28</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.andtradition.com/products/votive-av20" target="_blank" rel="noopener noreferrer">
+        <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2022/01/Votive-AV20.--600x800.jpg" alt="Votive AV20" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Votive AV20</span>
+          <span class="maker-country">&amp;Tradition</span>
+        </div>
+      </a>
+  </div>
+  <p class="page-tagline">Looking for who made it? <a href="/makers.html">Browse Makers &rarr;</a></p>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

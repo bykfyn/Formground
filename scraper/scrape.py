@@ -3760,6 +3760,105 @@ def extract_wastberg(brand):
     return products
 
 
+def _clean_andtradition_label(label):
+    """
+    andtradition.com's own category labels are inconsistently cased and
+    padded ("Bar Stool", "Bar Stool ", "Bar stool", "Bar chair" all
+    appear as distinct raw values, confirmed live 2026-09-26 - 116
+    "distinct" categories collapse to far fewer real ones) - trims
+    whitespace and title-cases each word, keeping small connector words
+    lowercase (except when leading) so "Lounge chair w. arms" reads as
+    "Lounge Chair w. Arms" rather than "W." Merges what would otherwise
+    be several near-duplicate categories/umbrella buckets for the same
+    real product type.
+    """
+    label = (label or "").strip()
+    if not label:
+        return ""
+    lowercase_words = {"w.", "with", "and", "for", "the", "of", "&"}
+    words = [w for w in label.split(" ") if w]
+    cleaned = []
+    for i, word in enumerate(words):
+        if i > 0 and word.lower() in lowercase_words:
+            cleaned.append(word.lower())
+        else:
+            cleaned.append(word[0].upper() + word[1:])
+    return " ".join(cleaned)
+
+
+def extract_andtradition(brand):
+    """
+    andtradition.com's own /products listing is a Nuxt 2 shell whose
+    server-rendered state is empty (window.__NUXT__.state.shop = {}) -
+    the real catalog loads client-side from a separate WordPress
+    backend at wp.andtradition.com. Confirmed live 2026-09-26: the
+    brand's own 2026-09-24 triage note ("real server-rendered /shop
+    page... Nuxt.js SSR") is stale - /shop now 404s, and the current
+    /products page doesn't server-render the catalog at all, directly
+    contradicting that note. The site was restructured since triage;
+    re-check this kind of note rather than trusting it indefinitely.
+
+    The real source is a clean JSON API, confirmed as the exact call
+    the site's own frontend makes to populate /products with no filter
+    applied (found via the browser's performance/network log, not
+    guessed): a custom WordPress REST endpoint returning the full
+    catalog in one request (amount=0 = no limit, tag[]=29 = "all
+    products" - the same value the real page's own JS uses server-side
+    for an unfiltered view). Each item already carries a clean base
+    title + model-code superscript ("Numbra" + "TY1" -> "Numbra TY1"),
+    a real category label ("Pendant", "Lounge chair", etc. - matches
+    Formground's existing umbrella keywords with no extra mapping
+    needed), a real teaser image, a real description, and - unusually
+    for this project - a structured designer credit on nearly every
+    product (`person[0].post_title`), not just a handful of brands.
+    """
+    api_url = (
+        "https://wp.andtradition.com/wp-json/trouble/list"
+        "?type=product&id=860&amount=0&tag[]=29&sort=title&show_featured=1&crop=3to4"
+    )
+    data = _fetch_json(api_url)
+    if not data:
+        return []
+
+    products = []
+    for item in data:
+        title = (item.get("title") or "").strip()
+        superscript = (item.get("superscript") or "").strip()
+        name = f"{title} {superscript}".strip() if superscript else title
+        if not name:
+            continue
+
+        category = _clean_andtradition_label(item.get("label"))
+        if category == "Care Kit":
+            # Teak/leather/linoleum maintenance kits (3 real SKUs,
+            # confirmed live) - not a design object in their own right,
+            # same exclusion pattern as other brands' spare-parts lines.
+            continue
+
+        people = item.get("person") or []
+        designer = ", ".join(
+            p.get("post_title", "").strip() for p in people if p.get("post_title")
+        )
+
+        teaser = item.get("image_teaser_3_4") or {}
+        image_url = teaser.get("0", "") if isinstance(teaser, dict) else ""
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": item.get("url", ""),
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": (item.get("excerpt") or "").strip(),
+            "image_url": image_url,
+            "designer": designer,
+        })
+
+    return products
+
+
 SE_COLLECTIONS_CATEGORIES = [
     "cabinets", "chairs", "lighting", "mirrors",
     "sofas-and-armchairs", "tables", "decorative",
@@ -6639,6 +6738,7 @@ EXTRACTORS = {
     "Mass Productions": extract_shopify,
     "Joy Objects": extract_shopify,
     "Wästberg": extract_wastberg,
+    "&Tradition": extract_andtradition,
     "Pulkra": extract_woocommerce,
     "Sé Collections": extract_se_collections,
     "Gubi": extract_gubi,
