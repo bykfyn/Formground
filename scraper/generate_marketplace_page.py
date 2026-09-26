@@ -33,12 +33,41 @@ import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
-from generate_brand_pages import CARD_CLICK_TRACKING_JS, DIRECTORY_FILTER_JS
+import sqlite3
+
+from generate_brand_pages import CARD_CLICK_TRACKING_JS, DIRECTORY_FILTER_JS, umbrella_categories_for
 
 SCRAPER_DIR = Path(__file__).parent
 REPO_ROOT = SCRAPER_DIR.parent
 RETAILERS_PATH = REPO_ROOT / "data" / "retailers.json"
 PROMOTIONS_PATH = REPO_ROOT / "data" / "promotions.json"
+DB_PATH = REPO_ROOT / "data" / "formground.db"
+
+
+def _load_brand_umbrellas():
+    """
+    Same brand -> Furniture/Lighting/Ceramics/Objects classification the
+    real brand pages use (see generate_brand_pages.umbrella_categories_for),
+    reused here so a stockist can be filtered by what it actually
+    carries rather than duplicating that logic. "Ceramics" is folded
+    into "objects" to match the Promotions sub-filter's own 3-category
+    scheme (see PROMOTIONS_SUBCHIPS) and the site-wide Objects tile,
+    which already folded Ceramics into it (2026-09-20, see project memory).
+    """
+    conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
+    rows = conn.execute("SELECT brand, category, product_name FROM products").fetchall()
+    conn.close()
+
+    by_brand = {}
+    for row in rows:
+        by_brand.setdefault(row["brand"], []).append(dict(row))
+
+    fold = {"Ceramics": "objects", "Furniture": "furniture", "Lighting": "lighting", "Objects": "objects"}
+    return {
+        brand: {fold[u] for u in umbrella_categories_for(products)}
+        for brand, products in by_brand.items()
+    }
 
 CLOUDFLARE_BEACON = (
     "<!-- Cloudflare Web Analytics -->"
@@ -64,6 +93,17 @@ CHIPS = [
 # "All" lives here now instead of as a top-level chip, since Stockists
 # is the only other top-level tab and needs no "all" of its own.
 PROMOTIONS_SUBCHIPS = [
+    ("all", "All"),
+    ("furniture", "Furniture"),
+    ("lighting", "Lighting"),
+    ("objects", "Objects"),
+]
+
+# Same idea, one tab over (2026-09-26, user direction): filter Stockists
+# by what they actually carry - see _load_brand_umbrellas(). A stockist
+# can span more than one category (most do), unlike a single promo item,
+# so its own data-subcat holds a space-separated list rather than one word.
+STOCKIST_SUBCHIPS = [
     ("all", "All"),
     ("furniture", "Furniture"),
     ("lighting", "Lighting"),
@@ -221,17 +261,24 @@ PAGE_SCRIPT = """
     });
   });
 
-  // Promotions' Furniture/Lighting/Objects sub-filter - real once there
-  // are real promo-cards to filter (pilot, 2026-09-25); a no-op when
-  // the grid is empty, since there's nothing yet for it to hide.
+  // Furniture/Lighting/Objects sub-filter, shared by both Promotions'
+  // promo-cards (2026-09-25) and Stockists' maker-cards (2026-09-26) -
+  // scoped to whichever panel the clicked chip lives in, so the two
+  // tabs' own sub-chips never affect each other's cards. A promo-card's
+  // data-subcat is always exactly one word; a stockist's own maker-card
+  // can hold more than one (most stockists carry several categories at
+  // once) - checked as a space-separated list either way, so a single
+  // word still matches itself correctly for promo-cards.
   document.querySelectorAll('.sub-chips .chip').forEach(function (btn) {
     btn.addEventListener('click', function () {
       var subcat = btn.dataset.subcat;
-      document.querySelectorAll('.sub-chips .chip').forEach(function (b) {
+      var panel = btn.closest('.cat-panel');
+      panel.querySelectorAll('.sub-chips .chip').forEach(function (b) {
         b.classList.toggle('active', b === btn);
       });
-      document.querySelectorAll('.promo-card').forEach(function (card) {
-        card.hidden = subcat !== 'all' && card.dataset.subcat !== subcat;
+      panel.querySelectorAll('[data-subcat]:not(.chip)').forEach(function (card) {
+        var cats = (card.dataset.subcat || '').split(' ').filter(Boolean);
+        card.hidden = subcat !== 'all' && cats.indexOf(subcat) === -1;
       });
     });
   });
@@ -362,7 +409,7 @@ FORCE_MONOGRAM = {
 }
 
 
-def _stockist_card(name, locations):
+def _stockist_card(name, locations, brand_umbrellas):
     website = locations[0]["website"]
     # Union of every location's brands, order preserved, dedup by
     # first occurrence - a chain like Svenssons doesn't necessarily
@@ -374,6 +421,22 @@ def _stockist_card(name, locations):
             if b not in seen:
                 seen.add(b)
                 brands.append(b)
+    # A stockist's own category coverage is the union of what its real
+    # carried brands are each classified as (see _load_brand_umbrellas) -
+    # most stockists carry more than one, unlike a single promo item, so
+    # this can hold more than one word, space-separated (see PAGE_SCRIPT's
+    # sub-chip filter, which checks list membership either way). A brand
+    # not recognized as a real Formground maker contributes nothing -
+    # the card just won't surface under a specific category filter.
+    subcats = set()
+    for b in brands:
+        subcats |= brand_umbrellas.get(b, set())
+    # Always emitted, even empty (2026-09-26, caught live: a card with no
+    # attribute at all is invisible to the sub-chip filter's own
+    # `[data-subcat]` selector, so it never gets hidden and stays visible
+    # under every filter regardless of match - an empty string still
+    # satisfies the selector and correctly fails every specific filter.
+    subcat_attr = f' data-subcat="{html.escape(" ".join(sorted(subcats)))}"'
     # Full brand list, and every location's own city/country/address,
     # stay in the DOM for the search box to match against, just not
     # rendered - many stockists carry 15-20+ brands, and a truncated
@@ -409,7 +472,7 @@ def _stockist_card(name, locations):
         f' data-brands="{html.escape("|".join(brands))}"'
         f' data-locations="{html.escape("|".join(_location(loc) for loc in locations))}"'
     )
-    return f"""      <a class="maker-card" href="{html.escape(website)}" target="_blank" rel="noopener noreferrer"{match_data}>
+    return f"""      <a class="maker-card" href="{html.escape(website)}" target="_blank" rel="noopener noreferrer"{match_data}{subcat_attr}>
         <div class="maker-card-hero"><div class="icon-badge">{badge}</div></div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(name)}</span>
@@ -422,12 +485,21 @@ def _stockist_card(name, locations):
 def render_stockists_panel(retailers):
     groups = _group_stockists(retailers)
     ordered = sorted(groups, key=lambda g: (g[1][0].get("country") or "zzz", g[1][0].get("city") or "", g[0]))
-    cards = "\n".join(_stockist_card(name, locations) for name, locations in ordered)
+    brand_umbrellas = _load_brand_umbrellas()
+    cards = "\n".join(_stockist_card(name, locations, brand_umbrellas) for name, locations in ordered)
+    subchips_html = "\n".join(
+        f'      <button class="chip{" active" if cat_id == "all" else ""}" data-subcat="{cat_id}">{html.escape(label)}</button>'
+        for cat_id, label in STOCKIST_SUBCHIPS
+    )
     intro = (
         "    <p class=\"panel-intro\">A selection of makers' stockists - "
         "no paid placement.</p>"
     )
-    return f'    <div class="cat-panel" data-cat="stockists">\n{intro}\n    <div class="maker-grid">\n{cards}\n    </div>\n    </div>'
+    return (
+        f'    <div class="cat-panel" data-cat="stockists">\n{intro}\n'
+        f'    <div class="sub-chips">\n{subchips_html}\n    </div>\n'
+        f'    <div class="maker-grid">\n{cards}\n    </div>\n    </div>'
+    )
 
 
 def _promo_card(p):
