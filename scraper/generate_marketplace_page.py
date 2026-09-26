@@ -424,8 +424,8 @@ def render_stockists_panel(retailers):
     ordered = sorted(groups, key=lambda g: (g[1][0].get("country") or "zzz", g[1][0].get("city") or "", g[0]))
     cards = "\n".join(_stockist_card(name, locations) for name, locations in ordered)
     intro = (
-        "    <p class=\"panel-intro\">A selection of stockists found via makers' own "
-        "published stockist lists - no paid placement.</p>"
+        "    <p class=\"panel-intro\">A selection of makers' stockists - "
+        "no paid placement.</p>"
     )
     return f'    <div class="cat-panel" data-cat="stockists">\n{intro}\n    <div class="maker-grid">\n{cards}\n    </div>\n    </div>'
 
@@ -463,9 +463,8 @@ def render_promotions_panel(promotions):
     # this) - paid Creator listings just aren't part of the grid yet.
     if promotions:
         intro = (
-            '    <p class="panel-intro">A pilot: real, live sales scraped directly from '
-            "makers' and stockists' own product pages - free, attributed, and removed on "
-            "request.</p>"
+            '    <p class="panel-intro">A selection of promotions from creators and '
+            "stockists - no paid placement.</p>"
         )
         cards = "\n".join(_promo_card(p) for p in promotions)
         grid = f'    <div class="promo-grid">\n{cards}\n    </div>'
