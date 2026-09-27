@@ -235,6 +235,27 @@ function renderCard(r) {
   return a;
 }
 
+// Removes a trailing partial row from the results grid (fewer cards
+// than the grid's own column count) and returns the result objects it
+// corresponded to, so the caller can carry them into the *next* reveal
+// instead of ever leaving a half-empty last row on screen. Only valid
+// right after appending `renderedItems` with nothing else queued
+// behind them - relies on gridEl.children still being in the same
+// order the array was built in. The grid's own column count isn't
+// fixed in CSS (auto-fit reflows by viewport width), so this reads it
+// back from the rendered layout rather than guessing.
+function trimTrailingPartialRow(renderedItems) {
+  const columns = getComputedStyle(gridEl).gridTemplateColumns.trim().split(/\s+/).length;
+  const total = gridEl.children.length;
+  const keep = Math.floor(total / columns) * columns || total;
+  const carryCount = total - keep;
+  if (carryCount === 0) return [];
+  for (let i = 0; i < carryCount; i++) {
+    gridEl.removeChild(gridEl.lastElementChild);
+  }
+  return renderedItems.slice(renderedItems.length - carryCount);
+}
+
 function renderResults(results, metaText, emptyText, trimToFullRows, totalOverride) {
   gridEl.innerHTML = "";
   statusEl.style.display = "none";
@@ -292,29 +313,48 @@ function updateLoadMoreProgress() {
   loadMoreProgress.textContent = `Showing ${shown.toLocaleString()} of ${total.toLocaleString()}, from every one of ${totalBrands} brand${totalBrands === 1 ? "" : "s"}`;
 }
 
-function revealNextChunk() {
-  const { pool, poolIndex } = moreState;
-  const chunk = pool.slice(poolIndex, poolIndex + LOAD_MORE_CHUNK_SIZE);
-  chunk.forEach(r => gridEl.appendChild(renderCard(r)));
-  moreState.poolIndex += chunk.length;
-  moreState.shown += chunk.length;
-  updateLoadMoreProgress();
+// Reveals up to `count` items from the pool, folding in whatever the
+// *previous* reveal trimmed off its own trailing row (moreState.carryOver)
+// so a carried-over remainder appears first rather than being held
+// forever. Trims its own new trailing row the same way, unless the
+// pool is now exhausted - at that point nothing more is ever coming to
+// complete the row, so everything left gets shown, ragged edge and all,
+// rather than silently withholding real matches.
+function revealFromPool(count) {
+  const carriedIn = moreState.carryOver;
+  moreState.carryOver = [];
+  const fromPool = moreState.pool.slice(moreState.poolIndex, moreState.poolIndex + Math.max(0, count - carriedIn.length));
+  const chunk = carriedIn.concat(fromPool);
+  moreState.poolIndex += fromPool.length;
 
-  if (moreState.poolIndex >= pool.length) {
+  chunk.forEach(r => gridEl.appendChild(renderCard(r)));
+  const exhausted = moreState.poolIndex >= moreState.pool.length;
+
+  if (exhausted) {
+    moreState.shown += chunk.length;
     loadMoreBtn.remove();
     loadMoreProgress.textContent = `That's every result — ${moreState.total.toLocaleString()} of ${moreState.total.toLocaleString()}.`;
+    return;
   }
+
+  const carried = trimTrailingPartialRow(chunk);
+  moreState.shown += chunk.length - carried.length;
+  moreState.carryOver = carried;
+  updateLoadMoreProgress();
 }
 
 // Shows the "See more results" row only when there's real, undisclosed
 // supply behind the fairness cap - a small query where nothing was
-// hidden (total_matches === results shown) gets no button at all.
+// hidden (total_matches === results shown) gets no button at all, and
+// `carryOver` (the initial batch's own trailing partial row, if any -
+// see trimTrailingPartialRow) is only ever non-empty in that same case,
+// since a fully-shown batch has nothing left to defer.
 // Also guards against an old backend response that predates these
 // fields (e.g. this frontend deployed slightly ahead of the backend,
 // or a local test pointed at the still-live production API) - without
 // this check, a missing total_matches used to throw partway through
 // setup and take the rest of the search page down with it.
-function setupLoadMore(query, intent, shownResults, totalMatches, totalBrands) {
+function setupLoadMore(query, intent, shownResults, carryOver, totalMatches, totalBrands) {
   if (typeof totalMatches !== "number" || typeof totalBrands !== "number" || !intent) {
     hideLoadMore();
     return;
@@ -327,8 +367,10 @@ function setupLoadMore(query, intent, shownResults, totalMatches, totalBrands) {
     query, intent,
     shownIds: shownResults.map(r => r.id),
     pool: null,
+    pendingCarry: carryOver,
     poolIndex: 0,
-    shown: shownResults.length,
+    carryOver: [],
+    shown: shownResults.length - carryOver.length,
     total: totalMatches,
     totalBrands,
   };
@@ -345,7 +387,10 @@ async function handleLoadMoreClick() {
   // remaining match in a single response, already round-robin ordered
   // (see query_engine.round_robin_order); every click after this one
   // just reveals more of that same in-memory list, no further network
-  // calls needed.
+  // calls needed. Whatever the initial batch's own trailing row
+  // deferred (pendingCarry) gets folded in right here, so it appears
+  // as part of this same first "load more" click instead of a
+  // separate, tiny click of its own.
   if (moreState.pool === null) {
     loadMoreBtn.disabled = true;
     loadMoreBtn.textContent = "Loading…";
@@ -358,7 +403,7 @@ async function handleLoadMoreClick() {
       const resp = await fetch(`${API_BASE}/search/more?${params.toString()}`);
       if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
       const data = await resp.json();
-      moreState.pool = data.results || [];
+      moreState.pool = moreState.pendingCarry.concat(data.results || []);
     } catch (err) {
       console.error(err);
       loadMoreBtn.disabled = false;
@@ -369,7 +414,7 @@ async function handleLoadMoreClick() {
     loadMoreBtn.textContent = "See more results";
   }
 
-  revealNextChunk();
+  revealFromPool(LOAD_MORE_CHUNK_SIZE);
 }
 
 loadMoreBtn.addEventListener("click", handleLoadMoreClick);
@@ -396,7 +441,13 @@ async function runSearch(query) {
       data.total_matches
     );
     if (results.length > 0) {
-      setupLoadMore(query, data.intent, results, data.total_matches, data.total_brands);
+      // Only worth trimming the initial batch's own trailing row when
+      // there's real hidden content to carry it into - a fully-shown
+      // batch (nothing left behind the fairness cap) has nowhere for a
+      // deferred card to go, so it's left exactly as it always has been.
+      const hasHidden = typeof data.total_matches === "number" && data.total_matches > results.length;
+      const carryOver = hasHidden ? trimTrailingPartialRow(results) : [];
+      setupLoadMore(query, data.intent, results, carryOver, data.total_matches, data.total_brands);
     }
   } catch (err) {
     statusEl.className = "error";
