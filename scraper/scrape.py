@@ -2610,6 +2610,32 @@ def extract_shopify(brand):
             p for p in raw_products
             if (p.get("product_type") or "").strip().upper() == "CERAMICAS"
         ]
+    if brand["name"] == "Noah":
+        # User-reported 2026-09-26 on "Heia Bett" resolving to a headboard
+        # cover, not a bed - confirmed live: every one of this brand's
+        # real product_type values containing "Parts" (e.g. "N13 Parts
+        # MTO", "N1 Sofa Parts MTS") is a spare/replacement component -
+        # headboard covers, sofa connectors, glide/foot sets, table
+        # sub-parts sold as their own listing - not a standalone design
+        # piece (18 real rows checked, all fit this pattern). Same
+        # exclusion shape as Le Klint's Accessories/Pholc's spare parts.
+        #
+        # Checking the rest of this brand's catalog for the same class
+        # of issue (not just the one reported row) turned up two more:
+        # "Service" (4 items - Miete/rental, Altmöbel Mitnahme/old-
+        # furniture removal, Verpackungsmitnahme/packaging pickup,
+        # Aufbauservice/assembly service - literal services, not
+        # products) and "N06 Subproduct" (6 items - table legs, center
+        # piece, glass top sold as separate listings for the Obento
+        # table - the same component pattern as "Parts", just under a
+        # different label for this one product line).
+        raw_products = [
+            p for p in raw_products
+            if not any(
+                kw in (p.get("product_type") or "").lower()
+                for kw in ("parts", "subproduct", "service")
+            )
+        ]
     if brand["url"].rstrip("/") == "https://shop.sightunseen.com":
         # shop.sightunseen.com is a shared Shopify storefront for dozens of
         # independent designer-makers (confirmed 2026-09-24: 52 distinct

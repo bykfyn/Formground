@@ -274,7 +274,7 @@ async function runSearch(query) {
     const data = await resp.json();
     renderResults(
       data.results || [],
-      (n) => `${n} result${n === 1 ? "" : "s"}, real makers, no rankings`,
+      (n) => `${n} random result${n === 1 ? "" : "s"}, no rankings, not paid for`,
       "No matches yet - try describing it a different way."
     );
   } catch (err) {
