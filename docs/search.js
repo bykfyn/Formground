@@ -299,7 +299,7 @@ async function runDiscover() {
     const data = await resp.json();
     renderResults(
       data.results || [],
-      (n) => `${n} real objects, picked at random across every maker`,
+      (n) => `${n} random products, no rankings, no paid results`,
       "Nothing to discover yet.",
       true
     );
