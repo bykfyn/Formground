@@ -751,20 +751,21 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
     return llm_intent
 
 
-def search(raw_query: str) -> list:
-    """The full pipeline: translate, then filter (category/material hard
+def _match_all(raw_query: str, intent: dict) -> list:
+    """The shared matching pipeline - filter (category/material hard
     facts, a style-descriptor narrow-if-possible pass, plus a direct
-    name match - see filter_by_name), then cap per brand.
+    name match - see filter_by_name), given an already-resolved intent.
+    Split out of search() (2026-09-27) so the "load more" pipeline
+    (search_more(), below) can re-run the exact same matching logic
+    against a query's already-resolved intent without a second LLM
+    call - translate_query() is the only step that costs a real API
+    call, and it only ever needs to run once per typed query.
 
-    Houses (see filter_houses) are folded into the same matches list
-    before capping, not returned separately - "two surfaces, one
-    engine" extends to "one result list," so a house and a product
-    compete for the same per-firm/per-brand fairness cap via the same
-    cap_per_brand() call, unmodified (see _normalize_house's "brand"
-    alias). Scoped to /search only for now, not /discover or
-    /agent/search - see project memory for why those two are
-    deliberately deferred."""
-    intent = _resolve_intent(raw_query, translate_query(raw_query))
+    Houses (see filter_houses) are folded into the same matches list,
+    not returned separately - "two surfaces, one engine" extends to
+    "one result list," so a house and a product compete for the same
+    per-firm/per-brand fairness cap via the same cap_per_brand() call,
+    unmodified (see _normalize_house's "brand" alias)."""
     matches = filter_products(intent)
 
     # Skipped for a house-intent query (e.g. "house", "villa in Sweden") -
@@ -790,4 +791,82 @@ def search(raw_query: str) -> list:
             matches.append(h)
             seen_ids.add(h["id"])
 
-    return cap_per_brand(matches)
+    return matches
+
+
+def round_robin_order(products: list) -> list:
+    """Orders a pool of leftover matches (everything cap_per_brand()
+    trimmed away) for the search page's "See more" button, so repeated
+    clicks stay mixed across brands all the way to the end instead of
+    the last few clicks being 100% one brand.
+
+    Takes exactly 1 item per brand per pass (reusing cap_per_brand()
+    itself, with max_per_brand=1) and repeats until the pool is empty,
+    building one fully interleaved sequence. Mocked up and measured
+    against a real "chair" search (1,418 raw matches, 90 brands) before
+    building this: a flat, larger per-round cap (e.g. 12/brand) drains
+    small-catalog brands within the first round or two, leaving the
+    biggest catalogs (there, Mater) to fill the last several clicks
+    entirely on their own - confirmed live, the last 3 of 11 "load
+    more" clicks came back 100% Mater. This 1-per-pass version never
+    dropped below 5 brands in any click on the same data, in 6 clicks
+    instead of 11. A same-brand run can still appear once every other
+    brand's supply is genuinely exhausted (unavoidable once only one
+    brand has anything left - the real floor there is just however much
+    bigger that one brand's catalog is than the next-biggest), but it's
+    no longer possible for an entire "load more" click to be one brand
+    while others still have items left.
+
+    The frontend slices this single ordered list into its own
+    fixed-size reveal chunks for pacing - that chunking is a UI choice,
+    kept independent of the fairness ordering computed here."""
+    ordered = []
+    pool = list(products)
+    while pool:
+        batch = cap_per_brand(pool, max_per_brand=1)
+        if not batch:
+            break
+        ordered.extend(batch)
+        batch_ids = {p["id"] for p in batch}
+        pool = [p for p in pool if p["id"] not in batch_ids]
+    return ordered
+
+
+def search(raw_query: str) -> list:
+    """The full pipeline: translate, then match (see _match_all), then
+    cap per brand. Used by /agent/search, which only ever wants the
+    plain result list - /search itself calls search_full() below for
+    the extra fields (total_matches, total_brands, intent) the "load
+    more" button needs."""
+    return search_full(raw_query)["results"]
+
+
+def search_full(raw_query: str) -> dict:
+    """Like search(), but also returns what the "load more" UI needs:
+    the resolved intent (so a later search_more() call can skip the
+    LLM translation step entirely) and the raw pre-cap match/brand
+    counts (so the results page can honestly say how many real matches
+    exist, not just how many are shown - see project memory,
+    [[search_load_more_design]])."""
+    intent = _resolve_intent(raw_query, translate_query(raw_query))
+    matches = _match_all(raw_query, intent)
+    return {
+        "results": cap_per_brand(matches),
+        "total_matches": len(matches),
+        "total_brands": len({m["brand"] for m in matches}),
+        "intent": intent,
+    }
+
+
+def search_more(raw_query: str, intent: dict, exclude_ids) -> list:
+    """Continuation of an existing /search call, for the "load more"
+    button. Takes the intent /search already resolved (no second LLM
+    call) and the ids of everything shown so far, re-runs the same
+    matching pipeline, and returns whatever's left, ordered by
+    round_robin_order() so the brand mix stays fair all the way to the
+    end - see that function's docstring for why a flat per-round cap
+    isn't used here instead."""
+    matches = _match_all(raw_query, intent)
+    exclude = {str(x) for x in exclude_ids}
+    remaining = [m for m in matches if str(m["id"]) not in exclude]
+    return round_robin_order(remaining)

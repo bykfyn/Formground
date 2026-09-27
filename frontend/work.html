@@ -171,6 +171,25 @@
   }
   .card-note i { font-size: 12px; vertical-align: -1px; margin-right: 3px; }
 
+  /* --- "see more results" (search only) --- */
+  /* Deliberately quiet - a text link, not a solid CTA pill - so it
+     reads as "more is available if you want it" rather than competing
+     with the results themselves for attention. Easy to make bolder
+     later (e.g. the same pill style as designers.html's notify-row
+     button) if this reads as too easy to miss. */
+  .load-more-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 40px 0 8px; text-align: center;
+  }
+  .load-more-btn {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: none; border: none; padding: 6px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .load-more-btn:hover { color: var(--text-primary); }
+  .load-more-btn:disabled { opacity: 0.6; cursor: default; text-decoration: none; }
+  .load-more-progress { font-size: 11.5px; color: var(--text-muted); }
+
   /* --- empty state / errors --- */
   #status { font-size: 13px; color: var(--text-muted); text-align: center; margin: 32px 0; display: none; }
   #status.error { color: #a14b3f; }
@@ -203,6 +222,11 @@
   <p id="status"></p>
   <p id="results-meta"></p>
   <div id="results-grid" class="results-grid"></div>
+
+  <div id="load-more-row" class="load-more-row" hidden>
+    <button type="button" id="load-more-btn" class="load-more-btn">See more results</button>
+    <span id="load-more-progress" class="load-more-progress"></span>
+  </div>
 
   <p class="foot-note">
     From a curated collection, equally relevant results are shown in

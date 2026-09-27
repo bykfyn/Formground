@@ -30,6 +30,16 @@ const input = document.getElementById("query-input");
 const statusEl = document.getElementById("status");
 const metaEl = document.getElementById("results-meta");
 const gridEl = document.getElementById("results-grid");
+const loadMoreRow = document.getElementById("load-more-row");
+const loadMoreBtn = document.getElementById("load-more-btn");
+const loadMoreProgress = document.getElementById("load-more-progress");
+
+// Number of leftover cards revealed per "See more results" click - a UI
+// pacing choice, independent of the fairness math that orders the pool
+// (see round_robin_order() in query_engine.py). Mocked up and measured
+// against a real 1,418-match "chair" search before picking this number -
+// see project memory, [[search_load_more_design]].
+const LOAD_MORE_CHUNK_SIZE = 180;
 
 const CATEGORY_ICONS = {
   chair: "ti-armchair", stool: "ti-armchair", bench: "ti-armchair", seat: "ti-armchair",
@@ -225,9 +235,10 @@ function renderCard(r) {
   return a;
 }
 
-function renderResults(results, metaText, emptyText, trimToFullRows) {
+function renderResults(results, metaText, emptyText, trimToFullRows, totalOverride) {
   gridEl.innerHTML = "";
   statusEl.style.display = "none";
+  hideLoadMore();
 
   if (results.length === 0) {
     statusEl.className = "";
@@ -256,13 +267,117 @@ function renderResults(results, metaText, emptyText, trimToFullRows) {
     results = results.slice(0, keep);
   }
 
-  metaEl.textContent = metaText(results.length);
+  // totalOverride is the real pre-cap match count (search only, from
+  // /search's total_matches) - falls back to the rendered count itself
+  // for Discover, which has no such hidden total to report.
+  metaEl.textContent = metaText(totalOverride ?? results.length);
   metaEl.style.display = "block";
 }
+
+// --- "See more results" (search only - see project memory,
+// [[search_load_more_design]] for why a per-brand fairness cap hides
+// most real matches by default, and why this reveals the rest instead
+// of silently dropping them) ---
+let moreState = null;
+
+function hideLoadMore() {
+  loadMoreRow.hidden = true;
+  loadMoreBtn.disabled = false;
+  loadMoreBtn.textContent = "See more results";
+  moreState = null;
+}
+
+function updateLoadMoreProgress() {
+  const { shown, total, totalBrands } = moreState;
+  loadMoreProgress.textContent = `Showing ${shown.toLocaleString()} of ${total.toLocaleString()}, from every one of ${totalBrands} brand${totalBrands === 1 ? "" : "s"}`;
+}
+
+function revealNextChunk() {
+  const { pool, poolIndex } = moreState;
+  const chunk = pool.slice(poolIndex, poolIndex + LOAD_MORE_CHUNK_SIZE);
+  chunk.forEach(r => gridEl.appendChild(renderCard(r)));
+  moreState.poolIndex += chunk.length;
+  moreState.shown += chunk.length;
+  updateLoadMoreProgress();
+
+  if (moreState.poolIndex >= pool.length) {
+    loadMoreBtn.remove();
+    loadMoreProgress.textContent = `That's every result — ${moreState.total.toLocaleString()} of ${moreState.total.toLocaleString()}.`;
+  }
+}
+
+// Shows the "See more results" row only when there's real, undisclosed
+// supply behind the fairness cap - a small query where nothing was
+// hidden (total_matches === results shown) gets no button at all.
+// Also guards against an old backend response that predates these
+// fields (e.g. this frontend deployed slightly ahead of the backend,
+// or a local test pointed at the still-live production API) - without
+// this check, a missing total_matches used to throw partway through
+// setup and take the rest of the search page down with it.
+function setupLoadMore(query, intent, shownResults, totalMatches, totalBrands) {
+  if (typeof totalMatches !== "number" || typeof totalBrands !== "number" || !intent) {
+    hideLoadMore();
+    return;
+  }
+  if (totalMatches <= shownResults.length) {
+    hideLoadMore();
+    return;
+  }
+  moreState = {
+    query, intent,
+    shownIds: shownResults.map(r => r.id),
+    pool: null,
+    poolIndex: 0,
+    shown: shownResults.length,
+    total: totalMatches,
+    totalBrands,
+  };
+  loadMoreRow.hidden = false;
+  loadMoreBtn.disabled = false;
+  loadMoreBtn.textContent = "See more results";
+  updateLoadMoreProgress();
+}
+
+async function handleLoadMoreClick() {
+  if (!moreState) return;
+
+  // Pool not fetched yet - one /search/more call gets back every
+  // remaining match in a single response, already round-robin ordered
+  // (see query_engine.round_robin_order); every click after this one
+  // just reveals more of that same in-memory list, no further network
+  // calls needed.
+  if (moreState.pool === null) {
+    loadMoreBtn.disabled = true;
+    loadMoreBtn.textContent = "Loading…";
+    try {
+      const params = new URLSearchParams({
+        q: moreState.query,
+        intent: JSON.stringify(moreState.intent),
+        exclude: moreState.shownIds.join(","),
+      });
+      const resp = await fetch(`${API_BASE}/search/more?${params.toString()}`);
+      if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
+      const data = await resp.json();
+      moreState.pool = data.results || [];
+    } catch (err) {
+      console.error(err);
+      loadMoreBtn.disabled = false;
+      loadMoreBtn.textContent = "Couldn't load more - try again";
+      return;
+    }
+    loadMoreBtn.disabled = false;
+    loadMoreBtn.textContent = "See more results";
+  }
+
+  revealNextChunk();
+}
+
+loadMoreBtn.addEventListener("click", handleLoadMoreClick);
 
 async function runSearch(query) {
   gridEl.innerHTML = "";
   metaEl.style.display = "none";
+  hideLoadMore();
   statusEl.className = "";
   statusEl.style.display = "block";
   statusEl.textContent = "Searching…";
@@ -272,11 +387,17 @@ async function runSearch(query) {
     const resp = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}${utmSuffix ? `&${utmSuffix}` : ""}`);
     if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
     const data = await resp.json();
+    const results = data.results || [];
     renderResults(
-      data.results || [],
-      (n) => `${n} random result${n === 1 ? "" : "s"}, no rankings, not paid for`,
-      "No matches yet - try describing it a different way."
+      results,
+      (n) => `${n.toLocaleString()} random result${n === 1 ? "" : "s"}, no rankings, not paid for`,
+      "No matches yet - try describing it a different way.",
+      false,
+      data.total_matches
     );
+    if (results.length > 0) {
+      setupLoadMore(query, data.intent, results, data.total_matches, data.total_brands);
+    }
   } catch (err) {
     statusEl.className = "error";
     statusEl.style.display = "block";
@@ -288,6 +409,7 @@ async function runSearch(query) {
 async function runDiscover() {
   gridEl.innerHTML = "";
   metaEl.style.display = "none";
+  hideLoadMore();
   statusEl.className = "";
   statusEl.style.display = "block";
   statusEl.textContent = "Shuffling…";

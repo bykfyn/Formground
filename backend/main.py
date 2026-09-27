@@ -21,13 +21,14 @@ HOW THIS RUNS FOR REAL:
   close to nothing at low traffic).
 """
 
+import json
 from typing import Optional
 
 from fastapi import Body, FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from analytics import log_event
-from query_engine import discover, search
+from query_engine import discover, search, search_full, search_more
 
 app = FastAPI(title="Formground")
 
@@ -49,10 +50,41 @@ def human_search(
     utm_medium: Optional[str] = None,
     utm_campaign: Optional[str] = None,
 ):
-    """Human-facing search. Returns a plain list of matching products."""
-    results = search(q)
+    """Human-facing search. Returns the fair, per-brand-capped list of
+    matching products, plus the raw total_matches/total_brands counts
+    and the resolved intent - the latter two exist for the "load more"
+    button (see /search/more) so the results page can say how many real
+    matches exist and so a "load more" click never re-runs the LLM
+    translation step."""
+    data = search_full(q)
     log_event("search", query=q, utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign)
-    return {"query": q, "results": results}
+    return {
+        "query": q,
+        "results": data["results"],
+        "total_matches": data["total_matches"],
+        "total_brands": data["total_brands"],
+        "intent": data["intent"],
+    }
+
+
+@app.get("/search/more")
+def human_search_more(
+    q: str = Query(..., description="The same query the original /search call used"),
+    intent: str = Query(..., description="The intent object /search returned, JSON-encoded"),
+    exclude: str = Query("", description="Comma-separated ids of results already shown"),
+):
+    """Continuation of an existing /search call for the "load more"
+    button. `intent` is exactly what /search's response already
+    returned - passing it back here means this never re-hits the LLM,
+    it just re-runs the same deterministic matching/ordering. Returns
+    every remaining match in one response, round-robin ordered (see
+    query_engine.round_robin_order) - the frontend reveals it in its
+    own fixed-size chunks per click, no further requests needed."""
+    parsed_intent = json.loads(intent)
+    exclude_ids = [x for x in exclude.split(",") if x]
+    results = search_more(q, parsed_intent, exclude_ids)
+    log_event("load_more", query=q)
+    return {"results": results}
 
 
 @app.get("/agent/search")
