@@ -293,6 +293,39 @@ def product_card_html(p, show_brand=False):
       </a>"""
 
 
+# Shared across all three static generators (this file, generate_
+# marketplace_page.py, generate_for_creators_page.py) - previously
+# three independently hand-maintained copies of the same rules (found
+# 2026-09-27 while stress-testing whether a "Sponsored" badge primitive
+# could generalize across surfaces: the copies had already drifted -
+# marketplace/for-creators used a fixed `190px` grid track + `justify-
+# content: center` where this file used `minmax(190px, 1fr)`, and none
+# of the three had `position: relative` on `.maker-card-hero`, which an
+# absolutely-positioned badge needs to anchor to the hero instead of
+# escaping to the page).
+#
+# `.maker-grid`'s track-sizing is deliberately NOT here - brand/maker
+# index pages have enough cards to want the grid to stretch and fill
+# each row (`minmax(_, 1fr)`), while Marketplace/For Creators sections
+# typically show a handful of cards that read better centered at a
+# fixed width - each of those two files keeps its own `.maker-grid`
+# rule for that reason, layered on top of this shared block.
+MAKER_CARD_CSS = """
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+"""
+
 # Only page-specific rules here - shared rules (:root, body, home-link,
 # h1, .tag, .foot-note) live in /site.css, linked with an absolute path
 # below since these pages are nested under /brands/.
@@ -323,19 +356,7 @@ PAGE_CSS = """
   .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
   .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 16px; align-items: start; }
-  .maker-card { display: block; text-decoration: none; color: inherit; }
-  .maker-card-hero {
-    aspect-ratio: 4/3; background: var(--surface-1);
-    border: 0.5px solid var(--border); margin: 0 0 10px;
-  }
-  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .maker-card-hero img.contain-fit { object-fit: contain; }
-  .maker-card-body { padding: 0; text-align: center; }
-  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
-    color: var(--text-secondary); margin: 0 0 3px; }
-  .maker-card:hover .maker-name { text-decoration: underline; }
-  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
-  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+""" + MAKER_CARD_CSS + """
   /* font-weight explicit since this class is also used on an <h1> in
      render_makers_index (the homepage's own header carries the same
      rule) - browsers bold headings by default, and this needs to look

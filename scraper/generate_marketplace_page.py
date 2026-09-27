@@ -35,7 +35,7 @@ from urllib.parse import urlparse
 
 import sqlite3
 
-from generate_brand_pages import CARD_CLICK_TRACKING_JS, DIRECTORY_FILTER_JS, umbrella_categories_for
+from generate_brand_pages import CARD_CLICK_TRACKING_JS, DIRECTORY_FILTER_JS, MAKER_CARD_CSS, umbrella_categories_for
 
 SCRAPER_DIR = Path(__file__).parent
 REPO_ROOT = SCRAPER_DIR.parent
@@ -193,14 +193,16 @@ PAGE_CSS = """
   /* Stockist cards reuse for-creators.html's maker-card/tool-card-hero
      pattern (see project memory) - a retailer's own real favicon over a
      bare monogram (user, 2026-09-25), since we don't have a real
-     storefront photo per retailer. */
+     storefront photo per retailer.
+     Base .maker-card rules come from generate_brand_pages.py's shared
+     MAKER_CARD_CSS (unified 2026-09-27, previously a hand-duplicated
+     copy) - only .maker-grid (fixed-width + centered here, vs. the
+     stretching grid on brand/maker index pages) and the extra flex-
+     centering on .maker-card-hero (for the icon-badge below) are kept
+     as page-specific additions on top of it. */
   .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, 190px); justify-content: center; gap: 16px; align-items: start; }
-  .maker-card { display: block; text-decoration: none; color: inherit; }
-  .maker-card-hero { aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border); margin: 0 0 10px; display: flex; align-items: center; justify-content: center; }
-  .maker-card-body { padding: 0; text-align: center; }
-  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 0 3px; }
-  .maker-card:hover .maker-name { text-decoration: underline; }
-  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+""" + MAKER_CARD_CSS + """
+  .maker-card-hero { display: flex; align-items: center; justify-content: center; }
   .match-hint { display: block; font-size: 10.5px; color: var(--text-accent); margin: 3px 0 0; font-style: italic; }
   /* Fixed-size circular badge, shared by a real favicon and the
      monogram fallback alike (user, 2026-09-25: favicons "minuscule" vs

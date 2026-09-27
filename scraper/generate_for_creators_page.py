@@ -34,7 +34,7 @@ import html
 
 from pathlib import Path
 
-from generate_brand_pages import CARD_CLICK_TRACKING_JS
+from generate_brand_pages import CARD_CLICK_TRACKING_JS, MAKER_CARD_CSS
 
 SCRAPER_DIR = Path(__file__).parent
 REPO_ROOT = SCRAPER_DIR.parent
@@ -241,14 +241,12 @@ PAGE_CSS = """
      freed space to the remaining ones unless they're sized with a
      flexible unit, which 190px is not. */
   .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, 190px); justify-content: center; gap: 16px; align-items: start; }
-  .maker-card { display: block; text-decoration: none; color: inherit; }
-  .maker-card-hero { aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border); margin: 0 0 10px; }
-  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .maker-card-body { padding: 0; text-align: center; }
-  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 0 3px; }
-  .maker-card:hover .maker-name { text-decoration: underline; }
-  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
-  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+""" + MAKER_CARD_CSS + """
+  /* .maker-card/.maker-card-hero/etc. above come from generate_brand_
+     pages.py's shared MAKER_CARD_CSS (unified 2026-09-27 - this file
+     previously hand-duplicated an identical-looking copy that had
+     quietly drifted from the other two generators', missing
+     position:relative on .maker-card-hero). */
 
   /* Tool/service/association cards reuse .maker-card, but their image is
      a square brand mark, not a cropped photo - contain + padding
