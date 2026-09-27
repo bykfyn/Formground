@@ -224,6 +224,17 @@ def setup_database():
         "ALTER TABLE products ADD COLUMN designer TEXT",
         "ALTER TABLE products ADD COLUMN link_dead INTEGER DEFAULT 0",
         "ALTER TABLE products ADD COLUMN first_seen TEXT",
+        # Added 2026-09-27 for automatic promotion detection (see
+        # scraper/find_price_promotions.py) - price/compare_at_price are
+        # already present in the raw JSON extract_shopify() and
+        # extract_woocommerce() fetch on every regular scrape, just never
+        # stored before now. NULL for every brand whose extractor doesn't
+        # populate them (most bespoke, non-Shopify/WooCommerce brands),
+        # not 0 - a real price of 0 would otherwise be indistinguishable
+        # from "unknown."
+        "ALTER TABLE products ADD COLUMN price REAL",
+        "ALTER TABLE products ADD COLUMN compare_at_price REAL",
+        "ALTER TABLE products ADD COLUMN currency TEXT",
     ):
         try:
             conn.execute(statement)
@@ -284,8 +295,9 @@ def save_product(conn, product):
     """
     conn.execute("""
         INSERT INTO products (brand, brand_url, product_name, product_url,
-                               category, material_options, dimensions, notes, thin, image_url, designer, last_checked, first_seen)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?)
+                               category, material_options, dimensions, notes, thin, image_url, designer, last_checked, first_seen,
+                               price, compare_at_price, currency)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?, ?, ?, ?)
     """, (
         product["brand"],
         product["brand_url"],
@@ -299,6 +311,9 @@ def save_product(conn, product):
         product.get("image_url", ""),
         _normalize_designer_name(product.get("designer", "")),
         product.get("first_seen"),
+        product.get("price"),
+        product.get("compare_at_price"),
+        product.get("currency"),
     ))
     conn.commit()
 
@@ -2362,6 +2377,51 @@ def _base_name(title, brand_name=None):
     return title[: match.start()].strip() if match else title.strip()
 
 
+def _shopify_price_info(group):
+    """
+    Scans every variant across a grouped Shopify listing (not just the
+    first) for a real, live discount - Shopify's own compare_at_price
+    is set higher than price exactly when a variant is on sale, and a
+    sale sometimes only applies to one color/size option rather than
+    the whole product. Returns (price, compare_at_price) for whichever
+    variant has the biggest live discount; if none is discounted,
+    returns the first variant's plain price with compare_at_price=None,
+    so every product still gets a real price on record either way.
+
+    Shopify's public /products.json has no currency field at all (it's
+    store-wide, not per-product) - callers get None for currency and
+    leave it for a human to fill in from the real product page when
+    turning a detected discount into a published Promotions entry (see
+    find_price_promotions.py).
+    """
+    best = None
+    for p in group:
+        for v in p.get("variants") or []:
+            try:
+                price = float(v["price"])
+            except (KeyError, TypeError, ValueError):
+                continue
+            compare_raw = v.get("compare_at_price")
+            try:
+                compare = float(compare_raw) if compare_raw not in (None, "") else None
+            except (TypeError, ValueError):
+                compare = None
+            if compare and compare > price:
+                pct = (compare - price) / compare
+                if best is None or pct > best[2]:
+                    best = (price, compare, pct)
+    if best:
+        return best[0], best[1]
+
+    first_variants = group[0].get("variants") or []
+    if first_variants:
+        try:
+            return float(first_variants[0]["price"]), None
+        except (KeyError, TypeError, ValueError):
+            pass
+    return None, None
+
+
 def extract_shopify(brand):
     """
     Generic extractor for any brand running a standard Shopify store.
@@ -2694,6 +2754,7 @@ def extract_shopify(brand):
     products = []
     for (product_type, base_name), group in grouped.items():
         first = group[0]
+        price, compare_at_price = _shopify_price_info(group)
         material_options = set()
         for option in first.get("options", []):
             if option.get("name", "").lower() in ("material", "materials", "finish", "color", "colour"):
@@ -2770,6 +2831,8 @@ def extract_shopify(brand):
             "notes": "",
             "image_url": images[0]["src"] if images else "",
             "designer": designer,
+            "price": price,
+            "compare_at_price": compare_at_price,
         })
 
     # A few brands sell a "build your own" configurator as its own listing
@@ -2808,6 +2871,41 @@ def extract_shopify(brand):
                 p["category"] = f"{p['category']}, Outdoor" if p["category"] else "Outdoor"
 
     return products
+
+
+def _woocommerce_price_info(group):
+    """
+    Same purpose as _shopify_price_info, for WooCommerce's Store API
+    shape instead - each product's "prices" object carries "price" and
+    "regular_price" as strings in the store's minor currency unit (e.g.
+    "990000" at currency_minor_unit=2 means 9900.00), plus a ready-made
+    "on_sale" boolean so there's no need to compare the two by hand.
+    Unlike Shopify, currency is given directly (currency_code), so it's
+    returned too rather than left for a human to fill in.
+    """
+    best = None
+    plain = None
+    for p in group:
+        prices = p.get("prices") or {}
+        try:
+            minor = int(prices.get("currency_minor_unit", 2))
+            divisor = 10 ** minor
+            price = int(prices["price"]) / divisor
+            regular = int(prices["regular_price"]) / divisor
+        except (KeyError, TypeError, ValueError):
+            continue
+        currency = prices.get("currency_code")
+        if plain is None:
+            plain = (price, currency)
+        if p.get("on_sale") and regular > price:
+            pct = (regular - price) / regular
+            if best is None or pct > best[2]:
+                best = (price, regular, pct, currency)
+    if best:
+        return best[0], best[1], best[3]
+    if plain:
+        return plain[0], None, plain[1]
+    return None, None, None
 
 
 def extract_woocommerce(brand):
@@ -2888,6 +2986,7 @@ def extract_woocommerce(brand):
     products = []
     for base_name, group in grouped.items():
         first = group[0]
+        price, compare_at_price, currency = _woocommerce_price_info(group)
         # Union of categories across the whole group, not just the first
         # item - covers the same inconsistent-tagging case above. A maker
         # who sells through a shared association shop (see
@@ -2933,6 +3032,9 @@ def extract_woocommerce(brand):
             # query time (see filter_products()'s matched_material).
             "notes": "",
             "image_url": image_url,
+            "price": price,
+            "compare_at_price": compare_at_price,
+            "currency": currency,
         })
 
     return products
