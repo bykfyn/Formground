@@ -644,7 +644,7 @@ def _stockist_card(name, locations, brand_umbrellas, has_promo=False):
     # own badge uses, so a user only interested in a specific stockist's
     # own site still sees that a real deal exists there today.
     promo_badge = (
-        '<span class="stockist-promo-badge" title="Live promotion at this stockist">'
+        '<span class="stockist-promo-badge" title="Promotion">'
         '<i class="ti ti-tag" aria-hidden="true"></i></span>'
         if has_promo else ""
     )
