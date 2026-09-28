@@ -89,8 +89,8 @@ FAVICON_TAGS = """<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">"""
 
 CHIPS = [
-    ("stockists", "Stockists"),
     ("promotions", "Promotions"),
+    ("stockists", "Stockists"),
 ]
 
 # Promotions' own sub-filter (2026-09-25, user direction): not creator
@@ -680,7 +680,11 @@ def render_stockists_panel(retailers, promotions):
         "no paid placement.</p>"
     )
     return (
-        f'    <div class="cat-panel" data-cat="stockists">\n{intro}\n'
+        # Hidden by default (2026-09-28) - Promotions is now the default
+        # landing tab, reinforcing the same cross-linking work already
+        # done to drive traffic there (see project memory,
+        # promotions_cross_site_linking).
+        f'    <div class="cat-panel" data-cat="stockists" style="display: none;">\n{intro}\n'
         f'    <div class="sub-chips">\n{subchips_html}\n    </div>\n'
         f'    <div class="maker-grid">\n{cards}\n    </div>\n    </div>'
     )
@@ -873,18 +877,18 @@ def render_promotions_panel(promotions):
             'Coming soon.</p>'
         )
         grid = ""
-    return f'    <div class="cat-panel" data-cat="promotions" style="display: none;">\n{intro}\n    <div class="sub-chips">\n{subchips_html}\n    </div>\n{grid}\n    </div>'
+    return f'    <div class="cat-panel" data-cat="promotions">\n{intro}\n    <div class="sub-chips">\n{subchips_html}\n    </div>\n{grid}\n    </div>'
 
 
 def render_page(retailers, promotions):
     chips_html = "\n".join(
-        f'    <button class="chip{" active" if cat_id == "stockists" else ""}" data-cat="{cat_id}">{html.escape(label)}</button>'
+        f'    <button class="chip{" active" if cat_id == "promotions" else ""}" data-cat="{cat_id}">{html.escape(label)}</button>'
         for cat_id, label in CHIPS
     )
 
     panels_html = "\n\n".join([
-        render_stockists_panel(retailers, promotions),
         render_promotions_panel(promotions),
+        render_stockists_panel(retailers, promotions),
     ])
 
     return f"""<!DOCTYPE html>
