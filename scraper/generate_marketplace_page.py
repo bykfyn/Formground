@@ -244,12 +244,38 @@ PAGE_CSS = """
   }
   .promo-card-body { padding: 0; }
   .promo-brand { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 2px; }
-  .promo-name { display: block; font-size: 15px; font-weight: 500; color: var(--text-secondary); margin: 0 0 4px; }
+  /* Reserves a full 2 lines' height regardless of actual title length
+     (2026-09-28) - same fix already shipped on search results
+     (work.html's .card-title-wrap): without this, a 1-line name and a
+     2-line name leave neighboring cards in the same row at different
+     heights, with everything below (retailer, CTA) landing at
+     different vertical positions. line-height is explicit so the
+     em-based min-height computes reliably; it scales automatically
+     with .promo-card-richer's larger font-size below. */
+  .promo-name {
+    display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden;
+    font-size: 15px; font-weight: 500; line-height: 1.3; min-height: 2.6em;
+    color: var(--text-secondary); margin: 0 0 4px;
+  }
   .promo-card:hover .promo-name { text-decoration: underline; }
   .promo-price { display: block; font-size: 13px; margin: 0 0 4px; }
   .promo-price-was { color: var(--text-muted); text-decoration: line-through; margin-right: 6px; }
   .promo-price-now { color: var(--text-primary); font-weight: 600; }
   .promo-retailer { display: block; font-size: 11px; color: var(--text-muted); }
+  /* One consistent CTA label everywhere - "Visit Shop", never a per-
+     retailer string - so a user never has to read/parse different
+     button text card to card (2026-09-28). The retailer's actual name
+     stays visible as its own separate text (.promo-retailer above,
+     .rc-retailer-name on a richer card) - the button is purely the
+     action, identification is a different job done elsewhere on the
+     card. Centered as its own block, independent of the left-aligned
+     text above it. Small enough to fit even the narrowest 220px card. */
+  .promo-cta {
+    display: block; width: fit-content; margin: 8px auto 0;
+    font-size: 11.5px; font-weight: 600; color: #fff;
+    background: var(--text-primary); border-radius: 999px; padding: 5px 14px;
+  }
+  .promo-card:hover .promo-cta { background: #35322e; }
 
   /* Multi-retailer offers (2026-09-28) - when the exact same product is
      on sale at 2+ real stockists, the card groups them instead of
@@ -289,6 +315,62 @@ PAGE_CSS = """
   .promo-card-grouped .promo-card-hero { cursor: default; }
   .promo-card-grouped .promo-card-hero:hover img { transform: none; }
   .promo-card-grouped:hover .promo-name { text-decoration: none; }
+
+  /* Richer card (2026-09-28) - the "richer card only" paid lever from
+     project memory, retailer_stockist_and_promotions_concept.md.
+     Spans 2 of the grid's own 220px tracks. Everything on it is either
+     already-scraped data or auto-generated from it (favicon, "Also at
+     N other stockists", the CTA) - a `tagline` is the one truly
+     optional field, itself meant to come from a future scrape of the
+     retailer's own page, never typed in by hand (see
+     [[price_based_promotion_detection]]-style automation, not an admin
+     form). */
+  .promo-card-richer {
+    grid-column: span 2;
+    display: grid; grid-template-columns: 200px 1fr; gap: 20px;
+    text-decoration: none; color: inherit;
+    border: 0.5px solid var(--border-strong); border-radius: var(--radius);
+    padding: 16px; background: var(--surface-2);
+  }
+  .promo-card-richer .promo-card-hero { aspect-ratio: 1/1; margin: 0; }
+  .promo-card-richer:hover .promo-card-hero img { transform: none; }
+  .promo-card-richer .rc-content { display: flex; flex-direction: column; }
+  .promo-card-richer .promo-brand { margin-bottom: 4px; }
+  .promo-card-richer .promo-name { font-size: 18px; margin-bottom: 8px; }
+  .promo-card-richer:hover .promo-name { text-decoration: none; }
+  .promo-card-richer .promo-price { font-size: 15px; margin-bottom: 10px; }
+  /* Retailer identity block - real favicon (the same _favicon_url()
+     Google-favicon pattern already used for Stockist cards) + name,
+     instead of the plain retailer text line - zero new data needed,
+     retailer_website is already on every offer. */
+  .rc-retailer-block { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+  .rc-retailer-icon { width: 22px; height: 22px; border-radius: 50%; border: 0.5px solid var(--border); background: var(--surface-1); display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; }
+  .rc-retailer-icon img { width: 65%; height: 65%; object-fit: contain; }
+  .rc-retailer-name { font-size: 13px; color: var(--text-secondary); font-weight: 500; }
+  /* Auto-generated fact - only appears when there's a real additional
+     fact to state (currently: multi-stockist count from the existing
+     offers array). No default filler text when there's nothing real
+     to say. */
+  .rc-auto-fact { font-size: 12px; color: var(--text-accent); margin: 0 0 10px; }
+  .rc-tagline { font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin: 0 0 12px; }
+  .rc-spacer { flex: 1; }
+  .promo-card-richer .promo-cta { margin: 0; align-self: flex-start; font-size: 13px; padding: 9px 20px; }
+  /* Richer = paid, always - a free/basic promotion never gets this
+     treatment. A richer card standing alone in the free grid (the
+     "richer-only" tier, no priority placement) needs its own small
+     "Sponsored" label, otherwise there's no visual signal it's a paid
+     placement - same transparency principle as the shared Sponsored
+     section's own label. Only rendered when the card ISN'T already
+     inside a .sponsored-section (that section's header already covers
+     it - see render_promotions_panel's in_sponsored_section flag). */
+  .rc-sponsored-tag {
+    display: block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.05em; color: var(--text-muted); margin: 0 0 4px;
+  }
+
+  @media (max-width: 640px) {
+    .promo-card-richer { grid-column: 1 / -1; grid-template-columns: 1fr; }
+  }
 
   [hidden] { display: none !important; }
 """ + SPONSORED_SECTION_CSS
@@ -560,7 +642,54 @@ def render_stockists_panel(retailers):
     )
 
 
-def _promo_card(p):
+def _richer_promo_card(p, offers, best, badge, subcat, in_sponsored_section):
+    """
+    The "richer card only" paid lever - see project memory,
+    retailer_stockist_and_promotions_concept.md. Spans 2 grid tracks;
+    everything on it besides an optional `tagline` is auto-derived from
+    data already on the entry, so it's usable with zero admin work the
+    moment a real paying customer exists (see [[monetization_build_sequencing_and_shared_primitive]]).
+
+    A grouped (2+ offer) richer promotion still resolves to ONE
+    destination (the best offer) rather than a clickable offers list
+    like the plain grouped card below - the richer treatment is a
+    single highlighted position, not a comparison table; the other
+    stockists surface only as the auto-generated fact line.
+    """
+    favicon = _favicon_url(best["retailer_website"])
+    icon_html = f'<img src="{html.escape(favicon)}" alt="">' if favicon else ""
+
+    auto_fact = ""
+    if len(offers) > 1:
+        extra = len(offers) - 1
+        auto_fact = f'<p class="rc-auto-fact">Also at {extra} other stockist{"s" if extra != 1 else ""}</p>'
+
+    tagline_html = f'<p class="rc-tagline">{html.escape(p["tagline"])}</p>' if p.get("tagline") else ""
+    sponsored_tag = "" if in_sponsored_section else '<span class="rc-sponsored-tag">Sponsored</span>'
+
+    return f"""      <a class="promo-card promo-card-richer" href="{html.escape(best['product_url'])}" target="_blank" rel="noopener noreferrer" data-subcat="{subcat}">
+        <div class="promo-card-hero">
+          <img src="{html.escape(p['image'])}" alt="{html.escape(p['product_name'])}" loading="lazy">
+          {badge}
+        </div>
+        <div class="rc-content">
+          {sponsored_tag}
+          <span class="promo-brand">{html.escape(p['brand'])}</span>
+          <span class="promo-name">{html.escape(p['product_name'])}</span>
+          {tagline_html}
+          <span class="promo-price"><span class="promo-price-was">{html.escape(best['price_was'])}</span> <span class="promo-price-now">{html.escape(best['price_now'])}</span></span>
+          <div class="rc-retailer-block">
+            <span class="rc-retailer-icon">{icon_html}</span>
+            <span class="rc-retailer-name">{html.escape(best['retailer'])}</span>
+          </div>
+          {auto_fact}
+          <div class="rc-spacer"></div>
+          <span class="promo-cta">Visit Shop</span>
+        </div>
+      </a>"""
+
+
+def _promo_card(p, in_sponsored_section=False):
     """
     Renders one product's promotion card. `p['offers']` holds 1+ real
     retailers currently selling this exact product at a discount -
@@ -574,19 +703,33 @@ def _promo_card(p):
     price is whichever offer wins that sort, not just the first one
     added to the file.
 
-    A single offer renders exactly as before (2026-09-25): one <a>,
-    "via X" line. 2+ offers can't be one link - each retailer needs its
-    own destination - so the wrapper becomes a plain div with each
-    offer as its own link below. Only the top 2 show by default; a 3rd+
-    stays reachable via a "+N more stockists" toggle (see PAGE_SCRIPT)
-    rather than either being dropped or stretching every card in the
-    grid to fit the longest offer list.
+    `p.get("richer")` opts a product into the bigger, 2-column "richer
+    card only" paid lever (see _richer_promo_card) - independent of
+    `in_sponsored_section`, since the three paid levers (richer,
+    priority placement, banner/carousel) are stackable, not tiers of
+    each other: a richer card can sit in the free grid on its own
+    (with its own small Sponsored tag) or inside the shared priority
+    section (see render_promotions_panel), and a card in that section
+    doesn't have to be richer at all.
+
+    A single-offer, non-richer promotion renders as before (2026-09-25,
+    updated 2026-09-28 for a consistent "Visit Shop" CTA and dropping
+    the "via" prefix - see project memory). 2+ offers can't be one
+    link - each retailer needs its own destination - so the wrapper
+    becomes a plain div with each offer as its own link below. Only the
+    top 2 show by default; a 3rd+ stays reachable via a "+N more
+    stockists" toggle (see PAGE_SCRIPT) rather than either being
+    dropped or stretching every card in the grid to fit the longest
+    offer list.
     """
     offers = sorted(p["offers"], key=lambda o: o.get("discount_pct") or 0, reverse=True)
     best = offers[0]
     best_discount = max((o.get("discount_pct") or 0) for o in offers)
     badge = f'<span class="promo-badge">-{best_discount}%</span>' if best_discount else ""
     subcat = html.escape(p["category"].lower())
+
+    if p.get("richer"):
+        return _richer_promo_card(p, offers, best, badge, subcat, in_sponsored_section)
 
     if len(offers) == 1:
         return f"""      <a class="promo-card" href="{html.escape(best['product_url'])}" target="_blank" rel="noopener noreferrer" data-subcat="{subcat}">
@@ -598,7 +741,8 @@ def _promo_card(p):
           <span class="promo-brand">{html.escape(p['brand'])}</span>
           <span class="promo-name">{html.escape(p['product_name'])}</span>
           <span class="promo-price"><span class="promo-price-was">{html.escape(best['price_was'])}</span> <span class="promo-price-now">{html.escape(best['price_now'])}</span></span>
-          <span class="promo-retailer">via {html.escape(best['retailer'])}</span>
+          <span class="promo-retailer">{html.escape(best['retailer'])}</span>
+          <span class="promo-cta">Visit Shop</span>
         </div>
       </a>"""
 
@@ -672,8 +816,8 @@ def render_promotions_panel(promotions):
                 "stockists - no paid placement.</p>"
             )
 
-        sponsored_cards = "\n".join(_promo_card(p) for p in sponsored)
-        free_cards = "\n".join(_promo_card(p) for p in free)
+        sponsored_cards = "\n".join(_promo_card(p, in_sponsored_section=True) for p in sponsored)
+        free_cards = "\n".join(_promo_card(p, in_sponsored_section=False) for p in free)
         sponsored_section = render_sponsored_section(sponsored_cards, "promo-grid")
         free_grid = f'    <div class="promo-grid">\n{free_cards}\n    </div>' if free else ""
         grid = "\n".join(part for part in (sponsored_section, free_grid) if part)
