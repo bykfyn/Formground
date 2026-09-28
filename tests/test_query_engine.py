@@ -131,10 +131,17 @@ class ResolveIntentTests(unittest.TestCase):
     # instead of real furniture.
 
     def test_browse_word_inside_multi_word_query_overrides_null_category(self):
+        # "Scandinavian" used to just sit in style_descriptors doing
+        # nothing useful (no product name literally contains it) - as of
+        # the 2026-09-28 geography fix it's now also recognized as a
+        # real country filter, so it correctly moves to `countries`
+        # instead of staying as inert style text. See
+        # GeographyRecognitionTests below for that fix's own coverage.
         llm_intent = {"category": None, "style_descriptors": ["Scandinavian"]}
         resolved = qe._resolve_intent("Scandinavian furniture design", llm_intent)
         self.assertEqual(resolved["category"], "furniture")
-        self.assertEqual(resolved["style_descriptors"], ["Scandinavian"])
+        self.assertEqual(set(resolved["countries"]), {"Sweden", "Denmark", "Norway"})
+        self.assertEqual(resolved["style_descriptors"], [])
 
     def test_browse_word_inside_multi_word_query_preserves_other_fields(self):
         llm_intent = {"category": None, "style_descriptors": ["independent"]}
@@ -194,6 +201,48 @@ class ResolveIntentTests(unittest.TestCase):
         resolved = qe._resolve_intent("new sculptural chair", llm_intent)
         self.assertTrue(resolved["new_only"])
         self.assertEqual(resolved["style_descriptors"], ["sculptural"])
+
+    # 2026-09-28: geography recognition, so "Scandinavian dining table"
+    # actually filters by real brand country instead of silently doing
+    # nothing (product search never used `location` at all before this -
+    # only house search did).
+
+    def test_scandinavian_region_word_sets_countries(self):
+        llm_intent = {"category": "dining table", "style_descriptors": ["scandinavian"]}
+        resolved = qe._resolve_intent("scandinavian dining table", llm_intent)
+        self.assertEqual(resolved["category"], "dining table")
+        self.assertEqual(set(resolved["countries"]), {"Sweden", "Denmark", "Norway"})
+        self.assertEqual(resolved["style_descriptors"], [])
+
+    def test_nordic_includes_finland(self):
+        llm_intent = {"category": None, "style_descriptors": ["nordic"]}
+        resolved = qe._resolve_intent("nordic lighting", llm_intent)
+        self.assertEqual(set(resolved["countries"]), {"Sweden", "Denmark", "Norway", "Finland"})
+
+    def test_single_country_demonym(self):
+        llm_intent = {"category": "chair", "style_descriptors": ["swedish"]}
+        resolved = qe._resolve_intent("swedish chair", llm_intent)
+        self.assertEqual(resolved["countries"], ["Sweden"])
+        self.assertEqual(resolved["style_descriptors"], [])
+
+    def test_llm_location_field_also_recognized(self):
+        # The simple case - LLM already extracts a bare country name
+        # into `location` - should still resolve without needing the
+        # word to also appear literally in the query text.
+        llm_intent = {"category": "chair", "location": "Sweden"}
+        resolved = qe._resolve_intent("a chair from Sweden", llm_intent)
+        self.assertEqual(resolved["countries"], ["Sweden"])
+
+    def test_no_geography_word_leaves_intent_unchanged(self):
+        llm_intent = {"category": "chair", "color": "red", "style_descriptors": []}
+        self.assertEqual(qe._resolve_intent("a red chair", llm_intent), llm_intent)
+
+    def test_geography_combines_with_new_only(self):
+        llm_intent = {"category": "lamp", "style_descriptors": ["new", "danish"]}
+        resolved = qe._resolve_intent("new danish lamp", llm_intent)
+        self.assertTrue(resolved["new_only"])
+        self.assertEqual(resolved["countries"], ["Denmark"])
+        self.assertEqual(resolved["style_descriptors"], [])
 
 
 class CapPerBrandTests(unittest.TestCase):

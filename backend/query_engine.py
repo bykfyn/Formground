@@ -125,6 +125,71 @@ def _load_hidden_brands() -> set:
 
 HIDDEN_BRANDS = _load_hidden_brands()
 
+
+def _load_brand_countries() -> dict:
+    """
+    Brand -> country, same source and same "only ever present when
+    genuinely confirmed, never guessed" discipline as
+    generate_brand_pages.py's own load_countries() (duplicated, not
+    imported - see that function's docstring; the Docker image ships
+    scraper/brands.json but never generate_brand_pages.py itself, same
+    boundary already documented for NEW_ARRIVALS_WINDOW_DAYS above).
+    Reads the same BRANDS_PATH file HIDDEN_BRANDS already reads, just a
+    second field off the same records.
+    """
+    try:
+        brands = json.loads(BRANDS_PATH.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+    return {b["name"]: b["country"] for b in brands if b.get("country")}
+
+
+BRAND_COUNTRIES = _load_brand_countries()
+
+# Real country values confirmed present in brands.json as of 2026-09-28
+# (see BRAND_COUNTRIES) mapped from how someone actually asks for them -
+# a region/demonym is not a literal country name, so this needs its own
+# small lookup rather than relying on the LLM to reliably resolve
+# "Scandinavian" to a set of real countries on its own (same class of
+# LLM-reliability gap already found and fixed for umbrella category
+# words and "new" - see _resolve_intent's own docstring). Deliberately
+# only covers terms with real, confirmed brand data behind them today;
+# extend this dict, not a new mechanism, as more countries get real
+# brand coverage.
+GEOGRAPHY_GROUPS = {
+    "scandinavia": {"Sweden", "Denmark", "Norway"},
+    "scandinavian": {"Sweden", "Denmark", "Norway"},
+    "nordic": {"Sweden", "Denmark", "Norway", "Finland"},
+    "sweden": {"Sweden"}, "swedish": {"Sweden"},
+    "denmark": {"Denmark"}, "danish": {"Denmark"},
+    "norway": {"Norway"}, "norwegian": {"Norway"},
+    "finland": {"Finland"}, "finnish": {"Finland"},
+    "italy": {"Italy"}, "italian": {"Italy"},
+    "france": {"France"}, "french": {"France"},
+}
+
+
+def _wanted_countries(stripped_query: str, llm_location) -> set:
+    """
+    Real countries (matching BRAND_COUNTRIES' own values) a query is
+    asking for - combines deterministic region/demonym word-matching
+    (the part the LLM can't be trusted to resolve on its own, same as
+    the umbrella-category and "new" fixes) with the LLM's own
+    `location` field when it directly names a known country/demonym
+    already in GEOGRAPHY_GROUPS (covers the simple "a chair from
+    Sweden" case, where the LLM's existing location extraction already
+    works fine).
+    """
+    countries = set()
+    for word in re.findall(r"[a-zà-ÿ]+", stripped_query):
+        if word in GEOGRAPHY_GROUPS:
+            countries |= GEOGRAPHY_GROUPS[word]
+    if llm_location and isinstance(llm_location, str):
+        loc = llm_location.strip().lower()
+        if loc in GEOGRAPHY_GROUPS:
+            countries |= GEOGRAPHY_GROUPS[loc]
+    return countries
+
 LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "anthropic")
 
 # These are settings to revisit occasionally, not set-once values - model
@@ -472,7 +537,8 @@ def _narrow_by_style(products: list, style_descriptors: list) -> list:
 def filter_products(intent: dict) -> list:
     """
     Filters stored products on the hard facts: category + material +
-    new_only (recency, see _wants_new_arrivals) + has a real image. A
+    new_only (recency, see _wants_new_arrivals) + countries (see
+    _wanted_countries) + has a real image. A
     missing image isn't just a display gap - the whole "thumbnail +
     link-back" model this tool is built on doesn't work without one,
     and in practice a missing image reliably means the listing is
@@ -506,6 +572,7 @@ def filter_products(intent: dict) -> list:
     # way material is - color names are already embedded in the same
     # compound material_options strings (e.g. "Black / Bone / Hardwire").
     wanted_color = (intent.get("color") or "").strip().lower()
+    wanted_countries = set(intent.get("countries") or [])
     raw_style_descriptors = intent.get("style_descriptors") or []
     wanted_style_descriptors = [
         d.strip().lower() for d in raw_style_descriptors
@@ -527,6 +594,8 @@ def filter_products(intent: dict) -> list:
         if wanted_color and wanted_color not in product["material_options"].lower():
             continue
         if new_cutoff and not (product["first_seen"] and product["first_seen"] >= new_cutoff):
+            continue
+        if wanted_countries and BRAND_COUNTRIES.get(product["brand"]) not in wanted_countries:
             continue
 
         # A product with many raw finish/color combos merged into one
@@ -823,6 +892,27 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
     out of style_descriptors when this fires so it isn't also literal-
     text-matched against product names on top of the real recency
     filter - pure noise otherwise, same reasoning as GENERIC_PRODUCT_NAMES.
+
+    Fourth, geography (2026-09-28): "Scandinavian dining table" is a
+    real, valuable ad phrase - the planned paid-traffic experiment's own
+    geography targeting is Sweden/Scandinavia (see project memory,
+    monetization_build_sequencing_and_shared_primitive) - but product
+    search never filtered on location at all before this; `location`
+    was only ever wired into house search. A region word like
+    "Scandinavian" also isn't a literal country name the LLM's own
+    `location` field can resolve on its own (same LLM-reliability gap
+    as the umbrella-category and "new" fixes above - it's an adjective
+    describing a group of countries, not a place name). See
+    _wanted_countries/GEOGRAPHY_GROUPS: matches real, confirmed country
+    data from brands.json (BRAND_COUNTRIES), combining deterministic
+    region/demonym word-matching with the LLM's own location field for
+    the simple single-country case. Sets `countries` as a hard filter
+    (a product's brand must be from one of the matched countries),
+    combinable with category same as material - "Scandinavian dining
+    table" becomes category=dining table AND countries={Sweden,Denmark,
+    Norway}. Strips the matched geography word out of style_descriptors
+    for the same reason "new" is stripped - avoids double-duty noise-
+    matching against product names.
     """
     stripped = raw_query.strip().lower()
     if stripped in BROWSE_CATEGORY_WORDS:
@@ -843,6 +933,18 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
         if style_descriptors:
             intent["style_descriptors"] = [
                 d for d in style_descriptors if not (isinstance(d, str) and d.strip().lower() == "new")
+            ]
+
+    wanted_countries = _wanted_countries(stripped, llm_intent.get("location"))
+    if wanted_countries:
+        intent = dict(intent)
+        intent["countries"] = sorted(wanted_countries)
+        style_descriptors = intent.get("style_descriptors")
+        if style_descriptors:
+            matched_words = {w for w in re.findall(r"[a-zà-ÿ]+", stripped) if w in GEOGRAPHY_GROUPS}
+            intent["style_descriptors"] = [
+                d for d in style_descriptors
+                if not (isinstance(d, str) and d.strip().lower() in matched_words)
             ]
 
     return intent
