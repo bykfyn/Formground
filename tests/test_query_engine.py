@@ -244,6 +244,50 @@ class ResolveIntentTests(unittest.TestCase):
         self.assertEqual(resolved["countries"], ["Denmark"])
         self.assertEqual(resolved["style_descriptors"], [])
 
+    def test_two_seater_word_form_sets_seat_count(self):
+        llm_intent = {"category": "sofa", "style_descriptors": ["two seater"]}
+        resolved = qe._resolve_intent("two seater sofa", llm_intent)
+        self.assertEqual(resolved["seat_count"], 2)
+        self.assertEqual(resolved["style_descriptors"], [])
+
+    def test_three_seater_word_form_sets_seat_count(self):
+        llm_intent = {"category": "sofa", "style_descriptors": ["three seater"]}
+        resolved = qe._resolve_intent("three seater sofa", llm_intent)
+        self.assertEqual(resolved["seat_count"], 3)
+        self.assertEqual(resolved["style_descriptors"], [])
+
+    def test_digit_hyphen_form_sets_seat_count(self):
+        llm_intent = {"category": "sofa", "style_descriptors": ["3-seater"]}
+        resolved = qe._resolve_intent("3-seater sofa", llm_intent)
+        self.assertEqual(resolved["seat_count"], 3)
+        self.assertEqual(resolved["style_descriptors"], [])
+
+    def test_no_seat_count_word_leaves_intent_unchanged(self):
+        llm_intent = {"category": "chair", "color": "red", "style_descriptors": []}
+        self.assertEqual(qe._resolve_intent("a red chair", llm_intent), llm_intent)
+
+    def test_seat_count_combines_with_geography_and_new_only(self):
+        llm_intent = {"category": "sofa", "style_descriptors": ["new", "swedish", "two seater"]}
+        resolved = qe._resolve_intent("new swedish two seater sofa", llm_intent)
+        self.assertTrue(resolved["new_only"])
+        self.assertEqual(resolved["countries"], ["Sweden"])
+        self.assertEqual(resolved["seat_count"], 2)
+        self.assertEqual(resolved["style_descriptors"], [])
+
+
+class ProductMatchesSeatCountTests(unittest.TestCase):
+    def test_digit_form_matches(self):
+        self.assertTrue(qe._product_matches_seat_count("Mogens 2-Seater Sofa", 2))
+
+    def test_word_form_matches(self):
+        self.assertTrue(qe._product_matches_seat_count("Mogens Two Seater Sofa", 2))
+
+    def test_wrong_count_does_not_match(self):
+        self.assertFalse(qe._product_matches_seat_count("Mogens Three Seater Sofa", 2))
+
+    def test_no_seat_count_in_name_does_not_match(self):
+        self.assertFalse(qe._product_matches_seat_count("Mogens Lounge Chair", 2))
+
 
 class CapPerBrandTests(unittest.TestCase):
     """

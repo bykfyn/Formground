@@ -190,6 +190,50 @@ def _wanted_countries(stripped_query: str, llm_location) -> set:
             countries |= GEOGRAPHY_GROUPS[loc]
     return countries
 
+
+# Real seat-count phrasing confirmed live in product names (2026-09-28,
+# ad keyword research for "two seater sofa"/"three seater sofa"): both
+# digit and word forms appear across real brands - "2-seater" (31),
+# "3 seater" (30), "two seater" (30), "3-seater" (25), "three seater"
+# (21), "one seater" (20), "5-seater"/"5 seater" (34 combined), "4
+# seater"/"4-seater" (15 combined), "1-seater"/"1 seater" (10 combined).
+# No product uses bare "seat" without "-er". A seat count is a real,
+# literal fact embedded in a product's own name, not a structured
+# database column - the same "read it from the name, don't invent a new
+# field" approach GENERIC_PRODUCT_NAMES/filter_by_name already use
+# elsewhere, just applied via a dedicated hard filter here since a
+# plain name-substring search (filter_by_name) already confirmed live
+# to under-match it (only 4 of 56 real "two seater" matches).
+SEAT_COUNT_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6}
+SEAT_COUNT_NUMBER_WORDS = {v: k for k, v in SEAT_COUNT_WORDS.items()}
+
+
+def _wanted_seat_count(stripped_query: str):
+    """
+    A seat count ("two seater", "2-seater", "3 seat sofa") a query is
+    asking for, or None. Digit and word forms both recognized, matching
+    the real variety already confirmed in the data (see above) - the
+    LLM's own style_descriptors handling can't be trusted to extract
+    this reliably or consistently (same LLM-reliability gap as every
+    other deterministic fix today), and even when it does, a bare
+    substring/style-descriptor match against product names is too
+    fragile (confirmed: filter_by_name("two seater sofa") finds only 4
+    of the 56 real matches).
+    """
+    m = re.search(r"\b(\d+|one|two|three|four|five|six)[\s-]?seaters?\b", stripped_query)
+    if not m:
+        return None
+    token = m.group(1)
+    return int(token) if token.isdigit() else SEAT_COUNT_WORDS.get(token)
+
+
+def _product_matches_seat_count(product_name: str, seat_count: int) -> bool:
+    """True if a product's own name literally states this seat count,
+    in either digit or word form (see SEAT_COUNT_NUMBER_WORDS)."""
+    number_word = SEAT_COUNT_NUMBER_WORDS.get(seat_count)
+    alternatives = "|".join(str(a) for a in (seat_count, number_word) if a is not None)
+    return bool(re.search(rf"\b({alternatives})[\s-]?seaters?\b", product_name, re.IGNORECASE))
+
 LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "anthropic")
 
 # These are settings to revisit occasionally, not set-once values - model
@@ -538,7 +582,8 @@ def filter_products(intent: dict) -> list:
     """
     Filters stored products on the hard facts: category + material +
     new_only (recency, see _wants_new_arrivals) + countries (see
-    _wanted_countries) + has a real image. A
+    _wanted_countries) + seat_count (see _wanted_seat_count) + has a
+    real image. A
     missing image isn't just a display gap - the whole "thumbnail +
     link-back" model this tool is built on doesn't work without one,
     and in practice a missing image reliably means the listing is
@@ -573,6 +618,7 @@ def filter_products(intent: dict) -> list:
     # compound material_options strings (e.g. "Black / Bone / Hardwire").
     wanted_color = (intent.get("color") or "").strip().lower()
     wanted_countries = set(intent.get("countries") or [])
+    wanted_seat_count = intent.get("seat_count")
     raw_style_descriptors = intent.get("style_descriptors") or []
     wanted_style_descriptors = [
         d.strip().lower() for d in raw_style_descriptors
@@ -596,6 +642,8 @@ def filter_products(intent: dict) -> list:
         if new_cutoff and not (product["first_seen"] and product["first_seen"] >= new_cutoff):
             continue
         if wanted_countries and BRAND_COUNTRIES.get(product["brand"]) not in wanted_countries:
+            continue
+        if wanted_seat_count is not None and not _product_matches_seat_count(product["product_name"], wanted_seat_count):
             continue
 
         # A product with many raw finish/color combos merged into one
@@ -913,6 +961,18 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
     Norway}. Strips the matched geography word out of style_descriptors
     for the same reason "new" is stripped - avoids double-duty noise-
     matching against product names.
+
+    Fifth, seat count (2026-09-28): "two seater sofa"/"three seater
+    sofa" are real ad keywords with real search volume - and a real
+    fact genuinely embedded in many product names ("2-Seater," "Three
+    Seater"), just not as a structured database column. Checked live
+    that the existing plain-substring name search (filter_by_name)
+    badly under-matches this - only 4 of 56 real "two seater" products,
+    since it requires the whole query or whole name to appear inside
+    the other, not a flexible digit/word-form regex. See
+    _wanted_seat_count/_product_matches_seat_count: sets `seat_count`
+    as a hard filter, combinable with category exactly like the others,
+    matching either digit or word form in the product's own name.
     """
     stripped = raw_query.strip().lower()
     if stripped in BROWSE_CATEGORY_WORDS:
@@ -945,6 +1005,17 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
             intent["style_descriptors"] = [
                 d for d in style_descriptors
                 if not (isinstance(d, str) and d.strip().lower() in matched_words)
+            ]
+
+    wanted_seat_count = _wanted_seat_count(stripped)
+    if wanted_seat_count is not None:
+        intent = dict(intent)
+        intent["seat_count"] = wanted_seat_count
+        style_descriptors = intent.get("style_descriptors")
+        if style_descriptors:
+            intent["style_descriptors"] = [
+                d for d in style_descriptors
+                if not (isinstance(d, str) and _wanted_seat_count(d.strip().lower()) == wanted_seat_count)
             ]
 
     return intent
