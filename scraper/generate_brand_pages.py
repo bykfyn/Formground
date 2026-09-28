@@ -437,24 +437,33 @@ BANNER_CAROUSEL_CSS = """
      .promo-brand/.promo-name/.promo-price/.promo-cta so the same data
      renders in both places, but every one of them needs to read at
      hero scale, not card scale (2026-09-28, user: "make everything
-     that is featured on the image bigger"). */
+     that is featured on the image bigger"). Sizes are grounded, not
+     guessed: measured a real hero banner on illumsbolighus.dk (600px
+     tall) - an 11px uppercase eyebrow, a 40px headline (~7% of the
+     banner's height), and a CTA whose prominence comes from generous
+     padding around small caps text, not a large font. Scaled to our
+     banner's own height (~467px at desktop content width) and kept
+     that same restrained-label / big-headline / boxy-CTA ratio. */
   .banner-slide .promo-badge { top: 20px; left: 20px; font-size: 13px; padding: 6px 14px; }
-  .banner-slide-content .promo-brand { font-size: 14px; color: rgba(255,255,255,0.75); margin: 0 0 8px; }
+  .banner-slide-content .promo-brand { font-size: 12px; color: rgba(255,255,255,0.75); margin: 0 0 8px; }
   .banner-slide-content .promo-name {
     display: block; -webkit-line-clamp: unset; overflow: visible; min-height: 0;
-    font-size: 36px; font-weight: 600; line-height: 1.15; color: #fff;
+    font-size: 34px; font-weight: 600; line-height: 1.15; color: #fff;
     max-width: 65%; margin: 0 0 14px;
   }
-  .banner-slide-content .promo-price { font-size: 18px; margin: 0 0 20px; }
+  .banner-slide-content .promo-price { font-size: 18px; margin: 0 0 22px; }
   .banner-slide-content .promo-price-was { color: rgba(255,255,255,0.6); }
   .banner-slide-content .promo-price-now { color: #fff; font-weight: 600; }
-  /* White pill instead of the card's dark-on-light .promo-cta - reads
+  /* White button instead of the card's dark-on-light .promo-cta - reads
      clearly against the photo's dark scrim and is the one control on
-     the whole banner asking for a click. */
+     the whole banner asking for a click. Small caps + letter-spacing +
+     generous padding (not a bigger font) is the illumsbolighus.dk
+     convention for a hero CTA - it reads as a considered button
+     rather than a card pill blown up in size. */
   .banner-slide-content .promo-cta {
     display: inline-block; margin: 0; width: auto;
-    font-size: 16px; font-weight: 600; padding: 14px 32px;
-    background: #fff; color: #1a1816;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 17px 36px; background: #fff; color: #1a1816;
   }
   .banner-slide:hover .promo-cta { background: #f0ede8; }
   .banner-dots { position: absolute; bottom: 18px; right: 24px; z-index: 2; display: flex; gap: 6px; }
