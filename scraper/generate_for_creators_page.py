@@ -34,7 +34,12 @@ import html
 
 from pathlib import Path
 
-from generate_brand_pages import CARD_CLICK_TRACKING_JS, MAKER_CARD_CSS
+from generate_brand_pages import (
+    CARD_CLICK_TRACKING_JS,
+    MAKER_CARD_CSS,
+    SPONSORED_SECTION_CSS,
+    render_sponsored_section,
+)
 
 SCRAPER_DIR = Path(__file__).parent
 REPO_ROOT = SCRAPER_DIR.parent
@@ -283,7 +288,7 @@ PAGE_CSS = """
   .guide-links .resource-name:hover { text-decoration: underline; }
   .guide-links .resource-name i { font-size: 14px; margin-left: 4px; vertical-align: 1px; color: var(--text-muted); }
   .guide-links p { font-size: 13.5px; line-height: 1.6; color: var(--text-secondary); margin: 2px 0 0; }
-"""
+""" + SPONSORED_SECTION_CSS
 
 
 def _initials(name):
@@ -324,8 +329,24 @@ def render_craftspeople_panel():
 
 
 def render_tool_panel(cat_id):
-    cards = "\n".join(_tool_card(t) for t in TOOL_CATEGORIES[cat_id])
-    return f'    <div class="maker-grid cat-panel" data-cat="{cat_id}" style="display: none;">\n{cards}\n    </div>'
+    # Sponsored/free split (2026-09-28) - same shared primitive as
+    # Promotions (see generate_brand_pages.py's render_sponsored_section
+    # and project memory, monetization_build_sequencing_and_shared_primitive.md).
+    # No real tool entry sets "sponsored" today (none of these listings
+    # are paid placements - see each entry's own curation, and the
+    # brief's own note that affiliate programs are only "identified,"
+    # not activated) - .get() defaults to falsy, so this stays dormant
+    # until a real paying tool/service provider exists.
+    tools = TOOL_CATEGORIES[cat_id]
+    sponsored = [t for t in tools if t.get("sponsored")]
+    free = [t for t in tools if not t.get("sponsored")]
+    sponsored_section = render_sponsored_section(
+        "\n".join(_tool_card(t) for t in sponsored), "maker-grid"
+    )
+    free_cards = "\n".join(_tool_card(t) for t in free)
+    free_grid = f'    <div class="maker-grid">\n{free_cards}\n    </div>' if free else ""
+    body = "\n".join(part for part in (sponsored_section, free_grid) if part)
+    return f'    <div class="cat-panel" data-cat="{cat_id}" style="display: none;">\n{body}\n    </div>'
 
 
 GUIDES_HTML = """    <div class="guides-list cat-panel" data-cat="guides" style="display: none;">

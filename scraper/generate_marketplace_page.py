@@ -35,7 +35,14 @@ from urllib.parse import urlparse
 
 import sqlite3
 
-from generate_brand_pages import CARD_CLICK_TRACKING_JS, DIRECTORY_FILTER_JS, MAKER_CARD_CSS, umbrella_categories_for
+from generate_brand_pages import (
+    CARD_CLICK_TRACKING_JS,
+    DIRECTORY_FILTER_JS,
+    MAKER_CARD_CSS,
+    SPONSORED_SECTION_CSS,
+    render_sponsored_section,
+    umbrella_categories_for,
+)
 
 SCRAPER_DIR = Path(__file__).parent
 REPO_ROOT = SCRAPER_DIR.parent
@@ -284,7 +291,7 @@ PAGE_CSS = """
   .promo-card-grouped:hover .promo-name { text-decoration: none; }
 
   [hidden] { display: none !important; }
-"""
+""" + SPONSORED_SECTION_CSS
 
 PAGE_SCRIPT = """
   // Top-level chips: every panel's real content already sits in the
@@ -642,12 +649,34 @@ def render_promotions_panel(promotions):
     # footer's own "want to be featured?" CTA, which already covers
     # this) - paid Creator listings just aren't part of the grid yet.
     if promotions:
-        intro = (
-            '    <p class="panel-intro">A selection of promotions from creators and '
-            "stockists - no paid placement.</p>"
-        )
-        cards = "\n".join(_promo_card(p) for p in promotions)
-        grid = f'    <div class="promo-grid">\n{cards}\n    </div>'
+        # sponsored/free split (2026-09-28) - see the shared
+        # render_sponsored_section() primitive in generate_brand_pages.py.
+        # No real entry sets "sponsored" today (no paid Promotions tier
+        # or payment flow exists yet - see project memory,
+        # monetization_build_sequencing_and_shared_primitive.md), so
+        # this is dormant machinery: `sponsored` stays empty and the
+        # page renders exactly as before. The intro copy is derived from
+        # whether any real sponsored entry exists, not hardcoded, so
+        # "no paid placement" can never go stale the day that changes.
+        sponsored = [p for p in promotions if p.get("sponsored")]
+        free = [p for p in promotions if not p.get("sponsored")]
+
+        if sponsored:
+            intro = (
+                '    <p class="panel-intro">A selection of promotions from creators and '
+                "stockists - sponsored placements are clearly labeled below.</p>"
+            )
+        else:
+            intro = (
+                '    <p class="panel-intro">A selection of promotions from creators and '
+                "stockists - no paid placement.</p>"
+            )
+
+        sponsored_cards = "\n".join(_promo_card(p) for p in sponsored)
+        free_cards = "\n".join(_promo_card(p) for p in free)
+        sponsored_section = render_sponsored_section(sponsored_cards, "promo-grid")
+        free_grid = f'    <div class="promo-grid">\n{free_cards}\n    </div>' if free else ""
+        grid = "\n".join(part for part in (sponsored_section, free_grid) if part)
     else:
         intro = (
             '    <p class="panel-intro">A mix of paid Creator listings and free, basic '

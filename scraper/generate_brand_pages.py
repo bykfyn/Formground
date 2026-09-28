@@ -326,6 +326,58 @@ MAKER_CARD_CSS = """
   .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
 """
 
+# Shared "Sponsored" priority-placement primitive (2026-09-28) - see
+# project memory, retailer_stockist_and_promotions_concept.md's three
+# stackable paid-placement levers. This is the first of the three:
+# a labeled section running in the first row(s) of a grid, ONE shared
+# label over the whole cluster rather than a badge repeated per card -
+# same convention as Google/Amazon sponsored search results. Built as
+# a shared primitive from day one (not Promotions-specific code) since
+# For Creators and Brandvue are confirmed future consumers of the same
+# mechanism, not hypothetical - see
+# monetization_build_sequencing_and_shared_primitive.md.
+#
+# Deliberately doesn't care what's inside it: a promo-card, a
+# maker-card, a tool-card - whatever shape the calling page's own cards
+# already are. Priority here is about POSITION, not card size/richness
+# (that's the separate "richer card" lever, not built yet) - a
+# sponsored card can be perfectly normal-sized.
+#
+# STATUS: real, reusable code, currently unused - no live entry
+# anywhere sets a sponsored flag, since no real paying customer exists
+# yet (no payment/sign-up flow exists either - see the same memory
+# file's item 1). Ships dormant and ready rather than half-built later
+# under time pressure once a real sponsor does exist.
+SPONSORED_SECTION_CSS = """
+  .sponsored-section { margin-bottom: 28px; }
+  .sponsored-label {
+    text-align: center; font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 14px;
+  }
+"""
+
+
+def render_sponsored_section(cards_html, grid_class, label="Sponsored"):
+    """
+    Wraps already-rendered card HTML (any shape) in a labeled Sponsored
+    section, meant to sit above a page's normal, unpaid grid.
+    `grid_class` should match whatever grid class the calling page
+    already uses for its own cards (e.g. "promo-grid", "maker-grid") so
+    the sponsored cluster lays out identically to the free cards below
+    it - this function only adds the label and wrapper, not a new
+    layout system. Returns "" if there's nothing sponsored to show, so
+    callers can always include the result unconditionally.
+    """
+    if not cards_html:
+        return ""
+    return (
+        '    <div class="sponsored-section">\n'
+        f'      <p class="sponsored-label">{html.escape(label)}</p>\n'
+        f'      <div class="{grid_class}">\n{cards_html}\n      </div>\n'
+        '    </div>'
+    )
+
+
 # Only page-specific rules here - shared rules (:root, body, home-link,
 # h1, .tag, .foot-note) live in /site.css, linked with an absolute path
 # below since these pages are nested under /brands/.
