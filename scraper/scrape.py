@@ -7189,11 +7189,31 @@ def run(brand_name=None):
             # brands not yet reached untouched.
             conn.execute("DELETE FROM products WHERE brand = ?", (brand["name"],))
             conn.commit()
+            # A brand's very first scrape has no prior rows at all, so
+            # old_first_seen comes back empty and every one of its
+            # products would otherwise get stamped "new today" below -
+            # confirmed live 2026-09-28: 91 brands onboarded the same
+            # day (see git log around "Add 55 small/independent
+            # furniture & objects brands") each dumped their entire
+            # back-catalog into first_seen with today's date, making an
+            # established brand's years-old catalog look like a mass
+            # product launch on the "New" page and brand pages' own
+            # "News" sections. The real add-date for a freshly-onboarded
+            # brand's existing catalog is genuinely unknown - same
+            # "never guess a real date" principle already applied below
+            # for an individual pre-existing product, just also applied
+            # to a brand's first scrape as a whole rather than only
+            # per-URL matches within it.
+            is_first_scrape_for_brand = not old_first_seen
+
             products_saved = 0
             sibling_names_lower = {p["product_name"].strip().lower() for p in products}
             for product in products:
                 url = product["product_url"]
-                product["first_seen"] = old_first_seen[url] if url in old_first_seen else today
+                if is_first_scrape_for_brand:
+                    product["first_seen"] = None
+                else:
+                    product["first_seen"] = old_first_seen[url] if url in old_first_seen else today
                 override = MANUAL_CATEGORY_OVERRIDES.get((brand["name"], product["product_name"]))
                 if override:
                     product["category"] = override

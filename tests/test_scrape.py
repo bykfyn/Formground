@@ -250,14 +250,42 @@ class FirstSeenCarryForwardTests(ScrapeRunDeleteThenInsertTests):
         conn.close()
         return row[0] if row else None
 
-    def test_new_product_is_stamped_with_todays_date(self):
+    def test_brands_first_scrape_leaves_first_seen_null(self):
+        # A brand's very first scrape has no prior rows to carry
+        # first_seen forward from - confirmed live 2026-09-28: 91 brands
+        # onboarded the same day each had their entire back-catalog
+        # stamped "new today," making an established brand's years-old
+        # catalog look like a mass product launch. The real add-date for
+        # a freshly-onboarded brand's existing catalog is genuinely
+        # unknown, same as any other pre-existing product with an
+        # unknown real date - it must stay NULL, not get "new today"
+        # just because Formground happened to start tracking it now.
         scrape.EXTRACTORS = {
             "Alpha": lambda brand: [self._product("Alpha", "Bench")],
             "Beta": lambda brand: [self._product("Beta", "Vase")],
         }
         scrape.run()
+        self.assertIsNone(self._first_seen_for("Alpha", "Bench"))
+
+    def test_new_product_on_an_already_tracked_brand_is_stamped_with_todays_date(self):
+        # The genuine "new arrival" case: Alpha is already a known brand
+        # (scraped once before with just "Bench") - a second run adding
+        # "Stool" for the first time is a real new arrival and should be
+        # stamped today, unlike the brand's own first scrape above.
+        scrape.EXTRACTORS = {
+            "Alpha": lambda brand: [self._product("Alpha", "Bench")],
+            "Beta": lambda brand: [self._product("Beta", "Vase")],
+        }
+        scrape.run()
+
+        scrape.EXTRACTORS = {
+            "Alpha": lambda brand: [self._product("Alpha", "Bench"), self._product("Alpha", "Stool")],
+            "Beta": lambda brand: [self._product("Beta", "Vase")],
+        }
+        scrape.run()
         today = datetime.date.today().isoformat()
-        self.assertEqual(self._first_seen_for("Alpha", "Bench"), today)
+        self.assertEqual(self._first_seen_for("Alpha", "Stool"), today)
+        self.assertIsNone(self._first_seen_for("Alpha", "Bench"))
 
     def test_still_live_product_keeps_its_original_first_seen(self):
         scrape.EXTRACTORS = {
