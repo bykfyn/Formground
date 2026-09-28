@@ -39,6 +39,7 @@ SCRAPER_DIR = Path(__file__).parent
 DATA_DIR = SCRAPER_DIR.parent / "data"
 DB_PATH = DATA_DIR / "formground.db"
 BRANDS_PATH = SCRAPER_DIR / "brands.json"
+PROMOTIONS_PATH = DATA_DIR / "promotions.json"
 DOCS_DIR = SCRAPER_DIR.parent / "docs"
 BRANDS_DIR = DOCS_DIR / "brands"
 SITE_URL = "https://formground.com"
@@ -129,6 +130,27 @@ def load_hidden_brands():
     """
     brands = json.loads(BRANDS_PATH.read_text())
     return {b["name"] for b in brands if b.get("hidden")}
+
+
+def load_promotions_by_brand():
+    """
+    Cross-references data/promotions.json (see
+    generate_marketplace_page.py, which owns the real schema) against
+    brand pages, so a brand with a live promotion links straight to it
+    (2026-09-28) - most of a promotion's value is wasted if only
+    someone who already knows to check Marketplace's Promotions tab
+    ever sees it. Keyed by brand name; every entry already carries its
+    own real product/retailer/discount data, so nothing new needs
+    scraping or authoring here. Brands not currently promoted just get
+    an empty list, same as before this existed.
+    """
+    if not PROMOTIONS_PATH.exists():
+        return {}
+    promotions = json.loads(PROMOTIONS_PATH.read_text(encoding="utf-8"))
+    by_brand = {}
+    for p in promotions:
+        by_brand.setdefault(p["brand"], []).append(p)
+    return by_brand
 
 # A brand can have products across more than one of these - the page
 # shows every umbrella that any of its products match. Kept as a
@@ -389,6 +411,18 @@ PAGE_CSS = """
   .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
   .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
   .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
   .tags { margin-bottom: 12px; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
   /* Photo + plain caption, not an enclosing card box - the site-wide
@@ -620,9 +654,28 @@ CARD_CLICK_TRACKING_JS = """
 """
 
 
-def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None):
+def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None):
     tag_list = list(umbrellas) + ([country] if country else [])
     tags = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
+    # Real, live cross-link to Marketplace's Promotions tab (2026-09-28,
+    # see load_promotions_by_brand) - only rendered when this brand
+    # genuinely has 1+ live promotion right now, using the same
+    # best-offer-wins-the-headline logic as the Promotions cards
+    # themselves. ?tab=promotions lands directly on the right tab
+    # rather than Marketplace's own default (Stockists).
+    promo_callout = ""
+    if promotions:
+        best_discount = max(
+            (o.get("discount_pct") or 0) for p in promotions for o in p["offers"]
+        )
+        count = len(promotions)
+        label = f"{count} live promotions" if count > 1 else "a live promotion"
+        discount_note = f", up to {best_discount}% off" if best_discount else ""
+        promo_callout = (
+            '\n    <a class="promo-callout" href="/marketplace.html?tab=promotions">'
+            f'<i class="ti ti-tag" aria-hidden="true"></i> {html.escape(brand)} has {label} right now'
+            f'{discount_note} &rarr;</a>'
+        )
     cards = "".join(product_card_html(p) for p in products)
     page_url = f"{SITE_URL}/brands/{slug}.html"
     description = f"{html.escape(brand)}'s work on Formground - {len(products)} pieces, linked straight to their own site."
@@ -685,7 +738,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None)
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">{html.escape(brand)}</h1>
     <div class="tags">{tags}</div>
-    <a class="brand-site-link" href="{html.escape(brand_url)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+    <a class="brand-site-link" href="{html.escape(brand_url)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>{promo_callout}
   </div>
   <div class="grid">{cards}</div>
   <p class="foot-note">
@@ -1079,6 +1132,7 @@ def generate():
 
     countries = load_countries()
     hidden_brands = load_hidden_brands()
+    promotions_by_brand = load_promotions_by_brand()
     BRANDS_DIR.mkdir(parents=True, exist_ok=True)
 
     # New-arrivals page: first_seen is only ever real (not NULL) for a
@@ -1118,7 +1172,7 @@ def generate():
         brand_url = products[0]["brand_url"]
         umbrellas = umbrella_categories_for(products)
         country = countries.get(brand)
-        page = render_brand_page(brand, slug, brand_url, products, umbrellas, country)
+        page = render_brand_page(brand, slug, brand_url, products, umbrellas, country, promotions_by_brand.get(brand))
         (BRANDS_DIR / f"{slug}.html").write_text(page)
         image = primary_image_for(products, umbrellas)
         makers_data.append((brand, slug, umbrellas, len(products), country, image))

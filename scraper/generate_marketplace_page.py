@@ -225,6 +225,16 @@ PAGE_CSS = """
     justify-content: center; overflow: hidden;
   }
   .icon-badge img { width: 65%; height: 65%; object-fit: contain; }
+  /* Live-promotion signal on a Stockist card (2026-09-28) - not its own
+     link (the whole card is already one <a>, and a link can't nest
+     inside another), just a plain visual cue that this stockist has a
+     real, current deal - see render_stockists_panel's cross-reference
+     against the same promotions data Promotions itself uses. */
+  .stockist-promo-badge {
+    position: absolute; top: 8px; right: 8px; width: 22px; height: 22px;
+    border-radius: 50%; background: var(--text-primary); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 12px;
+  }
   .monogram {
     font-family: 'Archivo', sans-serif; font-weight: 700;
     font-size: 34px; color: var(--text-secondary);
@@ -238,9 +248,15 @@ PAGE_CSS = """
   .promo-card-hero { position: relative; aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border); margin: 0 0 10px; overflow: hidden; }
   .promo-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .promo-card:hover .promo-card-hero img { transform: scale(1.02); }
+  /* Deliberately quiet (2026-09-28) - a light, translucent pill rather
+     than the same solid dark fill as .promo-cta, so the discount
+     badge reads as a fact about the photo and the "Visit Shop" CTA
+     stays the one thing on the card asking for a click. */
   .promo-badge {
-    position: absolute; top: 10px; left: 10px; background: var(--text-primary); color: var(--surface-2);
-    font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 999px;
+    position: absolute; top: 10px; left: 10px;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-primary);
+    border: 0.5px solid var(--border);
+    font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 999px;
   }
   .promo-card-body { padding: 0; }
   .promo-brand { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 2px; }
@@ -422,6 +438,16 @@ PAGE_SCRIPT = """
       btn.closest('.promo-card-grouped').classList.add('expanded');
     });
   });
+
+  // Lets a link from elsewhere on the site (a brand page's promotion
+  // callout, a Stockist card's promotion badge) land directly on a
+  // specific tab via ?tab=promotions or ?tab=stockists, instead of
+  // always opening on Stockists by default (2026-09-28).
+  var presetTab = new URLSearchParams(window.location.search).get('tab');
+  if (presetTab) {
+    var presetChip = document.querySelector('.chips > .chip[data-cat="' + presetTab + '"]');
+    if (presetChip) presetChip.click();
+  }
 """
 
 # "Matched: X" hint (user, 2026-09-25) - DIRECTORY_FILTER_JS already
@@ -549,7 +575,7 @@ FORCE_MONOGRAM = {
 }
 
 
-def _stockist_card(name, locations, brand_umbrellas):
+def _stockist_card(name, locations, brand_umbrellas, has_promo=False):
     website = locations[0]["website"]
     # Union of every location's brands, order preserved, dedup by
     # first occurrence - a chain like Svenssons doesn't necessarily
@@ -612,8 +638,18 @@ def _stockist_card(name, locations, brand_umbrellas):
         f' data-brands="{html.escape("|".join(brands))}"'
         f' data-locations="{html.escape("|".join(_location(loc) for loc in locations))}"'
     )
+    # Not its own link (this whole card is already one <a>, and a link
+    # can't nest inside another) - a plain visual signal that this
+    # stockist has a live promotion right now, same tag icon Promotions'
+    # own badge uses, so a user only interested in a specific stockist's
+    # own site still sees that a real deal exists there today.
+    promo_badge = (
+        '<span class="stockist-promo-badge" title="Live promotion at this stockist">'
+        '<i class="ti ti-tag" aria-hidden="true"></i></span>'
+        if has_promo else ""
+    )
     return f"""      <a class="maker-card" href="{html.escape(website)}" target="_blank" rel="noopener noreferrer"{match_data}{subcat_attr}>
-        <div class="maker-card-hero"><div class="icon-badge">{badge}</div></div>
+        <div class="maker-card-hero"><div class="icon-badge">{badge}</div>{promo_badge}</div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(name)}</span>
           <span class="maker-country">{html.escape(_grouped_location_line(locations))}</span>
@@ -622,11 +658,19 @@ def _stockist_card(name, locations, brand_umbrellas):
       </a>"""
 
 
-def render_stockists_panel(retailers):
+def render_stockists_panel(retailers, promotions):
     groups = _group_stockists(retailers)
     ordered = sorted(groups, key=lambda g: (g[1][0].get("country") or "zzz", g[1][0].get("city") or "", g[0]))
     brand_umbrellas = _load_brand_umbrellas()
-    cards = "\n".join(_stockist_card(name, locations, brand_umbrellas) for name, locations in ordered)
+    # Cross-references the same promotions data Promotions itself uses
+    # (2026-09-28) - a real retailer name match, not a new data source -
+    # so a stockist known to have a live deal today gets a visual signal
+    # right on their own card (see _stockist_card's promo_badge).
+    retailers_with_promo = {o["retailer"] for p in promotions for o in p["offers"]}
+    cards = "\n".join(
+        _stockist_card(name, locations, brand_umbrellas, name in retailers_with_promo)
+        for name, locations in ordered
+    )
     subchips_html = "\n".join(
         f'      <button class="chip{" active" if cat_id == "all" else ""}" data-subcat="{cat_id}">{html.escape(label)}</button>'
         for cat_id, label in STOCKIST_SUBCHIPS
@@ -839,7 +883,7 @@ def render_page(retailers, promotions):
     )
 
     panels_html = "\n\n".join([
-        render_stockists_panel(retailers),
+        render_stockists_panel(retailers, promotions),
         render_promotions_panel(promotions),
     ])
 

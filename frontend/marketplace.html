@@ -146,6 +146,16 @@
     justify-content: center; overflow: hidden;
   }
   .icon-badge img { width: 65%; height: 65%; object-fit: contain; }
+  /* Live-promotion signal on a Stockist card (2026-09-28) - not its own
+     link (the whole card is already one <a>, and a link can't nest
+     inside another), just a plain visual cue that this stockist has a
+     real, current deal - see render_stockists_panel's cross-reference
+     against the same promotions data Promotions itself uses. */
+  .stockist-promo-badge {
+    position: absolute; top: 8px; right: 8px; width: 22px; height: 22px;
+    border-radius: 50%; background: var(--text-primary); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-size: 12px;
+  }
   .monogram {
     font-family: 'Archivo', sans-serif; font-weight: 700;
     font-size: 34px; color: var(--text-secondary);
@@ -159,9 +169,15 @@
   .promo-card-hero { position: relative; aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border); margin: 0 0 10px; overflow: hidden; }
   .promo-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .promo-card:hover .promo-card-hero img { transform: scale(1.02); }
+  /* Deliberately quiet (2026-09-28) - a light, translucent pill rather
+     than the same solid dark fill as .promo-cta, so the discount
+     badge reads as a fact about the photo and the "Visit Shop" CTA
+     stays the one thing on the card asking for a click. */
   .promo-badge {
-    position: absolute; top: 10px; left: 10px; background: var(--text-primary); color: var(--surface-2);
-    font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 999px;
+    position: absolute; top: 10px; left: 10px;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-primary);
+    border: 0.5px solid var(--border);
+    font-size: 11px; font-weight: 600; padding: 4px 8px; border-radius: 999px;
   }
   .promo-card-body { padding: 0; }
   .promo-brand { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 2px; }
@@ -356,7 +372,7 @@
         </div>
       </a>
       <a class="maker-card" href="https://designspot.cz" target="_blank" rel="noopener noreferrer" data-brands="HAY|Muuto|Ferm Living|String|Louis Poulsen|New Works|HEM|Audo Copenhagen" data-locations="Czech Republic" data-subcat="furniture lighting objects">
-        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designspot.cz&amp;sz=128" alt="Designspot" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Designspot">D</span></div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=designspot.cz&amp;sz=128" alt="Designspot" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Designspot">D</span></div><span class="stockist-promo-badge" title="Live promotion at this stockist"><i class="ti ti-tag" aria-hidden="true"></i></span></div>
         <div class="maker-card-body">
           <span class="maker-name">Designspot</span>
           <span class="maker-country">Czech Republic</span>
@@ -364,7 +380,7 @@
         </div>
       </a>
       <a class="maker-card" href="https://illumsbolighus.dk" target="_blank" rel="noopener noreferrer" data-brands="Carl Hansen &amp; Søn|Fredericia|Vipp" data-locations="Denmark" data-subcat="">
-        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=illumsbolighus.dk&amp;sz=128" alt="Illums Bolighus" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Illums Bolighus">IB</span></div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=illumsbolighus.dk&amp;sz=128" alt="Illums Bolighus" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Illums Bolighus">IB</span></div><span class="stockist-promo-badge" title="Live promotion at this stockist"><i class="ti ti-tag" aria-hidden="true"></i></span></div>
         <div class="maker-card-body">
           <span class="maker-name">Illums Bolighus</span>
           <span class="maker-country">Denmark</span>
@@ -716,7 +732,7 @@
         </div>
       </a>
       <a class="maker-card" href="https://bolina.no" target="_blank" rel="noopener noreferrer" data-brands="&amp;Tradition|Santa &amp; Cole" data-locations="Norway" data-subcat="furniture lighting objects">
-        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=bolina.no&amp;sz=128" alt="Bolina" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Bolina">B</span></div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=bolina.no&amp;sz=128" alt="Bolina" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Bolina">B</span></div><span class="stockist-promo-badge" title="Live promotion at this stockist"><i class="ti ti-tag" aria-hidden="true"></i></span></div>
         <div class="maker-card-body">
           <span class="maker-name">Bolina</span>
           <span class="maker-country">Norway</span>
@@ -900,7 +916,7 @@
         </div>
       </a>
       <a class="maker-card" href="https://rum21.se" target="_blank" rel="noopener noreferrer" data-brands="HAY|&amp;Tradition" data-locations="Sweden" data-subcat="furniture lighting objects">
-        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=rum21.se&amp;sz=128" alt="Rum21" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Rum21">R</span></div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=rum21.se&amp;sz=128" alt="Rum21" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Rum21">R</span></div><span class="stockist-promo-badge" title="Live promotion at this stockist"><i class="ti ti-tag" aria-hidden="true"></i></span></div>
         <div class="maker-card-body">
           <span class="maker-name">Rum21</span>
           <span class="maker-country">Sweden</span>
@@ -940,7 +956,7 @@
         </div>
       </a>
       <a class="maker-card" href="https://svenssons.se" target="_blank" rel="noopener noreferrer" data-brands="HAY|Louis Poulsen|Swedese|&amp;Tradition|Stolab|Fritz Hansen|Audo Copenhagen|String Furniture|Carl Hansen &amp; Søn|Ferm Living|Fermob|Artek|Flos|Eilersen" data-locations="Göteborg, Sweden|Lammhult, Sweden|Malmö, Sweden|Stockholm, Sweden|Stockholm, Sweden" data-subcat="furniture lighting objects">
-        <div class="maker-card-hero"><div class="icon-badge"><span class="monogram" title="Svenssons">S</span></div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><span class="monogram" title="Svenssons">S</span></div><span class="stockist-promo-badge" title="Live promotion at this stockist"><i class="ti ti-tag" aria-hidden="true"></i></span></div>
         <div class="maker-card-body">
           <span class="maker-name">Svenssons</span>
           <span class="maker-country">5 locations in Sweden</span>
@@ -956,7 +972,7 @@
         </div>
       </a>
       <a class="maker-card" href="https://www.magasinseverin.se" target="_blank" rel="noopener noreferrer" data-brands="&amp;Tradition|Carl Hansen &amp; Søn|DUX|Design House Stockholm|Eilersen|Flos|Källemo|Louis Poulsen|Naver Collection|Stolab|String|Swedese|Vipp|Örsjö" data-locations="Kalmar, Sweden" data-subcat="furniture lighting objects">
-        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=magasinseverin.se&amp;sz=128" alt="Magasin Severin" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Magasin Severin">MS</span></div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=magasinseverin.se&amp;sz=128" alt="Magasin Severin" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Magasin Severin">MS</span></div><span class="stockist-promo-badge" title="Live promotion at this stockist"><i class="ti ti-tag" aria-hidden="true"></i></span></div>
         <div class="maker-card-body">
           <span class="maker-name">Magasin Severin</span>
           <span class="maker-country">Kalmar, Sweden</span>
@@ -964,7 +980,7 @@
         </div>
       </a>
       <a class="maker-card" href="https://nordicnest.se" target="_blank" rel="noopener noreferrer" data-brands="HAY|Louis Poulsen|Gubi|Marimekko|Ferm Living|Audo Copenhagen|Georg Jensen|&amp;Tradition|String Furniture" data-locations="Kalmar, Sweden" data-subcat="furniture lighting objects">
-        <div class="maker-card-hero"><div class="icon-badge"><span class="monogram" title="Nordic Nest">NN</span></div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><span class="monogram" title="Nordic Nest">NN</span></div><span class="stockist-promo-badge" title="Live promotion at this stockist"><i class="ti ti-tag" aria-hidden="true"></i></span></div>
         <div class="maker-card-body">
           <span class="maker-name">Nordic Nest</span>
           <span class="maker-country">Kalmar, Sweden</span>
@@ -1004,7 +1020,7 @@
         </div>
       </a>
       <a class="maker-card" href="https://glashusetmalmo.se" target="_blank" rel="noopener noreferrer" data-brands="DUX|Stolab|Fritz Hansen|String|Vitra|Eilersen|Moooi|Audo Copenhagen|Louis Poulsen|Fredericia|Montana|Gubi" data-locations="Malmö, Sweden" data-subcat="furniture lighting">
-        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=glashusetmalmo.se&amp;sz=128" alt="Glashuset i Malmö" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Glashuset i Malmö">GI</span></div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=glashusetmalmo.se&amp;sz=128" alt="Glashuset i Malmö" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Glashuset i Malmö">GI</span></div><span class="stockist-promo-badge" title="Live promotion at this stockist"><i class="ti ti-tag" aria-hidden="true"></i></span></div>
         <div class="maker-card-body">
           <span class="maker-name">Glashuset i Malmö</span>
           <span class="maker-country">Malmö, Sweden</span>
@@ -1116,7 +1132,7 @@
         </div>
       </a>
       <a class="maker-card" href="https://valamagasinet.se" target="_blank" rel="noopener noreferrer" data-brands="Vipp|Örsjö|Stolab|Gong" data-locations="Uppsala, Sweden" data-subcat="">
-        <div class="maker-card-hero"><div class="icon-badge"><span class="monogram" title="Vålamagasinet">V</span></div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><span class="monogram" title="Vålamagasinet">V</span></div><span class="stockist-promo-badge" title="Live promotion at this stockist"><i class="ti ti-tag" aria-hidden="true"></i></span></div>
         <div class="maker-card-body">
           <span class="maker-name">Vålamagasinet</span>
           <span class="maker-country">Uppsala, Sweden</span>
@@ -1132,7 +1148,7 @@
         </div>
       </a>
       <a class="maker-card" href="https://hanssonsmobler.se" target="_blank" rel="noopener noreferrer" data-brands="HAY|Fredericia|String Furniture|Normann Copenhagen|Swedese|Secto Design|Naver Collection" data-locations="Ängelholm, Sweden" data-subcat="furniture lighting objects">
-        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=hanssonsmobler.se&amp;sz=128" alt="Hanssons Möbler" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Hanssons Möbler">HM</span></div></div>
+        <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=hanssonsmobler.se&amp;sz=128" alt="Hanssons Möbler" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Hanssons Möbler">HM</span></div><span class="stockist-promo-badge" title="Live promotion at this stockist"><i class="ti ti-tag" aria-hidden="true"></i></span></div>
         <div class="maker-card-body">
           <span class="maker-name">Hanssons Möbler</span>
           <span class="maker-country">Ängelholm, Sweden</span>
@@ -1481,6 +1497,16 @@
       btn.closest('.promo-card-grouped').classList.add('expanded');
     });
   });
+
+  // Lets a link from elsewhere on the site (a brand page's promotion
+  // callout, a Stockist card's promotion badge) land directly on a
+  // specific tab via ?tab=promotions or ?tab=stockists, instead of
+  // always opening on Stockists by default (2026-09-28).
+  var presetTab = new URLSearchParams(window.location.search).get('tab');
+  if (presetTab) {
+    var presetChip = document.querySelector('.chips > .chip[data-cat="' + presetTab + '"]');
+    if (presetChip) presetChip.click();
+  }
 </script>
 <script>
   (function () {
