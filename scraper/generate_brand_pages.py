@@ -34,12 +34,14 @@ import re
 import sqlite3
 import unicodedata
 from pathlib import Path
+from urllib.parse import urlparse
 
 SCRAPER_DIR = Path(__file__).parent
 DATA_DIR = SCRAPER_DIR.parent / "data"
 DB_PATH = DATA_DIR / "formground.db"
 BRANDS_PATH = SCRAPER_DIR / "brands.json"
 PROMOTIONS_PATH = DATA_DIR / "promotions.json"
+RETAILERS_PATH = DATA_DIR / "retailers.json"
 DOCS_DIR = SCRAPER_DIR.parent / "docs"
 BRANDS_DIR = DOCS_DIR / "brands"
 SITE_URL = "https://formground.com"
@@ -150,6 +152,46 @@ def load_promotions_by_brand():
     by_brand = {}
     for p in promotions:
         by_brand.setdefault(p["brand"], []).append(p)
+    return by_brand
+
+
+def load_stockists_by_brand():
+    """
+    Real, free fact about a brand - "where to buy this" - not a paid
+    enhancement (2026-09-28, see project memory,
+    enhanced_brand_profile_paid_tier_concept: "real facts are free,
+    curated richness is paid"). Cross-references data/retailers.json's
+    existing `brands` field against brand pages, the same
+    zero-new-scraping pattern as load_promotions_by_brand above.
+
+    A retailer chain with several locations (Svenssons' 5 Swedish
+    stores) gets grouped into one entry per brand, not one per store -
+    same "brand is the minimum unit of inclusion" grouping key
+    generate_marketplace_page.py's own `_group_stockists` already uses
+    (`r.get("brand") or r["name"]`), duplicated here rather than
+    imported since generate_marketplace_page.py imports FROM this file,
+    not the other way around.
+    """
+    if not RETAILERS_PATH.exists():
+        return {}
+    retailers = json.loads(RETAILERS_PATH.read_text(encoding="utf-8"))
+    groups = {}
+    order = []
+    for r in retailers:
+        key = r.get("brand") or r["name"]
+        if key not in groups:
+            groups[key] = []
+            order.append(key)
+        groups[key].append(r)
+
+    by_brand = {}
+    for key in order:
+        locations = groups[key]
+        carried_brands = set()
+        for loc in locations:
+            carried_brands.update(loc.get("brands") or [])
+        for brand_name in carried_brands:
+            by_brand.setdefault(brand_name, []).append((key, locations))
     return by_brand
 
 # A brand can have products across more than one of these - the page
@@ -555,6 +597,26 @@ PAGE_CSS = """
   }
   .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
   .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
   .tags { margin-bottom: 12px; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
   /* Photo + plain caption, not an enclosing card box - the site-wide
@@ -786,7 +848,82 @@ CARD_CLICK_TRACKING_JS = """
 """
 
 
-def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None):
+def _brand_stockist_item(name, locations):
+    website = locations[0]["website"]
+    domain = urlparse(website).netloc.removeprefix("www.")
+    favicon = f"https://www.google.com/s2/favicons?domain={domain}&sz=64" if domain else None
+    icon_html = (
+        f'<img src="{html.escape(favicon)}" alt="" loading="lazy" onerror="this.remove();">'
+        if favicon else ""
+    )
+    if len(locations) == 1:
+        loc = locations[0]
+        city, country = loc.get("city", ""), loc.get("country", "")
+        location_line = f"{city}, {country}" if city and country else (city or country or "Online retailer")
+    else:
+        countries = {loc.get("country", "") for loc in locations if loc.get("country")}
+        location_line = (
+            f"{len(locations)} locations in {countries.pop()}" if len(countries) == 1
+            else f"{len(locations)} locations across {len(countries)} countries"
+        )
+    return f"""      <a class="stockist-item" href="{html.escape(website)}" target="_blank" rel="noopener noreferrer">
+        {icon_html}<span class="stockist-name">{html.escape(name)}</span>
+        <span class="stockist-location">{html.escape(location_line)}</span>
+      </a>"""
+
+
+def render_stockist_section(brand, stockist_groups):
+    """
+    "Where to buy" - a real, free fact (which real stockists carry this
+    brand today), not a paid enhancement - see load_stockists_by_brand
+    and project memory, enhanced_brand_profile_paid_tier_concept's
+    free/paid organizing principle. Returns "" when there's nothing to
+    show, so callers can include it unconditionally.
+    """
+    if not stockist_groups:
+        return ""
+    items = "\n".join(_brand_stockist_item(name, locations) for name, locations in stockist_groups)
+    return f"""
+  <section class="brand-section">
+    <p class="brand-section-title">Where to buy {html.escape(brand)}</p>
+    <div class="stockist-row">
+{items}
+    </div>
+  </section>"""
+
+
+def render_news_section(brand, new_products):
+    """
+    "News" - an auto-generated activity feed built from real data
+    Formground already tracks (first_seen, the same signal powering the
+    sitewide New Arrivals page - see NEW_ARRIVALS_WINDOW_DAYS), not
+    brand-authored editorial content. Resolved this way deliberately
+    (see project memory, enhanced_brand_profile_paid_tier_concept,
+    "option 2") since a manually-written news feed would create ongoing
+    admin work for the brand - the same thing already avoided for
+    Promotions' taglines and For Creators' "highlight" field. Returns
+    "" when this brand has nothing new within the window - genuinely
+    empty is expected, not a bug, same as the sitewide New page.
+    """
+    if not new_products:
+        return ""
+    # Capped (2026-09-28) - checked live and found some brands (e.g.
+    # HAY: 639 of 639 products) have their ENTIRE catalog flagged
+    # "new" within the window, almost certainly a stale first_seen
+    # backfill artifact from whenever this column was introduced, not
+    # real signal. Uncapped, "News" would just be a redundant copy of
+    # the whole product grid for those brands. new_products is already
+    # sorted most-recent-first by the caller, so this keeps the
+    # genuinely newest items regardless of how many technically qualify.
+    cards = "".join(product_card_html(p) for p in new_products[:NEW_SECTION_CAP])
+    return f"""
+  <section class="brand-section">
+    <p class="brand-section-title">New from {html.escape(brand)}</p>
+    <div class="grid">{cards}</div>
+  </section>"""
+
+
+def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None, stockists=None, new_products=None):
     tag_list = list(umbrellas) + ([country] if country else [])
     tags = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
     # Real, live cross-link to Marketplace's Promotions tab (2026-09-28,
@@ -809,6 +946,8 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
             f'{discount_note} &rarr;</a>'
         )
     cards = "".join(product_card_html(p) for p in products)
+    news_section = render_news_section(brand, new_products)
+    stockist_section = render_stockist_section(brand, stockists)
     page_url = f"{SITE_URL}/brands/{slug}.html"
     description = f"{html.escape(brand)}'s work on Formground - {len(products)} pieces, linked straight to their own site."
     # Reusing the same hero image makers.html already picks for this
@@ -873,6 +1012,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     <a class="brand-site-link" href="{html.escape(brand_url)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>{promo_callout}
   </div>
   <div class="grid">{cards}</div>
+{news_section}{stockist_section}
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
@@ -1030,6 +1170,14 @@ def render_category_redirect_stub(slug):
 # first_seen dates accumulate over months. Purely a display window;
 # nothing is ever deleted from the database because of it.
 NEW_ARRIVALS_WINDOW_DAYS = 90
+
+# Caps a brand page's own "News" section (see render_news_section) -
+# some brands (e.g. HAY: 639 of 639 products, confirmed live 2026-09-28)
+# have their entire catalog flagged "new" within the window above,
+# almost certainly a stale first_seen backfill artifact rather than
+# real signal. Uncapped, the section would just duplicate the whole
+# product grid for those brands.
+NEW_SECTION_CAP = 6
 
 
 def render_new_page(products):
@@ -1265,6 +1413,7 @@ def generate():
     countries = load_countries()
     hidden_brands = load_hidden_brands()
     promotions_by_brand = load_promotions_by_brand()
+    stockists_by_brand = load_stockists_by_brand()
     BRANDS_DIR.mkdir(parents=True, exist_ok=True)
 
     # New-arrivals page: first_seen is only ever real (not NULL) for a
@@ -1281,6 +1430,14 @@ def generate():
         reverse=True,
     )
     (DOCS_DIR / "new.html").write_text(render_new_page(new_arrivals))
+
+    # Reuses the exact same filtered/sorted new_arrivals list the
+    # sitewide New page just wrote, sliced per brand for each brand
+    # page's own "News" section (see render_news_section) - one query,
+    # not a second pass over the database.
+    new_arrivals_by_brand = {}
+    for p in new_arrivals:
+        new_arrivals_by_brand.setdefault(p["brand"], []).append(p)
 
     slugs_seen = {}
     makers_data = []
@@ -1304,7 +1461,12 @@ def generate():
         brand_url = products[0]["brand_url"]
         umbrellas = umbrella_categories_for(products)
         country = countries.get(brand)
-        page = render_brand_page(brand, slug, brand_url, products, umbrellas, country, promotions_by_brand.get(brand))
+        page = render_brand_page(
+            brand, slug, brand_url, products, umbrellas, country,
+            promotions_by_brand.get(brand),
+            stockists_by_brand.get(brand),
+            new_arrivals_by_brand.get(brand),
+        )
         (BRANDS_DIR / f"{slug}.html").write_text(page)
         image = primary_image_for(products, umbrellas)
         makers_data.append((brand, slug, umbrellas, len(products), country, image))
