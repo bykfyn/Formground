@@ -230,6 +230,87 @@
     .cat-details, .visit-source { opacity: 1; transform: none; pointer-events: auto; }
   }
 
+  /* "Recently added" - a small preview strip below the category grid,
+     not a 5th bento tile (that grid's row/column spans are deliberately
+     tuned - see .tile-houses/.tile-furniture above - a 5th tile would
+     need reworking the whole layout, not just adding a cell). Solves a
+     real gap found 2026-09-28: /new.html existed but nothing on the
+     site linked to it. Lighter card style than .cat-tile on purpose -
+     name/brand always visible, not hover-gated - since this is meant to
+     be scanned at a glance, matching work.html's own result-card
+     convention rather than the hero tiles' reveal-on-hover pattern. */
+  .recent-section { margin-top: 72px; }
+  /* Editorial section-break treatment (2026-09-28, user's call) - large,
+     centered, Archivo (the same display face .cat-label already uses
+     for the category tiles above, not a new typeface) rather than the
+     small left-aligned label this started as. A thin centered rule
+     below echoes the same 0.5px-border-as-divider convention already
+     used elsewhere (see .foot-note), marking this as a real section
+     break rather than just another heading. */
+  .recent-header { text-align: center; margin-bottom: 40px; }
+  .recent-header h2 {
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 36px;
+    letter-spacing: 0.01em; margin: 0 0 10px;
+  }
+  .recent-header a { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .recent-header a:hover { text-decoration: underline; }
+  .recent-header-rule { width: 48px; height: 0.5px; background: var(--border-strong); margin: 20px auto 0; }
+
+  /* One themed grouping ("New Vases") per real, currently-strong product
+     type among recently-added items, computed from real category/
+     first_seen data - not a fixed set, since which types have volume
+     changes week to week. Label and count are separate (2026-09-28,
+     user's call) - "New Vases" reads as the group's name, "See all 23
+     new vases" carries the real count, same split already used for the
+     section's own top-level "Recently added" / "See all N recently
+     added" header, just applied one level down. */
+  .recent-group + .recent-group { margin-top: 32px; }
+  .recent-group-header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .recent-group-header h3 { font-size: 14px; font-weight: 600; margin: 0; }
+  .recent-group-header a { font-size: 12px; color: var(--text-accent); text-decoration: none; }
+  .recent-group-header a:hover { text-decoration: underline; }
+  /* A horizontally scrollable "shelf" on every viewport, not just mobile
+     (2026-09-28, user's call after asking about it) - the same pattern
+     this content already borrows from (Pinterest/Netflix-style rows) is
+     itself scrollable on desktop, not just touch devices, and it future-
+     proofs a group that ever has more real diverse items than fit in
+     one screen width. Card width differs by breakpoint below only to
+     tune how much of the next card "peeks" as an invitation to scroll -
+     the scrolling mechanism itself is identical everywhere. Scrollbar
+     hidden since scroll-snap + drag/swipe is the intended interaction,
+     not a visible scrollbar to grab. */
+  /* Zero gap on purpose (2026-09-28) - each .recent-card-image already
+     carries its own 0.5px border, so adjacent tiles still read as
+     distinct at the seam, no visual mush. Smaller, edge-to-edge tiles
+     read as a dense Pinterest/mood-board wall rather than a row of
+     individual hero cards, which suits this section's actual job (a
+     quick taste of variety) better than the bigger spaced-out cards
+     used for the main category tiles above it. */
+  .recent-row {
+    display: flex; gap: 0; overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch; padding-bottom: 4px; scrollbar-width: none;
+  }
+  .recent-row::-webkit-scrollbar { display: none; }
+  .recent-card {
+    display: block; text-decoration: none; color: inherit;
+    flex: 0 0 160px; scroll-snap-align: start;
+  }
+  .recent-card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); border: 0.5px solid var(--border);
+    overflow: hidden; margin-bottom: 8px;
+  }
+  .recent-card-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+  .recent-card:hover .recent-card-image img { transform: scale(1.02); }
+  .recent-name { display: block; font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .recent-brand { display: block; font-size: 12px; color: var(--text-muted); }
+
+  @media (max-width: 760px) {
+    .recent-card { flex: 0 0 120px; }
+  }
+
   /* --- footer --- */
   /* color is --text-secondary, not --text-muted - fails WCAG contrast
      against --bg otherwise (confirmed via Lighthouse), and this is
@@ -269,16 +350,25 @@
     </form>
   </div>
 
+  <!-- Source order (2026-09-28, user's call): Furniture first (the
+       site's largest, strongest category), Houses last (its thinnest -
+       see architects_craftspeople_search_gap project memory). Desktop's
+       bento grid is unaffected - .tile-houses/.tile-furniture/etc. each
+       get an explicit grid-column/grid-row below, independent of source
+       order. Mobile has no such placement, so it's a plain flex column
+       that stacks in this exact order - leading with strength, ending
+       with the weakest area rather than opening with it. -->
   <section class="category-grid" style="margin-top:66px;">
-    <figure class="cat-tile tile-houses">
-      <a class="cat-link" href="work.html?q=house" aria-label="Browse Houses"></a>
-      <img src="https://static1.squarespace.com/static/68e7d1ef65f5323eae3c3b6c/68fa320b5b04cb318608db95/6981a89900e843417f888e2e/1772734362523/JSA_pinehouse_FINAL_WEB-37.jpg?format=1500w" alt="Pine House by Johan Sundberg Arkitektur">
-      <p class="cat-label">Houses</p>
+
+    <figure class="cat-tile tile-furniture">
+      <a class="cat-link" href="work.html?q=furniture" aria-label="Browse Furniture"></a>
+      <img src="https://cdn.shopify.com/s/files/1/0177/8296/files/GalvinBrothers_Products_IndiaHobson_HR-25.jpg?v=1777467413" alt="Split Turned Bench by Galvin Brothers">
+      <p class="cat-label">Furniture</p>
       <div class="cat-details">
-        <span class="product-name">Pine House</span>
-        <span class="product-maker">Johan Sundberg Arkitektur</span>
+        <span class="product-name">Split Turned Bench</span>
+        <span class="product-maker">Galvin Brothers</span>
       </div>
-      <a class="visit-source" href="https://www.johansundberg.com/projekt/alla/privatbostader/pine-house" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+      <a class="visit-source" href="https://galvinbrothers.co.uk/products/split-turned-bench" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
     </figure>
 
     <figure class="cat-tile tile-objects">
@@ -303,16 +393,171 @@
       <a class="visit-source" href="https://www.wastberg.com/en/collections/pawson-w223?tab=Gallery" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
     </figure>
 
-    <figure class="cat-tile tile-furniture">
-      <a class="cat-link" href="work.html?q=furniture" aria-label="Browse Furniture"></a>
-      <img src="https://cdn.shopify.com/s/files/1/0177/8296/files/GalvinBrothers_Products_IndiaHobson_HR-25.jpg?v=1777467413" alt="Split Turned Bench by Galvin Brothers">
-      <p class="cat-label">Furniture</p>
+    <figure class="cat-tile tile-houses">
+      <a class="cat-link" href="work.html?q=house" aria-label="Browse Houses"></a>
+      <img src="https://static1.squarespace.com/static/68e7d1ef65f5323eae3c3b6c/68fa320b5b04cb318608db95/6981a89900e843417f888e2e/1772734362523/JSA_pinehouse_FINAL_WEB-37.jpg?format=1500w" alt="Pine House by Johan Sundberg Arkitektur">
+      <p class="cat-label">Houses</p>
       <div class="cat-details">
-        <span class="product-name">Split Turned Bench</span>
-        <span class="product-maker">Galvin Brothers</span>
+        <span class="product-name">Pine House</span>
+        <span class="product-maker">Johan Sundberg Arkitektur</span>
       </div>
-      <a class="visit-source" href="https://galvinbrothers.co.uk/products/split-turned-bench" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+      <a class="visit-source" href="https://www.johansundberg.com/projekt/alla/privatbostader/pine-house" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
     </figure>
+  </section>
+
+  <section class="recent-section">
+    <div class="recent-header">
+      <h2>New</h2>
+      <a href="new.html">See all recently added &rarr;</a>
+      <div class="recent-header-rule"></div>
+    </div>
+
+    <div class="recent-group">
+      <div class="recent-group-header">
+        <h3>Chairs</h3>
+        <a href="work.html?q=new+chairs">See all 23 new chairs &rarr;</a>
+      </div>
+      <div class="recent-row">
+        <a class="recent-card" href="https://www.maruni.com/en/product/rd_chair_cushioned/" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://www.maruni.com/en/img/pages/products/rd_chair_cushioned/Product/beech_NL0.jpg" alt="CHAIR (cushioned) by Maruni" loading="lazy"></div>
+          <span class="recent-name">CHAIR (cushioned)</span>
+          <span class="recent-brand">Maruni</span>
+        </a>
+        <a class="recent-card" href="https://www.moustache.fr/en/accueil/1564-mr-bugatti-chair.html" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://www.moustache.fr/43501-home_default/mr-bugatti-chair.jpg" alt="Mr Bugatti chair by Moustache" loading="lazy"></div>
+          <span class="recent-name">Mr Bugatti chair</span>
+          <span class="recent-brand">Moustache</span>
+        </a>
+        <a class="recent-card" href="https://www.ghidini1961.com/armchairs/hillary-easy-chair" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/275/Hillary_Easy_Chair_1100x550_new.jpg" alt="Hillary Easy Chair by Ghidini 1961" loading="lazy"></div>
+          <span class="recent-name">Hillary Easy Chair</span>
+          <span class="recent-brand">Ghidini 1961</span>
+        </a>
+        <a class="recent-card" href="https://shop.sightunseen.com/products/tumi-chair" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/seandavidson_sightunseen_29copy.png?v=1685543719" alt="Tumi chair by Nifemi Ogunro" loading="lazy"></div>
+          <span class="recent-name">Tumi chair</span>
+          <span class="recent-brand">Nifemi Ogunro</span>
+        </a>
+        <a class="recent-card" href="https://shop.sightunseen.com/products/dry-kiss-chair" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/WEBDryKissChair_Oak_02_CalebEngstrom_PhotoBy_ofstudio.jpg?v=1747072111" alt="Dry Kiss chair by Rest Energy" loading="lazy"></div>
+          <span class="recent-name">Dry Kiss chair</span>
+          <span class="recent-brand">Rest Energy</span>
+        </a>
+        <a class="recent-card" href="https://shop.sightunseen.com/products/l5-jazz-chair" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/L5C_F_BEC_Totale_sRGB.jpg?v=1715018513" alt="L5 Jazz chair by LOEHR" loading="lazy"></div>
+          <span class="recent-name">L5 Jazz chair</span>
+          <span class="recent-brand">LOEHR</span>
+        </a>
+        <a class="recent-card" href="https://shop.sightunseen.com/products/roll-chair" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/LikemindedObjects_Lounge_main.jpg?v=1679349831" alt="Roll chair by LikeMindedObjects" loading="lazy"></div>
+          <span class="recent-name">Roll chair</span>
+          <span class="recent-brand">LikeMindedObjects</span>
+        </a>
+        <a class="recent-card" href="https://shop.sightunseen.com/products/box-chairs" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/NickPourfard_Chair_main.jpg?v=1679369043" alt="Box chair by Nicholas Bijan Pourfard" loading="lazy"></div>
+          <span class="recent-name">Box chair</span>
+          <span class="recent-brand">Nicholas Bijan Pourfard</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="recent-group">
+      <div class="recent-group-header">
+        <h3>Vases</h3>
+        <a href="work.html?q=new+vases">See all 23 new vases &rarr;</a>
+      </div>
+      <div class="recent-row">
+        <a class="recent-card" href="https://www.lachambredami.com/product-page/soliflores-figures" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://static.wixstatic.com/media/4a6aa5_0afdd01a4b9f49238a450083fd2e2b4d~mv2.png/v1/fit/w_500,h_500,q_90/file.png" alt="Soliflores Figures by La Chambre d&#x27;Ami" loading="lazy"></div>
+          <span class="recent-name">Soliflores Figures</span>
+          <span class="recent-brand">La Chambre d&#x27;Ami</span>
+        </a>
+        <a class="recent-card" href="https://101cph.com/products/sphere-vase-bubl-medio-marrakech-blue" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21977324_263059_Sphere_Vase_Bubl_Medio_-_Marrakech_Blue_1.jpg?v=1781652278" alt="Sphere Vase Bubl by 101cph" loading="lazy"></div>
+          <span class="recent-name">Sphere Vase Bubl</span>
+          <span class="recent-brand">101cph</span>
+        </a>
+        <a class="recent-card" href="https://raawii.eu/products/stroem-vase-small-salsa" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Nicholai_Wiig-Hansen_-_Stroem_-_vase_-_small-Vase-R1006-salsa.jpg?v=1719485134" alt="Strøm vase (small) by Raawii" loading="lazy"></div>
+          <span class="recent-name">Strøm vase (small)</span>
+          <span class="recent-brand">Raawii</span>
+        </a>
+        <a class="recent-card" href="https://101cph.com/products/bloom-vase-big-almond" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21974797_263088_Bloom_Vase_Big_-_Almond_1.jpg?v=1781652069" alt="Bloom Vase by 101cph" loading="lazy"></div>
+          <span class="recent-name">Bloom Vase</span>
+          <span class="recent-brand">101cph</span>
+        </a>
+        <a class="recent-card" href="https://101cph.com/products/sphere-vase-square-mini-marrakech-blue" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21977331_263053_Sphere_Vase_Square_Mini_-_Marrakech_Blue_1.jpg?v=1781652314" alt="Sphere Vase Square by 101cph" loading="lazy"></div>
+          <span class="recent-name">Sphere Vase Square</span>
+          <span class="recent-brand">101cph</span>
+        </a>
+        <a class="recent-card" href="https://101cph.com/products/bloom-vase-slim-big-dark-green" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21974792_263067_Bloom_Vase_Slim_Big_-_Dark_Green_1.jpg?v=1781652151" alt="Bloom Vase Slim by 101cph" loading="lazy"></div>
+          <span class="recent-name">Bloom Vase Slim</span>
+          <span class="recent-brand">101cph</span>
+        </a>
+        <a class="recent-card" href="https://101cph.com/products/sunao-vase-mini-dark-green" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21978579_263034_Sunao_Vase_Mini_-_Dark_Green_1.jpg?v=1782291809" alt="Sunao Vase by 101cph" loading="lazy"></div>
+          <span class="recent-name">Sunao Vase</span>
+          <span class="recent-brand">101cph</span>
+        </a>
+        <a class="recent-card" href="https://101cph.com/products/guggenheim-vase-mini-dark-green" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21976025_263038_Guggenheim_Vase_Mini_-_Dark_Green_1.jpg?v=1781652241" alt="Guggenheim Vase by 101cph" loading="lazy"></div>
+          <span class="recent-name">Guggenheim Vase</span>
+          <span class="recent-brand">101cph</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="recent-group">
+      <div class="recent-group-header">
+        <h3>Lamps</h3>
+        <a href="work.html?q=new+lamps">See all 14 new lamps &rarr;</a>
+      </div>
+      <div class="recent-row">
+        <a class="recent-card" href="https://www.lachambredami.com/product-page/lampe-moderne" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://static.wixstatic.com/media/4a6aa5_026b4406247a468d95a9b1bbc7393a4e~mv2.png/v1/fit/w_500,h_500,q_90/file.png" alt="Lampe Moderne by La Chambre d&#x27;Ami" loading="lazy"></div>
+          <span class="recent-name">Lampe Moderne</span>
+          <span class="recent-brand">La Chambre d&#x27;Ami</span>
+        </a>
+        <a class="recent-card" href="https://www.seletti.it/products/the-liar-lamp" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14915_THELIAR_UTOBALMORAL_1.png?v=1790599230" alt="The liar Lamp by Seletti" loading="lazy"></div>
+          <span class="recent-name">The liar Lamp</span>
+          <span class="recent-brand">Seletti</span>
+        </a>
+        <a class="recent-card" href="https://silcohaus.com/products/volet-lamp" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/0704/0063/9269/files/a387e0c4-feff-413e-a1b3-7344a0276845-6f113c3399b6.jpg?v=1789975070" alt="Volet Lamp by Silcohaus" loading="lazy"></div>
+          <span class="recent-name">Volet Lamp</span>
+          <span class="recent-brand">Silcohaus</span>
+        </a>
+        <a class="recent-card" href="https://raawii.eu/products/signal-lamp-eu-plug-large-vinyl-black" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/products/Panter_Tourron_-_Signal_-_lamp_-_large_-_EU_plug-Lamp-R1028-vinyl_black.jpg?v=1672922756" alt="Panter&amp;Tourron - Signal - lamp - large - EU plug by Raawii" loading="lazy"></div>
+          <span class="recent-name">Panter&amp;Tourron - Signal - lamp - large - EU plug</span>
+          <span class="recent-brand">Raawii</span>
+        </a>
+        <a class="recent-card" href="https://www.lachambredami.com/product-page/lampe-1960" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://static.wixstatic.com/media/4a6aa5_5359269395bb4b4f81d0526d7386b0a8~mv2.png/v1/fit/w_500,h_500,q_90/file.png" alt="Lampe 1960 by La Chambre d&#x27;Ami" loading="lazy"></div>
+          <span class="recent-name">Lampe 1960</span>
+          <span class="recent-brand">La Chambre d&#x27;Ami</span>
+        </a>
+        <a class="recent-card" href="https://www.lachambredami.com/product-page/lampe-fleur" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://static.wixstatic.com/media/4a6aa5_4fed6819421e4598b04960e7b0e523c0~mv2.png/v1/fit/w_500,h_500,q_90/file.png" alt="Lampe Fleur by La Chambre d&#x27;Ami" loading="lazy"></div>
+          <span class="recent-name">Lampe Fleur</span>
+          <span class="recent-brand">La Chambre d&#x27;Ami</span>
+        </a>
+        <a class="recent-card" href="https://www.lachambredami.com/product-page/base-de-lampe-classique" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://static.wixstatic.com/media/4a6aa5_f0bbec0ece8742e99ec4356c0c051851~mv2.png/v1/fit/w_500,h_500,q_90/file.png" alt="Base de Lampe Classique by La Chambre d&#x27;Ami" loading="lazy"></div>
+          <span class="recent-name">Base de Lampe Classique</span>
+          <span class="recent-brand">La Chambre d&#x27;Ami</span>
+        </a>
+        <a class="recent-card" href="https://www.lachambredami.com/product-page/lampe-hélium" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://static.wixstatic.com/media/4a6aa5_71715a29d92e46059fd88e9dc3eaf411~mv2.png/v1/fit/w_500,h_500,q_90/file.png" alt="Lampe Hélium by La Chambre d&#x27;Ami" loading="lazy"></div>
+          <span class="recent-name">Lampe Hélium</span>
+          <span class="recent-brand">La Chambre d&#x27;Ami</span>
+        </a>
+      </div>
+    </div>
   </section>
 
   <p class="foot-note">
