@@ -744,10 +744,34 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
     Kept as its own pure function, independent of the real translate_query()
     LLM call, so this override logic can be unit tested directly rather
     than only through a live search() call.
+
+    Second, broader fallback (2026-09-28): the same null-category failure
+    the bare-word case above already works around also happens for a real
+    multi-word query built around one of these umbrella words - confirmed
+    live: "furniture" alone and "handmade furniture" both correctly
+    resolve category="furniture", but "furniture makers", "Scandinavian
+    furniture", and "independent furniture makers" all come back
+    category=null from the LLM, since its own prompt asks for a specific
+    object type ("chair", "lamp"), not a broad grouping word, and it
+    isn't reliable about falling back to the grouping word once another
+    word is attached. A null category here means filter_products() skips
+    its category filter entirely and returns the whole catalog, which
+    _narrow_by_style then either hands back completely unfiltered (if the
+    leftover style word matches no product name) or narrows by pure
+    incidental substring match (e.g. "modern furniture design" narrowing
+    to 8 products just because they happen to say "Modern" in their
+    name, including a hand lotion and a poster) - both equally unrelated
+    to what was actually asked. Only fires when the LLM left category
+    null; a real, specific category it did find (e.g. "coffee table")
+    always wins over this broader fallback.
     """
     stripped = raw_query.strip().lower()
     if stripped in BROWSE_CATEGORY_WORDS:
         return {"category": stripped}
+    if not llm_intent.get("category"):
+        for word in re.findall(r"[a-zà-ÿ]+", stripped):
+            if word in BROWSE_CATEGORY_WORDS:
+                return {**llm_intent, "category": word}
     return llm_intent
 
 

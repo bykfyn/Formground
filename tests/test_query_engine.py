@@ -120,6 +120,46 @@ class ResolveIntentTests(unittest.TestCase):
         llm_intent = {"category": "chair", "material": "black"}
         self.assertEqual(qe._resolve_intent("black chair", llm_intent), llm_intent)
 
+    # 2026-09-28 fix: the same null-category failure the bare-word case
+    # above works around also happens for a real multi-word query built
+    # around one of these umbrella words - confirmed live via the actual
+    # /search API: "furniture" alone and "handmade furniture" correctly
+    # resolve category="furniture", but "furniture makers", "Scandinavian
+    # furniture", and "independent furniture makers" all came back
+    # category=null, which meant filter_products() skipped its category
+    # filter and returned the whole unfiltered catalog (~25,645 products)
+    # instead of real furniture.
+
+    def test_browse_word_inside_multi_word_query_overrides_null_category(self):
+        llm_intent = {"category": None, "style_descriptors": ["Scandinavian"]}
+        resolved = qe._resolve_intent("Scandinavian furniture design", llm_intent)
+        self.assertEqual(resolved["category"], "furniture")
+        self.assertEqual(resolved["style_descriptors"], ["Scandinavian"])
+
+    def test_browse_word_inside_multi_word_query_preserves_other_fields(self):
+        llm_intent = {"category": None, "style_descriptors": ["independent"]}
+        resolved = qe._resolve_intent("independent furniture makers", llm_intent)
+        self.assertEqual(resolved, {"category": "furniture", "style_descriptors": ["independent"]})
+
+    def test_real_category_wins_over_multi_word_browse_fallback(self):
+        # The LLM DID find a specific category here - the broader
+        # umbrella-word fallback must never override a real one.
+        llm_intent = {"category": "coffee table", "material": None}
+        self.assertEqual(
+            qe._resolve_intent("modern furniture coffee table", llm_intent), llm_intent
+        )
+
+    def test_browse_word_substring_is_not_matched(self):
+        # "object" must not match inside "objection" - word-boundary only.
+        llm_intent = {"category": None}
+        self.assertEqual(qe._resolve_intent("objection handling course", llm_intent), llm_intent)
+
+    def test_no_browse_word_present_keeps_null_category(self):
+        llm_intent = {"category": None, "style_descriptors": ["sculptural"]}
+        self.assertEqual(
+            qe._resolve_intent("something warm-toned and sculptural", llm_intent), llm_intent
+        )
+
 
 class CapPerBrandTests(unittest.TestCase):
     """
