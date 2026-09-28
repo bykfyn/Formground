@@ -131,8 +131,8 @@ def _craftsperson_rank(c):
 # dropped - its real domain doesn't resolve at all right now.
 TOOL_CATEGORIES = {
     "selling": [
-        {"name": "Shopify", "type": "E-commerce Platform", "country": "Canada", "website": "https://www.shopify.com", "icon": "https://cdn.shopify.com/b/shopify-brochure2-assets/c97c60ca19c64a8b5378d9f9e971f7bd.png"},
-        {"name": "Squarespace", "type": "Website & Store Builder", "country": "USA", "website": "https://www.squarespace.com", "icon": "https://media-www.sqspcdn.com/logos/apple-touch-icon-120.png"},
+        {"name": "Shopify", "type": "E-commerce Platform", "country": "Canada", "website": "https://www.shopify.com", "icon": "https://cdn.shopify.com/b/shopify-brochure2-assets/c97c60ca19c64a8b5378d9f9e971f7bd.png", "highlight": "3-day free trial, then $1/mo for 3 months"},
+        {"name": "Squarespace", "type": "Website & Store Builder", "country": "USA", "website": "https://www.squarespace.com", "icon": "https://media-www.sqspcdn.com/logos/apple-touch-icon-120.png", "highlight": "Free for 14 days, save up to 36% paying annually"},
         {"name": "WooCommerce", "type": "WordPress Store Plugin", "country": "USA", "website": "https://woocommerce.com", "icon": "https://woocommerce.com/wp-content/uploads/2024/12/cropped-logo-w-favicon.png?w=180"},
         {"name": "Big Cartel", "type": "Store Builder for Independent Makers", "country": "USA", "website": "https://www.bigcartel.com", "icon": "https://www.google.com/s2/favicons?domain=bigcartel.com&sz=128"},
         {"name": "Etsy", "type": "Handmade & Vintage Marketplace", "country": "USA", "website": "https://www.etsy.com", "icon": "https://www.google.com/s2/favicons?domain=etsy.com&sz=128"},
@@ -151,6 +151,12 @@ TOOL_CATEGORIES = {
     "hosting": [
         {"name": "WP Engine", "type": "Managed WordPress Hosting", "country": "USA", "website": "https://wpengine.com", "icon": "https://wpengine.com/assets/manifest/apple-touch-icon.png"},
         {"name": "Cloudways", "type": "Managed Cloud Hosting", "country": "Malta", "website": "https://www.cloudways.com", "icon": "https://www.google.com/s2/favicons?domain=cloudways.com&sz=128"},
+        # Added 2026-09-28 - both real, confirmed-live current offers on
+        # their own sites (checked live, not guessed), and both were the
+        # user's own picks. highlight is manually maintained, not
+        # scraped (see _tool_card's own comment on why).
+        {"name": "GoDaddy", "type": "Domain Registrar & Hosting", "country": "USA", "website": "https://www.godaddy.com", "icon": "https://www.google.com/s2/favicons?domain=godaddy.com&sz=128", "highlight": ".com domains from $0.01 for the first year"},
+        {"name": "Namecheap", "type": "Domain Registrar & Hosting", "country": "USA", "website": "https://www.namecheap.com", "icon": "https://www.google.com/s2/favicons?domain=namecheap.com&sz=128", "highlight": "Free first month of WordPress hosting via EasyWP"},
     ],
     "marketing": [
         {"name": "Klaviyo", "type": "Email & SMS Marketing", "country": "USA", "website": "https://www.klaviyo.com", "icon": "https://www.klaviyo.com/icons/icon-48x48.png"},
@@ -161,9 +167,12 @@ TOOL_CATEGORIES = {
         {"name": "uShip", "type": "Freight Marketplace", "country": "USA", "website": "https://www.uship.com", "icon": "https://www.ushipcdn.cloud/favicons/apple-touch-icon.png"},
     ],
     "fairs": [
-        {"name": "Salone del Mobile", "type": "Furniture & Design Fair", "country": "Italy", "website": "https://www.salonemilano.it", "icon": "https://www.salonemilano.it/themes/custom/sdm/favicon.ico"},
-        {"name": "Stockholm Furniture Fair", "type": "Furniture & Lighting Fair", "country": "Sweden", "website": "https://www.stockholmfurniturefair.com", "icon": "https://www.google.com/s2/favicons?domain=stockholmfurniturefair.com&sz=128"},
-        {"name": "Maison&Objet", "type": "Home & Design Trade Fair", "country": "France", "website": "https://www.maison-objet.com", "icon": "https://www.google.com/s2/favicons?domain=maison-objet.com&sz=128"},
+        {"name": "Salone del Mobile", "type": "Furniture & Design Fair", "country": "Italy", "website": "https://www.salonemilano.it", "icon": "https://www.salonemilano.it/themes/custom/sdm/favicon.ico", "highlight": "Next edition: 13–18 April 2027"},
+        # Real website fixed 2026-09-28 - the .com domain doesn't
+        # resolve at all (checked live); the fair's actual real site is
+        # the .se domain.
+        {"name": "Stockholm Furniture Fair", "type": "Furniture & Lighting Fair", "country": "Sweden", "website": "https://stockholmfurniturefair.se", "icon": "https://www.google.com/s2/favicons?domain=stockholmfurniturefair.se&sz=128", "highlight": "Next edition: 9–12 February 2027"},
+        {"name": "Maison&Objet", "type": "Home & Design Trade Fair", "country": "France", "website": "https://www.maison-objet.com", "icon": "https://www.google.com/s2/favicons?domain=maison-objet.com&sz=128", "highlight": "Next sessions: 10–14 Sept 2026 & 14–18 Jan 2027"},
         {"name": "ICFF", "type": "Contemporary Furniture Fair", "country": "USA", "website": "https://icff.com", "icon": "https://icff.com/wp-content/uploads/2024/01/ICFF-FAVICON-128X128.png"},
     ],
     "associations": [
@@ -264,6 +273,10 @@ PAGE_CSS = """
     justify-content: center; font-family: 'Archivo', sans-serif; font-weight: 700;
     font-size: 18px; color: var(--text-secondary);
   }
+  /* A real, current highlight (2026-09-28) - quiet, not a badge, since
+     most cards won't have one and it shouldn't look like something's
+     missing when absent. */
+  .tool-highlight { display: block; font-size: 11px; color: var(--text-accent); margin-top: 4px; }
 
   /* Guides: editorial write-ups per category, aimed at makers earlier in
      their journey than the brands already featured elsewhere - not a
@@ -312,12 +325,25 @@ def _tool_card(t):
         media = f'<img src="{html.escape(t["icon"])}" alt="{html.escape(t["name"])}" loading="lazy">'
     else:
         media = f'<div class="monogram" title="{html.escape(t["name"])}">{_initials(t["name"])}</div>'
+    # A real, current fact worth surfacing (2026-09-28) - a pricing
+    # offer for a SaaS/marketplace tool, an upcoming edition's dates for
+    # a fair, whatever's genuinely relevant for that entry. Optional and
+    # manually maintained, same as this whole page's curated list - not
+    # auto-scraped (checked live: SaaS pricing pages have no shared
+    # structure the way Shopify/WooCommerce's product APIs do, so a
+    # generic scraper isn't realistic here). Omitted when there's
+    # nothing real to say, not filled with filler - most entries won't
+    # have one, and that's fine (user: "won't cover all of the
+    # categories... but for some it might and that could be enough").
+    highlight_html = (
+        f'<span class="tool-highlight">{html.escape(t["highlight"])}</span>' if t.get("highlight") else ""
+    )
     return f"""      <a class="maker-card" href="{html.escape(t['website'])}" target="_blank" rel="noopener noreferrer">
         <div class="maker-card-hero tool-card-hero">{media}</div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(t['name'])}</span>
           <span class="maker-country">{html.escape(t['type'])}</span>
-          <span class="maker-categories">{html.escape(t['country'])}</span>
+          <span class="maker-categories">{html.escape(t['country'])}</span>{highlight_html}
         </div>
       </a>"""
 
