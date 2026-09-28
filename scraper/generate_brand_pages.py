@@ -400,6 +400,128 @@ def render_sponsored_section(cards_html, grid_class, label="Sponsored"):
     )
 
 
+# Shared "banner/carousel" paid-placement primitive (2026-09-28) - the
+# third and most prominent of the three stackable levers from project
+# memory, retailer_stockist_and_promotions_concept.md: "a genuinely
+# separate UI slot, not a grid card at all - a dedicated hero unit
+# above the grid." Same "wrap already-rendered content, agnostic to
+# shape" philosophy as render_sponsored_section above - a Promotions
+# slide's content differs from whatever a future For Creators or
+# Brandvue slide would show, so only the rotation mechanics are shared,
+# not the slide markup itself.
+#
+# STATUS: real, reusable code, currently unused everywhere - no real
+# entry sets a banner flag anywhere (no paid tier or payment flow
+# exists yet), same dormant-until-a-real-customer status as the other
+# two levers.
+BANNER_CAROUSEL_CSS = """
+  .banner-carousel { position: relative; margin-bottom: 32px; border-radius: var(--radius); overflow: hidden; aspect-ratio: 2.4/1; background: var(--surface-1); }
+  .banner-slide { position: absolute; inset: 0; display: none; }
+  .banner-slide.active { display: block; }
+  /* The slide's own content (any shape a caller renders) fills this
+     box - a plain block link is the common case, but this isn't
+     assumed, just given full width/height to work with. */
+  .banner-slide > * { display: block; width: 100%; height: 100%; position: relative; text-decoration: none; color: inherit; }
+  .banner-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* Same bottom-gradient-scrim treatment the homepage's own category
+     tiles already use for text over a photo (see frontend/index.html's
+     .cat-details) - proven to hold up across both dark and light real
+     photos, reused rather than inventing a new one. Always visible
+     here (not hover-only) since a banner needs to read at a glance. */
+  .banner-slide-content {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+    padding: 36px 40px; background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.05) 60%, rgba(0,0,0,0));
+    color: #fff;
+  }
+  /* The banner is a hero unit, not a grid card - it reuses .promo-badge/
+     .promo-brand/.promo-name/.promo-price/.promo-cta so the same data
+     renders in both places, but every one of them needs to read at
+     hero scale, not card scale (2026-09-28, user: "make everything
+     that is featured on the image bigger"). */
+  .banner-slide .promo-badge { top: 20px; left: 20px; font-size: 13px; padding: 6px 14px; }
+  .banner-slide-content .promo-brand { font-size: 14px; color: rgba(255,255,255,0.75); margin: 0 0 8px; }
+  .banner-slide-content .promo-name {
+    display: block; -webkit-line-clamp: unset; overflow: visible; min-height: 0;
+    font-size: 36px; font-weight: 600; line-height: 1.15; color: #fff;
+    max-width: 65%; margin: 0 0 14px;
+  }
+  .banner-slide-content .promo-price { font-size: 18px; margin: 0 0 20px; }
+  .banner-slide-content .promo-price-was { color: rgba(255,255,255,0.6); }
+  .banner-slide-content .promo-price-now { color: #fff; font-weight: 600; }
+  /* White pill instead of the card's dark-on-light .promo-cta - reads
+     clearly against the photo's dark scrim and is the one control on
+     the whole banner asking for a click. */
+  .banner-slide-content .promo-cta {
+    display: inline-block; margin: 0; width: auto;
+    font-size: 16px; font-weight: 600; padding: 14px 32px;
+    background: #fff; color: #1a1816;
+  }
+  .banner-slide:hover .promo-cta { background: #f0ede8; }
+  .banner-dots { position: absolute; bottom: 18px; right: 24px; z-index: 2; display: flex; gap: 6px; }
+  .banner-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; padding: 0; }
+  .banner-dot.active { background: #fff; }
+  @media (max-width: 640px) {
+    .banner-carousel { aspect-ratio: 4/3; }
+    .banner-slide-content { padding: 22px 20px; }
+    .banner-slide-content .promo-name { font-size: 24px; max-width: 85%; }
+    .banner-slide-content .promo-price { font-size: 15px; margin-bottom: 14px; }
+    .banner-slide-content .promo-cta { font-size: 14px; padding: 11px 24px; }
+  }
+"""
+
+BANNER_CAROUSEL_JS = """
+  // Banner/carousel rotation (2026-09-28) - a single slide is static,
+  // no controls; 2+ slides get dot navigation and auto-rotation,
+  // paused on hover so a reader isn't fighting the page to read it.
+  document.querySelectorAll('.banner-carousel').forEach(function (carousel) {
+    var slides = carousel.querySelectorAll('.banner-slide');
+    var dots = carousel.querySelectorAll('.banner-dot');
+    if (slides.length <= 1) return;
+    var current = 0;
+    var timer;
+    function show(i) {
+      current = i;
+      slides.forEach(function (s, idx) { s.classList.toggle('active', idx === i); });
+      dots.forEach(function (d, idx) { d.classList.toggle('active', idx === i); });
+    }
+    function next() { show((current + 1) % slides.length); }
+    function start() { timer = setInterval(next, 6000); }
+    function stop() { clearInterval(timer); }
+    dots.forEach(function (d, i) {
+      d.addEventListener('click', function () { show(i); stop(); start(); });
+    });
+    carousel.addEventListener('mouseenter', stop);
+    carousel.addEventListener('mouseleave', start);
+    start();
+  });
+"""
+
+
+def render_banner_carousel(slides_html):
+    """
+    Dedicated hero unit meant to sit above a page's own grid entirely -
+    not one of the grid's own cards. `slides_html` is a list of
+    already-rendered slide HTML (any shape); returns "" when empty, so
+    callers can always include the result unconditionally. A single
+    slide renders with no dots/rotation (nothing to navigate between).
+    """
+    if not slides_html:
+        return ""
+    slides = "\n".join(
+        f'      <div class="banner-slide{" active" if i == 0 else ""}">{slide}</div>'
+        for i, slide in enumerate(slides_html)
+    )
+    if len(slides_html) > 1:
+        dots = "\n".join(
+            f'        <button type="button" class="banner-dot{" active" if i == 0 else ""}" data-index="{i}" aria-label="Slide {i + 1}"></button>'
+            for i in range(len(slides_html))
+        )
+        dots_html = f'\n      <div class="banner-dots">\n{dots}\n      </div>'
+    else:
+        dots_html = ""
+    return f'    <div class="banner-carousel">\n{slides}{dots_html}\n    </div>'
+
+
 # Only page-specific rules here - shared rules (:root, body, home-link,
 # h1, .tag, .foot-note) live in /site.css, linked with an absolute path
 # below since these pages are nested under /brands/.

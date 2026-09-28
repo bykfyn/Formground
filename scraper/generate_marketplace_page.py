@@ -36,10 +36,13 @@ from urllib.parse import urlparse
 import sqlite3
 
 from generate_brand_pages import (
+    BANNER_CAROUSEL_CSS,
+    BANNER_CAROUSEL_JS,
     CARD_CLICK_TRACKING_JS,
     DIRECTORY_FILTER_JS,
     MAKER_CARD_CSS,
     SPONSORED_SECTION_CSS,
+    render_banner_carousel,
     render_sponsored_section,
     umbrella_categories_for,
 )
@@ -389,7 +392,7 @@ PAGE_CSS = """
   }
 
   [hidden] { display: none !important; }
-""" + SPONSORED_SECTION_CSS
+""" + SPONSORED_SECTION_CSS + BANNER_CAROUSEL_CSS
 
 PAGE_SCRIPT = """
   // Top-level chips: every panel's real content already sits in the
@@ -448,7 +451,7 @@ PAGE_SCRIPT = """
     var presetChip = document.querySelector('.chips > .chip[data-cat="' + presetTab + '"]');
     if (presetChip) presetChip.click();
   }
-"""
+""" + BANNER_CAROUSEL_JS
 
 # "Matched: X" hint (user, 2026-09-25) - DIRECTORY_FILTER_JS already
 # hides/shows cards by a plain substring match against everything in
@@ -826,6 +829,30 @@ def _promo_card(p, in_sponsored_section=False):
       </div>"""
 
 
+def _banner_promo_slide(p):
+    """
+    Slide content for the banner/carousel lever (see
+    generate_brand_pages.render_banner_carousel) - a full-bleed hero
+    treatment, distinct from every grid card shape on this page. Always
+    the best offer's own numbers, same "sorted best-discount-first"
+    reasoning as _promo_card.
+    """
+    offers = sorted(p["offers"], key=lambda o: o.get("discount_pct") or 0, reverse=True)
+    best = offers[0]
+    best_discount = max((o.get("discount_pct") or 0) for o in offers)
+    badge = f'<span class="promo-badge">-{best_discount}%</span>' if best_discount else ""
+    return f"""<a href="{html.escape(best['product_url'])}" target="_blank" rel="noopener noreferrer">
+        <img src="{html.escape(p['image'])}" alt="{html.escape(p['product_name'])}" loading="lazy">
+        {badge}
+        <div class="banner-slide-content">
+          <span class="promo-brand">{html.escape(p['brand'])}</span>
+          <span class="promo-name">{html.escape(p['product_name'])}</span>
+          <span class="promo-price"><span class="promo-price-was">{html.escape(best['price_was'])}</span> <span class="promo-price-now">{html.escape(best['price_now'])}</span></span>
+          <span class="promo-cta">Visit Shop</span>
+        </div>
+      </a>"""
+
+
 def render_promotions_panel(promotions):
     subchips_html = "\n".join(
         f'      <button class="chip{" active" if cat_id == "all" else ""}" data-subcat="{cat_id}">{html.escape(label)}</button>'
@@ -864,11 +891,20 @@ def render_promotions_panel(promotions):
                 "stockists - no paid placement.</p>"
             )
 
+        # Banner/carousel (2026-09-28) - the third, most prominent lever,
+        # independent of and additive to sponsored/free (a promotion
+        # flagged for the banner still appears in its normal grid
+        # position below too - "stackable levers," not a replacement).
+        # No real entry sets "banner" today, same dormant status as the
+        # other two levers.
+        banner_slides = [_banner_promo_slide(p) for p in promotions if p.get("banner")]
+        banner = render_banner_carousel(banner_slides)
+
         sponsored_cards = "\n".join(_promo_card(p, in_sponsored_section=True) for p in sponsored)
         free_cards = "\n".join(_promo_card(p, in_sponsored_section=False) for p in free)
         sponsored_section = render_sponsored_section(sponsored_cards, "promo-grid")
         free_grid = f'    <div class="promo-grid">\n{free_cards}\n    </div>' if free else ""
-        grid = "\n".join(part for part in (sponsored_section, free_grid) if part)
+        grid = "\n".join(part for part in (banner, sponsored_section, free_grid) if part)
     else:
         intro = (
             '    <p class="panel-intro">A mix of paid Creator listings and free, basic '
