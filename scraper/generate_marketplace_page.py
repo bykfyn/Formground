@@ -244,6 +244,45 @@ PAGE_CSS = """
   .promo-price-now { color: var(--text-primary); font-weight: 600; }
   .promo-retailer { display: block; font-size: 11px; color: var(--text-muted); }
 
+  /* Multi-retailer offers (2026-09-28) - when the exact same product is
+     on sale at 2+ real stockists, the card groups them instead of
+     picking one and dropping the rest: the point is letting a user
+     compare (a local store vs. better shipping terms), not just
+     showing "a" deal exists. Not a single <a> anymore since each
+     retailer needs its own destination - the wrapper becomes a plain
+     div, each offer row its own link. */
+  .promo-offers {
+    display: flex; flex-direction: column; gap: 5px;
+    margin-top: 6px; padding-top: 8px; border-top: 0.5px solid var(--border);
+  }
+  .promo-offer {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
+    font-size: 11.5px; color: var(--text-secondary); text-decoration: none;
+  }
+  .promo-offer:hover .promo-offer-name { color: var(--text-primary); text-decoration: underline; }
+  .promo-offer-name { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .promo-offer-price { color: var(--text-muted); font-variant-numeric: tabular-nums; white-space: nowrap; flex-shrink: 0; }
+  /* Only the top 2 (already sorted best-discount-first) show by
+     default - a 3rd+ stockist stays reachable via the toggle below
+     rather than either being dropped (the exact problem this feature
+     replaces) or stretching every card in the grid to fit the longest
+     offer list. */
+  .promo-offer.promo-offer-extra { display: none; }
+  .promo-card-grouped.expanded .promo-offer.promo-offer-extra { display: flex; }
+  .promo-offer-more {
+    font: inherit; font-size: 11px; color: var(--text-accent); font-weight: 600;
+    background: none; border: none; padding: 2px 0 0; margin: 0; cursor: pointer; text-align: left;
+  }
+  .promo-offer-more:hover { color: var(--text-primary); }
+  .promo-card-grouped.expanded .promo-offer-more { display: none; }
+  /* A grouped card's own hero/name/badge aren't a single link anymore -
+     each retailer needs its own destination via the offer rows below,
+     so nothing at the top of the card is itself clickable. */
+  .promo-card-grouped .promo-name,
+  .promo-card-grouped .promo-card-hero { cursor: default; }
+  .promo-card-grouped .promo-card-hero:hover img { transform: none; }
+  .promo-card-grouped:hover .promo-name { text-decoration: none; }
+
   [hidden] { display: none !important; }
 """
 
@@ -282,6 +321,16 @@ PAGE_SCRIPT = """
         var cats = (card.dataset.subcat || '').split(' ').filter(Boolean);
         card.hidden = subcat !== 'all' && cats.indexOf(subcat) === -1;
       });
+    });
+  });
+
+  // "+N more stockists" toggle on a grouped promo card (2026-09-28) -
+  // reveals the offers past the top 2 already shown, rather than a bare
+  // stockist count with nothing to click through to.
+  document.querySelectorAll('.promo-offer-more').forEach(function (btn) {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      btn.closest('.promo-card-grouped').classList.add('expanded');
     });
   });
 """
@@ -505,9 +554,35 @@ def render_stockists_panel(retailers):
 
 
 def _promo_card(p):
-    discount = p.get("discount_pct")
-    badge = f'<span class="promo-badge">-{discount}%</span>' if discount else ""
-    return f"""      <a class="promo-card" href="{html.escape(p['product_url'])}" target="_blank" rel="noopener noreferrer" data-subcat="{html.escape(p['category'].lower())}">
+    """
+    Renders one product's promotion card. `p['offers']` holds 1+ real
+    retailers currently selling this exact product at a discount -
+    grouped by product identity alone (same design, checked at
+    curation time), never by matching price: the whole point is
+    letting a user compare retailers selling the identical item, which
+    only matters when their prices/terms can genuinely differ (see
+    project memory, promo_multi_retailer_grouping_mockup). Sorted
+    best-discount-first, since this is a curated marketing surface, not
+    the neutral "no rankings" search index - the card's own headline
+    price is whichever offer wins that sort, not just the first one
+    added to the file.
+
+    A single offer renders exactly as before (2026-09-25): one <a>,
+    "via X" line. 2+ offers can't be one link - each retailer needs its
+    own destination - so the wrapper becomes a plain div with each
+    offer as its own link below. Only the top 2 show by default; a 3rd+
+    stays reachable via a "+N more stockists" toggle (see PAGE_SCRIPT)
+    rather than either being dropped or stretching every card in the
+    grid to fit the longest offer list.
+    """
+    offers = sorted(p["offers"], key=lambda o: o.get("discount_pct") or 0, reverse=True)
+    best = offers[0]
+    best_discount = max((o.get("discount_pct") or 0) for o in offers)
+    badge = f'<span class="promo-badge">-{best_discount}%</span>' if best_discount else ""
+    subcat = html.escape(p["category"].lower())
+
+    if len(offers) == 1:
+        return f"""      <a class="promo-card" href="{html.escape(best['product_url'])}" target="_blank" rel="noopener noreferrer" data-subcat="{subcat}">
         <div class="promo-card-hero">
           <img src="{html.escape(p['image'])}" alt="{html.escape(p['product_name'])}" loading="lazy">
           {badge}
@@ -515,10 +590,41 @@ def _promo_card(p):
         <div class="promo-card-body">
           <span class="promo-brand">{html.escape(p['brand'])}</span>
           <span class="promo-name">{html.escape(p['product_name'])}</span>
-          <span class="promo-price"><span class="promo-price-was">{html.escape(p['price_was'])}</span> <span class="promo-price-now">{html.escape(p['price_now'])}</span></span>
-          <span class="promo-retailer">via {html.escape(p['retailer'])}</span>
+          <span class="promo-price"><span class="promo-price-was">{html.escape(best['price_was'])}</span> <span class="promo-price-now">{html.escape(best['price_now'])}</span></span>
+          <span class="promo-retailer">via {html.escape(best['retailer'])}</span>
         </div>
       </a>"""
+
+    def _offer_row(o, extra):
+        cls = "promo-offer promo-offer-extra" if extra else "promo-offer"
+        pct = f" (-{o['discount_pct']}%)" if o.get("discount_pct") else ""
+        return (
+            f'          <a class="{cls}" href="{html.escape(o["product_url"])}" target="_blank" rel="noopener noreferrer">'
+            f'<span class="promo-offer-name">{html.escape(o["retailer"])}</span>'
+            f'<span class="promo-offer-price">{html.escape(o["price_now"])}{pct}</span></a>'
+        )
+
+    offer_rows = [_offer_row(o, extra=(i >= 2)) for i, o in enumerate(offers)]
+    more_toggle = (
+        f'          <button type="button" class="promo-offer-more">+{len(offers) - 2} more stockist{"s" if len(offers) - 2 != 1 else ""}</button>'
+        if len(offers) > 2 else ""
+    )
+
+    return f"""      <div class="promo-card promo-card-grouped" data-subcat="{subcat}">
+        <div class="promo-card-hero">
+          <img src="{html.escape(p['image'])}" alt="{html.escape(p['product_name'])}" loading="lazy">
+          {badge}
+        </div>
+        <div class="promo-card-body">
+          <span class="promo-brand">{html.escape(p['brand'])}</span>
+          <span class="promo-name">{html.escape(p['product_name'])}</span>
+          <span class="promo-price"><span class="promo-price-was">{html.escape(best['price_was'])}</span> <span class="promo-price-now">{html.escape(best['price_now'])}</span></span>
+          <div class="promo-offers">
+{chr(10).join(offer_rows)}
+{more_toggle}
+          </div>
+        </div>
+      </div>"""
 
 
 def render_promotions_panel(promotions):
