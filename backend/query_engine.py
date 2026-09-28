@@ -28,6 +28,7 @@ SWAPPING THE LLM PROVIDER/MODEL (e.g. to cut cost):
     ANTHROPIC_API_KEY / OPENAI_API_KEY   whichever matches LLM_PROVIDER.
 """
 
+import datetime
 import json
 import os
 import random
@@ -72,6 +73,34 @@ HOUSE_CATEGORY_WORDS = {"house", "houses", "villa", "villas", "home", "homes"}
 # material/color" - so search() below replaces the LLM's intent outright
 # for these, rather than patching just the missing-category case.
 BROWSE_CATEGORY_WORDS = {"furniture", "lighting", "ceramics", "objects", "object"}
+
+# Duplicated from scraper/generate_brand_pages.py's own
+# NEW_ARRIVALS_WINDOW_DAYS, not imported - the Cloud Run Docker image
+# only ships backend/, data/, and the single file scraper/brands.json
+# (see the Dockerfile's own comment on why), so generate_brand_pages.py
+# is never present in production. Keep this value in sync with that
+# file's if it ever changes - same cross-boundary-constant pattern
+# already accepted there for brands.json itself.
+NEW_ARRIVALS_WINDOW_DAYS = 90
+
+# Phrases checked before the bare word "new" itself, so "new arrivals"
+# doesn't also need "arrivals" to independently mean anything.
+NEW_ARRIVAL_PHRASES = ("new arrivals", "newly added", "recently added")
+
+
+def _wants_new_arrivals(stripped_query: str) -> bool:
+    """
+    True when the query is asking for recently-added items (2026-09-28)
+    - "new", "new chairs", "new arrivals", "recently added" - not a
+    product that literally happens to be named "New" something (no real
+    product in this catalog is, but the same word-boundary care
+    GENERIC_PRODUCT_NAMES already takes elsewhere applies here too).
+    Checked as its own function so _resolve_intent's own logic stays
+    readable and this one rule is independently testable.
+    """
+    if any(phrase in stripped_query for phrase in NEW_ARRIVAL_PHRASES):
+        return True
+    return bool(re.search(r"\bnew\b", stripped_query))
 
 
 def _load_hidden_brands() -> set:
@@ -442,17 +471,18 @@ def _narrow_by_style(products: list, style_descriptors: list) -> list:
 
 def filter_products(intent: dict) -> list:
     """
-    Filters stored products on the hard facts: category + material + has
-    a real image. A missing image isn't just a display gap - the whole
-    "thumbnail + link-back" model this tool is built on doesn't work
-    without one, and in practice a missing image reliably means the
-    listing is either a spare-parts/replacement SKU or genuine dead
-    weight on the source site (confirmed live: In Common With's
-    imageless records are all "Replacement"/"Hidden"-tagged hardware,
-    and Another Country's are either that or literal leftover test
-    listings like "test 3" and "Product"). Checked before adding this:
-    no brand loses all its results, and no brand relies on its imageless
-    records to be discoverable at all.
+    Filters stored products on the hard facts: category + material +
+    new_only (recency, see _wants_new_arrivals) + has a real image. A
+    missing image isn't just a display gap - the whole "thumbnail +
+    link-back" model this tool is built on doesn't work without one,
+    and in practice a missing image reliably means the listing is
+    either a spare-parts/replacement SKU or genuine dead weight on the
+    source site (confirmed live: In Common With's imageless records are
+    all "Replacement"/"Hidden"-tagged hardware, and Another Country's
+    are either that or literal leftover test listings like "test 3" and
+    "Product"). Checked before adding this: no brand loses all its
+    results, and no brand relies on its imageless records to be
+    discoverable at all.
     """
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -461,6 +491,12 @@ def filter_products(intent: dict) -> list:
 
     wanted_category = (intent.get("category") or "").strip()
     wanted_material = (intent.get("material") or "").strip().lower()
+    # Same 90-day window /new.html itself uses (see NEW_ARRIVALS_WINDOW_DAYS
+    # above) - computed once per call, not per row.
+    new_cutoff = (
+        (datetime.date.today() - datetime.timedelta(days=NEW_ARRIVALS_WINDOW_DAYS)).isoformat()
+        if intent.get("new_only") else None
+    )
     # translate_query() extracts color as its own field, separate from
     # material - it was being parsed and then silently thrown away here,
     # so a query like "black chair" filtered on category alone and could
@@ -489,6 +525,8 @@ def filter_products(intent: dict) -> list:
         if wanted_material and wanted_material not in product["material_options"].lower():
             continue
         if wanted_color and wanted_color not in product["material_options"].lower():
+            continue
+        if new_cutoff and not (product["first_seen"] and product["first_seen"] >= new_cutoff):
             continue
 
         # A product with many raw finish/color combos merged into one
@@ -764,15 +802,50 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
     to what was actually asked. Only fires when the LLM left category
     null; a real, specific category it did find (e.g. "coffee table")
     always wins over this broader fallback.
+
+    Third, "new"/"new arrivals" recognition (2026-09-28): typing "new"
+    or "new chairs" into Work's search box has a reasonable expectation
+    of behaving like the dedicated New Arrivals page - see project
+    memory, first_seen_new_arrivals_bug_fixed, and the homepage's own
+    "See all N new chairs" links, which need this to actually deliver
+    what they promise. Without this, "new" falls through to the LLM's
+    generic style_descriptors handling, which does a literal text-match
+    against product NAMES (see _narrow_by_style) - unrelated to
+    recency, and would either return the whole catalog unfiltered or
+    narrow by incidental coincidence, the same failure class the
+    umbrella-word fix above already solved for "furniture". Sets
+    `new_only` as a plain filter (is this product's first_seen within
+    the same 90-day window /new.html itself uses), never a sort order -
+    results still shuffle randomly like every other search, consistent
+    with this engine never ranking results (see
+    product_interface_decisions.md's "no ranking" principle); /new.html
+    remains the place to see this sorted chronologically. Strips "new"
+    out of style_descriptors when this fires so it isn't also literal-
+    text-matched against product names on top of the real recency
+    filter - pure noise otherwise, same reasoning as GENERIC_PRODUCT_NAMES.
     """
     stripped = raw_query.strip().lower()
     if stripped in BROWSE_CATEGORY_WORDS:
-        return {"category": stripped}
-    if not llm_intent.get("category"):
+        intent = {"category": stripped}
+    elif not llm_intent.get("category"):
+        intent = llm_intent
         for word in re.findall(r"[a-zà-ÿ]+", stripped):
             if word in BROWSE_CATEGORY_WORDS:
-                return {**llm_intent, "category": word}
-    return llm_intent
+                intent = {**llm_intent, "category": word}
+                break
+    else:
+        intent = llm_intent
+
+    if _wants_new_arrivals(stripped):
+        intent = dict(intent)
+        intent["new_only"] = True
+        style_descriptors = intent.get("style_descriptors")
+        if style_descriptors:
+            intent["style_descriptors"] = [
+                d for d in style_descriptors if not (isinstance(d, str) and d.strip().lower() == "new")
+            ]
+
+    return intent
 
 
 def _match_all(raw_query: str, intent: dict) -> list:

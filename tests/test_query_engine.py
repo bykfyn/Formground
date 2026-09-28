@@ -160,6 +160,41 @@ class ResolveIntentTests(unittest.TestCase):
             qe._resolve_intent("something warm-toned and sculptural", llm_intent), llm_intent
         )
 
+    # 2026-09-28: "new"/"new arrivals" recognition, so a query like "new
+    # chairs" behaves like the dedicated New Arrivals page instead of
+    # falling through to a literal text-match against product names.
+
+    def test_bare_new_sets_new_only_flag(self):
+        llm_intent = {"category": None, "style_descriptors": ["new"]}
+        resolved = qe._resolve_intent("new", llm_intent)
+        self.assertTrue(resolved["new_only"])
+        self.assertEqual(resolved["style_descriptors"], [])
+
+    def test_new_combined_with_category_sets_both(self):
+        llm_intent = {"category": "chair", "style_descriptors": ["new"]}
+        resolved = qe._resolve_intent("new chairs", llm_intent)
+        self.assertEqual(resolved["category"], "chair")
+        self.assertTrue(resolved["new_only"])
+        self.assertEqual(resolved["style_descriptors"], [])
+
+    def test_new_arrival_phrases_also_recognized(self):
+        for query in ("new arrivals", "newly added", "recently added"):
+            with self.subTest(query=query):
+                resolved = qe._resolve_intent(query, {"category": None, "style_descriptors": []})
+                self.assertTrue(resolved["new_only"])
+
+    def test_renew_does_not_trigger_new_only(self):
+        # "new" must be a whole word - "renew" is unrelated.
+        llm_intent = {"category": "chair", "style_descriptors": ["renewed"]}
+        resolved = qe._resolve_intent("renew my chair", llm_intent)
+        self.assertNotIn("new_only", resolved)
+
+    def test_new_only_preserves_other_style_descriptors(self):
+        llm_intent = {"category": "chair", "style_descriptors": ["new", "sculptural"]}
+        resolved = qe._resolve_intent("new sculptural chair", llm_intent)
+        self.assertTrue(resolved["new_only"])
+        self.assertEqual(resolved["style_descriptors"], ["sculptural"])
+
 
 class CapPerBrandTests(unittest.TestCase):
     """
