@@ -670,10 +670,25 @@ def render_stockists_panel(retailers, promotions):
     # so a stockist known to have a live deal today gets a visual signal
     # right on their own card (see _stockist_card's promo_badge).
     retailers_with_promo = {o["retailer"] for p in promotions for o in p["offers"]}
-    cards = "\n".join(
+    # Same "sponsored" opt-in flag as Promotions/For Creators (2026-09-28)
+    # - a stockist priority placement, the same primitive extended to a
+    # third page rather than a new mechanism. A group counts as sponsored
+    # if any of its locations carries the flag (mirrors how brands/
+    # locations are already unioned across a chain's multiple entries).
+    sponsored_names = {name for name, locations in ordered if any(loc.get("sponsored") for loc in locations)}
+    sponsored = [g for g in ordered if g[0] in sponsored_names]
+    free = [g for g in ordered if g[0] not in sponsored_names]
+    sponsored_cards = "\n".join(
         _stockist_card(name, locations, brand_umbrellas, name in retailers_with_promo)
-        for name, locations in ordered
+        for name, locations in sponsored
     )
+    free_cards = "\n".join(
+        _stockist_card(name, locations, brand_umbrellas, name in retailers_with_promo)
+        for name, locations in free
+    )
+    sponsored_section = render_sponsored_section(sponsored_cards, "maker-grid")
+    free_grid = f'    <div class="maker-grid">\n{free_cards}\n    </div>' if free_cards else ""
+    grid = "\n".join(part for part in (sponsored_section, free_grid) if part)
     subchips_html = "\n".join(
         f'      <button class="chip{" active" if cat_id == "all" else ""}" data-subcat="{cat_id}">{html.escape(label)}</button>'
         for cat_id, label in STOCKIST_SUBCHIPS
@@ -689,7 +704,7 @@ def render_stockists_panel(retailers, promotions):
         # promotions_cross_site_linking).
         f'    <div class="cat-panel" data-cat="stockists" style="display: none;">\n{intro}\n'
         f'    <div class="sub-chips">\n{subchips_html}\n    </div>\n'
-        f'    <div class="maker-grid">\n{cards}\n    </div>\n    </div>'
+        f'{grid}\n    </div>'
     )
 
 
