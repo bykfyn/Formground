@@ -458,7 +458,15 @@ DIRECTORY_FILTER_JS = """
     var filterInput = document.getElementById("directory-filter");
     function applyFilter(q) {
       q = q.trim().toLowerCase();
-      document.querySelectorAll(".maker-grid > a").forEach(function (card) {
+      // .promo-card covers both promo-grid card shapes (a plain <a> for
+      // a single offer, a <div class="promo-card promo-card-grouped">
+      // for 2+ offers) - matched by class, not tag, since the grouped
+      // shape isn't itself a link (see generate_marketplace_page.py's
+      // _promo_card). Marketplace's search box claims to search
+      // "stockists and promotions" but this used to only ever query
+      // .maker-grid > a, so Promotions cards were never actually
+      // filtered (2026-09-28 finding).
+      document.querySelectorAll(".maker-grid > a, .promo-card").forEach(function (card) {
         var match = !q || card.textContent.toLowerCase().includes(q);
         card.hidden = !match;
       });
