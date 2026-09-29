@@ -417,7 +417,14 @@ async function handleLoadMoreClick() {
   revealFromPool(LOAD_MORE_CHUNK_SIZE);
 }
 
-loadMoreBtn.addEventListener("click", handleLoadMoreClick);
+// Only present on work.html - unguarded, this threw on every other page
+// that loads search.js (including the homepage), halting the rest of
+// the script before it ever reached the search-form submit handler
+// below - the real cause of a live, critical bug: the homepage's search
+// box silently did nothing on Enter/submit. Confirmed live 2026-09-29.
+if (loadMoreBtn) {
+  loadMoreBtn.addEventListener("click", handleLoadMoreClick);
+}
 
 async function runSearch(query) {
   gridEl.innerHTML = "";

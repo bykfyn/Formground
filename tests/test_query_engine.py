@@ -274,6 +274,30 @@ class ResolveIntentTests(unittest.TestCase):
         self.assertEqual(resolved["seat_count"], 2)
         self.assertEqual(resolved["style_descriptors"], [])
 
+    def test_llm_echoing_whole_query_as_category_gets_cleaned(self):
+        # Confirmed live 2026-09-29: the real LLM classifier sometimes
+        # returns the whole raw query as `category` instead of isolating
+        # the real category word ("two seater sofa" verbatim, not
+        # "sofa") - collapsed 56 real matches down to 3-4 since almost no
+        # product's category tag matches that whole phrase.
+        llm_intent = {"category": "two seater sofa", "style_descriptors": []}
+        resolved = qe._resolve_intent("two seater sofa", llm_intent)
+        self.assertEqual(resolved["category"], "sofa")
+        self.assertEqual(resolved["seat_count"], 2)
+
+    def test_llm_echoing_numeral_form_as_category_gets_cleaned(self):
+        llm_intent = {"category": "2-seater sofa", "style_descriptors": []}
+        resolved = qe._resolve_intent("2-seater sofa", llm_intent)
+        self.assertEqual(resolved["category"], "sofa")
+        self.assertEqual(resolved["seat_count"], 2)
+
+    def test_clean_llm_category_is_left_untouched(self):
+        # The common/correct case - the LLM already isolated "sofa"
+        # cleanly - shouldn't be altered by the new cleanup step.
+        llm_intent = {"category": "sofa", "style_descriptors": ["two seater"]}
+        resolved = qe._resolve_intent("two seater sofa", llm_intent)
+        self.assertEqual(resolved["category"], "sofa")
+
 
 class ProductMatchesSeatCountTests(unittest.TestCase):
     def test_digit_form_matches(self):

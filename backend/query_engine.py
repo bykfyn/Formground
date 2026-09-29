@@ -206,6 +206,7 @@ def _wanted_countries(stripped_query: str, llm_location) -> set:
 # to under-match it (only 4 of 56 real "two seater" matches).
 SEAT_COUNT_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6}
 SEAT_COUNT_NUMBER_WORDS = {v: k for k, v in SEAT_COUNT_WORDS.items()}
+SEAT_COUNT_PATTERN = re.compile(r"\b(\d+|one|two|three|four|five|six)[\s-]?seaters?\b", re.IGNORECASE)
 
 
 def _wanted_seat_count(stripped_query: str):
@@ -220,10 +221,10 @@ def _wanted_seat_count(stripped_query: str):
     fragile (confirmed: filter_by_name("two seater sofa") finds only 4
     of the 56 real matches).
     """
-    m = re.search(r"\b(\d+|one|two|three|four|five|six)[\s-]?seaters?\b", stripped_query)
+    m = SEAT_COUNT_PATTERN.search(stripped_query)
     if not m:
         return None
-    token = m.group(1)
+    token = m.group(1).lower()
     return int(token) if token.isdigit() else SEAT_COUNT_WORDS.get(token)
 
 
@@ -1040,6 +1041,22 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
                 d for d in style_descriptors
                 if not (isinstance(d, str) and _wanted_seat_count(d.strip().lower()) == wanted_seat_count)
             ]
+        # The LLM's own category extraction sometimes echoes the whole
+        # raw query back verbatim instead of isolating the real category
+        # word - confirmed live 2026-09-29: "two seater sofa" (and the
+        # "2-seater"/"three seater" forms) all resolved to
+        # category="two seater sofa" etc., which matches almost no real
+        # product's category tag, collapsing 56 real matches down to 3-4.
+        # seat_count itself was already extracted correctly above (it
+        # comes from the raw query text directly, not the LLM's category
+        # field) - this just cleans the seat-count phrase back out of
+        # category too, same as it's already stripped from
+        # style_descriptors above.
+        category = intent.get("category")
+        if isinstance(category, str) and category:
+            cleaned_category = SEAT_COUNT_PATTERN.sub("", category).strip()
+            if cleaned_category != category:
+                intent["category"] = cleaned_category or None
 
     return intent
 
