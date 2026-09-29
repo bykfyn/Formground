@@ -206,17 +206,32 @@
   .mini-bento-3 { grid-column: 3; grid-row: 1; }
   .mini-bento-4 { grid-column: 2; grid-row: 2; }
   .mini-bento-5 { grid-column: 3; grid-row: 2; }
-  /* Same treatment as the homepage's own top 4-tile bento (.cat-label):
-     bold text straight over the photo, no background box/pill and no
-     gradient scrim - just a text-shadow for legibility (2026-09-29,
-     user's call: reuse "the main bento" look rather than either the
-     dark-gradient or light-pill versions tried first). */
-  .mini-bento-caption {
-    position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 1;
-    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 14px;
-    color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.55), 0 1px 16px rgba(0,0,0,0.35);
+  /* Hover-reveal, matching the homepage's own top 4-tile bento's
+     .cat-tile/.cat-label/.cat-details split, and now also its own
+     Floor Lamps mini-bento/duo-carousel slides (2026-09-29, user's
+     call: "should we use the same hover over function as on the home
+     page large bento... needs to be consistent across the site") - a
+     plain, always-visible name (.mini-bento-label) stands in at rest,
+     and this richer name+brand gradient scrim only fades in on hover.
+     Replaces an earlier, page-local-only text-shadow treatment (no
+     scrim, always visible) that predated the sitewide hover-reveal
+     convention. */
+  .mini-bento-label {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 13px;
+    color: #fff; letter-spacing: -0.005em; margin: 0;
+    pointer-events: none;
   }
-  .mini-bento-caption span { display: block; font-family: inherit; font-weight: 400; font-size: 11px; margin-top: 2px; opacity: 0.9; }
+  .mini-bento-caption {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+    padding: 10px 12px; background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));
+    color: #fff; font-size: 12px; font-weight: 500;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+  .mini-bento-caption span { display: block; font-size: 11px; font-weight: 400; opacity: 0.8; }
+  .mini-bento-tile:hover .mini-bento-caption { opacity: 1; transform: translateY(0); }
   @media (max-width: 760px) {
     .edit-header h1 { font-size: 28px; }
     .bento-row { grid-template-columns: 1fr; }
@@ -482,22 +497,27 @@
       <div class="mini-bento">
       <a class="mini-bento-tile mini-bento-1" href="https://moebe.dk/products/2-seater-sofa-with-1-side-table" target="_blank" rel="noopener noreferrer">
         <img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Modular-Sofa_PP_Modular_Sofa_Set_2_Seater_Sofa_with_1_side_table_Cognac-Leather_Low-Res_OS.2.1XTAB.OA.COGSA.jpg?v=1789522508" alt="2 Seater Sofa with 1 Side Table by Moebe">
+        <p class="mini-bento-label">2 Seater Sofa with 1 Side Table</p>
         <div class="mini-bento-caption">2 Seater Sofa with 1 Side Table<span>Moebe</span></div>
       </a>
       <a class="mini-bento-tile mini-bento-2" href="https://www.seletti.it/products/sofa-two-seater-snakes" target="_blank" rel="noopener noreferrer">
         <img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Furniture-Toiletpaper-magazine-sofa-2-seaters-160925.jpg?v=1728427692" alt="Sofa Two Seater Snakes by Seletti">
+        <p class="mini-bento-label">Sofa Two Seater Snakes</p>
         <div class="mini-bento-caption">Sofa Two Seater Snakes<span>Seletti</span></div>
       </a>
       <a class="mini-bento-tile mini-bento-3" href="https://www.maruni.com/en/product/br_two_seater_sofa/" target="_blank" rel="noopener noreferrer">
         <img src="https://www.maruni.com/en/img/pages/products/br_two_seater_sofa/Product/oak_NL0.jpg" alt="TWO SEATER SOFA by Maruni">
+        <p class="mini-bento-label">TWO SEATER SOFA</p>
         <div class="mini-bento-caption">TWO SEATER SOFA<span>Maruni</span></div>
       </a>
       <a class="mini-bento-tile mini-bento-4" href="https://theconranshop.com/products/tamilla-2-seater-oak-oatmeal" target="_blank" rel="noopener noreferrer">
         <img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS382520_1.jpg?v=1775820323" alt="Tamilla 2-Seater Sofa Oak &amp; Oatmeal by The Conran Shop">
+        <p class="mini-bento-label">Tamilla 2-Seater Sofa Oak &amp; Oatmeal</p>
         <div class="mini-bento-caption">Tamilla 2-Seater Sofa Oak &amp; Oatmeal<span>The Conran Shop</span></div>
       </a>
       <a class="mini-bento-tile mini-bento-5" href="https://www.fogia.com/sofas/sofa-2-seater/boxlike-2-seater-sofa" target="_blank" rel="noopener noreferrer">
         <img src="https://images.fogia.com/26/c6/7c/69/697cc626c2b2ec97a835d240/Fogia_Boxlike_2-seater_Green_Packshot_Front.png?auto=format&amp;w=2000&amp;q=90" alt="Boxlike 2 Seater Sofa by Fogia">
+        <p class="mini-bento-label">Boxlike 2 Seater Sofa</p>
         <div class="mini-bento-caption">Boxlike 2 Seater Sofa<span>Fogia</span></div>
       </a></div>
       <div class="bento-side-cards">

@@ -206,17 +206,32 @@
   .mini-bento-3 { grid-column: 3; grid-row: 1; }
   .mini-bento-4 { grid-column: 2; grid-row: 2; }
   .mini-bento-5 { grid-column: 3; grid-row: 2; }
-  /* Same treatment as the homepage's own top 4-tile bento (.cat-label):
-     bold text straight over the photo, no background box/pill and no
-     gradient scrim - just a text-shadow for legibility (2026-09-29,
-     user's call: reuse "the main bento" look rather than either the
-     dark-gradient or light-pill versions tried first). */
-  .mini-bento-caption {
-    position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 1;
-    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 14px;
-    color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.55), 0 1px 16px rgba(0,0,0,0.35);
+  /* Hover-reveal, matching the homepage's own top 4-tile bento's
+     .cat-tile/.cat-label/.cat-details split, and now also its own
+     Floor Lamps mini-bento/duo-carousel slides (2026-09-29, user's
+     call: "should we use the same hover over function as on the home
+     page large bento... needs to be consistent across the site") - a
+     plain, always-visible name (.mini-bento-label) stands in at rest,
+     and this richer name+brand gradient scrim only fades in on hover.
+     Replaces an earlier, page-local-only text-shadow treatment (no
+     scrim, always visible) that predated the sitewide hover-reveal
+     convention. */
+  .mini-bento-label {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 13px;
+    color: #fff; letter-spacing: -0.005em; margin: 0;
+    pointer-events: none;
   }
-  .mini-bento-caption span { display: block; font-family: inherit; font-weight: 400; font-size: 11px; margin-top: 2px; opacity: 0.9; }
+  .mini-bento-caption {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+    padding: 10px 12px; background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));
+    color: #fff; font-size: 12px; font-weight: 500;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+  .mini-bento-caption span { display: block; font-size: 11px; font-weight: 400; opacity: 0.8; }
+  .mini-bento-tile:hover .mini-bento-caption { opacity: 1; transform: translateY(0); }
   @media (max-width: 760px) {
     .edit-header h1 { font-size: 28px; }
     .bento-row { grid-template-columns: 1fr; }
@@ -405,22 +420,27 @@
       <div class="mini-bento">
       <a class="mini-bento-tile mini-bento-1" href="https://vaarnii.com/products/001-dining-table-round" target="_blank" rel="noopener noreferrer">
         <img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/001DiningTableRound-1-Vertical.jpg?v=1724225827" alt="001 Dining Table Round by Vaarnii">
+        <p class="mini-bento-label">001 Dining Table Round</p>
         <div class="mini-bento-caption">001 Dining Table Round<span>Vaarnii</span></div>
       </a>
       <a class="mini-bento-tile mini-bento-2" href="https://www.valerie-objects.com/products/dining-table-round-ivory" target="_blank" rel="noopener noreferrer">
         <img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9026204-004_01-jpg.jpg?v=1783002707" alt="dining table round ivory by Valerie Objects">
+        <p class="mini-bento-label">dining table round ivory</p>
         <div class="mini-bento-caption">dining table round ivory<span>Valerie Objects</span></div>
       </a>
       <a class="mini-bento-tile mini-bento-3" href="https://framacph.com/products/farmhouse-trestle-table-dark-oak-140-round" target="_blank" rel="noopener noreferrer">
         <img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FARMHOUSE-DARK-TRESTLE-TABLE-ROUND-PACKSHOT-1_acc37558-f310-4e45-aa43-220aa21473a9.png?v=1722869324" alt="Farmhouse Trestle Table | 140 Ø Round by Frama">
+        <p class="mini-bento-label">Farmhouse Trestle Table | 140 Ø Round</p>
         <div class="mini-bento-caption">Farmhouse Trestle Table | 140 Ø Round<span>Frama</span></div>
       </a>
       <a class="mini-bento-tile mini-bento-4" href="https://moebe.dk/products/round-dining-table" target="_blank" rel="noopener noreferrer">
         <img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/products/MOEBE_Dining-Table_PP_140-Round_Oak_Low-Res_01.jpg?v=1655817861" alt="Round Dining Table by Moebe">
+        <p class="mini-bento-label">Round Dining Table</p>
         <div class="mini-bento-caption">Round Dining Table<span>Moebe</span></div>
       </a>
       <a class="mini-bento-tile mini-bento-5" href="https://noearlybirds.se/products/neb-round-dining-table-with-top-in-brass-zinc-or-copper" target="_blank" rel="noopener noreferrer">
         <img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Dining_Table_Brass.jpg?v=1611846420" alt="NEB Round Dining Table With Top In by No Early Birds">
+        <p class="mini-bento-label">NEB Round Dining Table With Top In</p>
         <div class="mini-bento-caption">NEB Round Dining Table With Top In<span>No Early Birds</span></div>
       </a></div>
       <div class="bento-side-cards">

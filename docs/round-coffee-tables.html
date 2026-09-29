@@ -206,17 +206,32 @@
   .mini-bento-3 { grid-column: 3; grid-row: 1; }
   .mini-bento-4 { grid-column: 2; grid-row: 2; }
   .mini-bento-5 { grid-column: 3; grid-row: 2; }
-  /* Same treatment as the homepage's own top 4-tile bento (.cat-label):
-     bold text straight over the photo, no background box/pill and no
-     gradient scrim - just a text-shadow for legibility (2026-09-29,
-     user's call: reuse "the main bento" look rather than either the
-     dark-gradient or light-pill versions tried first). */
-  .mini-bento-caption {
-    position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 1;
-    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 14px;
-    color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.55), 0 1px 16px rgba(0,0,0,0.35);
+  /* Hover-reveal, matching the homepage's own top 4-tile bento's
+     .cat-tile/.cat-label/.cat-details split, and now also its own
+     Floor Lamps mini-bento/duo-carousel slides (2026-09-29, user's
+     call: "should we use the same hover over function as on the home
+     page large bento... needs to be consistent across the site") - a
+     plain, always-visible name (.mini-bento-label) stands in at rest,
+     and this richer name+brand gradient scrim only fades in on hover.
+     Replaces an earlier, page-local-only text-shadow treatment (no
+     scrim, always visible) that predated the sitewide hover-reveal
+     convention. */
+  .mini-bento-label {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 13px;
+    color: #fff; letter-spacing: -0.005em; margin: 0;
+    pointer-events: none;
   }
-  .mini-bento-caption span { display: block; font-family: inherit; font-weight: 400; font-size: 11px; margin-top: 2px; opacity: 0.9; }
+  .mini-bento-caption {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+    padding: 10px 12px; background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));
+    color: #fff; font-size: 12px; font-weight: 500;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+  .mini-bento-caption span { display: block; font-size: 11px; font-weight: 400; opacity: 0.8; }
+  .mini-bento-tile:hover .mini-bento-caption { opacity: 1; transform: translateY(0); }
   @media (max-width: 760px) {
     .edit-header h1 { font-size: 28px; }
     .bento-row { grid-template-columns: 1fr; }

@@ -387,6 +387,33 @@
   .duo-name { display: block; font-size: 14px; font-weight: 500; margin-bottom: 2px; }
   .duo-brand { display: block; font-size: 12px; color: var(--text-muted); }
 
+  /* Duo Carousel - a small banner-carousel sized to match one
+     .duo-card-image slot (4:3, same footprint as a static duo-card)
+     instead of the full-width Sofas/Promotions carousel's 2:1 spread,
+     so a duo-row column can rotate through several real items instead
+     of one static image (2026-09-29, user's call). Reuses the exact
+     .banner-carousel/.banner-slide/.banner-dots rotation script
+     already on this page - only the size and caption differ. Caption
+     reuses .mini-bento-caption's compact bottom-gradient overlay
+     (name + brand) rather than the large Feature Spread content
+     block, which is sized for the full-width banner. */
+  .duo-carousel { aspect-ratio: 4/3; margin-bottom: 10px; border: 0.5px solid var(--border); overflow: hidden; background: var(--surface-1); }
+  .duo-carousel .banner-slide a { display: block; width: 100%; height: 100%; position: relative; text-decoration: none; color: inherit; }
+  .duo-carousel .banner-slide img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+  .duo-carousel .banner-slide a:hover img { transform: scale(1.03); }
+  .duo-carousel .banner-dots { bottom: 10px; right: 10px; }
+
+  /* Placeholder slide - a pending-content stand-in for a duo-carousel
+     slot not hand-picked yet (Side Tables, Pendant Lamps -
+     2026-09-29). Plainly labeled rather than showing a real product
+     that would just be swapped out later, so it never reads as an
+     actual Formground maker result. */
+  .duo-carousel-placeholder {
+    display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;
+    background: var(--surface-1); color: var(--text-muted); font-size: 12px; text-align: center;
+  }
+  .duo-carousel-placeholder small { display: block; margin-top: 4px; font-size: 11px; opacity: 0.75; }
+
   /* Mini Bento - a smaller echo of the homepage's own top category
      grid (1 tall tile + 2 top tiles + 1 wide bottom tile), same
      asymmetric composition. Constrained to a cube-like aspect-ratio: 1/1
@@ -439,12 +466,36 @@
      no single stretched-out exception. */
   .mini-bento-4 { grid-column: 2; grid-row: 2; }
   .mini-bento-5 { grid-column: 3; grid-row: 2; }
+  /* Hover-reveal, matching the large homepage bento's own .cat-tile/
+     .cat-label/.cat-details split (2026-09-29, user's call: "should we
+     use the same hover over function as on the home page large
+     bento... needs to be consistent across the site") - a plain,
+     always-visible name (.mini-bento-label, same look as .cat-label)
+     stands in at rest, and this richer name+brand gradient scrim only
+     fades in on hover, instead of sitting over every tile permanently
+     (the "grey shade" the always-on version read as). Hover-gated for
+     both real homes this class has: a bare .mini-bento-tile (Floor
+     Lamps) and a .duo-carousel slide's <a> (Chairs/Side Tables/Table
+     Lamps carousels) - see the two hover selectors below. */
   .mini-bento-caption {
     position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
     padding: 10px 12px; background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));
     color: #fff; font-size: 12px; font-weight: 500;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
   }
   .mini-bento-caption span { display: block; font-size: 11px; font-weight: 400; opacity: 0.8; }
+  .mini-bento-label {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 13px;
+    color: #fff; letter-spacing: -0.005em; margin: 0;
+    pointer-events: none;
+  }
+  .mini-bento-tile:hover .mini-bento-caption,
+  .duo-carousel .banner-slide a:hover .mini-bento-caption {
+    opacity: 1; transform: translateY(0);
+  }
 
   @media (max-width: 760px) {
     .duo-row { grid-template-columns: 1fr; }
@@ -563,10 +614,10 @@
       <div class="recent-header-rule"></div>
     </div>
     <div class="recent-row">
-      <a class="recent-card" href="https://www.maruni.com/en/product/rd_chair_cushioned/" target="_blank" rel="noopener noreferrer">
-        <div class="recent-card-image"><img src="https://www.maruni.com/en/img/pages/products/rd_chair_cushioned/Product/beech_NL0.jpg" alt="CHAIR (cushioned) by Maruni" loading="lazy"></div>
-        <span class="recent-name">CHAIR (cushioned)</span>
-        <span class="recent-brand">Maruni</span>
+      <a class="recent-card" href="https://101cph.com/products/brutus-dining-chair-coffee-black-oak" target="_blank" rel="noopener noreferrer">
+        <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18429664_253070_-_Brutus_Dining_Chair_-_Coffee_Black_Oak_1.jpg?v=1788392431" alt="Brutus Dining Chair by 101cph" loading="lazy"></div>
+        <span class="recent-name">Brutus Dining Chair</span>
+        <span class="recent-brand">101cph</span>
       </a>
       <a class="recent-card" href="https://raawii.eu/products/stroem-vase-small-salsa" target="_blank" rel="noopener noreferrer">
         <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Nicholai_Wiig-Hansen_-_Stroem_-_vase_-_small-Vase-R1006-salsa.jpg?v=1719485134" alt="Strøm vase (small) by Raawii" loading="lazy"></div>
@@ -623,21 +674,65 @@
     </div>
 
     <div class="recent-group">
-      <div class="recent-group-header">
-        <h3>Chairs</h3>
-        <a href="work.html?q=chair">See all &rarr;</a>
+      <div class="duo-row">
+        <div class="recent-group-header">
+          <h3>Chairs</h3>
+          <a href="work.html?q=chair">See all &rarr;</a>
+        </div>
+        <div class="recent-group-header">
+          <h3>Side Tables</h3>
+          <a href="work.html?q=side+table">See all &rarr;</a>
+        </div>
       </div>
       <div class="duo-row">
-        <a class="duo-card" href="https://www.designbythem.com/products/piper-chair-upholstered-archive-store" target="_blank" rel="noopener noreferrer">
-          <div class="duo-card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/PIP-CHA-BLK-UPH-BLK_97b26e99-f361-45a1-97b6-5efc284410fa.jpg?v=1788744900" alt="Piper Chair by Designbythem"></div>
-          <span class="duo-name">Piper Chair</span>
-          <span class="duo-brand">Designbythem</span>
-        </a>
-        <a class="duo-card" href="https://petitefriture.com/fr/mobilier/3269-sandows-chaise-N212.html" target="_blank" rel="noopener noreferrer">
-          <div class="duo-card-image"><img src="https://petitefriture.com/38037-home_default/sandows-chaise-N212.jpg" alt="Sandows by Petite Friture"></div>
-          <span class="duo-name">Sandows</span>
-          <span class="duo-brand">Petite Friture</span>
-        </a>
+        <div class="duo-carousel banner-carousel">
+          <div class="banner-slide active">
+            <a href="https://www.designbythem.com/products/piper-chair-upholstered-archive-store" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn.shopify.com/s/files/1/0103/2042/files/PIP-CHA-BLK-UPH-BLK_97b26e99-f361-45a1-97b6-5efc284410fa.jpg?v=1788744900" alt="Piper Chair by Designbythem">
+              <p class="mini-bento-label">Piper Chair</p>
+              <div class="mini-bento-caption">Piper Chair<span>Designbythem</span></div>
+            </a>
+          </div>
+          <div class="banner-slide">
+            <a href="https://petitefriture.com/fr/mobilier/3269-sandows-chaise-N212.html" target="_blank" rel="noopener noreferrer">
+              <img src="https://petitefriture.com/38037-home_default/sandows-chaise-N212.jpg" alt="Sandows by Petite Friture">
+              <p class="mini-bento-label">Sandows</p>
+              <div class="mini-bento-caption">Sandows<span>Petite Friture</span></div>
+            </a>
+          </div>
+          <div class="banner-dots">
+            <button type="button" class="banner-dot active" data-index="0" aria-label="Slide 1"></button>
+            <button type="button" class="banner-dot" data-index="1" aria-label="Slide 2"></button>
+          </div>
+        </div>
+        <div class="duo-carousel banner-carousel">
+          <div class="banner-slide active">
+            <a href="https://101cph.com/products/artist-side-table-coffee-black-oak" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn.shopify.com/s/files/1/1885/3155/files/20825829_263014_Artist_Side_Table_-_Coffee_Black_1.jpg?v=1781010913" alt="Artist Side Table by 101cph" style="object-position: bottom;">
+              <p class="mini-bento-label">Artist Side Table</p>
+              <div class="mini-bento-caption">Artist Side Table<span>101cph</span></div>
+            </a>
+          </div>
+          <div class="banner-slide">
+            <a href="https://delaespada.com/products/754s-trio-side-table" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/TrioSideTableinwalnutbyNeri_Hu-2web.jpg?v=1600420204" alt="Trio Side Table by De La Espada">
+              <p class="mini-bento-label">Trio Side Table</p>
+              <div class="mini-bento-caption">Trio Side Table<span>De La Espada</span></div>
+            </a>
+          </div>
+          <div class="banner-slide">
+            <a href="https://galvinbrothers.co.uk/products/fluted-column-side-table" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn.shopify.com/s/files/1/0177/8296/products/GalvinOct22LR-95.jpg?v=1666799308" alt="Fluted Column Side Table by Galvin Brothers" style="object-position: center 79%;">
+              <p class="mini-bento-label">Fluted Side Table</p>
+              <div class="mini-bento-caption">Fluted Side Table<span>Galvin Brothers</span></div>
+            </a>
+          </div>
+          <div class="banner-dots">
+            <button type="button" class="banner-dot active" data-index="0" aria-label="Slide 1"></button>
+            <button type="button" class="banner-dot" data-index="1" aria-label="Slide 2"></button>
+            <button type="button" class="banner-dot" data-index="2" aria-label="Slide 3"></button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -654,7 +749,7 @@
               <p class="feature-spread-eyebrow">Sofas</p>
               <p class="feature-spread-title">Dajo Sofa</p>
               <p class="feature-spread-desc">Porta Romana</p>
-              <span class="feature-spread-cta">Shop the edit &rarr;</span>
+              <span class="feature-spread-cta">Visit site &rarr;</span>
             </div>
           </a>
         </div>
@@ -665,7 +760,7 @@
               <p class="feature-spread-eyebrow">Sofas</p>
               <p class="feature-spread-title">Pillow 3 Seater Sofa</p>
               <p class="feature-spread-desc">Cozmo</p>
-              <span class="feature-spread-cta">Shop the edit &rarr;</span>
+              <span class="feature-spread-cta">Visit site &rarr;</span>
             </div>
           </a>
         </div>
@@ -676,7 +771,7 @@
               <p class="feature-spread-eyebrow">Sofas</p>
               <p class="feature-spread-title">Lola Sofa</p>
               <p class="feature-spread-desc">Dusty Deco</p>
-              <span class="feature-spread-cta">Shop the edit &rarr;</span>
+              <span class="feature-spread-cta">Visit site &rarr;</span>
             </div>
           </a>
         </div>
@@ -752,43 +847,100 @@
       <div class="mini-bento">
         <a class="mini-bento-tile mini-bento-1" href="https://101cph.com/products/snake-floor-lamp-chrome" target="_blank" rel="noopener noreferrer">
           <img src="https://cdn.shopify.com/s/files/1/1885/3155/files/20238817_261014_Snake_Floor_Lamp_-_Chrome_-_1.jpg?v=1790378140" alt="Snake Floor Lamp by 101cph">
+          <p class="mini-bento-label">Snake Floor Lamp</p>
           <div class="mini-bento-caption">Snake Floor Lamp<span>101cph</span></div>
         </a>
         <a class="mini-bento-tile mini-bento-2" href="https://newworks.dk/en/product/nebra-floor-lamp" target="_blank" rel="noopener noreferrer">
           <img src="https://www.datocms-assets.com/49896/1783086050-new-works_website_images_2026_nebra-floor-lamp.png?h=800" alt="Nebra Floor Lamp by New Works DK">
+          <p class="mini-bento-label">Nebra Floor Lamp</p>
           <div class="mini-bento-caption">Nebra Floor Lamp<span>New Works DK</span></div>
         </a>
         <a class="mini-bento-tile mini-bento-3" href="https://minimalux.com/products/rota-floor-lamp" target="_blank" rel="noopener noreferrer">
           <img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/ROTA-F1-03r-72dpi.jpg?v=1757846540" alt="Rota Floor Lamp by Minimalux">
+          <p class="mini-bento-label">Rota Floor Lamp</p>
           <div class="mini-bento-caption">Rota Floor Lamp<span>Minimalux</span></div>
         </a>
         <a class="mini-bento-tile mini-bento-4" href="https://apparatusstudio.com/products/pip-lantern-floor-lamp" target="_blank" rel="noopener noreferrer">
           <img src="https://cdn.shopify.com/s/files/1/0005/7730/6687/files/APPARATUS_LANTERN_FLOOR_LAMP_01.jpg?v=1763153271" alt="Lantern Floor Lamp by Apparatus">
+          <p class="mini-bento-label">Lantern Floor Lamp</p>
           <div class="mini-bento-caption">Lantern Floor Lamp<span>Apparatus</span></div>
         </a>
         <a class="mini-bento-tile mini-bento-5" href="https://www.moustache.fr/en/accueil/1504-sistema-trepiu-floor-lamp.html" target="_blank" rel="noopener noreferrer">
           <img src="https://www.moustache.fr/41799-home_default/sistema-trepiu-floor-lamp.jpg" alt="Sistema Trepiù Floor Lamp by Moustache">
+          <p class="mini-bento-label">Sistema Trepiù</p>
           <div class="mini-bento-caption">Sistema Trepiù<span>Moustache</span></div>
         </a>
       </div>
     </div>
 
     <div class="recent-group">
-      <div class="recent-group-header">
-        <h3>Table Lamps</h3>
-        <a href="work.html?q=table+lamp">See all &rarr;</a>
+      <div class="duo-row">
+        <div class="recent-group-header">
+          <h3>Table Lamps</h3>
+          <a href="work.html?q=table+lamp">See all &rarr;</a>
+        </div>
+        <div class="recent-group-header">
+          <h3>Pendant Lamps</h3>
+          <a href="work.html?q=pendant+lamp">See all &rarr;</a>
+        </div>
       </div>
       <div class="duo-row">
-        <a class="duo-card" href="https://petitefriture.com/fr/luminaire/1497-8356-neotenic-petite-lampe-a-poser-vanille.html" target="_blank" rel="noopener noreferrer">
-          <div class="duo-card-image"><img src="https://petitefriture.com/19785-home_default/neotenic-petite-lampe-a-poser-vanille.jpg" alt="Neotenic by Petite Friture"></div>
-          <span class="duo-name">Neotenic</span>
-          <span class="duo-brand">Petite Friture</span>
-        </a>
-        <a class="duo-card" href="https://minimalux.com/products/stem" target="_blank" rel="noopener noreferrer">
-          <div class="duo-card-image"><img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/products/stem-brass.jpg?v=1639846854" alt="Stem by Minimalux"></div>
-          <span class="duo-name">Stem</span>
-          <span class="duo-brand">Minimalux</span>
-        </a>
+        <div class="duo-carousel banner-carousel">
+          <div class="banner-slide active">
+            <a href="https://petitefriture.com/fr/luminaire/1497-8356-neotenic-petite-lampe-a-poser-vanille.html" target="_blank" rel="noopener noreferrer">
+              <img src="https://petitefriture.com/19785-home_default/neotenic-petite-lampe-a-poser-vanille.jpg" alt="Neotenic by Petite Friture">
+              <p class="mini-bento-label">Neotenic</p>
+              <div class="mini-bento-caption">Neotenic<span>Petite Friture</span></div>
+            </a>
+          </div>
+          <div class="banner-slide">
+            <a href="https://minimalux.com/products/stem" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/products/stem-brass.jpg?v=1639846854" alt="Stem by Minimalux">
+              <p class="mini-bento-label">Stem</p>
+              <div class="mini-bento-caption">Stem<span>Minimalux</span></div>
+            </a>
+          </div>
+          <div class="banner-slide">
+            <a href="https://audocph.com/products/jwda-table-lamp-small" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/1800129_JWDA_ConcreteLamp_Jonas_Wagell_01_b309c770-3d4e-4a2a-957d-dadc2b762669.png?v=1755611341" alt="JWDA Table Lamp by Audo">
+              <p class="mini-bento-label">JWDA Table Lamp</p>
+              <div class="mini-bento-caption">JWDA Table Lamp<span>Audo</span></div>
+            </a>
+          </div>
+          <div class="banner-dots">
+            <button type="button" class="banner-dot active" data-index="0" aria-label="Slide 1"></button>
+            <button type="button" class="banner-dot" data-index="1" aria-label="Slide 2"></button>
+            <button type="button" class="banner-dot" data-index="2" aria-label="Slide 3"></button>
+          </div>
+        </div>
+        <div class="duo-carousel banner-carousel">
+          <div class="banner-slide active">
+            <a href="https://www.incommonwith.com/products/disc-pendant-medium-sandblasted-amber-patina-brass-13-36-inches" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn.shopify.com/s/files/1/2998/2346/files/Incommonwith_DiscPendant_FrontView_Off_PatinaBrass_SandblastedAmber_Medium_3b727936-a8ae-43c4-8ccf-e720044d8ee4.jpg?v=1769205704" alt="Disc Pendant by In Common With">
+              <p class="mini-bento-label">Disc Pendant</p>
+              <div class="mini-bento-caption">Disc Pendant<span>In Common With</span></div>
+            </a>
+          </div>
+          <div class="banner-slide">
+            <a href="https://dannykaplanstudio.com/products/augustus-orb-pendant" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn.shopify.com/s/files/1/0604/7773/5136/products/InCommonWith_AugustusPendant_Ivy.jpg?v=1652804378" alt="Augustus Orb Pendant by Danny Kaplan Studio">
+              <p class="mini-bento-label">Augustus Orb Pendant</p>
+              <div class="mini-bento-caption">Augustus Orb Pendant<span>Danny Kaplan Studio</span></div>
+            </a>
+          </div>
+          <div class="banner-slide">
+            <a href="https://www.lambertetfils.com/products/isle-13" target="_blank" rel="noopener noreferrer">
+              <img src="https://cdn.shopify.com/s/files/1/0746/0929/5611/files/ISL13P1.jpg?v=1755618501" alt="Isle 13 by Lambert &amp; Fils" style="object-fit: contain;">
+              <p class="mini-bento-label">Isle 13</p>
+              <div class="mini-bento-caption">Isle 13<span>Lambert &amp; Fils</span></div>
+            </a>
+          </div>
+          <div class="banner-dots">
+            <button type="button" class="banner-dot active" data-index="0" aria-label="Slide 1"></button>
+            <button type="button" class="banner-dot" data-index="1" aria-label="Slide 2"></button>
+            <button type="button" class="banner-dot" data-index="2" aria-label="Slide 3"></button>
+          </div>
+        </div>
       </div>
     </div>
   </section>
@@ -849,7 +1001,7 @@
           <p class="feature-spread-eyebrow">Ceramics</p>
           <p class="feature-spread-title">Plan</p>
           <p class="feature-spread-desc">Moustache</p>
-          <span class="feature-spread-cta">Shop the edit &rarr;</span>
+          <span class="feature-spread-cta">Visit site &rarr;</span>
         </div>
       </a>
     </div>
@@ -868,7 +1020,7 @@
           <p class="feature-spread-eyebrow">A themed edit</p>
           <p class="feature-spread-title">Two Seater Sofas</p>
           <p class="feature-spread-desc">A smaller scale doesn't mean smaller craft - from makers who build a two-seater with the same care as a three.</p>
-          <span class="feature-spread-cta">Shop the edit &rarr;</span>
+          <span class="feature-spread-cta">See the edit &rarr;</span>
         </div>
       </a>
     </div>
@@ -876,15 +1028,15 @@
     <div class="recent-group">
       <div class="recent-group-header">
         <h3>Round Dining Tables</h3>
-        <a href="round-dining-tables.html">See all &rarr;</a>
+        <a href="round-dining-tables.html">See the edit &rarr;</a>
       </div>
       <div class="duo-row">
-        <a class="duo-card" href="https://vaarnii.com/products/001-dining-table-round-files" target="_blank" rel="noopener noreferrer">
+        <a class="duo-card" href="round-dining-tables.html">
           <div class="duo-card-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/Dining-Table-Round-2.jpg?v=1719440688" alt="001 Dining Table Round Files by Vaarnii"></div>
           <span class="duo-name">001 Dining Table Round Files</span>
           <span class="duo-brand">Vaarnii</span>
         </a>
-        <a class="duo-card" href="https://www.fogia.com/tables/dining-table/supper-round-table" target="_blank" rel="noopener noreferrer">
+        <a class="duo-card" href="round-dining-tables.html">
           <div class="duo-card-image"><img src="https://images.fogia.com/21/92/c6/69/69c69221bcb2c7b68da4fa71/Fogia Supper round table Black stained Oak - RAL 9005 Front.png?auto=format&w=2000&q=90" alt="Supper Round Table by Fogia"></div>
           <span class="duo-name">Supper Round Table</span>
           <span class="duo-brand">Fogia</span>

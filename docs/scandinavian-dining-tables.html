@@ -206,17 +206,32 @@
   .mini-bento-3 { grid-column: 3; grid-row: 1; }
   .mini-bento-4 { grid-column: 2; grid-row: 2; }
   .mini-bento-5 { grid-column: 3; grid-row: 2; }
-  /* Same treatment as the homepage's own top 4-tile bento (.cat-label):
-     bold text straight over the photo, no background box/pill and no
-     gradient scrim - just a text-shadow for legibility (2026-09-29,
-     user's call: reuse "the main bento" look rather than either the
-     dark-gradient or light-pill versions tried first). */
-  .mini-bento-caption {
-    position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 1;
-    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 14px;
-    color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.55), 0 1px 16px rgba(0,0,0,0.35);
+  /* Hover-reveal, matching the homepage's own top 4-tile bento's
+     .cat-tile/.cat-label/.cat-details split, and now also its own
+     Floor Lamps mini-bento/duo-carousel slides (2026-09-29, user's
+     call: "should we use the same hover over function as on the home
+     page large bento... needs to be consistent across the site") - a
+     plain, always-visible name (.mini-bento-label) stands in at rest,
+     and this richer name+brand gradient scrim only fades in on hover.
+     Replaces an earlier, page-local-only text-shadow treatment (no
+     scrim, always visible) that predated the sitewide hover-reveal
+     convention. */
+  .mini-bento-label {
+    position: absolute; top: 10px; left: 10px; z-index: 2;
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 13px;
+    color: #fff; letter-spacing: -0.005em; margin: 0;
+    pointer-events: none;
   }
-  .mini-bento-caption span { display: block; font-family: inherit; font-weight: 400; font-size: 11px; margin-top: 2px; opacity: 0.9; }
+  .mini-bento-caption {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+    padding: 10px 12px; background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));
+    color: #fff; font-size: 12px; font-weight: 500;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+  .mini-bento-caption span { display: block; font-size: 11px; font-weight: 400; opacity: 0.8; }
+  .mini-bento-tile:hover .mini-bento-caption { opacity: 1; transform: translateY(0); }
   @media (max-width: 760px) {
     .edit-header h1 { font-size: 28px; }
     .bento-row { grid-template-columns: 1fr; }
@@ -706,22 +721,27 @@
       <div class="mini-bento">
       <a class="mini-bento-tile mini-bento-1" href="https://www.andtradition.com/products/drip-hw59-new-colours" target="_blank" rel="noopener noreferrer">
         <img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Drip-HW59_Bronzed-w.-Black-Fenix-Nano-Laminate-0720_front-view-600x800.jpg" alt="Drip HW59 by &amp;Tradition">
+        <p class="mini-bento-label">Drip HW59</p>
         <div class="mini-bento-caption">Drip HW59<span>&amp;Tradition</span></div>
       </a>
       <a class="mini-bento-tile mini-bento-2" href="https://kristinadamstudio.com/products/132000026" target="_blank" rel="noopener noreferrer">
         <img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/132000026.jpg?v=1756995606" alt="Bauhaus Dining Table by Kristina Dam Studio">
+        <p class="mini-bento-label">Bauhaus Dining Table</p>
         <div class="mini-bento-caption">Bauhaus Dining Table<span>Kristina Dam Studio</span></div>
       </a>
       <a class="mini-bento-tile mini-bento-3" href="https://framacph.com/products/tasca-table-small" target="_blank" rel="noopener noreferrer">
         <img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/FRAMA-Tasca-Table-Small-Context-Image-04_b8286053-c384-4005-9c74-438e1cbf055d.webp?v=1773244550" alt="Tasca Table | Small by Frama">
+        <p class="mini-bento-label">Tasca Table | Small</p>
         <div class="mini-bento-caption">Tasca Table | Small<span>Frama</span></div>
       </a>
       <a class="mini-bento-tile mini-bento-4" href="https://moebe.dk/products/kumu-dining-table" target="_blank" rel="noopener noreferrer">
         <img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_KUMU-Dining-Table_PP_220cm_Oak_Low-Res_04_KUCA220OOA.jpg?v=1789492487" alt="KUMU Dining Table by Moebe">
+        <p class="mini-bento-label">KUMU Dining Table</p>
         <div class="mini-bento-caption">KUMU Dining Table<span>Moebe</span></div>
       </a>
       <a class="mini-bento-tile mini-bento-5" href="https://noearlybirds.se/products/neb-rectangular-table-240x100cm-top-in-italian-granite" target="_blank" rel="noopener noreferrer">
         <img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Rectangular_table_240x100_verde_Italia_NEB_Bench_240_Neb_Chairs_01.jpg?v=1786903783" alt="NEB Rectangular Table by No Early Birds">
+        <p class="mini-bento-label">NEB Rectangular Table</p>
         <div class="mini-bento-caption">NEB Rectangular Table<span>No Early Birds</span></div>
       </a></div>
       <div class="bento-side-cards">
