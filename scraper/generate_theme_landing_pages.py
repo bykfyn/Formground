@@ -17,10 +17,15 @@ project-docs/FORMGROUND_STRATEGY_28.md, kept local/private) - not a
 replacement for /work.html, which still does everything these pages do
 and more (free-text search, every other category/theme).
 
-THEMES BUILT (2026-09-28), real counts at build time: floor lamp (238),
-round dining table (36), round coffee table (23 - thin, flagged as a
-scraping-priority follow-up per feedback_advertising_drives_content),
-scandinavian dining table (149).
+THEMES BUILT (2026-09-28), real counts at build time: floor lamp (238).
+
+THEMES MOVED OUT (2026-09-29): round dining table, round coffee table,
+and scandinavian dining table used to live here too, but they're also
+"Themed Edits" on the homepage (curated-feeling compound groupings, not
+a plain single keyword) - moved to generate_themed_edit_pages.py's
+richer editorial template (real intro copy, varied-size grid), which
+now owns those three output filenames. This file keeps only the
+straightforward single-keyword category pages.
 
 THEMES DELIBERATELY NOT BUILT: "modern vase" and "contemporary
 ceramics" were also on the same shortlist, but "modern"/"contemporary"
@@ -72,24 +77,6 @@ THEMES = [
         "title": "Floor Lamps",
         "intent": {"category": "floor lamp"},
         "intro": "Floor lamps from independent makers - every result links straight to the maker's own site.",
-    },
-    {
-        "slug": "round-dining-tables",
-        "title": "Round Dining Tables",
-        "intent": {"category": "dining table", "style_descriptors": ["round"]},
-        "intro": "Round dining tables from independent makers - every result links straight to the maker's own site.",
-    },
-    {
-        "slug": "round-coffee-tables",
-        "title": "Round Coffee Tables",
-        "intent": {"category": "coffee table", "style_descriptors": ["round"]},
-        "intro": "Round coffee tables from independent makers - every result links straight to the maker's own site.",
-    },
-    {
-        "slug": "scandinavian-dining-tables",
-        "title": "Scandinavian Dining Tables",
-        "intent": {"category": "dining table", "countries": ["Sweden", "Denmark", "Norway"]},
-        "intro": "Dining tables from Swedish, Danish, and Norwegian makers - new work by independent, living designers, not a vintage or antiques listing. Every result links straight to the maker's own site.",
     },
 ]
 

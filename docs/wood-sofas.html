@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wood Sofas — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="61 real wood sofas, from independent makers. Sofas built on real wood frames and legs, from makers who let the material show - the joinery, the grain, the leg profile are all part of the design, not hidden under upholstery. Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/wood-sofas.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Wood Sofas — Formground">
+<meta property="og:description" content="61 real wood sofas, from independent makers. Sofas built on real wood frames and legs, from makers who let the material show - the joinery, the grain, the leg profile are all part of the design, not hidden under upholstery. Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/wood-sofas.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Wood Sofas — Formground">
+<meta name="twitter:description" content="61 real wood sofas, from independent makers. Sofas built on real wood frames and legs, from makers who let the material show - the joinery, the grain, the leg profile are all part of the design, not hidden under upholstery. Every result links straight to the maker&#x27;s own site.">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .edit-header { max-width: 640px; margin: 0 auto 40px; text-align: center; }
+  .edit-header h1 { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 36px; margin: 0 0 14px; }
+  .edit-intro { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0; }
+  .page-tagline { font-size: 13px; color: var(--text-secondary); text-align: center; margin: 0 0 8px; }
+
+  /* Mini Bento paired with regular product cards in ONE row (2026-09-29,
+     user's call: not a full-width block interrupting the grid). The
+     bento stays square (matching the homepage's own paired version,
+     not its full-width 2.8:1 one), and .bento-side-cards is a matching
+     2x2 block of ordinary cards (same product_card_html() markup as the
+     rest of the page) sized to align with it. */
+  .bento-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 40px 0; align-items: stretch; }
+  .bento-side-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .mini-bento {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr;
+    gap: 10px; width: 100%; aspect-ratio: 1/1;
+  }
+  .mini-bento-tile { position: relative; display: block; overflow: hidden; border: 0.5px solid var(--border); background: var(--surface-1); }
+  .mini-bento-tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+  .mini-bento-tile:hover img { transform: scale(1.03); }
+  .mini-bento-1 { grid-column: 1; grid-row: 1 / 3; }
+  .mini-bento-2 { grid-column: 2; grid-row: 1; }
+  .mini-bento-3 { grid-column: 3; grid-row: 1; }
+  .mini-bento-4 { grid-column: 2; grid-row: 2; }
+  .mini-bento-5 { grid-column: 3; grid-row: 2; }
+  /* Same treatment as the homepage's own top 4-tile bento (.cat-label):
+     bold text straight over the photo, no background box/pill and no
+     gradient scrim - just a text-shadow for legibility (2026-09-29,
+     user's call: reuse "the main bento" look rather than either the
+     dark-gradient or light-pill versions tried first). */
+  .mini-bento-caption {
+    position: absolute; left: 10px; right: 10px; bottom: 10px; z-index: 1;
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 14px;
+    color: #fff; text-shadow: 0 1px 4px rgba(0,0,0,0.55), 0 1px 16px rgba(0,0,0,0.35);
+  }
+  .mini-bento-caption span { display: block; font-family: inherit; font-weight: 400; font-size: 11px; margin-top: 2px; opacity: 0.9; }
+  @media (max-width: 760px) {
+    .edit-header h1 { font-size: 28px; }
+    .bento-row { grid-template-columns: 1fr; }
+    .mini-bento { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; aspect-ratio: auto; height: 480px; }
+    .mini-bento-1 { grid-column: 1 / 3; grid-row: 1; }
+    .mini-bento-2 { grid-column: 1; grid-row: 2; }
+    .mini-bento-3 { grid-column: 2; grid-row: 2; }
+    .mini-bento-4 { grid-column: 1; grid-row: 3; }
+    .mini-bento-5 { grid-column: 2; grid-row: 3; }
+  }
+
+  /* Same Banner Carousel primitive used for the homepage's Sofas edit
+     (2026-09-29) - carries the homepage's own "themed edit" feel onto
+     this dedicated page, with different real pieces than the homepage
+     teaser shows (see each theme's "exclude" list). Auto-rotates every
+     6s, dot navigation, pauses on hover. */
+  .banner-carousel { position: relative; aspect-ratio: 2/1; margin-bottom: 40px; border: 0.5px solid var(--border); overflow: hidden; }
+  .banner-slide { position: absolute; inset: 0; display: none; }
+  .banner-slide.active { display: block; }
+  .banner-slide a { display: block; width: 100%; height: 100%; position: relative; text-decoration: none; color: inherit; }
+  .banner-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .banner-slide-content {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+    padding: 28px 32px; background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
+    color: #fff;
+  }
+  .banner-slide-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.8; margin: 0 0 6px; }
+  .banner-slide-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 28px; margin: 0 0 4px; }
+  .banner-slide-brand { font-size: 13px; opacity: 0.9; margin: 0; }
+  .banner-dots { position: absolute; bottom: 18px; right: 24px; z-index: 2; display: flex; gap: 6px; }
+  .banner-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; padding: 0; }
+  .banner-dot.active { background: #fff; }
+  @media (max-width: 760px) {
+    .banner-carousel { aspect-ratio: 4/3; }
+    .banner-slide-title { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline">A themed edit</p>
+  <div class="edit-header">
+    <h1>Wood Sofas</h1>
+    <p class="edit-intro">Sofas built on real wood frames and legs, from makers who let the material show - the joinery, the grain, the leg profile are all part of the design, not hidden under upholstery. Every result links straight to the maker&#x27;s own site.</p>
+  </div>
+  <div class="banner-carousel">
+        <div class="banner-slide active">
+          <a href="https://www.ligne-roset.com/en/p/upholstery/large-settee-kashima-3706" target="_blank" rel="noopener noreferrer">
+            <img src="https://www.ligne-roset.com/media/ligne_roset_ww/100b5v_c.jpg" alt="Kashima Large settee by Ligne Roset">
+            <div class="banner-slide-content">
+              <p class="banner-slide-eyebrow">A themed edit</p>
+              <p class="banner-slide-title">Kashima Large settee</p>
+              <p class="banner-slide-brand">Ligne Roset</p>
+            </div>
+          </a>
+        </div>
+        <div class="banner-slide">
+          <a href="https://verk.se/products/seating/sofas/sofa-v-vp-02/" target="_blank" rel="noopener noreferrer">
+            <img src="https://verk.se/wp-content/uploads/2023/04/sofa-v.vp_.02-product-image-1-860x937.jpg" alt="Sofa V.VP.02 by Verk">
+            <div class="banner-slide-content">
+              <p class="banner-slide-eyebrow">A themed edit</p>
+              <p class="banner-slide-title">Sofa V.VP.02</p>
+              <p class="banner-slide-brand">Verk</p>
+            </div>
+          </a>
+        </div>
+        <div class="banner-slide">
+          <a href="https://101cph.com/products/toe-sofa-natural-oak-off-white" target="_blank" rel="noopener noreferrer">
+            <img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21872359_263008_Toe_Sofa_-_Natural_Oak_Off_White_1.jpg?v=1781652820" alt="Toe Sofa by 101cph">
+            <div class="banner-slide-content">
+              <p class="banner-slide-eyebrow">A themed edit</p>
+              <p class="banner-slide-title">Toe Sofa</p>
+              <p class="banner-slide-brand">101cph</p>
+            </div>
+          </a>
+        </div><div class="banner-dots"><button type="button" class="banner-dot active" data-index="0" aria-label="Slide 1"></button><button type="button" class="banner-dot" data-index="1" aria-label="Slide 2"></button><button type="button" class="banner-dot" data-index="2" aria-label="Slide 3"></button></div></div>
+  <div class="grid">
+      <a class="card" href="https://www.ligne-roset.com/en/p/upholstery/large-settee-kashima-3706" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100b5v_c.jpg" alt="Kashima Large settee by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kashima Large settee</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/upholstery/medium-settee-kashima-3705" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100bld_c.jpg" alt="Kashima Medium settee by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kashima Medium settee</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/upholstery/large-1-armed-settee-kashima-4920" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100jgr_c.jpg" alt="Kashima Large 1-armed settee by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kashima Large 1-armed settee</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/upholstery/medium-1-armed-settee-kashima-4131" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100bkc_c.jpg" alt="Kashima Medium 1-armed settee by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kashima Medium 1-armed settee</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/upholstery/settee-wood-arms-g10-3763" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100iaz_c.jpg" alt="G10 Settee wood arms by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">G10 Settee wood arms</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://verk.se/products/seating/sofas/sofa-v-vp-02/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://verk.se/wp-content/uploads/2023/04/sofa-v.vp_.02-product-image-1-860x937.jpg" alt="Sofa V.VP.02 by Verk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa V.VP.02</p></div>
+          <p class="card-brand">Verk</p>
+        </div>
+      </a>
+      <a class="card" href="https://verk.se/products/seating/sofas/sofa-v-mc-01/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://verk.se/wp-content/uploads/2021/02/VERK-Mia-Cullin01-1-860x937.jpg" alt="Sofa V.MC.01 by Verk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa V.MC.01</p></div>
+          <p class="card-brand">Verk</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/toe-sofa-natural-oak-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21872359_263008_Toe_Sofa_-_Natural_Oak_Off_White_1.jpg?v=1781652820" alt="Toe Sofa by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Toe Sofa</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/day-bed-four-green/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Day-Bed-Four-Green1-1024x1024.jpg" alt="Day Bed Four by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Day Bed Four</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/bam-4-seater-sofa-4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/BAM_2400_Atlantis_18_Mole_01.png?v=1756636615" alt="BAM! 4 Seater Sofa by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BAM! 4 Seater Sofa</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/dandy-4-seater-sofa-focus" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Dandy_4-seater_Tonus_4_364_Natural_Oak_0005_027d9c83-4fae-41ba-a868-17a4a73e4d14.png?v=1756540035" alt="Dandy 4 Seater Sofa by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dandy 4 Seater Sofa</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/bam-3-seater-sofa-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/BAM_1800_Atlantis_18_Mole_01.png?v=1756633209" alt="BAM! 3 Seater Sofa by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BAM! 3 Seater Sofa</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/dandy-2-seater-sofa-focus" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Dandy_2-seater_Atlantis_18_Mole_Black_Stained_Oak_0001_3154bf2f-5dcb-4e84-a532-c0925d6370cb.png?v=1756201004" alt="Dandy 2 Seater Sofa by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dandy 2 Seater Sofa</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/bam-2-seater-sofa-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/BAM_1200_Atlantis_18_Mole_01_7d8c6b7e-dd73-4b54-9e66-dfb6b6e5cc87.png?v=1756634063" alt="BAM! 2 Seater Sofa by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BAM! 2 Seater Sofa</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/dandy-3-seater-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Dandy_3-seater_Atlantis_18_Mole_Black_Stained_Oak_0001_0b299950-3660-4e1d-a6a7-b9d11fbbaccd.png?v=1756461584" alt="Dandy 3 Seater Sofa by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dandy 3 Seater Sofa</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/brasilia-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/8156307-000200ZZ_Front.png?v=1761572018" alt="Brasilia Sofa by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Brasilia Sofa</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/mingle-sofa-sheepskin" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/byLassen_Mingle_2.jpg?v=1675774331" alt="Mingle Sofa by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mingle Sofa</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/vilhelm-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Vilhelm_Sofa_Jager_Lounge_Table_Gravel_Rug_Wing_Floor_Lamp_Releve_Platter.jpg?v=1676561435" alt="Vilhelm Sofa by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vilhelm Sofa</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/ingeborg-sofa-sheepskin" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/byLassen_IngeborgSofa_KlampenborgLamp_300.jpg?v=1676038301" alt="Ingeborg Sofa by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ingeborg Sofa</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/radiohus-sofa-p3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/1_Singleshot_DAKAR0250_HALLINGDAL65200_NATURALOAK_54a1a969-1da0-4362-b44b-866e60d1f5a4.png?v=1783239095" alt="Radiohus Sofa P3 by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Radiohus Sofa P3</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/radiohus-sofa-p2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/1_Singleshot_NATURALOAK_RE-WOOL218_UPHOLSTERY.png?v=1783238856" alt="Radiohus Sofa P2 by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Radiohus Sofa P2</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/pagode-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Pagode_Sofa_Androgyne_Lounge_Table.jpg?v=1654852447" alt="Pagode Sofa by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pagode Sofa</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-teddy-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDVTE_01-jpg.jpg?v=1764729258" alt="Sofa velvet teddy + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet teddy + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-tangerine-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDVT_01-jpg.jpg?v=1764729252" alt="Sofa velvet tangerine + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet tangerine + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-shade-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDVS_01-jpg.jpg?v=1764729262" alt="Sofa velvet shade + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet shade + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-rose-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDVR_01-jpg.jpg?v=1764729252" alt="Sofa velvet rose + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet rose + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-mole-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDVM_01-jpg.jpg?v=1764729249" alt="Sofa velvet mole + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet mole + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-fern-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDVFE_01-jpg.jpg?v=1764729254" alt="Sofa velvet fern + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet fern + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-grey-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDVF_01-jpg.jpg?v=1764729242" alt="Sofa velvet gray + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet gray + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-licot-black-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDLB_01-jpg.jpg?v=1764729242" alt="Sofa licot black + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa licot black + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-coco-off-white-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDCOW_01-jpg.jpg?v=1764729240" alt="Sofa coco off white + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa coco off white + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-coco-natural-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDCN_01-jpg.jpg?v=1764729240" alt="Sofa coco natural + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa coco natural + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-shade-frame-oak-natural-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003ONVS_01-jpg.jpg?v=1764729231" alt="Sofa velvet shade + frame oak natural Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet shade + frame oak natural Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-licot-black-frame-oak-natural-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003ONLB_01-jpg.jpg?v=1764729232" alt="Sofa licot black + frame oak natural Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa licot black + frame oak natural Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-shade-frame-oak-natural-ono-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522001ONVS_01-jpg.jpg?v=1764729211" alt="Sofa velvet shade + frame oak natural Ono 1 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet shade + frame oak natural Ono 1</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-licot-black-frame-oak-natural-ono-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522001ONLB_01-jpg.jpg?v=1764729207" alt="Sofa licot + frame Ono 1 by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa licot + frame Ono 1</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-tangerine-frame-oak-brown-ono-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522001OBRVT_01-jpg.jpg?v=1752545120" alt="Sofa velvet tangerine + frame oak brown Ono 1 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet tangerine + frame oak brown Ono 1</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-fern-frame-oak-brown-ono-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522001OBRVFE_01-jpg.jpg?v=1764729198" alt="Sofa velvet fern + frame oak brown  Ono 1 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet fern + frame oak brown  Ono 1</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-rose-lin-black-frame-oak-stained-black-ono-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522001OBLVRLB_01-jpg.jpg?v=1764729200" alt="Sofa velvet rose + lin black + frame oak stained black Ono 1 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet rose + lin black + frame oak stained black Ono 1</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-coco-natural-frame-oak-stained-black-ono-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522001OBLCN_01-jpg.jpg?v=1764729193" alt="Sofa coco natural + frame oak stained black Ono 1 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa coco natural + frame oak stained black Ono 1</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rico-sofa-2-seater-poppy-velvet-butter-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274471_1-bred.png?v=1788766473" alt="Rico Sofa 2-seater by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rico Sofa 2-seater</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dase-sofa-chaise-longue-left-poppy-velvet-butter-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274461_1-bred.png?v=1788766401" alt="Dase Sofa Chaise Longue Left by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dase Sofa Chaise Longue Left</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dase-sofa-chaise-longue-right-poppy-velvet-butter-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274462_1-bred.png?v=1788766327" alt="Dase Sofa Chaise Longue Right by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dase Sofa Chaise Longue Right</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/catena-sofa-connect-corner-l200-louisiana-sand-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273563_1-bred.png?v=1772690797" alt="Catena Sofa Connect Corner L200 by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Catena Sofa Connect Corner L200</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/catena-sofa-chaise-longue-right-l601-louisiana-sand-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273575_1-bred.png?v=1772690748" alt="Catena Sofa Chaise Longue Right L601 by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Catena Sofa Chaise Longue Right L601</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/catena-sofa-connect-corner-s200-louisiana-sand-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/catena_sofa_connect_corner_s200_louisiana_sand_chocolate_1_1x_1858bb08-24bd-463d-8b5c-b5a1df132122.webp?v=1775818258" alt="Catena Sofa Connect Corner S200 by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Catena Sofa Connect Corner S200</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/catena-sofa-chaise-longue-left-l600-louisiana-sand-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273553_1-bred.png?v=1772690621" alt="Catena Sofa Chaise Longue Left L600 by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Catena Sofa Chaise Longue Left L600</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/desert-2-seater-cashmere-pure-boucle-chestnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272764_1-bred.png?v=1772690489" alt="Desert 2-seater by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Desert 2-seater</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/catena-sofa-chaise-longue-right-s601-louisiana-sand-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/catena_sofa_chaise_longue_right_s601_louisiana_sand_chocolate_1_1x_d2ee370f-1771-4f51-a0f2-6b3f7ee812c2.webp?v=1775818345" alt="Catena Sofa Chaise Longue Right S601 by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Catena Sofa Chaise Longue Right S601</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rico-sofa-3-seater-louisiana-sand-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273697_1-bred.png?v=1772690242" alt="Rico Sofa 3-seater by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rico Sofa 3-seater</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/catena-sofa-chaise-longue-left-s600-louisiana-sand-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/catena_sofa_chaise_longue_left_s600_louisiana_sand_chocolate_1_1x_391b5d03-821f-46b4-8f25-7dc7c7728cbb.webp?v=1775818455" alt="Catena Sofa Chaise Longue Left S600 by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Catena Sofa Chaise Longue Left S600</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/desert-3-seater-cashmere-pure-boucle-chestnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272766_1-bred.png?v=1772689938" alt="Desert 3-seater by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Desert 3-seater</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/desert-1-seater-protective-cover-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273402_1.png?v=1772689670" alt="Desert 1-seater by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Desert 1-seater</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rico-sofa-4-boucle-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/593162_100108202_1.png?v=1762184054" alt="Rico Sofa 4-seater by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rico Sofa 4-seater</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dapple-lounge-2-seater-dark-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/879000_1104271793_1.png?v=1762178260" alt="Dapple Lounge 2-Seater by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dapple Lounge 2-Seater</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/lift-sofa-three-seater" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/LIFT_3_ash_pearl_fabric.jpg?v=1770726814" alt="LIFT Three Seat Sofa by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LIFT Three Seat Sofa</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/lift-sofa-two-seater" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/LIFT_2-_ash_anthracite_fabric.jpg?v=1770726832" alt="LIFT Two Seat Sofa by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LIFT Two Seat Sofa</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/tamilla-2-seater-oak-oatmeal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS382520_1.jpg?v=1775820323" alt="Tamilla 2-Seater Sofa Oak &amp; Oatmeal by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tamilla 2-Seater Sofa Oak &amp; Oatmeal</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/tamilla-2-seater-oak-sage" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS382521_1.jpg?v=1775820291" alt="Tamilla 2-Seater Sofa Oak &amp; Sage by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tamilla 2-Seater Sofa Oak &amp; Sage</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/tamilla-2-seater-oak-dahlia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS382522_1.jpg?v=1775820238" alt="Tamilla 2-Seater Sofa Oak &amp; Dahlia by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tamilla 2-Seater Sofa Oak &amp; Dahlia</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a></div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Search everything</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img, .mini-bento-tile img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  document.querySelectorAll(".banner-carousel").forEach(function (carousel) {
+    var slides = carousel.querySelectorAll(".banner-slide");
+    var dots = carousel.querySelectorAll(".banner-dot");
+    if (slides.length <= 1) return;
+    var current = 0;
+    var timer;
+    function show(i) {
+      current = i;
+      slides.forEach(function (s, idx) { s.classList.toggle("active", idx === i); });
+      dots.forEach(function (d, idx) { d.classList.toggle("active", idx === i); });
+    }
+    function next() { show((current + 1) % slides.length); }
+    function start() { timer = setInterval(next, 6000); }
+    function stop() { clearInterval(timer); }
+    dots.forEach(function (d, i) {
+      d.addEventListener("click", function () { show(i); stop(); start(); });
+    });
+    carousel.addEventListener("mouseenter", stop);
+    carousel.addEventListener("mouseleave", start);
+    start();
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
