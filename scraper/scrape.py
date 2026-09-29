@@ -1369,6 +1369,261 @@ def extract_eilersen(brand):
     return products
 
 
+def extract_jaume_ramirez(brand):
+    """
+    Real WordPress/Yoast site - the single /objects/ listing page
+    server-renders every real object in one grid (confirmed live
+    2026-09-29: 23 real cards, no pagination). Each card is a clean
+    <a><img></a><p class="object-name-grid">NAME</p> block - no category
+    field at all, so category is inferred from the name (already English,
+    e.g. "COPÉRNICA M TABLE LAMP") via the shared keyword matcher.
+    """
+    base = brand["url"].rstrip("/")
+    url = f"{base}/objects/"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    cards = re.findall(
+        r'<a href="(https://[a-zA-Z0-9./_-]+/objects/[a-z0-9-]+/)">'
+        r'<img src="([^"]+)"></a>\s*'
+        r'<p class="object-name-grid">([^<]+)</p>',
+        resp.text,
+    )
+    products = []
+    seen_urls = set()
+    for product_url, image_url, raw_name in cards:
+        if product_url in seen_urls:
+            continue
+        seen_urls.add(product_url)
+        name = html.unescape(raw_name).strip().title()
+        category = _infer_category_from_name(name, "", brand_name=brand["name"])
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": product_url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+
+    return products
+
+
+# Real category pages confirmed live 2026-09-29 - "bibliothques" is
+# Mokko's own real (misspelled, missing the "è") URL slug for their
+# bookcase collection, not a Formground typo.
+MOKKO_CATEGORIES = ["dining-tables", "coffee-and-side-tables", "consoles", "seating", "bibliothques", "objects"]
+# Real top-level pages that aren't products - confirmed by diffing every
+# link found in MOKKO_CATEGORIES against this site's own nav.
+MOKKO_NON_PRODUCT_PAGES = {
+    "about", "contact", "faq", "samples", "professionals", "collection",
+    "projects", "all",
+} | set(MOKKO_CATEGORIES)
+
+
+def extract_mokko_amsterdam(brand):
+    """
+    Squarespace, but not Commerce - each category page is a plain image-
+    gallery block (caption text, no link on the image itself), so name/
+    image/url can't be read off one card the way most brands allow.
+    Real individual product pages do exist (confirmed live: /brut-slim-
+    table, /fenestra-table, ...), just as bare top-level slugs unrelated
+    in the markup to the gallery images - collected here by diffing every
+    real link on each category page against MOKKO_NON_PRODUCT_PAGES, then
+    visited individually for a real title (og:title, brand suffix
+    stripped) and image (first real content image on the page). 35 real
+    products confirmed 2026-09-29, well within budget for the per-product
+    visits this approach needs.
+    """
+    base = brand["url"].rstrip("/")
+    slugs = set()
+    for category in MOKKO_CATEGORIES:
+        url = f"{base}/{category}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        hrefs = re.findall(r'href="(/[a-z0-9-]+)"', resp.text)
+        slugs |= {h[1:] for h in hrefs if h[1:] not in MOKKO_NON_PRODUCT_PAGES}
+        time.sleep(1)  # be polite - don't hammer the site
+
+    products = []
+    for slug in sorted(slugs):
+        product_url = f"{base}/{slug}"
+        try:
+            resp = requests.get(product_url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {product_url}: {e}")
+            continue
+
+        title_match = re.search(r'property="og:title" content="([^"]+)"', resp.text)
+        if not title_match:
+            continue
+        name = html.unescape(title_match.group(1)).split("&mdash;")[0].split("—")[0].strip()
+
+        image_match = re.search(r'data-src="(https://images\.squarespace-cdn\.com[^"]+)"', resp.text)
+        image_url = image_match.group(1) if image_match else ""
+        if not image_url:
+            continue
+
+        category = _infer_category_from_name(name, "", brand_name=brand["name"])
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": product_url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+        time.sleep(1)  # be polite - don't hammer the site
+
+    return products
+
+
+# Real category listing pages confirmed live 2026-09-29, each server-
+# rendering its full real grid in one page - the URL path segment itself
+# already carries a real, specific type for the lighting ones; "seating"
+# and "tables" are broad, so those are passed through as UNHELPFUL_
+# CATEGORIES values instead ("seating"/"table" are both already in that
+# set), letting the real name-based inference below refine them further
+# (e.g. "Sacha Sofa" -> Sofa, "Cadre Chair" -> Chair).
+RESIDENT_CATEGORY_PATHS = {
+    "seating": "seating",
+    "tables": "table",
+    "storage": "Storage",
+    "floor-lights": "Floor Lamp",
+    "pendant-lights": "Pendant Lamp",
+    "table-lamps": "Table Lamp",
+    "wall-lights": "Wall Lamp",
+}
+
+
+def extract_resident(brand):
+    """
+    Custom NZ site, no product API - each real /en/{furniture|lighting}/
+    overview page server-renders its full grid in one page (confirmed
+    live: 12 furniture + 12 lighting = 24 real products, no pagination).
+    One fetch per section, not per sub-path - an earlier version fetched
+    once per RESIDENT_CATEGORY_PATHS entry, which reused the SAME page's
+    full, unfiltered image list against a much shorter per-subpath href
+    list, misaligning almost every pairing once zip() ran out of the
+    shorter list. Each card also shows TWO images (primary + hover-swap)
+    sharing the exact same markup shape - handled by collecting hrefs and
+    images as two separate ordered lists (scoped to the whole page, not
+    per sub-path) and taking every OTHER image (index 0, 2, 4...),
+    confirmed live to realign correctly with the real, matching href.
+    """
+    base = brand["url"].rstrip("/")
+    products = []
+    for section in ("furniture", "lighting"):
+        url = f"{base}/en/{section}/"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        hrefs = re.findall(rf'<a href="(/en/{section}/[a-z-]+/[a-z0-9-]+)">', resp.text)
+        img_pairs = re.findall(r'<img src="([^"]+)" width=450 height=450\s*\n\s*alt="([^"]+)"', resp.text)
+        primary_images = img_pairs[0::2]
+        for href, (image_path, raw_name) in zip(hrefs, primary_images):
+            name = html.unescape(raw_name).strip()
+            subpath = href.split("/")[3]
+            coarse_category = RESIDENT_CATEGORY_PATHS.get(subpath, "")
+            category = _infer_category_from_name(name, coarse_category, brand_name=brand["name"])
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": name,
+                "product_url": urllib.parse.urljoin(base, href),
+                "category": category,
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": urllib.parse.urljoin(base, image_path),
+            })
+        time.sleep(1)  # be polite - don't hammer the site
+
+    return products
+
+
+# Marset's own real data-category values (confirmed live 2026-09-29) -
+# "portable-lamps" is a real, distinct type on their own site (relevant
+# to the cordless/rechargeable lamp keyword work the same night).
+MARSET_CATEGORY_MAP = {
+    "table-lamps": "Table Lamp", "floor-lamps": "Floor Lamp",
+    "wall-lamps": "Wall Lamp", "ceiling-lamps": "Ceiling Lamp",
+    "pendant-lamps": "Pendant Lamp", "portable-lamps": "Portable Lamp",
+}
+
+
+def extract_marset(brand):
+    """
+    Previously deferred (per brands.json's own prior note: ~98 separate
+    product pages needed) - that assumed per-product visits were the only
+    way in, but /en/indoor-lighting/ alone server-renders the ENTIRE real
+    catalog in one page (confirmed live 2026-09-29: 89 real cards, one
+    fetch, real category/name/image all in the same clean block - no
+    per-product visits needed at all). Each product appears with two
+    images (primary + hover-swap, same shape as Resident) but the regex
+    below is anchored to the "primary-image" class specifically, so no
+    dedup-by-index trick is needed here the way Resident required one.
+    """
+    base = brand["url"].rstrip("/")
+    url = f"{base}/en/indoor-lighting/"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    cards = re.findall(
+        r'data-category="\s*([a-z-]+)">\s*<a class="image-holder" href="([^"]+)">\s*'
+        r'<img class="primary-image[^"]*" alt="([^"]+)" data-src="" src="([^"]+)"',
+        resp.text,
+    )
+    products = []
+    seen_urls = set()
+    for raw_category, product_url, alt_text, image_url in cards:
+        if product_url in seen_urls:
+            continue
+        seen_urls.add(product_url)
+        category = MARSET_CATEGORY_MAP.get(raw_category, "")
+        # alt is "{Type} - {Name}" (e.g. "Table Lamp - Gambosa") - swapped
+        # to "{Name} {Type}" to match this site's own convention of
+        # naming the design first, type second (e.g. "Gambosa Table Lamp").
+        lamp_type, _, name = alt_text.partition(" - ")
+        product_name = f"{name.strip()} {lamp_type.strip()}" if name else lamp_type.strip()
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": html.unescape(product_name),
+            "product_url": product_url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+
+    return products
+
+
 def extract_baleri_italia(brand):
     """
     baleri-italia.com has a "products.json" endpoint too, but unlike a real
@@ -2295,6 +2550,45 @@ def _infer_byarums_bruk_category(product_name):
     return None
 
 
+# French object-type words (2026-09-29, Kann Design/Tiptoe) - kept
+# brand-scoped, not added to the shared English list, same reasoning as
+# BYARUMS_BRUK_SWEDISH_KEYWORDS above: these are plain French words that
+# would collide with real English product names at other brands. Ordered
+# so a longer, more specific phrase is checked before a shorter one it
+# contains ("chaise haute" before bare "chaise", "table basse" before
+# any bare "table" word this list might otherwise gain).
+FRENCH_OBJECT_TYPE_KEYWORDS = (
+    ("table de repas", "Dining Table"), ("table à manger", "Dining Table"),
+    ("table basse", "Coffee Table"),
+    ("table d'appoint", "Side Table"), ("table d’appoint", "Side Table"),
+    ("canapé", "Sofa"), ("canape", "Sofa"), ("banquette", "Sofa"),
+    ("fauteuil", "Armchair"),
+    ("chaise haute", "Chair"), ("chaise", "Chair"),
+    ("bibliothèque", "Bookcase"), ("bibliotheque", "Bookcase"),
+    ("buffet", "Sideboard"), ("bureau", "Desk"),
+    ("banc et tabouret", "Bench"), ("banc", "Bench"),
+    ("tabouret de bar", "Bar Stool"), ("tabouret", "Stool"),
+    ("chariot bar", "Bar Cart"),
+    ("étagère", "Shelving"), ("etagère", "Shelving"), ("etagere", "Shelving"),
+    ("tablette murale", "Shelving"),
+    ("repose-pieds", "Ottoman"),
+    ("penderie", "Wardrobe"), ("bloc portes", "Shelving"), ("echelle", "Ladder"),
+    ("accroche murale", "Coat Hook"), ("patère", "Coat Hook"), ("patere", "Coat Hook"),
+)
+
+
+def _infer_category_from_french_keywords(text):
+    text = text.lower()
+    for phrase, category in FRENCH_OBJECT_TYPE_KEYWORDS:
+        # Optional trailing "s" - confirmed live 2026-09-29: Kann
+        # Design's own "Bibliothèques" (plural) product_type didn't
+        # match bare "bibliothèque" without this, same \b-anchored-exact-
+        # word gap already documented on the English keyword list above.
+        if re.search(rf"\b{re.escape(phrase)}s?\b", text):
+            return category
+    return None
+
+
 # A last-resort fallback for a brand whose ENTIRE real catalog is one
 # object type, used only when every other check above already failed -
 # confirmed live 2026-09-26 for DCW editions: their own Shopify
@@ -2369,6 +2663,33 @@ def _infer_category_from_name(product_name, current_category, brand_name=None):
     # than adding these specific digit strings to UNHELPFUL_CATEGORIES,
     # so a future brand with different numeric codes is covered too.
     stripped_category = current_category.strip()
+    if brand_name == "Kann Design":
+        # product_type IS already the clean French word ("chaise",
+        # "table de repas") - always translate it, regardless of whether
+        # it happens to be in UNHELPFUL_CATEGORIES (it never is, these
+        # are specific real words, not umbrella ones like "furniture").
+        # A miss (some product_type not in the list above) falls through
+        # to blank rather than ever returning a raw, untranslated French
+        # word - confirmed live: without this, an unmapped value would
+        # pass the is_unhelpful gate below unchanged (it's a real,
+        # specific-looking string, just not in English).
+        french_match = _infer_category_from_french_keywords(stripped_category)
+        if french_match:
+            return french_match
+        stripped_category = ""
+    if brand_name == "Tiptoe":
+        # product_type is an internal collection/model code (TIPTOE, PLI,
+        # DISC, SSD...), never a real category - the real signal is a
+        # French object-type word embedded in the product NAME itself
+        # (e.g. "Table basse ronde DISC"). A miss forces blank too, same
+        # reasoning as Kann Design above - a collection code like "PLI"
+        # or "NEW MODERN" would otherwise pass the is_unhelpful gate
+        # below unchanged, since it's not a literal UNHELPFUL_CATEGORIES
+        # entry.
+        french_match = _infer_category_from_french_keywords(product_name)
+        if french_match:
+            return french_match
+        stripped_category = ""
     is_unhelpful = stripped_category.lower() in UNHELPFUL_CATEGORIES or stripped_category.isdigit()
     if not is_unhelpful:
         return current_category
@@ -3497,12 +3818,25 @@ def extract_woocommerce(brand):
         # result card needs.
         image_url = (images[0].get("thumbnail") or images[0].get("src")) if images else ""
 
+        joined_category = ", ".join(categories)
+        if brand["name"] == "Heilig Objects":
+            # Confirmed live 2026-09-29: this brand's real WooCommerce
+            # categories are full descriptive sentences ("Seats & stools
+            # in limitied editions" [sic], "Cabinets, chests of drawers
+            # and lowboards as unique pieces or limited editions") - never
+            # a match for UNHELPFUL_CATEGORIES below, so the real
+            # name-based inference never got a chance to run. Forced
+            # blank here so it does - real English product names (PONTI
+            # Coffee Table, FAT LEG 65 Dining Table) resolve cleanly.
+            joined_category = ""
+        joined_category = _infer_category_from_name(base_name, joined_category, brand_name=brand["name"])
+
         products.append({
             "brand": brand["name"],
             "brand_url": brand["url"],
             "product_name": base_name,
             "product_url": first.get("permalink", base),
-            "category": ", ".join(categories),
+            "category": joined_category,
             "material_options": sorted(material_options),
             "dimensions": "",
             # No longer a bare variant count here (2026-09-09) - some
@@ -7508,6 +7842,17 @@ EXTRACTORS = {
     "Noom": extract_noom,
     "Design House Stockholm": extract_shopify,
     "Eilersen": extract_eilersen,
+    "Fleur Studios": extract_shopify,
+    "Kann Design": extract_shopify,
+    "Lemon Furniture": extract_shopify,
+    "Tiptoe": extract_shopify,
+    "Heilig Objects": extract_woocommerce,
+    "Nedrefoss": extract_woocommerce,
+    "Art Resources": extract_woocommerce,
+    "Jaume Ramirez": extract_jaume_ramirez,
+    "Mokko Amsterdam": extract_mokko_amsterdam,
+    "Resident": extract_resident,
+    "Marset": extract_marset,
     # "TAKT" excluded here - confirmed 2026-09-25: the WooCommerce Store
     # API returns HTTP 200 but a 0-byte body for the scraper's real UA
     # specifically, while a generic UA gets the full real response - a
