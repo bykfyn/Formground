@@ -298,6 +298,19 @@ class ResolveIntentTests(unittest.TestCase):
         resolved = qe._resolve_intent("two seater sofa", llm_intent)
         self.assertEqual(resolved["category"], "sofa")
 
+    def test_bare_seat_word_without_er_suffix_still_matches(self):
+        # Confirmed live 2026-09-29: "two seat sofa" (no "-er") returned
+        # only 4 results - the query-side pattern required "seater(s)"
+        # and missed the bare "seat(s)" phrasing a real searcher used,
+        # even though no product name itself ever uses bare "seat".
+        self.assertEqual(qe._wanted_seat_count("two seat sofa"), 2)
+        self.assertEqual(qe._wanted_seat_count("2 seat sofa"), 2)
+        self.assertEqual(qe._wanted_seat_count("two seats sofa"), 2)
+
+    def test_loveseat_does_not_false_positive(self):
+        self.assertIsNone(qe._wanted_seat_count("a loveseat sofa"))
+        self.assertIsNone(qe._wanted_seat_count("seat cushion"))
+
 
 class ProductMatchesSeatCountTests(unittest.TestCase):
     def test_digit_form_matches(self):

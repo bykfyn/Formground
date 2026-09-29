@@ -197,16 +197,24 @@ def _wanted_countries(stripped_query: str, llm_location) -> set:
 # "3 seater" (30), "two seater" (30), "3-seater" (25), "three seater"
 # (21), "one seater" (20), "5-seater"/"5 seater" (34 combined), "4
 # seater"/"4-seater" (15 combined), "1-seater"/"1 seater" (10 combined).
-# No product uses bare "seat" without "-er". A seat count is a real,
-# literal fact embedded in a product's own name, not a structured
-# database column - the same "read it from the name, don't invent a new
-# field" approach GENERIC_PRODUCT_NAMES/filter_by_name already use
-# elsewhere, just applied via a dedicated hard filter here since a
-# plain name-substring search (filter_by_name) already confirmed live
-# to under-match it (only 4 of 56 real "two seater" matches).
+# No product uses bare "seat" without "-er" in its own name - but a
+# real searcher does sometimes type "two seat sofa" rather than "two
+# seater sofa" (confirmed live 2026-09-29: it returned only 4 results,
+# same small count "two seater" itself used to return before this
+# whole feature existed). The "-er" stays optional in this QUERY-side
+# pattern for that reason, even though it's never optional in
+# _product_matches_seat_count's product-name check below - a search
+# for "two seat" should still match a product literally named "Two
+# Seater Sofa". A seat count is a real, literal fact embedded in a
+# product's own name, not a structured database column - the same
+# "read it from the name, don't invent a new field" approach
+# GENERIC_PRODUCT_NAMES/filter_by_name already use elsewhere, just
+# applied via a dedicated hard filter here since a plain name-substring
+# search (filter_by_name) already confirmed live to under-match it
+# (only 4 of 56 real "two seater" matches).
 SEAT_COUNT_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6}
 SEAT_COUNT_NUMBER_WORDS = {v: k for k, v in SEAT_COUNT_WORDS.items()}
-SEAT_COUNT_PATTERN = re.compile(r"\b(\d+|one|two|three|four|five|six)[\s-]?seaters?\b", re.IGNORECASE)
+SEAT_COUNT_PATTERN = re.compile(r"\b(\d+|one|two|three|four|five|six)[\s-]?seat(?:er)?s?\b", re.IGNORECASE)
 
 
 def _wanted_seat_count(stripped_query: str):
