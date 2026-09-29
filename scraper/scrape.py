@@ -1300,6 +1300,75 @@ def extract_noom(brand):
     return products
 
 
+# Eilersen's own real category-type labels (from each product card's
+# data-gtm attribute, confirmed live 2026-09-29) mapped to this site's
+# category vocabulary. /products/table-tops/ is deliberately excluded
+# from EILERSEN_CATEGORIES below, not mapped here - its "products" are
+# material swatches for a table's top surface ("Glass, Transparent",
+# "Marble, Brown"), not standalone design objects, same shape as every
+# other brand's material-sample exclusion already in
+# _looks_like_a_maintenance_item.
+EILERSEN_CATEGORY_MAP = {
+    "Sofa": "Sofa", "Chair": "Chair", "Table": "Table",
+    "Footstool": "Ottoman", "Shelf": "Shelving", "Cushion": "Cushion",
+    "Outdoor": "Outdoor",
+}
+EILERSEN_CATEGORIES = ["sofas", "chairs", "tables", "footstools", "shelves", "cushions", "outdoor"]
+
+
+def extract_eilersen(brand):
+    """
+    eilersen.dk redirects to eilersen.com, a near-empty landing page -
+    the real, live storefront is eilersen.eu (user-provided 2026-09-29).
+    No product API (old TYPO3-flavored custom site), but each of the 7
+    real category pages (EILERSEN_CATEGORIES) server-renders its full
+    product grid in one page - confirmed live: real content sits in the
+    initial HTML despite href values being root-relative ("/products/
+    sofas/amon/"), which an absolute-URL-only regex would miss entirely.
+    Each card gives name (.fname h2), category (data-gtm), image (inline
+    background-image style), and url together in one clean block.
+    """
+    base = brand["url"].rstrip("/")
+    products = []
+    seen_urls = set()
+
+    for category_slug in EILERSEN_CATEGORIES:
+        url = f"{base}/products/{category_slug}/"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        cards = re.findall(
+            r'<a href="(/products/[a-z0-9-]+/[a-z0-9-]+/)" class="item_product [a-zA-Z]+" '
+            r'data-gtm="([^"]+)" id="[a-z_0-9-]+">\s*'
+            r'<div class="fimage" style="background-image: url\(\'([^\']+)\'\);"></div>\s*'
+            r'<div class="fname"><h2>([^<]+)</h2></div>',
+            resp.text,
+        )
+        for product_url, raw_type, image_path, name in cards:
+            full_url = urllib.parse.urljoin(base, product_url)
+            if full_url in seen_urls:
+                continue
+            seen_urls.add(full_url)
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": html.unescape(name).strip(),
+                "product_url": full_url,
+                "category": EILERSEN_CATEGORY_MAP.get(raw_type, ""),
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": urllib.parse.urljoin(base, image_path),
+            })
+        time.sleep(1)  # be polite - don't hammer the site
+
+    return products
+
+
 def extract_baleri_italia(brand):
     """
     baleri-italia.com has a "products.json" endpoint too, but unlike a real
@@ -2293,7 +2362,15 @@ def _fetch_dcw_category_overrides(base_url):
 
 
 def _infer_category_from_name(product_name, current_category, brand_name=None):
-    if current_category.strip().lower() not in UNHELPFUL_CATEGORIES:
+    # A purely-numeric category is never a real category name for any
+    # brand - confirmed live 2026-09-29 on Design House Stockholm, whose
+    # Shopify product_type field is sometimes a raw internal code ("807",
+    # "806", "804") instead of a real value. Checked generically rather
+    # than adding these specific digit strings to UNHELPFUL_CATEGORIES,
+    # so a future brand with different numeric codes is covered too.
+    stripped_category = current_category.strip()
+    is_unhelpful = stripped_category.lower() in UNHELPFUL_CATEGORIES or stripped_category.isdigit()
+    if not is_unhelpful:
         return current_category
     first_word = product_name.strip().split(" ")[0].lower().rstrip(",.")
     italian = ITALIAN_OBJECT_TYPES.get(first_word)
@@ -2841,6 +2918,27 @@ def extract_shopify(brand):
         # brand was added to deepen. No "spare"/"template" keyword in
         # the name, so the generic filters above don't catch it.
         raw_products = [p for p in raw_products if not p["title"].lower().startswith("arc leg (")]
+    if brand["name"] == "Design House Stockholm":
+        # Confirmed live 2026-09-29: 93 of 440 real listings (21%) are a
+        # gift-shop sideline sold through the same catalog as its real
+        # furniture/lighting/rugs/objects - Elsa Beskow/Astrid Lindgren/
+        # Birds 1967 branded mugs, posters, Christmas ornaments, and tote
+        # bags. Real illustrator/character merchandise, not design
+        # objects Formground exists to surface (same reasoning as the
+        # Seletti/Artetica jewelry-sideline exclusions already in
+        # _looks_like_a_maintenance_item, just brand-scoped here since
+        # "mug"/"poster" would be too broad to exclude generically -
+        # several other brands sell real design-object vases/carafes/
+        # trays that could plausibly use those words).
+        gift_shop_keywords = (
+            "mug", "poster", "ornament", "tote bag", "christmas",
+            "notebook", "calendar", "apron", "towel", "napkin", "coaster",
+            "scarf", "backpack",
+        )
+        raw_products = [
+            p for p in raw_products
+            if not any(kw in p["title"].lower() for kw in gift_shop_keywords)
+        ]
     if brand["name"] == "Byarums Bruk":
         # 106 of 183 real catalog entries (58%, confirmed 2026-09-22) are
         # literally replacement components sold for Byarums Bruk's own
@@ -7408,6 +7506,8 @@ EXTRACTORS = {
     "B&B Italia": extract_bb_italia,
     "Gervasoni": extract_gervasoni,
     "Noom": extract_noom,
+    "Design House Stockholm": extract_shopify,
+    "Eilersen": extract_eilersen,
     # "TAKT" excluded here - confirmed 2026-09-25: the WooCommerce Store
     # API returns HTTP 200 but a 0-byte body for the scraper's real UA
     # specifically, while a generic UA gets the full real response - a
