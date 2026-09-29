@@ -32,6 +32,7 @@ appends to it):
 """
 
 import html
+import sqlite3
 import sys
 from pathlib import Path
 
@@ -57,38 +58,37 @@ from generate_theme_landing_pages import (  # noqa: E402
     append_to_sitemap,
 )
 
-# Real wood-species/generic-wood words, checked against a product's own
-# name + material_options (never notes - checked live, notes barely
-# changed the count and is a less reliable field). This is the same
-# real signal a "wood sofa" claim rests on elsewhere on the site
-# (material_options already stores literal finish names like "Natural
-# Oak"/"Walnut" for Audo's Pagode Sofa, the theme's original hero).
-WOOD_WORDS = {"oak", "walnut", "ash", "teak", "pine", "birch", "wood", "timber", "beech", "elm"}
-
-
-def _is_wood_sofa(p):
-    text = (p["product_name"] + " " + " ".join(p["material_options"])).lower()
-    return any(w in text for w in WOOD_WORDS)
-
-
-def _wood_sofas():
-    return [p for p in qe.filter_products({"category": "sofa"}) if _is_wood_sofa(p)]
-
-
 THEMES = [
     {
-        "slug": "wood-sofas",
-        "title": "Wood Sofas",
-        "fetch": _wood_sofas,
+        # Replaces the old "Wood Sofas" theme (2026-09-29) - "two seater
+        # sofa" is one of the locked ad keywords (see
+        # project-docs/FORMGROUND_STRATEGY_28.md, kept local/private),
+        # ties directly to the real seat_count search fix, and needs no
+        # ad-hoc word-matching heuristic the way "wood sofa" did (no
+        # clean existing definition existed for that one - see project
+        # memory, themed_edit_pages_built.md). Real count: 54 products,
+        # 11 brands (56 minus 2 Serax "protection cover" items excluded
+        # by _is_protective_cover, added 2026-09-29).
+        "slug": "two-seater-sofas",
+        "title": "Two Seater Sofas",
+        "fetch": lambda: qe.filter_products({"category": "sofa", "seat_count": 2}),
         "intro": (
-            "Sofas built on real wood frames and legs, from makers who let the "
-            "material show - the joinery, the grain, the leg profile are all "
-            "part of the design, not hidden under upholstery. Every result "
-            "links straight to the maker's own site."
+            "A two-seater doesn't try to fill a room - it fits a reading "
+            "corner, a hallway, a space a three-seater never would. The "
+            "smaller scale doesn't mean smaller craft: the same joinery, "
+            "the same attention to an arm or a leg, just sized for more "
+            "homes. Every result links straight to the maker's own site."
         ),
-        # Already shown on the homepage's own Wood Sofas Feature Spread -
-        # the carousel here should feel like the same edit, not a rerun.
-        "exclude": {("Audo", "Pagode Sofa")},
+        # User's own hand-picked carousel (2026-09-29) - see
+        # _resolve_carousel_picks for why "Rydal sofa" and "Fly SC2"
+        # need the direct-DB-lookup fallback (neither name literally
+        # says "2 seater", so the theme's own fetch filter above
+        # excludes them from the grid).
+        "carousel_picks": [
+            ("Fogia", "Boxlike 2 Seater Sofa"),
+            ("Pinch", "Rydal sofa"),
+            ("&Tradition", "Fly SC2"),
+        ],
     },
     {
         "slug": "round-dining-tables",
@@ -129,6 +129,59 @@ THEMES = [
 ]
 
 CAROUSEL_SIZE = 3
+
+
+def _resolve_carousel_picks(theme, products):
+    """
+    A theme with a "carousel_picks" key (a list of (brand, product_name)
+    tuples) is being hand-picked by a real person - looks each one up
+    first in the real fetched product list, then falls back to a direct
+    DB lookup by exact (brand, product_name) for anything not found
+    there (so a typo or a since-delisted product just quietly drops
+    instead of crashing the build), and uses exactly that set, in that
+    order, instead of auto-picking. The DB fallback matters because a
+    theme's own "fetch" filter can be stricter than what a human
+    correctly recognizes as belonging - confirmed live 2026-09-29:
+    Two Seater Sofas' fetch requires a product's NAME to literally say
+    "2 seater" (see _product_matches_seat_count), which two of three
+    user-picked products don't (Pinch's "Rydal sofa", &Tradition's "Fly
+    SC2" - the latter's own category field is literally "2-seater
+    Sofa"), even though both are real two-seaters. A hand pick has
+    already been visually verified by a person, so it doesn't need to
+    also pass the same automated heuristic used to build the grid. An
+    empty list (the pending-picks state) means no carousel renders at
+    all (see _render_carousel) rather than falling back to a default
+    that would only need replacing once real picks arrive. A theme with
+    no "carousel_picks" key at all keeps the original deterministic
+    auto-pick behavior.
+    """
+    manual = theme.get("carousel_picks")
+    if manual is None:
+        return _carousel_picks(products, theme.get("exclude", set()))
+    lookup = {(p["brand"], p["product_name"]): p for p in products}
+    resolved = []
+    for key in manual:
+        if key in lookup:
+            resolved.append(lookup[key])
+            continue
+        product = _lookup_product_by_identity(*key)
+        if product is not None:
+            resolved.append(product)
+    return resolved
+
+
+def _lookup_product_by_identity(brand, product_name):
+    """Direct DB lookup by exact (brand, product_name) - used only as
+    the fallback above for a manual carousel pick the theme's own
+    fetch filter excluded."""
+    conn = sqlite3.connect(qe.DB_PATH)
+    conn.row_factory = sqlite3.Row
+    row = conn.execute(
+        "SELECT * FROM products WHERE brand = ? AND product_name = ?",
+        (brand, product_name),
+    ).fetchone()
+    conn.close()
+    return dict(row) if row else None
 
 
 def _carousel_picks(products, exclude):
@@ -374,7 +427,7 @@ def render_themed_edit_page(theme, products):
     description = f"{n} real {title.lower()}{'' if title.lower().endswith('s') else 's'}, from independent makers. {theme['intro']}"
 
     cards_to_render, variant_counts = _group_color_variants(products)
-    carousel_html = _render_carousel(_carousel_picks(cards_to_render, theme.get("exclude", set())))
+    carousel_html = _render_carousel(_resolve_carousel_picks(theme, cards_to_render))
 
     if cards_to_render:
         # Individual products use the exact same card as /work.html's own

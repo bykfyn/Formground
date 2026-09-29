@@ -346,6 +346,20 @@ class IsModularComponentTests(unittest.TestCase):
         self.assertFalse(qe._is_modular_component("Bolide Sofa"))
 
 
+class IsProtectiveCoverTests(unittest.TestCase):
+    def test_protection_cover_matches(self):
+        self.assertTrue(qe._is_protective_cover("protection cover 2 seater rudolph"))
+
+    def test_ordinary_name_does_not_match(self):
+        self.assertFalse(qe._is_protective_cover("Bolide Sofa"))
+
+    def test_unrelated_cover_word_does_not_match(self):
+        # Only the literal "protection cover" phrase is excluded - a
+        # real product legitimately named with just "cover" (e.g. a
+        # standalone seat cover product) isn't affected.
+        self.assertFalse(qe._is_protective_cover("Seat Cover"))
+
+
 class CapPerBrandTests(unittest.TestCase):
     """
     Covers "brand is the minimum unit of inclusion" - a brand with a

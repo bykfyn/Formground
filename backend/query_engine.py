@@ -607,13 +607,31 @@ def _is_modular_component(product_name: str) -> bool:
     return bool(MODULAR_COMPONENT_PATTERN.search(product_name))
 
 
+# A protective cover FOR a piece of furniture, not the furniture itself -
+# found live 2026-09-29 while building the Two Seater Sofas theme:
+# Serax lists "protection cover 2 seater rudolph"/"protection cover 2
+# seater bea mombaers" under category "Sofa" (and a 1-seater/3-seater/
+# ottoman version of each, 9 total), so a plain "sofa" search surfaced
+# a fabric cover as if it were a sofa. Scoped tightly to the literal
+# phrase actually found, not a broader "cover" match, since a real
+# product could legitimately be named e.g. "seat cover" as its own
+# upholstery product.
+PROTECTIVE_COVER_PATTERN = re.compile(r"protection cover", re.IGNORECASE)
+
+
+def _is_protective_cover(product_name: str) -> bool:
+    return bool(PROTECTIVE_COVER_PATTERN.search(product_name))
+
+
 def filter_products(intent: dict) -> list:
     """
     Filters stored products on the hard facts: category + material +
     new_only (recency, see _wants_new_arrivals) + countries (see
     _wanted_countries) + seat_count (see _wanted_seat_count) + not an
     individual modular-system build component (see
-    _is_modular_component) + has a real image. A
+    _is_modular_component) + not a protective cover for the furniture
+    rather than the furniture itself (see _is_protective_cover) + has a
+    real image. A
     missing image isn't just a display gap - the whole "thumbnail +
     link-back" model this tool is built on doesn't work without one,
     and in practice a missing image reliably means the listing is
@@ -666,6 +684,8 @@ def filter_products(intent: dict) -> list:
         if wanted_category and not _category_matches(product["category"], wanted_category):
             continue
         if wanted_category and _is_modular_component(product["product_name"]):
+            continue
+        if wanted_category and _is_protective_cover(product["product_name"]):
             continue
         if wanted_material and wanted_material not in product["material_options"].lower():
             continue
