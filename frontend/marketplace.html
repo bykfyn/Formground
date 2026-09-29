@@ -1227,7 +1227,7 @@
           <span class="match-hint" hidden></span><span class="sr-only">Örsjö</span>
         </div>
       </a>
-      <a class="maker-card" href="https://glashusetmalmo.se" target="_blank" rel="noopener noreferrer" data-brands="DUX|Stolab|Fritz Hansen|String|Vitra|Eilersen|Moooi|Audo Copenhagen|Louis Poulsen|Fredericia|Montana|Gubi" data-locations="Malmö, Sweden" data-subcat="furniture lighting">
+      <a class="maker-card" href="https://glashusetmalmo.se" target="_blank" rel="noopener noreferrer" data-brands="DUX|Stolab|Fritz Hansen|String|Vitra|Eilersen|Moooi|Audo Copenhagen|Louis Poulsen|Fredericia|Montana|Gubi" data-locations="Malmö, Sweden" data-subcat="furniture lighting objects">
         <div class="maker-card-hero"><div class="icon-badge"><img src="https://www.google.com/s2/favicons?domain=glashusetmalmo.se&amp;sz=128" alt="Glashuset i Malmö" loading="lazy" onerror="this.remove();this.parentElement.querySelector('.monogram').style.display='';"><span class="monogram" style="display:none;" title="Glashuset i Malmö">GI</span></div><span class="stockist-promo-badge" title="Promotions"><i class="ti ti-tag" aria-hidden="true"></i></span></div>
         <div class="maker-card-body">
           <span class="maker-name">Glashuset i Malmö</span>
@@ -1586,6 +1586,7 @@
       dots.forEach(function (d, idx) { d.classList.toggle('active', idx === i); });
     }
     function next() { show((current + 1) % slides.length); }
+    function prev() { show((current - 1 + slides.length) % slides.length); }
     function start() { timer = setInterval(next, 6000); }
     function stop() { clearInterval(timer); }
     dots.forEach(function (d, i) {
@@ -1593,6 +1594,32 @@
     });
     carousel.addEventListener('mouseenter', stop);
     carousel.addEventListener('mouseleave', start);
+    // Touch swipe (2026-09-29) - mouseenter/mouseleave above never fire
+    // on a touch device, so mobile previously only had dot-tapping and
+    // auto-rotation. touchmove decides real swipe intent (horizontal
+    // movement clearly exceeding vertical) before preventDefault, so a
+    // vertical page scroll starting inside the carousel is untouched.
+    var touchStartX = 0, touchStartY = 0, isSwiping = false;
+    carousel.addEventListener('touchstart', function (e) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      isSwiping = false;
+      stop();
+    }, { passive: true });
+    carousel.addEventListener('touchmove', function (e) {
+      var dx = e.touches[0].clientX - touchStartX;
+      var dy = e.touches[0].clientY - touchStartY;
+      if (!isSwiping && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) isSwiping = true;
+      if (isSwiping) e.preventDefault();
+    }, { passive: false });
+    carousel.addEventListener('touchend', function (e) {
+      if (isSwiping) {
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        if (dx > 30) prev();
+        else if (dx < -30) next();
+      }
+      start();
+    });
     start();
   });
 </script>

@@ -554,6 +554,7 @@ BANNER_CAROUSEL_JS = """
       dots.forEach(function (d, idx) { d.classList.toggle('active', idx === i); });
     }
     function next() { show((current + 1) % slides.length); }
+    function prev() { show((current - 1 + slides.length) % slides.length); }
     function start() { timer = setInterval(next, 6000); }
     function stop() { clearInterval(timer); }
     dots.forEach(function (d, i) {
@@ -561,6 +562,32 @@ BANNER_CAROUSEL_JS = """
     });
     carousel.addEventListener('mouseenter', stop);
     carousel.addEventListener('mouseleave', start);
+    // Touch swipe (2026-09-29) - mouseenter/mouseleave above never fire
+    // on a touch device, so mobile previously only had dot-tapping and
+    // auto-rotation. touchmove decides real swipe intent (horizontal
+    // movement clearly exceeding vertical) before preventDefault, so a
+    // vertical page scroll starting inside the carousel is untouched.
+    var touchStartX = 0, touchStartY = 0, isSwiping = false;
+    carousel.addEventListener('touchstart', function (e) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      isSwiping = false;
+      stop();
+    }, { passive: true });
+    carousel.addEventListener('touchmove', function (e) {
+      var dx = e.touches[0].clientX - touchStartX;
+      var dy = e.touches[0].clientY - touchStartY;
+      if (!isSwiping && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) isSwiping = true;
+      if (isSwiping) e.preventDefault();
+    }, { passive: false });
+    carousel.addEventListener('touchend', function (e) {
+      if (isSwiping) {
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        if (dx > 30) prev();
+        else if (dx < -30) next();
+      }
+      start();
+    });
     start();
   });
 """
