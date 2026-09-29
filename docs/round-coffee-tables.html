@@ -76,8 +76,23 @@
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-image img.contain-fit { object-fit: contain; }
   .card-body { padding: 0; }
-  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
-  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
   .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 16px; align-items: start; }
 
@@ -175,161 +190,161 @@
       <a class="card" href="https://pinchdesign.com/products/landry-coffee-table-circular-bronze" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375" alt="Landry coffee table circular bronze by Pinch" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">Landry coffee table circular bronze</p>
+          <div class="card-title-wrap"><p class="card-title">Landry coffee table circular bronze</p></div>
           <p class="card-brand">Pinch</p>
         </div>
       </a>
       <a class="card" href="https://pinchdesign.com/products/landry-circular-coffee-table-moss" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_July_24_4862.jpg?v=1763998224" alt="Landry coffee table circular moss by Pinch" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">Landry coffee table circular moss</p>
+          <div class="card-title-wrap"><p class="card-title">Landry coffee table circular moss</p></div>
           <p class="card-brand">Pinch</p>
         </div>
       </a>
       <a class="card" href="https://pinchdesign.com/products/landry-circular-coffee-table-timber" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_April24_4298_6a5bfb94-d90f-4d6f-97b7-9472a0af5d7f.jpg?v=1763995299" alt="Landry coffee table circular timber by Pinch" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">Landry coffee table circular timber</p>
+          <div class="card-title-wrap"><p class="card-title">Landry coffee table circular timber</p></div>
           <p class="card-brand">Pinch</p>
         </div>
       </a>
       <a class="card" href="https://pinchdesign.com/products/landry-coffee-table-circular-white-gold" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Landry_Coffee_Table_WhiteGold_Sept25_0017_1_ALT1_870f3220-6187-45a8-a7a5-3396bb09049a.jpg?v=1763977990" alt="Landry coffee table circular white gold by Pinch" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">Landry coffee table circular white gold</p>
+          <div class="card-title-wrap"><p class="card-title">Landry coffee table circular white gold</p></div>
           <p class="card-brand">Pinch</p>
         </div>
       </a>
       <a class="card" href="https://wendelbo.com/products/notch-coffee-table-round-medium" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Notch_Coffeetable_Round_M_1.jpg?v=1741635393" alt="Notch Coffee Table - Round by Wendelbo" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">Notch Coffee Table - Round</p>
+          <div class="card-title-wrap"><p class="card-title">Notch Coffee Table - Round</p></div>
           <p class="card-brand">Wendelbo</p>
         </div>
       </a>
       <a class="card" href="https://www.portaromana.com/products/giacometti_round_coffee_table" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/products/CFT18-LGD-CCP-HERO.jpg?v=1662723122" alt="Giacometti Round Coffee Table by Porta Romana" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">Giacometti Round Coffee Table</p>
+          <div class="card-title-wrap"><p class="card-title">Giacometti Round Coffee Table</p></div>
           <p class="card-brand">Porta Romana</p>
         </div>
       </a>
       <a class="card" href="https://moebe.dk/products/round-coffee-table" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Round-Coffee-Table_PP_Low-Res_02.jpg?v=1685443063" alt="Round Coffee Table by Moebe" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">Round Coffee Table</p>
+          <div class="card-title-wrap"><p class="card-title">Round Coffee Table</p></div>
           <p class="card-brand">Moebe</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-round-side-table-with-top-in-oak-copy" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Soffbord_H30_Ek_01.png?v=1765192935" alt="NEB Round Coffee Table With Top In Oak by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB Round Coffee Table With Top In Oak</p>
+          <div class="card-title-wrap"><p class="card-title">NEB Round Coffee Table With Top In Oak</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-high-round-side-table-travertine-top" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_H72_Travertin_04.png?v=1764859559" alt="NEB High Round Side Table by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB High Round Side Table</p>
+          <div class="card-title-wrap"><p class="card-title">NEB High Round Side Table</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-round-side-table-with-top-in-brass" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_Massing_04.png?v=1764860094" alt="NEB Round Side Table With Top In Brass by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB Round Side Table With Top In Brass</p>
+          <div class="card-title-wrap"><p class="card-title">NEB Round Side Table With Top In Brass</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-high-round-side-table-with-top-in-travertine-1" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/IMG_0831_a37fedcb-0e0e-42bd-bc5e-f049fab9a44f.jpg?v=1737548082" alt="NEB High Round Side Table With Top In Travertine by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB High Round Side Table With Top In Travertine</p>
+          <div class="card-title-wrap"><p class="card-title">NEB High Round Side Table With Top In Travertine</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-round-coffee-table-with-top-in-laminate" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Coffee_Table_Laminate.jpg?v=1642090636" alt="NEB Round Coffee Table with Top In Laminate by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB Round Coffee Table with Top In Laminate</p>
+          <div class="card-title-wrap"><p class="card-title">NEB Round Coffee Table with Top In Laminate</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-round-coffee-table-with-top-in-verde-italia" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Coffee_Table_Verde_Italia.jpg?v=1642090783" alt="NEB Round Coffee Table with Top in Verde Italia by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB Round Coffee Table with Top in Verde Italia</p>
+          <div class="card-title-wrap"><p class="card-title">NEB Round Coffee Table with Top in Verde Italia</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-side-table" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_H42_H72_Travertin_02_3f147aa7-ca55-482b-84a9-8f13f6b8a6ec.png?v=1764863334" alt="NEB Round Side Table With Top In Travertine by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB Round Side Table With Top In Travertine</p>
+          <div class="card-title-wrap"><p class="card-title">NEB Round Side Table With Top In Travertine</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-coffee-table-in-travertine-stone-top" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Soffbord_H30_Travertin_04.png?v=1764345674" alt="NEB Round Coffee Table with Travertine Top by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB Round Coffee Table with Travertine Top</p>
+          <div class="card-title-wrap"><p class="card-title">NEB Round Coffee Table with Travertine Top</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/copy-of-neb-round-side-table-with-top-in-laminate" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_Ek.png?v=1764860962" alt="NEB Round Side Table with Top in Oak by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB Round Side Table with Top in Oak</p>
+          <div class="card-title-wrap"><p class="card-title">NEB Round Side Table with Top in Oak</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-round-side-table-with-top-in-laminate" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Round_side_table_500_White_laminate_black_044.jpg?v=1740070273" alt="NEB Round Side Table With Top In Laminate by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB Round Side Table With Top In Laminate</p>
+          <div class="card-title-wrap"><p class="card-title">NEB Round Side Table With Top In Laminate</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-round-side-table-with-top-in-verde-italia-granite" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Side_table_Verde_italia.jpg?v=1611860799" alt="NEB Round Side Table With Top In Verde Italia Granite by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB Round Side Table With Top In Verde Italia Granite</p>
+          <div class="card-title-wrap"><p class="card-title">NEB Round Side Table With Top In Verde Italia Granite</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-round-sofa-table-80-cm-carrara-marble" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/9.png?v=1731751526" alt="NEB Round Coffee Table with Top In Carrara Marble by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB Round Coffee Table with Top In Carrara Marble</p>
+          <div class="card-title-wrap"><p class="card-title">NEB Round Coffee Table with Top In Carrara Marble</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-round-sofa-table-brass-top" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Soffbord_Massing_01.png?v=1764325364" alt="NEB Round Coffee Table with Top In Brass by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB Round Coffee Table with Top In Brass</p>
+          <div class="card-title-wrap"><p class="card-title">NEB Round Coffee Table with Top In Brass</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://noearlybirds.se/products/neb-round-side-table" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_H430_Carrara_01.png?v=1764864020" alt="NEB Round Side Table With Top In Carrara Marble by No Early Birds" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">NEB Round Side Table With Top In Carrara Marble</p>
+          <div class="card-title-wrap"><p class="card-title">NEB Round Side Table With Top In Carrara Marble</p></div>
           <p class="card-brand">No Early Birds</p>
         </div>
       </a>
       <a class="card" href="https://www.fogia.com/coffee-side-tables/coffee-table/koku-coffee-table-round-high" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://images.fogia.com/c1/0c/71/69/69710cc199e7bed9add8a2bc/FogiaKoku Sofa Table Round High-Oak stained blackFront.png?auto=format&amp;w=2000&amp;q=90" alt="Koku Coffee Table Round, High by Fogia" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">Koku Coffee Table Round, High</p>
+          <div class="card-title-wrap"><p class="card-title">Koku Coffee Table Round, High</p></div>
           <p class="card-brand">Fogia</p>
         </div>
       </a>
       <a class="card" href="https://www.fogia.com/coffee-side-tables/coffee-table/koku-coffee-table-round-low" target="_blank" rel="noopener noreferrer">
         <div class="card-image"><img src="https://images.fogia.com/93/0d/71/69/69710d932052e8b80f7188b3/FogiaKoku Sofa Table Round Low-Oak stained blackFront.png?auto=format&amp;w=2000&amp;q=90" alt="Koku Coffee Table Round, Low by Fogia" loading="lazy"></div>
         <div class="card-body">
-          <p class="card-title">Koku Coffee Table Round, Low</p>
+          <div class="card-title-wrap"><p class="card-title">Koku Coffee Table Round, Low</p></div>
           <p class="card-brand">Fogia</p>
         </div>
       </a></div>

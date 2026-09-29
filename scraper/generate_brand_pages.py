@@ -346,12 +346,20 @@ def product_card_html(p, show_brand=False):
         f'<img src="{html.escape(p["image_url"])}" alt="{alt_text}" loading="lazy">'
         if p["image_url"] else ""
     )
+    title_html = f'<p class="card-title">{html.escape(p["product_name"])}</p>'
+    if show_brand:
+        # .card-title-wrap reserves a full 2 lines' height so .card-brand
+        # always starts at the same row across a mixed-brand grid (see
+        # PAGE_CSS comment) - only needed when a brand line actually
+        # follows; a single-brand grid (show_brand=False) has nothing
+        # below the title to misalign, so it stays unwrapped.
+        title_html = f'<div class="card-title-wrap">{title_html}</div>'
     brand_line = f'<p class="card-brand">{html.escape(p["brand"])}</p>' if show_brand else ""
     return f"""
       <a class="card" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
         <div class="card-image">{image}</div>
         <div class="card-body">
-          <p class="card-title">{html.escape(p["product_name"])}</p>
+          {title_html}
           {brand_line}
         </div>
       </a>"""
@@ -632,8 +640,23 @@ PAGE_CSS = """
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-image img.contain-fit { object-fit: contain; }
   .card-body { padding: 0; }
-  .card-title { font-size: 13px; font-weight: 500; margin: 0; }
-  .card-brand { font-size: 12px; color: var(--text-secondary); margin: 2px 0 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
   .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 16px; align-items: start; }
 """ + MAKER_CARD_CSS + """
