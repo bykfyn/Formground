@@ -289,6 +289,26 @@ class ProductMatchesSeatCountTests(unittest.TestCase):
         self.assertFalse(qe._product_matches_seat_count("Mogens Lounge Chair", 2))
 
 
+class IsModularComponentTests(unittest.TestCase):
+    def test_numbered_module_matches(self):
+        self.assertTrue(qe._is_modular_component("Shore Dining Curved End Left, Plinth, Module 41"))
+
+    def test_sized_module_matches(self):
+        self.assertTrue(qe._is_modular_component("Livello Middle Module 95cm"))
+
+    def test_coded_module_matches(self):
+        self.assertTrue(qe._is_modular_component("Catena Sofa Connect Corner Module L200"))
+
+    def test_configuration_does_not_match(self):
+        self.assertFalse(qe._is_modular_component("Shore Modular Sofa, Configuration 1"))
+
+    def test_bare_module_word_does_not_match(self):
+        self.assertFalse(qe._is_modular_component("Elogio Sofa Module"))
+
+    def test_ordinary_name_does_not_match(self):
+        self.assertFalse(qe._is_modular_component("Bolide Sofa"))
+
+
 class CapPerBrandTests(unittest.TestCase):
     """
     Covers "brand is the minimum unit of inclusion" - a brand with a

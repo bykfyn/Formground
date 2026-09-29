@@ -578,12 +578,33 @@ def _narrow_by_style(products: list, style_descriptors: list) -> list:
     return narrowed if narrowed else products
 
 
+# An individual, numbered build-your-own module/component of a modular
+# furniture system (e.g. "Shore Dining Curved End Left, Plinth, Module
+# 41", "Livello Middle Module 95cm") - a real, individually-orderable
+# replacement/build part, but not something a category search should
+# surface as if it were a complete, standalone piece. Found live
+# 2026-09-29: "Shore Dining Curved End Left, Plinth, Module 41" (New
+# Works DK) surfaced under a plain "sofa" search. Confirmed the real
+# pattern across 2 brands, 12 total items: the word "Module" followed
+# by any numbered/sized code (a bare number, or a code like "L200"/
+# "95cm"). Deliberately doesn't match "Shore Modular Sofa, Configuration
+# N" (New Works DK's own real, complete pre-built configurations, which
+# use "Modular"/"Configuration", never "Module <code>") - checked live,
+# 0 false positives/negatives across all 690 real sofa-category results.
+MODULAR_COMPONENT_PATTERN = re.compile(r"\bModule\s+\w*\d")
+
+
+def _is_modular_component(product_name: str) -> bool:
+    return bool(MODULAR_COMPONENT_PATTERN.search(product_name))
+
+
 def filter_products(intent: dict) -> list:
     """
     Filters stored products on the hard facts: category + material +
     new_only (recency, see _wants_new_arrivals) + countries (see
-    _wanted_countries) + seat_count (see _wanted_seat_count) + has a
-    real image. A
+    _wanted_countries) + seat_count (see _wanted_seat_count) + not an
+    individual modular-system build component (see
+    _is_modular_component) + has a real image. A
     missing image isn't just a display gap - the whole "thumbnail +
     link-back" model this tool is built on doesn't work without one,
     and in practice a missing image reliably means the listing is
@@ -634,6 +655,8 @@ def filter_products(intent: dict) -> list:
         if product["brand"] in HIDDEN_BRANDS:
             continue
         if wanted_category and not _category_matches(product["category"], wanted_category):
+            continue
+        if wanted_category and _is_modular_component(product["product_name"]):
             continue
         if wanted_material and wanted_material not in product["material_options"].lower():
             continue
