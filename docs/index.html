@@ -352,11 +352,12 @@
   .feature-banner-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
   .feature-banner-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 24px; margin: 0 0 6px; }
   .feature-banner-desc { font-size: 13px; color: var(--text-secondary); margin: 0 0 14px; max-width: 420px; }
-  .feature-banner-cta {
-    display: inline-block; font-size: 13px; font-weight: 600; color: #fff;
-    background: var(--text-primary); padding: 10px 22px; border-radius: 999px;
-  }
-  .feature-banner-caption:hover .feature-banner-cta { background: var(--text-secondary); }
+  /* No separate CTA line - the whole caption (eyebrow+title+desc) is
+     already the link, so a trailing "Visit site"/"See the edit" was
+     just a redundant repeat of what the block already does, and no
+     other product image on the page has one either (2026-09-29,
+     user's call). The title itself gets the hover affordance instead. */
+  .feature-banner-caption:hover .feature-banner-title { text-decoration: underline; }
 
   /* Carousel wrapper for a Feature Banner with more than one real image
      to show (2026-09-29) - reuses the Banner Carousel primitive already
@@ -378,7 +379,27 @@
 
   /* Duo - two medium images side by side, more presence than a shelf
      tile, less than a full spread. */
-  .duo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  /* align-items: start (not grid's own default, stretch) - a stretched
+     .duo-carousel column gets its height force-set to the row's own
+     auto-computed height, which a real browser quirk derives from just
+     the aspect-ratio'd .duo-carousel-frame while ignoring the
+     .duo-carousel-caption block below it in the same column - the
+     stretched column then clips shorter than its own content needs,
+     so the caption silently overflows past it and the next section's
+     margin gets computed from that wrong, too-short height and
+     overlaps on top of it (found live 2026-09-29: "product names...
+     not visible, partially hidden" + "text above sofa not visible").
+     align-items: start sidesteps the whole bug by never stretching
+     items to the row's height in the first place.
+     min-width: 0 on every column - the same real bug already fixed
+     once on this page for .bento-spread > * (see its own comment) -
+     an unconstrained <img>'s large intrinsic width otherwise blows out
+     its own 1fr track's min-content size, so a .duo-row of images ends
+     up wider than an otherwise-identical .duo-row of header text sitting
+     right above it (found live 2026-09-29: "side tables straddles both
+     images... Pendant Lamps header straddles middle"). */
+  .duo-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .duo-row > * { min-width: 0; }
   .duo-card { display: block; text-decoration: none; color: inherit; }
   .duo-card-image {
     aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border);
@@ -463,9 +484,17 @@
      each TILE becomes a flex column and the image itself is cropped a
      little shorter to leave room for the text strip below it, keeping
      the grid's own total height/aspect-ratio unchanged. */
-  .mini-bento-tile { display: flex; flex-direction: column; overflow: hidden; border: 0.5px solid var(--border); text-decoration: none; color: inherit; }
-  .mini-bento-tile img { width: 100%; flex: 1; min-height: 0; object-fit: cover; display: block; transition: transform 0.3s ease; }
-  .mini-bento-tile:hover img { transform: scale(1.03); }
+  .mini-bento-tile { display: flex; flex-direction: column; overflow: hidden; text-decoration: none; color: inherit; }
+  /* .mini-bento-image is its OWN clipped box (flex:1 + overflow:hidden),
+     separate from .mini-bento-tile's outer overflow:hidden - otherwise
+     the hover-zoom below scales the image from its center, and with
+     only the OUTER tile clipping it, the enlarged image bleeds down
+     over the caption text under it instead of being contained to its
+     own slot (found live 2026-09-29: "hover over enlarges image and
+     hides text"). */
+  .mini-bento-image { flex: 1; min-height: 0; overflow: hidden; display: block; }
+  .mini-bento-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+  .mini-bento-tile:hover .mini-bento-image img { transform: scale(1.03); }
   .mini-bento-name { display: block; padding: 6px 8px 0; font-size: 12px; font-weight: 600; line-height: 1.25; }
   .mini-bento-brand { display: block; padding: 0 8px 6px; font-size: 11px; color: var(--text-muted); line-height: 1.25; }
   .mini-bento-1 { grid-column: 1; grid-row: 1 / 3; }
@@ -675,7 +704,7 @@
             </div>
             <div class="banner-slide" data-name="Sandows" data-brand="Petite Friture" data-href="https://petitefriture.com/fr/mobilier/3269-sandows-chaise-N212.html">
               <a href="https://petitefriture.com/fr/mobilier/3269-sandows-chaise-N212.html" target="_blank" rel="noopener noreferrer">
-                <img src="https://petitefriture.com/38037-home_default/sandows-chaise-N212.jpg" alt="Sandows by Petite Friture">
+                <img src="https://petitefriture.com/38037-home_default/sandows-chaise-N212.jpg" alt="Sandows by Petite Friture" style="object-position: bottom;">
               </a>
             </div>
             <div class="banner-dots">
@@ -750,7 +779,6 @@
         <p class="feature-banner-eyebrow" data-field="eyebrow"></p>
         <p class="feature-banner-title" data-field="title"></p>
         <p class="feature-banner-desc" data-field="desc"></p>
-        <span class="feature-banner-cta">Visit site &rarr;</span>
       </a>
     </div>
 
@@ -817,27 +845,27 @@
       </div>
       <div class="mini-bento">
         <a class="mini-bento-tile mini-bento-1" href="https://101cph.com/products/snake-floor-lamp-chrome" target="_blank" rel="noopener noreferrer">
-          <img src="https://cdn.shopify.com/s/files/1/1885/3155/files/20238817_261014_Snake_Floor_Lamp_-_Chrome_-_1.jpg?v=1790378140" alt="Snake Floor Lamp by 101cph">
+          <span class="mini-bento-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/20238817_261014_Snake_Floor_Lamp_-_Chrome_-_1.jpg?v=1790378140" alt="Snake Floor Lamp by 101cph"></span>
           <span class="mini-bento-name">Snake Floor Lamp</span>
           <span class="mini-bento-brand">101cph</span>
         </a>
         <a class="mini-bento-tile mini-bento-2" href="https://newworks.dk/en/product/nebra-floor-lamp" target="_blank" rel="noopener noreferrer">
-          <img src="https://www.datocms-assets.com/49896/1783086050-new-works_website_images_2026_nebra-floor-lamp.png?h=800" alt="Nebra Floor Lamp by New Works DK">
+          <span class="mini-bento-image"><img src="https://www.datocms-assets.com/49896/1783086050-new-works_website_images_2026_nebra-floor-lamp.png?h=800" alt="Nebra Floor Lamp by New Works DK"></span>
           <span class="mini-bento-name">Nebra Floor Lamp</span>
           <span class="mini-bento-brand">New Works DK</span>
         </a>
         <a class="mini-bento-tile mini-bento-3" href="https://minimalux.com/products/rota-floor-lamp" target="_blank" rel="noopener noreferrer">
-          <img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/ROTA-F1-03r-72dpi.jpg?v=1757846540" alt="Rota Floor Lamp by Minimalux">
+          <span class="mini-bento-image"><img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/ROTA-F1-03r-72dpi.jpg?v=1757846540" alt="Rota Floor Lamp by Minimalux"></span>
           <span class="mini-bento-name">Rota Floor Lamp</span>
           <span class="mini-bento-brand">Minimalux</span>
         </a>
         <a class="mini-bento-tile mini-bento-4" href="https://apparatusstudio.com/products/pip-lantern-floor-lamp" target="_blank" rel="noopener noreferrer">
-          <img src="https://cdn.shopify.com/s/files/1/0005/7730/6687/files/APPARATUS_LANTERN_FLOOR_LAMP_01.jpg?v=1763153271" alt="Lantern Floor Lamp by Apparatus">
+          <span class="mini-bento-image"><img src="https://cdn.shopify.com/s/files/1/0005/7730/6687/files/APPARATUS_LANTERN_FLOOR_LAMP_01.jpg?v=1763153271" alt="Lantern Floor Lamp by Apparatus"></span>
           <span class="mini-bento-name">Lantern Floor Lamp</span>
           <span class="mini-bento-brand">Apparatus</span>
         </a>
         <a class="mini-bento-tile mini-bento-5" href="https://www.moustache.fr/en/accueil/1504-sistema-trepiu-floor-lamp.html" target="_blank" rel="noopener noreferrer">
-          <img src="https://www.moustache.fr/41799-home_default/sistema-trepiu-floor-lamp.jpg" alt="Sistema Trepiù Floor Lamp by Moustache">
+          <span class="mini-bento-image"><img src="https://www.moustache.fr/41799-home_default/sistema-trepiu-floor-lamp.jpg" alt="Sistema Trepiù Floor Lamp by Moustache"></span>
           <span class="mini-bento-name">Sistema Trepiù</span>
           <span class="mini-bento-brand">Moustache</span>
         </a>
@@ -868,9 +896,9 @@
                 <img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/products/stem-brass.jpg?v=1639846854" alt="Stem by Minimalux">
               </a>
             </div>
-            <div class="banner-slide" data-name="JWDA Table Lamp" data-brand="Audo" data-href="https://audocph.com/products/jwda-table-lamp-small">
-              <a href="https://audocph.com/products/jwda-table-lamp-small" target="_blank" rel="noopener noreferrer">
-                <img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/1800129_JWDA_ConcreteLamp_Jonas_Wagell_01_b309c770-3d4e-4a2a-957d-dadc2b762669.png?v=1755611341" alt="JWDA Table Lamp by Audo">
+            <div class="banner-slide" data-name="Knuckle Table Lamp" data-brand="Tala" data-href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-walnut-sphere-iv">
+              <a href="https://eu.tala.co.uk/products/knuckle-table-lamp-in-walnut-sphere-iv" target="_blank" rel="noopener noreferrer">
+                <img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Walnut-Sphere-On.png?v=1786627369" alt="Knuckle Table Lamp in Walnut + Sphere IV by Tala">
               </a>
             </div>
             <div class="banner-dots">
@@ -898,7 +926,7 @@
             </div>
             <div class="banner-slide" data-name="Hyo" data-brand="AY Illuminate" data-href="https://www.ayilluminate.com/portfolio/hyo-large/">
               <a href="https://www.ayilluminate.com/portfolio/hyo-large/" target="_blank" rel="noopener noreferrer">
-                <img src="https://www.ayilluminate.com/wp-content/uploads/2023/01/Hyo-Large.jpg" alt="Hyo by AY Illuminate" style="object-position: center 78%;">
+                <img src="https://www.ayilluminate.com/wp-content/uploads/2023/01/Hyo-Large.jpg" alt="Hyo by AY Illuminate" style="object-position: center 49%;">
               </a>
             </div>
             <div class="banner-dots">
@@ -958,25 +986,88 @@
           <span class="recent-name">Sphere Vase Bubl</span>
           <span class="recent-brand">101cph</span>
         </a>
+        <a class="recent-card" href="https://fermliving.com/products/muses-clio" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/825413_9339_1.png?v=1762182759" alt="Muses Vase by Ferm Living" loading="lazy"></div>
+          <span class="recent-name">Muses Vase</span>
+          <span class="recent-brand">Ferm Living</span>
+        </a>
+        <a class="recent-card" href="https://www.andtradition.com/products/momento-vase-jh47" target="_blank" rel="noopener noreferrer">
+          <div class="recent-card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2025/05/ATD_Retail_2025_Momento-JH47-600x800.jpg" alt="Momento Vase JH47 by &amp;Tradition" loading="lazy"></div>
+          <span class="recent-name">Momento Vase JH47</span>
+          <span class="recent-brand">&amp;Tradition</span>
+        </a>
       </div>
     </div>
 
     <div class="recent-group">
-      <div class="recent-group-header">
-        <h3>Ceramics</h3>
-        <a href="work.html?q=ceramics">See all &rarr;</a>
+      <div class="duo-row">
+        <div class="recent-group-header">
+          <h3>Bowls</h3>
+          <a href="work.html?q=bowl">See all &rarr;</a>
+        </div>
+        <div class="recent-group-header">
+          <h3>Candleholders</h3>
+          <a href="work.html?q=candle+holder">See all &rarr;</a>
+        </div>
       </div>
-      <div class="feature-banner-frame">
-        <a href="https://www.moustache.fr/en/vases/119-339-grand-vase-en-ceramique-plan.html" target="_blank" rel="noopener noreferrer">
-          <img src="https://www.moustache.fr/2201-home_default/grand-vase-en-ceramique-plan.jpg" alt="Plan ceramic vase by Moustache">
-        </a>
+      <div class="duo-row">
+        <div class="duo-carousel">
+          <div class="duo-carousel-frame banner-carousel">
+            <div class="banner-slide active" data-name="Squared bowl in sycamore" data-brand="Luke Hope" data-href="https://lukehope.com/products/squared-bowl-in-sycamore">
+              <a href="https://lukehope.com/products/squared-bowl-in-sycamore" target="_blank" rel="noopener noreferrer">
+                <img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Squared-bowl-sycamore-2-LukeHope.jpg?v=1777435532" alt="Squared bowl in sycamore by Luke Hope" style="object-position: center 60%;">
+              </a>
+            </div>
+            <div class="banner-slide" data-name="Alfonso Fruit Bowl" data-brand="Project 213A" data-href="https://project213a.com/products/alfonso-fruit-bowl-6">
+              <a href="https://project213a.com/products/alfonso-fruit-bowl-6" target="_blank" rel="noopener noreferrer">
+                <img src="https://cdn.shopify.com/s/files/1/0531/5395/6002/products/Project_213a_AlfonsoBowl_graphite5.jpg?v=1657011732" alt="Alfonso Fruit Bowl by Project 213A">
+              </a>
+            </div>
+            <div class="banner-slide" data-name="Nium Bowl" data-brand="Ferm Living" data-href="https://fermliving.com/products/nium-bowl-large-dark-sage">
+              <a href="https://fermliving.com/products/nium-bowl-large-dark-sage" target="_blank" rel="noopener noreferrer">
+                <img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/373421_1104269042_1.png?v=1762180564" alt="Nium Bowl by Ferm Living" style="object-position: center 95%;">
+              </a>
+            </div>
+            <div class="banner-dots">
+              <button type="button" class="banner-dot active" data-index="0" aria-label="Slide 1"></button>
+              <button type="button" class="banner-dot" data-index="1" aria-label="Slide 2"></button>
+              <button type="button" class="banner-dot" data-index="2" aria-label="Slide 3"></button>
+            </div>
+          </div>
+          <a class="duo-carousel-caption" target="_blank" rel="noopener noreferrer">
+            <span class="duo-name" data-field="name"></span>
+            <span class="duo-brand" data-field="brand"></span>
+          </a>
+        </div>
+        <div class="duo-carousel">
+          <div class="duo-carousel-frame banner-carousel">
+            <div class="banner-slide active" data-name="Chessboard Candle Holder Set/3" data-brand="Serax" data-href="https://www.serax.com/products/candle-holder-set-3-chessboard-les-objets-mouleversants">
+              <a href="https://www.serax.com/products/candle-holder-set-3-chessboard-les-objets-mouleversants" target="_blank" rel="noopener noreferrer">
+                <img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B8924007-999_01-jpg.png?v=1764734310" alt="Chessboard Candle Holder Set/3 by Serax" style="object-position: center 61%;">
+              </a>
+            </div>
+            <div class="banner-slide" data-name="Candle Holder Green Cosas Lindas" data-brand="Serax" data-href="https://www.serax.com/products/candle-holder-green-cosas-lindas">
+              <a href="https://www.serax.com/products/candle-holder-green-cosas-lindas" target="_blank" rel="noopener noreferrer">
+                <img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7324209-500_01.jpg?v=1752551209" alt="Candle Holder Green Cosas Lindas by Serax" style="object-position: center 71.5%;">
+              </a>
+            </div>
+            <div class="banner-slide" data-name="O Candleholder" data-brand="Minimalux" data-href="https://minimalux.com/products/o-candleholder">
+              <a href="https://minimalux.com/products/o-candleholder" target="_blank" rel="noopener noreferrer">
+                <img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/O-A1.jpg?v=1712752482" alt="O Candleholder by Minimalux">
+              </a>
+            </div>
+            <div class="banner-dots">
+              <button type="button" class="banner-dot active" data-index="0" aria-label="Slide 1"></button>
+              <button type="button" class="banner-dot" data-index="1" aria-label="Slide 2"></button>
+              <button type="button" class="banner-dot" data-index="2" aria-label="Slide 3"></button>
+            </div>
+          </div>
+          <a class="duo-carousel-caption" target="_blank" rel="noopener noreferrer">
+            <span class="duo-name" data-field="name"></span>
+            <span class="duo-brand" data-field="brand"></span>
+          </a>
+        </div>
       </div>
-      <a class="feature-banner-caption" href="https://www.moustache.fr/en/vases/119-339-grand-vase-en-ceramique-plan.html" target="_blank" rel="noopener noreferrer">
-        <p class="feature-banner-eyebrow">Ceramics</p>
-        <p class="feature-banner-title">Plan</p>
-        <p class="feature-banner-desc">Moustache</p>
-        <span class="feature-banner-cta">Visit site &rarr;</span>
-      </a>
     </div>
   </section>
 
@@ -996,7 +1087,6 @@
         <p class="feature-banner-eyebrow">A themed edit</p>
         <p class="feature-banner-title">Two Seater Sofas</p>
         <p class="feature-banner-desc">A smaller scale doesn't mean smaller craft - from makers who build a two-seater with the same care as a three.</p>
-        <span class="feature-banner-cta">See the edit &rarr;</span>
       </a>
     </div>
 
@@ -1021,15 +1111,25 @@
 
     <div class="recent-group">
       <div class="duo-row">
+        <div class="recent-group-header">
+          <h3>Round Coffee Tables</h3>
+          <a href="round-coffee-tables.html">See the edit &rarr;</a>
+        </div>
+        <div class="recent-group-header">
+          <h3>Scandinavian Dining Tables</h3>
+          <a href="scandinavian-dining-tables.html">See the edit &rarr;</a>
+        </div>
+      </div>
+      <div class="duo-row">
         <a class="duo-card" href="round-coffee-tables.html">
-          <div class="duo-card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375" alt="Round Coffee Tables"></div>
-          <span class="duo-name">Round Coffee Tables</span>
-          <span class="duo-brand">See the edit &rarr;</span>
+          <div class="duo-card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375" alt="Landry Coffee Table Circular Bronze by Pinch"></div>
+          <span class="duo-name">Landry Coffee Table Circular Bronze</span>
+          <span class="duo-brand">Pinch</span>
         </a>
         <a class="duo-card" href="scandinavian-dining-tables.html">
-          <div class="duo-card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_Puffin_Dining_Table_Mauro_Dining_Chair_Crescent_Shelving_H60_Nonna_Table_Lamp_H24_Triptych_Bowl_66.jpg?v=1780578984" alt="Scandinavian Dining Tables"></div>
-          <span class="duo-name">Scandinavian Dining Tables</span>
-          <span class="duo-brand">See the edit &rarr;</span>
+          <div class="duo-card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_Puffin_Dining_Table_Mauro_Dining_Chair_Crescent_Shelving_H60_Nonna_Table_Lamp_H24_Triptych_Bowl_66.jpg?v=1780578984" alt="Puffin Dining Table by Audo"></div>
+          <span class="duo-name">Puffin Dining Table</span>
+          <span class="duo-brand">Audo</span>
         </a>
       </div>
     </div>
