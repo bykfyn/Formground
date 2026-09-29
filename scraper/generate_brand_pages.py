@@ -1306,31 +1306,6 @@ def render_new_page(products):
 """
 
 
-def _craftspeople_sitemap_slugs():
-    """
-    Reads data/craftspeople.json directly (rather than relying on
-    generate_craftspeople_pages.py having appended to a previous
-    sitemap.xml) so render_sitemap() is self-contained and correct
-    regardless of which generator last ran - a real ordering bug
-    otherwise: this function used to fully rebuild sitemap.xml from
-    scratch, which would silently wipe out any craftspeople URLs a
-    prior run of generate_craftspeople_pages.py had appended.
-    """
-    path = DATA_DIR / "craftspeople.json"
-    if not path.exists():
-        return []
-    people = json.loads(path.read_text())
-    slugs_seen = {}
-    slugs = []
-    for person in people:
-        slug = slugify(person["name"])
-        if slug in slugs_seen and slugs_seen[slug] != person["name"]:
-            slug = f"{slug}-{len(slugs_seen)}"
-        slugs_seen[slug] = person["name"]
-        slugs.append(slug)
-    return sorted(slugs)
-
-
 def _architects_sitemap_slugs():
     """Same self-healing rationale as _craftspeople_sitemap_slugs() -
     reads data/houses.json directly so render_sitemap() stays correct
@@ -1408,13 +1383,6 @@ def render_sitemap(brand_slugs):
         ("https://formground.com/new.html", "weekly", "0.6", today),
     ]
     urls += [(f"https://formground.com/brands/{slug}.html", "weekly", "0.5", today) for slug in brand_slugs]
-    craftspeople_slugs = _craftspeople_sitemap_slugs()
-    if craftspeople_slugs:
-        urls.append(("https://formground.com/craftspeople.html", "weekly", "0.7", today))
-        urls += [
-            (f"https://formground.com/craftspeople/{slug}.html", "weekly", "0.5", today)
-            for slug in craftspeople_slugs
-        ]
     designer_slugs = _designers_sitemap_slugs()
     if designer_slugs:
         urls.append(("https://formground.com/designers.html", "weekly", "0.7", today))

@@ -160,7 +160,7 @@ def render_architect_page(firm_name, slug, meta, houses):
   <p class="category-intro">{len(houses)} real house{'' if len(houses) == 1 else 's'} designed by {html.escape(firm_name)}, each pulled from their own project page.</p>
   <div class="maker-grid">{houses_html}
   </div>
-  <p class="page-tagline">Looking for someone to help build it? <a href="/craftspeople.html">Browse Craftspeople &rarr;</a> &middot; <a href="/work.html?q=house">Browse every house on Work &rarr;</a></p>
+  <p class="page-tagline">Looking for someone to help build it? <a href="/for-creators.html">Browse For Creators &rarr;</a> &middot; <a href="/work.html?q=house">Browse every house on Work &rarr;</a></p>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
   </p>
