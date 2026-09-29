@@ -352,6 +352,26 @@
     display: inline-block; font-size: 13px; font-weight: 600; color: #1a1816;
     background: #fff; padding: 10px 22px; border-radius: 999px;
   }
+
+  /* Carousel wrapper for a Feature Spread with more than one real image
+     to show (2026-09-29) - reuses the Banner Carousel primitive already
+     built for Promotions (see project memory: render_banner_carousel/
+     BANNER_CAROUSEL_JS in generate_brand_pages.py), just wrapping
+     .feature-spread's own slide markup instead of Promotions' price/
+     badge markup. aspect-ratio overridden to 2/1 to match every other
+     Feature Spread on this page (Promotions' own carousel uses 2.4/1).
+     Auto-rotates every 6s, dot navigation, pauses on hover - same
+     behavior already live and proven on Promotions. */
+  .banner-carousel { position: relative; aspect-ratio: 2/1; }
+  .banner-carousel .feature-spread { position: absolute; inset: 0; aspect-ratio: unset; border: none; }
+  .banner-slide { position: absolute; inset: 0; display: none; }
+  .banner-slide.active { display: block; }
+  .banner-dots { position: absolute; bottom: 18px; right: 24px; z-index: 2; display: flex; gap: 6px; }
+  .banner-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; padding: 0; }
+  .banner-dot.active { background: #fff; }
+  @media (max-width: 760px) {
+    .banner-carousel { aspect-ratio: 4/3; }
+  }
   .feature-spread:hover .feature-spread-cta { background: #f0ede8; }
 
   /* Duo - two medium images side by side, more presence than a shelf
@@ -626,15 +646,46 @@
         <h3>Sofas</h3>
         <a href="work.html?q=sofa">See all &rarr;</a>
       </div>
-      <a class="feature-spread" href="https://www.miniforms.com/en/products/16_armchairs-and-sofas/317_bolide/" target="_blank" rel="noopener noreferrer">
-        <img src="https://www.miniforms.com/images/foto/prodotti/copertina/317.png" alt="Bolide by Miniforms">
-        <div class="feature-spread-content">
-          <p class="feature-spread-eyebrow">Sofas</p>
-          <p class="feature-spread-title">Bolide</p>
-          <p class="feature-spread-desc">Miniforms</p>
-          <span class="feature-spread-cta">Shop the edit &rarr;</span>
+      <div class="banner-carousel">
+        <div class="banner-slide active">
+          <a class="feature-spread" href="https://www.portaromana.com/products/dajo-sofa" target="_blank" rel="noopener noreferrer">
+            <img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/USF08-COM-HERO.jpg?v=1745922070" alt="Dajo Sofa by Porta Romana">
+            <div class="feature-spread-content">
+              <p class="feature-spread-eyebrow">Sofas</p>
+              <p class="feature-spread-title">Dajo Sofa</p>
+              <p class="feature-spread-desc">Porta Romana</p>
+              <span class="feature-spread-cta">Shop the edit &rarr;</span>
+            </div>
+          </a>
         </div>
-      </a>
+        <div class="banner-slide">
+          <a class="feature-spread" href="https://www.mycozmo.com/products/pillow-3-seater-sofa-blue-brown-textured-weave" target="_blank" rel="noopener noreferrer">
+            <img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/PillowFront.png?v=1782909053" alt="Pillow 3 Seater Sofa by Cozmo">
+            <div class="feature-spread-content">
+              <p class="feature-spread-eyebrow">Sofas</p>
+              <p class="feature-spread-title">Pillow 3 Seater Sofa</p>
+              <p class="feature-spread-desc">Cozmo</p>
+              <span class="feature-spread-cta">Shop the edit &rarr;</span>
+            </div>
+          </a>
+        </div>
+        <div class="banner-slide">
+          <a class="feature-spread" href="https://dustydeco.com/products/lola-sofa-beaten-track-green" target="_blank" rel="noopener noreferrer">
+            <img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_PRODUCT_JAN_LOLA_SOFA_BEATEN_TRACK_GREEN_0258.jpg?v=1759997680" alt="Lola Sofa Beaten Track Green by Dusty Deco">
+            <div class="feature-spread-content">
+              <p class="feature-spread-eyebrow">Sofas</p>
+              <p class="feature-spread-title">Lola Sofa</p>
+              <p class="feature-spread-desc">Dusty Deco</p>
+              <span class="feature-spread-cta">Shop the edit &rarr;</span>
+            </div>
+          </a>
+        </div>
+        <div class="banner-dots">
+          <button type="button" class="banner-dot active" data-index="0" aria-label="Slide 1"></button>
+          <button type="button" class="banner-dot" data-index="1" aria-label="Slide 2"></button>
+          <button type="button" class="banner-dot" data-index="2" aria-label="Slide 3"></button>
+        </div>
+      </div>
     </div>
 
     <div class="recent-group">
@@ -864,6 +915,34 @@
 </main>
 
 <script src="search.js"></script>
+
+<script>
+  // Banner/carousel rotation - same behavior as the Promotions page's
+  // own carousel (see BANNER_CAROUSEL_JS in scraper/generate_brand_pages.py):
+  // a single slide is static, 2+ get dot navigation and auto-rotation,
+  // paused on hover.
+  document.querySelectorAll(".banner-carousel").forEach(function (carousel) {
+    var slides = carousel.querySelectorAll(".banner-slide");
+    var dots = carousel.querySelectorAll(".banner-dot");
+    if (slides.length <= 1) return;
+    var current = 0;
+    var timer;
+    function show(i) {
+      current = i;
+      slides.forEach(function (s, idx) { s.classList.toggle("active", idx === i); });
+      dots.forEach(function (d, idx) { d.classList.toggle("active", idx === i); });
+    }
+    function next() { show((current + 1) % slides.length); }
+    function start() { timer = setInterval(next, 6000); }
+    function stop() { clearInterval(timer); }
+    dots.forEach(function (d, i) {
+      d.addEventListener("click", function () { show(i); stop(); start(); });
+    });
+    carousel.addEventListener("mouseenter", stop);
+    carousel.addEventListener("mouseleave", start);
+    start();
+  });
+</script>
 
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
