@@ -190,7 +190,7 @@ function renderCard(r) {
     e.preventDefault();
     e.stopPropagation();
     const shareUrl = a.href;
-    const shareText = `Check out ${r.product_name} by ${r.brand} on Formground`;
+    const shareText = `${r.product_name} by ${r.brand}. Discovered at Formground.com`;
     // Its own event, not the same "click" beacon a card navigation
     // fires (stopPropagation above means that one never fires here) -
     // sharing and clicking through are different actions worth telling
