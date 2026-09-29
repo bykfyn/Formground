@@ -167,6 +167,28 @@ class ResolveIntentTests(unittest.TestCase):
             qe._resolve_intent("something warm-toned and sculptural", llm_intent), llm_intent
         )
 
+    # 2026-09-29: Swedish equivalents (campaign rebuilt Swedish-first) -
+    # bare "möbler" used to fall through to the same null-category/
+    # whole-catalog bug this whole mechanism was built to fix for
+    # English, since it wasn't recognized as an umbrella word at all.
+
+    def test_swedish_browse_word_overrides_null_category(self):
+        llm_intent = {"category": None, "material": None}
+        self.assertEqual(qe._resolve_intent("möbler", llm_intent), {"category": "furniture"})
+
+    def test_swedish_browse_word_maps_to_canonical_english_value(self):
+        # The stored category value must be the canonical English word
+        # ("lighting"), not the literal matched Swedish string - that's
+        # what _category_matches()/HYPERNYM_WORDS actually know how to
+        # expand against real product category tags.
+        resolved = qe._resolve_intent("belysning", {"category": None})
+        self.assertEqual(resolved["category"], "lighting")
+
+    def test_swedish_browse_word_inside_multi_word_query(self):
+        llm_intent = {"category": None, "style_descriptors": ["oberoende"]}
+        resolved = qe._resolve_intent("oberoende möbler tillverkare", llm_intent)
+        self.assertEqual(resolved["category"], "furniture")
+
     # 2026-09-28: "new"/"new arrivals" recognition, so a query like "new
     # chairs" behaves like the dedicated New Arrivals page instead of
     # falling through to a literal text-match against product names.
@@ -244,6 +266,28 @@ class ResolveIntentTests(unittest.TestCase):
         self.assertEqual(resolved["countries"], ["Denmark"])
         self.assertEqual(resolved["style_descriptors"], [])
 
+    # 2026-09-29: Swedish equivalents (campaign rebuilt Swedish-first) -
+    # confirmed live "skandinaviskt matbord" returned the same count as
+    # bare "matbord", i.e. no geography filter was ever applying.
+
+    def test_swedish_scandinavian_adjective_sets_countries(self):
+        llm_intent = {"category": "dining table", "style_descriptors": ["skandinaviskt"]}
+        resolved = qe._resolve_intent("skandinaviskt matbord", llm_intent)
+        self.assertEqual(resolved["category"], "dining table")
+        self.assertEqual(set(resolved["countries"]), {"Sweden", "Denmark", "Norway"})
+        self.assertEqual(resolved["style_descriptors"], [])
+
+    def test_swedish_nordic_word_includes_finland(self):
+        llm_intent = {"category": None, "style_descriptors": ["nordisk"]}
+        resolved = qe._resolve_intent("nordisk belysning", llm_intent)
+        self.assertEqual(set(resolved["countries"]), {"Sweden", "Denmark", "Norway", "Finland"})
+
+    def test_swedish_single_country_demonym(self):
+        llm_intent = {"category": "stol", "style_descriptors": ["svensk"]}
+        resolved = qe._resolve_intent("svensk stol", llm_intent)
+        self.assertEqual(resolved["countries"], ["Sweden"])
+        self.assertEqual(resolved["style_descriptors"], [])
+
     def test_two_seater_word_form_sets_seat_count(self):
         llm_intent = {"category": "sofa", "style_descriptors": ["two seater"]}
         resolved = qe._resolve_intent("two seater sofa", llm_intent)
@@ -311,6 +355,28 @@ class ResolveIntentTests(unittest.TestCase):
         self.assertIsNone(qe._wanted_seat_count("a loveseat sofa"))
         self.assertIsNone(qe._wanted_seat_count("seat cushion"))
 
+    # 2026-09-29: Swedish equivalents (campaign rebuilt Swedish-first) -
+    # "tvåsits" ("two-seat") is the real Swedish furniture term; "tvåsits
+    # soffa" returned 0 results before this despite 58 real matches for
+    # the equivalent English query.
+
+    def test_swedish_word_form_sets_seat_count(self):
+        llm_intent = {"category": "soffa", "style_descriptors": ["tvåsits"]}
+        resolved = qe._resolve_intent("tvåsits soffa", llm_intent)
+        self.assertEqual(resolved["seat_count"], 2)
+        self.assertEqual(resolved["style_descriptors"], [])
+
+    def test_swedish_digit_hyphen_form_sets_seat_count(self):
+        self.assertEqual(qe._wanted_seat_count("2-sits soffa"), 2)
+        self.assertEqual(qe._wanted_seat_count("tre-sits soffa"), 3)
+        self.assertEqual(qe._wanted_seat_count("3 sits soffa"), 3)
+
+    def test_swedish_seat_count_does_not_affect_product_name_matching(self):
+        # The reverse int->word lookup used to match PRODUCT names must
+        # stay English regardless of the query's own language - this
+        # catalog's product names are English even when the query isn't.
+        self.assertTrue(qe._product_matches_seat_count("Collar 2-seater", 2))
+
 
 class ProductMatchesSeatCountTests(unittest.TestCase):
     def test_digit_form_matches(self):
@@ -324,6 +390,57 @@ class ProductMatchesSeatCountTests(unittest.TestCase):
 
     def test_no_seat_count_in_name_does_not_match(self):
         self.assertFalse(qe._product_matches_seat_count("Mogens Lounge Chair", 2))
+
+
+class PortableLampRecognitionTests(unittest.TestCase):
+    """
+    2026-09-29 (campaign rebuilt Swedish-first) - "uppladdningsbar
+    bordslampa"/"portable table lamp" are real, high-value ad keywords.
+    "Portable" is a real naming convention 28 real products across 6
+    brands already use for a cordless/rechargeable lamp - no structured
+    battery/power-source field exists, same "read it from the name"
+    shape as seat count.
+    """
+
+    def test_english_word_sets_portable_only(self):
+        llm_intent = {"category": "table lamp", "style_descriptors": ["portable"]}
+        resolved = qe._resolve_intent("portable table lamp", llm_intent)
+        self.assertTrue(resolved["portable_only"])
+        self.assertEqual(resolved["style_descriptors"], [])
+
+    def test_swedish_word_sets_portable_only(self):
+        llm_intent = {"category": "bordslampa", "style_descriptors": ["uppladdningsbar"]}
+        resolved = qe._resolve_intent("uppladdningsbar bordslampa", llm_intent)
+        self.assertTrue(resolved["portable_only"])
+        self.assertEqual(resolved["style_descriptors"], [])
+
+    def test_other_swedish_synonyms_also_recognized(self):
+        for word in ("portabel", "sladdlös", "batteridriven"):
+            with self.subTest(word=word):
+                self.assertTrue(qe._wants_portable(f"{word} bordslampa"))
+
+    def test_no_portable_word_leaves_intent_unchanged(self):
+        llm_intent = {"category": "table lamp", "color": "black", "style_descriptors": []}
+        self.assertEqual(qe._resolve_intent("black table lamp", llm_intent), llm_intent)
+
+    def test_portable_combines_with_category(self):
+        llm_intent = {"category": "table lamp", "style_descriptors": ["cordless"]}
+        resolved = qe._resolve_intent("cordless table lamp", llm_intent)
+        self.assertEqual(resolved["category"], "table lamp")
+        self.assertTrue(resolved["portable_only"])
+
+
+class ProductIsPortableTests(unittest.TestCase):
+    def test_portable_in_name_matches(self):
+        self.assertTrue(qe._product_is_portable("Margin Portable Table Lamp"))
+        self.assertTrue(qe._product_is_portable("Beetle Portable Lamp"))
+
+    def test_no_portable_in_name_does_not_match(self):
+        # A real, known cordless lamp whose name doesn't say "portable" -
+        # confirmed limitation, not a false negative bug: this recognizer
+        # only catches the naming convention, not every cordless lamp.
+        self.assertFalse(qe._product_is_portable("Alumina Multi-Use Lamp in Sapphire"))
+        self.assertFalse(qe._product_is_portable("Mogens Lounge Chair"))
 
 
 class IsModularComponentTests(unittest.TestCase):

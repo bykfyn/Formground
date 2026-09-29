@@ -72,7 +72,23 @@ HOUSE_CATEGORY_WORDS = {"house", "houses", "villa", "villas", "home", "homes"}
 # means "browse this whole category," never "and also match this as a
 # material/color" - so search() below replaces the LLM's intent outright
 # for these, rather than patching just the missing-category case.
-BROWSE_CATEGORY_WORDS = {"furniture", "lighting", "ceramics", "objects", "object"}
+#
+# A dict, not a set, mapping each recognized word to its canonical
+# English umbrella value (what filter_products()/_category_matches()'s
+# HYPERNYM_WORDS actually expect) - added Swedish equivalents
+# 2026-09-29 (campaign rebuilt Swedish-first): bare "möbler" ("furniture")
+# was falling through to the same null-category/whole-catalog bug this
+# dict was built to fix for English, since it wasn't recognized as an
+# umbrella word at all. Mapping to the canonical value (not the matched
+# word itself) means "möbler" sets category="furniture", not the literal
+# Swedish string, so it reaches _category_matches with a value it
+# already knows how to expand.
+BROWSE_CATEGORY_WORDS = {
+    "furniture": "furniture", "möbler": "furniture",
+    "lighting": "lighting", "belysning": "lighting",
+    "ceramics": "ceramics", "keramik": "ceramics",
+    "objects": "objects", "object": "objects", "föremål": "objects",
+}
 
 # Duplicated from scraper/generate_brand_pages.py's own
 # NEW_ARRIVALS_WINDOW_DAYS, not imported - the Cloud Run Docker image
@@ -166,6 +182,25 @@ GEOGRAPHY_GROUPS = {
     "finland": {"Finland"}, "finnish": {"Finland"},
     "italy": {"Italy"}, "italian": {"Italy"},
     "france": {"France"}, "french": {"France"},
+    # Swedish-language forms (2026-09-29, campaign rebuilt Swedish-first -
+    # keyword research showed "skandinaviskt matbord" has real volume but
+    # returned the same count as bare "matbord", i.e. no geography filter
+    # was applying at all). Swedish adjectives inflect by the noun's
+    # gender/number (en/ett-word, singular/plural) - all confirmed common,
+    # neuter, and plural/definite forms included, same as "scandinavian"
+    # alone already covers only the one English form needed.
+    "skandinavien": {"Sweden", "Denmark", "Norway"},
+    "skandinavisk": {"Sweden", "Denmark", "Norway"},
+    "skandinaviskt": {"Sweden", "Denmark", "Norway"},
+    "skandinaviska": {"Sweden", "Denmark", "Norway"},
+    "norden": {"Sweden", "Denmark", "Norway", "Finland"},
+    "nordisk": {"Sweden", "Denmark", "Norway", "Finland"},
+    "nordiskt": {"Sweden", "Denmark", "Norway", "Finland"},
+    "nordiska": {"Sweden", "Denmark", "Norway", "Finland"},
+    "sverige": {"Sweden"}, "svensk": {"Sweden"}, "svenskt": {"Sweden"}, "svenska": {"Sweden"},
+    "danmark": {"Denmark"}, "dansk": {"Denmark"}, "danskt": {"Denmark"}, "danska": {"Denmark"},
+    "norge": {"Norway"}, "norsk": {"Norway"}, "norskt": {"Norway"}, "norska": {"Norway"},
+    "finskt": {"Finland"}, "finska": {"Finland"}, "finsk": {"Finland"},
 }
 
 
@@ -216,24 +251,41 @@ SEAT_COUNT_WORDS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six":
 SEAT_COUNT_NUMBER_WORDS = {v: k for k, v in SEAT_COUNT_WORDS.items()}
 SEAT_COUNT_PATTERN = re.compile(r"\b(\d+|one|two|three|four|five|six)[\s-]?seat(?:er)?s?\b", re.IGNORECASE)
 
+# Swedish seat-count phrasing (2026-09-29, campaign rebuilt Swedish-first):
+# "tvåsits"/"2-sits" is the real Swedish furniture term for a seat count
+# (literally "two-seat") - "tvåsits soffa" returned 0 results before this,
+# since only the English pattern above was ever recognized. Kept as its
+# own dict/pattern rather than merged into SEAT_COUNT_WORDS above:
+# product names in this catalog are in English, so
+# _product_matches_seat_count's reverse int->word lookup
+# (SEAT_COUNT_NUMBER_WORDS) must stay English-only regardless of which
+# language the query itself arrived in.
+SWEDISH_SEAT_COUNT_WORDS = {"en": 1, "två": 2, "tre": 3, "fyra": 4, "fem": 5, "sex": 6}
+SWEDISH_SEAT_COUNT_PATTERN = re.compile(r"\b(\d+|en|två|tre|fyra|fem|sex)[\s-]?sits\b", re.IGNORECASE)
+
 
 def _wanted_seat_count(stripped_query: str):
     """
-    A seat count ("two seater", "2-seater", "3 seat sofa") a query is
-    asking for, or None. Digit and word forms both recognized, matching
-    the real variety already confirmed in the data (see above) - the
-    LLM's own style_descriptors handling can't be trusted to extract
-    this reliably or consistently (same LLM-reliability gap as every
-    other deterministic fix today), and even when it does, a bare
+    A seat count ("two seater", "2-seater", "3 seat sofa", or the
+    Swedish "tvåsits"/"2-sits") a query is asking for, or None. Digit
+    and word forms both recognized in either language, matching the
+    real variety already confirmed in the data (see above) - the LLM's
+    own style_descriptors handling can't be trusted to extract this
+    reliably or consistently (same LLM-reliability gap as every other
+    deterministic fix today), and even when it does, a bare
     substring/style-descriptor match against product names is too
     fragile (confirmed: filter_by_name("two seater sofa") finds only 4
     of the 56 real matches).
     """
     m = SEAT_COUNT_PATTERN.search(stripped_query)
-    if not m:
-        return None
-    token = m.group(1).lower()
-    return int(token) if token.isdigit() else SEAT_COUNT_WORDS.get(token)
+    if m:
+        token = m.group(1).lower()
+        return int(token) if token.isdigit() else SEAT_COUNT_WORDS.get(token)
+    m = SWEDISH_SEAT_COUNT_PATTERN.search(stripped_query)
+    if m:
+        token = m.group(1).lower()
+        return int(token) if token.isdigit() else SWEDISH_SEAT_COUNT_WORDS.get(token)
+    return None
 
 
 def _product_matches_seat_count(product_name: str, seat_count: int) -> bool:
@@ -242,6 +294,42 @@ def _product_matches_seat_count(product_name: str, seat_count: int) -> bool:
     number_word = SEAT_COUNT_NUMBER_WORDS.get(seat_count)
     alternatives = "|".join(str(a) for a in (seat_count, number_word) if a is not None)
     return bool(re.search(rf"\b({alternatives})[\s-]?seaters?\b", product_name, re.IGNORECASE))
+
+
+# Real, reliable naming convention confirmed live 2026-09-29 (ad keyword
+# research for "uppladdningsbar bordslampa"/"portabel bordslampa" -
+# cordless/rechargeable table lamps, among the cheapest-CPC terms
+# researched): 28 real table lamps across 6 brands (New Works DK,
+# 101cph, In Common With, Audo, Porta Romana, Louise Roe) literally say
+# "Portable" in their own product name - the lighting industry's own
+# established term for a cordless/battery lamp, same shape as the seat-
+# count fact above (a real fact embedded in the name, not a structured
+# database column - no separate battery/power-source field exists).
+# Query-side recognition covers English and Swedish search terms; the
+# product-name check itself only ever needs to look for the English
+# word "Portable", since that's the term real brands actually use in
+# this catalog regardless of what language the query arrived in - same
+# principle as SWEDISH_SEAT_COUNT_PATTERN feeding into an English-only
+# product-name check.
+PORTABLE_LAMP_WORDS = {
+    "portable", "cordless", "rechargeable", "battery",
+    "uppladdningsbar", "portabel", "sladdlös", "batteridriven",
+}
+
+
+def _wants_portable(stripped_query: str) -> bool:
+    """True when the query is asking for a cordless/rechargeable/
+    portable lamp, in English or Swedish (see PORTABLE_LAMP_WORDS)."""
+    words = set(re.findall(r"[a-zà-ÿ]+", stripped_query))
+    return bool(words & PORTABLE_LAMP_WORDS)
+
+
+def _product_is_portable(product_name: str) -> bool:
+    """True if a product's own name literally says "Portable" - the
+    real, confirmed naming convention this catalog's brands already use
+    for cordless/rechargeable lamps (see PORTABLE_LAMP_WORDS above)."""
+    return bool(re.search(r"\bportable\b", product_name, re.IGNORECASE))
+
 
 LLM_PROVIDER = os.environ.get("LLM_PROVIDER", "anthropic")
 
@@ -627,7 +715,8 @@ def filter_products(intent: dict) -> list:
     """
     Filters stored products on the hard facts: category + material +
     new_only (recency, see _wants_new_arrivals) + countries (see
-    _wanted_countries) + seat_count (see _wanted_seat_count) + not an
+    _wanted_countries) + seat_count (see _wanted_seat_count) +
+    portable_only (see _wants_portable/_product_is_portable) + not an
     individual modular-system build component (see
     _is_modular_component) + not a protective cover for the furniture
     rather than the furniture itself (see _is_protective_cover) + has a
@@ -667,6 +756,7 @@ def filter_products(intent: dict) -> list:
     wanted_color = (intent.get("color") or "").strip().lower()
     wanted_countries = set(intent.get("countries") or [])
     wanted_seat_count = intent.get("seat_count")
+    wanted_portable = bool(intent.get("portable_only"))
     raw_style_descriptors = intent.get("style_descriptors") or []
     wanted_style_descriptors = [
         d.strip().lower() for d in raw_style_descriptors
@@ -696,6 +786,8 @@ def filter_products(intent: dict) -> list:
         if wanted_countries and BRAND_COUNTRIES.get(product["brand"]) not in wanted_countries:
             continue
         if wanted_seat_count is not None and not _product_matches_seat_count(product["product_name"], wanted_seat_count):
+            continue
+        if wanted_portable and not _product_is_portable(product["product_name"]):
             continue
 
         # A product with many raw finish/color combos merged into one
@@ -1025,15 +1117,26 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
     _wanted_seat_count/_product_matches_seat_count: sets `seat_count`
     as a hard filter, combinable with category exactly like the others,
     matching either digit or word form in the product's own name.
+    Swedish query forms added 2026-09-29 (SWEDISH_SEAT_COUNT_PATTERN) -
+    "tvåsits"/"2-sits" is the real Swedish furniture term, and returned
+    zero results before this despite real matching inventory.
+
+    Sixth, portable/cordless lamps (2026-09-29, campaign rebuilt
+    Swedish-first): "uppladdningsbar bordslampa"/"portable table lamp"
+    are real, high-value ad keywords, and "Portable" is a real naming
+    convention 28 products across 6 brands already use for a cordless/
+    rechargeable lamp - see PORTABLE_LAMP_WORDS/_product_is_portable.
+    Sets `portable_only` as a hard filter, combinable with category
+    exactly like the others.
     """
     stripped = raw_query.strip().lower()
     if stripped in BROWSE_CATEGORY_WORDS:
-        intent = {"category": stripped}
+        intent = {"category": BROWSE_CATEGORY_WORDS[stripped]}
     elif not llm_intent.get("category"):
         intent = llm_intent
         for word in re.findall(r"[a-zà-ÿ]+", stripped):
             if word in BROWSE_CATEGORY_WORDS:
-                intent = {**llm_intent, "category": word}
+                intent = {**llm_intent, "category": BROWSE_CATEGORY_WORDS[word]}
                 break
     else:
         intent = llm_intent
@@ -1083,8 +1186,19 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
         category = intent.get("category")
         if isinstance(category, str) and category:
             cleaned_category = SEAT_COUNT_PATTERN.sub("", category).strip()
+            cleaned_category = SWEDISH_SEAT_COUNT_PATTERN.sub("", cleaned_category).strip()
             if cleaned_category != category:
                 intent["category"] = cleaned_category or None
+
+    if _wants_portable(stripped):
+        intent = dict(intent)
+        intent["portable_only"] = True
+        style_descriptors = intent.get("style_descriptors")
+        if style_descriptors:
+            intent["style_descriptors"] = [
+                d for d in style_descriptors
+                if not (isinstance(d, str) and d.strip().lower() in PORTABLE_LAMP_WORDS)
+            ]
 
     return intent
 
