@@ -442,7 +442,16 @@ async function runSearch(query) {
     const results = data.results || [];
     renderResults(
       results,
-      (n) => `${n.toLocaleString()} random result${n === 1 ? "" : "s"}, no rankings, not paid for`,
+      // Copy-paste bug fixed 2026-09-29 (found while investigating a
+      // handoff report that search "doesn't work"): this used to reuse
+      // runDiscover's "random results" phrasing verbatim even for a
+      // real, specific query - the search itself was always working
+      // (confirmed live: real filtered results, real total_matches from
+      // the API), but the label made every result look like unfiltered
+      // Discover output, indistinguishable from a broken search at a
+      // glance. metaEl uses textContent, not innerHTML, so query needs
+      // no HTML-escaping here.
+      (n) => `${n.toLocaleString()} result${n === 1 ? "" : "s"} for "${query}", no rankings, not paid for`,
       "No matches yet - try describing it a different way.",
       false,
       data.total_matches
