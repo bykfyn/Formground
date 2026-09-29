@@ -40,6 +40,7 @@ appends to it):
 """
 
 import html
+import re
 import sys
 from pathlib import Path
 
@@ -93,15 +94,112 @@ THEMES = [
 ]
 
 
+# Real vocabulary confirmed present across all 4 themes' product names
+# (2026-09-29) - covers colors, wood species, and common finish/material
+# words. Deliberately does NOT include size words ("Small"/"Large"/
+# "Medium") or anything numeric (Ø-diameters, cm measurements, x-by-x
+# dimensions) - those stay in the grouping key on purpose (see
+# _group_color_variants's docstring for why).
+COLOR_FINISH_WORDS = {
+    "black", "white", "grey", "gray", "red", "blue", "green", "yellow",
+    "brown", "beige", "cream", "natural", "natur", "dark", "light",
+    "oak", "walnut", "ash", "teak", "pine", "birch", "timber", "moss",
+    "marble", "limestone", "granite", "travertine", "concrete", "terrazzo",
+    "lacquered", "lacquer", "stain", "stained", "matt", "glossy", "waxed",
+    "smoked", "veneer", "laminate",
+    "steel", "stainless", "brass", "chrome", "bronze", "gold", "silver",
+    "nickel", "copper",
+    "waste", "sirka",
+}
+
+
+def _group_color_variants(products):
+    """
+    Collapses same-size color/finish variants of one product into a
+    single representative card (first one listed, in whatever order
+    filter_products() returned) with a "N finishes" badge - built after
+    a real case was found live on scandinavian-dining-tables.html:
+    Davsjo alone contributed ~18 near-duplicate cards (5 wood finishes x
+    several sizes) that drowned out the other 15 brands on the page.
+
+    Deliberately does NOT collapse different SIZES into one card (user's
+    explicit call, 2026-09-29) - "Coin Dining Table - O120" and "- O150"
+    stay as two real, separately-clickable cards, since a size is often
+    a genuine functional choice someone is searching for, unlike a
+    color/finish. The grouping key keeps every digit, "O"-diameter, "cm"
+    measurement, and size word (Small/Large/Medium) from the original
+    name untouched - only known color/material words (COLOR_FINISH_WORDS)
+    are stripped before comparing, so two names that differ ONLY by a
+    color word collapse together, and anything else (including a size
+    difference) keeps them apart.
+
+    Returns (products_to_render, variant_counts) where variant_counts
+    maps a rendered product's id() to its group's real size (omitted /
+    1 for a product with no real variants).
+    """
+    def grouping_key(p):
+        words = re.findall(r"[A-Za-zÀ-ÿ]+|[0-9]+|Ø|/", p["product_name"])
+        kept = [w for w in words if w.lower() not in COLOR_FINISH_WORDS]
+        return (p["brand"], " ".join(kept).lower())
+
+    groups = {}
+    order = []
+    for p in products:
+        key = grouping_key(p)
+        if key not in groups:
+            groups[key] = []
+            order.append(key)
+        groups[key].append(p)
+
+    result = []
+    variant_counts = {}
+    for key in order:
+        group = groups[key]
+        representative = dict(group[0])
+        if len(group) > 1:
+            representative["product_name"] = _strip_color_words_for_display(representative["product_name"])
+            variant_counts[id(representative)] = len(group)
+        result.append(representative)
+    return result, variant_counts
+
+
+def _strip_color_words_for_display(name):
+    """
+    Removes the same COLOR_FINISH_WORDS from a representative card's own
+    title (not just the grouping key) so a grouped card reads "Sintra
+    Dining Table" instead of "Sintra Dining Table | Black Marble" -
+    misleading once the card actually stands in for 5 different colors.
+    Collapses whatever delimiter mess stripping words out of the middle
+    of a "|"-separated name leaves behind.
+    """
+    def strip_word(m):
+        return "" if m.group(0).lower() in COLOR_FINISH_WORDS else m.group(0)
+
+    cleaned = re.sub(r"[A-Za-zÀ-ÿ]+", strip_word, name)
+    cleaned = re.sub(r"\s*\|\s*\|\s*", " | ", cleaned)
+    cleaned = re.sub(r"\s{2,}", " ", cleaned)
+    cleaned = re.sub(r"^\s*[|,-]\s*|\s*[|,-]\s*$", "", cleaned)
+    cleaned = re.sub(r"\s*\|\s*", " | ", cleaned)
+    return cleaned.strip()
+
+
 def render_theme_page(theme, products):
     slug = theme["slug"]
     title = theme["title"]
     page_url = f"{SITE_URL}/{slug}.html"
+    # The meta description counts every real, distinct product - grouping
+    # same-size color variants below is a display choice, not a content
+    # reduction, so the honest "how much is here" number stays ungrouped.
     n = len(products)
     description = f"{n} real {title.lower()}{'' if title.lower().endswith('s') else 's'}, from independent makers. {theme['intro']}"
 
-    if products:
-        cards = "".join(product_card_html(p, show_brand=True) for p in products)
+    cards_to_render, variant_counts = _group_color_variants(products)
+
+    if cards_to_render:
+        cards = "".join(
+            product_card_html(p, show_brand=True, variant_count=variant_counts.get(id(p)))
+            for p in cards_to_render
+        )
         body = f'<div class="grid">{cards}</div>'
     else:
         body = '<p class="empty-state">Check back soon - new pieces are added here as they are found.</p>'

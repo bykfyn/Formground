@@ -331,7 +331,7 @@ def primary_image_for(products, umbrellas):
     return ""
 
 
-def product_card_html(p, show_brand=False):
+def product_card_html(p, show_brand=False, variant_count=None):
     """
     show_brand adds a brand-name line under the title - off by default
     since every existing caller (render_brand_page's own single-brand
@@ -339,6 +339,13 @@ def product_card_html(p, show_brand=False):
     redundant; the New-arrivals page (render_new_page) is the one place
     a mixed-brand grid actually needs it, since "Bench" alone means
     nothing without knowing whose.
+
+    variant_count, when set to 2+, renders a "N finishes" badge over the
+    image - the caller (currently only generate_theme_landing_pages.py's
+    _group_color_variants) has already collapsed same-size/different-
+    color variants of one product into this single representative card;
+    see that function for why size variants are deliberately NOT
+    collapsed the same way (2026-09-29, user's explicit call).
     """
     url = p["brand_url"] if p["link_dead"] else p["product_url"]
     alt_text = html.escape(f'{p["product_name"]} by {p["brand"]}')
@@ -346,6 +353,8 @@ def product_card_html(p, show_brand=False):
         f'<img src="{html.escape(p["image_url"])}" alt="{alt_text}" loading="lazy">'
         if p["image_url"] else ""
     )
+    if image and variant_count and variant_count > 1:
+        image += f'<span class="variant-badge">{variant_count} finishes</span>'
     title_html = f'<p class="card-title">{html.escape(p["product_name"])}</p>'
     if show_brand:
         # .card-title-wrap reserves a full 2 lines' height so .card-brand
@@ -635,7 +644,15 @@ PAGE_CSS = """
   .card { display: block; text-decoration: none; color: inherit; }
   .card-image {
     aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
-    border: 0.5px solid var(--border); margin: 0 0 10px;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
   }
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-image img.contain-fit { object-fit: contain; }
