@@ -944,6 +944,362 @@ def extract_moustache(brand):
     return products
 
 
+def extract_bd_barcelona(brand):
+    """
+    A single /shop/category/all/ page carries the entire real catalog -
+    confirmed live 2026-09-29, no pagination signal (no "load more",
+    no page=2 link) and the count (102) matches what's visibly listed.
+    Each product card embeds a full Schema.org Product JSON-LD block
+    server-rendered right in the page (name, url, image, price/currency,
+    and a real "Designer" additionalProperty) - far cleaner than the
+    site's own /products.json, which 404s (headless/custom storefront on
+    top of Shopify's backend, per the "shopifyProduct-..." sku prefix).
+    Names come back ALL CAPS ("ECLIPSO COFFEE TABLE") - .title()'d for
+    readability; checked the full 102-item list for HAY-style acronym
+    model codes first (AAC/CPH-style prefixes that .title() would mangle)
+    and found none, just ordinary words and numbers.
+    No category field exists in the JSON-LD at all, so every product
+    relies on _infer_category_from_name() - spot-checked live: correctly
+    reads "Eclipso Coffee Table" -> Coffee Table, "Carlina Dining Table
+    Round" -> Dining Table, etc.
+    """
+    url = f"{brand['url'].rstrip('/')}/shop/category/all/"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    blocks = re.findall(
+        r'<script type="application/ld\+json">(\{[^<]*?"@type":"Product"[^<]*?\})</script>',
+        resp.text,
+    )
+    products = []
+    seen_urls = set()
+    for block in blocks:
+        try:
+            data = json.loads(block)
+        except json.JSONDecodeError:
+            continue
+        product_url = data.get("url", "")
+        if not product_url or product_url in seen_urls:
+            continue
+        seen_urls.add(product_url)
+
+        name = html.unescape(data.get("name", "")).title()
+        if not name:
+            continue
+
+        designer = ""
+        for prop in data.get("additionalProperty", []):
+            if prop.get("name") == "Designer":
+                designer = prop.get("value", "")
+                break
+
+        offer = data.get("offers", {})
+        price = offer.get("price")
+        try:
+            price = float(price) if price else None
+        except (TypeError, ValueError):
+            price = None
+
+        category = _infer_category_from_name(name, "", brand_name=brand["name"])
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": product_url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": data.get("image", ""),
+            "designer": designer,
+            "price": price,
+            "currency": offer.get("priceCurrency"),
+        })
+
+    return products
+
+
+# B&B Italia's own Italian family/category slugs (confirmed live
+# 2026-09-29), mapped to English categories. "tavoli" (bare "tables") is
+# mapped to Dining Table specifically since low tables and side tables
+# each have their own separate family slug (tavolibassi, tavolini...).
+BB_ITALIA_CATEGORIES = {
+    "family_armadiecabinearmadio": "Wardrobe",
+    "family_cassettiere": "Chest of Drawers",
+    "family_comodini": "Nightstand",
+    "family_console": "Console Table",
+    "family_contenitoriecredenze": "Sideboard",
+    "family_divanicomponibili": "Sofa",
+    "family_divaniletto": "Sofa Bed",
+    "family_divanilineari": "Sofa",
+    "family_letticontestata": "Bed",
+    "family_librerie": "Bookcase",
+    "family_panche": "Bench",
+    "family_paraventi": "Room Divider",
+    "family_poggiapiedi": "Ottoman",
+    "family_poltrone": "Armchair",
+    "family_pouf": "Pouf",
+    "family_scrittoi": "Desk",
+    "family_sedieconbraccioli": "Chair",
+    "family_sediesenzabraccioli": "Chair",
+    "family_sgabelli": "Stool",
+    "family_sistemigiorno": "Shelving",
+    "family_specchi": "Mirror",
+    "family_tappeti": "Rug",
+    "family_tavoli": "Dining Table",
+    "family_tavolibassi": "Coffee Table",
+    "family_tavoliniedelementiservizio": "Side Table",
+}
+
+
+def extract_bb_italia(brand):
+    """
+    Magento storefront (confirmed live: /media/catalog/product/ image
+    paths, form_key hidden fields) - no product API, but each of the 25
+    real indoor-furniture category pages (BB_ITALIA_CATEGORIES) renders
+    its full product grid server-side in one page, no pagination found
+    on any category checked (confirmed: family_tavoli's 12 links matched
+    what the page itself lists, no "page 2" control). Name/url/image
+    come straight from the category grid - visiting each of the ~150+
+    individual product pages too would blow the per-brand fetch budget
+    for a designer credit alone, so this brand doesn't capture one
+    (several other brands in this file don't either).
+    Indoor only, not outdoor - matches the target keywords (dining/
+    coffee/side tables, sofas), and keeps this to a bounded ~25 fetches.
+    """
+    base = brand["url"].rstrip("/")
+    products = []
+    seen_urls = set()
+    brand_start = time.monotonic()
+
+    for slug, category in BB_ITALIA_CATEGORIES.items():
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"{brand['name']} - stopping early with what was fetched so far.")
+            break
+        url = f"{base}/en-us/modern-furniture/indoor/{slug}.html"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for link in soup.select("a.product-item-photo"):
+            product_url = link.get("href", "")
+            if not product_url or product_url in seen_urls:
+                continue
+            img = link.find("img")
+            if not img:
+                continue
+            name = (link.get("aria-label") or "").strip()
+            if not name:
+                continue
+            # Real names come back like "Husk-Sofa" / "Tobi Ishi" - the
+            # trailing " Sofas"/" Tavoli" etc. in the img's own alt text
+            # is a generic category label, not part of the name, so the
+            # aria-label (just the product name) is used instead of alt.
+            name = name.replace("-", " ").strip()
+            seen_urls.add(product_url)
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": name,
+                "product_url": product_url,
+                "category": category,
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": img.get("src", ""),
+            })
+        time.sleep(1)  # be polite - don't hammer the site
+
+    return products
+
+
+# Gervasoni's own real category-type labels (from each product card's
+# .item-prod__collection text, confirmed live 2026-09-29) mapped to this
+# site's category vocabulary. "Suspension lamp"/"Standing lamp" have no
+# direct equivalent match elsewhere in the target keyword set but are
+# kept for completeness rather than dropped.
+GERVASONI_CATEGORY_MAP = {
+    "chair": "Chair", "side chair": "Chair", "rocking chair": "Chair",
+    "armchair": "Armchair", "bergere armchair": "Armchair",
+    "side table": "Side Table", "bedside table": "Side Table",
+    "table": "Dining Table", "round table": "Dining Table",
+    "coffee table": "Coffee Table", "sofa": "Sofa", "modular sofa": "Sofa",
+    "sofa bed": "Sofa Bed", "sofa-bed": "Sofa Bed",
+    "bed": "Bed", "headboard": "Bed", "pouf": "Pouf", "ottoman": "Ottoman",
+    "bench": "Bench", "bookshelf": "Bookcase",
+    "storage unit": "Sideboard", "highboard": "Sideboard", "sideboard": "Sideboard",
+    "chest of drawers": "Chest of Drawers", "writing desk": "Desk",
+    "mirror": "Mirror", "rug": "Rug", "suspension lamp": "Pendant Lamp",
+    "standing lamp": "Floor Lamp", "table lamp": "Table Lamp",
+}
+
+
+def extract_gervasoni(brand):
+    """
+    /en/indoor/products lists the ENTIRE real indoor catalog on one page
+    (confirmed live 2026-09-29: 141 unique products, no "load more"/
+    page=2 signal) - far simpler than crawling the 15+ separate indoor
+    category pages one at a time. Each card's real type lives in its own
+    .item-prod__collection text (e.g. "Bolla" / "Side table"), not the
+    category page it happens to appear under - a design (e.g. "Brick")
+    spans several real types (chair, mirror, ottoman, table), so this is
+    the only reliable category source, mapped via GERVASONI_CATEGORY_MAP.
+    Images are flat cutout renders on a transparent ground ("fondo-
+    trasparente" in their own image path) rather than lifestyle photos -
+    real but lower-quality, same pattern as Kallemo; held back on
+    2026-09-25 for this reason, revisited 2026-09-29 for its real round/
+    coffee/side-table and sofa depth. Indoor only, not outdoor, matching
+    B&B Italia's same scoping choice.
+    """
+    url = f"{brand['url'].rstrip('/')}/en/indoor/products"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products = []
+    seen_urls = set()
+    for item in soup.select(".product-list__item.item-prod"):
+        link = item.select_one(".item-prod__link")
+        name_el = item.select_one(".item-prod__name")
+        type_el = item.select_one(".item-prod__collection")
+        img = item.select_one("img")
+        if not link or not name_el or not img:
+            continue
+        product_url = link.get("href", "")
+        if not product_url or product_url in seen_urls:
+            continue
+        seen_urls.add(product_url)
+
+        name = name_el.get_text(strip=True)
+        raw_type = (type_el.get_text(strip=True) if type_el else "").lower()
+        # A few real .item-prod__collection values are "{name} / {type}"
+        # (e.g. "Samet low / modular sofa", confirmed live 2026-09-29) -
+        # a data quirk on Gervasoni's own site, not a Formground bug; the
+        # real type is always the part after the slash.
+        if "/" in raw_type:
+            raw_type = raw_type.rsplit("/", 1)[1].strip()
+        # "LC 45"/"LC 46" etc. are Gervasoni's own bed model codes
+        # (confirmed live: these products live under /en/indoor/beds-...
+        # urls) - no plain "bed" word in the type text itself.
+        if re.match(r"^lc\s*\d+$", raw_type):
+            category = "Bed"
+        else:
+            category = GERVASONI_CATEGORY_MAP.get(raw_type, "")
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": urllib.parse.urljoin(brand["url"], product_url),
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": urllib.parse.urljoin(brand["url"], img.get("src", "")),
+        })
+
+    return products
+
+
+# Noom's own /tables listing-page class tokens (confirmed live
+# 2026-09-29) - "category-dining-tabels" is their own real typo for
+# "tables" carried straight through into the CSS class, not a Formground
+# error. /seating has no per-type class at all (every item just
+# "category-furniture"), so its category is inferred from the product
+# name instead (real names like "Archipen Chair"/"Flock Sofa"/"Flock
+# Ottoman" carry the type in the name itself).
+NOOM_CATEGORY_CLASS_MAP = {
+    "category-dining-tabels": "Dining Table",
+    "category-coffee-tables": "Coffee Table",
+}
+
+
+def extract_noom(brand):
+    """
+    Noom Home (noom-home.com, not the .dk domain - a same-name,
+    unrelated business) is a Squarespace commerce site - no bulk
+    products.json API the way Shopify/WooCommerce brands have. robots.txt
+    disallows "?format=json" for every bot including the wildcard rule
+    (confirmed live 2026-09-29 - a real, respected restriction, not
+    routed around via that common Squarespace shortcut), so this parses
+    the plain server-rendered HTML instead, same as any other custom
+    site. Scoped to /tables and /seating only - the two categories that
+    match the target keywords (round/coffee tables, sofas) - out of six
+    real category pages total (the others: /storages, /decor, /lighting,
+    /mirrors), keeping this to 2 fetches.
+    """
+    products = []
+    seen_urls = set()
+    for path in ("/tables", "/seating"):
+        url = f"{brand['url'].rstrip('/')}{path}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for item in soup.select(".ProductList-item"):
+            link = item.select_one("a.ProductList-item-link")
+            title_el = item.select_one(".ProductList-title")
+            img = item.select_one("img.ProductList-image--primary") or item.select_one("img")
+            if not link or not title_el or not img:
+                continue
+            product_url = link.get("href", "")
+            if not product_url or product_url in seen_urls:
+                continue
+            seen_urls.add(product_url)
+            name = title_el.get_text(strip=True)
+
+            # The name is trusted over the site's own class tag, not just
+            # used as a fallback - confirmed live 2026-09-29: "Dining
+            # Table Flock"/"Dining Table Paul" both carry Noom's own
+            # "category-coffee-tables" class (a real mistake on their
+            # side, not a Formground parsing bug), which would otherwise
+            # mislabel an unambiguously-named dining table.
+            if "dining table" in name.lower():
+                category = "Dining Table"
+            else:
+                category = ""
+                for cls in item.get("class", []):
+                    if cls in NOOM_CATEGORY_CLASS_MAP:
+                        category = NOOM_CATEGORY_CLASS_MAP[cls]
+                        break
+                category = _infer_category_from_name(name, category, brand_name=brand["name"])
+
+            image_url = img.get("data-image") or img.get("data-src") or img.get("src") or ""
+
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": name,
+                "product_url": urllib.parse.urljoin(brand["url"], product_url),
+                "category": category,
+                "material_options": [],
+                "dimensions": "",
+                "notes": "",
+                "image_url": image_url,
+            })
+        time.sleep(1)  # be polite - don't hammer the site
+
+    return products
+
+
 def extract_baleri_italia(brand):
     """
     baleri-italia.com has a "products.json" endpoint too, but unlike a real
@@ -2101,6 +2457,11 @@ def _looks_like_a_maintenance_item(title):
         # the same "Building parts" category (which do have their own
         # real product identity and aren't excluded here).
         "textile cord", "plug adaptor",
+        # Woud's own "Stedge Template" (confirmed live 2026-09-29: "Cardboard
+        # template for mounting Stedge") - a mounting aid, same shape as
+        # "assembly kit"/"mounting kit" above, not a design object. No other
+        # brand has "template" in a real product name (checked site-wide).
+        "template",
     )
     title_lower = title.lower()
     if any(kw in title_lower for kw in keywords):
@@ -2115,6 +2476,19 @@ def _looks_like_a_maintenance_item(title):
     # catalog for MOR's chairs (e.g. "CAST", "FRAME" on their own), so
     # nothing is lost by excluding the bundle SKU.
     if re.match(r"^\d+x\s", title_lower):
+        return True
+    # A bare "spare" as its own word means a replacement component, not
+    # a design object - confirmed live 2026-09-29 on Woud's 12 real
+    # "Spare Shade"/"Spare Dowels"/"Spare Handle"/"Spare Connecting
+    # Nut"/"Spare Leg Fittings"/"Spare Wall Fittings"/"Spare Shelf"
+    # listings, and Seletti's pre-existing 5 "Head Spare part" rows
+    # (same shape, never excluded until now). Needs a word-boundary
+    # regex rather than the plain substring keywords tuple above -
+    # "spare" is a substring of "transparent" and "Gaspare" (Alessi),
+    # both real product names/words across Serax/Ligne Roset/Mater/
+    # Alessi - checked every "spare"-containing title site-wide before
+    # adding this, and those are the only two false-positive shapes.
+    if re.search(r"\bspare\b", title_lower):
         return True
     return False
 
@@ -2458,6 +2832,15 @@ def extract_shopify(brand):
 
     raw_products = [p for p in raw_products if not _looks_like_a_class_listing(p["title"])]
     raw_products = [p for p in raw_products if not _looks_like_a_maintenance_item(p["title"])]
+    if brand["name"] == "Woud":
+        # Confirmed live 2026-09-29: "Arc leg (Coffee table)"/"Arc leg
+        # (Side table)" are single replacement legs sold on their own
+        # ("One leg for Arc coffee tables ... screws are not included",
+        # per the product's own body_html), not a real coffee/side
+        # table - would otherwise pollute exactly the categories this
+        # brand was added to deepen. No "spare"/"template" keyword in
+        # the name, so the generic filters above don't catch it.
+        raw_products = [p for p in raw_products if not p["title"].lower().startswith("arc leg (")]
     if brand["name"] == "Byarums Bruk":
         # 106 of 183 real catalog entries (58%, confirmed 2026-09-22) are
         # literally replacement components sold for Byarums Bruk's own
@@ -7020,6 +7403,11 @@ EXTRACTORS = {
     "Rihouse": extract_woocommerce,
     "Pode": extract_pode,
     "Cozmo": extract_shopify,
+    "Woud": extract_shopify,
+    "BD Barcelona": extract_bd_barcelona,
+    "B&B Italia": extract_bb_italia,
+    "Gervasoni": extract_gervasoni,
+    "Noom": extract_noom,
     # "TAKT" excluded here - confirmed 2026-09-25: the WooCommerce Store
     # API returns HTTP 200 but a 0-byte body for the scraper's real UA
     # specifically, while a generic UA gets the full real response - a

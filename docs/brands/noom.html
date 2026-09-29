@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Noom on Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Noom's work on Formground - 63 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/noom.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Noom on Formground">
+<meta property="og:description" content="Noom's work on Formground - 63 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/noom.html">
+<meta property="og:image" content="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/9122574d-5791-44e6-9553-20c050ed43a2/250619+06.png">
+<meta name="twitter:image" content="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/9122574d-5791-44e6-9553-20c050ed43a2/250619+06.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Noom on Formground">
+<meta name="twitter:description" content="Noom's work on Formground - 63 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Noom", "item": "https://formground.com/brands/noom.html"}]}</script>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Noom</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Ukraine</span></div>
+    <a class="brand-site-link" href="https://www.noom-home.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  <div class="grid">
+      <a class="card" href="https://www.noom-home.com/seating/archipen-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/9122574d-5791-44e6-9553-20c050ed43a2/250619+06.png" alt="Archipen Chair by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Archipen Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/archipen-chair-artistry-edition" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/fb9d02d6-0b17-4472-8031-5039962cafd4/Archipen+chair+by+NOOM+in+Patience+%26+Gough+Tora+ASH+fabric+%282%29.jpg" alt="Archipen Chair Artistry Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Archipen Chair Artistry Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/archipen-coffee-table-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/4a0ec5c8-2648-4e64-b9a6-48a407ed58ae/Archipen+Coffee+Tables+by+NOOM_web+%2812%291.jpg" alt="Archipen Coffee Table 1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Archipen Coffee Table 1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/archipen-coffee-table-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/87a604b8-1de3-4062-aced-f40585034447/Archipen+Coffee+Tables+by+NOOM_web+%2816%291.jpg" alt="Archipen Coffee Table 2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Archipen Coffee Table 2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/archipen-coffee-table-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/e15cee8a-afd0-41f8-8b48-e50f630e2664/Archipen_Cofee_Table_Three_brown_stained_ashwood_0321.jpg" alt="Archipen Coffee Table 3 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Archipen Coffee Table 3</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/archipen-coffee-table-4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/04d7d6ed-424a-41f2-9119-3f50170d7017/Archipen_Cofee_Table_Four_Brown_stained_ashwood_011.jpg" alt="Archipen Coffee Table 4 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Archipen Coffee Table 4</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/archipen-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/3adeabfc-df32-4278-91af-10175284dd1b/Archipen+Lounge+Chair+by+NOOM_web+%2817%291.jpg" alt="Archipen Lounge Chair by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Archipen Lounge Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/archipen-lounge-chair-hk3mc" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/9d8e5a9e-17c4-4359-99d1-bb9bd031c451/Archipen_Armchair_Wood_Black_stained_ashwood_Textile_Serpentine_Kvadrat_0928+1.jpg" alt="Archipen Lounge Chair by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Archipen Lounge Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/archipen-lounge-chair-p5lb9" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/26f738ac-71da-4558-aa69-08125880a426/Archipen_Armchair_Wood_RAL_5003_Textile_Archive_Fabrics_The_O_Textile_Vasyl_Krychevskyi+2.jpg" alt="Archipen Lounge Chair Artistry Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Archipen Lounge Chair Artistry Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/baby-chair-gropius-cs1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1665508873364-MHIM2M9GTPQEEGRH23G6/Baby+Gropius+%282%29ab.jpg" alt="Baby Chair Gropius CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Baby Chair Gropius CS1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/baby-chair-gropius-cs1-8dbrb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1708218173878-922B07LM1Q8CPCTY3LTQ/Fluffy-Baby-Chair-Gropius-CS1_in-Azur-Cotonneux-Faux-Fur+a.jpg" alt="Baby Chair Gropius CS1 Fluffy Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Baby Chair Gropius CS1 Fluffy Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/baby-chair-gropius-cs1-72e44" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/344cb9dc-1909-47e0-9372-86f9a7f3fde7/Fluffy-Baby-Chair-Gropius-CS1_in-Medo-Faux-Sheepskin-%281%29+a1.jpg" alt="Baby Chair Gropius CS1 in Faux Fur by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Baby Chair Gropius CS1 in Faux Fur</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/baby-low-chair-gropius-cs1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1665074150945-YUPRVW916Z9VA0IZ4QR2/Baby+Gropius+%281%29+sq1.jpg" alt="Baby Low Chair Gropius CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Baby Low Chair Gropius CS1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/baby-low-chair-gropius-cs1-2y4gf" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1708219719469-8YFW7NVRO4243QRI104R/Fluffy-Baby-Low-Chair-Gropius-CS1_in-Azur-Cotonneux-Faux-Fur-%281%29+a.jpg" alt="Baby Low Chair Gropius CS1 Fluffy Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Baby Low Chair Gropius CS1 Fluffy Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/baby-low-chair-gropius-cs1-5t6j6" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1711051984508-3T2JXABIXZ2RUK5F7AFN/Fluffy-Baby-Low-Chair-Gropius-CS1_in-Medo-Faux-Sheepskin-%281%29+a.jpg" alt="Baby Low Chair Gropius CS1 in Faux Fur by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Baby Low Chair Gropius CS1 in Faux Fur</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/baby-table-paul" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1707856302817-T5J1OC8HHDS2TG7JA6V2/Baby-Paul-Table--%281%29+a.jpg" alt="Baby Paul Table by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Baby Paul Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/baby-spheric-ottoman" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1665504651235-BV39YKYFEYZQDB0QJYDU/Baby+Gropius+%2820%29+2a.jpg" alt="Baby Spheric Ottoman by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Baby Spheric Ottoman</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/bar-chair-flock-cs1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/0d5dd68d-9c77-47f0-8b40-c38595bac33d/Bar+%26+Counter+Chairs+Flock+by+NOOM+%282%291.jpg" alt="Bar Chair Flock CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bar Chair Flock CS1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/bar-chair-flock-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/8342792b-a961-4b7c-ae9a-f05681510a37/Bar+%26+Counter+Chairs+Flock+by+NOOM+%284%291.jpg" alt="Bar Chair Flock CS2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bar Chair Flock CS2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/counter-chair-gropius-cs1-cdjgs" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1657548665671-TX7ADHFXUV58UKE3FDUB/Bar+Chair+Gropius+CS1+%282%29+1.jpg" alt="Bar Chair Gropius CS1/Seat height 75 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bar Chair Gropius CS1/Seat height 75</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/bar-chair-gropius-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1623609607147-XY7VG7T089KNA7QYHGOZ/Bar+Chair+Gropius+CS2+++%282%29+a.jpg" alt="Bar Chair Gropius CS2/75 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Bar Chair Gropius CS2/75</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/chair-gropius-cs1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1591885904705-S5RWM1R38XJZPLYOJWVS/Chair+Gropius+CS1+by+NOOM++%281%29-min+b.jpg" alt="Chair Gropius CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chair Gropius CS1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/chair-gropius-cs1-artistry-edition" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/95eb6af9-349b-46f2-b5a4-67245e05ce54/Chair+Gropius+CS1+by+NOOM+in+Patience+%26+Gough+Penrose+Prowl+NAKED+fabric+%282%29a1.jpg" alt="Chair Gropius CS1 Artistry Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chair Gropius CS1 Artistry Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/chair-gropius-cs1-fluffy-edition" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1707857198147-L6U67VPZIBXM4HZR9ZA3/Fluffy-Chair-Gropius-CS1_in-Azur-Cotonneux-Faux-Fur-%281%29a.jpg" alt="Chair Gropius CS1 Fluffy Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chair Gropius CS1 Fluffy Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/chair-gropius-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1623590018270-1EF4F3BYWE7VCQ7YVTPU/gg1+sm+1.jpg" alt="Chair Gropius CS2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chair Gropius CS2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/chair-gropius-cs2-fluffy-edition" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1708033632099-18UWT6FM1ZP1089YEW0F/Fluffy-Chair-Gropius-CS2_in-Azur-Cotonneux-Faux-Fur-%281%29+a.jpg" alt="Chair Gropius CS2 Fluffy Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chair Gropius CS2 Fluffy Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/chair-hello-artistry-editon" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/7d2183d1-f6a3-45ab-afdb-3f7b800eda35/04_Hello_Chair1.jpg" alt="Chair Hello Artistry Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Chair Hello Artistry Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/counter-chair-flock-cs1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/cb1ce20b-b66c-49fe-b489-9e7d17fda574/Bar+%26+Counter+Chairs+Flock+by+NOOM+%2834%29.jpg" alt="Counter Chair Flock CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Counter Chair Flock CS1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/counter-chair-flock-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1c2b298f-e91f-491a-9aac-ee59c3d05ab1/Bar+%26+Counter+Chairs+Flock+by+NOOM+%2836%29.jpg" alt="Counter Chair Flock CS2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Counter Chair Flock CS2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/counter-chair-gropius-cs1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1656708969392-9IRQ9L2CMDSBLSB4MRT0/Counter-Chair-Gropius-CS1-%283%29+a.jpg" alt="Counter Chair Gropius CS1/Seat height 65 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Counter Chair Gropius CS1/Seat height 65</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/counter-chair-gropius-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1623606581246-MT75P9112QSF1CG29B2D/Counter+Chair+Gropius+CS2++%282%29.jpg" alt="Counter Chair Gropius CS2/65 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Counter Chair Gropius CS2/65</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/dining-table-flock" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1712177287393-IT8VXWNRZMEUVTDTSAF9/Dining-Table-Flock-%281%29+1.jpg" alt="Dining Table Flock by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dining Table Flock</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/dining-table-paul" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1669483787222-QGMXR8BDIXJXGZFF5CJY/Dining-Table-NOOM-%289%29%D0%B0.jpg" alt="Dining Table Paul by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dining Table Paul</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/dining-table-paul-limited-edition" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1669155383359-FY16Y4E5KWIU505L2A75/PAUL+DINING+TABLE+LIMITED+EDITION+%283%29+%D0%B01.jpg" alt="Dining Table Paul Limited Edition of 12 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Dining Table Paul Limited Edition of 12</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/flock-chair-cs-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/0fff4151-9ead-4d27-b45c-4824f90ef85d/250619+05.png" alt="Flock Chair CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flock Chair CS1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/flock-chair-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/4fd85dea-de38-492c-9ac8-a73752e1ef87/250619+04.png" alt="Flock Chair CS2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flock Chair CS2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/flock-chair-cs2-fluffy-edition" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/85f1fb5a-4bbb-428e-af85-dcf1285a8f3f/_Flock+chair+CS2+Fluffy+Edition+by+NOOM+%283%29+a.jpg" alt="Flock Chair CS2 Fluffy Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flock Chair CS2 Fluffy Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/flock-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/181d52c3-5f82-468b-baa3-b35a6b3d8112/250606+02.png" alt="Flock Lounge Chair by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flock Lounge Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/flock-lounge-chair-fluffy-edition" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/c87a4c59-68cd-474b-9401-3b2c9949c704/Flock+Lounge+Chair+Fluffy+Edition+by_NOOM+%283%29+a.jpg" alt="Flock Lounge Chair Fluffy Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flock Lounge Chair Fluffy Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/flock-ottoman" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/083d5d88-1623-4242-8bdf-9e312ce995df/250613+07.png" alt="Flock Ottoman by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flock Ottoman</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/flock-ottoman-fluffy-edition" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/8d80213b-7ee4-4fdc-a951-cac3c5bc018a/Flock+Lounge+Chair+Fluffy+Edition+by_NOOM+%2816%29+a1.jpg" alt="Flock Ottoman Fluffy Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flock Ottoman Fluffy Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/flock-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/db1d87c2-d7bd-4e7a-917d-ad76ae973f4e/Sofa+Flock+by_NOOM+%281%29+1+sm+1.jpg" alt="Flock Sofa by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Flock Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/freyja-coffee-table-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1671205554806-VIL8WVB3DHA92OT2DZLS/FREYJA+COFFEE+TABLE+1_Black+stained+Ashwood+%283%29b.jpg" alt="Freyja Coffee Table 1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Freyja Coffee Table 1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/freyja-coffee-table-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1671034403185-MXTH3EM2HL0CDE1R0FA2/FREYJA+COFFEE+TABLE+2_Thermo+Oak+%281%29a1.jpg" alt="Freyja Coffee Table 2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Freyja Coffee Table 2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/freyja-coffee-table-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1669498986324-NEMEOUZ2XD9OS8BYNEHQ/FREYJA+COFFEE+TABLE+3_Thermo+Ash+%281%29b.jpg" alt="Freyja Coffee Table 3 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Freyja Coffee Table 3</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/freyja-coffee-table-3-limited-edition" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1669806467091-MND0Q5XDJ0FSJC6V4ZQT/FREYJA+COFFEE+TABLE+3+LIMITED+EDITION+%283%29d1.jpg" alt="Freyja Coffee Table 3 Numbered Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Freyja Coffee Table 3 Numbered Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/chair-hello" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/4f015aea-dc33-432a-a9bc-46aa56aed92f/_HELLO+chairs+by+NOOM+in+Dedar%2C+Kvadrat%2C+Alpaca+fabrics+%2813%29a.jpg" alt="Hello Chair by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hello Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/hello-coffee-table-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1712912310540-528JJ5HFG6DRJCHILT1X/Hello+coffee+tabes+by+NOOM++%2813%29+white+1.jpg" alt="Hello Coffee Table 2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hello Coffee Table 2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/hello-coffee-table-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1712912327415-F32RBPIF1IV15006CMJP/Hello+coffee+tabes+by+NOOM++%281%29+white+1.jpg" alt="Hello Coffee Table 3 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Hello Coffee Table 3</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/high-coffee-table-brandt-cs1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1585756330151-E4AAD798ZW70DK3JHQVD/_Brandt+Coffee+table+High+CS1_03.jpg" alt="High Coffee Table Brandt CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">High Coffee Table Brandt CS1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/high-coffee-table-brandt-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1630615986593-DVQX45JD6VXAIS8POCGQ/HIGH+COFFEE+TABLE+BRANDT+CS2+%281%29+b.jpg" alt="High Coffee Table Brandt CS2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">High Coffee Table Brandt CS2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/high-coffee-table-brandt-limited-edition-csl3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1663696266794-H5MCCJH43QS0W7Q2GMS1/2a.jpg" alt="High Coffee Table Brandt CSL3 Numbered Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">High Coffee Table Brandt CSL3 Numbered Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/armchair-gropius-cs1-boucle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1597325157590-W2SIZ3V42Q9TP8DHSPRC/Low+Chair+Gropius+CS1+by+NOOM+in+Boucle+1+min.jpg" alt="Low Chair Gropius CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Low Chair Gropius CS1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/armchair-gropius-cs1-boucle-9hxc4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1707862901269-GA09XNOG7PB0Y45EC09S/Fluffy-Low-Chair-Gropius-CS1_in-Azur-Cotonneux-Faux-Fur--%281%29+a.jpg" alt="Low Chair Gropius CS1 Fluffy Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Low Chair Gropius CS1 Fluffy Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/armchair-gropius-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1693659403734-GK6RJMP0K01PQGW4UG1L/Gropius-Low-Chair-CS2-in-Wool-%281%29+1.jpg" alt="Low Chair Gropius CS2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Low Chair Gropius CS2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/armchair-gropius-cs1-boucle-9hxc4-rp2pg" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1707866179630-XO9OL19B18ABWSHKXBEB/Fluffy-Low-Chair-Gropius-CS2_in-Azur-Cotonneux-Faux-Fur---%281%29+a.jpg" alt="Low Chair Gropius CS2 Fluffy Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Low Chair Gropius CS2 Fluffy Edition</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/low-chair-hello" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/9f02eba5-88a7-41e4-87f1-334cbbe0cbad/Hello_Low_Chair_03a.jpg" alt="Low Chair Hello by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Low Chair Hello</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/low-coffee-table-brandt-cs1-93ngz" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1585778109582-99IL3SA1XEPCRY0GT6B9/_Brandt+Coffee+table+Small+CS1_05.jpg" alt="Low Coffee Table Brandt CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Low Coffee Table Brandt CS1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/low-coffee-table-brandt-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1630621281968-BI06T33LYU2I58AZVVLT/LOW+COFFEE+TABLE+BRANDT+CS2+%282%29+b.jpg" alt="Low Coffee Table Brandt CS2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Low Coffee Table Brandt CS2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/dining-table-paul-cb2ga" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1693681026557-1FFQ8TFV1Y1MG8JPN41J/Gropius_Chair_11a.jpg" alt="Paul Dining Table Long by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Paul Dining Table Long</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/sofa-gropius-cs1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1654008971921-PDIV270DQPEC239YXN0E/Sofa-Gropius-%288%29a.jpg" alt="Sofa Gropius CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sofa Gropius CS1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/sofa-hello" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/3261396c-6f24-4e14-a486-c252c51c6294/Sofa_Hello_011a.jpg" alt="Sofa Hello by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Sofa Hello</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/spheric-ottoman-in-boucle-fabric" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1708218612880-41A8XM88TFW0KO2PTCPY/Fluffy-Baby-Spheric-Ottoman_in-Azur-Cotonneux-Faux-Fur-%281%29.jpg" alt="Spheric Ottoman by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <p class="card-title">Spheric Ottoman</p>
+          
+        </div>
+      </a></div>
+
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
