@@ -2368,7 +2368,8 @@
     "url": "https://arco.nl",
     "platform": "custom",
     "scrapable": false,
-    "country": "Netherlands"
+    "country": "Netherlands",
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates). No e-commerce signal found in the raw HTML of its own /collectie/webshop/ listing page on a quick pass (no product links, no price text) - likely JS-rendered or a dealer/service-request model rather than direct checkout. Needs a closer manual look before a firm verdict."
   },
   {
     "name": "Arper",
@@ -2382,64 +2383,71 @@
     "url": "https://carlhansen.com",
     "platform": "custom",
     "scrapable": false,
-    "country": "Denmark"
+    "country": "Denmark",
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates). Real content confirmed - genuine Cloudinary-hosted product images and real names (e.g. \"CH20 | Elbow Chair\" by Hans J. Wegner), but the product name/SKU lives in a JS-driven nested button/span (data-sku attribute) rather than a clean <title>/og:title, so a bespoke extractor would need real per-page parsing work. Also a large, established Danish house (Wegner-era classics) - same \"large brand, curated cohort rather than full scrape\" question already raised for HAY/TAKT/Muuto, worth a deliberate call before building either way."
   },
   {
     "name": "Desalto",
     "url": "https://desalto.it",
     "platform": "custom",
-    "scrapable": false,
+    "scrapable": true,
     "country": "Italy",
-    "notes": "Triaged 2026-09-25: buildable, moderate effort. Real server-rendered product pages under /it/prodotti/{category}/{slug} (e.g. tavoli/clay), clean <title> + og:image, no JS needed. ~7 categories to crawl (novita-2026, sistemi, tavoli, sedute, imbottiti, tavolini-consolle, complementi, outdoor). No dealer/e-commerce checkout, portfolio-style. scrapable currently false with no prior notes explaining why - held per user 2026-09-25, not yet built."
+    "notes": "Triaged 2026-09-25: buildable, moderate effort. Built 2026-09-30 - real server-rendered product pages under /it/prodotti/{category}/{slug}, clean <title> + og:image. 7 real categories crawled (sistemi, tavoli, sedute, imbottiti, tavolini-consolle, complementi, outdoor); \"novita-2026\" and \"configuratore\" are nav links, not real categories of their own."
   },
   {
     "name": "Kristalia",
     "url": "https://kristalia.it",
     "platform": "custom",
     "scrapable": false,
-    "country": "Italy"
+    "country": "Italy",
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates): buildable. Real server-rendered product pages under /en/products/{slug}/, clean descriptive <title> (\"Areo by Kristalia — Steel chair with expanded metal mesh\") + real og:image. No sitemap checked yet for exact catalog size/full category list - needs that before a build, same moderate-effort shape as Desalto/Living Divani above."
   },
   {
     "name": "Living Divani",
     "url": "https://livingdivani.it",
     "platform": "custom",
-    "scrapable": false,
+    "scrapable": true,
     "country": "Italy",
-    "notes": "Triaged 2026-09-25: buildable, moderate effort. Real server-rendered product pages under /en/products-materials/{category}/{slug}, clean title + multiple real og:image angles (best image quality of the Italian brands triaged this round). Small category count (~5: complementi, tables-chairs-stools, tavolini, the-uncollected-collection, plus sofas). scrapable currently false with no prior notes - held per user 2026-09-25, not yet built."
+    "notes": "Triaged 2026-09-25: buildable, moderate effort. Built 2026-09-30 - real sitemap.xml lists every product page directly under two coexisting prefixes (/en/products/ and /en/products-materials/), 211 real product URLs after filtering out catalogues/latestnews/materials/styling. Clean <title> + first og:image per product page."
   },
   {
     "name": "Sibast",
     "url": "https://sibast-furniture.com",
     "platform": "woocommerce",
-    "scrapable": false,
-    "country": "Denmark"
+    "scrapable": true,
+    "country": "Denmark",
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates). WooCommerce Store API confirmed working, X-WP-Total: 284, clean real product/category/image data - the same generic extractor already used for TAKT etc. works as-is."
   },
   {
     "name": "Stolab",
     "url": "https://stolab.se",
     "platform": "custom",
     "scrapable": false,
-    "country": "Sweden"
+    "country": "Sweden",
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates). Defer - a real product page returns a 23-line HTML shell with just a generic \"Stolab\" <title> and no og:image, a client-side-rendered SPA (checklist #2 fail) despite a real 1,544-URL sitemap suggesting a sizeable catalog exists behind it."
   },
   {
     "name": "Aromas Del Campo",
     "url": "https://aromasdelcampo.com",
     "platform": "custom",
-    "scrapable": false
+    "scrapable": false,
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates). Feasible but deferred on size - real WordPress content confirmed (clean h1/og:image per product, e.g. \"B223\"), but its own un_product-sitemap.xml lists 899 distinct English product URLs, far over this project's own established per-brand budget (Salvatori deferred at 215, Marset at 98). Product names are also bare model codes (\"B223\") rather than descriptive names."
   },
   {
     "name": "Arrmet",
     "url": "https://arrmet.it",
     "platform": "custom",
     "scrapable": false,
-    "country": "Italy"
+    "country": "Italy",
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates): buildable. Real server-rendered product pages (e.g. /product/mani/), clean descriptive <title> (\"Máni plastic 4L - Arrmet\") + real og:image. Category list/full catalog size not yet mapped - needs that before a build, same moderate-effort shape as Desalto/Living Divani above."
   },
   {
     "name": "Artifort",
     "url": "https://artifort.com",
     "platform": "custom",
     "scrapable": false,
-    "country": "Netherlands"
+    "country": "Netherlands",
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates). Needs a closer manual look - real product images confirmed server-rendered (e.g. /Collection/Armchairs/Mushroom shows real Mushroom product photos), but that URL's own <title>/<h1> are the CATEGORY's (\"Armchairs\"), not the specific product's, and there's no og:image - individual products may not have their own dedicated page/URL at all, or use a different path. Needs the real per-product URL pattern confirmed before a build."
   },
   {
     "name": "BuzziSpace",
@@ -2468,20 +2476,23 @@
     "name": "Profim",
     "url": "https://profim.eu",
     "platform": "custom",
-    "scrapable": false
+    "scrapable": false,
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates). Excluded - the brand's own real e-commerce backend, profim.shop (linked directly from profim.eu's own nav), has a robots.txt that names ClaudeBot, GPTBot, and anthropic-ai individually with Disallow: / - a specific, deliberate exclusion, same standard already applied to Nikari/Driade/Toou/Bomma. Not routed around."
   },
   {
     "name": "Please Wait to Be Seated",
     "url": "https://pleasewaittobeseated.com",
     "platform": "custom",
-    "scrapable": false
+    "scrapable": false,
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates). Defer - real, small catalog confirmed (sitemap-products.xml: 578 URLs collapsing to ~57 distinct chair/stool/bench designs, a genuinely manageable size), but a real product page's raw HTML has a real <title> (\"AHM chair\") yet zero <img> tags and no price text anywhere - all real content (images, price) loads client-side via JS, a checklist #2 fail despite the promising size."
   },
   {
     "name": "Vipp",
     "url": "https://vipp.com",
     "platform": "custom",
     "scrapable": false,
-    "country": "Denmark"
+    "country": "Denmark",
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates): buildable. Real sitemap.xml (/en/sitemap.xml) has ~244 real /en/products/{slug} URLs (furniture, lighting, and some bathroom/kitchen objects); a real product page (Lodge Lounge Chair) has a clean <title> and real og:image (hosted on a Vipp-specific CDN). A well-known, larger Danish design house though - worth a deliberate call on full-catalog vs. a curated subset (same question already raised for HAY/TAKT/Carl Hansen & Søn) before building."
   },
   {
     "name": "Gemla",
@@ -2496,14 +2507,16 @@
     "url": "https://jlm.dk",
     "platform": "custom",
     "scrapable": false,
-    "country": "Denmark"
+    "country": "Denmark",
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates). Not real - its own store-products-sitemap.xml lists product URLs literally titled \"questo è un prodotto\" (Italian for \"this is a product\") - a demo/placeholder Wix template that was never replaced with real content, not a genuine catalog."
   },
   {
     "name": "Thorup Copenhagen",
     "url": "https://thorupcopenhagen.com",
-    "platform": "squarespace",
-    "scrapable": false,
-    "country": "Denmark"
+    "platform": "shopify",
+    "scrapable": true,
+    "country": "Denmark",
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates) - mistagged \"squarespace\" originally, actually a genuine Shopify store (/products.json confirmed working). 163 real products (lighting/chairs/tables), generic Shopify extractor works as-is; existing spare-parts/gift-card filters already clear its own \"Spare Parts\"/\"Gift Card\" product_type rows."
   },
   {
     "name": "Mouvement",
@@ -2656,7 +2669,8 @@
     "name": "Abyss & Habidecor",
     "url": "https://abysshabidecor.com",
     "platform": "custom",
-    "scrapable": false
+    "scrapable": false,
+    "notes": "Triaged 2026-09-30 (part of a batch triage of untriaged candidates). Defer - no shop/product/collection navigation signal found in the raw homepage HTML at all (likely dealer-only or JS-rendered). Also a scope mismatch regardless: this is a luxury bath-towel/linen brand, not furniture/lighting/ceramics/objects."
   },
   {
     "name": "Bonnibonne",
@@ -2822,18 +2836,18 @@
   },
   {
     "name": "Tecta",
-    "url": "https://www.tecta.de",
+    "url": "https://shop.tecta.de",
     "platform": "custom",
-    "scrapable": false,
+    "scrapable": true,
     "country": "Germany",
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Real product content confirmed in raw HTML (small Bauhaus-classics catalog, ~20-40 pages) but no API - would need a bespoke extractor, held back with the other custom-platform builds for a later pass."
+    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push. Built 2026-09-30 - the real e-commerce storefront is shop.tecta.de (Shopware), a separate subdomain from the tecta.de marketing site originally triaged; it has a real gzipped sitemap (357 SKU/finish variants across 75 distinct product lines) and its own category listing pages. One representative URL per product line is scraped, not every finish variant, to stay within the per-brand time budget. German only, no English version on this subdomain."
   },
   {
     "name": "Tim Teven Studio",
     "url": "https://timtevenstudio.bigcartel.com",
-    "platform": "custom",
-    "scrapable": false,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Small Big Cartel shop with real price/cart content confirmed (Formground already has a generic Big Cartel extractor built for Patrick de Glo de Besses) - held back with the other bespoke-extractor builds for a later pass, not a proven-platform brand in this round."
+    "platform": "bigcartel",
+    "scrapable": true,
+    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push. Built 2026-09-30 - Big Cartel's own /products.json confirmed working (same generic extractor already built for Patrick de Glo de Besses), robots.txt permissive. 9 real objects (Pressure Vase/Stool/Bench line)."
   },
   {
     "name": "Standard Equipment",

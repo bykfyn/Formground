@@ -3128,6 +3128,15 @@ def _looks_like_a_maintenance_item(title):
         # like a necklace, sold as "Accessories" on bdbarcelona.com),
         # which a blanket keyword would have wrongly excluded.
         "chain necklace silver", "bird necklace",
+        # Tecta (built 2026-09-30) runs real spare-parts/raw-material
+        # listings through the same shop as its real Bauhaus-classic
+        # furniture - checked site-wide, no other brand's real product
+        # name contains any of these German words: "Ersatz-..." (replacement
+        # felt pads/PTFE runner inserts for its own chairs), "Kufengleiter"
+        # (glide runners for its cantilever chairs), "Polsterauflagen"
+        # (loose upholstery pads), "Meterware" (raw material sold by the
+        # metre - wall profile/edge-block stock, not a finished object).
+        "ersatz", "gleiter", "polsterauflage", "meterware",
     )
     title_lower = title.lower()
     if any(kw in title_lower for kw in keywords):
@@ -7717,6 +7726,315 @@ def extract_davsjo(brand):
     return products
 
 
+def extract_living_divani(brand):
+    """
+    livingdivani.it (custom ASP.NET, no product API) - a real
+    sitemap.xml lists every product page directly under two coexisting
+    URL prefixes, /en/products/{category}/{slug}/ and /en/products-
+    materials/{category}/{slug}/ (confirmed live 2026-09-30: 211 real
+    product URLs, filtered from the sitemap's ~2,500 total <loc> entries
+    by keeping only exactly-4-path-segment URLs and dropping the non-
+    product sections that share the same two prefixes - "catalogues"
+    (PDF downloads), "latestnews" (press), "materials" (fabric/finish
+    swatches), "styling" (a services page)). Each product page's own
+    <title> is just the bare model name ("Wall", "Agra"), and its FIRST
+    <meta property="og:image"> is always a real product photo - the
+    LAST og:image on every page checked is instead a shared site-wide
+    fallback (livingdivani-og.png), so only the first is used. No
+    per-product category text on the page itself; the URL's own
+    category segment (already a real, human-chosen grouping) is reused
+    directly rather than re-inferring one from the bare model name.
+    """
+    # The bare domain (as stored in brands.json) 301s to the www one on
+    # every request - using www directly avoids a redirect on all ~200
+    # per-product fetches below. The sitemap's own <loc> values are
+    # bare (no www) though, so that's what's matched against here.
+    bare_domain = brand["url"].rstrip("/").removeprefix("https://").removeprefix("www.")
+    domain = f"https://www.{bare_domain}"
+    sitemap_url = f"{domain}/sitemap.xml"
+    try:
+        resp = requests.get(sitemap_url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {sitemap_url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    non_product_sections = {"catalogues", "latestnews", "materials", "styling"}
+    product_urls = []
+    for loc in soup.find_all("loc"):
+        url = loc.get_text(strip=True)
+        match = re.match(
+            rf"^https://(?:www\.)?{re.escape(bare_domain)}/en/(products|products-materials)/([a-z0-9-]+)/([a-z0-9-]+)/$",
+            url,
+        )
+        if match and match.group(2) not in non_product_sections:
+            fetch_url = f"{domain}/en/{match.group(1)}/{match.group(2)}/{match.group(3)}/"
+            product_urls.append((fetch_url, match.group(2)))
+
+    products = []
+    brand_start = time.monotonic()
+    for url, category_slug in product_urls:
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"{brand['name']} - stopping early with what was fetched so far.")
+            break
+        try:
+            page_resp = requests.get(url, headers=HEADERS, timeout=20)
+            page_resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        page = BeautifulSoup(page_resp.text, "html.parser")
+        title = page.find("title")
+        name = title.get_text(strip=True) if title else ""
+        if not name:
+            continue
+
+        og_image = page.find("meta", property="og:image")
+        image_url = og_image.get("content", "") if og_image else ""
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": category_slug.replace("-", " ").title(),
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+        time.sleep(0.3)  # be polite - don't hammer the site
+
+    return products
+
+
+# The 7 real product categories under /it/prodotti/{category}/{slug} -
+# confirmed live 2026-09-30 by checking every nav link on desalto.it.
+# "novita-2026" (a curated highlights page) and "configuratore" (a
+# configurator tool) both also appear in the same nav but aren't real
+# categories of their own: novita-2026's own links are all duplicates of
+# products that already live under one of these 7 (confirmed by diffing
+# its own link list against theirs), and configuratore has no product
+# links at all.
+DESALTO_CATEGORIES = [
+    "sistemi", "tavoli", "sedute", "imbottiti", "tavolini-consolle",
+    "complementi", "outdoor",
+]
+
+# The raw Italian slugs above aren't real category words the site's own
+# English-language umbrella classifier (generate_brand_pages.py) or the
+# search backend's category matcher (query_engine.py, same hypernym
+# keyword list) recognize - confirmed live 2026-09-30: storing them
+# as-is left Desalto (a real furniture maker) missing the "Furniture"
+# chip entirely everywhere on the site, the exact bug already fixed
+# once before for Wästberg's own non-English mount-type categories (see
+# extract_wastberg's own comment). Translated to the closest real
+# English hypernym-matching word per category, checked against a sample
+# of that category's own real product names first (Sistemi's "Helsinki
+# Libreria" = "Helsinki Bookcase", confirming shelving/storage systems).
+DESALTO_CATEGORY_LABELS = {
+    "sistemi": "Shelving System",
+    "tavoli": "Table",
+    "sedute": "Chair",
+    "imbottiti": "Armchair",
+    "tavolini-consolle": "Console",
+    "complementi": "Accessories",
+    "outdoor": "Outdoor Furniture",
+}
+
+
+def extract_desalto(brand):
+    """
+    desalto.it (custom ASP.NET, no product API, no sitemap.xml) - each
+    of DESALTO_CATEGORIES' own listing pages server-renders real
+    /it/prodotti/{category}/{slug} links for every product in it (~95
+    real products total, confirmed live 2026-09-30). A bare numeric
+    slug (e.g. "/tavoli/25") is a pagination/filter link on the listing
+    page itself, not a product - skipped by checking the slug is not
+    all-digits. Each product page's own <title>/og:title is just the
+    bare model name ("Clay"), and there's exactly one real og:image per
+    page (no fallback/gallery duplicates to filter, unlike Living
+    Divani above). The bare domain 301s to www on every request - using
+    www directly avoids a redirect on every fetch below.
+    """
+    domain = "https://www." + brand["url"].rstrip("/").removeprefix("https://").removeprefix("www.")
+    product_urls = []
+    for category in DESALTO_CATEGORIES:
+        category_url = f"{domain}/it/prodotti/{category}"
+        try:
+            resp = requests.get(category_url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {category_url}: {e}")
+            continue
+        soup = BeautifulSoup(resp.text, "html.parser")
+        slugs = []
+        for a in soup.find_all("a", href=True):
+            match = re.match(rf"^/it/prodotti/{re.escape(category)}/([a-z0-9-]+)$", a["href"])
+            if match and match.group(1) not in slugs and not match.group(1).isdigit():
+                slugs.append(match.group(1))
+        for slug in slugs:
+            product_urls.append((f"{domain}/it/prodotti/{category}/{slug}", category))
+        time.sleep(0.3)
+
+    products = []
+    brand_start = time.monotonic()
+    for url, category in product_urls:
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"{brand['name']} - stopping early with what was fetched so far.")
+            break
+        try:
+            page_resp = requests.get(url, headers=HEADERS, timeout=20)
+            page_resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        page = BeautifulSoup(page_resp.text, "html.parser")
+        title = page.find("title")
+        name = title.get_text(strip=True) if title else ""
+        if not name:
+            continue
+
+        og_image = page.find("meta", property="og:image")
+        image_url = og_image.get("content", "") if og_image else ""
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": DESALTO_CATEGORY_LABELS.get(category, category.replace("-", " ").title()),
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+        time.sleep(0.3)  # be polite - don't hammer the site
+
+    return products
+
+
+# The real product categories on shop.tecta.de (its own Shopware storefront,
+# separate from the tecta.de marketing site) - confirmed live 2026-09-30 by
+# checking every one of these listing pages. "Buecher" (books) is excluded
+# deliberately - not a design object, same reasoning as elsewhere in this
+# file. Each category page only links to one representative URL per real
+# product LINE (a "Stuhl" chair line, say), not every color/material SKU
+# variant of it - that's exactly the granularity TECTA_CATEGORIES is used
+# for below (a lookup by product-line slug), separate from the full SKU-
+# level sitemap crawl for the URLs actually fetched.
+TECTA_CATEGORIES = [
+    "Einzelstuecke", "LEUCHTEN", "Zubehoer", "Stuehle", "Sessel-Sofas",
+    "Beistelltische", "Accessoires", "Aufbewahrung", "Geschenke",
+]
+
+
+def extract_tecta(brand):
+    """
+    shop.tecta.de (Shopware, separate from the tecta.de marketing site)
+    exposes a real gzipped sitemap listing every individual SKU/finish
+    variant page directly - confirmed live 2026-09-30: 357 real
+    "/{ProductLine}/{sku}/" URLs collapsing to 75 distinct product
+    lines. Fetching all 357 would blow well past MAX_SECONDS_PER_BRAND
+    (Desalto's own ~1.2s/request average projects to ~7 minutes here),
+    so only the FIRST sitemap-listed SKU under each distinct product
+    line is fetched - one real photo/name per design, same tradeoff as
+    a brand whose own listing already only shows one card per design
+    rather than per color option. Category comes from a separate crawl
+    of TECTA_CATEGORIES' own listing pages (each links to one
+    representative URL per product line it contains), not the product
+    page itself, which has no clean category field of its own. Product
+    names come from the page's own pipe-delimited <title> ("K6 |
+    Stahlrohr verchromt | Nussbaum | K6-600-Nussbaum") with the last
+    segment (a bare repeat of the URL's own SKU code, not real
+    descriptive text) dropped. German only - shop.tecta.de has no
+    English version (the /en/ prefix 404s here, unlike tecta.de itself).
+    """
+    domain = "https://shop.tecta.de"
+
+    category_by_line = {}
+    for category in TECTA_CATEGORIES:
+        try:
+            resp = requests.get(f"{domain}/{category}/", headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {domain}/{category}/: {e}")
+            continue
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for a in soup.find_all("a", href=True):
+            match = re.match(rf"^{re.escape(domain)}/([^/]+)/[^/]+/$", a["href"])
+            if match:
+                category_by_line.setdefault(match.group(1), category)
+        time.sleep(0.3)
+
+    try:
+        index_resp = requests.get(f"{domain}/sitemap.xml", headers=HEADERS, timeout=20)
+        index_resp.raise_for_status()
+        index_soup = BeautifulSoup(index_resp.text, "html.parser")
+        sub_sitemap_url = index_soup.find("loc").get_text(strip=True)
+        sitemap_resp = requests.get(sub_sitemap_url, headers=HEADERS, timeout=20)
+        sitemap_resp.raise_for_status()
+        sitemap_xml = gzip.decompress(sitemap_resp.content).decode("utf-8")
+    except (requests.RequestException, AttributeError, OSError) as e:
+        print(f"  Could not fetch Tecta's sitemap: {e}")
+        return []
+
+    sitemap_soup = BeautifulSoup(sitemap_xml, "html.parser")
+    product_line_urls = {}
+    for loc in sitemap_soup.find_all("loc"):
+        url = loc.get_text(strip=True)
+        match = re.match(rf"^{re.escape(domain)}/([^/]+)/[^/]+/$", url)
+        if match:
+            product_line_urls.setdefault(match.group(1), url)
+
+    products = []
+    brand_start = time.monotonic()
+    for line, url in product_line_urls.items():
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND:
+            print(f"  Hit the {MAX_SECONDS_PER_BRAND // 60}-minute safety limit for "
+                  f"{brand['name']} - stopping early with what was fetched so far.")
+            break
+        try:
+            page_resp = requests.get(url, headers=HEADERS, timeout=20)
+            page_resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        page = BeautifulSoup(page_resp.text, "html.parser")
+        title = page.find("title")
+        title_text = title.get_text(strip=True) if title else ""
+        if not title_text:
+            continue
+        if _looks_like_a_maintenance_item(title_text):
+            continue
+        parts = [p.strip() for p in title_text.split("|")]
+        name = " ".join(parts[:-1]) if len(parts) > 1 else title_text
+
+        og_image = page.find("meta", property="og:image")
+        image_url = og_image.get("content", "") if og_image else ""
+
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": category_by_line.get(line, ""),
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+        })
+        time.sleep(0.3)  # be polite - don't hammer the site
+
+    return products
+
+
 # Non-product pages that show up as links on Ingridsdotter's own category
 # pages (nav/footer, not part of the actual catalog) - excluded by slug.
 INGRIDSDOTTER_NON_PRODUCT_SLUGS = {
@@ -7936,6 +8254,7 @@ EXTRACTORS = {
     "Baleri Italia": extract_baleri_italia,
     "Paola Paronetto": extract_paola_paronetto,
     "Minimalux": extract_shopify,
+    "Thorup Copenhagen": extract_shopify,
     "Pinch": extract_shopify,
     "Bitossi Ceramiche": extract_shopify,
     "GATOMIKIO": extract_shopify,
@@ -7952,10 +8271,12 @@ EXTRACTORS = {
     "Utilitario Mexicano": extract_shopify,
     "Galvin Brothers": extract_shopify,
     "Verk": extract_woocommerce,
+    "Sibast": extract_woocommerce,
     "Another Country": extract_woocommerce,
     "Piet Hein Eek": extract_woocommerce,
     "Mati Sipiora": extract_woocommerce,
     "Patrick de Glo de Besses": extract_bigcartel,
+    "Tim Teven Studio": extract_bigcartel,
     "B-Line Italia": extract_bline,
     "Omelette Editions": extract_omelette_editions,
     "Par en Par": extract_parenpar_ar,
@@ -8013,6 +8334,9 @@ EXTRACTORS = {
     "Blå Station": extract_blastation,
     "Gärsnäs": extract_garsnas,
     "Davsjö": extract_davsjo,
+    "Living Divani": extract_living_divani,
+    "Desalto": extract_desalto,
+    "Tecta": extract_tecta,
     "Ingridsdotter": extract_ingridsdotter,
     "Blond": extract_blond,
     "HAY": extract_hay,
