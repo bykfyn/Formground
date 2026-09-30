@@ -1624,6 +1624,155 @@ def extract_marset(brand):
     return products
 
 
+DECERES_NON_PRODUCT_PATHS = {"all-products", "studio", "cart", "home", ""}
+
+
+def extract_deceres_studio(brand):
+    """
+    deceresstudio.com (Mexico City/Southern California studio) is
+    Squarespace, fully server-rendered - the /all-products index page
+    lists every real product href directly in the raw HTML (confirmed
+    live: 32 real products, one fetch, no pagination), including one
+    ("teneo-bowl") whose own href is missing its leading slash - a real
+    bug on the site's own end, handled by stripping any leading slash
+    before rejoining rather than assuming one is always there. Trade/
+    bespoke studio - every product page ends in "INQUIRE" with no visible
+    price, same pattern as other custom-order brands already on
+    Formground. Material/dimension text on each product page is one
+    run-on paragraph with inline <strong> labels and no separating
+    punctuation (confirmed live: a plain get_text() glues "...sacral
+    vessels.MATERIAL:" together with no space) - not reliably parseable
+    into structured fields, so left blank rather than guessed at. The
+    first real (non-GIF, non-footer-logo) <img> in the page's <article>
+    is consistently that product's own photo, confirmed against several
+    different product pages.
+    """
+    base = brand["url"].rstrip("/")
+    listing_url = f"{base}/all-products"
+    try:
+        resp = requests.get(listing_url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {listing_url}: {e}")
+        return []
+
+    slugs = sorted(set(
+        slug.lstrip("/") for slug in re.findall(r'href="(/?[a-z0-9-]+)"', resp.text)
+        if slug.lstrip("/") not in DECERES_NON_PRODUCT_PATHS
+    ))
+
+    products = []
+    for slug in slugs:
+        url = f"{base}/{slug}"
+        try:
+            presp = requests.get(url, headers=HEADERS, timeout=20)
+            presp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        psoup = BeautifulSoup(presp.text, "html.parser")
+        title_el = psoup.find("title")
+        article = psoup.find("article")
+        if not title_el or not article:
+            continue
+
+        name = title_el.get_text().split("—")[0].strip().title()
+        if not name:
+            continue
+        # .title() mangles Roman numerals ("OLTER II" -> "Olter Ii") -
+        # confirmed live on the real "Olter II Dining Table" - restored
+        # rather than left wrong.
+        name = re.sub(r"\bIi\b", "II", name)
+        name = re.sub(r"\bIii\b", "III", name)
+
+        images = [
+            img.get("src", "") for img in article.find_all("img")
+            if img.get("src", "").lower().endswith((".jpg", ".jpeg", ".png"))
+            and "footer" not in img.get("src", "").lower()
+        ]
+        if not images:
+            continue
+
+        category = _infer_category_from_name(name, "", brand_name=brand["name"])
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": images[0],
+        })
+        time.sleep(1)  # be polite - don't hammer the site
+
+    return products
+
+
+def extract_bleurenn(brand):
+    """
+    bleurenn.com (Sydney furniture studio) is Wix - same shape as
+    extract_shibui, but that brand's store-products-sitemap.xml 404s
+    here, so the real product-page URLs are pulled from the
+    /category/all-products listing page instead, which is server-
+    rendered with every one of them already in the raw HTML (confirmed
+    live: 13 found in a single fetch, no per-category pagination
+    needed). Each product page is then server-rendered the same way
+    shibui's are (data-hook="product-title" for the real name, og:image
+    for the photo). 4 of the 13 are marked "Coming Soon" with $0.00
+    pricing and nothing actually for sale yet - skipped rather than
+    listed as buyable.
+    """
+    base = brand["url"].rstrip("/")
+    listing_url = f"{base}/category/all-products"
+    try:
+        resp = requests.get(listing_url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {listing_url}: {e}")
+        return []
+
+    slugs = sorted(set(re.findall(r"product-page/([a-z0-9-]+)", resp.text)))
+
+    products = []
+    for slug in slugs:
+        url = f"{base}/product-page/{slug}"
+        try:
+            presp = requests.get(url, headers=HEADERS, timeout=20)
+            presp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+
+        if "coming soon" in presp.text.lower():
+            continue  # not yet for sale - see docstring
+
+        psoup = BeautifulSoup(presp.text, "html.parser")
+        title_el = psoup.find(attrs={"data-hook": "product-title"})
+        og_image = psoup.find("meta", property="og:image")
+        if not title_el:
+            continue
+
+        name = title_el.get_text(strip=True)
+        category = _infer_category_from_name(name, "", brand_name=brand["name"])
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": og_image.get("content", "") if og_image else "",
+        })
+        time.sleep(1)  # be polite - don't hammer the site
+
+    return products
+
+
 def extract_baleri_italia(brand):
     """
     baleri-italia.com has a "products.json" endpoint too, but unlike a real
@@ -1946,6 +2095,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("flush-mount", "Flush Mount"),
     ("cushion", "Cushion"), ("day bed", "Daybed"), ("bergere", "Armchair"),
     ("bookshelves", "Shelving"), ("bookshelf", "Shelving"), ("shelves", "Shelving"),
+    ("bookcase", "Shelving"), ("catchall", "Catchall"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -7853,6 +8003,8 @@ EXTRACTORS = {
     "Mokko Amsterdam": extract_mokko_amsterdam,
     "Resident": extract_resident,
     "Marset": extract_marset,
+    "Deceres Studio": extract_deceres_studio,
+    "Bleurenn": extract_bleurenn,
     # "TAKT" excluded here - confirmed 2026-09-25: the WooCommerce Store
     # API returns HTTP 200 but a 0-byte body for the scraper's real UA
     # specifically, while a generic UA gets the full real response - a
