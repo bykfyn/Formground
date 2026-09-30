@@ -173,6 +173,23 @@
     padding: 7px 10px; border-radius: 999px;
   }
 
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
   /* Explicit, not relying on the browser's default [hidden] styling -
      .maker-card's own `display: block` below has the same specificity
      and comes later in source order, so it would otherwise win and
@@ -202,9 +219,13 @@
       <input id="directory-filter" type="text" placeholder="Filter by name, city, or category…" autocomplete="off">
     </div>
   </div>
+  <div class="tier-filters">
+    <button type="button" class="filter-chip" data-tier="independent">Independent Makers</button>
+    <button type="button" class="filter-chip" data-tier="established">Established Makers</button>
+  </div>
   <h1 class="sr-only">Makers</h1>
   <div class="maker-grid">
-      <a class="maker-card" href="/brands/tradition.html">
+      <a class="maker-card" href="/brands/tradition.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/AX-HM11_Lacquered-Oak-Walnut_Front-600x800.jpg" alt="&amp;Tradition" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">&amp;Tradition</span>
@@ -212,7 +233,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/101cph.html">
+      <a class="maker-card" href="/brands/101cph.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18346850_223091_-_Arc_Bench_-_Coffee_-_1.jpg?v=1774544320" alt="101cph" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">101cph</span>
@@ -220,7 +241,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/a-petersen.html">
+      <a class="maker-card" href="/brands/a-petersen.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0944/2990/5239/files/A-Petersen-Torben-Skov-Bench-05.jpg?v=1761223877" alt="A. Petersen" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">A. Petersen</span>
@@ -228,7 +249,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/alessi.html">
+      <a class="maker-card" href="/brands/alessi.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_PU10-1.jpg?v=1747149799" alt="Alessi" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Alessi</span>
@@ -236,7 +257,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/alexis-ginger.html">
+      <a class="maker-card" href="/brands/alexis-ginger.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/WEB_SAVOYE_CABINET_006.jpg?v=1715623794" alt="Alexis &amp; Ginger" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Alexis &amp; Ginger</span>
@@ -244,7 +265,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/anna-dawson.html">
+      <a class="maker-card" href="/brands/anna-dawson.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/WBStudioAnnaDawson_Valley_Basin_ACHACH_off1.jpg?v=1779374443" alt="Anna Dawson" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Anna Dawson</span>
@@ -252,7 +273,7 @@
           <span class="maker-categories">Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/anna-lowenhielm-ceramics.html">
+      <a class="maker-card" href="/brands/anna-lowenhielm-ceramics.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0579/6016/9666/files/DSC_0291.jpg?v=1774266796" alt="Anna Löwenhielm Ceramics" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Anna Löwenhielm Ceramics</span>
@@ -260,7 +281,7 @@
           <span class="maker-categories">Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/another-country.html">
+      <a class="maker-card" href="/brands/another-country.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.anothercountry.com/wp-content/uploads/5.-Another-Chair-1024x1024.jpg" alt="Another Country" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Another Country</span>
@@ -268,7 +289,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/anour.html">
+      <a class="maker-card" href="/brands/anour.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://anour.dk/wp-content/uploads/2022/02/Divar_wall_lamp_polished_stainless_steel_150cm-1-1000x1250.jpg" alt="Anour" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Anour</span>
@@ -276,7 +297,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/antidark.html">
+      <a class="maker-card" href="/brands/antidark.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://antidark.dk/wp-content/uploads/ANTIDARK-Table-T1-300x300.jpg" alt="Antidark" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Antidark</span>
@@ -284,7 +305,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/apparatus.html">
+      <a class="maker-card" href="/brands/apparatus.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0005/7730/6687/files/APPARATUS_EPISODE_ARMCHAIR_01.jpg?v=1775490182" alt="Apparatus" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Apparatus</span>
@@ -292,7 +313,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/art-resources.html">
+      <a class="maker-card" href="/brands/art-resources.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://artresources.co/wp-content/uploads/2024/04/S-❇️-LBarney-Table-Lamp-Parchment-800x800.jpg" alt="Art Resources" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Art Resources</span>
@@ -300,7 +321,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/artek.html">
+      <a class="maker-card" href="/brands/artek.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-armchair-401-zebra.gif?v=1728463236" alt="Artek" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Artek</span>
@@ -308,7 +329,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/artetica.html">
+      <a class="maker-card" href="/brands/artetica.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0844/1597/1665/files/ab-vases-by-artetica-design-by-artetica-8012134.jpg?v=1776446551" alt="Artetica" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Artetica</span>
@@ -316,7 +337,7 @@
           <span class="maker-categories">Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/arturel.html">
+      <a class="maker-card" href="/brands/arturel.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Arch_Tile_Set-of-1_Cloudy-Grey_01_Web.jpg?v=1761580725" alt="Arturel" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Arturel</span>
@@ -324,7 +345,7 @@
           <span class="maker-categories">Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/arvo-ray.html">
+      <a class="maker-card" href="/brands/arvo-ray.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/ArvoRay_Westbury_New_1.jpg?v=1688370722" alt="Arvo Ray" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Arvo Ray</span>
@@ -332,7 +353,7 @@
           <span class="maker-categories">Furniture · Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/asplund.html">
+      <a class="maker-card" href="/brands/asplund.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/Frame-Cabient-White.jpg?v=1648721155" alt="Asplund" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Asplund</span>
@@ -340,7 +361,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/astraeus-clarke.html">
+      <a class="maker-card" href="/brands/astraeus-clarke.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/AstraeusClarke_Alpine_main.jpg?v=1679339010" alt="Astraeus Clarke" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Astraeus Clarke</span>
@@ -348,7 +369,7 @@
           <span class="maker-categories">Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/audo.html">
+      <a class="maker-card" href="/brands/audo.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/AF2B9D_1.png?v=1755501179" alt="Audo" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Audo</span>
@@ -356,7 +377,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/avolt.html">
+      <a class="maker-card" href="/brands/avolt.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0073/9046/2036/files/ISO_LP1-EUF10-WMGG.png?v=1788784035" alt="Avolt" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Avolt</span>
@@ -364,7 +385,7 @@
           <span class="maker-categories">Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/ay-illuminate.html">
+      <a class="maker-card" href="/brands/ay-illuminate.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.ayilluminate.com/wp-content/uploads/2019/01/Bamboo-M1.jpg" alt="AY Illuminate" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">AY Illuminate</span>
@@ -372,7 +393,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/b-b-italia.html">
+      <a class="maker-card" href="/brands/b-b-italia.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/p/r/project_office_AC-Executive_03_1.jpg" alt="B&amp;B Italia" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">B&amp;B Italia</span>
@@ -380,7 +401,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/b-line-italia.html">
+      <a class="maker-card" href="/brands/b-line-italia.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://www.b-line.it/wp-content/uploads/2019/11/44-home.jpg" alt="B-Line Italia" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">B-Line Italia</span>
@@ -388,7 +409,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/baleri-italia.html">
+      <a class="maker-card" href="/brands/baleri-italia.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://www.baleri-italia.com/uploads/media/1400x/05/1535-Baleri-Italia_Cartoons_screen_composition_1992_02d.png?v=1-0" alt="Baleri Italia" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Baleri Italia</span>
@@ -396,7 +417,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/bd-barcelona.html">
+      <a class="maker-card" href="/brands/bd-barcelona.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD-2001-Canalda-Ubeda-big.png?v=1748518829" alt="BD Barcelona" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">BD Barcelona</span>
@@ -404,7 +425,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/bitossi-ceramiche.html">
+      <a class="maker-card" href="/brands/bitossi-ceramiche.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0593/6984/9030/files/Urquiola_URQ_233_03.webp?v=1744723181" alt="Bitossi Ceramiche" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Bitossi Ceramiche</span>
@@ -412,7 +433,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/bleurenn.html">
+      <a class="maker-card" href="/brands/bleurenn.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/ed30ea_a29360414950414ca865045d7ca40848~mv2.jpeg/v1/fit/w_500,h_500,q_90/file.jpg" alt="Bleurenn" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Bleurenn</span>
@@ -420,7 +441,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/blond.html">
+      <a class="maker-card" href="/brands/blond.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/67e4eb04c0944e34afb2b1e9/fadd9e5d-6671-4747-90bc-3253a0b7c2d2/_M3A6547-2.jpg" alt="Blond" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Blond</span>
@@ -428,7 +449,7 @@
           <span class="maker-categories">Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/bla-station.html">
+      <a class="maker-card" href="/brands/bla-station.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_able-table-lounge-l551-1-1.jpg" alt="Blå Station" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Blå Station</span>
@@ -436,7 +457,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/buro-berger.html">
+      <a class="maker-card" href="/brands/buro-berger.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/FU001-1B_c1e19a65-19c4-417b-a085-d7f086a4092a.jpg?v=1776265253" alt="Buro Berger" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Buro Berger</span>
@@ -444,7 +465,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/byarums-bruk.html">
+      <a class="maker-card" href="/brands/byarums-bruk.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarum_bord.jpg?v=1705327499" alt="Byarums Bruk" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Byarums Bruk</span>
@@ -452,7 +473,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/calen-knauf.html">
+      <a class="maker-card" href="/brands/calen-knauf.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0271/8505/3785/files/CBCKStudioWowTables2023-04-28045.jpg?v=1694210146" alt="Calen Knauf" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Calen Knauf</span>
@@ -460,7 +481,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/ceramicah.html">
+      <a class="maker-card" href="/brands/ceramicah.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0555/4932/9719/files/CELESTIAL_TERA_30.jpg?v=1759542644" alt="Ceramicah" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Ceramicah</span>
@@ -468,7 +489,7 @@
           <span class="maker-categories">Lighting · Ceramics</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/ceramics-furniture-plants.html">
+      <a class="maker-card" href="/brands/ceramics-furniture-plants.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/CeramicsFurniturePlants_AfricanMahoganySideboard__main.jpg?v=1679500976" alt="Ceramics Furniture Plants" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Ceramics Furniture Plants</span>
@@ -476,7 +497,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/charles-constantine.html">
+      <a class="maker-card" href="/brands/charles-constantine.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/IMG_7324wb2_47366f8b-2b79-4503-8eb9-bbc3f0c29d2a.jpg?v=1728330651" alt="Charles Constantine" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Charles Constantine</span>
@@ -484,7 +505,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/clay-brown.html">
+      <a class="maker-card" href="/brands/clay-brown.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/FrontWB.jpg?v=1731606806" alt="Clay Brown" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Clay Brown</span>
@@ -492,7 +513,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/coco-flip.html">
+      <a class="maker-card" href="/brands/coco-flip.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/1737/9815/files/CocoFlip_BelliniBench1340_BK_Oracle_002.jpg?v=1696825245" alt="Coco Flip" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Coco Flip</span>
@@ -500,7 +521,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/cozmo.html">
+      <a class="maker-card" href="/brands/cozmo.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-1_5-Seater-Chaise-Sofa-Ecru-Boucle.jpg?v=1737551502" alt="Cozmo" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Cozmo</span>
@@ -508,7 +529,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/cultivation-objects.html">
+      <a class="maker-card" href="/brands/cultivation-objects.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/Cultivation-Objects_Durutti-Chair_Silo.jpg?v=1747068642" alt="Cultivation Objects" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Cultivation Objects</span>
@@ -516,7 +537,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/danny-kaplan-studio.html">
+      <a class="maker-card" href="/brands/danny-kaplan-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0604/7773/5136/files/Stone_Amphora_Side3.jpg?v=1692890811" alt="Danny Kaplan Studio" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Danny Kaplan Studio</span>
@@ -524,7 +545,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/david-vu-studio.html">
+      <a class="maker-card" href="/brands/david-vu-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/DavidVu_Desk_main.jpg?v=1679346988" alt="David Vu Studio" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">David Vu Studio</span>
@@ -532,7 +553,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/davsjo.html">
+      <a class="maker-card" href="/brands/davsjo.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.prod.website-files.com/68923634315f62ce4fd9f9e4/689330191f166bd703ca2258_66b2daa702c2d809de1a5b1d_Hero-DS10-ash.jpeg" alt="Davsjö" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Davsjö</span>
@@ -540,7 +561,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/dcw-editions.html">
+      <a class="maker-card" href="/brands/dcw-editions.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0980/2891/2970/files/DCW_AARO_CEILING_01.webp?v=1772110335" alt="DCW éditions" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">DCW éditions</span>
@@ -548,7 +569,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/de-la-espada.html">
+      <a class="maker-card" href="/brands/de-la-espada.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/98.6_F-OUTDOOR-BENCH-by-Neri_Hu_1.jpg?v=1635760724" alt="De La Espada" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">De La Espada</span>
@@ -556,7 +577,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/deceres-studio.html">
+      <a class="maker-card" href="/brands/deceres-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/60c6c7d303b6bb345051e428/9e21f522-a3a6-4f7e-b8da-997838aeb5c7/EC-TFP-Deceres-Install-04-min.jpg" alt="Deceres Studio" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Deceres Studio</span>
@@ -564,7 +585,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/design-house-stockholm.html">
+      <a class="maker-card" href="/brands/design-house-stockholm.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/2630-8400_Hover.jpg?v=1737659017" alt="Design House Stockholm" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Design House Stockholm</span>
@@ -572,7 +593,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/designbythem.html">
+      <a class="maker-card" href="/brands/designbythem.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/collection-seating-web-d_0073_august-armchair-sisu-brown.jpg?v=1769739344" alt="Designbythem" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Designbythem</span>
@@ -580,7 +601,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/dixie.html">
+      <a class="maker-card" href="/brands/dixie.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.dixie.se/uploads/2021/09/45247-W.hyac-Seating-pouf-round-300x300.png" alt="Dixie" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Dixie</span>
@@ -588,7 +609,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/dusty-deco.html">
+      <a class="maker-card" href="/brands/dusty-deco.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_2303_PRODUCT_ALBA_CHAIR_0355.jpg?v=1738764373" alt="Dusty Deco" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Dusty Deco</span>
@@ -596,7 +617,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/editions-midi.html">
+      <a class="maker-card" href="/brands/editions-midi.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://editions-midi.com/wp-content/uploads/2024/09/HDlourmarin113759-01127-OK-V2-540x720.jpg" alt="Editions Midi" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Editions Midi</span>
@@ -604,7 +625,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/eilersen.html">
+      <a class="maker-card" href="/brands/eilersen.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://eilersen.eu/media/17754/thumbnail__0003_alba-chair-oak-oil-treated-77x70-cm-front-cover-curl-39-and-wheel-footstool-envir-0194.jpg" alt="Eilersen" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Eilersen</span>
@@ -612,7 +633,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/eric-schmitt-studio.html">
+      <a class="maker-card" href="/brands/eric-schmitt-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.ericschmitt.com/upload/300/T_hd-antana-1-copie.jpg" alt="Eric Schmitt Studio" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Eric Schmitt Studio</span>
@@ -620,7 +641,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/established-sons.html">
+      <a class="maker-card" href="/brands/established-sons.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://establishedandsons.com/transforms/images/_1200x630_crop_center-center_82_none/AQUA-TABLE_Zaha-Hadid_01_Frieze-Week-EstablishedandSons-In-Residence-at-Rosewood-London_cJamesChampion_72dpi.jpg?mtime=1603753882" alt="Established &amp; Sons" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Established &amp; Sons</span>
@@ -628,7 +649,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/esther-knopfler.html">
+      <a class="maker-card" href="/brands/esther-knopfler.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/6f70b2_12371b0be2e74db197327c211dd5883a~mv2.jpg/v1/fill/w_3400,h_4250,al_c/6f70b2_12371b0be2e74db197327c211dd5883a~mv2.jpg" alt="Esther Knopfler" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Esther Knopfler</span>
@@ -636,7 +657,7 @@
           <span class="maker-categories">Furniture · Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/fabrikant.html">
+      <a class="maker-card" href="/brands/fabrikant.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.fabrikant.se/wp-content/uploads/5020-01-900x900.jpg" alt="Fabrikant" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Fabrikant</span>
@@ -644,7 +665,7 @@
           <span class="maker-categories">Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/farrah-sit.html">
+      <a class="maker-card" href="/brands/farrah-sit.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://ik.imagekit.io/vpmkkvxmw/images/tr:w-3840,f-webp/fb78096fd02785eff4e405b99e4748865370c60c-1122x1333.png/Farrah_Sit_Arc_Ceramic_Brass_Sconce.webp" alt="Farrah Sit" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Farrah Sit</span>
@@ -652,7 +673,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/ferm-living.html">
+      <a class="maker-card" href="/brands/ferm-living.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272760_1.png?v=1772688973" alt="Ferm Living" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Ferm Living</span>
@@ -660,7 +681,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/fine-little-day.html">
+      <a class="maker-card" href="/brands/fine-little-day.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/SER-604502_Paper_Napkins_Barr_Green_FLD.webp?v=1757341622" alt="Fine Little Day" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Fine Little Day</span>
@@ -668,7 +689,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/fleur-studios.html">
+      <a class="maker-card" href="/brands/fleur-studios.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/1002/1073/7523/files/FLeur_Studios_Balzac_coffee_table_in_marble_checkerboard-2.jpg?v=1785810798" alt="Fleur Studios" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Fleur Studios</span>
@@ -676,7 +697,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/fogia.html">
+      <a class="maker-card" href="/brands/fogia.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://images.fogia.com/f1/3d/ce/69/69ce3df18cf35ae5b318452d/Fogia Alex Sofa 2.5 seater Hiro 139 - Brushed SS Front.png?auto=format&amp;w=2000&amp;q=90" alt="Fogia" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Fogia</span>
@@ -684,7 +705,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/form-refine.html">
+      <a class="maker-card" href="/brands/form-refine.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://formandrefine.com/wp-content/uploads/2020/12/Form-and-Refine_A-Line_Loundry-box_white-oak_front_nb-scaled-800x800.webp" alt="Form &amp; Refine" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Form &amp; Refine</span>
@@ -692,7 +713,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/frama.html">
+      <a class="maker-card" href="/brands/frama.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2865_912140b657-frama-64-bench-l2000-travertine-packshot-1-original.png?v=1722853334" alt="Frama" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Frama</span>
@@ -700,7 +721,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/frangere-studio.html">
+      <a class="maker-card" href="/brands/frangere-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0633/8114/3751/products/FloorLamp4x5-04.jpg?v=1750545149" alt="Frangere Studio" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Frangere Studio</span>
@@ -708,7 +729,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/g-a-d.html">
+      <a class="maker-card" href="/brands/g-a-d.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://gad.se/wp-content/uploads/2025/05/sideboard-bjork-svensk-250x250.jpg" alt="G.A.D" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">G.A.D</span>
@@ -716,7 +737,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/galerie-kreo.html">
+      <a class="maker-card" href="/brands/galerie-kreo.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://www.galeriekreo.com/sync4D/images/pieces/2A135023DB29484B897215DC7164FD02.jpg.webp" alt="Galerie Kreo" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Galerie Kreo</span>
@@ -724,7 +745,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/galvin-brothers.html">
+      <a class="maker-card" href="/brands/galvin-brothers.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0177/8296/products/Completely_ImperfectSideTable1_f789cb38-fb77-4ef9-b07e-c3e7db708c76.jpg?v=1591620790" alt="Galvin Brothers" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Galvin Brothers</span>
@@ -732,7 +753,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/gatomikio.html">
+      <a class="maker-card" href="/brands/gatomikio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_43f72c7e-a4af-46e9-a87d-a4146a99dd52.jpg?v=1747186164" alt="GATOMIKIO" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">GATOMIKIO</span>
@@ -740,7 +761,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/gervasoni.html">
+      <a class="maker-card" href="/brands/gervasoni.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19242__productGrid/allu_clipped_rev_1_1@2x.png" alt="Gervasoni" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Gervasoni</span>
@@ -748,7 +769,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/ghidini-1961.html">
+      <a class="maker-card" href="/brands/ghidini-1961.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.ghidini1961.com/uploads/prodotti/145/Abbracci_Armchair_1100x550.jpg" alt="Ghidini 1961" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Ghidini 1961</span>
@@ -756,7 +777,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/grain.html">
+      <a class="maker-card" href="/brands/grain.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1657664345491-T08Q9HEUWFSZPGVQD8HN/ben-blood-0340.jpg" alt="Grain" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Grain</span>
@@ -764,7 +785,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/graypants.html">
+      <a class="maker-card" href="/brands/graypants.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://graypants.com/app/uploads/2026/04/product2Falkiparent2FGraypantsAlkiPendantNatural-12-247x247.jpg" alt="Graypants" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Graypants</span>
@@ -772,7 +793,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/gubi.html">
+      <a class="maker-card" href="/brands/gubi.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.thorcommerce.io/gubi/a6852cc49aa9900d6bb33f63695ef5cb/10003846_F3Q_62+Desk_American+Walnut.png" alt="Gubi" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Gubi</span>
@@ -780,7 +801,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/garsnas.html">
+      <a class="maker-card" href="/brands/garsnas.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARSn_0130-810x1080.jpg" alt="Gärsnäs" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Gärsnäs</span>
@@ -788,7 +809,7 @@
           <span class="maker-categories">Furniture · Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/h-bigeleisen.html">
+      <a class="maker-card" href="/brands/h-bigeleisen.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/57b3208aff7c50dc3b5aef6a/585b9aae-9eb9-430b-87a7-ffc6a26b9dfd/Bigeleisen_Clover_Blue.jpg" alt="H. Bigeleisen" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">H. Bigeleisen</span>
@@ -796,7 +817,7 @@
           <span class="maker-categories">Furniture · Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/hay.html">
+      <a class="maker-card" href="/brands/hay.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://www.hay.com/img_20250430101835/img_20250430101835/globalassets/inriver/integration/service/aac-seat-pad_910x1100_brandmodel2.jpg" alt="HAY" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">HAY</span>
@@ -804,7 +825,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/heilig-objects.html">
+      <a class="maker-card" href="/brands/heilig-objects.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.heilig-objects.com/wp-content/uploads/2021/09/heilig-objects-anc66-coffee-table-0513-300x300.jpg" alt="Heilig Objects" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Heilig Objects</span>
@@ -812,7 +833,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/hyfer-objects.html">
+      <a class="maker-card" href="/brands/hyfer-objects.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0842/3361/7748/files/Anemone_Dining_table_black_kopia.jpg?v=1762949133" alt="Hyfer Objects" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Hyfer Objects</span>
@@ -820,7 +841,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/ian-cochran.html">
+      <a class="maker-card" href="/brands/ian-cochran.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/seandavidson_sightunseen_25_4.png?v=1685542669" alt="Ian Cochran" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Ian Cochran</span>
@@ -828,7 +849,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/in-common-with.html">
+      <a class="maker-card" href="/brands/in-common-with.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/2998/2346/files/GreatRoom_No.05_Furniture_Vintage_18th.c_Cabinet_Wood_Marble_2.jpg?v=1722275472" alt="In Common With" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">In Common With</span>
@@ -836,7 +857,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/ingo-maurer.html">
+      <a class="maker-card" href="/brands/ingo-maurer.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://www.ingo-maurer.com/media/isotope-data/1000karat.jpg" alt="Ingo Maurer" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Ingo Maurer</span>
@@ -844,7 +865,7 @@
           <span class="maker-categories">Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/ingridsdotter.html">
+      <a class="maker-card" href="/brands/ingridsdotter.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://ingridsdotter.com/wp-content/uploads/2024/05/PJ-1646804-fri_low-1.png" alt="Ingridsdotter" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Ingridsdotter</span>
@@ -852,7 +873,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/interesting-times-gang.html">
+      <a class="maker-card" href="/brands/interesting-times-gang.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0894/4726/8616/files/GIGAS-INTERESTINGTIMESGANG-1-BG.png?v=1740654289" alt="Interesting Times Gang" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Interesting Times Gang</span>
@@ -860,7 +881,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/jackrabbit-studio.html">
+      <a class="maker-card" href="/brands/jackrabbit-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/Jackrabbbit_Sofa_main.jpg?v=1679356164" alt="Jackrabbit Studio" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Jackrabbit Studio</span>
@@ -868,7 +889,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/jaume-ramirez.html">
+      <a class="maker-card" href="/brands/jaume-ramirez.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://jaumeramirez.com/wp-content/uploads/2022/04/JaumeRamirez-Ele_Armchair_0-scaled.jpg" alt="Jaume Ramirez" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Jaume Ramirez</span>
@@ -876,7 +897,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/jesse-groom.html">
+      <a class="maker-card" href="/brands/jesse-groom.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/JesseGroomwb.jpg?v=1725562460" alt="Jesse Groom" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Jesse Groom</span>
@@ -884,7 +905,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/joe-armitage.html">
+      <a class="maker-card" href="/brands/joe-armitage.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/6058bd841c48a27b4d71ea37/1639656885316-MIRPY8YCIE3QTFU8GADT/IMG_1771.jpg" alt="Joe Armitage" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Joe Armitage</span>
@@ -892,7 +913,7 @@
           <span class="maker-categories">Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/jon-goulder.html">
+      <a class="maker-card" href="/brands/jon-goulder.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/6510bcbab829ad7b19b6c675/b9e434de-fd67-475a-94a6-aa5cbc86d516/Innate+-+Console+05.jpg" alt="Jon Goulder" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Jon Goulder</span>
@@ -900,7 +921,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/jonas-lindholm.html">
+      <a class="maker-card" href="/brands/jonas-lindholm.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://konsthantverkarna.se/wp-content/uploads/2023/12/KB-23020_KHV_webshop_nr8_1091-500x500.jpg" alt="Jonas Lindholm" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Jonas Lindholm</span>
@@ -908,7 +929,7 @@
           <span class="maker-categories">Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/joris-poggioli.html">
+      <a class="maker-card" href="/brands/joris-poggioli.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://admin.jorispoggioli.com/wp-content/uploads/2025/12/Console-1536x1229.png" alt="Joris Poggioli" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Joris Poggioli</span>
@@ -916,7 +937,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/joy-objects.html">
+      <a class="maker-card" href="/brands/joy-objects.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0700/1328/8703/files/BENCH_ONE_v2.png?v=1780917010" alt="Joy Objects" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Joy Objects</span>
@@ -924,7 +945,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/juntos-projects.html">
+      <a class="maker-card" href="/brands/juntos-projects.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/WB_BENCH.jpg?v=1772816059" alt="Juntos Projects" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Juntos Projects</span>
@@ -932,7 +953,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/kalmar-werkstatten.html">
+      <a class="maker-card" href="/brands/kalmar-werkstatten.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://www.kalmarlighting.com/wp-content/uploads/2021/05/Kalmar-W-Admont-Pendant-Below-Front-300x400.jpg" alt="Kalmar Werkstätten" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Kalmar Werkstätten</span>
@@ -940,7 +961,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/kann-design.html">
+      <a class="maker-card" href="/brands/kann-design.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/products/galta120-oak-01.jpg?v=1623425298" alt="Kann Design" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Kann Design</span>
@@ -948,7 +969,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/kieran-kinsella.html">
+      <a class="maker-card" href="/brands/kieran-kinsella.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/546e39aee4b01216a372f659/1582070372661-IWORBQUYH1QY4EHWUMZW/Kieran+Kinsella+Chair+Bench+Wood.JPG" alt="Kieran Kinsella" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Kieran Kinsella</span>
@@ -956,7 +977,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/kin-and-co.html">
+      <a class="maker-card" href="/brands/kin-and-co.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.kinandcompany.com/user/pages/01.work/14.a-table/1.atable.jpg" alt="Kin and Co" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Kin and Co</span>
@@ -964,7 +985,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/known-work.html">
+      <a class="maker-card" href="/brands/known-work.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/KnownWork_KW_01_Perception_Bench_CreditTo8_SeanDavidson.jpg?v=1738275796" alt="Known Work" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Known Work</span>
@@ -972,7 +993,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/kouros-maghsoudi.html">
+      <a class="maker-card" href="/brands/kouros-maghsoudi.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/KourousMaghsoudi_main.jpg?v=1679342405" alt="Kouros Maghsoudi" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Kouros Maghsoudi</span>
@@ -980,7 +1001,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/kristina-dam-studio.html">
+      <a class="maker-card" href="/brands/kristina-dam-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/118200005.jpg?v=1756995594" alt="Kristina Dam Studio" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Kristina Dam Studio</span>
@@ -988,7 +1009,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/kallemo.html">
+      <a class="maker-card" href="/brands/kallemo.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.kallemo.se/templates/yootheme/cache/3e/fa%CC%8Ato%CC%88lj-aluminium-3e59c345.png" alt="Källemo" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Källemo</span>
@@ -996,7 +1017,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/la-chambre-d-ami.html">
+      <a class="maker-card" href="/brands/la-chambre-d-ami.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/4a6aa5_2877bcd96ac34c27b0d3a9e9b16222bb~mv2.png/v1/fit/w_500,h_500,q_90/file.png" alt="La Chambre d&#x27;Ami" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">La Chambre d&#x27;Ami</span>
@@ -1004,7 +1025,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/lambert-fils.html">
+      <a class="maker-card" href="/brands/lambert-fils.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0746/0929/5611/files/BDA05_REV01.jpg?v=1769122726" alt="Lambert &amp; Fils" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Lambert &amp; Fils</span>
@@ -1012,7 +1033,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/laun.html">
+      <a class="maker-card" href="/brands/laun.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/Laun_CurvedBench_main.jpg?v=1683135248" alt="Laun" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Laun</span>
@@ -1020,7 +1041,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/le-klint.html">
+      <a class="maker-card" href="/brands/le-klint.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0803/2351/0565/files/leklint1_pendant_30cm_dijon_paper_brass_hangup_packshot2_dd70a1e0-8694-4f5a-9c75-8f45781c7cb3.png?v=1765978021" alt="Le Klint" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Le Klint</span>
@@ -1028,7 +1049,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/lemon-furniture.html">
+      <a class="maker-card" href="/brands/lemon-furniture.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0679/2622/9278/files/athens-stool-1_jpg.jpg?v=1745860353" alt="Lemon Furniture" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Lemon Furniture</span>
@@ -1036,7 +1057,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/ligne-roset.html">
+      <a class="maker-card" href="/brands/ligne-roset.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100efk_W.jpg" alt="Ligne Roset" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Ligne Roset</span>
@@ -1044,7 +1065,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/likemindedobjects.html">
+      <a class="maker-card" href="/brands/likemindedobjects.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/LikemindedObjects_Lounge_main.jpg?v=1679349831" alt="LikeMindedObjects" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">LikeMindedObjects</span>
@@ -1052,7 +1073,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/lland.html">
+      <a class="maker-card" href="/brands/lland.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/Lland_Tuffet_main.jpg?v=1679380266" alt="Lland" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Lland</span>
@@ -1060,7 +1081,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/llot-llov.html">
+      <a class="maker-card" href="/brands/llot-llov.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://llotllov.com/files/02_osis_brutal_llot_llov_top-600x281.jpg" alt="Llot Llov" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Llot Llov</span>
@@ -1068,7 +1089,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/loehr.html">
+      <a class="maker-card" href="/brands/loehr.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/L5AC_F_SL_Totale_sRGB.jpg?v=1721999113" alt="LOEHR" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">LOEHR</span>
@@ -1076,7 +1097,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/louise-roe.html">
+      <a class="maker-card" href="/brands/louise-roe.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKS_52358.jpg?v=1783589662" alt="Louise Roe" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Louise Roe</span>
@@ -1084,7 +1105,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/luke-hope.html">
+      <a class="maker-card" href="/brands/luke-hope.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Spreading_set_in_light_walnut_1.jpg?v=1790482650" alt="Luke Hope" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Luke Hope</span>
@@ -1092,7 +1113,7 @@
           <span class="maker-categories">Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/luke-malaney.html">
+      <a class="maker-card" href="/brands/luke-malaney.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/LukeMalaney_Nightstand_1_FINAL_2.jpg?v=1706976298" alt="Luke Malaney" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Luke Malaney</span>
@@ -1100,7 +1121,7 @@
           <span class="maker-categories">Furniture · Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/mabeo-furniture.html">
+      <a class="maker-card" href="/brands/mabeo-furniture.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://mabeofurniture.com/wp-content/uploads/2024/09/Dira-Stool-Series-Vincent-Van-Duysen-2018-v1-1024x640-1-800x534.png" alt="Mabeo Furniture" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Mabeo Furniture</span>
@@ -1108,7 +1129,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/made-by-hand.html">
+      <a class="maker-card" href="/brands/made-by-hand.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/made-by-hand_core_table-pendant_light_E27_2609.jpg?v=1715683810" alt="Made by Hand" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Made by Hand</span>
@@ -1116,7 +1137,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/magis.html">
+      <a class="maker-card" href="/brands/magis.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://www.magisdesign.com/wp-content/uploads/2015/01/Magis_360_chair_product_lateral_SD1540_01-162x300.png" alt="Magis" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Magis</span>
@@ -1124,7 +1145,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/marbledworks.html">
+      <a class="maker-card" href="/brands/marbledworks.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.marbledworks.com/wp-content/uploads/2025/09/ISOSCELES-TABLE-350-L-BLACK-600x600.jpg" alt="Marbledworks" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Marbledworks</span>
@@ -1132,7 +1153,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/marset.html">
+      <a class="maker-card" href="/brands/marset.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://www.marset.com/wp-content/uploads/lamparas/ambrosia/marset-hr-ambrosia-v130-matt-gold-800x1200.jpg" alt="Marset" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Marset</span>
@@ -1140,7 +1161,7 @@
           <span class="maker-categories">Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/maruni.html">
+      <a class="maker-card" href="/brands/maruni.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.maruni.com/en/img/pages/products/hr_angled_open_shelf_207_left/Product/oak_BNK1.jpg" alt="Maruni" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Maruni</span>
@@ -1148,7 +1169,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/mass-productions.html">
+      <a class="maker-card" href="/brands/mass-productions.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Table_4PM_02.0002.png?v=1758052317" alt="Mass Productions" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Mass Productions</span>
@@ -1156,7 +1177,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/massimo-copenhagen.html">
+      <a class="maker-card" href="/brands/massimo-copenhagen.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Bloom.jpg?v=1770379125" alt="Massimo Copenhagen" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Massimo Copenhagen</span>
@@ -1164,7 +1185,7 @@
           <span class="maker-categories">Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/mater.html">
+      <a class="maker-card" href="/brands/mater.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0260/0981/files/Accent_Glider.jpg?v=1788340752" alt="Mater" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Mater</span>
@@ -1172,7 +1193,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/mati-sipiora.html">
+      <a class="maker-card" href="/brands/mati-sipiora.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://matisipiora.com/wp-content/uploads/2025/02/COSMIC-CHAIR-LILAC-PACKSHOT-400x500.png" alt="Mati Sipiora" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Mati Sipiora</span>
@@ -1180,7 +1201,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/mercoeur-editions.html">
+      <a class="maker-card" href="/brands/mercoeur-editions.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.prod.website-files.com/65f8e4972094d2411f63ed1d/6a672566cfadff37a56cdd18_Mercoeur_Thumbnail_CANCALE-Coffee%20table.webp" alt="Mercoeur Editions" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Mercoeur Editions</span>
@@ -1188,7 +1209,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/michael-felix.html">
+      <a class="maker-card" href="/brands/michael-felix.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/MichaelFelix_CelesteSofa_noshadow.jpg?v=1706658612" alt="Michael Felix" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Michael Felix</span>
@@ -1196,7 +1217,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/mike-ruiz-serra.html">
+      <a class="maker-card" href="/brands/mike-ruiz-serra.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/RAL_8029_PEARL_COPPER1_wb.jpg?v=1741138899" alt="Mike Ruiz-Serra" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Mike Ruiz-Serra</span>
@@ -1204,7 +1225,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/miniforms.html">
+      <a class="maker-card" href="/brands/miniforms.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/170.png" alt="Miniforms" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Miniforms</span>
@@ -1212,7 +1233,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/minimalux.html">
+      <a class="maker-card" href="/brands/minimalux.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/bulb-brass-1w.jpg?v=1712849690" alt="Minimalux" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Minimalux</span>
@@ -1220,7 +1241,7 @@
           <span class="maker-categories">Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/moebe.html">
+      <a class="maker-card" href="/brands/moebe.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Modular-Sofa_PP_Modular_Sofa_Set_2_Seater_Daybed_Cognac-Leather_Low-Res_NS.2.OA.COGSA.jpg?v=1789530243" alt="Moebe" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Moebe</span>
@@ -1228,7 +1249,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/mokko-amsterdam.html">
+      <a class="maker-card" href="/brands/mokko-amsterdam.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5e73916b28f23d676eebaddd/17270eb1-2c18-44a7-b705-e875eb1dd79f/Acer+Capsule+Table+-+dark+brown+-+front+view.jpg" alt="Mokko Amsterdam" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Mokko Amsterdam</span>
@@ -1236,7 +1257,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/monsieur-cailloux.html">
+      <a class="maker-card" href="/brands/monsieur-cailloux.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.prod.website-files.com/64c80e9ba49de1bd4890a668/68288a0c7614b0888688bfc5_monsieur-cailloux-specimen-IGpost0.png" alt="Monsieur Cailloux" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Monsieur Cailloux</span>
@@ -1244,7 +1265,7 @@
           <span class="maker-categories">Ceramics</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/mor.html">
+      <a class="maker-card" href="/brands/mor.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/Aitai-8_59008fe9-af19-4921-afb2-551f6f2acddc.jpg?v=1770726527" alt="MOR" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">MOR</span>
@@ -1252,7 +1273,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/motarasu.html">
+      <a class="maker-card" href="/brands/motarasu.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0780/0058/7083/files/Float-Chair_3.jpg?v=1780407721" alt="Motarasu" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Motarasu</span>
@@ -1260,7 +1281,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/moustache.html">
+      <a class="maker-card" href="/brands/moustache.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.moustache.fr/6195-home_default/support-d-etagere-bagou.jpg" alt="Moustache" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Moustache</span>
@@ -1268,7 +1289,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/muhly.html">
+      <a class="maker-card" href="/brands/muhly.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/050a4f58-c456-47e6-b014-49dce6c7087a/AxelConsole.jpg" alt="Muhly" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Muhly</span>
@@ -1276,7 +1297,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/nazara-lazaro.html">
+      <a class="maker-card" href="/brands/nazara-lazaro.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/Nazara_Bench_main.jpg?v=1679344039" alt="Nazara Lazaro" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Nazara Lazaro</span>
@@ -1284,7 +1305,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/nedrefoss.html">
+      <a class="maker-card" href="/brands/nedrefoss.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.nedrefoss.com/wp-content/uploads/2025/09/NF_Anker_Pre-lansering-028_gra_Products_2-1-720x1008.jpg" alt="Nedrefoss" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Nedrefoss</span>
@@ -1292,7 +1313,7 @@
           <span class="maker-categories">Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/new-works-dk.html">
+      <a class="maker-card" href="/brands/new-works-dk.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.datocms-assets.com/49896/1750103711-new-works_packshot_42741_atlas-bench_100_fumed-oak_front.png?h=800" alt="New Works DK" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">New Works DK</span>
@@ -1300,7 +1321,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/nice-condo.html">
+      <a class="maker-card" href="/brands/nice-condo.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/Nice_Condo_Belmont_Table_01.png?v=1709143616" alt="Nice Condo" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Nice Condo</span>
@@ -1308,7 +1329,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/nicholas-bijan-pourfard.html">
+      <a class="maker-card" href="/brands/nicholas-bijan-pourfard.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/NickPourfard_Chair_main.jpg?v=1679369043" alt="Nicholas Bijan Pourfard" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Nicholas Bijan Pourfard</span>
@@ -1316,7 +1337,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/nifemi-ogunro.html">
+      <a class="maker-card" href="/brands/nifemi-ogunro.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/seandavidson_sightunseen_29copy.png?v=1685543719" alt="Nifemi Ogunro" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Nifemi Ogunro</span>
@@ -1324,7 +1345,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/no-early-birds.html">
+      <a class="maker-card" href="/brands/no-early-birds.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/FunkCabinet_180x70cm.png?v=1786913428" alt="No Early Birds" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">No Early Birds</span>
@@ -1332,7 +1353,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/noah.html">
+      <a class="maker-card" href="/brands/noah.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Awa_Sofa_-_Sitzmodul_85x70_cm_Velvet_-_eisblau.webp?v=1789563929" alt="Noah" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Noah</span>
@@ -1340,7 +1361,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/noom.html">
+      <a class="maker-card" href="/brands/noom.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/9122574d-5791-44e6-9553-20c050ed43a2/250619+06.png" alt="Noom" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Noom</span>
@@ -1348,7 +1369,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/northern.html">
+      <a class="maker-card" href="/brands/northern.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0837/2250/2463/files/Daybe_dining_sofa_modular_L-corner_peach_office_close_Northern_High-res.jpg?v=1780661997" alt="Northern" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Northern</span>
@@ -1356,7 +1377,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/objects-ideas.html">
+      <a class="maker-card" href="/brands/objects-ideas.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/ObjectsIdeas_Henge_oak_main.jpg?v=1679423009" alt="Objects &amp; Ideas" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Objects &amp; Ideas</span>
@@ -1364,7 +1385,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/objects-for-objects.html">
+      <a class="maker-card" href="/brands/objects-for-objects.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/ObjectsforObjects_BenchNavy_main.jpg?v=1679343281" alt="Objects for Objects" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Objects for Objects</span>
@@ -1372,7 +1393,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/oblure.html">
+      <a class="maker-card" href="/brands/oblure.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://oblure.com/wp-content/uploads/2024/08/lightbone_floor_lamp_professional.png" alt="Oblure" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Oblure</span>
@@ -1380,7 +1401,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/oi-soi-oi.html">
+      <a class="maker-card" href="/brands/oi-soi-oi.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/boaw2610.jpg?v=1785855173" alt="Oi Soi Oi" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Oi Soi Oi</span>
@@ -1388,7 +1409,7 @@
           <span class="maker-categories">Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/omelette-editions.html">
+      <a class="maker-card" href="/brands/omelette-editions.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://omeletteeditions.com/wp-content/uploads/2025/12/Omelette-Editions_Alex-Bistro-Reposabrazos.jpg" alt="Omelette Editions" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Omelette Editions</span>
@@ -1396,7 +1417,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/orlando-pippig.html">
+      <a class="maker-card" href="/brands/orlando-pippig.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/AL-01_2.jpg?v=1730146714" alt="Orlando Pippig" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Orlando Pippig</span>
@@ -1404,7 +1425,7 @@
           <span class="maker-categories">Furniture · Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/oven-editions.html">
+      <a class="maker-card" href="/brands/oven-editions.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0880/5459/5866/files/MESA_RECTANGULAR_02.jpg?v=1752395916" alt="Oven Editions" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Oven Editions</span>
@@ -1412,7 +1433,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/palefire-studio.html">
+      <a class="maker-card" href="/brands/palefire-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0938/3745/9805/files/UVDIU002_Diabolo_Uplighter_Serpent_24ef2a07-a7ef-46f7-90b4-39d7ff81886a.webp?v=1787755589" alt="Palefire Studio" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Palefire Studio</span>
@@ -1420,7 +1441,7 @@
           <span class="maker-categories">Furniture · Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/paola-paronetto.html">
+      <a class="maker-card" href="/brands/paola-paronetto.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.paolaparonetto.com/media/pages/collezioni/anemone-tulipano-e-ciotole/4d5af2e158-1741767855/rcr6482-modifica-2-2000x2000-q85.jpg" alt="Paola Paronetto" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Paola Paronetto</span>
@@ -1428,7 +1449,7 @@
           <span class="maker-categories">Ceramics</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/par-en-par.html">
+      <a class="maker-card" href="/brands/par-en-par.html" data-tier="independent">
         <div class="maker-card-hero"><img src="http://acdn-us.mitiendanube.com/stores/005/991/341/products/parenpar4444-a43912bcbac450455317430969416127-640-0.webp" alt="Par en Par" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Par en Par</span>
@@ -1436,7 +1457,7 @@
           <span class="maker-categories">Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/parachilna.html">
+      <a class="maker-card" href="/brands/parachilna.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/products/ABALLSMGRGolden.jpg?v=1620065058" alt="Parachilna" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Parachilna</span>
@@ -1444,7 +1465,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/paradisverkstaden.html">
+      <a class="maker-card" href="/brands/paradisverkstaden.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/products/MorgonGra__Skal_x_Stor_Kalk.png?v=1675938438" alt="Paradisverkstaden" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Paradisverkstaden</span>
@@ -1452,7 +1473,7 @@
           <span class="maker-categories">Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/patrick-de-glo-de-besses.html">
+      <a class="maker-card" href="/brands/patrick-de-glo-de-besses.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://assets.bigcartel.com/product_images/430347984/Capture+d%E2%80%99e%CC%81cran+2026-09-01+a%CC%80+10.40.57.png?auto=format&amp;fit=max&amp;h=1000&amp;w=1000" alt="Patrick de Glo de Besses" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Patrick de Glo de Besses</span>
@@ -1460,7 +1481,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/petite-friture.html">
+      <a class="maker-card" href="/brands/petite-friture.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://petitefriture.com/37756-home_default/eclipse-chaise-longue-avec-coussin-vert-bouteille-strange-loves.jpg" alt="Petite Friture" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Petite Friture</span>
@@ -1468,7 +1489,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/pholc.html">
+      <a class="maker-card" href="/brands/pholc.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0874/4294/8443/files/Champagne_30_202311_Product_1.png?v=1730892338" alt="Pholc" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Pholc</span>
@@ -1476,7 +1497,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/piet-hein-eek.html">
+      <a class="maker-card" href="/brands/piet-hein-eek.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://pietheineek.nl/wp-content/uploads/2021/06/03_40x40_Waste_Desk_FF_210255_perspective01_THUMBNAIL-300x300.jpg" alt="Piet Hein Eek" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Piet Hein Eek</span>
@@ -1484,7 +1505,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/pinch.html">
+      <a class="maker-card" href="/brands/pinch.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Alba-sideboard_221988_LR.jpg?v=1762360097" alt="Pinch" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Pinch</span>
@@ -1492,7 +1513,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/pode.html">
+      <a class="maker-card" href="/brands/pode.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://a.storyblok.com/f/95982/704x1016/7a8df52a15/pode-website-bibo-overzicht.png" alt="Pode" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Pode</span>
@@ -1500,7 +1521,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/porta-romana.html">
+      <a class="maker-card" href="/brands/porta-romana.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/CCT63-VER-CLR-HERO.jpg?v=1725965198" alt="Porta Romana" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Porta Romana</span>
@@ -1508,7 +1529,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/project-213a.html">
+      <a class="maker-card" href="/brands/project-213a.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0531/5395/6002/products/Project213Aarcdestool37black2.jpg?v=1655911306" alt="Project 213A" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Project 213A</span>
@@ -1516,7 +1537,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/pulkra.html">
+      <a class="maker-card" href="/brands/pulkra.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.pulkra.it/wp-content/uploads/2024/04/25016-PLK-RAW-NTHS-0-1-3-1-300x300.jpg" alt="Pulkra" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Pulkra</span>
@@ -1524,7 +1545,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/pulpo.html">
+      <a class="maker-card" href="/brands/pulpo.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://pulpoproducts.com/wp-content/uploads/2017/11/AlwaOneVariety.png" alt="Pulpo" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Pulpo</span>
@@ -1532,7 +1553,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/raawii.html">
+      <a class="maker-card" href="/brands/raawii.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Arba_Bench_upholstered-Bench-R1095-Orange_base_Kvadrat_Remix.jpg?v=1755680004" alt="Raawii" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Raawii</span>
@@ -1540,7 +1561,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/resident.html">
+      <a class="maker-card" href="/brands/resident.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://www.resident.co.nz/media/uploads/2026_06/Avant_Shot1200_00_Square.jpg.450x450_q85_crop-smart_upscale.jpg" alt="Resident" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Resident</span>
@@ -1548,7 +1569,7 @@
           <span class="maker-categories">Furniture · Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/rest-energy.html">
+      <a class="maker-card" href="/brands/rest-energy.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/WEBDryKissChair_Oak_02_CalebEngstrom_PhotoBy_ofstudio.jpg?v=1747072111" alt="Rest Energy" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Rest Energy</span>
@@ -1556,7 +1577,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/rihouse.html">
+      <a class="maker-card" href="/brands/rihouse.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://rihouse.shop/wp-content/uploads/furniture_oiside_francesc_rife_penda_13-1-600x600.jpg" alt="Rihouse" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Rihouse</span>
@@ -1564,7 +1585,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/rubn.html">
+      <a class="maker-card" href="/brands/rubn.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/1049/4646/7165/files/Angel-3-1000-Chandelier-Brass-1655-1930.png?v=1781002861" alt="Rubn" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Rubn</span>
@@ -1572,7 +1593,7 @@
           <span class="maker-categories">Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/ruka-studio.html">
+      <a class="maker-card" href="/brands/ruka-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0699/4182/1622/files/TD_1_concreteside_View.212.png?v=1780706650" alt="Ruka Studio" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Ruka Studio</span>
@@ -1580,7 +1601,7 @@
           <span class="maker-categories">Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/ryan-jones-studio.html">
+      <a class="maker-card" href="/brands/ryan-jones-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/RyanJones_white2.jpg?v=1728853810" alt="Ryan Jones Studio" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Ryan Jones Studio</span>
@@ -1588,7 +1609,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/santa-cole.html">
+      <a class="maker-card" href="/brands/santa-cole.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://www.santacole.com/wp-content/uploads/dam/Barceloneta-EnricBadrinas-2023-BARFA01-R25-x600.jpg" alt="Santa &amp; Cole" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Santa &amp; Cole</span>
@@ -1596,7 +1617,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/seer-studio.html">
+      <a class="maker-card" href="/brands/seer-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/SeerStudio_Ratio_main.jpg?v=1679355856" alt="Seer Studio" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Seer Studio</span>
@@ -1604,7 +1625,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/sekt.html">
+      <a class="maker-card" href="/brands/sekt.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/631eeb2fe3c7c323a3e2438e/1738844551852-2U4M2I961UZRALXQQMHB/SEKT+Produkt+17.png" alt="Sekt" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Sekt</span>
@@ -1612,7 +1633,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/seletti.html">
+      <a class="maker-card" href="/brands/seletti.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/18620-amanita-table-2.jpg?v=1728436357" alt="Seletti" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Seletti</span>
@@ -1620,7 +1641,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/serax.html">
+      <a class="maker-card" href="/brands/serax.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Apero_set_12_pieces_La_Nouvelle_Table_01.jpg?v=1756207119" alt="Serax" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Serax</span>
@@ -1628,7 +1649,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/shibui.html">
+      <a class="maker-card" href="/brands/shibui.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/62b04d_feea17a8982249b8a4b750afd59cea9d~mv2_d_5472_3648_s_4_2.jpg/v1/fit/w_500,h_500,q_90/file.jpg" alt="Shibui" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Shibui</span>
@@ -1636,7 +1657,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/silcohaus.html">
+      <a class="maker-card" href="/brands/silcohaus.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0704/0063/9269/files/5e791828-27d2-450c-a970-bcabe72dc4c8-e17f88130346.jpg?v=1790254501" alt="Silcohaus" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Silcohaus</span>
@@ -1644,7 +1665,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/sizar-alexis.html">
+      <a class="maker-card" href="/brands/sizar-alexis.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://sizaralexis.se/wp-content/uploads/2025/05/IMG_0033-scaled.jpg" alt="Sizar Alexis" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Sizar Alexis</span>
@@ -1652,7 +1673,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/stackelbergs.html">
+      <a class="maker-card" href="/brands/stackelbergs.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0943/5408/0070/files/9140AURORABoreasLightBlue_Yellow_Pink130x190cmjpg.jpg?v=1753738617" alt="Stackelbergs" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Stackelbergs</span>
@@ -1660,7 +1681,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/steven-bukowski.html">
+      <a class="maker-card" href="/brands/steven-bukowski.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/Bukowski_Signal_WB.jpg?v=1725568526" alt="Steven Bukowski" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Steven Bukowski</span>
@@ -1668,7 +1689,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/studio-mignone.html">
+      <a class="maker-card" href="/brands/studio-mignone.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/StudioMignone_Tavolo_whiteclear.png?v=1683731485" alt="Studio Mignone" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Studio Mignone</span>
@@ -1676,7 +1697,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/studio-sam-klemick.html">
+      <a class="maker-card" href="/brands/studio-sam-klemick.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/WBEBBellChair_front-Samklemick_BrianGuidoPhotography.jpg?v=1746565407" alt="Studio Sam Klemick" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Studio Sam Klemick</span>
@@ -1684,7 +1705,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/studio-vraco.html">
+      <a class="maker-card" href="/brands/studio-vraco.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/Console-Table-High-W.jpg?v=1776302382" alt="Studio Vraco" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Studio Vraco</span>
@@ -1692,7 +1713,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/sunfish.html">
+      <a class="maker-card" href="/brands/sunfish.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/WEB20250516-SIGHT-UNSEEN-2025-DESIGN-WEEK2922_WB.jpg?v=1748471563" alt="Sunfish" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Sunfish</span>
@@ -1700,7 +1721,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/se-collections.html">
+      <a class="maker-card" href="/brands/se-collections.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://new.se-collections.com/wp-content/uploads/2021/04/Atlas-Bench-in-Oak-Brosse-Naturel-SIKKENS-ON-00-31-2-800x800.jpg" alt="Sé Collections" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Sé Collections</span>
@@ -1708,7 +1729,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/tala.html">
+      <a class="maker-card" href="/brands/tala.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0551/4300/6274/files/Alumina-Blossom-On-Setof2.png?v=1786461932" alt="Tala" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Tala</span>
@@ -1716,7 +1737,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/tamo.html">
+      <a class="maker-card" href="/brands/tamo.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/amelia_desk_natur_oak.jpg?v=1770029109" alt="Tamo" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Tamo</span>
@@ -1724,7 +1745,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/tell-me-more.html">
+      <a class="maker-card" href="/brands/tell-me-more.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Adrian_cushion_cover_40x60_brown_-_webb_1_24130049-1075-44a2-8ac6-867b697c76b9.jpg?v=1768306831" alt="Tell Me More" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Tell Me More</span>
@@ -1732,7 +1753,7 @@
           <span class="maker-categories">Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/the-conran-shop.html">
+      <a class="maker-card" href="/brands/the-conran-shop.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS403385_1.jpg?v=1771324765" alt="The Conran Shop" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">The Conran Shop</span>
@@ -1740,7 +1761,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/tiptoe.html">
+      <a class="maker-card" href="/brands/tiptoe.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Banc-LOU-140x30-chene-naturel-noir.jpg?v=1777052038" alt="Tiptoe" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Tiptoe</span>
@@ -1748,7 +1769,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/toh-studio.html">
+      <a class="maker-card" href="/brands/toh-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0201/5002/6294/products/SSA_SSANGEXT_FRONT.jpg?v=1639859531" alt="TOH-STUDIO" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">TOH-STUDIO</span>
@@ -1756,7 +1777,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/tolix.html">
+      <a class="maker-card" href="/brands/tolix.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/TABLE55140x80_BRUTVERNI_PLATEAUCHENENATUREL_1.jpg?v=1772395753" alt="Tolix" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Tolix</span>
@@ -1764,7 +1785,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/unico-milano.html">
+      <a class="maker-card" href="/brands/unico-milano.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0380/2795/2263/products/U463_set2tavolini_AMALFI_neroopaco_UnicoMilano_1.jpg?v=1736369380" alt="Unico Milano" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Unico Milano</span>
@@ -1772,7 +1793,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/utilitario-mexicano.html">
+      <a class="maker-card" href="/brands/utilitario-mexicano.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/1216/6402/products/candelabro-2.jpg?v=1571458202" alt="Utilitario Mexicano" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Utilitario Mexicano</span>
@@ -1780,7 +1801,7 @@
           <span class="maker-categories">Ceramics</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/vaarnii.html">
+      <a class="maker-card" href="/brands/vaarnii.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/001BarStool65-1-Vertical.jpg?v=1749742676" alt="Vaarnii" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Vaarnii</span>
@@ -1788,7 +1809,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/valerie-objects.html">
+      <a class="maker-card" href="/brands/valerie-objects.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9016035L_01.jpg?v=1753788905" alt="Valerie Objects" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Valerie Objects</span>
@@ -1796,7 +1817,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/verk.html">
+      <a class="maker-card" href="/brands/verk.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://verk.se/wp-content/uploads/2022/02/VERK-Trienna-2.0-P5-860x937.jpg" alt="Verk" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Verk</span>
@@ -1804,7 +1825,7 @@
           <span class="maker-categories">Furniture · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/verpan.html">
+      <a class="maker-card" href="/brands/verpan.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0513/1829/2651/products/Barboy-Lilac-Grey_338162e1-5abe-4156-94b1-bf79498336cc.jpg?v=1630506382" alt="Verpan" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Verpan</span>
@@ -1812,7 +1833,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/wendelbo.html">
+      <a class="maker-card" href="/brands/wendelbo.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Aero_L_Coda962_2.jpg?v=1744008819" alt="Wendelbo" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Wendelbo</span>
@@ -1820,7 +1841,7 @@
           <span class="maker-categories">Furniture · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/will-choui.html">
+      <a class="maker-card" href="/brands/will-choui.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://framerusercontent.com/images/ppykS3XC6FGty5dP5RMOfotJfE.png?width=2160&amp;height=2160" alt="Will Choui" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Will Choui</span>
@@ -1828,7 +1849,7 @@
           <span class="maker-categories">Furniture · Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/wontek.html">
+      <a class="maker-card" href="/brands/wontek.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/38-DSC_2322kopia.jpg?v=1788900335" alt="Wontek" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Wontek</span>
@@ -1836,7 +1857,7 @@
           <span class="maker-categories">Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/workstead.html">
+      <a class="maker-card" href="/brands/workstead.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://m-workstead.imgix.net/assets/galleries/550/1356_Bole_P_II_Gallery_Situ_04.jpg?fit=crop&amp;w=640&amp;h=640&amp;q=60&amp;auto=format,compress" alt="Workstead" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Workstead</span>
@@ -1844,7 +1865,7 @@
           <span class="maker-categories">Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/woud.html">
+      <a class="maker-card" href="/brands/woud.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Arc_66_Oiled_Oak.png?v=1743412372" alt="Woud" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Woud</span>
@@ -1852,7 +1873,7 @@
           <span class="maker-categories">Furniture · Lighting · Ceramics · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/wastberg.html">
+      <a class="maker-card" href="/brands/wastberg.html" data-tier="established">
         <div class="maker-card-hero"><img src="https://www.wastberg.com/pim/ALMA%20CEILING%20W171C/4200/image-thumb__4200__product-grid/alma-ceiling-raw-lighting.df5e8dab.png" alt="Wästberg" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Wästberg</span>
@@ -1860,7 +1881,7 @@
           <span class="maker-categories">Lighting</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/ysh-studio.html">
+      <a class="maker-card" href="/brands/ysh-studio.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/seandavidson_sightunseen_32.png?v=1685542706" alt="YSH Studio" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">YSH Studio</span>
@@ -1868,7 +1889,7 @@
           <span class="maker-categories">Furniture</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/zero.html">
+      <a class="maker-card" href="/brands/zero.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499784339151-MCMVTB6UPMF6M0CH7H2C/a01gra.jpg" alt="Zero" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Zero</span>
@@ -1876,7 +1897,7 @@
           <span class="maker-categories">Lighting · Objects</span>
         </div>
       </a>
-      <a class="maker-card" href="/brands/lukasz-korol.html">
+      <a class="maker-card" href="/brands/lukasz-korol.html" data-tier="independent">
         <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/1049/3060/7436/files/DSC_9517-Edit.jpg?v=1786051538" alt="Łukasz Korol" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Łukasz Korol</span>
@@ -1906,6 +1927,12 @@
 
   (function () {
     var filterInput = document.getElementById("directory-filter");
+    // Tier chips only exist on makers.html - an empty NodeList here on
+    // architects.html (which shares this same script) just means
+    // activeTier never leaves null, so tierMatch below is always true
+    // and nothing changes for that page.
+    var tierButtons = document.querySelectorAll(".filter-chip[data-tier]");
+    var activeTier = null;
     function applyFilter(q) {
       q = q.trim().toLowerCase();
       // .promo-card covers both promo-grid card shapes (a plain <a> for
@@ -1917,11 +1944,30 @@
       // .maker-grid > a, so Promotions cards were never actually
       // filtered (2026-09-28 finding).
       document.querySelectorAll(".maker-grid > a, .promo-card").forEach(function (card) {
-        var match = !q || card.textContent.toLowerCase().includes(q);
-        card.hidden = !match;
+        var textMatch = !q || card.textContent.toLowerCase().includes(q);
+        var tierMatch = !activeTier || card.dataset.tier === activeTier;
+        card.hidden = !(textMatch && tierMatch);
       });
     }
     filterInput.addEventListener("input", function (e) { applyFilter(e.target.value); });
+    // Each chip toggles independently - clicking the already-active one
+    // clears back to showing every tier, clicking the other one swaps
+    // which tier is active (a card can only ever be one or the other,
+    // so having both active at once would just mean "all" again).
+    tierButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var tier = btn.dataset.tier;
+        if (activeTier === tier) {
+          activeTier = null;
+          btn.classList.remove("active");
+        } else {
+          activeTier = tier;
+          tierButtons.forEach(function (b) { b.classList.remove("active"); });
+          btn.classList.add("active");
+        }
+        applyFilter(filterInput.value);
+      });
+    });
     // Pre-filled from Creators' own search box (?q=stockholm after it
     // strips "architects"/"designers"/"makers" off the front and routes
     // here) - runs the exact same filter immediately, not just on the

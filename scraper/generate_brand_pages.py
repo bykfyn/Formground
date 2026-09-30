@@ -134,6 +134,26 @@ def load_hidden_brands():
     return {b["name"] for b in brands if b.get("hidden")}
 
 
+def load_brand_tiers():
+    """
+    "established" is only ever set manually in brands.json (2026-09-30,
+    same 39-brand list used for the keyword-research export) for a
+    genuinely well-known/multinational/legacy design house, or a brand
+    added specifically to fill a paid-ad keyword gap rather than as an
+    independent-maker pick - never inferred from catalog size (a tiny
+    catalog doesn't make a brand "independent" any more than a big one
+    makes it "established" - Herman Miller-scale brands are excluded
+    from the catalog entirely, not just tagged, per
+    feedback_exclude_mega_corporate_furniture_houses). Every brand
+    without the field defaults to "independent" - the unmarked case is
+    the norm, matching makers.html's own "curated selection of makers,
+    new and established" framing, not an exception that needs its own
+    flag.
+    """
+    brands = json.loads(BRANDS_PATH.read_text())
+    return {b["name"]: "established" for b in brands if b.get("tier") == "established"}
+
+
 def load_promotions_by_brand():
     """
     Cross-references data/promotions.json (see
@@ -759,6 +779,23 @@ PAGE_CSS = """
     padding: 7px 10px; border-radius: 999px;
   }
 
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
   /* Explicit, not relying on the browser's default [hidden] styling -
      .maker-card's own `display: block` below has the same specificity
      and comes later in source order, so it would otherwise win and
@@ -775,6 +812,19 @@ def directory_filter_html(placeholder, category_label):
       <span class="ask-box-context">{html.escape(category_label)}</span>
       <input id="directory-filter" type="text" placeholder="{placeholder}" autocomplete="off">
     </div>
+  </div>"""
+
+
+def tier_filter_html():
+    """
+    makers.html only - see load_brand_tiers() for what "established"
+    means and how a brand gets it. Independent is listed first since
+    it's the default/norm, not the exception.
+    """
+    return """
+  <div class="tier-filters">
+    <button type="button" class="filter-chip" data-tier="independent">Independent Makers</button>
+    <button type="button" class="filter-chip" data-tier="established">Established Makers</button>
   </div>"""
 
 
@@ -803,6 +853,12 @@ HERO_SEARCH_POSITION_CSS = """
 DIRECTORY_FILTER_JS = """
   (function () {
     var filterInput = document.getElementById("directory-filter");
+    // Tier chips only exist on makers.html - an empty NodeList here on
+    // architects.html (which shares this same script) just means
+    // activeTier never leaves null, so tierMatch below is always true
+    // and nothing changes for that page.
+    var tierButtons = document.querySelectorAll(".filter-chip[data-tier]");
+    var activeTier = null;
     function applyFilter(q) {
       q = q.trim().toLowerCase();
       // .promo-card covers both promo-grid card shapes (a plain <a> for
@@ -814,11 +870,30 @@ DIRECTORY_FILTER_JS = """
       // .maker-grid > a, so Promotions cards were never actually
       // filtered (2026-09-28 finding).
       document.querySelectorAll(".maker-grid > a, .promo-card").forEach(function (card) {
-        var match = !q || card.textContent.toLowerCase().includes(q);
-        card.hidden = !match;
+        var textMatch = !q || card.textContent.toLowerCase().includes(q);
+        var tierMatch = !activeTier || card.dataset.tier === activeTier;
+        card.hidden = !(textMatch && tierMatch);
       });
     }
     filterInput.addEventListener("input", function (e) { applyFilter(e.target.value); });
+    // Each chip toggles independently - clicking the already-active one
+    // clears back to showing every tier, clicking the other one swaps
+    // which tier is active (a card can only ever be one or the other,
+    // so having both active at once would just mean "all" again).
+    tierButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var tier = btn.dataset.tier;
+        if (activeTier === tier) {
+          activeTier = null;
+          btn.classList.remove("active");
+        } else {
+          activeTier = tier;
+          tierButtons.forEach(function (b) { b.classList.remove("active"); });
+          btn.classList.add("active");
+        }
+        applyFilter(filterInput.value);
+      });
+    });
     // Pre-filled from Creators' own search box (?q=stockholm after it
     // strips "architects"/"designers"/"makers" off the front and routes
     // here) - runs the exact same filter immediately, not just on the
@@ -1124,12 +1199,12 @@ def render_makers_index(brands_data):
     # covers, rather than a line that's sometimes long and sometimes
     # short.
     items = ""
-    for brand, slug, umbrellas, _count, country, image in sorted(brands_data, key=lambda b: b[0].lower()):
+    for brand, slug, umbrellas, _count, country, image, tier in sorted(brands_data, key=lambda b: b[0].lower()):
         categories = " · ".join(umbrellas)
         country_html = html.escape(country) if country else "&nbsp;"
         image_tag = f'<img src="{html.escape(image)}" alt="{html.escape(brand)}" loading="lazy">' if image else ""
         items += f"""
-      <a class="maker-card" href="/brands/{slug}.html">
+      <a class="maker-card" href="/brands/{slug}.html" data-tier="{tier}">
         <div class="maker-card-hero">{image_tag}</div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(brand)}</span>
@@ -1165,7 +1240,7 @@ def render_makers_index(brands_data):
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
 {site_nav_html("creators")}
 </header>
-<main style="max-width:1160px;">{directory_filter_html("Filter by name, city, or category…", "Makers")}
+<main style="max-width:1160px;">{directory_filter_html("Filter by name, city, or category…", "Makers")}{tier_filter_html()}
   <h1 class="sr-only">Makers</h1>
   <div class="maker-grid">{items}
   </div>
@@ -1447,6 +1522,7 @@ def generate():
 
     countries = load_countries()
     hidden_brands = load_hidden_brands()
+    tiers = load_brand_tiers()
     promotions_by_brand = load_promotions_by_brand()
     stockists_by_brand = load_stockists_by_brand()
     BRANDS_DIR.mkdir(parents=True, exist_ok=True)
@@ -1504,7 +1580,8 @@ def generate():
         )
         (BRANDS_DIR / f"{slug}.html").write_text(page)
         image = primary_image_for(products, umbrellas)
-        makers_data.append((brand, slug, umbrellas, len(products), country, image))
+        tier = tiers.get(brand, "independent")
+        makers_data.append((brand, slug, umbrellas, len(products), country, image, tier))
 
     (DOCS_DIR / "makers.html").write_text(render_makers_index(makers_data))
     for slug in RETIRED_CATEGORY_SLUGS:

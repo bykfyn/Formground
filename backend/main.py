@@ -46,6 +46,7 @@ app.add_middleware(
 @app.get("/search")
 def human_search(
     q: str = Query(..., description="Natural language search query"),
+    tier: Optional[str] = Query(None, description="'independent' or 'established' - the Work page's own chip filter, not part of the natural-language query"),
     utm_source: Optional[str] = None,
     utm_medium: Optional[str] = None,
     utm_campaign: Optional[str] = None,
@@ -55,8 +56,10 @@ def human_search(
     and the resolved intent - the latter two exist for the "load more"
     button (see /search/more) so the results page can say how many real
     matches exist and so a "load more" click never re-runs the LLM
-    translation step."""
-    data = search_full(q)
+    translation step. `tier` rides along in the returned intent, so
+    /search/more (which re-sends that same intent) honors it too with
+    no extra query param needed there."""
+    data = search_full(q, tier=tier)
     log_event("search", query=q, utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign)
     return {
         "query": q,
@@ -112,6 +115,7 @@ def agent_search(q: str = Query(..., description="Structured or natural language
 
 @app.get("/discover")
 def discover_random(
+    tier: Optional[str] = Query(None, description="'independent' or 'established' - the Work page's own chip filter"),
     utm_source: Optional[str] = None,
     utm_medium: Optional[str] = None,
     utm_campaign: Optional[str] = None,
@@ -119,7 +123,7 @@ def discover_random(
     """Random browse across the whole catalog - no LLM call, no query,
     just a fair sample across every brand. Doesn't hit the LLM at all,
     so it's also free to call as often as someone hits "surprise me"."""
-    results = discover()
+    results = discover(tier=tier)
     log_event("discover", utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign)
     return {"results": results}
 

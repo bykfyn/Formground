@@ -162,6 +162,28 @@ def _load_brand_countries() -> dict:
 
 BRAND_COUNTRIES = _load_brand_countries()
 
+
+def _load_brand_tiers() -> dict:
+    """
+    Brand -> "established", same source/shape as BRAND_COUNTRIES above.
+    "established" is only ever set by hand in brands.json (2026-09-30,
+    same 39-brand list generate_brand_pages.py's makers.html filter
+    uses) for a genuinely well-known/multinational/legacy design house,
+    or a brand added specifically to fill a paid-ad keyword gap rather
+    than as an independent-maker pick - never inferred from catalog
+    size. A brand with no "tier" field (the norm, not the exception) is
+    "independent" by default - see filter_products()'s own use of this
+    dict for where that default is applied.
+    """
+    try:
+        brands = json.loads(BRANDS_PATH.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+    return {b["name"]: "established" for b in brands if b.get("tier") == "established"}
+
+
+BRAND_TIERS = _load_brand_tiers()
+
 # Real country values confirmed present in brands.json as of 2026-09-28
 # (see BRAND_COUNTRIES) mapped from how someone actually asks for them -
 # a region/demonym is not a literal country name, so this needs its own
@@ -716,7 +738,9 @@ def filter_products(intent: dict) -> list:
     Filters stored products on the hard facts: category + material +
     new_only (recency, see _wants_new_arrivals) + countries (see
     _wanted_countries) + seat_count (see _wanted_seat_count) +
-    portable_only (see _wants_portable/_product_is_portable) + not an
+    portable_only (see _wants_portable/_product_is_portable) + tier (see
+    BRAND_TIERS - explicit chip selection only, never inferred from
+    query text) + not an
     individual modular-system build component (see
     _is_modular_component) + not a protective cover for the furniture
     rather than the furniture itself (see _is_protective_cover) + has a
@@ -757,6 +781,12 @@ def filter_products(intent: dict) -> list:
     wanted_countries = set(intent.get("countries") or [])
     wanted_seat_count = intent.get("seat_count")
     wanted_portable = bool(intent.get("portable_only"))
+    # Never set by query-text parsing (unlike every other intent field
+    # here) - this only ever arrives explicitly from the Work page's own
+    # Independent/Established chips (see main.py's tier query param),
+    # not inferred from what someone typed. "independent" or
+    # "established"; anything else (including absent) means no filter.
+    wanted_tier = intent.get("tier")
     raw_style_descriptors = intent.get("style_descriptors") or []
     wanted_style_descriptors = [
         d.strip().lower() for d in raw_style_descriptors
@@ -788,6 +818,8 @@ def filter_products(intent: dict) -> list:
         if wanted_seat_count is not None and not _product_matches_seat_count(product["product_name"], wanted_seat_count):
             continue
         if wanted_portable and not _product_is_portable(product["product_name"]):
+            continue
+        if wanted_tier and BRAND_TIERS.get(product["brand"], "independent") != wanted_tier:
             continue
 
         # A product with many raw finish/color combos merged into one
@@ -830,7 +862,7 @@ GENERIC_PRODUCT_NAMES = {
 }
 
 
-def filter_by_name(raw_query: str) -> list:
+def filter_by_name(raw_query: str, tier=None) -> list:
     """
     Matches the raw query against each product's own name, independent
     of the category/material hard filter above - checked in both
@@ -849,6 +881,12 @@ def filter_by_name(raw_query: str) -> list:
     extraction already handles better on its own. See
     GENERIC_PRODUCT_NAMES above for why the forward direction is
     additionally skipped for a bare object-type name.
+
+    tier (see BRAND_TIERS), when given, applies here too - a direct
+    name match still has to respect the Independent/Established chip,
+    the same as filter_products() already does, otherwise a name-match
+    fallback would silently defeat the filter whenever the query itself
+    happened to also name the product.
     """
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -860,6 +898,8 @@ def filter_by_name(raw_query: str) -> list:
     for row in rows:
         product = dict(row)
         if product["brand"] in HIDDEN_BRANDS:
+            continue
+        if tier and BRAND_TIERS.get(product["brand"], "independent") != tier:
             continue
         name = product["product_name"]
         name_in_query = (
@@ -969,7 +1009,7 @@ def filter_houses_by_name(raw_query: str, houses=None) -> list:
     return matches
 
 
-def discover(per_brand: int = DISCOVER_PER_BRAND, total_cap: int = DISCOVER_TOTAL_CAP) -> list:
+def discover(per_brand: int = DISCOVER_PER_BRAND, total_cap: int = DISCOVER_TOTAL_CAP, tier=None) -> list:
     """
     Random browse across the whole catalog, no query/filtering involved -
     for "surprise me" / typing "random" instead of a real search. Samples
@@ -985,6 +1025,12 @@ def discover(per_brand: int = DISCOVER_PER_BRAND, total_cap: int = DISCOVER_TOTA
     - a random total_cap-sized slice of an already-shuffled list, so which
     brands make the cut varies call to call rather than always favoring
     the same ones alphabetically or by ID.
+
+    tier (see BRAND_TIERS), when given, restricts the whole sample to
+    just that tier before any sampling happens - same explicit,
+    chip-only filter as filter_products()'s own tier check, not
+    something Discover's "no query at all" nature would otherwise have
+    any way to express.
     """
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
@@ -995,6 +1041,8 @@ def discover(per_brand: int = DISCOVER_PER_BRAND, total_cap: int = DISCOVER_TOTA
     for row in rows:
         product = dict(row)
         if product["brand"] in HIDDEN_BRANDS:
+            continue
+        if tier and BRAND_TIERS.get(product["brand"], "independent") != tier:
             continue
         product["material_options"] = json.loads(product["material_options"] or "[]")
         product["thin"] = bool(product["thin"])
@@ -1229,11 +1277,16 @@ def _match_all(raw_query: str, intent: dict) -> list:
     is_house_intent = (intent.get("category") or "").lower() in HOUSE_CATEGORY_WORDS
     seen_ids = {m["id"] for m in matches}
     if not is_house_intent:
-        for m in filter_by_name(raw_query):
+        for m in filter_by_name(raw_query, tier=intent.get("tier")):
             if m["id"] not in seen_ids:
                 matches.append(m)
                 seen_ids.add(m["id"])
 
+    # Houses are deliberately never tier-filtered - architecture firms
+    # aren't part of BRAND_TIERS' established/independent taxonomy at
+    # all (that's a product-brand distinction), so applying intent.get
+    # ("tier") here would just default every firm to "independent" and
+    # silently hide every house whenever "Established" is selected.
     for h in filter_houses(intent):
         if h["id"] not in seen_ids:
             matches.append(h)
@@ -1293,14 +1346,24 @@ def search(raw_query: str) -> list:
     return search_full(raw_query)["results"]
 
 
-def search_full(raw_query: str) -> dict:
+def search_full(raw_query: str, tier=None) -> dict:
     """Like search(), but also returns what the "load more" UI needs:
     the resolved intent (so a later search_more() call can skip the
     LLM translation step entirely) and the raw pre-cap match/brand
     counts (so the results page can honestly say how many real matches
     exist, not just how many are shown - see project memory,
-    [[search_load_more_design]])."""
+    [[search_load_more_design]]).
+
+    tier (see BRAND_TIERS) comes straight from the Work page's own
+    Independent/Established chips, not from anything _resolve_intent
+    extracted from the query text - stamped into intent right after
+    resolution so it's just one more thing filter_products()/
+    filter_by_name() already know how to honor, and so it round-trips
+    into search_more() for free (the frontend already sends this same
+    intent object back unchanged on every "load more" click)."""
     intent = _resolve_intent(raw_query, translate_query(raw_query))
+    if tier:
+        intent["tier"] = tier
     matches = _match_all(raw_query, intent)
     return {
         "results": cap_per_brand(matches),

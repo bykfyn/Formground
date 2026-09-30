@@ -25,6 +25,32 @@ function utmQueryString() {
   return params.toString();
 }
 
+// Only present on work.html - "independent" or "established" (the
+// Independent/Established Makers chips), read from the URL the same
+// way UTM is, so a shared/bookmarked link reproduces the exact same
+// filtered view. Never touched by the search/discover text itself -
+// this is an explicit chip choice, not something the query means (see
+// backend/query_engine.py's own tier docstring for why it's threaded
+// through separately from _resolve_intent).
+const TIER = urlParams.get("tier");
+
+// Re-navigates to the same q/discover state currently on screen, with
+// the tier param toggled - clicking the already-active chip clears it
+// back to both tiers. A full navigation, not an in-place re-fetch,
+// matching how "Surprise me" already works on this page (submitQuery
+// below also just sets window.location.href) - reuses the exact same
+// URL-read-on-load pipeline with no separate re-render path to keep in
+// sync.
+function applyTierFilter(tier) {
+  const params = new URLSearchParams(window.location.search);
+  if (tier === TIER) {
+    params.delete("tier");
+  } else {
+    params.set("tier", tier);
+  }
+  window.location.href = `/work.html?${params.toString()}`;
+}
+
 const form = document.getElementById("search-form");
 const input = document.getElementById("query-input");
 const statusEl = document.getElementById("status");
@@ -436,7 +462,8 @@ async function runSearch(query) {
 
   try {
     const utmSuffix = utmQueryString();
-    const resp = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}${utmSuffix ? `&${utmSuffix}` : ""}`);
+    const tierSuffix = TIER ? `&tier=${encodeURIComponent(TIER)}` : "";
+    const resp = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}${utmSuffix ? `&${utmSuffix}` : ""}${tierSuffix}`);
     if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
     const data = await resp.json();
     const results = data.results || [];
@@ -483,7 +510,9 @@ async function runDiscover() {
 
   try {
     const utmSuffix = utmQueryString();
-    const resp = await fetch(`${API_BASE}/discover${utmSuffix ? `?${utmSuffix}` : ""}`);
+    const tierSuffix = TIER ? `tier=${encodeURIComponent(TIER)}` : "";
+    const discoverQuery = [utmSuffix, tierSuffix].filter(Boolean).join("&");
+    const resp = await fetch(`${API_BASE}/discover${discoverQuery ? `?${discoverQuery}` : ""}`);
     if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
     const data = await resp.json();
     renderResults(
@@ -547,6 +576,14 @@ if (discoverChip) {
     submitQuery(input.value.trim());
   });
 }
+
+// Only present on work.html - highlights whichever tier the URL
+// already carries (a shared/bookmarked filtered link lands with the
+// right chip already active) and wires each chip to applyTierFilter().
+document.querySelectorAll(".filter-chip[data-tier]").forEach((btn) => {
+  if (btn.dataset.tier === TIER) btn.classList.add("active");
+  btn.addEventListener("click", () => applyTierFilter(btn.dataset.tier));
+});
 
 // Only present on work.html - the homepage has no results grid, so
 // this block simply never runs there. Reads the query straight from the
