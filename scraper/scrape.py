@@ -2565,6 +2565,59 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("No Early Birds", "NEB Round Side Table with Top in Oak"): "Side Table",
     ("No Early Birds", "PS Bespoke Side Table in Calacatta and Walnut"): "Side Table",
     ("No Early Birds", "PS Bespoke Side Table in Travertine and Walnut"): "Side Table",
+    # Serax's own "August" outdoor-furniture line lists its own cushions
+    # under the base furniture's category (Sofa/Chair/Lounge Chair)
+    # instead of "Cushion" - confirmed live 2026-09-30 (user-reported:
+    # "Serax has a cushion August that maybe should not be amongst
+    # results for furniture"). The rest of the same line's cushions
+    # (sun lounger variants) are already correctly tagged "Cushion",
+    # confirming this is a real per-row tagging gap, not a deliberate
+    # choice. Exact double-space typos in a couple of these names are
+    # Serax's own raw data, kept as-is so the dict key actually matches.
+    ("Serax", "Cushion two seater black August"): "Cushion",
+    ("Serax", "Cushion two seater green August"): "Cushion",
+    ("Serax", "Cushion for lounge chair Valerie  white outdoor"): "Cushion",
+    ("Serax", "Cushion lounge chair white August"): "Cushion",
+    ("Serax", "Cushion chair white August"): "Cushion",
+    ("Serax", "Cushion compact chair white August"): "Cushion",
+    ("Serax", "Cushion lounge chair  green August"): "Cushion",
+    ("Serax", "Cushion chair  green August"): "Cushion",
+    ("Serax", "Cushion compact chair green August"): "Cushion",
+    ("Serax", "Cushion lounge chair black August"): "Cushion",
+    ("Serax", "Cushion chair black August"): "Cushion",
+    ("Serax", "Cushion compact chair black August"): "Cushion",
+    # Dixie's own cushion covers, tagged with an unrelated tray/interior-
+    # details category string instead of a real cushion category.
+    ("Dixie", "Cushion cover Flora"): "Cushion",
+    ("Dixie", "Cushion cover Fläta grey/brown"): "Cushion",
+    ("Dixie", "Cushion cover Fläta grey/blue"): "Cushion",
+    ("Dixie", "Cushion cover Fashion drömliv"): "Cushion",
+    # Audo's real fabric slipcovers for its Tearoom/Offset seating,
+    # tagged with the base furniture's own category (Lounge Chair/Sofa)
+    # instead of a real accessory category - same "cover mistagged as
+    # the furniture itself" shape as the Serax cushions above.
+    ("Audo", "Loose Cover for Tearoom Club Chair w. Swivel"): "Accessories",
+    ("Audo", "Loose Cover for Tearoom Lounge Chair w. Swivel"): "Accessories",
+    ("Audo", "Loose Cover for Tearoom Lounge Chair"): "Accessories",
+    ("Audo", "Loose Cover for Tearoom Club Chair"): "Accessories",
+    ("Audo", "Offset Loose Cover"): "Accessories",
+    # Moustache's real protective covers for its Bold seating line, same
+    # shape - tagged Chair/Bench/Stool instead of an accessory category.
+    ("Moustache", "Bold chair cover"): "Accessories",
+    ("Moustache", "Bold bench cover"): "Accessories",
+    ("Moustache", "Bold stool cover"): "Accessories",
+    # The Conran Shop's own "Nicholson Loose Cover Sofa" listings are
+    # tagged "Sofas" (the sofa's own category) even though this brand
+    # already has a real "Sofa Covers" category for the closely-related
+    # "Nicholson Sofa Cover Only" line - reusing that same real,
+    # already-correct category rather than inventing a new one.
+    ("The Conran Shop", "Nicholson Loose Cover Sofa 180cm Linen Flax"): "Sofa Covers",
+    ("The Conran Shop", "Nicholson Loose Cover Sofa 220cm Linen Flax"): "Sofa Covers",
+    ("The Conran Shop", "Nicholson Loose Cover Sofa 180cm"): "Sofa Covers",
+    ("The Conran Shop", "Nicholson Loose Cover Sofa 160cm"): "Sofa Covers",
+    ("The Conran Shop", "Nicholson Loose Cover Sofa 220cm"): "Sofa Covers",
+    ("The Conran Shop", "Nicholson Loose Cover Sofa 240cm"): "Sofa Covers",
+    ("The Conran Shop", "Nicholson Loose Cover Sofa 200cm"): "Sofa Covers",
 }
 
 # Same idea as MANUAL_CATEGORY_OVERRIDES above, but for a picked image
@@ -3034,6 +3087,47 @@ def _looks_like_a_maintenance_item(title):
         # "assembly kit"/"mounting kit" above, not a design object. No other
         # brand has "template" in a real product name (checked site-wide).
         "template",
+        # 2026-09-30 broader sweep (user-reported, "run through products
+        # and remove any spare parts etc"): Coco Flip's "Coco Flip
+        # Voucher"/"Gift Voucher" and Fleur Studios' "E-Gift Voucher" -
+        # same shape as "gift card" above, just the other common word
+        # for the same non-object. Checked site-wide, no real product is
+        # ever named "X Voucher".
+        "voucher",
+        # Serax's "Gift wrap"/"Gift wrap full order" and Seletti's "Gift
+        # Wrap" - a checkout add-on, not a design object.
+        "gift wrap",
+        # Seletti's own "Notebook Medium/Big ..." line and Another
+        # Country's "... Notebook by Mark + Fold"/"Planner Pad by Mark +
+        # Fold" - real stationery products, sold alongside real
+        # furniture/objects, but not a home design object. Deliberately
+        # NOT excluding "pen"/"pencil" the same way - Minimalux's "Pen
+        # Pot", Another Country's "Pencil Holder", and De La Espada's
+        # "Solo Desk Pencil Tray" are real, legitimate desk objects, the
+        # exact false-positive risk this file's own comments elsewhere
+        # warn about.
+        "notebook", "planner pad",
+        # Moebe's "Shelving System Assembly Instructions" - a PDF/manual
+        # listing, not a physical object, same shape as "assembly kit"
+        # above just without "kit" in the name.
+        "assembly instructions",
+        # Anour's own Casambi-branded lighting-CONTROL hardware
+        # (confirmed live 2026-09-30, user-reported: "Casambi wall
+        # switch by anour") - real accessories, but controls for a
+        # lamp, not a lamp - same "Building parts" category as this
+        # brand's real named lamp/shade/reflector components (see
+        # "textile cord"/"plug adaptor" above), so excluded by exact
+        # name rather than blanket category.
+        "casambi wall switch", "casambi push button interface", "casambi control panel",
+        # Fine Little Day runs a real jewelry sideline through the same
+        # catalog as its real cushions/rugs/ceramics (confirmed live
+        # 2026-09-30, user-reported: "Necklace from Fine Little Day").
+        # Scoped to these two exact names, NOT a bare "necklace" keyword -
+        # checked live and found BD Barcelona's real "Trivet Necklace"
+        # (a genuine Ronan Bouroullec-designed cast-iron trivet, shaped
+        # like a necklace, sold as "Accessories" on bdbarcelona.com),
+        # which a blanket keyword would have wrongly excluded.
+        "chain necklace silver", "bird necklace",
     )
     title_lower = title.lower()
     if any(kw in title_lower for kw in keywords):
@@ -3099,6 +3193,12 @@ OUT_OF_SCOPE_CATEGORIES = {
     # existing name-based _looks_like_a_maintenance_item check never
     # caught them - the category field is the only real signal here.
     "fabric sample", "bar soap",
+    # Joy Objects runs a real apparel/merch line (t-shirts, caps)
+    # through the same catalog as its real furniture - confirmed live
+    # 2026-09-30 (user-reported: "Necklace from Fine Little Day" led to
+    # a broader sweep). "Apparel" is a literal, unambiguous category
+    # value - no real design object is ever tagged with it.
+    "apparel",
 }
 
 # Unlike OUT_OF_SCOPE_CATEGORIES above, "Upholstery" isn't safe to
