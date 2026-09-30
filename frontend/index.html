@@ -150,8 +150,29 @@
 
   /* The internal "browse this category" link - a sibling to the
      external visit-source link below, not a wrapper around the whole
-     figure, so the two links can't end up nested (invalid HTML). */
-  .cat-link { position: absolute; inset: 0; z-index: 1; }
+     figure, so the two links can't end up nested (invalid HTML). Scoped
+     to .cat-tile specifically (2026-09-30) - .cat-link is now also
+     reused on the section headers below (.section-header-link) purely
+     for its existing shared click-tracking in search.js, which selects
+     on the bare class name; that full-bleed absolute overlay is only
+     correct for a hero tile, and would otherwise break a heading's
+     entire layout wherever else this class gets added. */
+  .cat-tile .cat-link { position: absolute; inset: 0; z-index: 1; }
+
+  /* Section headers (New/Furniture/Lighting/Objects/Themed Edits)
+     became real links (2026-09-30) - "the headers on the home page
+     could be clickable" (user's own framing). The trailing arrow is
+     the primary affordance since it's always visible (a hover-only
+     underline would leave mobile/touch visitors with zero indication
+     the heading is tappable at all); the underline is the secondary
+     cue for desktop pointer users on top of that. Reuses .cat-link
+     purely for search.js's existing category_click tracking (see
+     above) - shares the class, not the tile-specific positioning. */
+  .section-header-link { color: inherit; text-decoration: none; }
+  .section-header-link:hover { text-decoration: underline; }
+  .section-header-link .header-arrow {
+    font-weight: 400; font-size: 0.55em; color: var(--text-accent); vertical-align: middle;
+  }
 
   /* Category label - always visible, solid chip with no shadow/blur -
      some tiles are dark photography (Houses, Lighting), others
@@ -252,8 +273,14 @@
     font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 36px;
     letter-spacing: 0.01em; margin: 0 0 10px;
   }
-  .recent-header a { font-size: 13px; color: var(--text-accent); text-decoration: none; }
-  .recent-header a:hover { text-decoration: underline; }
+  /* Direct child only (the sibling "See all recently added" link, not
+     the .section-header-link now nested inside h2 itself) - matching
+     the bare descendant selector here caught that new heading link too
+     and shrank it to this 13px accent-colored style, overriding the
+     inherited 36px/bold it should have kept (caught live 2026-09-30,
+     see .section-header-link for the heading link this must not touch). */
+  .recent-header > a { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .recent-header > a:hover { text-decoration: underline; }
   .recent-header-rule { width: 48px; height: 0.5px; background: var(--border-strong); margin: 20px auto 0; }
 
   /* One themed grouping ("New Vases") per real, currently-strong product
@@ -638,7 +665,7 @@
 
   <section class="recent-section">
     <div class="recent-header">
-      <h2>New</h2>
+      <h2><a class="cat-link section-header-link" href="new.html">New<span class="header-arrow"> &rarr;</span></a></h2>
       <a href="new.html">See all recently added &rarr;</a>
       <div class="recent-header-rule"></div>
     </div>
@@ -698,7 +725,7 @@
 
   <section class="recent-section">
     <div class="recent-header">
-      <h2>Furniture</h2>
+      <h2><a class="cat-link section-header-link" href="work.html?q=furniture">Furniture<span class="header-arrow"> &rarr;</span></a></h2>
       <div class="recent-header-rule"></div>
     </div>
 
@@ -855,7 +882,7 @@
 
   <section class="recent-section">
     <div class="recent-header">
-      <h2>Lighting</h2>
+      <h2><a class="cat-link section-header-link" href="work.html?q=lighting">Lighting<span class="header-arrow"> &rarr;</span></a></h2>
       <div class="recent-header-rule"></div>
     </div>
 
@@ -969,7 +996,7 @@
 
   <section class="recent-section">
     <div class="recent-header">
-      <h2>Objects</h2>
+      <h2><a class="cat-link section-header-link" href="work.html?q=objects">Objects<span class="header-arrow"> &rarr;</span></a></h2>
       <div class="recent-header-rule"></div>
     </div>
 
@@ -1098,7 +1125,7 @@
 
   <section class="recent-section">
     <div class="recent-header">
-      <h2>Themed Edits</h2>
+      <h2><a class="cat-link section-header-link" href="edits.html">Themed Edits<span class="header-arrow"> &rarr;</span></a></h2>
       <div class="recent-header-rule"></div>
     </div>
 
@@ -1168,7 +1195,7 @@
 
 
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a>
+    &copy; 2026 Formground &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
   </p>
 </main>
 

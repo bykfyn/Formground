@@ -37,6 +37,7 @@ from pathlib import Path
 from generate_brand_pages import (
     CARD_CLICK_TRACKING_JS,
     MAKER_CARD_CSS,
+    SITE_FOOTER_HTML,
     SPONSORED_SECTION_CSS,
     render_sponsored_section,
 )
@@ -527,7 +528,7 @@ def render_page():
 {panels_html}
 
   <p class="foot-note">
-    This list doesn't imply any partnership or endorsement beyond what's stated above. &middot; &copy; 2026 Formground &middot; <a href="/">← Back to Formground</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a>
+    This list doesn't imply any partnership or endorsement beyond what's stated above. &middot; {SITE_FOOTER_HTML}
   </p>
 
 </main>

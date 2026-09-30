@@ -38,6 +38,7 @@ from generate_brand_pages import (
     FAVICON_TAGS,
     HERO_SEARCH_POSITION_CSS,
     PAGE_CSS,
+    SITE_FOOTER_HTML,
     SITE_NAV_HTML,
     SITE_URL,
     directory_filter_html,
@@ -162,7 +163,7 @@ def render_architect_page(firm_name, slug, meta, houses):
   </div>
   <p class="page-tagline">Looking for someone to help build it? <a href="/for-creators.html">Browse For Creators &rarr;</a> &middot; <a href="/work.html?q=house">Browse every house on Work &rarr;</a></p>
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+    {SITE_FOOTER_HTML}
   </p>
 </main>
 <script>
@@ -220,7 +221,7 @@ def render_architects_index(firms_with_slugs, meta_by_name, houses_by_firm):
   </div>
   <p class="footer-description">Formground promotes a curated selection of architects, new and established, to be discovered. If you'd like to be featured, <a href="/contact.html">get in touch here</a>.</p>
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+    {SITE_FOOTER_HTML}
   </p>
 </main>
 <script>

@@ -41,6 +41,7 @@ from generate_brand_pages import (
     CARD_CLICK_TRACKING_JS,
     DIRECTORY_FILTER_JS,
     MAKER_CARD_CSS,
+    SITE_FOOTER_HTML,
     SPONSORED_SECTION_CSS,
     render_banner_carousel,
     render_sponsored_section,
@@ -1003,7 +1004,7 @@ def render_page(retailers, promotions):
   <p class="footer-description">Something outdated or missing? <a href="contact.html">Let us know</a>.</p>
 
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">← Back to Formground</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a>
+    {SITE_FOOTER_HTML}
   </p>
 </main>
 

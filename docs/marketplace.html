@@ -1509,7 +1509,7 @@
   <p class="footer-description">Something outdated or missing? <a href="contact.html">Let us know</a>.</p>
 
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">← Back to Formground</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="about.html">About</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
   </p>
 </main>
 
@@ -1626,6 +1626,12 @@
 <script>
   (function () {
     var filterInput = document.getElementById("directory-filter");
+    // Tier chips only exist on makers.html - an empty NodeList here on
+    // architects.html (which shares this same script) just means
+    // activeTier never leaves null, so tierMatch below is always true
+    // and nothing changes for that page.
+    var tierButtons = document.querySelectorAll(".filter-chip[data-tier]");
+    var activeTier = null;
     function applyFilter(q) {
       q = q.trim().toLowerCase();
       // .promo-card covers both promo-grid card shapes (a plain <a> for
@@ -1637,11 +1643,30 @@
       // .maker-grid > a, so Promotions cards were never actually
       // filtered (2026-09-28 finding).
       document.querySelectorAll(".maker-grid > a, .promo-card").forEach(function (card) {
-        var match = !q || card.textContent.toLowerCase().includes(q);
-        card.hidden = !match;
+        var textMatch = !q || card.textContent.toLowerCase().includes(q);
+        var tierMatch = !activeTier || card.dataset.tier === activeTier;
+        card.hidden = !(textMatch && tierMatch);
       });
     }
     filterInput.addEventListener("input", function (e) { applyFilter(e.target.value); });
+    // Each chip toggles independently - clicking the already-active one
+    // clears back to showing every tier, clicking the other one swaps
+    // which tier is active (a card can only ever be one or the other,
+    // so having both active at once would just mean "all" again).
+    tierButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var tier = btn.dataset.tier;
+        if (activeTier === tier) {
+          activeTier = null;
+          btn.classList.remove("active");
+        } else {
+          activeTier = tier;
+          tierButtons.forEach(function (b) { b.classList.remove("active"); });
+          btn.classList.add("active");
+        }
+        applyFilter(filterInput.value);
+      });
+    });
     // Pre-filled from Creators' own search box (?q=stockholm after it
     // strips "architects"/"designers"/"makers" off the front and routes
     // here) - runs the exact same filter immediately, not just on the

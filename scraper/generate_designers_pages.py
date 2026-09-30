@@ -42,6 +42,7 @@ from generate_brand_pages import (
     FAVICON_TAGS,
     HERO_SEARCH_POSITION_CSS,
     PAGE_CSS,
+    SITE_FOOTER_HTML,
     SITE_NAV_HTML,
     SITE_URL,
     directory_filter_html,
@@ -151,7 +152,7 @@ def render_designer_page(designer_name, slug, products):
   </div>
   <p class="page-tagline">Looking for who made it? <a href="/makers.html">Browse Makers &rarr;</a></p>
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+    {SITE_FOOTER_HTML}
   </p>
 </main>
 <script>
@@ -209,7 +210,7 @@ def render_designers_index(designers_with_slugs, products_by_designer):
   </div>
   <p class="footer-description">Formground promotes a curated selection of designers, new and established, to be discovered. If you'd like to be featured, <a href="/contact.html">get in touch here</a>.</p>
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+    {SITE_FOOTER_HTML}
   </p>
 </main>
 <script>

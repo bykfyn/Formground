@@ -106,6 +106,29 @@ def site_nav_html(current=None):
 # per-section-highlighted version everything else now uses.
 SITE_NAV_HTML = site_nav_html()
 
+# Full site nav in the footer (2026-09-30) - every page's own
+# .foot-note used to carry only Home/Privacy/About (sometimes missing
+# one of those too, drifted independently per page over time). Every
+# real top-level section now gets a real link here, on every page,
+# regardless of whether that page also has it in the header nav (which
+# stays capped at 4 items - see site_nav_html()'s own docstring for why
+# a 5th item there caused a wrap regression). Absolute paths throughout
+# so this is identical whether the page sits at the site root or one
+# level down (docs/brands/*.html) - this exact string is reused
+# unmodified everywhere, not rebuilt per page.
+SITE_FOOTER_HTML = (
+    '&copy; 2026 Formground &middot; '
+    '<a href="/">&larr; Back to Formground</a> &middot; '
+    '<a href="/work.html">Work</a> &middot; '
+    '<a href="/creators.html">Creators</a> &middot; '
+    '<a href="/marketplace.html">Marketplace</a> &middot; '
+    '<a href="/for-creators.html">For Creators</a> &middot; '
+    '<a href="/edits.html">Edits</a> &middot; '
+    '<a href="/privacy.html">Privacy</a> &middot; '
+    '<a href="/about.html">About</a> &middot; '
+    '<a href="/contact.html">Contact</a>'
+)
+
 
 def load_countries():
     """
@@ -1156,7 +1179,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
   <div class="grid">{cards}</div>
 {news_section}{stockist_section}
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+    {SITE_FOOTER_HTML}
   </p>
 </main>
 <script>
@@ -1246,7 +1269,7 @@ def render_makers_index(brands_data):
   </div>
   <p class="footer-description">Formground promotes a curated selection of makers, new and established, to be discovered. If you'd like to be featured, <a href="/contact.html">get in touch here</a>.</p>
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+    {SITE_FOOTER_HTML}
   </p>
 </main>
 <script>
@@ -1386,7 +1409,7 @@ def render_new_page(products):
   <p class="category-intro">Pieces newly added to Formground, most recent first - updated as new work is found, roughly weekly rather than in real time.</p>
   {body}
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a>
+    {SITE_FOOTER_HTML}
   </p>
 </main>
 <script>

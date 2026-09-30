@@ -62,6 +62,7 @@ from generate_brand_pages import (  # noqa: E402
     CLOUDFLARE_ANALYTICS,
     FAVICON_TAGS,
     PAGE_CSS,
+    SITE_FOOTER_HTML,
     SITE_NAV_HTML,
     SITE_URL,
     product_card_html,
@@ -224,7 +225,7 @@ def render_theme_page(theme, products):
   <p class="category-intro">{html.escape(theme["intro"])}</p>
   {body}
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Search everything</a> &middot; <a href="/about.html">About</a>
+    {SITE_FOOTER_HTML}
   </p>
 </main>
 <script>
