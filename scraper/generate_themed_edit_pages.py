@@ -114,6 +114,15 @@ THEMES = [
             "room. Every result links straight to the maker's own site."
         ),
         "exclude": {("Pinch", "Landry coffee table circular bronze")},
+        # Testing a new standard layout (2026-09-30, user: "a strong
+        # main in situ image that serves as the attraction... to see if
+        # the idea works") - ONE real in-situ room photo instead of the
+        # usual 3-product rotating carousel, same real Pinch piece
+        # already proven to read far better than a studio shot on the
+        # Edits hub banner. "exclude" above still keeps this exact item
+        # out of the homepage's own separate teaser pick - unrelated to
+        # this override, which bypasses the auto-pick entirely.
+        "hero_image": ("Pinch", "Landry coffee table circular bronze"),
     },
     {
         "slug": "scandinavian-dining-tables",
@@ -155,7 +164,20 @@ def _resolve_carousel_picks(theme, products):
     that would only need replacing once real picks arrive. A theme with
     no "carousel_picks" key at all keeps the original deterministic
     auto-pick behavior.
+
+    "hero_image" (2026-09-30) takes priority over all of the above when
+    present - a single hand-picked (brand, product_name), rendered as
+    one static image with no rotation (see _render_carousel's own
+    len(picks) <= 1 case) instead of the usual 3-product carousel. This
+    is the "strong main in situ image as the attraction" layout being
+    tried out - same lookup-then-DB-fallback resolution as a manual
+    carousel_picks entry, just capped at exactly one result.
     """
+    hero = theme.get("hero_image")
+    if hero is not None:
+        lookup = {(p["brand"], p["product_name"]): p for p in products}
+        product = lookup.get(hero) or _lookup_product_by_identity(*hero)
+        return [product] if product is not None else []
     manual = theme.get("carousel_picks")
     if manual is None:
         return _carousel_picks(products, theme.get("exclude", set()))
@@ -378,6 +400,21 @@ EDIT_PAGE_CSS = """
   .edit-intro { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0; }
   .page-tagline { font-size: 13px; color: var(--text-secondary); text-align: center; margin: 0 0 8px; }
 
+  /* "Edits" as a recurring masthead across every individual edit page
+     (2026-09-30, user's own framing: "Edits... stays on all edits
+     pages as the equivalent of a magazine brand name" - Round Coffee
+     Tables etc. are then "one of many themes/sections" under it) - a
+     real link back to the hub, not just a plain caption the way "A
+     themed edit" was. Bold + letter-spaced so it reads as a mark, but
+     still visually secondary to the page's own h1 below it - the
+     visitor came for "Round Coffee Tables," not for "Edits" again.
+     Nested inside .page-tagline for the same centering, not duplicated. */
+  .edits-kicker {
+    font-weight: 700; color: var(--text-secondary);
+    text-transform: uppercase; letter-spacing: 0.08em; text-decoration: none;
+  }
+  .edits-kicker:hover { color: var(--text-primary); text-decoration: underline; }
+
   /* Mini Bento paired with regular product cards in ONE row (2026-09-29,
      user's call: not a full-width block interrupting the grid). The
      bento stays square (matching the homepage's own paired version,
@@ -522,7 +559,7 @@ def render_themed_edit_page(theme, products):
 {SITE_NAV_HTML}
 </header>
 <main>
-  <p class="page-tagline">A themed edit</p>
+  <p class="page-tagline"><a class="edits-kicker" href="/edits.html">Edits</a></p>
   <div class="edit-header">
     <h1>{html.escape(title)}</h1>
     <p class="edit-intro">{html.escape(theme["intro"])}</p>

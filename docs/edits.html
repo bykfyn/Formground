@@ -18,6 +18,7 @@
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Edits — Formground">
 <meta name="twitter:description" content="Curated, editorial groupings of real work from Formground&#x27;s makers - browse every Edit, gathered in one place.">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
@@ -197,8 +198,169 @@
   [hidden] { display: none !important; }
 </style>
 <style>
-  main { padding-top: 24px; }
-  .site-header { margin-bottom: 0; }
+  .banner-carousel { position: relative; margin-bottom: 32px; border-radius: var(--radius); overflow: hidden; aspect-ratio: 2.4/1; background: var(--surface-1); }
+  .banner-slide { position: absolute; inset: 0; display: none; }
+  .banner-slide.active { display: block; }
+  /* The slide's own content (any shape a caller renders) fills this
+     box - a plain block link is the common case, but this isn't
+     assumed, just given full width/height to work with. */
+  .banner-slide > * { display: block; width: 100%; height: 100%; position: relative; text-decoration: none; color: inherit; }
+  .banner-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* Same bottom-gradient-scrim treatment the homepage's own category
+     tiles already use for text over a photo (see frontend/index.html's
+     .cat-details) - proven to hold up across both dark and light real
+     photos, reused rather than inventing a new one. Always visible
+     here (not hover-only) since a banner needs to read at a glance. */
+  .banner-slide-content {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
+    padding: 36px 40px; background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.05) 60%, rgba(0,0,0,0));
+    color: #fff;
+  }
+  /* The banner is a hero unit, not a grid card - it reuses .promo-badge/
+     .promo-brand/.promo-name/.promo-price/.promo-cta so the same data
+     renders in both places, but every one of them needs to read at
+     hero scale, not card scale (2026-09-28, user: "make everything
+     that is featured on the image bigger"). Scale is sanity-checked
+     against real hero banners (illumsbolighus.dk, mohd's shop, both
+     ~40px headlines at 7-8% of their banner's height, CTA buttons
+     ~44-50px tall) - but the styling itself stays Formground's own:
+     same gradient scrim as the homepage's .cat-details hover reveal,
+     same pill-shaped, normal-case "Visit Shop" CTA every other
+     Promotions card already uses, just sized for a hero instead of a
+     card. Formground's own visual language wins over an external
+     site's button conventions (2026-09-28, user: "we should be
+     consistent across Formground first and foremost"). */
+  .banner-slide .promo-badge { top: 20px; left: 20px; font-size: 13px; padding: 6px 14px; }
+  .banner-slide-content .promo-brand { font-size: 13px; color: rgba(255,255,255,0.75); margin: 0 0 8px; }
+  .banner-slide-content .promo-name {
+    display: block; -webkit-line-clamp: unset; overflow: visible; min-height: 0;
+    font-size: 34px; font-weight: 600; line-height: 1.15; color: #fff;
+    max-width: 65%; margin: 0 0 14px;
+  }
+  .banner-slide-content .promo-price { font-size: 18px; margin: 0 0 22px; }
+  .banner-slide-content .promo-price-was { color: rgba(255,255,255,0.6); }
+  .banner-slide-content .promo-price-now { color: #fff; font-weight: 600; }
+  /* White fill (not the card's dark fill) so the same pill still reads
+     clearly against the photo's dark scrim - the one color change is
+     for contrast, the shape/case/weight match every other "Visit Shop"
+     pill on the site. */
+  .banner-slide-content .promo-cta {
+    display: inline-block; margin: 0; width: auto;
+    font-size: 15px; font-weight: 600;
+    padding: 15px 34px; background: #fff; color: #1a1816;
+  }
+  .banner-slide:hover .promo-cta { background: #f0ede8; }
+  .banner-dots { position: absolute; bottom: 18px; right: 24px; z-index: 2; display: flex; gap: 6px; }
+  .banner-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; padding: 0; }
+  .banner-dot.active { background: #fff; }
+  @media (max-width: 640px) {
+    .banner-carousel { aspect-ratio: 4/3; }
+    .banner-slide-content { padding: 22px 20px; }
+    .banner-slide-content .promo-name { font-size: 24px; max-width: 85%; }
+    .banner-slide-content .promo-price { font-size: 15px; margin-bottom: 14px; }
+    .banner-slide-content .promo-cta { font-size: 14px; padding: 11px 24px; }
+  }
+
+  /* Edit-specific banner text - the shared BANNER_CAROUSEL_CSS above
+     only defines the slide box/gradient/rotation chrome, not any
+     particular text treatment (Promotions' own .promo-name/.promo-cta
+     are for a priced placement, which a Themed Edit isn't). */
+  .edit-banner-eyebrow {
+    display: block; font-size: 13px; color: rgba(255,255,255,0.75);
+    text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 8px;
+  }
+  .edit-banner-title {
+    display: block; font-family: 'Archivo', sans-serif; font-weight: 700;
+    font-size: 34px; line-height: 1.15; color: #fff; max-width: 70%;
+  }
+  @media (max-width: 640px) {
+    .edit-banner-title { font-size: 22px; max-width: 85%; }
+  }
+
+  /* Strong header + preamble together, above the banner (2026-09-30,
+     user: "so that Edits reads more as the name of a magazine" - title
+     first, like a masthead, then a two-line dek, then the photo below
+     it). The preamble's own manual <br> (in render_edits_index, not
+     here) is deliberate - two real sentences broken after "real work"
+     so the first line reads narrower than the second, rather than
+     however a plain paragraph happens to wrap at the viewport's width. */
+  .edits-hero { text-align: center; margin: 0 0 32px; }
+  .edits-hero h1 {
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 44px;
+    letter-spacing: 0.01em; margin: 0 0 16px;
+  }
+  .edits-preamble {
+    font-size: 15px; color: var(--text-secondary);
+    max-width: 580px; margin: 0 auto; line-height: 1.6;
+  }
+  @media (max-width: 640px) {
+    .edits-hero h1 { font-size: 30px; }
+  }
+
+  #edits-empty-state {
+    display: none; text-align: center; font-size: 14px; color: var(--text-muted);
+    padding: 60px 20px;
+  }
+
+  /* Magazine-cover hero grid (2026-09-30, user: "apply some of the
+     homepage layout and style... so it reads more like a magazine" -
+     "results page is what it is, Edits is different") - the exact same
+     asymmetric 4-tile proportions as the homepage's own
+     .category-grid/.tile-houses etc (one tall lead tile, two smaller
+     top-right, one wide bottom-right), which happens to fit today's
+     real count of 4 edits exactly. Renamed rather than reusing those
+     class names directly since this page has its own stylesheet, not
+     index.html's. Only the first 4 (biggest by real product count) go
+     in the fixed grid; any beyond that render in the plain overflow
+     grid below (see render_edits_index) rather than forcing a 5th slot
+     into a layout tuned for exactly four. */
+  .edits-tile-grid {
+    display: grid; grid-template-columns: 1.4fr 1fr 1fr; grid-template-rows: 1fr 1fr;
+    gap: 20px; height: 560px; margin: 0 0 40px;
+  }
+  .edits-tile-1 { grid-column: 1; grid-row: 1 / 3; }
+  .edits-tile-2 { grid-column: 2; grid-row: 1; }
+  .edits-tile-3 { grid-column: 3; grid-row: 1; }
+  .edits-tile-4 { grid-column: 2 / 4; grid-row: 2; }
+
+  /* Same image-fills-tile, hover-reveal-details treatment as the
+     homepage's own .cat-tile/.cat-label/.cat-details - simpler here
+     since an Edit tile only ever needs the one internal link (no
+     competing external "visit source" link the way a maker's own
+     homepage teaser does), so the whole tile is just one <a>, no
+     invisible full-bleed overlay link needed. */
+  .edit-tile {
+    position: relative; display: block; overflow: hidden; text-decoration: none; color: inherit;
+    border: 0.5px solid var(--border); background: var(--surface-1); height: 100%;
+  }
+  .edit-tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .edit-tile:hover img { transform: scale(1.03); }
+  .edit-tile-label {
+    position: absolute; top: 16px; left: 16px; z-index: 2;
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 18px;
+    color: #fff; letter-spacing: -0.005em; margin: 0; pointer-events: none;
+  }
+  .edit-tile-details {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+    padding: 28px 16px 14px;
+    background: linear-gradient(to top, rgba(0,0,0,0.68), rgba(0,0,0,0));
+    color: #fff; font-size: 12px;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    pointer-events: none;
+  }
+  .edit-tile:hover .edit-tile-details { opacity: 1; transform: translateY(0); }
+
+  .edits-overflow-heading {
+    font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    text-align: center; margin: 0 0 20px;
+  }
+
+  @media (max-width: 760px) {
+    .edits-tile-grid { display: flex; flex-direction: column; height: auto; gap: 16px; }
+    .edit-tile { aspect-ratio: 4 / 3; }
+    .edit-tile-details { opacity: 1; transform: none; }
+  }
 </style>
 </head>
 <body>
@@ -212,6 +374,14 @@
 </nav>
 </header>
 <main style="max-width:1160px;">
+  <div class="edits-hero">
+    <h1>Edits</h1>
+    <p class="edits-preamble">Curated, editorial groupings of real work<br>from Formground&#x27;s makers - browse every Edit, gathered in one place.</p>
+  </div>
+    <div class="banner-carousel">
+      <div class="banner-slide active"><a href="/round-coffee-tables.html"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375" alt="Round Coffee Tables" loading="lazy"><div class="banner-slide-content"><span class="edit-banner-eyebrow">Themed Edit</span><span class="edit-banner-title">Round Coffee Tables</span></div></a></div>
+    </div>
+  
   <div class="search-wide">
     <div class="ask-box">
       <i class="ti ti-search" aria-hidden="true"></i>
@@ -219,38 +389,34 @@
       <input id="directory-filter" type="text" placeholder="Filter edits by name…" autocomplete="off">
     </div>
   </div>
-  <h1 class="sr-only">Edits</h1>
-  <p class="page-tagline">Curated, editorial groupings of real work from Formground&#x27;s makers - browse every Edit, gathered in one place.</p>
-  <div class="maker-grid">
-      <a class="maker-card" href="/round-coffee-tables.html">
-        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375" alt="Round Coffee Tables" loading="lazy"></div>
-        <div class="maker-card-body">
-          <span class="maker-name">Round Coffee Tables</span>
-          <span class="maker-country">16 pieces &middot; 7 makers</span>
-        </div>
-      </a>
-      <a class="maker-card" href="/round-dining-tables.html">
-        <div class="maker-card-hero"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/005HFT1S_i_vue_c.jpg" alt="Round Dining Tables" loading="lazy"></div>
-        <div class="maker-card-body">
-          <span class="maker-name">Round Dining Tables</span>
-          <span class="maker-country">35 pieces &middot; 17 makers</span>
-        </div>
-      </a>
-      <a class="maker-card" href="/scandinavian-dining-tables.html">
-        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0944/2990/5239/files/A-Petersen_2025_DiningTable_1_rescale_1908f581-8b1f-41c3-a702-e2d22aa803ff.png?v=1761230697" alt="Scandinavian Dining Tables" loading="lazy"></div>
-        <div class="maker-card-body">
-          <span class="maker-name">Scandinavian Dining Tables</span>
-          <span class="maker-country">119 pieces &middot; 17 makers</span>
-        </div>
-      </a>
-      <a class="maker-card" href="/two-seater-sofas.html">
-        <div class="maker-card-hero"><img src="https://images.fogia.com/26/c6/7c/69/697cc626c2b2ec97a835d240/Fogia_Boxlike_2-seater_Green_Packshot_Front.png?auto=format&amp;w=2000&amp;q=90" alt="Two Seater Sofas" loading="lazy"></div>
-        <div class="maker-card-body">
-          <span class="maker-name">Two Seater Sofas</span>
-          <span class="maker-country">59 pieces &middot; 13 makers</span>
-        </div>
-      </a>
+  <div class="tier-filters">
+    <button type="button" class="filter-chip" data-edit-type="work">Work</button>
+    <button type="button" class="filter-chip" data-edit-type="makers">Makers</button>
   </div>
+  <div class="edits-tile-grid">
+    <a class="edit-tile edits-tile-1" href="/scandinavian-dining-tables.html" data-edit-type="work">
+      <img src="https://cdn.shopify.com/s/files/1/0944/2990/5239/files/A-Petersen_2025_DiningTable_1_rescale_1908f581-8b1f-41c3-a702-e2d22aa803ff.png?v=1761230697" alt="Scandinavian Dining Tables" loading="lazy">
+      <p class="edit-tile-label">Scandinavian Dining Tables</p>
+      <div class="edit-tile-details">119 pieces &middot; 17 makers</div>
+    </a>
+    <a class="edit-tile edits-tile-2" href="/two-seater-sofas.html" data-edit-type="work">
+      <img src="https://images.fogia.com/26/c6/7c/69/697cc626c2b2ec97a835d240/Fogia_Boxlike_2-seater_Green_Packshot_Front.png?auto=format&amp;w=2000&amp;q=90" alt="Two Seater Sofas" loading="lazy">
+      <p class="edit-tile-label">Two Seater Sofas</p>
+      <div class="edit-tile-details">59 pieces &middot; 13 makers</div>
+    </a>
+    <a class="edit-tile edits-tile-3" href="/round-dining-tables.html" data-edit-type="work">
+      <img src="https://www.ligne-roset.com/media/ligne_roset_ww/005HFT1S_i_vue_c.jpg" alt="Round Dining Tables" loading="lazy">
+      <p class="edit-tile-label">Round Dining Tables</p>
+      <div class="edit-tile-details">35 pieces &middot; 17 makers</div>
+    </a>
+    <a class="edit-tile edits-tile-4" href="/round-coffee-tables.html" data-edit-type="work">
+      <img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375" alt="Round Coffee Tables" loading="lazy">
+      <p class="edit-tile-label">Round Coffee Tables</p>
+      <div class="edit-tile-details">16 pieces &middot; 7 makers</div>
+    </a>
+    </div>
+  
+  <p id="edits-empty-state">No maker-focused edits yet - check back soon.</p>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
   </p>
@@ -263,60 +429,99 @@
     });
   });
 
+  // Banner/carousel rotation (2026-09-28) - a single slide is static,
+  // no controls; 2+ slides get dot navigation and auto-rotation,
+  // paused on hover so a reader isn't fighting the page to read it.
+  document.querySelectorAll('.banner-carousel').forEach(function (carousel) {
+    var slides = carousel.querySelectorAll('.banner-slide');
+    var dots = carousel.querySelectorAll('.banner-dot');
+    if (slides.length <= 1) return;
+    var current = 0;
+    var timer;
+    function show(i) {
+      current = i;
+      slides.forEach(function (s, idx) { s.classList.toggle('active', idx === i); });
+      dots.forEach(function (d, idx) { d.classList.toggle('active', idx === i); });
+    }
+    function next() { show((current + 1) % slides.length); }
+    function prev() { show((current - 1 + slides.length) % slides.length); }
+    function start() { timer = setInterval(next, 6000); }
+    function stop() { clearInterval(timer); }
+    dots.forEach(function (d, i) {
+      d.addEventListener('click', function () { show(i); stop(); start(); });
+    });
+    carousel.addEventListener('mouseenter', stop);
+    carousel.addEventListener('mouseleave', start);
+    // Touch swipe (2026-09-29) - mouseenter/mouseleave above never fire
+    // on a touch device, so mobile previously only had dot-tapping and
+    // auto-rotation. touchmove decides real swipe intent (horizontal
+    // movement clearly exceeding vertical) before preventDefault, so a
+    // vertical page scroll starting inside the carousel is untouched.
+    var touchStartX = 0, touchStartY = 0, isSwiping = false;
+    carousel.addEventListener('touchstart', function (e) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+      isSwiping = false;
+      stop();
+    }, { passive: true });
+    carousel.addEventListener('touchmove', function (e) {
+      var dx = e.touches[0].clientX - touchStartX;
+      var dy = e.touches[0].clientY - touchStartY;
+      if (!isSwiping && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) isSwiping = true;
+      if (isSwiping) e.preventDefault();
+    }, { passive: false });
+    carousel.addEventListener('touchend', function (e) {
+      if (isSwiping) {
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        if (dx > 30) prev();
+        else if (dx < -30) next();
+      }
+      start();
+    });
+    start();
+  });
+
+
   (function () {
     var filterInput = document.getElementById("directory-filter");
-    // Tier chips only exist on makers.html - an empty NodeList here on
-    // architects.html (which shares this same script) just means
-    // activeTier never leaves null, so tierMatch below is always true
-    // and nothing changes for that page.
-    var tierButtons = document.querySelectorAll(".filter-chip[data-tier]");
-    var activeTier = null;
+    var typeButtons = document.querySelectorAll(".filter-chip[data-edit-type]");
+    var emptyState = document.getElementById("edits-empty-state");
+    var activeType = null;
     function applyFilter(q) {
       q = q.trim().toLowerCase();
-      // .promo-card covers both promo-grid card shapes (a plain <a> for
-      // a single offer, a <div class="promo-card promo-card-grouped">
-      // for 2+ offers) - matched by class, not tag, since the grouped
-      // shape isn't itself a link (see generate_marketplace_page.py's
-      // _promo_card). Marketplace's search box claims to search
-      // "stockists and promotions" but this used to only ever query
-      // .maker-grid > a, so Promotions cards were never actually
-      // filtered (2026-09-28 finding).
-      document.querySelectorAll(".maker-grid > a, .promo-card").forEach(function (card) {
+      var visibleCount = 0;
+      // Covers both the featured magazine-grid tiles and any overflow
+      // .maker-card entries beyond it - same [data-edit-type] attribute
+      // either way, so one selector filters both without caring which
+      // shape a given edit's card happens to be.
+      document.querySelectorAll("[data-edit-type]").forEach(function (card) {
         var textMatch = !q || card.textContent.toLowerCase().includes(q);
-        var tierMatch = !activeTier || card.dataset.tier === activeTier;
-        card.hidden = !(textMatch && tierMatch);
+        var typeMatch = !activeType || card.dataset.editType === activeType;
+        var visible = textMatch && typeMatch;
+        card.hidden = !visible;
+        if (visible) visibleCount++;
       });
+      // Only worth a dedicated empty-state message for the Makers
+      // chip's real "nothing here yet" case (see this file's own
+      // docstring) - a text search that happens to match nothing
+      // already has no separate message here, same as makers.html.
+      emptyState.style.display = (visibleCount === 0 && activeType === "makers") ? "block" : "none";
     }
     filterInput.addEventListener("input", function (e) { applyFilter(e.target.value); });
-    // Each chip toggles independently - clicking the already-active one
-    // clears back to showing every tier, clicking the other one swaps
-    // which tier is active (a card can only ever be one or the other,
-    // so having both active at once would just mean "all" again).
-    tierButtons.forEach(function (btn) {
+    typeButtons.forEach(function (btn) {
       btn.addEventListener("click", function () {
-        var tier = btn.dataset.tier;
-        if (activeTier === tier) {
-          activeTier = null;
+        var type = btn.dataset.editType;
+        if (activeType === type) {
+          activeType = null;
           btn.classList.remove("active");
         } else {
-          activeTier = tier;
-          tierButtons.forEach(function (b) { b.classList.remove("active"); });
+          activeType = type;
+          typeButtons.forEach(function (b) { b.classList.remove("active"); });
           btn.classList.add("active");
         }
         applyFilter(filterInput.value);
       });
     });
-    // Pre-filled from Creators' own search box (?q=stockholm after it
-    // strips "architects"/"designers"/"makers" off the front and routes
-    // here) - runs the exact same filter immediately, not just on the
-    // next keystroke, so landing here already shows the real results
-    // rather than the unfiltered full list (2026-09-20, see project
-    // memory).
-    var presetQuery = new URLSearchParams(window.location.search).get("q");
-    if (presetQuery) {
-      filterInput.value = presetQuery;
-      applyFilter(presetQuery);
-    }
   })();
 </script>
 <script>
