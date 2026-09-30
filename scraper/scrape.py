@@ -5632,6 +5632,22 @@ def extract_coco_flip(brand):
             continue
         if _looks_like_a_maintenance_item(name):
             continue
+        # Sanity keeps a permanent record of every Shopify product ever
+        # synced, including ones since deleted/archived in Shopify itself
+        # - confirmed live 2026-09-30 (user report: "images seem broken
+        # on product cards") by pulling every raw Sanity document: 61 of
+        # 142 have store.isDeleted=true/store.status="archived", and
+        # every one of their featuredImage URLs 404s (Shopify's own CDN
+        # drops an asset once its product is gone), while 36 of those 61
+        # share the exact same title as a real, live, non-deleted
+        # replacement - e.g. "Bellini 1340 Bench" exists as both an
+        # archived doc (dead 2023 image) and an active one (a real,
+        # working 2025 photo). Skipping isDeleted docs entirely leaves
+        # only one genuine same-title pair site-wide ("Linear F03") -
+        # two real, distinct, live products that just happen to share a
+        # name, left alone rather than guessed at.
+        if store.get("isDeleted"):
+            continue
 
         products.append({
             "brand": brand["name"],
