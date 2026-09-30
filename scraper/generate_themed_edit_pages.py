@@ -136,6 +136,72 @@ THEMES = [
         ),
         "exclude": {("Audo", "Puffin Dining Table")},
     },
+    # Lighting cluster (2026-09-30, user: "use lighting as the category
+    # and build from that") - the locked ad-keyword research flagged
+    # lighting as the strongest cluster with the deepest confirmed
+    # catalog, but only Floor Lamps had a dedicated page before this.
+    # Each of these four is a real, single-keyword category filter with
+    # its own real depth (906/672/267/111 products respectively,
+    # confirmed live) - same "no ad-hoc heuristic needed" cleanliness as
+    # the seat-count-based Two Seater Sofas theme. "exclude" on Pendant/
+    # Table Lamps keeps this page's own auto-picked carousel from just
+    # repeating the exact same three pieces the homepage's own duo-
+    # carousel teasers already show for these two categories.
+    {
+        "slug": "pendant-lamps",
+        "title": "Pendant Lamps",
+        "fetch": lambda: qe.filter_products({"category": "pendant"}),
+        "intro": (
+            "A pendant hangs low enough to matter - over a dining table, "
+            "an island, a reading chair - doing the one thing a light "
+            "recessed flush into the ceiling never can: becoming part of "
+            "the room's own composition. Every result links straight to "
+            "the maker's own site."
+        ),
+        "exclude": {
+            ("In Common With", "Disc Pendant"),
+            ("Danny Kaplan Studio", "Augustus Orb Pendant"),
+            ("AY Illuminate", "Hyo"),
+        },
+    },
+    {
+        "slug": "table-lamps",
+        "title": "Table Lamps",
+        "fetch": lambda: qe.filter_products({"category": "table lamp"}),
+        "intro": (
+            "No wiring, no ceiling box, no commitment - a table lamp asks "
+            "only for a surface and a socket, then does the rest: real "
+            "presence on a nightstand, a console, or a desk. Every result "
+            "links straight to the maker's own site."
+        ),
+        "exclude": {
+            ("Motarasu", "Cho Table Lamp Matcha"),
+            ("In Common With", "Helena Table Lamp"),
+            ("Tala", "Knuckle Table Lamp in Walnut + Sphere IV"),
+        },
+    },
+    {
+        "slug": "wall-lamps",
+        "title": "Wall Lamps",
+        "fetch": lambda: qe.filter_products({"category": "wall lamp"}),
+        "intro": (
+            "Fixed to the wall, a wall lamp gives up nothing in design for "
+            "the surface it frees underneath - a nightstand with no lamp "
+            "base to work around, a hallway with no room for anything "
+            "else. Every result links straight to the maker's own site."
+        ),
+    },
+    {
+        "slug": "ceiling-lamps",
+        "title": "Ceiling Lamps",
+        "fetch": lambda: qe.filter_products({"category": "ceiling lamp"}),
+        "intro": (
+            "Not a pendant on a long drop, not a chandelier - a ceiling "
+            "lamp sits close and flush, built for a room where headroom "
+            "is real and every inch of it counts. Every result links "
+            "straight to the maker's own site."
+        ),
+    },
 ]
 
 CAROUSEL_SIZE = 3

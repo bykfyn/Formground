@@ -127,10 +127,20 @@ EDITS_PAGE_CSS = (
      here) is deliberate - two real sentences broken after "real work"
      so the first line reads narrower than the second, rather than
      however a plain paragraph happens to wrap at the viewport's width. */
-  .edits-hero { text-align: center; margin: 0 0 32px; }
+  /* Tightened (2026-09-30, real complaint: the banner sat partially
+     below the fold on a 13" laptop) - main's own default 48px top
+     padding plus .site-header's default 40px bottom margin left ~108px
+     of pure whitespace above the masthead before this, on top of the
+     hero block's own spacing. Shaving both this block's margins and
+     the page-level gaps above it (see the plain CSS rules right below
+     this one) gets the banner meaningfully higher without cramming
+     anything - there was real slack to cut, not just a squeeze. */
+  main { padding-top: 20px; }
+  .site-header { margin-bottom: 16px; }
+  .edits-hero { text-align: center; margin: 0 0 20px; }
   .edits-hero h1 {
     font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 44px;
-    letter-spacing: 0.01em; margin: 0 0 16px;
+    letter-spacing: 0.01em; margin: 0 0 10px;
   }
   .edits-preamble {
     font-size: 15px; color: var(--text-secondary);
