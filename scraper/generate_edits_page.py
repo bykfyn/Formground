@@ -145,33 +145,28 @@ EDITS_PAGE_CSS = (
     .edits-hero h1 { font-size: 30px; }
   }
 
-  /* One plain grid for every edit (2026-09-30, user: "remove the bento
-     and make the images in it the same size as Round Coffee Tables") -
-     an asymmetric magazine-style bento (one tall lead tile, two smaller,
-     one wide) briefly led the page, sized by real product count; it's
-     gone now, and every edit renders the same size in the same
-     .maker-grid of .maker-card entries makers.html already defines in
-     PAGE_CSS (real editorial count in place of a maker's country/
-     category tags) - no edit gets a bigger slot just because it has
-     more real matches. Base track size capped at 552px (2026-09-30,
-     user: "the search result on the edits page should be no larger
-     than 552x552px") - makers.html's own shared rule uses an unbounded
-     1fr track that grows to fill whatever's left in the row, which on
-     a wide viewport could make a plain card's image noticeably bigger
-     than the homepage's own reference square size; overridden here,
-     not in the shared rule, since makers.html has no such cap requested
-     for its own cards. One deliberate exception: Portable Lamps (user,
-     2026-09-30: "i wanted Portable Lamps to remain large, 552x552px") -
-     spans 2 of the grid's own auto-fit tracks and squares off its
-     image, matching the homepage's own .duo-carousel-frame.square
-     proportions - explicitly capped to the same 552px on its own,
-     since 2 tracks together would otherwise add up to noticeably more
-     than that. */
-  .maker-grid { margin: 0 0 40px; grid-template-columns: repeat(auto-fit, minmax(190px, 552px)); }
-  .maker-card.edit-tile-large { grid-column: span 2; max-width: 552px; justify-self: start; }
-  .maker-card.edit-tile-large .maker-card-hero { aspect-ratio: 1/1; }
+  /* A fixed 2-column grid, not the bento tried earlier and not
+     makers.html's own auto-fit one either (2026-09-30, user: "i don't
+     want a bento on the page, but it would be good to have a fixed
+     structure of columns and rows as the home page to work within") -
+     auto-fit's column count depends on viewport width, so "row 1" or
+     "under Ceiling Lamps" never meant the same thing twice (confirmed
+     live, repeatedly, this same session) - a real, structural problem,
+     not a one-off mistake. Every edit is the same size, no spans, no
+     exceptions - with a fixed 2 columns and no items spanning more than
+     one cell, plain list order alone determines each card's row/column
+     (item 1 = row1-col1, item 2 = row1-col2, item 3 = row2-col1, ...) -
+     deterministic at every viewport, no per-card position class needed
+     the way the homepage's own real bento (.category-grid) requires for
+     its own asymmetric tiles. Two columns lands each square almost
+     exactly at 552px wide at this page's max content width (1120px
+     usable minus one 16px gap, halved) - the same reference size
+     "552x552px" has meant throughout this page's work, now built into
+     the grid itself rather than capped after the fact. */
+  .maker-grid { margin: 0 0 40px; grid-template-columns: 1fr 1fr; }
+  .maker-card-hero { aspect-ratio: 1/1; }
   @media (max-width: 760px) {
-    .maker-card.edit-tile-large { grid-column: span 1; }
+    .maker-grid { grid-template-columns: 1fr; }
   }
 """
 )
@@ -261,19 +256,13 @@ def _edit_meta_text(count, brand_count):
 # swapping two same-cell-width entries in this list only ever changes
 # where those two land, since every entry between and after them keeps
 # the same cumulative cell count either way.
-EDITS_DISPLAY_ORDER = [
-    "portable-lamps", "round-coffee-tables", "pendant-lamps",
-    "round-dining-tables", "scandinavian-dining-tables",
-    "ceiling-lamps", "table-lamps", "two-seater-sofas",
-    "wall-lamps",
-]
-
-
+# Display order (2026-09-30) - plain alphabetical by default. With the
+# fixed 2-column grid below (no auto-fit, no spans), item N in this
+# list always lands at row ceil(N/2), column (N odd ? 1 : 2), at every
+# viewport - so moving an edit to a specific row/column later is just
+# reordering this list, no cell-math or reflow guessing required.
 def _edits_sort_key(entry):
-    slug = entry[0]["slug"]
-    if slug in EDITS_DISPLAY_ORDER:
-        return (0, EDITS_DISPLAY_ORDER.index(slug))
-    return (1, entry[0]["title"].lower())
+    return entry[0]["title"].lower()
 
 
 def render_edits_index(themes_data):
@@ -282,17 +271,17 @@ def render_edits_index(themes_data):
     hero_product) tuples, one per THEMES entry, already computed by
     generate() below.
 
-    One plain grid, every edit the same size (2026-09-30, user: "remove
-    the bento and make the images in it the same size as Round Coffee
-    Tables") - reuses the same .maker-card/.maker-grid markup
-    makers.html already defines in PAGE_CSS (same card shape, a real
-    editorial count in place of a maker's country/category tags - an
-    Edit isn't a "brand is the minimum unit of inclusion" listing the
-    way makers.html is, so showing real depth here doesn't undercut
-    that principle the way it would there). Ordered per
-    EDITS_DISPLAY_ORDER (see its own comment), not alphabetically -
-    nothing here is meant to read as "featured" any more, but the exact
-    order still matters for how the rows fall.
+    One plain, FIXED 2-column grid, every edit the same size (2026-09-30,
+    user: "i don't want a bento on the page, but it would be good to
+    have a fixed structure of columns and rows... to work within") -
+    reuses the same .maker-card markup makers.html already defines in
+    PAGE_CSS (real editorial count in place of a maker's country/
+    category tags - an Edit isn't a "brand is the minimum unit of
+    inclusion" listing the way makers.html is, so showing real depth
+    here doesn't undercut that principle the way it would there), but
+    NOT that file's own auto-fit .maker-grid track sizing - see
+    .maker-grid's own CSS comment for why a fixed column count was the
+    actual fix needed, not another round of position tweaks.
     """
     ordered = sorted(themes_data, key=_edits_sort_key)
 
@@ -302,10 +291,8 @@ def render_edits_index(themes_data):
             f'<img src="{html.escape(image)}" alt="{html.escape(theme["title"])}" loading="lazy">'
             if image else ""
         )
-        # Portable Lamps stays large - see .edit-tile-large's own CSS comment.
-        large_class = " edit-tile-large" if theme["slug"] == "portable-lamps" else ""
         tile_items += f"""
-      <a class="maker-card{large_class}" href="/{theme['slug']}.html">
+      <a class="maker-card" href="/{theme['slug']}.html">
         <div class="maker-card-hero">{image_tag}</div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(theme['title'])}</span>
