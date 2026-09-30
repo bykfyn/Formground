@@ -2541,6 +2541,30 @@ MANUAL_CATEGORY_OVERRIDES = {
     # value applied explicitly. Both grouped rows share this exact
     # name, so one override entry covers both correctly.
     ("Seletti", "CUT 'N PASTE"): "Lighting",
+    # No Early Birds' own Shopify product_type says "Coffee Tables" for
+    # every one of these, even though each product's own title (and its
+    # real listing photo/description on noearlybirds.se) says "Side
+    # Table" - confirmed live 2026-09-30 by pulling the raw Shopify JSON
+    # for "neb-side-table" directly: title "NEB Round Side Table With
+    # Top In Travertine", product_type "Coffee Tables". Unlike every
+    # other entry in this dict, the brand's own name-based signal IS
+    # there and is correct - it's the brand's own upstream product_type
+    # field that's wrong, so it's overridden rather than trusted. Found
+    # via a user report that these were surfacing in the Round Coffee
+    # Tables themed edit.
+    ("No Early Birds", "NEB Hexagonal Side Table With Top In Brass"): "Side Table",
+    ("No Early Birds", "NEB Hexagonal Side Table With Top In Oak"): "Side Table",
+    ("No Early Birds", "NEB Hexagonal Side Table With Top In Zinc"): "Side Table",
+    ("No Early Birds", "NEB High Round Side Table"): "Side Table",
+    ("No Early Birds", "NEB High Round Side Table With Top In Travertine"): "Side Table",
+    ("No Early Birds", "NEB Round Side Table With Top In Brass"): "Side Table",
+    ("No Early Birds", "NEB Round Side Table With Top In Carrara Marble"): "Side Table",
+    ("No Early Birds", "NEB Round Side Table With Top In Laminate"): "Side Table",
+    ("No Early Birds", "NEB Round Side Table With Top In Travertine"): "Side Table",
+    ("No Early Birds", "NEB Round Side Table With Top In Verde Italia Granite"): "Side Table",
+    ("No Early Birds", "NEB Round Side Table with Top in Oak"): "Side Table",
+    ("No Early Birds", "PS Bespoke Side Table in Calacatta and Walnut"): "Side Table",
+    ("No Early Birds", "PS Bespoke Side Table in Travertine and Walnut"): "Side Table",
 }
 
 # Same idea as MANUAL_CATEGORY_OVERRIDES above, but for a picked image

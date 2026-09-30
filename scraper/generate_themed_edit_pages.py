@@ -10,21 +10,22 @@ straightforward single-keyword categories (Floor Lamps, Table Lamps,
 Vases, Ceramics, Chairs, Sofas, Coffee Tables).
 
 WHY A SEPARATE GENERATOR: a Themed Edit is framed as "our pick," not
-"here's everything" - even though (per 2026-09-29 decision) it still
-shows every real matching product rather than a hand-curated subset,
-it deserves real editorial treatment: a genuine intro paragraph, not a
-one-line description, and a varied-size grid (some tiles large, most
-normal) rather than a uniform card grid - "more editorial and rich,"
-per the user's own framing. One shared render function
-(render_themed_edit_page) means adding a new theme later is just a new
-THEMES entry, not a new template.
+"here's everything" - it deserves real editorial treatment: a genuine
+intro paragraph, not a one-line description, and a varied-size grid
+(some tiles large, most normal) rather than a uniform card grid - "more
+editorial and rich," per the user's own framing. One shared render
+function (render_themed_edit_page) means adding a new theme later is
+just a new THEMES entry, not a new template.
 
-"Show all products unless the theme is '10 wooden tables'" (user's own
-example of the one exception) - none of today's four themes are a
-fixed-count pick, so all four are fully query-driven from
-backend/query_engine.py, same as generate_theme_landing_pages.py's
-pages. Reuses that module's _group_color_variants()/COLOR_FINISH_WORDS
-directly rather than duplicating the variant-grouping logic.
+Every theme is fully query-driven from backend/query_engine.py, same
+as generate_theme_landing_pages.py's pages - no theme is a hand-typed
+fixed list of products. But the real match count is then capped down to
+a small, consistent size (see MAX_PRODUCTS_PER_EDIT) - "it is not a
+filter, it is an edit" (user, 2026-09-30): showing all 906 real
+Pendant Lamps matches read as a search result, not a curated pick, and
+made every edit a different length. Reuses generate_theme_landing_pages'
+_group_color_variants()/COLOR_FINISH_WORDS directly rather than
+duplicating the variant-grouping logic.
 
 RUN (after generate_brand_pages.py, since it needs sitemap.xml and
 appends to it):
@@ -52,13 +53,26 @@ from generate_brand_pages import (  # noqa: E402
     SITE_FOOTER_HTML,
     SITE_NAV_HTML,
     SITE_URL,
-    product_card_html,
 )
 from generate_theme_landing_pages import (  # noqa: E402
     _group_color_variants,
     append_to_sitemap,
 )
 
+# "hero_image" fairness policy (2026-09-30) - the first pass at these
+# only checked each theme's own top-3 auto-picked candidates, which
+# skewed heavily toward whichever brand happened to have the deepest
+# catalog (Pinch, then New Works DK) - the opposite of what a feature
+# meant to help visibility across makers should do. Every hero_image
+# below was chosen only after checking that no other real edit already
+# uses that same brand, and after specifically looking past the first
+# few auto-picks for a genuinely independent maker's own photo -
+# "plain product photos are fine, they just need to look good" (user's
+# own bar, loosened from "must be in-situ" once real independent-maker
+# candidates that weren't full room scenes turned up). Each one links
+# straight to its own real source (see generate_edits_page.py's
+# _edit_banner_slide_html for the same rule on the hub's own banner) -
+# credit and traffic go to the actual maker, not just their photo.
 THEMES = [
     {
         # Replaces the old "Wood Sofas" theme (2026-09-29) - "two seater
@@ -80,16 +94,14 @@ THEMES = [
             "the same attention to an arm or a leg, just sized for more "
             "homes. Every result links straight to the maker's own site."
         ),
-        # User's own hand-picked carousel (2026-09-29) - see
-        # _resolve_carousel_picks for why "Rydal sofa" and "Fly SC2"
-        # need the direct-DB-lookup fallback (neither name literally
-        # says "2 seater", so the theme's own fetch filter above
-        # excludes them from the grid).
-        "carousel_picks": [
-            ("Fogia", "Boxlike 2 Seater Sofa"),
-            ("Pinch", "Rydal sofa"),
-            ("&Tradition", "Fly SC2"),
-        ],
+        # Superseded the old hand-picked 3-product carousel (2026-09-29:
+        # Boxlike/Rydal/Fly SC2) once every edit banner went static
+        # (2026-09-30, user: "the edit banners can be static, no
+        # carousel - looks more editorial anyway"). De La Espada was
+        # picked specifically over Pinch's own excellent "Rydal sofa"
+        # shot to avoid Pinch anchoring this AND Round Coffee Tables -
+        # see the fairness policy comment above THEMES.
+        "hero_image": ("De La Espada", "HEPBURN MODULAR 2-SEATER ARMLESS SOFA"),
     },
     {
         "slug": "round-dining-tables",
@@ -103,6 +115,12 @@ THEMES = [
             "maker's own site."
         ),
         "exclude": {("Vaarnii", "001 Dining Table Round Files"), ("Fogia", "Supper Round Table")},
+        # A real workshop shot, not a styled room - Galvin Brothers' own
+        # Titan photographed in their actual UK workshop, sawdust and
+        # tools included. Picked over Pinch's own "Tove dining table
+        # circular" (also excellent) for the same fairness reason.
+        "hero_image": ("Galvin Brothers", "Titan (Round) Dining Table"),
+        "hero_label": "Titan Dining Table",
     },
     {
         "slug": "round-coffee-tables",
@@ -135,6 +153,7 @@ THEMES = [
             "own site."
         ),
         "exclude": {("Audo", "Puffin Dining Table")},
+        "hero_image": ("Mass Productions", "Draft Dining Table Ø700"),
     },
     # Lighting cluster (2026-09-30, user: "use lighting as the category
     # and build from that") - the locked ad-keyword research flagged
@@ -163,6 +182,12 @@ THEMES = [
             ("Danny Kaplan Studio", "Augustus Orb Pendant"),
             ("AY Illuminate", "Hyo"),
         },
+        # A dramatic studio shot, not in-situ - fine per the loosened bar
+        # ("plain product photos are fine, they just need to look good"),
+        # and Apparatus is independent, unlike Pinch's own excellent
+        # "Remu pendant light whiskey" (already ruled out - Pinch
+        # anchors Round Coffee Tables).
+        "hero_image": ("Apparatus", "LANTERN : 1 PENDANT"),
     },
     {
         "slug": "table-lamps",
@@ -179,6 +204,9 @@ THEMES = [
             ("In Common With", "Helena Table Lamp"),
             ("Tala", "Knuckle Table Lamp in Walnut + Sphere IV"),
         },
+        # A real, moody in-situ shot (an antique desk, a folding chair,
+        # real books) - H. Bigeleisen is a genuinely independent studio.
+        "hero_image": ("H. Bigeleisen", "IO Brushed Brass Table Lamp"),
     },
     {
         "slug": "wall-lamps",
@@ -190,6 +218,16 @@ THEMES = [
             "base to work around, a hallway with no room for anything "
             "else. Every result links straight to the maker's own site."
         ),
+        # Louise Roe's real "Moon Lantern" (1667x2500, portrait) was tried
+        # here first, but a portrait source is the wrong shape for a wide
+        # banner slot no matter what aspect-ratio the box itself uses -
+        # "the images are the wrong size for a banner so they are being
+        # forced to do something they cannot" (user, 2026-09-30). Pinch's
+        # own "Remu wall light whiskey" (2000x1430, genuinely landscape)
+        # is a placeholder the user's fine with for now ("use the pinch
+        # images as placeholders where relevant... they seem to work well
+        # as banners") while they manually source a permanent replacement.
+        "hero_image": ("Pinch", "Remu wall light whiskey"),
     },
     {
         "slug": "ceiling-lamps",
@@ -201,6 +239,35 @@ THEMES = [
             "is real and every inch of it counts. Every result links "
             "straight to the maker's own site."
         ),
+        # New Works DK's "Kantarell Wall & Ceiling Lamp" (595x800,
+        # portrait) had the same wrong-shape-for-a-banner problem as Wall
+        # Lamps' own original pick, and Pinch has no real ceiling lamp to
+        # stand in here (its lighting is all Wall Lamp/Pendant/table
+        # Light). Left pending rather than forcing another mismatched
+        # photo in - the empty list is the documented "no banner yet"
+        # state (see _resolve_carousel_picks), not an oversight.
+        "carousel_picks": [],
+    },
+    {
+        # Real, distinct filter (see _wants_portable/_product_is_portable
+        # in query_engine.py, built 2026-09-29 for the cordless/
+        # rechargeable lamp keyword work) - not scoped to table lamps
+        # only, since the real 84-product set spans table lamps, floor-
+        # adjacent "Lamp"/"Light" categories, and outdoor pieces alike;
+        # the real, shared thing they have in common is no cord to plan
+        # around, not which room they sit in.
+        "slug": "portable-lamps",
+        "title": "Portable Lamps",
+        "fetch": lambda: qe.filter_products({"portable_only": True}),
+        "intro": (
+            "No outlet to plan around, no cord to route - a portable lamp "
+            "goes wherever the evening does: a dinner table, a bath, a "
+            "porch step. Every result links straight to the maker's own "
+            "site."
+        ),
+        # Shot inside Maison Louis Carré, Alvar Aalto's real house in
+        # France - In Common With is independent.
+        "hero_image": ("In Common With", "Dune Portable Table Lamp"),
     },
 ]
 
@@ -238,11 +305,21 @@ def _resolve_carousel_picks(theme, products):
     is the "strong main in situ image as the attraction" layout being
     tried out - same lookup-then-DB-fallback resolution as a manual
     carousel_picks entry, just capped at exactly one result.
+
+    An optional "hero_label" overrides just the displayed name for this
+    one hero slide (e.g. "Titan (Round) Dining Table" reading as plain
+    "Titan Dining Table" here, since "(Round)" is already redundant with
+    the whole page being called Round Dining Tables) - a shallow copy,
+    never mutating the real dict, since that exact same product also
+    appears again in the grid below and must keep showing its real,
+    unabbreviated name there.
     """
     hero = theme.get("hero_image")
     if hero is not None:
         lookup = {(p["brand"], p["product_name"]): p for p in products}
         product = lookup.get(hero) or _lookup_product_by_identity(*hero)
+        if product is not None and theme.get("hero_label"):
+            product = {**product, "product_name": theme["hero_label"]}
         return [product] if product is not None else []
     manual = theme.get("carousel_picks")
     if manual is None:
@@ -293,38 +370,67 @@ def _carousel_picks(products, exclude):
     return picks
 
 
-def _carousel_slide_html(p, index):
+def _carousel_frame_html(p, index):
+    """
+    The image half of a banner slide - just the photo, no overlay text
+    at all. A theme-name badge was tried here (2026-09-30, "we can have
+    the theme in text on the image"), then dropped the same day once
+    live: "it duplicates the work done by the title of the edit" - the
+    page's own H1 already says the theme name right above this banner.
+    Product name/brand live in _carousel_caption_html instead, below
+    the image (same "clean image, caption below" principle the
+    homepage's own .feature-banner-frame/.feature-banner-caption pair
+    already uses).
+    """
     url = p["brand_url"] if p["link_dead"] else p["product_url"]
     alt_text = html.escape(f'{p["product_name"]} by {p["brand"]}')
     active = " active" if index == 0 else ""
     return f"""
-        <div class="banner-slide{active}">
-          <a href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
-            <img src="{html.escape(p["image_url"])}" alt="{alt_text}">
-            <div class="banner-slide-content">
-              <p class="banner-slide-eyebrow">A themed edit</p>
-              <p class="banner-slide-title">{html.escape(p["product_name"])}</p>
-              <p class="banner-slide-brand">{html.escape(p["brand"])}</p>
-            </div>
-          </a>
-        </div>"""
+        <a class="banner-slide-frame{active}" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
+          <img src="{html.escape(p["image_url"])}" alt="{alt_text}">
+        </a>"""
+
+
+def _carousel_caption_html(p, index):
+    """
+    The product name/brand half of a banner slide, in normal flow below
+    the image box rather than overlaid on it (2026-09-30, user: "the
+    product information should sit below... so that clicking the link
+    or image takes you to the site") - a second real link to the same
+    source URL, kept in sync with its frame via the shared "active"
+    class/index (see CAROUSEL_JS's show()).
+    """
+    url = p["brand_url"] if p["link_dead"] else p["product_url"]
+    active = " active" if index == 0 else ""
+    return f"""
+        <a class="banner-caption{active}" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
+          <p class="banner-caption-title">{html.escape(p["product_name"])}</p>
+          <p class="banner-caption-brand">{html.escape(p["brand"])}</p>
+        </a>"""
 
 
 def _render_carousel(picks):
     if not picks:
         return ""
-    slides = "".join(_carousel_slide_html(p, i) for i, p in enumerate(picks))
+    frames = "".join(_carousel_frame_html(p, i) for i, p in enumerate(picks))
+    captions = "".join(_carousel_caption_html(p, i) for i, p in enumerate(picks))
     dots = "".join(
         f'<button type="button" class="banner-dot{" active" if i == 0 else ""}" data-index="{i}" aria-label="Slide {i + 1}"></button>'
         for i in range(len(picks))
     ) if len(picks) > 1 else ""
     dots_html = f'<div class="banner-dots">{dots}</div>' if dots else ""
-    return f'<div class="banner-carousel">{slides}{dots_html}</div>'
+    # .banner-frames is its own position:relative box (image frames +
+    # dots only) so the dots' absolute bottom/right anchors to the image
+    # itself, not to the whole carousel's height once a caption is added
+    # below it in normal flow - the exact bug already documented on the
+    # homepage's own .duo-carousel-caption (see its own comment there).
+    return f'<div class="banner-carousel"><div class="banner-frames">{frames}{dots_html}</div>{captions}</div>'
 
 
 CAROUSEL_JS = """
   document.querySelectorAll(".banner-carousel").forEach(function (carousel) {
-    var slides = carousel.querySelectorAll(".banner-slide");
+    var slides = carousel.querySelectorAll(".banner-slide-frame");
+    var captions = carousel.querySelectorAll(".banner-caption");
     var dots = carousel.querySelectorAll(".banner-dot");
     if (slides.length <= 1) return;
     var current = 0;
@@ -332,6 +438,7 @@ CAROUSEL_JS = """
     function show(i) {
       current = i;
       slides.forEach(function (s, idx) { s.classList.toggle("active", idx === i); });
+      captions.forEach(function (c, idx) { c.classList.toggle("active", idx === i); });
       dots.forEach(function (d, idx) { d.classList.toggle("active", idx === i); });
     }
     function next() { show((current + 1) % slides.length); }
@@ -374,89 +481,106 @@ CAROUSEL_JS = """
 """
 
 
-# A Mini Bento interlude (the same asymmetric 1-tall+4-square module
-# built for the homepage), paired with a few regular product cards in
-# the SAME row - not a full-width block interrupting the grid, but one
-# row that mixes the bento cluster with ordinary cards (2026-09-29,
-# user's own call after seeing the full-width version). Only inserted
-# when there's enough real content to spare (see _split_for_bento) - a
-# thin theme just gets the carousel + a plain grid, no bento pulled out
-# of too few results.
-MIN_PRODUCTS_FOR_BENTO = 20
-BENTO_SIZE = 5
-SIDE_CARD_COUNT = 4
+# "It is not a filter, it is an edit" (user, 2026-09-30) - real edits
+# were showing their whole raw match count (906 for Pendant Lamps),
+# which reads as a search result, not a curated pick, and made every
+# page a different length. Capped every edit down to the same small,
+# genuinely curated size instead - originally landed on 16 (talking
+# through 6/9/12/16 live) so it would divide cleanly into a 7-card
+# feature row plus a 9-card Mini Bento interlude. Once the Mini Bento
+# was dropped (see _render_feature_grid's own comment), the feature
+# grid's own real column count - 6 per row at its max page width -
+# became the constraint instead: 16 left 2 empty slots dangling in a
+# third row. Lowered to 12 (two full, clean rows of 6) rather than
+# rounding up to 18, since a tighter cap reads more like "our pick"
+# than a looser one.
+MAX_PRODUCTS_PER_EDIT = 12
 
 
-def _split_for_bento(cards):
+def _cap_products_fairly(cards, max_count=MAX_PRODUCTS_PER_EDIT):
     """
-    (before, bento_picks, side_picks, after) - pulled from roughly the
-    midpoint of the real, ordered list (not the start, so the carousel
-    and the grid's own opening don't repeat the same pieces). Only the
-    bento cluster requires distinct brands (it's the visual hero of the
-    row); the side cards just take whatever comes next, repeats allowed
-    - the real data is scraped and stored brand-by-brand, so a run of
-    114 real items can still land on only 8 distinct brands in its back
-    half (confirmed live, Scandinavian Dining Tables) - requiring 9
-    distinct brands for bento+side together made the interlude silently
-    vanish even on the biggest theme. Returns (cards, [], [], [])
-    unchanged when there isn't enough content to spare a real interlude.
+    Round-robins one product per brand per pass - same fairness
+    principle as query_engine.cap_per_brand/round_robin_order - so
+    capping down to a small, fixed size doesn't just keep whichever
+    brand happens to have the deepest catalog for this theme. Stable,
+    not random: dict insertion order here follows `cards`' own order
+    (whatever _group_color_variants/the DB query already produced), so
+    the same real data always caps down to the same real edit - a
+    curated page shouldn't look different on every rebuild for no
+    curatorial reason.
     """
-    if len(cards) < MIN_PRODUCTS_FOR_BENTO:
-        return cards, [], [], []
-    mid = len(cards) // 2
-    seen_brands = set()
-    bento_picks = []
-    bento_indices = []
-    for i in range(mid, len(cards)):
-        p = cards[i]
-        if p["brand"] in seen_brands:
-            continue
-        seen_brands.add(p["brand"])
-        bento_picks.append(p)
-        bento_indices.append(i)
-        if len(bento_picks) >= BENTO_SIZE:
+    if len(cards) <= max_count:
+        return cards
+    by_brand = {}
+    for p in cards:
+        by_brand.setdefault(p["brand"], []).append(p)
+    capped = []
+    while len(capped) < max_count:
+        added_this_pass = False
+        for brand_products in by_brand.values():
+            if not brand_products:
+                continue
+            capped.append(brand_products.pop(0))
+            added_this_pass = True
+            if len(capped) >= max_count:
+                break
+        if not added_this_pass:
             break
-
-    remaining_after_bento = len(cards) - mid - len(bento_indices)
-    if len(bento_picks) < BENTO_SIZE or remaining_after_bento < SIDE_CARD_COUNT:
-        return cards, [], [], []
-
-    bento_index_set = set(bento_indices)
-    side_picks = []
-    side_indices = []
-    for i in range(mid, len(cards)):
-        if i in bento_index_set:
-            continue
-        side_picks.append(cards[i])
-        side_indices.append(i)
-        if len(side_picks) >= SIDE_CARD_COUNT:
-            break
-
-    pick_index_set = bento_index_set | set(side_indices)
-    before = [p for i, p in enumerate(cards) if i < mid]
-    after = [p for i, p in enumerate(cards) if i >= mid and i not in pick_index_set]
-    return before, bento_picks, side_picks, after
+    return capped
 
 
-def _render_bento_row(bento_picks, side_picks):
-    if len(bento_picks) < BENTO_SIZE or len(side_picks) < SIDE_CARD_COUNT:
-        return ""
-    tiles = ""
-    for i, p in enumerate(bento_picks[:BENTO_SIZE]):
-        url = p["brand_url"] if p["link_dead"] else p["product_url"]
-        alt_text = html.escape(f'{p["product_name"]} by {p["brand"]}')
-        tiles += f"""
-      <a class="mini-bento-tile mini-bento-{i + 1}" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
-        <img src="{html.escape(p["image_url"])}" alt="{alt_text}">
-        <p class="mini-bento-label">{html.escape(p["product_name"])}</p>
-        <div class="mini-bento-caption">{html.escape(p["product_name"])}<span>{html.escape(p["brand"])}</span></div>
-      </a>"""
-    side_cards = "".join(product_card_html(p, show_brand=True) for p in side_picks[:SIDE_CARD_COUNT])
+def capped_edit_cards(theme, products):
+    """
+    The one real product list every surface showing this edit's content
+    or count should use - color-variant-grouped, then fairly capped to
+    MAX_PRODUCTS_PER_EDIT. Shared between this file's own
+    render_themed_edit_page and generate_edits_page.py's hub (both the
+    "X pieces" count shown there and the individual edit page's own
+    grid need to agree on the same real number - see MAX_PRODUCTS_PER_
+    EDIT's own comment for why that now matters). Returns (cards,
+    variant_counts) - the same shape _group_color_variants itself
+    returns, so callers don't need to know capping happened at all.
+    """
+    cards_to_render, variant_counts = _group_color_variants(products)
+    return _cap_products_fairly(cards_to_render), variant_counts
+
+
+# Larger-image feature row (2026-09-30, user: "we can also use larger
+# images such as for Chairs on the home page and have the same placing
+# of the product name and brand... with a max of 16 then I think we can
+# look at using different layout combinations to make the edit pages
+# interesting to peruse") - reuses the exact image/name/brand placement
+# the homepage's own "New" shelf cards (.recent-card) already use, just
+# laid out as a wrapping grid here (not a horizontal scroll-snap shelf)
+# so every feature card stays visible without needing a swipe - an
+# edit's whole point is a small, fully-visible curated set, not a
+# "peek and scroll for more" teaser the way the homepage's own shelf is.
+# Carries the whole MAX_PRODUCTS_PER_EDIT-capped set alone (a Mini Bento
+# interlude was tried between this and the grid, 2026-09-30, then
+# dropped: "not worth the hassle this is causing").
+
+
+def _feature_card_html(p, variant_count=None):
+    url = p["brand_url"] if p["link_dead"] else p["product_url"]
+    alt_text = html.escape(f'{p["product_name"]} by {p["brand"]}')
+    badge = (
+        f'<span class="variant-badge">{variant_count} finishes</span>'
+        if variant_count and variant_count > 1 else ""
+    )
     return f"""
-    <div class="bento-row">
-      <div class="mini-bento">{tiles}</div>
-      <div class="bento-side-cards">{side_cards}</div>
-    </div>"""
+      <a class="edit-feature-card" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="{html.escape(p["image_url"])}" alt="{alt_text}" loading="lazy">{badge}</div>
+        <span class="edit-feature-name">{html.escape(p["product_name"])}</span>
+        <span class="edit-feature-brand">{html.escape(p["brand"])}</span>
+      </a>"""
+
+
+def _render_feature_grid(cards, variant_counts=None):
+    if not cards:
+        return ""
+    variant_counts = variant_counts or {}
+    items = "".join(_feature_card_html(p, variant_counts.get(id(p))) for p in cards)
+    return f'<div class="edit-feature-grid">{items}\n    </div>'
 
 
 EDIT_PAGE_CSS = """
@@ -481,87 +605,81 @@ EDIT_PAGE_CSS = """
   }
   .edits-kicker:hover { color: var(--text-primary); text-decoration: underline; }
 
-  /* Mini Bento paired with regular product cards in ONE row (2026-09-29,
-     user's call: not a full-width block interrupting the grid). The
-     bento stays square (matching the homepage's own paired version,
-     not its full-width 2.8:1 one), and .bento-side-cards is a matching
-     2x2 block of ordinary cards (same product_card_html() markup as the
-     rest of the page) sized to align with it. */
-  .bento-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 40px 0; align-items: stretch; }
-  .bento-side-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .mini-bento {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr;
-    gap: 10px; width: 100%; aspect-ratio: 1/1;
+  /* Larger-image feature row (see _render_feature_grid) - same image/
+     name/brand placement as the homepage's own .recent-card (bigger
+     square photo, bold name, muted brand directly below), just a
+     wrapping grid instead of a horizontal scroll-snap shelf - every
+     card stays visible at once, nothing hidden behind a swipe the way
+     the homepage's own "peek and scroll" shelf intentionally hides
+     more. Carries the whole capped edit alone (a Mini Bento interlude
+     was tried and dropped, 2026-09-30 - "not worth the hassle this is
+     causing"). */
+  .edit-feature-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 20px; margin: 0 0 40px;
   }
-  .mini-bento-tile { position: relative; display: block; overflow: hidden; border: 0.5px solid var(--border); background: var(--surface-1); }
-  .mini-bento-tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
-  .mini-bento-tile:hover img { transform: scale(1.03); }
-  .mini-bento-1 { grid-column: 1; grid-row: 1 / 3; }
-  .mini-bento-2 { grid-column: 2; grid-row: 1; }
-  .mini-bento-3 { grid-column: 3; grid-row: 1; }
-  .mini-bento-4 { grid-column: 2; grid-row: 2; }
-  .mini-bento-5 { grid-column: 3; grid-row: 2; }
-  /* Hover-reveal, matching the homepage's own top 4-tile bento's
-     .cat-tile/.cat-label/.cat-details split, and now also its own
-     Floor Lamps mini-bento/duo-carousel slides (2026-09-29, user's
-     call: "should we use the same hover over function as on the home
-     page large bento... needs to be consistent across the site") - a
-     plain, always-visible name (.mini-bento-label) stands in at rest,
-     and this richer name+brand gradient scrim only fades in on hover.
-     Replaces an earlier, page-local-only text-shadow treatment (no
-     scrim, always visible) that predated the sitewide hover-reveal
-     convention. */
-  .mini-bento-label {
-    position: absolute; top: 10px; left: 10px; z-index: 2;
-    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 13px;
-    color: #fff; letter-spacing: -0.005em; margin: 0;
-    pointer-events: none;
+  .edit-feature-card { display: block; text-decoration: none; color: inherit; }
+  .edit-feature-image {
+    aspect-ratio: 1/1; background: var(--surface-1); border: 0.5px solid var(--border);
+    overflow: hidden; margin-bottom: 8px; position: relative;
   }
-  .mini-bento-caption {
-    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
-    padding: 10px 12px; background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));
-    color: #fff; font-size: 12px; font-weight: 500;
-    opacity: 0; transform: translateY(6px);
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    pointer-events: none;
-  }
-  .mini-bento-caption span { display: block; font-size: 11px; font-weight: 400; opacity: 0.8; }
-  .mini-bento-tile:hover .mini-bento-caption { opacity: 1; transform: translateY(0); }
+  .edit-feature-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+  .edit-feature-card:hover .edit-feature-image img { transform: scale(1.02); }
+  .edit-feature-name { display: block; font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .edit-feature-brand { display: block; font-size: 12px; color: var(--text-muted); }
+
   @media (max-width: 760px) {
     .edit-header h1 { font-size: 28px; }
-    .bento-row { grid-template-columns: 1fr; }
-    .mini-bento { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; aspect-ratio: auto; height: 480px; }
-    .mini-bento-1 { grid-column: 1 / 3; grid-row: 1; }
-    .mini-bento-2 { grid-column: 1; grid-row: 2; }
-    .mini-bento-3 { grid-column: 2; grid-row: 2; }
-    .mini-bento-4 { grid-column: 1; grid-row: 3; }
-    .mini-bento-5 { grid-column: 2; grid-row: 3; }
   }
 
   /* Same Banner Carousel primitive used for the homepage's Sofas edit
      (2026-09-29) - carries the homepage's own "themed edit" feel onto
      this dedicated page, with different real pieces than the homepage
      teaser shows (see each theme's "exclude" list). Auto-rotates every
-     6s, dot navigation, pauses on hover. */
-  .banner-carousel { position: relative; aspect-ratio: 2/1; margin-bottom: 40px; border: 0.5px solid var(--border); overflow: hidden; }
-  .banner-slide { position: absolute; inset: 0; display: none; }
-  .banner-slide.active { display: block; }
-  .banner-slide a { display: block; width: 100%; height: 100%; position: relative; text-decoration: none; color: inherit; }
-  .banner-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .banner-slide-content {
-    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
-    padding: 28px 32px; background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
-    color: #fff;
+     6s, dot navigation, pauses on hover.
+     Image and caption were split into two real elements, not one
+     gradient-scrim-over-photo block (2026-09-30, user: "the product
+     information should sit below... so that clicking the link or image
+     takes you to the site") - same "clean image, caption below"
+     principle the homepage's own .feature-banner-frame/
+     .feature-banner-caption pair already settled on. A theme-name badge
+     was tried on the image itself too, same day, then dropped just as
+     quickly once live - "it duplicates the work done by the title of
+     the edit" (the page's own H1, right above this banner). Sized 2/1
+     (desktop) / 4/3 (mobile) to match that same primitive exactly - an
+     earlier attempt to widen this box for portrait-shaped
+     hero photos (first 4/5, then a "square" 1/1) never actually fixed
+     anything, since the real problem was the SOURCE PHOTO's own shape,
+     not the box: "the images are the wrong size for a banner so they
+     are being forced to do something they cannot" (user, 2026-09-30).
+     See each theme's own "hero_image" comment for how that's handled
+     now (a landscape placeholder, or left pending). */
+  .banner-carousel { margin-bottom: 40px; }
+  /* Own position:relative box for just the image frames + dots, kept
+     separate from the caption below - otherwise the dots' absolute
+     bottom/right would anchor to the bottom of the WHOLE carousel
+     (frame + caption combined) instead of to the image itself, the
+     same bug already documented on the homepage's own
+     .duo-carousel-caption. */
+  .banner-frames { position: relative; }
+  .banner-slide-frame {
+    display: none; position: relative; aspect-ratio: 2/1;
+    border: 0.5px solid var(--border); overflow: hidden;
+    text-decoration: none; color: inherit;
   }
-  .banner-slide-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.8; margin: 0 0 6px; }
-  .banner-slide-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 28px; margin: 0 0 4px; }
-  .banner-slide-brand { font-size: 13px; opacity: 0.9; margin: 0; }
+  .banner-slide-frame.active { display: block; }
+  .banner-slide-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .banner-slide-frame:hover img { transform: scale(1.02); }
   .banner-dots { position: absolute; bottom: 18px; right: 24px; z-index: 2; display: flex; gap: 6px; }
   .banner-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; padding: 0; }
   .banner-dot.active { background: #fff; }
+  .banner-caption { display: none; text-decoration: none; color: inherit; margin-top: 14px; }
+  .banner-caption.active { display: block; }
+  .banner-caption-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 22px; margin: 0 0 4px; }
+  .banner-caption-brand { font-size: 13px; color: var(--text-secondary); margin: 0; }
+  .banner-caption:hover .banner-caption-title { text-decoration: underline; }
   @media (max-width: 760px) {
-    .banner-carousel { aspect-ratio: 4/3; }
-    .banner-slide-title { font-size: 22px; }
+    .banner-slide-frame { aspect-ratio: 4/3; }
   }
 """
 
@@ -570,29 +688,27 @@ def render_themed_edit_page(theme, products):
     slug = theme["slug"]
     title = theme["title"]
     page_url = f"{SITE_URL}/{slug}.html"
-    n = len(products)
+
+    # The real, capped count (see capped_edit_cards/MAX_PRODUCTS_PER_EDIT) -
+    # not the raw pre-cap match count. "It is not a filter, it is an
+    # edit" (user, 2026-09-30): the description should promise exactly
+    # what the page actually shows, the same number the Edits hub's own
+    # card already advertises for this theme.
+    cards_to_render, variant_counts = capped_edit_cards(theme, products)
+    n = len(cards_to_render)
     description = f"{n} real {title.lower()}{'' if title.lower().endswith('s') else 's'}, from independent makers. {theme['intro']}"
 
-    cards_to_render, variant_counts = _group_color_variants(products)
     carousel_html = _render_carousel(_resolve_carousel_picks(theme, cards_to_render))
 
     if cards_to_render:
-        # Individual products use the exact same card as /work.html's own
-        # results (product_card_html) - the richness comes from the
-        # carousel above and the Mini Bento interlude below, not from
-        # reinventing the card itself (2026-09-29, user's own call).
-        before, bento_picks, side_picks, after = _split_for_bento(cards_to_render)
-        before_html = "".join(
-            product_card_html(p, show_brand=True, variant_count=variant_counts.get(id(p)))
-            for p in before
-        )
-        body = f'<div class="grid">{before_html}</div>'
-        if bento_picks:
-            after_html = "".join(
-                product_card_html(p, show_brand=True, variant_count=variant_counts.get(id(p)))
-                for p in after
-            )
-            body += _render_bento_row(bento_picks, side_picks) + f'<div class="grid">{after_html}</div>'
+        # One layout treatment for the whole capped set (2026-09-30,
+        # user: "let's just skip the mini bento, not worth the hassle
+        # this is causing") - a Mini Bento interlude was tried between
+        # this and the feature grid, but dropped before shipping; the
+        # larger-image feature grid alone (see _render_feature_grid,
+        # same placement as the homepage's own "New" shelf cards) now
+        # carries every capped card.
+        body = _render_feature_grid(cards_to_render, variant_counts)
     else:
         body = '<p class="empty-state">Check back soon - new pieces are added here as they are found.</p>'
 
@@ -637,7 +753,7 @@ def render_themed_edit_page(theme, products):
   </p>
 </main>
 <script>
-  document.querySelectorAll(".card-image img, .mini-bento-tile img").forEach(function (img) {{
+  document.querySelectorAll(".card-image img").forEach(function (img) {{
     img.addEventListener("load", function () {{
       var ratio = img.naturalWidth / img.naturalHeight;
       if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
@@ -658,7 +774,8 @@ def generate():
         products = theme["fetch"]()
         (DOCS_DIR / f"{theme['slug']}.html").write_text(render_themed_edit_page(theme, products))
         slugs.append(theme["slug"])
-        print(f"{theme['slug']}.html: {len(products)} products")
+        shown, _ = capped_edit_cards(theme, products)
+        print(f"{theme['slug']}.html: {len(shown)} shown (of {len(products)} real matches)")
     append_to_sitemap(slugs)
 
 

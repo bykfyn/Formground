@@ -21,26 +21,18 @@ markup/text classes (.edit-banner-*), not the promo-specific
 .promo-name/.promo-cta ones - a Themed Edit isn't a paid placement with
 a price/CTA, just a real photo and a title linking to the edit itself.
 
-WORK / MAKERS CHIPS: every THEMES entry has an implicit "type" - "work"
-(a product/category grouping - every real Edit today) unless a THEMES
-entry explicitly sets "type": "makers" (a maker-focused editorial
-grouping - none exist yet, per the user's own sequencing: "build the
-page and then we add Makers edits afterwards"). Selecting "Makers"
-today correctly shows nothing but a real, honest empty-state message
-rather than a blank grid - the empty state is expected, not a bug,
-until a real first Makers-type entry exists (same "genuinely empty is
-not a bug" convention as new.html/for-creators.html's own empty
-states). Written as its own small script rather than reusing
-DIRECTORY_FILTER_JS's tier-filter logic (see generate_brand_pages.py) -
-that mechanism is named/shaped around brand tier specifically; this
-page's search box still reuses that module's directory_filter_html for
-the input markup, just not its paired filtering JS.
-
 Same shared search box as makers.html/architects.html/designers.html
 (directory_filter_html) - "the edits page itself could use the same
 search box as we have across the site" (user's own words) - filtering
 here is a plain client-side text match against each card's own title/
-meta line, combined with the active Work/Makers chip.
+meta line. A Work/Makers filter-chip pair briefly sat next to it (every
+THEMES entry has an implicit "type" - "work" unless a THEMES entry sets
+"type": "makers", none of which exist yet), removed 2026-09-30 (user:
+"remove the chips with Work and Makers") since there was nothing real
+for the Makers chip to ever show. EDITS_FILTER_JS stayed its own small
+script rather than switching to DIRECTORY_FILTER_JS's tier-filter logic
+(see generate_brand_pages.py) - that mechanism is named/shaped around
+brand tier specifically, not what this page is filtering.
 
 Not yet linked from the header nav (deliberately) - the last time a
 5th item was added there it wrapped badly at some widths, which is why
@@ -79,7 +71,7 @@ from generate_brand_pages import (  # noqa: E402
     render_banner_carousel,
     site_nav_html,
 )
-from generate_theme_landing_pages import _group_color_variants, append_to_sitemap  # noqa: E402
+from generate_theme_landing_pages import append_to_sitemap  # noqa: E402
 import generate_themed_edit_pages as gte  # noqa: E402
 
 # How many of the real edits lead as rotating banner slides - all of
@@ -116,6 +108,9 @@ EDITS_PAGE_CSS = (
     display: block; font-family: 'Archivo', sans-serif; font-weight: 700;
     font-size: 34px; line-height: 1.15; color: #fff; max-width: 70%;
   }
+  .edit-banner-brand {
+    display: block; font-size: 14px; color: rgba(255,255,255,0.85); margin: 8px 0 0;
+  }
   @media (max-width: 640px) {
     .edit-banner-title { font-size: 22px; max-width: 85%; }
   }
@@ -140,7 +135,7 @@ EDITS_PAGE_CSS = (
   .edits-hero { text-align: center; margin: 0 0 20px; }
   .edits-hero h1 {
     font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 44px;
-    letter-spacing: 0.01em; margin: 0 0 10px;
+    letter-spacing: 0.01em; margin: 0 0 10px; text-transform: uppercase;
   }
   .edits-preamble {
     font-size: 15px; color: var(--text-secondary);
@@ -150,102 +145,83 @@ EDITS_PAGE_CSS = (
     .edits-hero h1 { font-size: 30px; }
   }
 
-  #edits-empty-state {
-    display: none; text-align: center; font-size: 14px; color: var(--text-muted);
-    padding: 60px 20px;
-  }
-
-  /* Magazine-cover hero grid (2026-09-30, user: "apply some of the
-     homepage layout and style... so it reads more like a magazine" -
-     "results page is what it is, Edits is different") - the exact same
-     asymmetric 4-tile proportions as the homepage's own
-     .category-grid/.tile-houses etc (one tall lead tile, two smaller
-     top-right, one wide bottom-right), which happens to fit today's
-     real count of 4 edits exactly. Renamed rather than reusing those
-     class names directly since this page has its own stylesheet, not
-     index.html's. Only the first 4 (biggest by real product count) go
-     in the fixed grid; any beyond that render in the plain overflow
-     grid below (see render_edits_index) rather than forcing a 5th slot
-     into a layout tuned for exactly four. */
-  .edits-tile-grid {
-    display: grid; grid-template-columns: 1.4fr 1fr 1fr; grid-template-rows: 1fr 1fr;
-    gap: 20px; height: 560px; margin: 0 0 40px;
-  }
-  .edits-tile-1 { grid-column: 1; grid-row: 1 / 3; }
-  .edits-tile-2 { grid-column: 2; grid-row: 1; }
-  .edits-tile-3 { grid-column: 3; grid-row: 1; }
-  .edits-tile-4 { grid-column: 2 / 4; grid-row: 2; }
-
-  /* Same image-fills-tile, hover-reveal-details treatment as the
-     homepage's own .cat-tile/.cat-label/.cat-details - simpler here
-     since an Edit tile only ever needs the one internal link (no
-     competing external "visit source" link the way a maker's own
-     homepage teaser does), so the whole tile is just one <a>, no
-     invisible full-bleed overlay link needed. */
-  .edit-tile {
-    position: relative; display: block; overflow: hidden; text-decoration: none; color: inherit;
-    border: 0.5px solid var(--border); background: var(--surface-1); height: 100%;
-  }
-  .edit-tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
-  .edit-tile:hover img { transform: scale(1.03); }
-  .edit-tile-label {
-    position: absolute; top: 16px; left: 16px; z-index: 2;
-    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 18px;
-    color: #fff; letter-spacing: -0.005em; margin: 0; pointer-events: none;
-  }
-  .edit-tile-details {
-    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-    padding: 28px 16px 14px;
-    background: linear-gradient(to top, rgba(0,0,0,0.68), rgba(0,0,0,0));
-    color: #fff; font-size: 12px;
-    opacity: 0; transform: translateY(6px);
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    pointer-events: none;
-  }
-  .edit-tile:hover .edit-tile-details { opacity: 1; transform: translateY(0); }
-
-  .edits-overflow-heading {
-    font-size: 13px; font-weight: 600; color: var(--text-secondary);
-    text-align: center; margin: 0 0 20px;
-  }
-
+  /* One plain grid for every edit (2026-09-30, user: "remove the bento
+     and make the images in it the same size as Round Coffee Tables") -
+     an asymmetric magazine-style bento (one tall lead tile, two smaller,
+     one wide) briefly led the page, sized by real product count; it's
+     gone now, and every edit renders the same size in the same
+     .maker-grid of .maker-card entries makers.html already defines in
+     PAGE_CSS (real editorial count in place of a maker's country/
+     category tags) - no edit gets a bigger slot just because it has
+     more real matches. Base track size capped at 552px (2026-09-30,
+     user: "the search result on the edits page should be no larger
+     than 552x552px") - makers.html's own shared rule uses an unbounded
+     1fr track that grows to fill whatever's left in the row, which on
+     a wide viewport could make a plain card's image noticeably bigger
+     than the homepage's own reference square size; overridden here,
+     not in the shared rule, since makers.html has no such cap requested
+     for its own cards. One deliberate exception: Portable Lamps (user,
+     2026-09-30: "i wanted Portable Lamps to remain large, 552x552px") -
+     spans 2 of the grid's own auto-fit tracks and squares off its
+     image, matching the homepage's own .duo-carousel-frame.square
+     proportions - explicitly capped to the same 552px on its own,
+     since 2 tracks together would otherwise add up to noticeably more
+     than that. */
+  .maker-grid { margin: 0 0 40px; grid-template-columns: repeat(auto-fit, minmax(190px, 552px)); }
+  .maker-card.edit-tile-large { grid-column: span 2; max-width: 552px; justify-self: start; }
+  .maker-card.edit-tile-large .maker-card-hero { aspect-ratio: 1/1; }
   @media (max-width: 760px) {
-    .edits-tile-grid { display: flex; flex-direction: column; height: auto; gap: 16px; }
-    .edit-tile { aspect-ratio: 4 / 3; }
-    .edit-tile-details { opacity: 1; transform: none; }
+    .maker-card.edit-tile-large { grid-column: span 1; }
   }
 """
 )
 
-# Only the leading N real edits (by product count, biggest first) get a
-# slot in the fixed 4-position magazine grid - see .edits-tile-grid's
-# own comment for why 4 specifically. Any beyond this render in a plain
-# overflow grid underneath instead of forcing a 5th tile into a layout
-# tuned for four.
-FEATURED_TILE_COUNT = 4
-
-
-def _edit_card_image(theme, cards_to_render):
+def _edit_hero_product(theme, cards_to_render):
     """
-    The same real photo a visitor sees first on the edit's own page -
+    The same real product a visitor sees first on the edit's own page -
     its hand-picked carousel's first entry when the theme has one (a
     human already chose it as the best representative shot), otherwise
     the first product in the grid itself, in the same order
-    render_themed_edit_page's own grid uses.
+    render_themed_edit_page's own grid uses. Returns the full product
+    dict (not just its image), so a caller can also credit/link to the
+    real source - see _edit_banner_slide_html's own docstring for why
+    that matters.
     """
     picks = gte._resolve_carousel_picks(theme, cards_to_render)
     if picks:
-        return picks[0].get("image_url", "")
-    return cards_to_render[0]["image_url"] if cards_to_render else ""
+        return picks[0]
+    return cards_to_render[0] if cards_to_render else None
 
 
-def _edit_banner_slide_html(theme, image):
+def _edit_card_image(theme, cards_to_render):
+    product = _edit_hero_product(theme, cards_to_render)
+    return product.get("image_url", "") if product else ""
+
+
+def _edit_banner_slide_html(theme, product):
+    """
+    Links straight to the real product's own source (brand's homepage
+    if check_links.py flagged the product page dead, same fallback
+    every other card on the site already uses) - not to this Edit's own
+    page - and credits the real brand/product by name on the image
+    itself, matching the exact "link back to source" convention every
+    other carousel/card on Formground already follows (see
+    _carousel_slide_html). Displaying a maker's photo without crediting
+    and linking to them is exactly the thing this site's whole "every
+    result links straight to the maker's own site" promise exists to
+    avoid - the hub banner doesn't get an exception just because it's a
+    bigger, more prominent placement. The theme itself (title, slug)
+    stays reachable via this same edit's own tile in the grid below,
+    not lost by pointing the banner elsewhere.
+    """
+    url = product["brand_url"] if product.get("link_dead") else product["product_url"]
     return (
-        f'<a href="/{theme["slug"]}.html">'
-        f'<img src="{html.escape(image)}" alt="{html.escape(theme["title"])}" loading="lazy">'
+        f'<a href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">'
+        f'<img src="{html.escape(product["image_url"])}" alt="{html.escape(product["product_name"])} by {html.escape(product["brand"])}" loading="lazy">'
         '<div class="banner-slide-content">'
-        '<span class="edit-banner-eyebrow">Themed Edit</span>'
-        f'<span class="edit-banner-title">{html.escape(theme["title"])}</span>'
+        f'<span class="edit-banner-eyebrow">{html.escape(theme["title"])}</span>'
+        f'<span class="edit-banner-title">{html.escape(product["product_name"])}</span>'
+        f'<span class="edit-banner-brand">{html.escape(product["brand"])}</span>'
         "</div>"
         "</a>"
     )
@@ -254,44 +230,13 @@ def _edit_banner_slide_html(theme, image):
 EDITS_FILTER_JS = """
   (function () {
     var filterInput = document.getElementById("directory-filter");
-    var typeButtons = document.querySelectorAll(".filter-chip[data-edit-type]");
-    var emptyState = document.getElementById("edits-empty-state");
-    var activeType = null;
     function applyFilter(q) {
       q = q.trim().toLowerCase();
-      var visibleCount = 0;
-      // Covers both the featured magazine-grid tiles and any overflow
-      // .maker-card entries beyond it - same [data-edit-type] attribute
-      // either way, so one selector filters both without caring which
-      // shape a given edit's card happens to be.
-      document.querySelectorAll("[data-edit-type]").forEach(function (card) {
-        var textMatch = !q || card.textContent.toLowerCase().includes(q);
-        var typeMatch = !activeType || card.dataset.editType === activeType;
-        var visible = textMatch && typeMatch;
-        card.hidden = !visible;
-        if (visible) visibleCount++;
+      document.querySelectorAll(".maker-card").forEach(function (card) {
+        card.hidden = !(!q || card.textContent.toLowerCase().includes(q));
       });
-      // Only worth a dedicated empty-state message for the Makers
-      // chip's real "nothing here yet" case (see this file's own
-      // docstring) - a text search that happens to match nothing
-      // already has no separate message here, same as makers.html.
-      emptyState.style.display = (visibleCount === 0 && activeType === "makers") ? "block" : "none";
     }
     filterInput.addEventListener("input", function (e) { applyFilter(e.target.value); });
-    typeButtons.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var type = btn.dataset.editType;
-        if (activeType === type) {
-          activeType = null;
-          btn.classList.remove("active");
-        } else {
-          activeType = type;
-          typeButtons.forEach(function (b) { b.classList.remove("active"); });
-          btn.classList.add("active");
-        }
-        applyFilter(filterInput.value);
-      });
-    });
   })();
 """
 
@@ -303,71 +248,80 @@ def _edit_meta_text(count, brand_count):
     )
 
 
-def _edit_tile_html(theme, count, brand_count, image, position_class):
-    edit_type = theme.get("type", "work")
-    image_tag = (
-        f'<img src="{html.escape(image)}" alt="{html.escape(theme["title"])}" loading="lazy">'
-        if image else ""
-    )
-    return f"""
-    <a class="edit-tile {position_class}" href="/{theme['slug']}.html" data-edit-type="{edit_type}">
-      {image_tag}
-      <p class="edit-tile-label">{html.escape(theme['title'])}</p>
-      <div class="edit-tile-details">{_edit_meta_text(count, brand_count)}</div>
-    </a>"""
+# Explicit display order, built up one step at a time per the user's
+# own request (2026-09-30: "let's do one step at a time"). Step 1:
+# "Place Portable Lamps on the first row, left aligned" - moved it to
+# the very front. Step 2: "Move Round Coffee Tables to sit under
+# Ceiling Lamps" - landed it in row 2's 3rd column, directly under
+# Ceiling Lamps in row 1. Step 3: "Move Round Coffee Tables up one row.
+# Don't move anything else" - swaps its list position with Ceiling
+# Lamps's (the only way to move it up one row while staying in the same
+# column) rather than re-deriving the whole order again; everything
+# else keeps the exact same cell it already had - confirmed by hand:
+# swapping two same-cell-width entries in this list only ever changes
+# where those two land, since every entry between and after them keeps
+# the same cumulative cell count either way.
+EDITS_DISPLAY_ORDER = [
+    "portable-lamps", "round-coffee-tables", "pendant-lamps",
+    "round-dining-tables", "scandinavian-dining-tables",
+    "ceiling-lamps", "table-lamps", "two-seater-sofas",
+    "wall-lamps",
+]
+
+
+def _edits_sort_key(entry):
+    slug = entry[0]["slug"]
+    if slug in EDITS_DISPLAY_ORDER:
+        return (0, EDITS_DISPLAY_ORDER.index(slug))
+    return (1, entry[0]["title"].lower())
 
 
 def render_edits_index(themes_data):
     """
-    themes_data is a list of (theme, product_count, brand_count, image)
-    tuples, one per THEMES entry, already computed by generate() below.
+    themes_data is a list of (theme, product_count, brand_count, image,
+    hero_product) tuples, one per THEMES entry, already computed by
+    generate() below.
 
-    The FEATURED_TILE_COUNT biggest real edits (by product count) lead
-    in the fixed magazine-style bento grid (see .edits-tile-grid) - any
-    beyond that render in a plain overflow grid underneath, reusing the
-    same .maker-card/.maker-grid markup makers.html already defines in
-    PAGE_CSS (same card shape, a real editorial count in place of a
-    maker's country/category tags - an Edit isn't a "brand is the
-    minimum unit of inclusion" listing the way makers.html is, so
-    showing real depth here doesn't undercut that principle the way it
-    would there). Today there are only 4 real edits total, so the
-    overflow section is empty and simply doesn't render.
+    One plain grid, every edit the same size (2026-09-30, user: "remove
+    the bento and make the images in it the same size as Round Coffee
+    Tables") - reuses the same .maker-card/.maker-grid markup
+    makers.html already defines in PAGE_CSS (same card shape, a real
+    editorial count in place of a maker's country/category tags - an
+    Edit isn't a "brand is the minimum unit of inclusion" listing the
+    way makers.html is, so showing real depth here doesn't undercut
+    that principle the way it would there). Ordered per
+    EDITS_DISPLAY_ORDER (see its own comment), not alphabetically -
+    nothing here is meant to read as "featured" any more, but the exact
+    order still matters for how the rows fall.
     """
-    by_count_desc = sorted(themes_data, key=lambda t: t[1], reverse=True)
-    featured = by_count_desc[:FEATURED_TILE_COUNT]
-    overflow = sorted(by_count_desc[FEATURED_TILE_COUNT:], key=lambda t: t[0]["title"].lower())
+    ordered = sorted(themes_data, key=_edits_sort_key)
 
-    tile_html = "".join(
-        _edit_tile_html(theme, count, brand_count, image, f"edits-tile-{i + 1}")
-        for i, (theme, count, brand_count, image) in enumerate(featured)
-    )
-    tile_grid_html = f'<div class="edits-tile-grid">{tile_html}\n    </div>' if tile_html else ""
-
-    overflow_items = ""
-    for theme, count, brand_count, image in overflow:
-        edit_type = theme.get("type", "work")
+    tile_items = ""
+    for theme, count, brand_count, image, _hero_product in ordered:
         image_tag = (
             f'<img src="{html.escape(image)}" alt="{html.escape(theme["title"])}" loading="lazy">'
             if image else ""
         )
-        overflow_items += f"""
-      <a class="maker-card" href="/{theme['slug']}.html" data-edit-type="{edit_type}">
+        # Portable Lamps stays large - see .edit-tile-large's own CSS comment.
+        large_class = " edit-tile-large" if theme["slug"] == "portable-lamps" else ""
+        tile_items += f"""
+      <a class="maker-card{large_class}" href="/{theme['slug']}.html">
         <div class="maker-card-hero">{image_tag}</div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(theme['title'])}</span>
           <span class="maker-country">{_edit_meta_text(count, brand_count)}</span>
         </div>
       </a>"""
-    overflow_html = (
-        f'<p class="edits-overflow-heading">More Edits</p>\n  <div class="maker-grid">{overflow_items}\n  </div>'
-        if overflow_items else ""
-    )
+    tile_grid_html = f'<div class="maker-grid">{tile_items}\n  </div>' if tile_items else ""
 
-    by_slug = {theme["slug"]: (theme, image) for theme, _count, _brand_count, image in themes_data}
+    by_slug = {
+        theme["slug"]: (theme, hero_product)
+        for theme, _count, _brand_count, _image, hero_product in themes_data
+    }
     banner_slides = [
         _edit_banner_slide_html(*by_slug[slug])
         for slug in BANNER_SLUGS
-        if slug in by_slug and by_slug[slug][1]
+        if slug in by_slug and by_slug[slug][1] is not None
     ]
     banner_html = render_banner_carousel(banner_slides)
 
@@ -409,13 +363,7 @@ def render_edits_index(themes_data):
   </div>
 {banner_html}
   {directory_filter_html("Filter edits by name…", "Edits")}
-  <div class="tier-filters">
-    <button type="button" class="filter-chip" data-edit-type="work">Work</button>
-    <button type="button" class="filter-chip" data-edit-type="makers">Makers</button>
-  </div>
   {tile_grid_html}
-  {overflow_html}
-  <p id="edits-empty-state">No maker-focused edits yet - check back soon.</p>
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
@@ -440,10 +388,11 @@ def generate():
     themes_data = []
     for theme in gte.THEMES:
         products = theme["fetch"]()
-        cards_to_render, _ = _group_color_variants(products)
+        cards_to_render, _ = gte.capped_edit_cards(theme, products)
         brand_count = len({p["brand"] for p in cards_to_render})
-        image = _edit_card_image(theme, cards_to_render)
-        themes_data.append((theme, len(cards_to_render), brand_count, image))
+        hero_product = _edit_hero_product(theme, cards_to_render)
+        image = hero_product.get("image_url", "") if hero_product else ""
+        themes_data.append((theme, len(cards_to_render), brand_count, image, hero_product))
 
     (DOCS_DIR / "edits.html").write_text(render_edits_index(themes_data))
     append_to_sitemap(["edits"])

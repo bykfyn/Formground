@@ -8,16 +8,16 @@
 <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="description" content="24 real round coffee tables, from independent makers. No corners to work around - a round coffee table sits equally well against a sofa, an armchair, or a walking path through the room. Every result links straight to the maker&#x27;s own site.">
+<meta name="description" content="11 real round coffee tables, from independent makers. No corners to work around - a round coffee table sits equally well against a sofa, an armchair, or a walking path through the room. Every result links straight to the maker&#x27;s own site.">
 <link rel="canonical" href="https://formground.com/round-coffee-tables.html">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Round Coffee Tables — Formground">
-<meta property="og:description" content="24 real round coffee tables, from independent makers. No corners to work around - a round coffee table sits equally well against a sofa, an armchair, or a walking path through the room. Every result links straight to the maker&#x27;s own site.">
+<meta property="og:description" content="11 real round coffee tables, from independent makers. No corners to work around - a round coffee table sits equally well against a sofa, an armchair, or a walking path through the room. Every result links straight to the maker&#x27;s own site.">
 <meta property="og:url" content="https://formground.com/round-coffee-tables.html">
 <meta property="og:image" content="https://formground.com/favicon-192x192.png">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Round Coffee Tables — Formground">
-<meta name="twitter:description" content="24 real round coffee tables, from independent makers. No corners to work around - a round coffee table sits equally well against a sofa, an armchair, or a walking path through the room. Every result links straight to the maker&#x27;s own site.">
+<meta name="twitter:description" content="11 real round coffee tables, from independent makers. No corners to work around - a round coffee table sits equally well against a sofa, an armchair, or a walking path through the room. Every result links straight to the maker&#x27;s own site.">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
@@ -218,87 +218,81 @@
   }
   .edits-kicker:hover { color: var(--text-primary); text-decoration: underline; }
 
-  /* Mini Bento paired with regular product cards in ONE row (2026-09-29,
-     user's call: not a full-width block interrupting the grid). The
-     bento stays square (matching the homepage's own paired version,
-     not its full-width 2.8:1 one), and .bento-side-cards is a matching
-     2x2 block of ordinary cards (same product_card_html() markup as the
-     rest of the page) sized to align with it. */
-  .bento-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 40px 0; align-items: stretch; }
-  .bento-side-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .mini-bento {
-    display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr;
-    gap: 10px; width: 100%; aspect-ratio: 1/1;
+  /* Larger-image feature row (see _render_feature_grid) - same image/
+     name/brand placement as the homepage's own .recent-card (bigger
+     square photo, bold name, muted brand directly below), just a
+     wrapping grid instead of a horizontal scroll-snap shelf - every
+     card stays visible at once, nothing hidden behind a swipe the way
+     the homepage's own "peek and scroll" shelf intentionally hides
+     more. Carries the whole capped edit alone (a Mini Bento interlude
+     was tried and dropped, 2026-09-30 - "not worth the hassle this is
+     causing"). */
+  .edit-feature-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 20px; margin: 0 0 40px;
   }
-  .mini-bento-tile { position: relative; display: block; overflow: hidden; border: 0.5px solid var(--border); background: var(--surface-1); }
-  .mini-bento-tile img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
-  .mini-bento-tile:hover img { transform: scale(1.03); }
-  .mini-bento-1 { grid-column: 1; grid-row: 1 / 3; }
-  .mini-bento-2 { grid-column: 2; grid-row: 1; }
-  .mini-bento-3 { grid-column: 3; grid-row: 1; }
-  .mini-bento-4 { grid-column: 2; grid-row: 2; }
-  .mini-bento-5 { grid-column: 3; grid-row: 2; }
-  /* Hover-reveal, matching the homepage's own top 4-tile bento's
-     .cat-tile/.cat-label/.cat-details split, and now also its own
-     Floor Lamps mini-bento/duo-carousel slides (2026-09-29, user's
-     call: "should we use the same hover over function as on the home
-     page large bento... needs to be consistent across the site") - a
-     plain, always-visible name (.mini-bento-label) stands in at rest,
-     and this richer name+brand gradient scrim only fades in on hover.
-     Replaces an earlier, page-local-only text-shadow treatment (no
-     scrim, always visible) that predated the sitewide hover-reveal
-     convention. */
-  .mini-bento-label {
-    position: absolute; top: 10px; left: 10px; z-index: 2;
-    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 13px;
-    color: #fff; letter-spacing: -0.005em; margin: 0;
-    pointer-events: none;
+  .edit-feature-card { display: block; text-decoration: none; color: inherit; }
+  .edit-feature-image {
+    aspect-ratio: 1/1; background: var(--surface-1); border: 0.5px solid var(--border);
+    overflow: hidden; margin-bottom: 8px; position: relative;
   }
-  .mini-bento-caption {
-    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
-    padding: 10px 12px; background: linear-gradient(to top, rgba(0,0,0,0.65), rgba(0,0,0,0));
-    color: #fff; font-size: 12px; font-weight: 500;
-    opacity: 0; transform: translateY(6px);
-    transition: opacity 0.25s ease, transform 0.25s ease;
-    pointer-events: none;
-  }
-  .mini-bento-caption span { display: block; font-size: 11px; font-weight: 400; opacity: 0.8; }
-  .mini-bento-tile:hover .mini-bento-caption { opacity: 1; transform: translateY(0); }
+  .edit-feature-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
+  .edit-feature-card:hover .edit-feature-image img { transform: scale(1.02); }
+  .edit-feature-name { display: block; font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .edit-feature-brand { display: block; font-size: 12px; color: var(--text-muted); }
+
   @media (max-width: 760px) {
     .edit-header h1 { font-size: 28px; }
-    .bento-row { grid-template-columns: 1fr; }
-    .mini-bento { grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr 1fr; aspect-ratio: auto; height: 480px; }
-    .mini-bento-1 { grid-column: 1 / 3; grid-row: 1; }
-    .mini-bento-2 { grid-column: 1; grid-row: 2; }
-    .mini-bento-3 { grid-column: 2; grid-row: 2; }
-    .mini-bento-4 { grid-column: 1; grid-row: 3; }
-    .mini-bento-5 { grid-column: 2; grid-row: 3; }
   }
 
   /* Same Banner Carousel primitive used for the homepage's Sofas edit
      (2026-09-29) - carries the homepage's own "themed edit" feel onto
      this dedicated page, with different real pieces than the homepage
      teaser shows (see each theme's "exclude" list). Auto-rotates every
-     6s, dot navigation, pauses on hover. */
-  .banner-carousel { position: relative; aspect-ratio: 2/1; margin-bottom: 40px; border: 0.5px solid var(--border); overflow: hidden; }
-  .banner-slide { position: absolute; inset: 0; display: none; }
-  .banner-slide.active { display: block; }
-  .banner-slide a { display: block; width: 100%; height: 100%; position: relative; text-decoration: none; color: inherit; }
-  .banner-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .banner-slide-content {
-    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
-    padding: 28px 32px; background: linear-gradient(to top, rgba(0,0,0,0.7), rgba(0,0,0,0));
-    color: #fff;
+     6s, dot navigation, pauses on hover.
+     Image and caption were split into two real elements, not one
+     gradient-scrim-over-photo block (2026-09-30, user: "the product
+     information should sit below... so that clicking the link or image
+     takes you to the site") - same "clean image, caption below"
+     principle the homepage's own .feature-banner-frame/
+     .feature-banner-caption pair already settled on. A theme-name badge
+     was tried on the image itself too, same day, then dropped just as
+     quickly once live - "it duplicates the work done by the title of
+     the edit" (the page's own H1, right above this banner). Sized 2/1
+     (desktop) / 4/3 (mobile) to match that same primitive exactly - an
+     earlier attempt to widen this box for portrait-shaped
+     hero photos (first 4/5, then a "square" 1/1) never actually fixed
+     anything, since the real problem was the SOURCE PHOTO's own shape,
+     not the box: "the images are the wrong size for a banner so they
+     are being forced to do something they cannot" (user, 2026-09-30).
+     See each theme's own "hero_image" comment for how that's handled
+     now (a landscape placeholder, or left pending). */
+  .banner-carousel { margin-bottom: 40px; }
+  /* Own position:relative box for just the image frames + dots, kept
+     separate from the caption below - otherwise the dots' absolute
+     bottom/right would anchor to the bottom of the WHOLE carousel
+     (frame + caption combined) instead of to the image itself, the
+     same bug already documented on the homepage's own
+     .duo-carousel-caption. */
+  .banner-frames { position: relative; }
+  .banner-slide-frame {
+    display: none; position: relative; aspect-ratio: 2/1;
+    border: 0.5px solid var(--border); overflow: hidden;
+    text-decoration: none; color: inherit;
   }
-  .banner-slide-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; opacity: 0.8; margin: 0 0 6px; }
-  .banner-slide-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 28px; margin: 0 0 4px; }
-  .banner-slide-brand { font-size: 13px; opacity: 0.9; margin: 0; }
+  .banner-slide-frame.active { display: block; }
+  .banner-slide-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .banner-slide-frame:hover img { transform: scale(1.02); }
   .banner-dots { position: absolute; bottom: 18px; right: 24px; z-index: 2; display: flex; gap: 6px; }
   .banner-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; padding: 0; }
   .banner-dot.active { background: #fff; }
+  .banner-caption { display: none; text-decoration: none; color: inherit; margin-top: 14px; }
+  .banner-caption.active { display: block; }
+  .banner-caption-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 22px; margin: 0 0 4px; }
+  .banner-caption-brand { font-size: 13px; color: var(--text-secondary); margin: 0; }
+  .banner-caption:hover .banner-caption-title { text-decoration: underline; }
   @media (max-width: 760px) {
-    .banner-carousel { aspect-ratio: 4/3; }
-    .banner-slide-title { font-size: 22px; }
+    .banner-slide-frame { aspect-ratio: 4/3; }
   }
 </style>
 </head>
@@ -318,136 +312,77 @@
     <h1>Round Coffee Tables</h1>
     <p class="edit-intro">No corners to work around - a round coffee table sits equally well against a sofa, an armchair, or a walking path through the room. Every result links straight to the maker&#x27;s own site.</p>
   </div>
-  <div class="banner-carousel">
-        <div class="banner-slide active">
-          <a href="https://pinchdesign.com/products/landry-coffee-table-circular-bronze" target="_blank" rel="noopener noreferrer">
-            <img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375" alt="Landry coffee table circular bronze by Pinch">
-            <div class="banner-slide-content">
-              <p class="banner-slide-eyebrow">A themed edit</p>
-              <p class="banner-slide-title">Landry coffee table circular bronze</p>
-              <p class="banner-slide-brand">Pinch</p>
-            </div>
-          </a>
-        </div></div>
-  <div class="grid">
-      <a class="card" href="https://pinchdesign.com/products/landry-coffee-table-circular-bronze" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375" alt="Landry coffee table circular by Pinch" loading="lazy"><span class="variant-badge">4 finishes</span></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Landry coffee table circular</p></div>
-          <p class="card-brand">Pinch</p>
-        </div>
+  <div class="banner-carousel"><div class="banner-frames">
+        <a class="banner-slide-frame active" href="https://pinchdesign.com/products/landry-coffee-table-circular-bronze" target="_blank" rel="noopener noreferrer">
+          <img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375" alt="Landry coffee table circular bronze by Pinch">
+        </a></div>
+        <a class="banner-caption active" href="https://pinchdesign.com/products/landry-coffee-table-circular-bronze" target="_blank" rel="noopener noreferrer">
+          <p class="banner-caption-title">Landry coffee table circular bronze</p>
+          <p class="banner-caption-brand">Pinch</p>
+        </a></div>
+  <div class="edit-feature-grid">
+      <a class="edit-feature-card" href="https://pinchdesign.com/products/landry-coffee-table-circular-bronze" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375" alt="Landry coffee table circular by Pinch" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <span class="edit-feature-name">Landry coffee table circular</span>
+        <span class="edit-feature-brand">Pinch</span>
       </a>
-      <a class="card" href="https://wendelbo.com/products/notch-coffee-table-round-medium" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Notch_Coffeetable_Round_M_1.jpg?v=1741635393" alt="Notch Coffee Table - Round by Wendelbo" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Notch Coffee Table - Round</p></div>
-          <p class="card-brand">Wendelbo</p>
-        </div>
+      <a class="edit-feature-card" href="https://wendelbo.com/products/notch-coffee-table-round-medium" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Notch_Coffeetable_Round_M_1.jpg?v=1741635393" alt="Notch Coffee Table - Round by Wendelbo" loading="lazy"></div>
+        <span class="edit-feature-name">Notch Coffee Table - Round</span>
+        <span class="edit-feature-brand">Wendelbo</span>
       </a>
-      <a class="card" href="https://www.portaromana.com/products/giacometti_round_coffee_table" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/products/CFT18-LGD-CCP-HERO.jpg?v=1662723122" alt="Giacometti Round Coffee Table by Porta Romana" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Giacometti Round Coffee Table</p></div>
-          <p class="card-brand">Porta Romana</p>
-        </div>
+      <a class="edit-feature-card" href="https://www.portaromana.com/products/giacometti_round_coffee_table" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/products/CFT18-LGD-CCP-HERO.jpg?v=1662723122" alt="Giacometti Round Coffee Table by Porta Romana" loading="lazy"></div>
+        <span class="edit-feature-name">Giacometti Round Coffee Table</span>
+        <span class="edit-feature-brand">Porta Romana</span>
       </a>
-      <a class="card" href="https://moebe.dk/products/round-coffee-table" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Round-Coffee-Table_PP_Low-Res_02.jpg?v=1685443063" alt="Round Coffee Table by Moebe" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Round Coffee Table</p></div>
-          <p class="card-brand">Moebe</p>
-        </div>
+      <a class="edit-feature-card" href="https://moebe.dk/products/round-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Round-Coffee-Table_PP_Low-Res_02.jpg?v=1685443063" alt="Round Coffee Table by Moebe" loading="lazy"></div>
+        <span class="edit-feature-name">Round Coffee Table</span>
+        <span class="edit-feature-brand">Moebe</span>
       </a>
-      <a class="card" href="https://noearlybirds.se/products/neb-round-side-table-with-top-in-oak-copy" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Soffbord_H30_Ek_01.png?v=1765192935" alt="NEB Round Coffee Table With Top In by No Early Birds" loading="lazy"><span class="variant-badge">3 finishes</span></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">NEB Round Coffee Table With Top In</p></div>
-          <p class="card-brand">No Early Birds</p>
-        </div>
+      <a class="edit-feature-card" href="https://www.fogia.com/coffee-side-tables/coffee-table/koku-coffee-table-round-high" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://images.fogia.com/c1/0c/71/69/69710cc199e7bed9add8a2bc/FogiaKoku Sofa Table Round High-Oak stained blackFront.png?auto=format&amp;w=2000&amp;q=90" alt="Koku Coffee Table Round, High by Fogia" loading="lazy"></div>
+        <span class="edit-feature-name">Koku Coffee Table Round, High</span>
+        <span class="edit-feature-brand">Fogia</span>
       </a>
-      <a class="card" href="https://noearlybirds.se/products/neb-high-round-side-table-travertine-top" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_H72_Travertin_04.png?v=1764859559" alt="NEB High Round Side Table by No Early Birds" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">NEB High Round Side Table</p></div>
-          <p class="card-brand">No Early Birds</p>
-        </div>
+      <a class="edit-feature-card" href="https://www.fogia.com/coffee-side-tables/coffee-table/koku-coffee-table-round-low" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://images.fogia.com/93/0d/71/69/69710d932052e8b80f7188b3/FogiaKoku Sofa Table Round Low-Oak stained blackFront.png?auto=format&amp;w=2000&amp;q=90" alt="Koku Coffee Table Round, Low by Fogia" loading="lazy"></div>
+        <span class="edit-feature-name">Koku Coffee Table Round, Low</span>
+        <span class="edit-feature-brand">Fogia</span>
       </a>
-      <a class="card" href="https://noearlybirds.se/products/neb-round-side-table-with-top-in-brass" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_Massing_04.png?v=1764860094" alt="NEB Round Side Table With Top In by No Early Birds" loading="lazy"><span class="variant-badge">4 finishes</span></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">NEB Round Side Table With Top In</p></div>
-          <p class="card-brand">No Early Birds</p>
-        </div>
+      <a class="edit-feature-card" href="https://en.kanndesign.com/products/table-basse-galta-forte-round-chene-naturel" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/products/galta-forte-round-oak-01.jpg?v=1629453250" alt="Table basse Galta Forte Round chêne naturel CT1087 by Kann Design" loading="lazy"></div>
+        <span class="edit-feature-name">Table basse Galta Forte Round chêne naturel CT1087</span>
+        <span class="edit-feature-brand">Kann Design</span>
       </a>
-      <a class="card" href="https://noearlybirds.se/products/neb-high-round-side-table-with-top-in-travertine-1" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/IMG_0831_a37fedcb-0e0e-42bd-bc5e-f049fab9a44f.jpg?v=1737548082" alt="NEB High Round Side Table With Top In Travertine by No Early Birds" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">NEB High Round Side Table With Top In Travertine</p></div>
-          <p class="card-brand">No Early Birds</p>
-        </div>
+      <a class="edit-feature-card" href="https://noearlybirds.se/products/neb-round-side-table-with-top-in-oak-copy" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Soffbord_H30_Ek_01.png?v=1765192935" alt="NEB Round Coffee Table With Top In by No Early Birds" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <span class="edit-feature-name">NEB Round Coffee Table With Top In</span>
+        <span class="edit-feature-brand">No Early Birds</span>
       </a>
-      <a class="card" href="https://noearlybirds.se/products/neb-round-coffee-table-with-top-in-verde-italia" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Coffee_Table_Verde_Italia.jpg?v=1642090783" alt="NEB Round Coffee Table with Top in Verde Italia by No Early Birds" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">NEB Round Coffee Table with Top in Verde Italia</p></div>
-          <p class="card-brand">No Early Birds</p>
-        </div>
+      <a class="edit-feature-card" href="https://noearlybirds.se/products/neb-round-coffee-table-with-top-in-verde-italia" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Coffee_Table_Verde_Italia.jpg?v=1642090783" alt="NEB Round Coffee Table with Top in Verde Italia by No Early Birds" loading="lazy"></div>
+        <span class="edit-feature-name">NEB Round Coffee Table with Top in Verde Italia</span>
+        <span class="edit-feature-brand">No Early Birds</span>
       </a>
-      <a class="card" href="https://noearlybirds.se/products/neb-coffee-table-in-travertine-stone-top" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Soffbord_H30_Travertin_04.png?v=1764345674" alt="NEB Round Coffee Table with Travertine Top by No Early Birds" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">NEB Round Coffee Table with Travertine Top</p></div>
-          <p class="card-brand">No Early Birds</p>
-        </div>
+      <a class="edit-feature-card" href="https://noearlybirds.se/products/neb-coffee-table-in-travertine-stone-top" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Soffbord_H30_Travertin_04.png?v=1764345674" alt="NEB Round Coffee Table with Travertine Top by No Early Birds" loading="lazy"></div>
+        <span class="edit-feature-name">NEB Round Coffee Table with Travertine Top</span>
+        <span class="edit-feature-brand">No Early Birds</span>
       </a>
-      <a class="card" href="https://noearlybirds.se/products/neb-round-side-table-with-top-in-verde-italia-granite" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Round_Side_table_Verde_italia.jpg?v=1611860799" alt="NEB Round Side Table With Top In Verde Italia Granite by No Early Birds" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">NEB Round Side Table With Top In Verde Italia Granite</p></div>
-          <p class="card-brand">No Early Birds</p>
-        </div>
+      <a class="edit-feature-card" href="https://noearlybirds.se/products/neb-round-sofa-table-80-cm-carrara-marble" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/9.png?v=1731751526" alt="NEB Round Coffee Table with Top In Carrara Marble by No Early Birds" loading="lazy"></div>
+        <span class="edit-feature-name">NEB Round Coffee Table with Top In Carrara Marble</span>
+        <span class="edit-feature-brand">No Early Birds</span>
       </a>
-      <a class="card" href="https://noearlybirds.se/products/neb-round-sofa-table-80-cm-carrara-marble" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/9.png?v=1731751526" alt="NEB Round Coffee Table with Top In Carrara Marble by No Early Birds" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">NEB Round Coffee Table with Top In Carrara Marble</p></div>
-          <p class="card-brand">No Early Birds</p>
-        </div>
-      </a>
-      <a class="card" href="https://noearlybirds.se/products/neb-round-side-table" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Runt_Sidobord_H430_Carrara_01.png?v=1764864020" alt="NEB Round Side Table With Top In Carrara Marble by No Early Birds" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">NEB Round Side Table With Top In Carrara Marble</p></div>
-          <p class="card-brand">No Early Birds</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.fogia.com/coffee-side-tables/coffee-table/koku-coffee-table-round-high" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://images.fogia.com/c1/0c/71/69/69710cc199e7bed9add8a2bc/FogiaKoku Sofa Table Round High-Oak stained blackFront.png?auto=format&amp;w=2000&amp;q=90" alt="Koku Coffee Table Round, High by Fogia" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Koku Coffee Table Round, High</p></div>
-          <p class="card-brand">Fogia</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.fogia.com/coffee-side-tables/coffee-table/koku-coffee-table-round-low" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://images.fogia.com/93/0d/71/69/69710d932052e8b80f7188b3/FogiaKoku Sofa Table Round Low-Oak stained blackFront.png?auto=format&amp;w=2000&amp;q=90" alt="Koku Coffee Table Round, Low by Fogia" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Koku Coffee Table Round, Low</p></div>
-          <p class="card-brand">Fogia</p>
-        </div>
-      </a>
-      <a class="card" href="https://en.kanndesign.com/products/table-basse-galta-forte-round-chene-naturel" target="_blank" rel="noopener noreferrer">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/products/galta-forte-round-oak-01.jpg?v=1629453250" alt="Table basse Galta Forte Round chêne naturel CT1087 by Kann Design" loading="lazy"></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Table basse Galta Forte Round chêne naturel CT1087</p></div>
-          <p class="card-brand">Kann Design</p>
-        </div>
-      </a></div>
+    </div>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
   </p>
 </main>
 <script>
-  document.querySelectorAll(".card-image img, .mini-bento-tile img").forEach(function (img) {
+  document.querySelectorAll(".card-image img").forEach(function (img) {
     img.addEventListener("load", function () {
       var ratio = img.naturalWidth / img.naturalHeight;
       if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
@@ -456,7 +391,8 @@
 </script>
 <script>
   document.querySelectorAll(".banner-carousel").forEach(function (carousel) {
-    var slides = carousel.querySelectorAll(".banner-slide");
+    var slides = carousel.querySelectorAll(".banner-slide-frame");
+    var captions = carousel.querySelectorAll(".banner-caption");
     var dots = carousel.querySelectorAll(".banner-dot");
     if (slides.length <= 1) return;
     var current = 0;
@@ -464,6 +400,7 @@
     function show(i) {
       current = i;
       slides.forEach(function (s, idx) { s.classList.toggle("active", idx === i); });
+      captions.forEach(function (c, idx) { c.classList.toggle("active", idx === i); });
       dots.forEach(function (d, idx) { d.classList.toggle("active", idx === i); });
     }
     function next() { show((current + 1) % slides.length); }
