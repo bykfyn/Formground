@@ -726,6 +726,20 @@ PAGE_CSS = """
   }
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
   .card-body { padding: 0; }
   /* Reserves a full 2 lines' height so .card-brand always starts at the
      same row across every card in a grid, regardless of whether a given
@@ -1169,7 +1183,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
 {site_nav_html("creators")}
 </header>
-<main>
+<main data-brand="{html.escape(brand)}">
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">{html.escape(brand)}</h1>
