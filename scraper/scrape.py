@@ -8900,15 +8900,26 @@ def extract_page_offers(page_html):
 PRICE_FROM_PAGE_JSONLD = {
     "Moustache", "Gubi", "Yird Ceramics", "Joe Armitage", "New Works DK",
     "H. Bigeleisen", "Tim Teven Studio",
+    # Added 2026-10-02 after the user confirmed these show prices. Grain
+    # declares exact USD offers. Coco Flip is customisable/made-to-order:
+    # only pages that declare an Offer (AUD) get a price - its visible
+    # "From $715" figures belong to OTHER products' cards, so no
+    # visible-text fallback is used for it.
+    "Grain", "Coco Flip",
 }
-# Brands with a visible price only: (regex with ONE price group, currency).
-# Accepted only when the same value appears 2+ times on the page (the real
-# price repeats in the buy box and the header/meta; stray accessory prices
-# and "$0.00" placeholders do not).
+# Brands with a visible price only: (regex with ONE price group, currency,
+# minimum repeats). The first price seen that repeats at least that many
+# times wins: 2 for sites where the real price shows in the buy box AND
+# the header/meta (stray accessory prices and "$0.00" placeholders do not
+# repeat), 1 where the page structure puts the product's own price first.
 PRICE_FROM_PAGE_VISIBLE = {
-    "Workstead": (re.compile(r"\$\s?(\d[\d,]*\.\d{2})"), "USD"),
-    "Wästberg": (re.compile(r"(\d[\d,.]*\d)\s*SEK"), "SEK"),
-    "Muhly": (re.compile(r"\$\s?(\d[\d,]*(?:\.\d{2})?)"), "USD"),
+    "Workstead": (re.compile(r"\$\s?(\d[\d,]*\.\d{2})"), "USD", 2),
+    "Wästberg": (re.compile(r"(\d[\d,.]*\d)\s*SEK"), "SEK", 2),
+    "Muhly": (re.compile(r"\$\s?(\d[\d,]*(?:\.\d{2})?)"), "USD", 2),
+    # Danny Kaplan prints "<Title> $2,200 USD" straight after the title,
+    # BEFORE the "Related products" prices (also "$X USD"), and a made-to-
+    # order piece shows it only once - so the FIRST priced-in-USD figure.
+    "Danny Kaplan Studio": (re.compile(r"\$\s?(\d[\d,]*(?:\.\d{2})?)\s*USD"), "USD", 1),
 }
 PRICE_PAGE_DELAY = 0.6
 
@@ -8920,18 +8931,24 @@ def _price_from_page_html(brand_name, page_html):
             if prices and prices[0] > 0:
                 return prices[0], currency
         return None, None
-    pattern, currency = PRICE_FROM_PAGE_VISIBLE[brand_name]
-    text = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", page_html, flags=re.S | re.I)
-    counts, order = {}, []
-    for raw in pattern.findall(text):
-        value = _parse_price(raw)
-        if value and value > 0:
-            if value not in counts:
-                order.append(value)
-            counts[value] = counts.get(value, 0) + 1
-    for value in order:
-        if counts[value] >= 2:
-            return value, currency
+    pattern, currency, min_repeats = PRICE_FROM_PAGE_VISIBLE[brand_name]
+    raw = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", page_html, flags=re.S | re.I)
+    # Two views of the page, tried in order: the markup as served (Workstead's
+    # price repeats mostly in meta/attribute values, which only this view
+    # sees) and then the visible text with tags removed (Danny Kaplan puts
+    # "$2,200" and "USD" in sibling elements, which only this view joins).
+    visible = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", raw))
+    for text in (raw, visible):
+        counts, order = {}, []
+        for match in pattern.findall(text):
+            value = _parse_price(match)
+            if value and value > 0:
+                if value not in counts:
+                    order.append(value)
+                counts[value] = counts.get(value, 0) + 1
+        for value in order:
+            if counts[value] >= min_repeats:
+                return value, currency
     return None, None
 
 

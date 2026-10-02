@@ -363,6 +363,23 @@ class PriceFromPageTests(unittest.TestCase):
         self.assertEqual(scrape._price_from_page_html("Muhly", "<p>$295</p>"), (None, None))
         self.assertEqual(scrape._price_from_page_html("Muhly", "<p>$295</p><b>$295.00</b>"), (295.0, "USD"))
 
+    def test_danny_kaplan_takes_the_first_price_before_related_products(self):
+        page = "<h1>Agnes Lamp</h1> $2,200 USD <h2>Related Products</h2> Astor $2,200 USD Globe $1,950 USD"
+        self.assertEqual(scrape._price_from_page_html("Danny Kaplan Studio", page), (2200.0, "USD"))
+        one_off = "<h1>Facet Dining Chair</h1> $3,000 USD <h2>Related Products</h2> Brion $6,500 USD"
+        self.assertEqual(scrape._price_from_page_html("Danny Kaplan Studio", one_off), (3000.0, "USD"))
+
+    def test_price_split_across_sibling_elements_is_still_read(self):
+        # the live markup: number and currency in separate elements
+        page = '<h1>Agnes Lamp</h1><span class="p">$2,200</span> <span>USD</span><h2>Related</h2><span>$1,950</span><span>USD</span>'
+        self.assertEqual(scrape._price_from_page_html("Danny Kaplan Studio", page), (2200.0, "USD"))
+
+    def test_coco_flip_uses_structured_offer_only_never_from_prices_in_text(self):
+        text_only = "<p>Chorus Wall Light From $715 Explore</p>"
+        self.assertEqual(scrape._price_from_page_html("Coco Flip", text_only), (None, None))
+        offer = '<script type="application/ld+json">{"offers":{"price":"2750","priceCurrency":"AUD"}}</script>'
+        self.assertEqual(scrape._price_from_page_html("Coco Flip", offer), (2750.0, "AUD"))
+
     def test_visible_zero_placeholder_ignored(self):
         page = "<p>$4,925.00</p><p>$4,925.00</p><p>$0.00</p><p>$0.00</p>"
         self.assertEqual(scrape._price_from_page_html("Workstead", page), (4925.0, "USD"))
