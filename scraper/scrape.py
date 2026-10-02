@@ -2096,6 +2096,18 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("cushion", "Cushion"), ("day bed", "Daybed"), ("bergere", "Armchair"),
     ("bookshelves", "Shelving"), ("bookshelf", "Shelving"), ("shelves", "Shelving"),
     ("bookcase", "Shelving"), ("catchall", "Catchall"),
+    # Added 2026-10-02 (backfill step 2) from the blank-category names of
+    # HAY/Ferm Living/Serax: real furniture/lighting words the map lacked,
+    # plus plural tableware words ("glasses" does not end in "glass").
+    ("lampshade", "Lampshade"), ("shade", "Lampshade"), ("wardrobe", "Wardrobe"), ("cupboard", "Cabinet"),
+    ("drawers", "Chest of Drawers"), ("mattress", "Mattress"), ("divan", "Sofa"),
+    ("lounge seat", "Lounge Chair"), ("bedspread", "Bedding"), ("duvet cover", "Bedding"),
+    ("pillow case", "Bedding"), ("bath towel", "Bath Textile"), ("hand towel", "Bath Textile"),
+    ("bath sheet", "Bath Textile"), ("wash cloth", "Bath Textile"), ("guest towel", "Bath Textile"),
+    ("shower curtain", "Bath Textile"), ("teapot", "Teapot"), ("glasses", "Glass"),
+    ("tumbler", "Glass"), ("champagne flute", "Glass"), ("flutes", "Glass"),
+    ("platter", "Serving Dish"), ("cake stand", "Serving Dish"), ("serving dish", "Serving Dish"),
+    ("seat pad", "Cushion"), ("pinboard", "Wall Art"), ("wallpaper", "Wallpaper"),
     ("table", "Table"), ("chandelier", "Chandelier"), ("pendant", "Pendant"),
     ("uplight", "Light"), ("lamp", "Lamp"), ("light", "Light"),
 )
@@ -3019,6 +3031,28 @@ def _infer_category_from_foreign_keywords(text):
             if stem not in FOREIGN_EXACT_ONLY_STEMS and len(stem) >= 4 and word.endswith(stem):
                 return category
     return None
+
+
+# Brands whose furniture/lighting carries only a model code, never a type
+# word ("AAC 212", "Soft Edge 60"). Checked 2026-10-02 against HAY's own
+# range: AAC = About A Chair, AAL = About A Lamp, AAS = About A Stool,
+# AAT = About A Table, J-Series and Soft Edge are chair families.
+CODED_SERIES_TYPES = {
+    "HAY": (("aac ", "Chair"), ("aal ", "Lamp"), ("aas ", "Stool"), ("aat ", "Table"),
+            ("j-series ", "Chair"), ("soft edge ", "Chair")),
+}
+
+
+def _infer_category_for_blank(product_name, brand_name=None):
+    """Type for a product whose category is blank: coded-series rules, then
+    portable/wall lamp shorthand, then the English name map."""
+    lower = product_name.lower().strip() + " "
+    for prefix, category in CODED_SERIES_TYPES.get(brand_name, ()):
+        if lower.startswith(prefix) and "seat pad" not in lower:
+            return category
+    if lower.rstrip().endswith(" portable"):
+        return "Table Lamp"
+    return _infer_category_from_english_keywords(product_name)
 
 
 def _backfill_foreign_category(product_name, category):
@@ -8868,6 +8902,8 @@ def run(brand_name=None):
                 if image_override:
                     product["image_url"] = image_override
                 if not override:
+                    if not (product["category"] or "").strip():
+                        product["category"] = _infer_category_for_blank(product["product_name"], brand["name"]) or ""
                     product["category"] = _backfill_foreign_category(product["product_name"], product["category"])
                 if _is_out_of_scope_product(product["product_name"], product["category"], brand["name"], sibling_names_lower):
                     continue
