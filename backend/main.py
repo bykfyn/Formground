@@ -30,7 +30,63 @@ from fastapi.middleware.cors import CORSMiddleware
 from analytics import log_event
 from query_engine import discover, search, search_full, search_more, shape_agent_product
 
-app = FastAPI(title="Formground")
+AGENT_PRODUCT_SCHEMA = {
+    "type": "object",
+    "description": "A schema.org Product-shaped record. Optional fields are omitted, never null.",
+    "required": ["@type", "name", "brand", "url", "category", "priceStatus", "tier"],
+    "properties": {
+        "@type": {"type": "string", "enum": ["Product"]},
+        "name": {"type": "string"},
+        "brand": {
+            "type": "object",
+            "properties": {"@type": {"type": "string", "enum": ["Brand"]}, "name": {"type": "string"}},
+        },
+        "url": {
+            "type": "string", "format": "uri",
+            "description": "The maker's own product page (Formground does not sell anything). "
+                           "Falls back to the maker's homepage if the product page is confirmed dead.",
+        },
+        "category": {"type": "string", "description": "Product type tags as scraped/normalized, comma-separated; may be empty."},
+        "priceStatus": {
+            "type": "string",
+            "enum": ["listed", "on_request", "dealer_priced", "unknown"],
+            "description": "listed: price and currency are both known (see offers). on_request: the maker "
+                           "prices on application or to commission - send an enquiry. dealer_priced: the maker "
+                           "does not set a public price; stockists do. unknown: no price data, no claim made. "
+                           "A missing price is often correct, not an error.",
+        },
+        "offers": {
+            "type": "object",
+            "description": "Present only when priceStatus is listed. The price exactly as the maker lists it, "
+                           "in the maker's own currency - never converted or estimated.",
+            "properties": {
+                "@type": {"type": "string", "enum": ["Offer"]},
+                "price": {"type": "string", "example": "415.00"},
+                "priceCurrency": {"type": "string", "description": "ISO 4217 code", "example": "EUR"},
+            },
+        },
+        "tier": {"type": "string", "enum": ["independent", "established"],
+                 "description": "Hand-curated: established = well-known or multinational design house."},
+        "image": {"type": "string", "format": "uri"},
+        "material": {"type": "array", "items": {"type": "string"}, "description": "Material/finish options the maker lists."},
+        "creator": {
+            "type": "object", "description": "The designer, when the maker names one.",
+            "properties": {"@type": {"type": "string", "enum": ["Person"]}, "name": {"type": "string"}},
+        },
+        "makerCountry": {"type": "string", "description": "Country of the maker's studio/business, when confirmed."},
+    },
+}
+
+app = FastAPI(
+    title="Formground",
+    version="0.2.0",
+    description=(
+        "Formground indexes furniture, lighting and objects from independent makers and links every "
+        "result straight to the maker's own site. /agent/search is the public, machine-readable search; "
+        "the other routes serve the formground.com interface. No authentication; please keep request "
+        "volume modest."
+    ),
+)
 
 # Allows the frontend (wherever it's hosted) to call this backend.
 # POST is needed alongside GET now for /event (the click-tracking
@@ -90,8 +146,22 @@ def human_search_more(
     return {"results": results}
 
 
-@app.get("/agent/search")
-def agent_search(q: str = Query(..., description="Structured or natural language query from an agent")):
+@app.get(
+    "/agent/search",
+    summary="Search products from independent makers",
+    tags=["agents"],
+    responses={200: {
+        "description": "Matching products, brand-balanced so no single maker dominates.",
+        "content": {"application/json": {"schema": {
+            "type": "object",
+            "properties": {
+                "query": {"type": "string"},
+                "results": {"type": "array", "items": AGENT_PRODUCT_SCHEMA},
+            },
+        }}},
+    }},
+)
+def agent_search(q: str = Query(..., description="Natural-language query, e.g. 'oak dining table', 'two seater sofa', 'Swedish pendant lamp'. Product type, material, colour, maker country and seat count are understood.", examples=["round dining table"])):
     """
     Agent-facing search. Same engine as /search, but shaped as
     schema.org Product objects for machine consumption.
@@ -116,7 +186,7 @@ def discover_random(
     return {"results": results}
 
 
-@app.post("/event")
+@app.post("/event", include_in_schema=False)
 def track_event(payload: dict = Body(...)):
     """
     Click/share-tracking beacon - the frontend fires this (via

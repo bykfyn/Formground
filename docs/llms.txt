@@ -1,0 +1,40 @@
+# Formground
+
+> Formground helps people discover furniture, lighting and objects from independent makers. It indexes 27,525 products from 216 makers and links every result straight to the maker's own site. It sells nothing and shows no paid results in search.
+
+Generated 2026-10-02; the catalog is re-scraped weekly. Prices and availability belong to the makers - always send people to the maker's own page (the `url` field), not to Formground.
+
+## Search (machine-readable)
+
+- [Agent search API](https://formground-git-182928637479.europe-west1.run.app/agent/search?q=round+dining+table): GET, no authentication. Natural-language query in `q` (product type, material, colour, maker country, seat count are understood). Returns schema.org Product-shaped JSON, balanced across makers so no single brand dominates.
+- [OpenAPI description](https://formground.com/openapi.json): the exact request and response schema.
+
+## Reading the price fields
+
+- `priceStatus` is always present: `listed` (price and currency both known, see `offers`), `on_request` (the maker prices on application or to commission - send an enquiry), `dealer_priced` (the maker sets no public price; stockists do), or `unknown` (no data, no claim).
+- A missing price is often correct, not an error: many makers do not publish prices. Do not estimate one.
+- `offers.price` is exactly what the maker lists, in the maker's own currency (`offers.priceCurrency`, ISO 4217). Nothing is converted. Compare across currencies yourself if you need to.
+
+## Browse the full catalog by type (static pages, every match listed)
+
+- [All types](https://formground.com/browse/): 35 product types, each paginated, with schema.org Product data on every page.
+- Lighting: [Floor Lamps](https://formground.com/floor-lamps.html), [Table Lamps](https://formground.com/browse/table-lamps.html), [Pendant Lamps](https://formground.com/browse/pendant-lamps.html), [Wall Lamps](https://formground.com/browse/wall-lamps.html), [Ceiling Lamps](https://formground.com/browse/ceiling-lamps.html), [Chandeliers](https://formground.com/browse/chandeliers.html)
+- Seating: [Sofas](https://formground.com/browse/sofas.html), [Chairs](https://formground.com/browse/chairs.html), [Dining Chairs](https://formground.com/browse/dining-chairs.html), [Armchairs and Lounge Chairs](https://formground.com/browse/armchairs.html), [Stools](https://formground.com/browse/stools.html), [Bar Stools](https://formground.com/browse/bar-stools.html), [Benches](https://formground.com/browse/benches.html), [Footstools](https://formground.com/browse/footstools.html), [Ottomans and Poufs](https://formground.com/browse/ottomans-and-poufs.html)
+- Tables and desks: [Dining Tables](https://formground.com/browse/dining-tables.html), [Coffee Tables](https://formground.com/browse/coffee-tables.html), [Side Tables](https://formground.com/browse/side-tables.html), [Console Tables](https://formground.com/browse/console-tables.html), [Desks](https://formground.com/browse/desks.html)
+- Storage, beds and mirrors: [Sideboards](https://formground.com/browse/sideboards.html), [Cabinets](https://formground.com/browse/cabinets.html), [Shelving](https://formground.com/browse/shelving.html), [Beds](https://formground.com/browse/beds.html), [Mirrors](https://formground.com/browse/mirrors.html)
+- Soft furnishings: [Rugs](https://formground.com/browse/rugs.html), [Cushions](https://formground.com/browse/cushions.html), [Blankets and Throws](https://formground.com/browse/blankets.html)
+- Objects: [Candle Holders](https://formground.com/browse/candle-holders.html), [Candles](https://formground.com/browse/candles.html), [Glass](https://formground.com/browse/glass.html), [Vases](https://formground.com/browse/vases.html), [Bowls](https://formground.com/browse/bowls.html), [Plates](https://formground.com/browse/plates.html), [Trays](https://formground.com/browse/trays.html)
+
+## Curated and reference pages
+
+- [Edits](https://formground.com/edits.html): hand-picked selections by theme.
+- [Makers](https://formground.com/makers.html): every maker, one page each at https://formground.com/brands/{maker-slug}.html listing their full range.
+- [Designers](https://formground.com/designers.html): independent product designers and their pieces.
+- [New arrivals](https://formground.com/new.html): pieces added in the last 90 days.
+- [Sitemap](https://formground.com/sitemap.xml)
+
+## Notes
+
+- Categories are normalized by Formground and are not always the maker's own wording; footstools, ottomans/poufs and stools are separate types, as are candle holders and candles.
+- `tier` is hand-curated: `established` marks a well-known or multinational design house, everything else is `independent`.
+- Please keep request volume modest. Questions or corrections: [contact](https://formground.com/contact.html).

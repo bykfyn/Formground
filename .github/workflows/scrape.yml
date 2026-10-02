@@ -42,19 +42,34 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4
+        run: pip install requests beautifulsoup4 -r backend/requirements.txt
 
       - name: Run the scraper
         run: python scraper/scrape.py
 
+      # Order matters: generate_brand_pages.py rebuilds sitemap.xml from
+      # scratch, and the generators after it APPEND their own URLs. Running
+      # it alone (as this workflow once did) silently dropped every
+      # browse/edit/theme URL from the sitemap and left those pages stale
+      # against the fresh scrape.
       - name: Regenerate brand pages, makers index, and sitemap
         run: python scraper/generate_brand_pages.py
+
+      - name: Regenerate category, browse, and edit pages
+        run: |
+          python scraper/generate_theme_landing_pages.py
+          python scraper/generate_browse_pages.py
+          python scraper/generate_themed_edit_pages.py
+          python scraper/generate_edits_page.py
+
+      - name: Regenerate llms.txt and openapi.json
+        run: python scraper/generate_agent_docs.py
 
       - name: Save updated data back to the repo
         run: |
           git config user.name "formground-bot"
           git config user.email "bot@formground.local"
-          git add data/formground.db data/last_scrape_report.json docs/brands docs/makers.html docs/sitemap.xml
+          git add data/formground.db data/last_scrape_report.json docs
           git diff --quiet --cached || git commit -m "Update scraped data and regenerate brand pages"
           git push
 
