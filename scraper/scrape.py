@@ -29,6 +29,7 @@ import datetime
 import gzip
 import html
 import json
+import os
 from urllib.parse import urlsplit
 import urllib.robotparser
 import re
@@ -9287,7 +9288,7 @@ def _scrape_one_brand(brand, extractor):
     return brand, products, round(time.monotonic() - brand_start, 1), None
 
 
-def run(brand_name=None):
+def run(brand_name=None, local_only=False):
     """
     brand_name: if given, scrapes only that one brand (case-insensitive
     exact match) instead of the full catalog - for testing/adding a
@@ -9314,6 +9315,19 @@ def run(brand_name=None):
         if not brands:
             print(f"No brand named '{brand_name}' found in {BRANDS_PATH}.")
             return
+    if local_only:
+        brands = [b for b in brands if b.get("scrape_from") == "local"]
+        print(f"Local-only run: {len(brands)} brands marked scrape_from=local.")
+    elif os.environ.get("GITHUB_ACTIONS") == "true" and not brand_name:
+        # Some sites refuse requests from cloud data-center addresses (the
+        # four below returned 0 products in the 2026-10-02 workflow run yet
+        # extract fully from a normal connection). Scraping them here only
+        # produces false "blocked" alerts, so the workflow leaves them alone:
+        # their stored data stays as last refreshed by `scrape.py --local-only`.
+        skipped = [b["name"] for b in brands if b.get("scrape_from") == "local"]
+        if skipped:
+            print(f"Skipping in CI (scrape_from=local, refresh with --local-only): {', '.join(skipped)}")
+        brands = [b for b in brands if b.get("scrape_from") != "local"]
 
     conn = setup_database()
     start_time = time.monotonic()
@@ -9490,11 +9504,11 @@ def run(brand_name=None):
 
     conn.close()
     total_seconds = round(time.monotonic() - start_time, 1)
-    print_summary(brand_reports, total_seconds, stopped_early)
+    print_summary(brand_reports, total_seconds, stopped_early, save_report=not (brand_name or local_only))
     print("Done.")
 
 
-def print_summary(brand_reports, total_seconds, stopped_early):
+def print_summary(brand_reports, total_seconds, stopped_early, save_report=True):
     """
     Resource-effectiveness summary: how long the run took overall and per
     brand, and total products saved - printed to the console (visible in
@@ -9533,6 +9547,11 @@ def print_summary(brand_reports, total_seconds, stopped_early):
         "blocked_brands": blocked,
         "brands": brand_reports,
     }
+    if not save_report:
+        # A single-brand or local-only run is not the weekly picture: leave
+        # last_scrape_report.json (and the CI blocked-brands alert) as the
+        # last FULL run wrote it.
+        return
     with open(REPORT_PATH, "w") as f:
         json.dump(report, f, indent=2)
 
@@ -9543,5 +9562,9 @@ if __name__ == "__main__":
         "--brand", default=None,
         help="Scrape only this one brand (exact name from brands.json), instead of the full catalog.",
     )
+    parser.add_argument(
+        "--local-only", action="store_true",
+        help="Scrape only brands marked scrape_from=local in brands.json (sites that refuse cloud/CI addresses); run from your own machine.",
+    )
     args = parser.parse_args()
-    run(brand_name=args.brand)
+    run(brand_name=args.brand, local_only=args.local_only)
