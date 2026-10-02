@@ -246,6 +246,32 @@ def _breadcrumb_json(crumbs):
     })
 
 
+def _itemlist_json(cards, start_index):
+    """schema.org ItemList of Product for the page's cards - typed data for
+    crawlers and agents that the visual cards alone don't carry. An Offer is
+    included ONLY when both price and currency are stored (currency is
+    known for few products; it is never guessed)."""
+    items = []
+    for i, p in enumerate(cards, start=start_index):
+        product = {
+            "@type": "Product",
+            "name": p["product_name"],
+            "url": p["product_url"],
+            "image": p["image_url"],
+            "brand": {"@type": "Brand", "name": p["brand"]},
+        }
+        if p.get("category"):
+            product["category"] = p["category"].split(",")[0].strip()
+        if p.get("price") and p.get("currency"):
+            product["offers"] = {
+                "@type": "Offer", "price": f'{p["price"]:.2f}',
+                "priceCurrency": p["currency"],
+            }
+        items.append({"@type": "ListItem", "position": i, "item": product})
+    return json.dumps({"@context": "https://schema.org", "@type": "ItemList", "itemListElement": items},
+                      ensure_ascii=False, separators=(",", ":"))
+
+
 def _see_also_html(category):
     links = [CATEGORY_BY_SLUG[r] for r in category.get("related", []) if r in CATEGORY_BY_SLUG]
     if not links:
@@ -255,6 +281,7 @@ def _see_also_html(category):
 
 
 def render_browse_page(category, cards, variant_counts, page, pages, total_products):
+    itemlist = _itemlist_json(cards, (page - 1) * CARDS_PER_PAGE + 1)
     slug, title = category["slug"], category["title"]
     page_url = f"{SITE_URL}/browse/{_page_slug(slug, page)}.html"
     noun = title.lower()
@@ -279,6 +306,7 @@ def render_browse_page(category, cards, variant_counts, page, pages, total_produ
 <head>
 {_head(full_title, description, page_url)}
 <script type="application/ld+json">{breadcrumb}</script>
+<script type="application/ld+json">{itemlist}</script>
 </head>
 <body>
 <header class="site-header">
