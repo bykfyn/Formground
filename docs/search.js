@@ -8,11 +8,35 @@ const API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637
 // same for every visitor who clicked the same ad - it identifies the
 // campaign, not the person.
 const urlParams = new URLSearchParams(window.location.search);
-const UTM = {
+// Since 2026-10-02 the campaign (and the visit's landing page) comes from
+// fg-track.js, which carries both across pages of the same browser tab via
+// sessionStorage - so an ad's attribution survives navigating past the
+// landing page. Falls back to this page's own URL if that file did not load.
+const TRACK = window.FGTrack || null;
+const UTM = TRACK ? TRACK.ctx.utm : {
   utm_source: urlParams.get("utm_source"),
   utm_medium: urlParams.get("utm_medium"),
   utm_campaign: urlParams.get("utm_campaign"),
 };
+
+// The id /search or /discover returned for the results now on screen
+// (random per search, not per person) - echoed on a click so it joins to
+// the exact search that produced it.
+let currentSearchId = null;
+
+// page_path / landing_page (+ search_id) for every event this file sends.
+function trackExtra() {
+  const extra = TRACK ? TRACK.extra() : { page_path: window.location.pathname };
+  if (currentSearchId) extra.search_id = currentSearchId;
+  return extra;
+}
+
+// Never report from a local preview.
+const TRACKING_ON = window.FG_TRACK_FORCE || !/^(localhost|127\.0\.0\.1|\[::1\]|)$/.test(window.location.hostname);
+function beacon(payload) {
+  if (!TRACKING_ON) return;
+  navigator.sendBeacon(`${API_BASE}/event`, new Blob([JSON.stringify(payload)], { type: "application/json" }));
+}
 
 // Bare "utm_source=x&utm_medium=y" with no leading separator - callers
 // join it onto their own existing query string with "&" (search) or
@@ -111,13 +135,17 @@ function renderCard(r) {
   // doesn't even need to race a page unload, but sendBeacon is the
   // right tool either way - fire-and-forget, never throws).
   a.addEventListener("click", () => {
-    const payload = JSON.stringify({
+    beacon({
+      event_type: "click",
       query: input.value.trim() || null,
       brand: r.brand,
       product_name: r.product_name,
+      surface: "work",
+      position: a.parentNode ? Array.prototype.indexOf.call(a.parentNode.children, a) + 1 : null,
+      target_url: a.href,
+      ...trackExtra(),
       ...UTM,
     });
-    navigator.sendBeacon(`${API_BASE}/event`, new Blob([payload], { type: "application/json" }));
   });
 
   const imageDiv = document.createElement("div");
@@ -221,16 +249,14 @@ function renderCard(r) {
     // fires (stopPropagation above means that one never fires here) -
     // sharing and clicking through are different actions worth telling
     // apart later.
-    navigator.sendBeacon(
-      `${API_BASE}/event`,
-      new Blob([JSON.stringify({
-        event_type: "share",
-        query: input.value.trim() || null,
-        brand: r.brand,
-        product_name: r.product_name,
-        ...UTM,
-      })], { type: "application/json" }),
-    );
+    beacon({
+      event_type: "share",
+      query: input.value.trim() || null,
+      brand: r.brand,
+      product_name: r.product_name,
+      ...trackExtra(),
+      ...UTM,
+    });
     if (navigator.share) {
       // Native share sheet (mobile mostly) - a real OS-level standard,
       // not something to build a custom picker for. AbortError just
@@ -426,6 +452,7 @@ async function handleLoadMoreClick() {
         intent: JSON.stringify(moreState.intent),
         exclude: moreState.shownIds.join(","),
       });
+      if (currentSearchId) params.set("search_id", currentSearchId);
       const resp = await fetch(`${API_BASE}/search/more?${params.toString()}`);
       if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
       const data = await resp.json();
@@ -463,9 +490,12 @@ async function runSearch(query) {
   try {
     const utmSuffix = utmQueryString();
     const tierSuffix = TIER ? `&tier=${encodeURIComponent(TIER)}` : "";
-    const resp = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}${utmSuffix ? `&${utmSuffix}` : ""}${tierSuffix}`);
+    const where = `&page_path=${encodeURIComponent(window.location.pathname)}` +
+      (TRACK ? `&landing_page=${encodeURIComponent(TRACK.ctx.landing_page)}` : "");
+    const resp = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}${utmSuffix ? `&${utmSuffix}` : ""}${tierSuffix}${where}`);
     if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
     const data = await resp.json();
+    currentSearchId = data.search_id || null;
     const results = data.results || [];
     renderResults(
       results,
@@ -511,10 +541,13 @@ async function runDiscover() {
   try {
     const utmSuffix = utmQueryString();
     const tierSuffix = TIER ? `tier=${encodeURIComponent(TIER)}` : "";
-    const discoverQuery = [utmSuffix, tierSuffix].filter(Boolean).join("&");
+    const where = `page_path=${encodeURIComponent(window.location.pathname)}` +
+      (TRACK ? `&landing_page=${encodeURIComponent(TRACK.ctx.landing_page)}` : "");
+    const discoverQuery = [utmSuffix, tierSuffix, where].filter(Boolean).join("&");
     const resp = await fetch(`${API_BASE}/discover${discoverQuery ? `?${discoverQuery}` : ""}`);
     if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
     const data = await resp.json();
+    currentSearchId = data.search_id || null;
     renderResults(
       data.results || [],
       (n) => `${n} random products, no rankings, no paid results`,
@@ -610,13 +643,14 @@ if (gridEl) {
 document.querySelectorAll(".visit-source").forEach((link) => {
   link.addEventListener("click", () => {
     const tile = link.closest(".cat-tile");
-    const payload = JSON.stringify({
+    beacon({
       event_type: "click",
       brand: tile ? tile.querySelector(".product-maker")?.textContent.trim() : null,
       product_name: tile ? tile.querySelector(".product-name")?.textContent.trim() : null,
+      target_url: link.href,
+      ...trackExtra(),
       ...UTM,
     });
-    navigator.sendBeacon(`${API_BASE}/event`, new Blob([payload], { type: "application/json" }));
   });
 });
 
@@ -628,11 +662,11 @@ document.querySelectorAll(".visit-source").forEach((link) => {
 document.querySelectorAll(".cat-link").forEach((link) => {
   link.addEventListener("click", () => {
     const category = new URLSearchParams(link.href.split("?")[1]).get("q");
-    const payload = JSON.stringify({
+    beacon({
       event_type: "category_click",
       query: category,
+      ...trackExtra(),
       ...UTM,
     });
-    navigator.sendBeacon(`${API_BASE}/event`, new Blob([payload], { type: "application/json" }));
   });
 });

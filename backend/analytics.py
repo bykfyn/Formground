@@ -17,6 +17,26 @@ WHAT THIS DOES:
   campaign, not the person, the same way the query text describes the
   search, not the searcher. No new identifier, no session concept.
 
+  Widened 2026-10-02 so the history exists before the Insights /
+  demand-trend features are built (see project memory). Still no
+  cookie, no user identifier, no session id: every added field
+  describes a PAGE, a SEARCH or a MAKER, never a person.
+    - per-maker traffic: "pageview" events (page_path, page_type,
+      brand on a maker's own page) and `result_brands` - the makers
+      shown by a search or listing page - for per-maker impressions;
+    - query log: category/material/country/tier-filter the search was
+      resolved to, result counts, a random per-SEARCH `search_id` echoed
+      back on the click so a click joins to the exact search, `surface`
+      (work / agent / discover);
+    - maker classification: `brand_tier` / `brand_country` stamped
+      server-side at event time (never client-supplied), so the
+      established-vs-independent comparison stays correct retroactively
+      even if a maker's tier changes later;
+    - landing-page attribution: `page_path` (where it happened),
+      `landing_page` (the first page of that browser tab's visit, held
+      in sessionStorage - identical for everyone arriving the same
+      way), `referrer_host`, `position`, `target_url`/`target_type`.
+
 WHY BIGQUERY, NOT THE PRODUCT DATABASE:
   Cloud Run instances are ephemeral and scale to zero - writes to the
   SQLite file baked into the container image wouldn't persist past
@@ -53,7 +73,34 @@ SCHEMA = [
     bigquery.SchemaField("utm_source", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("utm_medium", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("utm_campaign", "STRING", mode="NULLABLE"),
+    # --- added 2026-10-02 (all nullable; old rows read back null) ---
+    bigquery.SchemaField("page_path", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("page_type", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("landing_page", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("referrer_host", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("surface", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("search_id", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("category", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("material", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("intent_countries", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("tier_filter", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("total_matches", "INTEGER", mode="NULLABLE"),
+    bigquery.SchemaField("total_brands", "INTEGER", mode="NULLABLE"),
+    bigquery.SchemaField("result_count", "INTEGER", mode="NULLABLE"),
+    bigquery.SchemaField("result_brands", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("position", "INTEGER", mode="NULLABLE"),
+    bigquery.SchemaField("target_url", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("target_type", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("brand_tier", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("brand_country", "STRING", mode="NULLABLE"),
 ]
+
+_SCHEMA_TYPES = {f.name: f.field_type for f in SCHEMA}
+LEGACY_FIELDS = {"timestamp", "event_type", "query", "brand", "product_name",
+                 "utm_source", "utm_medium", "utm_campaign"}
+MAX_STRING = 500
+MAX_RESULT_BRANDS = 8000   # a JSON array of [brand, tier] pairs
+_live_fields = None        # columns the real table has (set by _ensure_ready)
 
 _client = None
 _table_id = None
@@ -100,32 +147,63 @@ def _ensure_ready():
             existing_names = {f.name for f in table.schema}
             missing = [f for f in SCHEMA if f.name not in existing_names]
             if missing:
-                table.schema = list(table.schema) + missing
-                _client.update_table(table, ["schema"])
+                try:
+                    table.schema = list(table.schema) + missing
+                    table = _client.update_table(table, ["schema"])
+                except Exception as widen_error:
+                    # Widening must never switch ALL logging off: carry on
+                    # with whichever columns the table really has.
+                    logger.warning(f"Could not widen analytics table: {widen_error}")
+            global _live_fields
+            _live_fields = {f.name for f in table.schema}
 
         _ready = True
     except Exception as e:
         logger.warning(f"BigQuery not available, skipping analytics: {e}")
 
 
+def build_row(event_type, fields, allowed=None, now=None):
+    """Pure: the BigQuery row for one event. Keeps only schema columns
+    (and only `allowed` ones - the columns the live table really has),
+    truncates strings, coerces integers, drops empty values, and never
+    lets a caller set `timestamp`/`event_type` through `fields`."""
+    row = {
+        "timestamp": now or time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+        "event_type": event_type,
+    }
+    allowed = allowed if allowed is not None else set(_SCHEMA_TYPES)
+    for name, value in fields.items():
+        if name in ("timestamp", "event_type") or name not in _SCHEMA_TYPES or name not in allowed:
+            continue
+        if value is None or value == "":
+            continue
+        if _SCHEMA_TYPES[name] == "INTEGER":
+            try:
+                row[name] = int(value)
+            except (TypeError, ValueError):
+                continue
+        else:
+            limit = MAX_RESULT_BRANDS if name == "result_brands" else MAX_STRING
+            row[name] = str(value)[:limit]
+    return row
+
+
 def log_event(event_type, query=None, brand=None, product_name=None,
-              utm_source=None, utm_medium=None, utm_campaign=None):
+              utm_source=None, utm_medium=None, utm_campaign=None, **extra):
     """Insert one event row. Never raises - a logging failure should
-    never break a search or a click-through."""
+    never break a search or a click-through. `extra` carries the 2026-10-02
+    dimensions (see SCHEMA); anything that is not a schema column is
+    ignored."""
     try:
         _ensure_ready()
         if not _ready:
             return
-        row = {
-            "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
-            "event_type": event_type,
-            "query": query,
-            "brand": brand,
-            "product_name": product_name,
-            "utm_source": utm_source,
-            "utm_medium": utm_medium,
-            "utm_campaign": utm_campaign,
+        fields = {
+            "query": query, "brand": brand, "product_name": product_name,
+            "utm_source": utm_source, "utm_medium": utm_medium, "utm_campaign": utm_campaign,
+            **extra,
         }
+        row = build_row(event_type, fields, allowed=_live_fields)
         errors = _client.insert_rows_json(_table_id, [row])
         if errors:
             logger.warning(f"BigQuery insert errors: {errors}")

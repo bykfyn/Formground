@@ -22,13 +22,18 @@ HOW THIS RUNS FOR REAL:
 """
 
 import json
+import re
+import secrets
 from typing import Optional
+from urllib.parse import urlsplit
 
-from fastapi import Body, FastAPI, Query
+from fastapi import Body, FastAPI, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 
 from analytics import log_event
-from query_engine import discover, search, search_full, search_more, shape_agent_product
+from query_engine import (
+    BRAND_COUNTRIES, BRAND_TIERS, discover, search, search_full, search_more, shape_agent_product,
+)
 
 AGENT_PRODUCT_SCHEMA = {
     "type": "object",
@@ -99,6 +104,84 @@ app.add_middleware(
 )
 
 
+# ---------------------------------------------------------------------------
+# Analytics helpers (see analytics.py for what is logged and why)
+# ---------------------------------------------------------------------------
+BOT_UA_RE = re.compile(
+    r"bot|crawl|spider|slurp|headless|preview|lighthouse|pagespeed|gtmetrix|uptime|monitor|curl|python-requests",
+    re.I,
+)
+
+
+def _is_bot(request: Request) -> bool:
+    """Crawlers that execute JS (Googlebot renders pages) would otherwise
+    inflate page views. The user agent is only tested here, never stored."""
+    return bool(BOT_UA_RE.search(request.headers.get("user-agent", "")))
+
+
+def _brand_dims(brand):
+    """Maker classification stamped at event time, server-side: a client
+    can never set it, and later tier changes don't rewrite history."""
+    if not brand:
+        return {}
+    return {
+        "brand_tier": BRAND_TIERS.get(brand, "independent"),
+        "brand_country": BRAND_COUNTRIES.get(brand),
+    }
+
+
+def _page_type(path):
+    """Coarse page class from a URL path. The raw path is stored too, so a
+    change to these rules can be re-applied to history."""
+    path = (path or "").split("?")[0]
+    if path in ("", "/", "/index.html"):
+        return "home"
+    for prefix, kind in (("/brands/", "brand"), ("/browse/", "browse"),
+                         ("/designers/", "designer"), ("/architects/", "architect")):
+        if path.startswith(prefix):
+            return "browse_hub" if (kind == "browse" and path in ("/browse/", "/browse/index.html")) else kind
+    fixed = {
+        "/work.html": "work", "/search.html": "work", "/marketplace.html": "marketplace",
+        "/for-creators.html": "for_creators", "/edits.html": "edits_hub", "/new.html": "new",
+        "/makers.html": "directory", "/designers.html": "directory", "/architects.html": "directory",
+        "/creators.html": "directory", "/about.html": "info", "/contact.html": "info", "/privacy.html": "info",
+    }
+    return fixed.get(path, "edit_or_category")
+
+
+# What a click-through lands on, by the kind of page it happened on.
+_TARGET_TYPE_BY_PAGE = {"marketplace": "retailer", "for_creators": "creator_tool", "architect": "architect"}
+
+
+def _result_brands_json(results):
+    """[brand, tier] for each distinct maker in a result list, in order:
+    what lets per-maker search impressions be counted later."""
+    seen, out = set(), []
+    for r in results:
+        b = r.get("brand")
+        if b and b not in seen:
+            seen.add(b)
+            out.append([b, BRAND_TIERS.get(b, "independent")])
+    return json.dumps(out, ensure_ascii=False, separators=(",", ":"))
+
+
+def _clean_path(value):
+    """Path only - never a query string, so no stray parameter can leak in."""
+    if not value:
+        return None
+    return urlsplit(str(value)).path[:300] or None
+
+
+def _intent_fields(intent):
+    countries = intent.get("countries") or []
+    return {
+        "category": intent.get("category"),
+        "material": intent.get("material"),
+        "intent_countries": ",".join(countries) if countries else None,
+        "tier_filter": intent.get("tier"),
+    }
+
+
 @app.get("/search")
 def human_search(
     q: str = Query(..., description="Natural language search query"),
@@ -106,6 +189,9 @@ def human_search(
     utm_source: Optional[str] = None,
     utm_medium: Optional[str] = None,
     utm_campaign: Optional[str] = None,
+    landing_page: Optional[str] = None,
+    page_path: Optional[str] = None,
+    request: Request = None,
 ):
     """Human-facing search. Returns the fair, per-brand-capped list of
     matching products, plus the raw total_matches/total_brands counts
@@ -116,9 +202,20 @@ def human_search(
     /search/more (which re-sends that same intent) honors it too with
     no extra query param needed there."""
     data = search_full(q, tier=tier)
-    log_event("search", query=q, utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign)
+    # A random id for THIS search only (not a person or a session): echoed
+    # back on the click so a click-through joins to the exact search.
+    search_id = secrets.token_hex(6)
+    if not _is_bot(request):
+        log_event(
+            "search", query=q, utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign,
+            surface="work", search_id=search_id, landing_page=_clean_path(landing_page),
+            page_path=_clean_path(page_path), total_matches=data["total_matches"],
+            total_brands=data["total_brands"], result_count=len(data["results"]),
+            result_brands=_result_brands_json(data["results"]), **_intent_fields(data["intent"]),
+        )
     return {
         "query": q,
+        "search_id": search_id,
         "results": data["results"],
         "total_matches": data["total_matches"],
         "total_brands": data["total_brands"],
@@ -131,6 +228,8 @@ def human_search_more(
     q: str = Query(..., description="The same query the original /search call used"),
     intent: str = Query(..., description="The intent object /search returned, JSON-encoded"),
     exclude: str = Query("", description="Comma-separated ids of results already shown"),
+    search_id: Optional[str] = None,
+    request: Request = None,
 ):
     """Continuation of an existing /search call for the "load more"
     button. `intent` is exactly what /search's response already
@@ -142,7 +241,9 @@ def human_search_more(
     parsed_intent = json.loads(intent)
     exclude_ids = [x for x in exclude.split(",") if x]
     results = search_more(q, parsed_intent, exclude_ids)
-    log_event("load_more", query=q)
+    if not _is_bot(request):
+        log_event("load_more", query=q, search_id=search_id, surface="work",
+                  result_count=len(results), **_intent_fields(parsed_intent))
     return {"results": results}
 
 
@@ -166,7 +267,16 @@ def agent_search(q: str = Query(..., description="Natural-language query, e.g. '
     Agent-facing search. Same engine as /search, but shaped as
     schema.org Product objects for machine consumption.
     """
-    results = search(q)
+    data = search_full(q)
+    results = data["results"]
+    # Agent queries are real demand signal too - logged like human ones,
+    # on their own `surface`. Not bot-filtered: agents ARE the audience.
+    log_event(
+        "search", query=q, surface="agent", search_id=secrets.token_hex(6),
+        total_matches=data["total_matches"], total_brands=data["total_brands"],
+        result_count=len(results), result_brands=_result_brands_json(results),
+        **_intent_fields(data["intent"]),
+    )
     shaped = [shape_agent_product(r) for r in results]
     return {"query": q, "results": shaped}
 
@@ -177,17 +287,27 @@ def discover_random(
     utm_source: Optional[str] = None,
     utm_medium: Optional[str] = None,
     utm_campaign: Optional[str] = None,
+    landing_page: Optional[str] = None,
+    page_path: Optional[str] = None,
+    request: Request = None,
 ):
     """Random browse across the whole catalog - no LLM call, no query,
     just a fair sample across every brand. Doesn't hit the LLM at all,
     so it's also free to call as often as someone hits "surprise me"."""
     results = discover(tier=tier)
-    log_event("discover", utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign)
-    return {"results": results}
+    search_id = secrets.token_hex(6)
+    if not _is_bot(request):
+        log_event(
+            "discover", utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign,
+            surface="discover", search_id=search_id, landing_page=_clean_path(landing_page),
+            page_path=_clean_path(page_path), tier_filter=tier, result_count=len(results),
+            result_brands=_result_brands_json(results),
+        )
+    return {"search_id": search_id, "results": results}
 
 
 @app.post("/event", include_in_schema=False)
-def track_event(payload: dict = Body(...)):
+def track_event(request: Request, payload: dict = Body(...)):
     """
     Click/share-tracking beacon - the frontend fires this (via
     navigator.sendBeacon, so it doesn't block the navigation to the
@@ -199,14 +319,47 @@ def track_event(payload: dict = Body(...)):
     brand/product and what query led there, the same anonymous-
     aggregate shape as the search-event logging in /search.
     """
+    if _is_bot(request):
+        return {"status": "ok"}
+    event_type = payload.get("event_type") or "click"
+    page_path = _clean_path(payload.get("page_path"))
+    page_type = _page_type(page_path) if page_path else None
+    brand = payload.get("brand")
+    result_brands = payload.get("result_brands")
+    if isinstance(result_brands, list):
+        # a pageview lists the makers shown on the page (names from the
+        # client); the tier is looked up here, never taken from the client
+        result_brands = json.dumps(
+            [[b, BRAND_TIERS.get(b, "independent")] for b in dict.fromkeys(result_brands) if isinstance(b, str)],
+            ensure_ascii=False, separators=(",", ":"),
+        )
+    target_url = payload.get("target_url")
+    if target_url:
+        parts = urlsplit(str(target_url))
+        target_url = f"{parts.scheme}://{parts.netloc}{parts.path}"  # never the query string
     log_event(
-        payload.get("event_type") or "click",
+        event_type,
         query=payload.get("query"),
-        brand=payload.get("brand"),
+        brand=brand,
         product_name=payload.get("product_name"),
         utm_source=payload.get("utm_source"),
         utm_medium=payload.get("utm_medium"),
         utm_campaign=payload.get("utm_campaign"),
+        page_path=page_path,
+        page_type=page_type,
+        landing_page=_clean_path(payload.get("landing_page")),
+        referrer_host=(payload.get("referrer_host") or None),
+        search_id=payload.get("search_id"),
+        surface=payload.get("surface"),
+        position=payload.get("position"),
+        result_brands=result_brands,
+        result_count=payload.get("result_count"),
+        target_url=target_url,
+        target_type=(
+            payload.get("target_type")
+            or (_TARGET_TYPE_BY_PAGE.get(page_type, "maker") if event_type == "click" else None)
+        ),
+        **_brand_dims(brand),
     )
     return {"status": "ok"}
 
