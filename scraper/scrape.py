@@ -3143,6 +3143,21 @@ def _fix_glass_material_tag(product_name, category):
     return _infer_category_from_english_keywords(product_name) or category
 
 
+# Verified per-brand currency (scraper/detect_brand_currency.py): Shopify's
+# product feed has no currency, so the detector confirms it from each
+# brand's own product pages, only when the page price equals the stored
+# price. Fills currency when an extractor left it empty; never overrides
+# one the extractor read directly (WooCommerce and JSON-LD brands do).
+_BRAND_CURRENCY_PATH = Path(__file__).parent / "brand_currency.json"
+
+
+def _load_brand_currency():
+    try:
+        return {b: v["currency"] for b, v in json.loads(_BRAND_CURRENCY_PATH.read_text()).items()}
+    except (OSError, ValueError, KeyError):
+        return {}
+
+
 def _backfill_foreign_category(product_name, category):
     """
     Universal safety net applied in run()'s save loop: when the category
@@ -8976,6 +8991,7 @@ def run(brand_name=None):
             is_first_scrape_for_brand = not old_first_seen
 
             products_saved = 0
+            brand_currency = _load_brand_currency()
             sibling_names_lower = {p["product_name"].strip().lower() for p in products}
             for product in products:
                 url = product["product_url"]
@@ -8996,6 +9012,8 @@ def run(brand_name=None):
                     if not (product["category"] or "").strip():
                         product["category"] = _infer_category_for_blank(product["product_name"], brand["name"]) or ""
                     product["category"] = _backfill_foreign_category(product["product_name"], product["category"])
+                if product.get("price") and not product.get("currency"):
+                    product["currency"] = brand_currency.get(brand["name"])
                 if _is_out_of_scope_product(product["product_name"], product["category"], brand["name"], sibling_names_lower):
                     continue
                 save_product(conn, product)
