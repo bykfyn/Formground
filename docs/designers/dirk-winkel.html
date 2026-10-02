@@ -87,6 +87,20 @@
   }
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
   .card-body { padding: 0; }
   /* Reserves a full 2 lines' height so .card-brand always starts at the
      same row across every card in a grid, regardless of whether a given
@@ -282,14 +296,14 @@
         </div>
       </a>
       <a class="maker-card" href="https://www.wastberg.com/en/products/linier-suspended-w181s1" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero"><img src="https://www.wastberg.com/pim/3885/image-thumb__3885__product-grid/linier-suspended-s1-jet-black-lighting.e0def12c.png" alt="Linier Suspended" loading="lazy"></div>
+        <div class="maker-card-hero"><img src="https://www.wastberg.com/pim/LINIER%20SUSPENDED%20W181S1/3885/image-thumb__3885__product-grid/linier-suspended-s1-jet-black-lighting.e0def12c.png" alt="Linier Suspended" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Linier Suspended</span>
           <span class="maker-country">Wästberg</span>
         </div>
       </a>
       <a class="maker-card" href="https://www.wastberg.com/en/products/linier-suspended-w181s2" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero"><img src="https://www.wastberg.com/pim/3886/image-thumb__3886__product-grid/linier-suspended-s2-jet-black-lighting.8c4e2401.png" alt="Linier Suspended" loading="lazy"></div>
+        <div class="maker-card-hero"><img src="https://www.wastberg.com/pim/LINIER%20SUSPENDED%20W181S2/3886/image-thumb__3886__product-grid/linier-suspended-s2-jet-black-lighting.8c4e2401.png" alt="Linier Suspended" loading="lazy"></div>
         <div class="maker-card-body">
           <span class="maker-name">Linier Suspended</span>
           <span class="maker-country">Wästberg</span>
@@ -312,7 +326,7 @@
   </div>
   <p class="page-tagline">Looking for who made it? <a href="/makers.html">Browse Makers &rarr;</a></p>
   <p class="foot-note">
-    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/browse/">Browse</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
   </p>
 </main>
 <script>
