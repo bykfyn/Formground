@@ -84,6 +84,20 @@
   }
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
   .card-body { padding: 0; }
   /* Reserves a full 2 lines' height so .card-brand always starts at the
      same row across every card in a grid, regardless of whether a given
@@ -227,6 +241,9 @@
      more. Carries the whole capped edit alone (a Mini Bento interlude
      was tried and dropped, 2026-09-30 - "not worth the hassle this is
      causing"). */
+  .edit-see-all { text-align: center; margin: -8px 0 40px; font-size: 14px; }
+  .edit-see-all a { color: var(--text-accent); text-decoration: none; }
+  .edit-see-all a:hover { text-decoration: underline; }
   .edit-feature-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 20px; margin: 0 0 40px;
@@ -341,35 +358,15 @@
         <span class="edit-feature-name">Trace Sofa - 2-seater</span>
         <span class="edit-feature-brand">Wendelbo</span>
       </a>
-      <a class="edit-feature-card" href="https://www.serax.com/products/cushion-two-seater-black-august" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B7223010-900_01-jpg.jpg?v=1764732538" alt="Cushion two seater August by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
-        <span class="edit-feature-name">Cushion two seater August</span>
-        <span class="edit-feature-brand">Serax</span>
-      </a>
       <a class="edit-feature-card" href="https://fermliving.com/products/rico-sofa-2-seater-poppy-velvet-butter-black" target="_blank" rel="noopener noreferrer">
         <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274471_1-bred.png?v=1788766473" alt="Rico Sofa 2-seater by Ferm Living" loading="lazy"></div>
         <span class="edit-feature-name">Rico Sofa 2-seater</span>
         <span class="edit-feature-brand">Ferm Living</span>
       </a>
-      <a class="edit-feature-card" href="https://moebe.dk/products/2-seater-sofa-with-sides-and-1-side-table" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Modular-Sofa_PP_Modular_Sofa_Set_2_Seater_Sofa_with_sides_1_side_table_Cognac-Leather_Low-Res_CS.2.1XTAB.OA.COGSA.jpg?v=1789504682" alt="2 Seater Sofa with Sides + 1 Side Table by Moebe" loading="lazy"></div>
-        <span class="edit-feature-name">2 Seater Sofa with Sides + 1 Side Table</span>
-        <span class="edit-feature-brand">Moebe</span>
-      </a>
-      <a class="edit-feature-card" href="https://www.seletti.it/products/sofa-two-seater-snakes" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Furniture-Toiletpaper-magazine-sofa-2-seaters-160925.jpg?v=1728427692" alt="Sofa Two Seater Snakes by Seletti" loading="lazy"></div>
-        <span class="edit-feature-name">Sofa Two Seater Snakes</span>
-        <span class="edit-feature-brand">Seletti</span>
-      </a>
       <a class="edit-feature-card" href="https://www.maruni.com/en/product/br_two_seater_sofa/" target="_blank" rel="noopener noreferrer">
         <div class="edit-feature-image"><img src="https://www.maruni.com/en/img/pages/products/br_two_seater_sofa/Product/oak_NL0.jpg" alt="TWO SEATER SOFA by Maruni" loading="lazy"><span class="variant-badge">3 finishes</span></div>
         <span class="edit-feature-name">TWO SEATER SOFA</span>
         <span class="edit-feature-brand">Maruni</span>
-      </a>
-      <a class="edit-feature-card" href="https://theconranshop.com/products/tamilla-2-seater-oak-oatmeal" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS382520_1.jpg?v=1775820323" alt="Tamilla 2-Seater Sofa Oak &amp; Oatmeal by The Conran Shop" loading="lazy"></div>
-        <span class="edit-feature-name">Tamilla 2-Seater Sofa Oak &amp; Oatmeal</span>
-        <span class="edit-feature-brand">The Conran Shop</span>
       </a>
       <a class="edit-feature-card" href="https://www.fogia.com/sofas/sofa-2-seater/boxlike-2-seater-sofa" target="_blank" rel="noopener noreferrer">
         <div class="edit-feature-image"><img src="https://images.fogia.com/26/c6/7c/69/697cc626c2b2ec97a835d240/Fogia_Boxlike_2-seater_Green_Packshot_Front.png?auto=format&amp;w=2000&amp;q=90" alt="Boxlike 2 Seater Sofa by Fogia" loading="lazy"></div>
@@ -381,7 +378,28 @@
         <span class="edit-feature-name">Collar 2-seater</span>
         <span class="edit-feature-brand">Woud</span>
       </a>
+      <a class="edit-feature-card" href="https://en.kanndesign.com/products/canape-atlas-2-seater-beige-s-1991" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/files/atlas-2seater-beige-00.jpg?v=1686318123" alt="Canapé Atlas 2 Seater beige S 1991 by Kann Design" loading="lazy"></div>
+        <span class="edit-feature-name">Canapé Atlas 2 Seater beige S 1991</span>
+        <span class="edit-feature-brand">Kann Design</span>
+      </a>
+      <a class="edit-feature-card" href="https://moebe.dk/products/2-seater-sofa-with-sides-and-1-side-table" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Modular-Sofa_PP_Modular_Sofa_Set_2_Seater_Sofa_with_sides_1_side_table_Cognac-Leather_Low-Res_CS.2.1XTAB.OA.COGSA.jpg?v=1789504682" alt="2 Seater Sofa with Sides + 1 Side Table by Moebe" loading="lazy"></div>
+        <span class="edit-feature-name">2 Seater Sofa with Sides + 1 Side Table</span>
+        <span class="edit-feature-brand">Moebe</span>
+      </a>
+      <a class="edit-feature-card" href="https://www.serax.com/products/two-seater-aluminium-black-august" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5023001-900_01-jpg.jpg?v=1764732265" alt="Two seater aluminium black August by Serax" loading="lazy"></div>
+        <span class="edit-feature-name">Two seater aluminium black August</span>
+        <span class="edit-feature-brand">Serax</span>
+      </a>
+      <a class="edit-feature-card" href="https://theconranshop.com/products/tamilla-2-seater-oak-oatmeal" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS382520_1.jpg?v=1775820323" alt="Tamilla 2-Seater Sofa Oak &amp; Oatmeal by The Conran Shop" loading="lazy"></div>
+        <span class="edit-feature-name">Tamilla 2-Seater Sofa Oak &amp; Oatmeal</span>
+        <span class="edit-feature-brand">The Conran Shop</span>
+      </a>
     </div>
+  <p class="edit-see-all"><a href="/browse/sofas.html">See all sofas &rarr;</a></p>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
   </p>

@@ -84,6 +84,20 @@
   }
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
   .card-body { padding: 0; }
   /* Reserves a full 2 lines' height so .card-brand always starts at the
      same row across every card in a grid, regardless of whether a given
@@ -227,6 +241,9 @@
      more. Carries the whole capped edit alone (a Mini Bento interlude
      was tried and dropped, 2026-09-30 - "not worth the hassle this is
      causing"). */
+  .edit-see-all { text-align: center; margin: -8px 0 40px; font-size: 14px; }
+  .edit-see-all a { color: var(--text-accent); text-decoration: none; }
+  .edit-see-all a:hover { text-decoration: underline; }
   .edit-feature-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 20px; margin: 0 0 40px;
@@ -336,20 +353,10 @@
         <span class="edit-feature-name">Titan (Round) Dining Table</span>
         <span class="edit-feature-brand">Galvin Brothers</span>
       </a>
-      <a class="edit-feature-card" href="https://www.anothercountry.com/contemporary-craft-products/hardy-dining-table-round/" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country-Hardy-Round-Table1-1024x1024.jpg" alt="Hardy Dining Table Round by Another Country" loading="lazy"></div>
-        <span class="edit-feature-name">Hardy Dining Table Round</span>
-        <span class="edit-feature-brand">Another Country</span>
-      </a>
       <a class="edit-feature-card" href="https://www.ghidini1961.com/brass-tables/tria-round-dining-table" target="_blank" rel="noopener noreferrer">
         <div class="edit-feature-image"><img src="https://www.ghidini1961.com/uploads/prodotti/287/tria_round_dining_table_1100x550.jpg" alt="Tria Round Dining Table by Ghidini 1961" loading="lazy"></div>
         <span class="edit-feature-name">Tria Round Dining Table</span>
         <span class="edit-feature-brand">Ghidini 1961</span>
-      </a>
-      <a class="edit-feature-card" href="https://www.serax.com/products/dining-table-round-l-aluminium-black-august" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5022004B_01-jpg.jpg?v=1764730388" alt="Dining table round L aluminium black August by Serax" loading="lazy"></div>
-        <span class="edit-feature-name">Dining table round L aluminium black August</span>
-        <span class="edit-feature-brand">Serax</span>
       </a>
       <a class="edit-feature-card" href="https://vaarnii.com/products/001-dining-table-round-files" target="_blank" rel="noopener noreferrer">
         <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/Dining-Table-Round-2.jpg?v=1719440688" alt="001 Dining Table Round Files by Vaarnii" loading="lazy"></div>
@@ -366,22 +373,33 @@
         <span class="edit-feature-name">Farmhouse Trestle Table | 140 Ø Round</span>
         <span class="edit-feature-brand">Frama</span>
       </a>
-      <a class="edit-feature-card" href="https://moebe.dk/products/round-dining-table" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/products/MOEBE_Dining-Table_PP_140-Round_Oak_Low-Res_01.jpg?v=1655817861" alt="Round Dining Table by Moebe" loading="lazy"></div>
-        <span class="edit-feature-name">Round Dining Table</span>
-        <span class="edit-feature-brand">Moebe</span>
-      </a>
       <a class="edit-feature-card" href="https://formandrefine.com/product/trefoil-round-table-90-white-oak/" target="_blank" rel="noopener noreferrer">
         <div class="edit-feature-image"><img src="https://formandrefine.com/wp-content/uploads/2024/11/Form-and-Refine_Trefoil_Table_O90_White_Oak-800x800.webp" alt="Trefoil Round Table Ø90 by Form &amp; Refine" loading="lazy"></div>
         <span class="edit-feature-name">Trefoil Round Table Ø90</span>
         <span class="edit-feature-brand">Form &amp; Refine</span>
       </a>
-      <a class="edit-feature-card" href="https://theconranshop.com/products/gather-dining-table-round-walnut" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS413374_TCS413206_1_d2bb1664-1627-49a9-a426-9ed9f46eeb18.png?v=1784643537" alt="Gather Dining Table Round by The Conran Shop" loading="lazy"><span class="variant-badge">2 finishes</span></div>
-        <span class="edit-feature-name">Gather Dining Table Round</span>
-        <span class="edit-feature-brand">The Conran Shop</span>
+      <a class="edit-feature-card" href="https://www.fogia.com/tables/dining-table/supper-round-table" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://images.fogia.com/21/92/c6/69/69c69221bcb2c7b68da4fa71/Fogia Supper round table Black stained Oak - RAL 9005 Front.png?auto=format&amp;w=2000&amp;q=90" alt="Supper Round Table by Fogia" loading="lazy"></div>
+        <span class="edit-feature-name">Supper Round Table</span>
+        <span class="edit-feature-brand">Fogia</span>
+      </a>
+      <a class="edit-feature-card" href="https://www.bdbarcelona.com/shop/product/eclipso-dining-table-round" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Eclipso_dining_Multicolor_red_top_Maroon_rosso_Jaime_Hayon_ce21b608-c9ba-4c3a-9e4b-56fd60f3a35e.png?v=1760526990" alt="Eclipso Dining Table Round by BD Barcelona" loading="lazy"></div>
+        <span class="edit-feature-name">Eclipso Dining Table Round</span>
+        <span class="edit-feature-brand">BD Barcelona</span>
+      </a>
+      <a class="edit-feature-card" href="https://en.kanndesign.com/products/table-de-repas-tal-bitrot-round-65-chene-dt3034" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/files/tal-bistro-round-65-oak-01.jpg?v=1718271604" alt="Table de repas Tal Bistro Round 65 by Kann Design" loading="lazy"></div>
+        <span class="edit-feature-name">Table de repas Tal Bistro Round 65</span>
+        <span class="edit-feature-brand">Kann Design</span>
+      </a>
+      <a class="edit-feature-card" href="https://www.bleurenn.com/product-page/crescent-round-dining-table" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://static.wixstatic.com/media/ed30ea_4d92e28866e34c5fba28e03ca3898cfd~mv2.jpg/v1/fit/w_909,h_908,q_90/file.jpg/v1/fit/w_500,h_500,q_90/file.jpg" alt="Crescent Round Dining Table by Bleurenn" loading="lazy"></div>
+        <span class="edit-feature-name">Crescent Round Dining Table</span>
+        <span class="edit-feature-brand">Bleurenn</span>
       </a>
     </div>
+  <p class="edit-see-all"><a href="/browse/dining-tables.html">See all dining tables &rarr;</a></p>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
   </p>

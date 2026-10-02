@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ceiling Lamps — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="126 real ceiling lamps from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/browse/ceiling-lamps.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ceiling Lamps — Formground">
+<meta property="og:description" content="126 real ceiling lamps from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/browse/ceiling-lamps.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ceiling Lamps — Formground">
+<meta name="twitter:description" content="126 real ceiling lamps from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Browse", "item": "https://formground.com/browse/"}, {"@type": "ListItem", "position": 3, "name": "Ceiling Lamps", "item": "https://formground.com/browse/ceiling-lamps.html"}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <h1>Ceiling Lamps</h1>
+  <p class="category-intro">126 ceiling lamps from independent makers. Every result links straight to the maker's own site.</p>
+  <div class="grid">
+      <a class="card" href="https://www.andtradition.com/products/mist-ap22" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2025/06/ATD_Retail_2025_Mist-AP22_8-600x800.jpg" alt="Mist AP22 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mist AP22</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://anour.dk/products/donya-pivot-ceiling-triple-black-steel/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://anour.dk/wp-content/uploads/2026/06/triple_backplate_donya_pivot_ceiling_black_stainless_steel-1000x1250.jpg" alt="DONYA Pivot Ceiling by Anour" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DONYA Pivot Ceiling</p></div>
+          <p class="card-brand">Anour</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/ceiling-light-a622a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-ceiling-light-a622a-white-off.jpg?v=1777550313" alt="Ceiling Light A622A by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ceiling Light A622A</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/chancery-pendant-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/71242-008798_71242-008799_front_ON.png?v=1758267887" alt="Chancery Pendant Lamp by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Chancery Pendant Lamp</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jean-boris-lacroix/ceiling-light" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/805C3105AB8F194787080BC749A36672.jpg.webp" alt="Ceiling light by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ceiling light</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://leklint.com/products/le-klint-23" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0803/2351/0565/files/leklint23_ceiling_lamp_plafond_60cm_packshot2.png?v=1768404002" alt="Le Klint 23 by Le Klint" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Le Klint 23</p></div>
+          <p class="card-brand">Le Klint</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-3080-3582" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100c2z_W.jpg" alt="3080 Suspended ceiling light by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">3080 Suspended ceiling light</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.marset.com/en/indoor-lighting/ceiling-lamps/ringo-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.marset.com/wp-content/uploads/lamparas/techo/ringo/marset-lr-ringo-c70-fixed-stem-dark-smoked-1200x1200.jpg" alt="Ringo Ceiling Lamp by Marset" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ringo Ceiling Lamp</p></div>
+          <p class="card-brand">Marset</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/bulb-lamp-hemisphere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/BULBLAMP_REDhemisphereM.jpg?v=1770725232" alt="BULB Hemisphere Ceiling Lamp by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BULB Hemisphere Ceiling Lamp</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/kantarell-wall-ceiling-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1765551574-new-works_website_images_2025_december_kantarell-extensions-12.png?h=800" alt="Kantarell Wall &amp; Ceiling Lamp by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kantarell Wall &amp; Ceiling Lamp</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://rubn.com/products/vox-ceiling" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1049/4646/7165/files/Vox_Ceiling_Brass_Opal.jpg?v=1778851675" alt="Vox Ceiling by Rubn" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vox Ceiling</p></div>
+          <p class="card-brand">Rubn</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hybrid-ceiling-lamp-inalda" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/07098_INALDA_CEILING_LAMP_CTRLZAK_1.jpg?v=1753709599" alt="Hybrid ceiling lamp Inalda by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hybrid ceiling lamp Inalda</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/ceiling-lamp-nr32-bluesteel-sofisticato" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B7220390_01-jpg.jpg?v=1764732773" alt="Ceiling lamp nr.32 bluesteel Sofisticato by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ceiling lamp nr.32 bluesteel Sofisticato</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://thorupcopenhagen.com/products/patrone-surface-ceiling-light-nickel-plated-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0972/7672/3527/files/ThorupCopenhagen_CL1088PatroneSurfaceCeilingLampw.lightpackshot.jpg?v=1779106856" alt="Patrone Surface Ceiling Light by Thorup Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Patrone Surface Ceiling Light</p></div>
+          <p class="card-brand">Thorup Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://vaarnii.com/products/1005-hans-ceiling-light-files" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/1005HansCeilingLight42-1-Vertical.jpg?v=1724229766" alt="1005 Hans Ceiling Light Files by Vaarnii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">1005 Hans Ceiling Light Files</p></div>
+          <p class="card-brand">Vaarnii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-5-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020601Z_01-jpg_29a5ba6b-5e02-4624-9a48-74a4e6a8d332.jpg?v=1763122159" alt="ceiling lamp n°5 by Valerie Objects" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ceiling lamp n°5</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.wastberg.com/en/products/cast-ceiling-w261c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.wastberg.com/pim/CAST%20CEILING%20W261C/55696/image-thumb__55696__product-grid/cast-ceiling-anthracite-lighting.833a87b4.png" alt="Cast Ceiling by Wästberg" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cast Ceiling</p></div>
+          <p class="card-brand">Wästberg</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/allrightstor-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/3fcdd4a4-a291-4485-8acd-63ce1e0e65c4/Allright-Ceiling-Box.png" alt="Allright - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Allright - Ceiling</p></div>
+          <p class="card-brand">Zero</p>
+        </div>
+      </a>
+      <a class="card" href="https://anour.dk/products/donya-pivot-dropped-ceiling-triple-black-steel/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://anour.dk/wp-content/uploads/2026/06/triple_backplate_donya_pivot_dropped_ceiling_black_stainless_steel_light_off-1000x1250.jpg" alt="DONYA Pivot Dropped Ceiling by Anour" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DONYA Pivot Dropped Ceiling</p></div>
+          <p class="card-brand">Anour</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/ceiling-light-a622b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-ceiling-light-a622b-white.jpg?v=1777550358" alt="Ceiling Light A622B by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ceiling Light A622B</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/hashira-ceiling-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/0073_1510699_1510699U_low_ON.png?v=1755603206" alt="Hashira Ceiling Lamp by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hashira Ceiling Lamp</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jean-baptiste-fastrez/jellyfish-ceiling-light" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F3B6564B2870984C8701AB869EA18899.jpg.webp" alt="Jellyfish ceiling by Galerie Kreo" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Jellyfish ceiling</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://leklint.com/products/le-klint-1320-swirl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0803/2351/0565/products/leklint1320_swirl_celling_wall_lamp_medium_white_packshot1.png?v=1767793695" alt="Le Klint 1320 Swirl by Le Klint" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Le Klint 1320 Swirl</p></div>
+          <p class="card-brand">Le Klint</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-ruflette-2686" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100708_c.jpg" alt="Ruflette Suspended ceiling light by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ruflette Suspended ceiling light</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.marset.com/en/indoor-lighting/ceiling-lamps/atlas-ceiling/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.marset.com/wp-content/uploads/lamparas/ceiling-lamps/atlas-ceiling/marset-lr-altas-techo-min.jpg" alt="Atlas Ceiling Lamp by Marset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Atlas Ceiling Lamp</p></div>
+          <p class="card-brand">Marset</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/bulb-lamp-cylinder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/BULBLAMP_blackCylinderS.jpg?v=1770725232" alt="BULB Cylinder Ceiling Lamp by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BULB Cylinder Ceiling Lamp</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://rubn.com/products/vox-ceiling-ip44" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1049/4646/7165/files/Vox_Ceiling_Black_Smoke.jpg?v=1778851665" alt="Vox Ceiling IP44 by Rubn" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vox Ceiling IP44</p></div>
+          <p class="card-brand">Rubn</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hybrid-ceiling-lamp-lauvia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/07097_LAUVIA_CEILING_LAMP_HYBRID_LAMP_CTRLZAK_1.jpg?v=1753709574" alt="Hybrid ceiling lamp Lauvia by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hybrid ceiling lamp Lauvia</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/ceiling-lamp-nr22-bluesteel-sofisticato" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B7219380_01-jpg.jpg?v=1752550041" alt="Ceiling lamp nr.22 bluesteel Sofisticato by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ceiling lamp nr.22 bluesteel Sofisticato</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://thorupcopenhagen.com/products/patrone-recessed-ceiling-light-box-fit-nickel-plated-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0972/7672/3527/files/Thorup_Copenhagen_CRB1088_Patrone_Recessed_Ceiling_Lamp_w._light_packshot.jpg?v=1779095496" alt="Patrone Recessed Ceiling Light (Box fit) by Thorup Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Patrone Recessed Ceiling Light (Box fit)</p></div>
+          <p class="card-brand">Thorup Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-5-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020601I_01-jpg_86b3bfbf-87d2-4d15-a159-bbf34153b30b.jpg?v=1763122151" alt="ceiling lamp n°5 ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ceiling lamp n°5 ivory</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.wastberg.com/en/products/alma-ceiling-w171c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.wastberg.com/pim/ALMA%20CEILING%20W171C/4200/image-thumb__4200__product-grid/alma-ceiling-raw-lighting.df5e8dab.png" alt="Alma Ceiling by Wästberg" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alma Ceiling</p></div>
+          <p class="card-brand">Wästberg</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convex-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1506516890839-QLYTPG087NLJWCMAGP04/Convex-spotlight-group.jpg" alt="Convex - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Convex - Ceiling</p></div>
+          <p class="card-brand">Zero</p>
+        </div>
+      </a>
+      <a class="card" href="https://anour.dk/products/donya-downlight-triple-brushed-steel/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://anour.dk/wp-content/uploads/2026/06/ANOUR_DONYA-downlight_triple_brushed_stainless_steel_lightoff-1000x1250.jpg" alt="DONYA Downlight by Anour" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DONYA Downlight</p></div>
+          <p class="card-brand">Anour</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/trapeze-1-ceiling-light" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/E5B26F8A1B74A4459D7E81EB236663E1.jpg.webp" alt="Trapeze 1 Ceiling light by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Trapeze 1 Ceiling light</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://leklint.com/products/le-klint-236-lamella" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0803/2351/0565/products/leklint236_lamella_ceiling_wall_lamp_d50cm_golden_packshot1.png?v=1710158815" alt="Le Klint 236 Lamella by Le Klint" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Le Klint 236 Lamella</p></div>
+          <p class="card-brand">Le Klint</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-small-globe-sky-2070" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1003gp_c.jpg" alt="Globe sky Suspended ceiling light small by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Globe sky Suspended ceiling light small</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.marset.com/en/indoor-lighting/ceiling-lamps/dipping-light-ceiling/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.marset.com/wp-content/uploads/lamparas/techo/dipping-light-techo/marset-lr-dipping-light-a2-13-burgundy-1-1200x1200.jpg" alt="Dipping Light Ceiling Lamp by Marset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dipping Light Ceiling Lamp</p></div>
+          <p class="card-brand">Marset</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/bulb-lamp-cone" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/BULBLAMP_YELLOWConeM.jpg?v=1770725232" alt="BULB  Cone Ceiling Lamp by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BULB  Cone Ceiling Lamp</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://rubn.com/products/monroe-1-ceiling" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1049/4646/7165/files/Monroe_1_Ceiling_Steel_Smoke.png?v=1779088118" alt="Monroe 1 Ceiling by Rubn" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Monroe 1 Ceiling</p></div>
+          <p class="card-brand">Rubn</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hybrid-ceiling-lamp-vepira" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/07096_VEPIRA_CEILING_LAMP_CTRLZAK_1.jpg?v=1753709489" alt="Hybrid ceiling lamp Vepira by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hybrid ceiling lamp Vepira</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/ceiling-lamp-nr04-bluesteel-sofisticato" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B7219363_01-jpg.jpg?v=1764731087" alt="Ceiling lamp nr.04 bluesteel Sofisticato by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ceiling lamp nr.04 bluesteel Sofisticato</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://thorupcopenhagen.com/products/patrone-recessed-ceiling-light-clip-fit-black-browned-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0972/7672/3527/files/Thorup_Copenhagen_C1166_Patrone_Recessed_Ceiling_Lamp_packshot.jpg?v=1779095497" alt="Patrone Recessed Ceiling Light (Clip fit) by Thorup Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Patrone Recessed Ceiling Light (Clip fit)</p></div>
+          <p class="card-brand">Thorup Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-4-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020600Z_01-jpg_ffd542ea-88d8-467c-a78f-f9ac8639b822.jpg?v=1763122151" alt="ceiling lamp n°4 by Valerie Objects" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ceiling lamp n°4</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.wastberg.com/en/products/focal-ceiling-w222c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.wastberg.com/pim/FOCAL%20CEILING%20W222C/3427/image-thumb__3427__product-grid/focal-ceiling-c-jet-black-lighting.d280a07e.png" alt="Focal Ceiling by Wästberg" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Focal Ceiling</p></div>
+          <p class="card-brand">Wästberg</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/convex3phase-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/e054081c-4896-4f5f-a56d-a651917c485b/Convex-Spotlight-3phase-Box.png" alt="Convex - Track by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Convex - Track</p></div>
+          <p class="card-brand">Zero</p>
+        </div>
+      </a>
+      <a class="card" href="https://anour.dk/products/donya-ceiling-spot-dark-opal-chrome/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://anour.dk/wp-content/uploads/2025/02/ANOUR_DONYA-SPOT-ceiling_dark-opal_light_off-1000x1250.jpg" alt="DONYA Ceiling Spot by Anour" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DONYA Ceiling Spot</p></div>
+          <p class="card-brand">Anour</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/trapeze-2-ceiling-light" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/EE4AE4D1A1B38C4C87A9511420DC6BA1.jpg.webp" alt="Trapeze 2 Ceiling light by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Trapeze 2 Ceiling light</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://leklint.com/products/le-klint-36" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0803/2351/0565/products/leklint36_ceiling_lamp_plafond_55cm_packshot1_394ded26-7645-4fe0-acc9-1ad8bcc6cd09.png?v=1691579717" alt="Le Klint 36 by Le Klint" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Le Klint 36</p></div>
+          <p class="card-brand">Le Klint</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-g13-am-929" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100cn1_C.jpg" alt="G13 am Suspended ceiling light by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">G13 am Suspended ceiling light</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.marset.com/en/indoor-lighting/ceiling-lamps/discoco-ceiling/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.marset.com/wp-content/uploads/lamparas/techo-es/discoco-techo/discoco-c_no-brackground_hover-776x1200.jpg" alt="Discocó Ceiling Lamp by Marset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Discocó Ceiling Lamp</p></div>
+          <p class="card-brand">Marset</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/bulb-lamp-sphere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/BULBLAMP_YELLOWSphereS.jpg?v=1770725962" alt="BULB Sphere Ceiling Lamp by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BULB Sphere Ceiling Lamp</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://rubn.com/products/monroe-1-ceiling-w-spot" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1049/4646/7165/files/Monroe_Ceiling_with_Spot_1520_Brass_Opal.png?v=1778570244" alt="Monroe 1 Ceiling w. Spot by Rubn" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Monroe 1 Ceiling w. Spot</p></div>
+          <p class="card-brand">Rubn</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/vitamin-pumpkin-2-ceiling-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Lampadario_zucca_1_3.jpg?v=1730998101" alt="Vitamin Pumpkin 2 Ceiling Lamp by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vitamin Pumpkin 2 Ceiling Lamp</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/ceiling-lamp-nr02-bluesteel-sofisticato" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B7219361_01-jpg.jpg?v=1764731078" alt="Ceiling lamp nr.02 bluesteel Sofisticato by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ceiling lamp nr.02 bluesteel Sofisticato</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://thorupcopenhagen.com/products/patrone-canopy-ceiling-light-black-browned-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0972/7672/3527/files/Thorup_Copenhagen_CM1166_Patrone_Canopy_Ceiling_Lamp_packshot.jpg?v=1779095497" alt="Patrone Canopy Ceiling Light by Thorup Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Patrone Canopy Ceiling Light</p></div>
+          <p class="card-brand">Thorup Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-4-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9020600I_01-jpg_88f6a472-f144-41c5-8b33-1c91230d03d1.jpg?v=1763122142" alt="ceiling lamp n°4 ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ceiling lamp n°4 ivory</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/grid-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499440079220-JU2V72XCC4K8QDI3CHKG/gridtakguldgra.jpg" alt="Grid - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Grid - Ceiling</p></div>
+          <p class="card-brand">Zero</p>
+        </div>
+      </a>
+      <a class="card" href="https://leklint.com/products/le-klint-235-lamella" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0803/2351/0565/products/leklint235_lamella_ceeling_wall_lamp_d35cm_golden_packshot1.png?v=1706697985" alt="Le Klint 235 Lamella by Le Klint" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Le Klint 235 Lamella</p></div>
+          <p class="card-brand">Le Klint</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-paper-lamp-400" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/011fh_c.jpg" alt="Paper lamp Suspended ceiling light by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Paper lamp Suspended ceiling light</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.marset.com/en/indoor-lighting/ceiling-lamps/djembe-ceiling/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.marset.com/wp-content/uploads/lamparas/techo-es/djembe/marset_hr_djembe_2-copia-1-1022x1200.jpg" alt="Djembé Ceiling Lamp by Marset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Djembé Ceiling Lamp</p></div>
+          <p class="card-brand">Marset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/vitamin-aubergine-ceiling-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Lampada_melanzana_1_3.jpg?v=1730998015" alt="Vitamin Aubergine Ceiling lamp by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vitamin Aubergine Ceiling lamp</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/ceiling-lamp-nr01-bluesteel-sofisticato" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B7219360_01-jpg.jpg?v=1764731074" alt="Ceiling lamp nr.01 bluesteel Sofisticato by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ceiling lamp nr.01 bluesteel Sofisticato</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://thorupcopenhagen.com/products/patrone-ceiling-track-light-fixture-black-browned-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0972/7672/3527/files/Thorup_Copenhagen_CS1166_Patrone_Track_Ceiling_Light_w._light_packshot.jpg?v=1779095498" alt="Patrone Ceiling Track Light Fixture by Thorup Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Patrone Ceiling Track Light Fixture</p></div>
+          <p class="card-brand">Thorup Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-3-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018003Z_01-jpg_0a96a54b-eda0-4eec-9a3d-b661f08a1a0e.jpg?v=1763122169" alt="ceiling lamp n°3 by Valerie Objects" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ceiling lamp n°3</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/mist-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/c4b19d56-d04d-4c81-8e62-e4ecddc2fe94/Mist-Ceiling-Box.png" alt="Mist - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mist - Ceiling</p></div>
+          <p class="card-brand">Zero</p>
+        </div>
+      </a>
+      <a class="card" href="https://leklint.com/products/le-klint-35" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0803/2351/0565/products/leklint35_ceiling_lamp_plafond_45cm_packshot1_79e75a5f-a01a-4801-859a-a17a4d74d1a0.png?v=1691579734" alt="Le Klint 35 by Le Klint" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Le Klint 35</p></div>
+          <p class="card-brand">Le Klint</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-white-bloom-56" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10071691_i_vue_c.jpg" alt="Bloom Suspended ceiling by Ligne Roset" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bloom Suspended ceiling</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.marset.com/en/indoor-lighting/ceiling-lamps/ginger-ceiling/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.marset.com/wp-content/uploads/lamparas/techo/ginger-techo/marset-lr-ginger-ceiling-stonegrey-1200x1200.jpg" alt="Ginger Ceiling Lamp by Marset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ginger Ceiling Lamp</p></div>
+          <p class="card-brand">Marset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/vitamin-pineapple-ceiling-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Lampada_ananas_1_3.jpg?v=1730997922" alt="Vitamin Pineapple Ceiling lamp by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vitamin Pineapple Ceiling lamp</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://thorupcopenhagen.com/products/patrone-pendant-cluster-lamp-small-nickel-plated-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0972/7672/3527/files/Thorup_Copenhagen_C3108_Patrone_Pendant_Cluster_3_Lamp_w._light_packshot.jpg?v=1779095495" alt="Patrone Pendant Cluster Lamp small by Thorup Copenhagen" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Patrone Pendant Cluster Lamp small</p></div>
+          <p class="card-brand">Thorup Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-2-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018002M_01-jpg_14a4964c-a1cb-40c2-a3b5-799e5e27586c.jpg?v=1763122165" alt="ceiling lamp n°2 by Valerie Objects" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ceiling lamp n°2</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/shibuya-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/3b291115-cf23-4513-83ec-2a6be92267eb/Shibuya-Ceiling-Box.png" alt="Shibuya - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shibuya - Ceiling</p></div>
+          <p class="card-brand">Zero</p>
+        </div>
+      </a>
+      <a class="card" href="https://leklint.com/products/le-klint-33" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0803/2351/0565/products/leklint33_ceiling_lamp_plafond_45cm_packshot1.png?v=1691579703" alt="Le Klint 33 by Le Klint" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Le Klint 33</p></div>
+          <p class="card-brand">Le Klint</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-g13-m-3764" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100cn0_C.jpg" alt="G13 m Suspended ceiling light by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">G13 m Suspended ceiling light</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.marset.com/en/indoor-lighting/ceiling-lamps/mercer-ceiling/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.marset.com/wp-content/uploads/lamparas/techo/mercer-techo/mercer-ceiling_miniature-1.jpg" alt="Mercer Ceiling Lamp by Marset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mercer Ceiling Lamp</p></div>
+          <p class="card-brand">Marset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/vitamin-watermelon-ceiling-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Lampada_anguria_1_3_619cb416-1ad2-4cd4-bf35-707b63711ec4.jpg?v=1730997824" alt="Vitamin Watermelon Ceiling lamp by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vitamin Watermelon Ceiling lamp</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://thorupcopenhagen.com/products/patrone-pendant-cluster-lamp-large-nickel-plated-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0972/7672/3527/files/Thorup_Copenhagen_C5108_Patrone_Pendant_Cluster_5_Lamp_w._light_packshot.jpg?v=1779095497" alt="Patrone Pendant Cluster Lamp large by Thorup Copenhagen" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Patrone Pendant Cluster Lamp large</p></div>
+          <p class="card-brand">Thorup Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/ceiling-lamp-n-1-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018001Z_01-jpg_2c7d14d1-14be-46ba-b5bc-e1d54db28ada.jpg?v=1763122162" alt="ceiling lamp n°1 by Valerie Objects" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ceiling lamp n°1</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/sprinkle-ceiling-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/00b37d07-0dbd-428c-9421-afcc79a81fd9/Sprinkle-ceiling-large.jpg" alt="Sprinkle - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sprinkle - Ceiling</p></div>
+          <p class="card-brand">Zero</p>
+        </div>
+      </a>
+      <a class="card" href="https://leklint.com/products/le-klint-32" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0803/2351/0565/products/leklint32_ceiling_lamp_plafond_45cm_packshot1_7c7281fc-e5cf-4f1f-9f88-2320e83fd20e.png?v=1691579739" alt="Le Klint 32 by Le Klint" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Le Klint 32</p></div>
+          <p class="card-brand">Le Klint</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-pukka-2760" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100ahq_c.jpg" alt="Pukka Suspended ceiling light by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pukka Suspended ceiling light</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.marset.com/en/indoor-lighting/ceiling-lamps/plaff-on-ceiling/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.marset.com/wp-content/uploads/lamparas/techo/plaff-on-techo/marset_hr_plaff-on-33-ip44_miniature-835x1200.jpg" alt="Plaff-on! Ceiling Lamp by Marset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Plaff-on! Ceiling Lamp</p></div>
+          <p class="card-brand">Marset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/vitamin-lemon-ceiling-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Lampadario_limone_1_4.jpg?v=1730997715" alt="Vitamin Lemon Ceiling lamp by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vitamin Lemon Ceiling lamp</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/sprinkle-downlight-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/14f2d502-7a3a-4e5f-abba-a01591d1d979/Sprinkle-Downlight1.jpg" alt="Sprinkle - Downlight by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sprinkle - Downlight</p></div>
+          <p class="card-brand">Zero</p>
+        </div>
+      </a>
+      <a class="card" href="https://leklint.com/products/le-klint-30" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0803/2351/0565/files/leklint30_ceiling_lamp_plafond_50cm_packshot2.png?v=1768563339" alt="Le Klint 30 by Le Klint" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Le Klint 30</p></div>
+          <p class="card-brand">Le Klint</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-medium-globe-sky-2071" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1003gp_c2.jpg" alt="Globe sky Suspended ceiling light medium by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Globe sky Suspended ceiling light medium</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.marset.com/en/indoor-lighting/ceiling-lamps/scotch-club-ceiling/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.marset.com/wp-content/uploads/lamparas/techo/scotch-club-techo/scotchclub-cterracotta-gold.jpg" alt="Scotch Club Ceiling Lamp by Marset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scotch Club Ceiling Lamp</p></div>
+          <p class="card-brand">Marset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/vitamin-pear-ceiling-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Lampada_pera_1_3.jpg?v=1730997613" alt="Vitamin Pear Ceiling Lamp by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vitamin Pear Ceiling Lamp</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/thirty-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1499700635465-5MMIXDYJ881WMPCBQZ6T/thirty-2.jpg" alt="Thirty - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Thirty - Ceiling</p></div>
+          <p class="card-brand">Zero</p>
+        </div>
+      </a>
+      <a class="card" href="https://leklint.com/products/le-klint-26" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0803/2351/0565/files/leklint26_ceiling_lamp_plafond_70cm_packshot2_a10bfbd4-04ff-414e-a8d2-7b603eae9b78.png?v=1768560393" alt="Le Klint 26 by Le Klint" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Le Klint 26</p></div>
+          <p class="card-brand">Le Klint</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-white-asola-451" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/012k0_c2.jpg" alt="Asola Suspended ceiling by Ligne Roset" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Asola Suspended ceiling</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.marset.com/en/indoor-lighting/ceiling-lamps/soho-ceiling/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.marset.com/wp-content/uploads/lamparas/techo-es/soho-techo/soho-c_hover-857x1200.jpg" alt="Soho Ceiling Lamp by Marset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Soho Ceiling Lamp</p></div>
+          <p class="card-brand">Marset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/vitamin-pumpkin-1-table-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/lampada_zucca_panna_1_3.jpg?v=1730997469" alt="Vitamin Pumpkin 1 Ceiling lamp by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vitamin Pumpkin 1 Ceiling lamp</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/umbrella-inomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/b2a611e0-44aa-41a1-904c-f96a03340f87/Umbrella-Ceiling-Box.png" alt="Umbrella - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Umbrella - Ceiling</p></div>
+          <p class="card-brand">Zero</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-large-globe-sky-2072" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/011c0_c.jpg" alt="Globe sky Suspended ceiling light large by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Globe sky Suspended ceiling light large</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/egg-of-columbus-ceiling-lamp-1-light-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Lighting-Egg-of-Columbus-Ceiling-Lamp-Indoor-09707azz-1.jpg?v=1728424533" alt="Egg of Columbus Ceiling Lamp #1 by Seletti" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Egg of Columbus Ceiling Lamp #1</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/lumo-utomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1709197143478-PNVRUYW3MWZXR27AEQEQ/Lumo-ceiling-black-single.jpg" alt="Lumo - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lumo - Ceiling</p></div>
+          <p class="card-brand">Zero</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-white-large-bloom-59" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10071693_i_vue_c.jpg" alt="Bloom Suspended ceiling large by Ligne Roset" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bloom Suspended ceiling large</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/egg-of-columbus-ceiling-lamp-2-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Lighting-Egg-of-Columbus-Ceiling-Lamp-Indoor-09706nat-1.jpg?v=1728424551" alt="Egg of Columbus Ceiling Lamp #2 Natural by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Egg of Columbus Ceiling Lamp #2 Natural</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.zerolighting.com/pathfinder-utomta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5943d7dcc534a5f4dd214abc/1548857928557-YYJA6I6FZMQVC2W9SDFV/PATHFINDER-Ceiling-black-cut.JPG" alt="Pathfinder - Ceiling by Zero" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pathfinder - Ceiling</p></div>
+          <p class="card-brand">Zero</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-5-cables-chrome-bell-763" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1000qt_c.jpg" alt="Chrome bell Suspended ceiling light 5 cables by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Chrome bell Suspended ceiling light 5 cables</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-saturne-5120" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10073800_i_vue_c.jpg" alt="Saturne Suspended ceiling light by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Saturne Suspended ceiling light</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-doro-4971" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100k2v_W.jpg" alt="Doro Suspended ceiling light by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Doro Suspended ceiling light</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-squeeze-4561" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10073660_i_vue_c.jpg" alt="Squeeze Suspended ceiling light by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Squeeze Suspended ceiling light</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-large-nef-4473" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10073752_i_vue_c.jpg" alt="Nef Suspended ceiling light large by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nef Suspended ceiling light large</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/ceiling-lighting-and-wall-lighting/suspended-ceiling-light-small-nef-4472" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100hxe_c.jpg" alt="Nef Suspended ceiling light small by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nef Suspended ceiling light small</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a></div>
+  
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

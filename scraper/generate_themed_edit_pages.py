@@ -614,6 +614,9 @@ EDIT_PAGE_CSS = """
      more. Carries the whole capped edit alone (a Mini Bento interlude
      was tried and dropped, 2026-09-30 - "not worth the hassle this is
      causing"). */
+  .edit-see-all { text-align: center; margin: -8px 0 40px; font-size: 14px; }
+  .edit-see-all a { color: var(--text-accent); text-decoration: none; }
+  .edit-see-all a:hover { text-decoration: underline; }
   .edit-feature-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 20px; margin: 0 0 40px;
@@ -684,6 +687,24 @@ EDIT_PAGE_CSS = """
 """
 
 
+# Each Edit shows a curated MAX_PRODUCTS_PER_EDIT; the uncapped category
+# it was picked from lives under /browse/ (generate_browse_pages.py,
+# 2026-10-02) - linked from here so a visitor or crawler can get from
+# the pick to the full set. Portable Lamps is a filtered subset of
+# table lamps with no category page of its own, so it points there too.
+EDIT_BROWSE_LINKS = {
+    "table-lamps": ("table-lamps", "table lamps"),
+    "portable-lamps": ("table-lamps", "table lamps"),
+    "pendant-lamps": ("pendant-lamps", "pendant lamps"),
+    "wall-lamps": ("wall-lamps", "wall lamps"),
+    "ceiling-lamps": ("ceiling-lamps", "ceiling lamps"),
+    "round-dining-tables": ("dining-tables", "dining tables"),
+    "scandinavian-dining-tables": ("dining-tables", "dining tables"),
+    "round-coffee-tables": ("coffee-tables", "coffee tables"),
+    "two-seater-sofas": ("sofas", "sofas"),
+}
+
+
 def render_themed_edit_page(theme, products):
     slug = theme["slug"]
     title = theme["title"]
@@ -709,6 +730,9 @@ def render_themed_edit_page(theme, products):
         # same placement as the homepage's own "New" shelf cards) now
         # carries every capped card.
         body = _render_feature_grid(cards_to_render, variant_counts)
+        if slug in EDIT_BROWSE_LINKS:
+            browse_slug, noun = EDIT_BROWSE_LINKS[slug]
+            body += f'\n  <p class="edit-see-all"><a href="/browse/{browse_slug}.html">See all {noun} &rarr;</a></p>'
     else:
         body = '<p class="empty-state">Check back soon - new pieces are added here as they are found.</p>'
 

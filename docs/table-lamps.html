@@ -84,6 +84,20 @@
   }
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
   .card-body { padding: 0; }
   /* Reserves a full 2 lines' height so .card-brand always starts at the
      same row across every card in a grid, regardless of whether a given
@@ -227,6 +241,9 @@
      more. Carries the whole capped edit alone (a Mini Bento interlude
      was tried and dropped, 2026-09-30 - "not worth the hassle this is
      causing"). */
+  .edit-see-all { text-align: center; margin: -8px 0 40px; font-size: 14px; }
+  .edit-see-all a { color: var(--text-accent); text-decoration: none; }
+  .edit-see-all a:hover { text-decoration: underline; }
   .edit-feature-grid {
     display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
     gap: 20px; margin: 0 0 40px;
@@ -356,20 +373,10 @@
         <span class="edit-feature-name">Metro Table Lamp</span>
         <span class="edit-feature-brand">Galvin Brothers</span>
       </a>
-      <a class="edit-feature-card" href="https://www.anothercountry.com/contemporary-craft-products/house-lamp-small/" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"><img src="https://www.anothercountry.com/wp-content/uploads/221129-AnotherCountry0208_Web-1024x1024.jpg" alt="House Lamp by Another Country" loading="lazy"></div>
-        <span class="edit-feature-name">House Lamp</span>
-        <span class="edit-feature-brand">Another Country</span>
-      </a>
       <a class="edit-feature-card" href="https://www.mercoeur-edition.com/products/table-lamp" target="_blank" rel="noopener noreferrer">
         <div class="edit-feature-image"><img src="https://cdn.prod.website-files.com/65f8e4972094d2411f63ed1d/6a672487c43e84bf175cbab8_Mercoeur_Thumbnail_ARCY-Table%20lamp.webp" alt="Arcy Table Lamp by Mercoeur Editions" loading="lazy"></div>
         <span class="edit-feature-name">Arcy Table Lamp</span>
         <span class="edit-feature-brand">Mercoeur Editions</span>
-      </a>
-      <a class="edit-feature-card" href="https://www.moustache.fr/en/accueil/1491-caillou-lamp.html" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"><img src="https://www.moustache.fr/41632-home_default/caillou-lamp.jpg" alt="Caillou lamp by Moustache" loading="lazy"></div>
-        <span class="edit-feature-name">Caillou lamp</span>
-        <span class="edit-feature-brand">Moustache</span>
       </a>
       <a class="edit-feature-card" href="https://louise-roe.com/products/person-lamp-portable" target="_blank" rel="noopener noreferrer">
         <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/260516_LOUISEROE_2_0289_EDITED.png?v=1783589976" alt="PERSON LAMP PORTABLE by Louise Roe" loading="lazy"></div>
@@ -381,7 +388,18 @@
         <span class="edit-feature-name">Vox Table</span>
         <span class="edit-feature-brand">Rubn</span>
       </a>
+      <a class="edit-feature-card" href="https://apparatusstudio.com/products/pip-signal-y-table-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0005/7730/6687/files/APPARATUS_SIGNAL_Y_TABLE_LAMP_01.jpg?v=1763153086" alt="SIGNAL Y : TABLE LAMP by Apparatus" loading="lazy"></div>
+        <span class="edit-feature-name">SIGNAL Y : TABLE LAMP</span>
+        <span class="edit-feature-brand">Apparatus</span>
+      </a>
+      <a class="edit-feature-card" href="https://materdesign.com/products/dome-lamp-black" target="_blank" rel="noopener noreferrer">
+        <div class="edit-feature-image"><img src="https://cdn.shopify.com/s/files/1/0260/0981/products/dome_black.jpg?v=1491992653" alt="Dome Lamp | Black | by Todd Bracher by Mater" loading="lazy"></div>
+        <span class="edit-feature-name">Dome Lamp | Black | by Todd Bracher</span>
+        <span class="edit-feature-brand">Mater</span>
+      </a>
     </div>
+  <p class="edit-see-all"><a href="/browse/table-lamps.html">See all table lamps &rarr;</a></p>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
   </p>

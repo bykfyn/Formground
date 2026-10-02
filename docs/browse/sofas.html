@@ -1,0 +1,2407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sofas — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="854 real sofas from independent makers, listed in full (page 1 of 3). Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/browse/sofas.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Sofas — Formground">
+<meta property="og:description" content="854 real sofas from independent makers, listed in full (page 1 of 3). Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/browse/sofas.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Sofas — Formground">
+<meta name="twitter:description" content="854 real sofas from independent makers, listed in full (page 1 of 3). Every result links straight to the maker&#x27;s own site.">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Browse", "item": "https://formground.com/browse/"}, {"@type": "ListItem", "position": 3, "name": "Sofas", "item": "https://formground.com/browse/sofas.html"}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <h1>Sofas</h1>
+  <p class="category-intro">854 sofas from independent makers - page 1 of 3. Every result links straight to the maker's own site.</p>
+  <div class="grid">
+      <a class="card" href="https://www.andtradition.com/products/hi-lo-av54" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2025/04/146473A236A014A299_Hi-Lo-AV54-Single-Module-Gentle-0733-600x800.jpg" alt="Hi Lo AV54 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hi Lo AV54</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/toe-sofa-natural-oak-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21872359_263008_Toe_Sofa_-_Natural_Oak_Off_White_1.jpg?v=1781652820" alt="Toe Sofa by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Toe Sofa</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/brook-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Brook_Sofa_3seat_1-1024x1024.jpg" alt="Brook Sofa by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Brook Sofa</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/brasilia-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/8156307-000200ZZ_Front.png?v=1761572018" alt="Brasilia Sofa by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Brasilia Sofa</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-us-noonu-divani.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_sofa_Noonu_01.jpg" alt="Noonu by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Noonu</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://baleri-italia.com/en/products/spunta-2-seater-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.baleri-italia.com/uploads/media/1400x/04/4104-Baleri-Italia_Spunta_2-seater-sofa_OF302_2026_01c.png?v=3-0" alt="Spunta 2-seater sofa by Baleri Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Spunta 2-seater sofa</p></div>
+          <p class="card-brand">Baleri Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/pillow-sofa-lacquer-cotton-kassl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/pillow_kassl_1_01a8b869-bff1-461a-a849-eb8f7f854ff4.png?v=1761652944" alt="Pillow Sofa Lacquer Cotton Kassl by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pillow Sofa Lacquer Cotton Kassl</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/family/dundra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_dundra-sofa_s74.jpg" alt="Dundra Sofa S74 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dundra Sofa S74</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/lessebo-soffa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/lessebosoffa.jpg?v=1705328720" alt="Lessebo soffa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lessebo soffa</p></div>
+          <p class="card-brand">Byarums Bruk</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/toro-daybed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/files/Toro-by-Sam-Baron-and-De-La-Espada-Atelier1_WEB.jpg?v=1748344798" alt="TORO DAYBED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TORO DAYBED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/gardeners-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/2868-6000.jpg?v=1737556109" alt="Gardener&#x27;s Sofa by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gardener&#x27;s Sofa</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/cabin-seat-modular-single-seat-kvadrat-autumn-101-archive-store" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/CabinArchiveThumbnail.png?v=1788829669" alt="Cabin Seat Modular by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cabin Seat Modular</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://editions-midi.com/produit/penequet/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://editions-midi.com/wp-content/uploads/2024/09/HDlourmarin082505-01305-OK-V2-540x720.jpg" alt="Penequet by Editions Midi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Penequet</p></div>
+          <p class="card-brand">Editions Midi</p>
+        </div>
+      </a>
+      <a class="card" href="https://eilersen.eu/products/sofas/amon/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://eilersen.eu/media/19701/amon-sofa-240x108-cm-sand-01-envir-with-wheel-footstool-152636-til-thumbnail.jpg" alt="Amon by Eilersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Amon</p></div>
+          <p class="card-brand">Eilersen</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rico-sofa-3-seater-vanir-black-honey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274564_1-bred.png?v=1788766451" alt="Rico Sofa 3-Seater by Ferm Living" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rico Sofa 3-Seater</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/sofas/sofa-25-seater/barba-club-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/44/da/70/69/6970da449b2bb6a5a625e355/FogiaBarba Club Sofa Beech lacquered-Vidar 0693Front.png?auto=format&amp;w=2000&amp;q=90" alt="Barba Club Sofa by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Barba Club Sofa</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/franco-albini/divano-dv33-small-purple" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/0BF6CE4EA85F3642B6111C8D0078CE52.jpg.webp" alt="Sofa DV33 by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa DV33</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://galvinbrothers.co.uk/products/byron-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0177/8296/products/Beverley_Low_Back_Sofa_1_featured_7515ecd4-5b11-461f-b26d-200eca8cb7f6.jpg?v=1591527216" alt="Byron Sofa by Galvin Brothers" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Byron Sofa</p></div>
+          <p class="card-brand">Galvin Brothers</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/club-modular-p25815" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__26396__productGrid/club-modular@2x.png" alt="Club by Gervasoni" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Club</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/sofas/settebello-modular-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/283/settebello_sofa_1100x550_new.jpg" alt="Settebello Modular Sofa by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Settebello Modular Sofa</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/bistro-modulsoffa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2024/02/Gärsnäs-_BISTRO-modulsoffa_01-1-1620x1080.jpg" alt="Bistro modulsoffa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bistro modulsoffa</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-sofa/crate-lounge-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422060518/img_20250422060518/globalassets/inriver/integration/service/crate-lounge-sofa_910x1100_brandmodel3.jpg" alt="Crate Lounge Sofa by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Crate Lounge Sofa</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://ingridsdotter.com/tivoli-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://ingridsdotter.com/wp-content/uploads/brizy/imgs/Tivolisoffa-2001-561x720x68x177x425x366x1678791009.jpg" alt="TIVOLI Sofa by Ingridsdotter" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TIVOLI Sofa</p></div>
+          <p class="card-brand">Ingridsdotter</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/pillar-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/Jackrabbbit_Sofa_main.jpg?v=1679356164" alt="Pillar sofa by Jackrabbit Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pillar sofa</p></div>
+          <p class="card-brand">Jackrabbit Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/timber-4-seater-beige-s3051" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/files/timber-4seater-beige-01_a39a2927-260d-4c2e-9656-79c54cfb0097.jpg?v=1715760562" alt="Timber 4 Seater beige S3051 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Timber 4 Seater beige S3051</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kallemo.se/en/sida/fatoeljer-soffor/chester-soffa-english" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/09/soffa-chester-497d7265-090fdd07.webp" alt="CHESTER SOFA by Källemo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CHESTER SOFA</p></div>
+          <p class="card-brand">Källemo</p>
+        </div>
+      </a>
+      <a class="card" href="https://lemonfurniture.co/products/la-plume-sofa-za" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0679/2622/9278/files/la-plume-sofa-1_jpg_b9c69fdd.jpg?v=1745860876" alt="La Plume Sofa by Lemon Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">La Plume Sofa</p></div>
+          <p class="card-brand">Lemon Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/armchairs/loveseat-paipai-2209" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/17600300_4561_i_vue_c.jpg" alt="Paipaï Loveseat by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Paipaï Loveseat</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/sofas/bubble-rock/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/483/1200x630/nocrop/noenlarge/align_7/BUBBLEROCK-HIGH.jpg.aspx" alt="Bubble Rock by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bubble Rock</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/brut-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2021/10/Magis_brut_sofa_product_front_vidar_SD2870_vidar_01-598x300.png" alt="Brut by Magis" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Brut</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/br_arm_sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/br_arm_sofa/Product/oak_C0.jpg" alt="ARM SOFA by Maruni" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARM SOFA</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/patch-sofa-system-chaise-open" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Patch_Chaise_Atlantis_18_Mole_02.png?v=1756899264" alt="Patch Sofa System by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Patch Sofa System</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/celeste-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/MichaelFelix_CelesteSofa_noshadow.jpg?v=1706658612" alt="Celeste sofa by Michael Felix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Celeste sofa</p></div>
+          <p class="card-brand">Michael Felix</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/16_armchairs-and-sofas/317_bolide/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/317.png" alt="Bolide by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bolide</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/modular-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Modular-Sofa_PP_Modular_Sofa_Set_3_Seater_Sofa_with_sides_Chaise_Longue_Cognac-Leather_Low-Res_CS.3.CL.OA.COGSA.jpg?v=1789551673" alt="Modular Sofa by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Modular Sofa</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mokkoamsterdam.com/acer-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5e73916b28f23d676eebaddd/ef79583b-1e36-4993-b02c-399b065ef59f/Mokko+-+Acer+Sofa+-+Black+Oak+-+Burgundy+Wool+-+lg+-+front+view+-+design+by+Aad+Bos.jpg" alt="Acer Dining Sofa by Mokko Amsterdam" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Acer Dining Sofa</p></div>
+          <p class="card-brand">Mokko Amsterdam</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/lift-sofa-three-seater" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/LIFT_3_ash_pearl_fabric.jpg?v=1770726814" alt="LIFT Three Seat Sofa by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LIFT Three Seat Sofa</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/sofas/1436-6144-extra-bold-sofa-pearl.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/23918-home_default/extra-bold-sofa-pearl.jpg" alt="Extra Bold sofa by Moustache" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Extra Bold sofa</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/shore-modular-sofa-configuration-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1751022698-new_works_packshots_shore_modular_sofa_configuration_01_front-copy.png?h=800" alt="Shore Modular Sofa, Configuration 1 by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shore Modular Sofa, Configuration 1</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/awa-sofa-sitzmodul-85x70-cm-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/Awa_Sofa_-_Sitzmodul_85x70_cm_Velvet_-_eisblau.webp?v=1789563929" alt="Awa Sofa by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Awa Sofa</p></div>
+          <p class="card-brand">Noah</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/sofa-hello" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/3261396c-6f24-4e14-a486-c252c51c6294/Sofa_Hello_011a.jpg" alt="Sofa Hello by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa Hello</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.northern.no/products/daybe-dining-modular-sofa-end-module" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0837/2250/2463/files/Daybe_dining_sofa_modular_L-corner_peach_office_close_Northern_High-res.jpg?v=1780661997" alt="Daybe Dining Modular Sofa by Northern" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Daybe Dining Modular Sofa</p></div>
+          <p class="card-brand">Northern</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/sofas/majestic-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2024/05/Omelette-Editions_Majestic_Sofa_5.jpg" alt="Majestic sofa - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Majestic sofa - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/modulair-bank-in-legerstof" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2025/02/HE_0552-thumb-1-300x300.jpg" alt="Modulaire bank in legerstof by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Modulaire bank in legerstof</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/moreau-sofa-the-younger" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_MoreautheY_Aug_26_270v2_ff1fe952-e815-445f-a9d3-8ca4cac57739.jpg?v=1789995633" alt="Moreau sofa the Younger by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Moreau sofa the Younger</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.pode.eu/collection/sofas/chablo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://a.storyblok.com/f/95982/696x1018/c36abd5ead/overview.png" alt="Chablo by Pode" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Chablo</p></div>
+          <p class="card-brand">Pode</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/harding_exterior_sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/ECH05-BLB-HERO.jpg?v=1785328615" alt="Harding Exterior Sofa by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Harding Exterior Sofa</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://project213a.com/products/pericia-lounge-chair-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0531/5395/6002/files/Project213A_PericiaLoungeSofa7.jpg?v=1759338088" alt="Perícia Sofa by Project 213A" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Perícia Sofa</p></div>
+          <p class="card-brand">Project 213A</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.resident.co.nz/en/furniture/seating/sacha-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.resident.co.nz/media/uploads/2024_05/Resident_JAN2024_Sacha_3Seater_0006_web-sq.jpg.450x450_q85_crop-smart_upscale.jpg" alt="Sacha Sofa by Resident" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sacha Sofa</p></div>
+          <p class="card-brand">Resident</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/comfy-sofa-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/comfy_turquaise_front.jpg?v=1728426813" alt="Comfy Sofa by Seletti" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Comfy Sofa</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/two-seater-aluminium-black-august" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5023001-900_01-jpg.jpg?v=1764732265" alt="Two seater aluminium black August by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Two seater aluminium black August</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/aware-sofa-fabric-ricco-20/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Aware_packshot_ricco-20_01-400x400.png" alt="Aware Sofa Black Base by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Aware Sofa Black Base</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/sofa-table-01" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/SOFATABLE2.jpg?v=1775858388" alt="Sofa Table 01 by Studio Vraco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa Table 01</p></div>
+          <p class="card-brand">Studio Vraco</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.tecta.de/D4/D4-63-BGschwarz/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://shop.tecta.de/media/99/32/9d/1588749520/D4_Bauhaus-Gurt_09_06.png?ts=1595578589" alt="D4 Stahlrohr vernickelt Bauhaus-Gurt Schwarz by Tecta" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">D4 Stahlrohr vernickelt Bauhaus-Gurt Schwarz</p></div>
+          <p class="card-brand">Tecta</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/livello-3-seater-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS349916_livello_3_seat_sofa_textured_chenille_almond_front.jpg?v=1732032766" alt="Livello 3-Seater sofa 323cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Livello 3-Seater sofa 323cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/canape-easy-2-places" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/canap_C3_A9-easy-2-places-noir-rose_4e48b70c-2b0a-435f-b419-598b8b4000d7.jpg?v=1778080764" alt="Canapé EASY by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Canapé EASY</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://verk.se/products/seating/sofas/sofa-v-vp-02/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://verk.se/wp-content/uploads/2023/04/sofa-v.vp_.02-product-image-1-860x937.jpg" alt="Sofa V.VP.02 by Verk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa V.VP.02</p></div>
+          <p class="card-brand">Verk</p>
+        </div>
+      </a>
+      <a class="card" href="https://verpan.com/products/easy-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0513/1829/2651/files/EasySofa_KK0001_Cam00_0000.jpg?v=1739183574" alt="Easy Sofa by Verpan" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Easy Sofa</p></div>
+          <p class="card-brand">Verpan</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/levanto-sofa-3-seater-bosa-col-04" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Levanto_Sofa_3seater_Bosacol.04_2.jpg?v=1788181565" alt="Levanto Sofa - 3 seater by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Levanto Sofa - 3 seater</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://willchoui.com/collections/per-for-h-ated" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://framerusercontent.com/images/AA7iDCiYOviaZmJlYcRnJqehM74.jpg?width=2200&amp;height=3000" alt="per.for.(H)ated by Will Choui" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">per.for.(H)ated</p></div>
+          <p class="card-brand">Will Choui</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/nakki-modular-side-table-stainless-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Nakki_Modular_Side_Table_Steel_1.png?v=1787640495" alt="Nakki Modular by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nakki Modular</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/hi-lo-av55" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2025/05/ATD_Retail_2025_Hi-Lo-AV54_Hi-Lo-AV55_Formakami-JH5_Mist-AP17_Wire-Stool-VP11_Table-Top-Wire-Stool-VP11_Ita-OS4_Collect-SC63_Collect-SC78_Mnemonic-MNC5_Loafer-SC107_The-Moor-AP18-600x800.jpg" alt="Hi Lo AV55 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hi Lo AV55</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/another-sofa-armchair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/191129-anothercountry1385661-1024x1024.jpg" alt="Another Sofa &amp; Armchair by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Another Sofa &amp; Armchair</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/eave-seamline-modular-sofa-86-open-section" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/EaveSeamlineModularSofa86_OpenSectionUpholsteryAudoBoucle02_2_17a2db22-4a4b-4739-8755-59bbab756a74.png?v=1756195075" alt="Eave Seamline Modular Sofa by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eave Seamline Modular Sofa</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-naviglio-divani.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_sofa_Naviglio_01.jpg" alt="Naviglio by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Naviglio</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://baleri-italia.com/en/products/miss-match-sectional-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.baleri-italia.com/uploads/media/1400x/02/1662-Baleri-Italia_MissMatch_sectional-sofa_composition-01_2018_01d.png?v=2-0" alt="Miss Match Sectional sofa by Baleri Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Miss Match Sectional sofa</p></div>
+          <p class="card-brand">Baleri Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/pillow-sofa-corduroy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Pillow_corduroy_blue.jpg?v=1738245619" alt="Pillow Sofa Corduroy by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pillow Sofa Corduroy</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/family/dundra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_dundra-sofa_s74-1.jpg" alt="Dundra Sofa S74AS by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dundra Sofa S74AS</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/classic-soffa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/classicsoffa.jpg?v=1705328286" alt="Classic soffa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Classic soffa</p></div>
+          <p class="card-brand">Byarums Bruk</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/turfa-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/files/Turfa-by-Sam-Baron-and-De-La-Espada-Atelier7_WEB.jpg?v=1748344850" alt="TURFA STOOL by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TURFA STOOL</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/confetti-modular-lounge-upholstered-base-6-seater-corner-right" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/thumbnails-confetti-mod--10.jpg?v=1773381745" alt="Confetti Modular Lounge by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Confetti Modular Lounge</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://editions-midi.com/produit/radassie/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://editions-midi.com/wp-content/uploads/2024/09/HDlourmarin075408-00944-OK-V2-543x720.jpg" alt="Radassié by Editions Midi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Radassié</p></div>
+          <p class="card-brand">Editions Midi</p>
+        </div>
+      </a>
+      <a class="card" href="https://eilersen.eu/products/sofas/ares/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://eilersen.eu/media/18998/desktop_slider__0001_gjet-april142078.jpg" alt="Ares by Eilersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ares</p></div>
+          <p class="card-brand">Eilersen</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rico-sofa-2-seater-poppy-velvet-butter-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274471_1-bred.png?v=1788766473" alt="Rico Sofa 2-seater by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rico Sofa 2-seater</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/sofas/sofa-25-seater/barba-lounge-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/05/dc/70/69/6970dc059595e0f1d0ad7620/FogiaBarba Lounge Sofa Beech lacquered-Vidar 0693Front.png?auto=format&amp;w=2000&amp;q=90" alt="Barba Lounge Sofa by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Barba Lounge Sofa</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/florence-knoll/sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/873AFE35C190F3498C8D2D0995183635.jpg.webp" alt="Sofa by Galerie Kreo" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/ghost-modular-sofa-p6418" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19306__productGrid/ghost-modular_clipped_rev_1@2x.png" alt="Ghost by Gervasoni" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ghost</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/sofas/tasca-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/252/Tasca_Sofa_1100x550_new.jpg" alt="Tasca Sofa by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tasca Sofa</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/bleck/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2017/02/LDC1464-1620x1080.jpg" alt="Bleck soffa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bleck soffa</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-sofa/palissade-lounge-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422064813/img_20250422064813/globalassets/inriver/integration/service/palissade-lounge-sofa_910x1100_brandmodel2.jpg" alt="Palissade Lounge Sofa by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palissade Lounge Sofa</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://ingridsdotter.com/formula-150-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://ingridsdotter.com/wp-content/uploads/brizy/imgs/Rod-soffa-e1657183903550-530x366x52x0x425x366x1657183903.jpg" alt="FORMULA 150 Sofa / FORMULA 90 Sofa by Ingridsdotter" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FORMULA 150 Sofa / FORMULA 90 Sofa</p></div>
+          <p class="card-brand">Ingridsdotter</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/banquette-mid-gris" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/products/mid-grey-01.jpg?v=1632913936" alt="Banquette Mid gris DB1096 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Banquette Mid gris DB1096</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kallemo.se/en/sida/fatoeljer-soffor/beatrix-soffa-english" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/2a/soffa-beatrix-2a176988.png" alt="BEATRIX SOFA by Källemo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BEATRIX SOFA</p></div>
+          <p class="card-brand">Källemo</p>
+        </div>
+      </a>
+      <a class="card" href="https://lemonfurniture.co/products/kent-loveseat-za" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0679/2622/9278/files/kent-loveseat-1_jpg_f19b2bb7.jpg?v=1745860833" alt="Kent Loveseat by Lemon Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kent Loveseat</p></div>
+          <p class="card-brand">Lemon Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/settee-outdoor-saparella-2433" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/18053000_671_i_vue_c.jpg" alt="Saparella Settee outdoor by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Saparella Settee outdoor</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/sofas/chemise-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/484/1200x630/nocrop/noenlarge/align_7/CHEMISE-HIGH.jpg.aspx" alt="Chemise by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Chemise</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/costume/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2020/04/Magis_costume_1seater_product_front_SD5142_kvadrat_uniform_melange_green_963_01_compasso_doro-286x300.jpg" alt="Costume by Magis" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Costume</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/br_three_seater_sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/br_three_seater_sofa/Product/ash_NL0.jpg" alt="THREE SEATER SOFA by Maruni" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">THREE SEATER SOFA</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/bam-4-seater-sofa-4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/BAM_2400_Atlantis_18_Mole_01.png?v=1756636615" alt="BAM! 4 Seater Sofa by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BAM! 4 Seater Sofa</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/madda-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/MichaelFelix_Madda_main.jpg?v=1679422541" alt="Madda sofa by Michael Felix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Madda sofa</p></div>
+          <p class="card-brand">Michael Felix</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/16_armchairs-and-sofas/254_botera-sofa-/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/254.png" alt="Botera Sofa by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Botera Sofa</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/mixed-combination-a" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Modular-Sofa_PP_Modular_Sofa_Set_Mixed_Combination_A_Cognac-Leather_Low-Res_MIX.A.OA.COGSA.jpg?v=1789544114" alt="Mixed Combination A by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mixed Combination A</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mokkoamsterdam.com/scalae-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5e73916b28f23d676eebaddd/136687cb-6a4a-42e3-aa32-e73f7049b0a3/Scalae+dining+sofa.jpg" alt="Scalae Dining Sofa by Mokko Amsterdam" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scalae Dining Sofa</p></div>
+          <p class="card-brand">Mokko Amsterdam</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/lift-sofa-two-seater" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/LIFT_2-_ash_anthracite_fabric.jpg?v=1770726832" alt="LIFT Two Seat Sofa by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LIFT Two Seat Sofa</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/shore-modular-sofa-configuration-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1751022698-new_works_packshots_shore_modular_sofa_configuration_02_front-copy.png?h=800" alt="Shore Modular Sofa, Configuration 2 by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shore Modular Sofa, Configuration 2</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/modul-100x150" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/S15-N9-MO-100x150-Modul-Beigeweiss-P1.webp?v=1743671984" alt="Torio Sofa by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Torio Sofa</p></div>
+          <p class="card-brand">Noah</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/flock-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/db1d87c2-d7bd-4e7a-917d-ad76ae973f4e/Sofa+Flock+by_NOOM+%281%29+1+sm+1.jpg" alt="Flock Sofa by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flock Sofa</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/sofas/masala-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2024/05/Omelette-Editions_Masala_Sofa_1.jpg" alt="Masala sofa - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Masala sofa - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/enorme-gestoffeerde-balkenbank-l-shape" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2025/02/HE_1198-thumb-300x300.jpg" alt="Enorme gestoffeerde balkenbank L Shape by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Enorme gestoffeerde balkenbank L Shape</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/bower-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Bower_Aug_26_269_692129b8-b2b2-4919-9e8d-19592f3222aa.jpg?v=1789999330" alt="Bower sofa by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bower sofa</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.pode.eu/collection/sofas/yanda" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://a.storyblok.com/f/95982/704x1016/918226de5a/pode-website-yanda-bank-overzicht.png" alt="Yanda by Pode" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Yanda</p></div>
+          <p class="card-brand">Pode</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/william_sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/USF11-HERO.jpg?v=1757428375" alt="William Sofa by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">William Sofa</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://project213a.com/products/nazare-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0531/5395/6002/files/Project_213A_Nazare_Sofa_walnut.jpg?v=1740579989" alt="Nazaré Sofa by Project 213A" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nazaré Sofa</p></div>
+          <p class="card-brand">Project 213A</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hot-dog-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Studio-Job-Hot-dog-Sofa-16011-7.jpg?v=1728426956" alt="Hot Dog Sofa by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hot Dog Sofa</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/two-seater-aluminium-eucalyptus-green-august" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5023001-514_01-jpg.jpg?v=1764732278" alt="Two seater aluminium eucalyptus green August by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Two seater aluminium eucalyptus green August</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/primum-sofa-black-base-without-arms-zenso-congac/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Primum-Sofa_Zenso2_223-400x400.png" alt="Primum Sofa Black Base Without Arms by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Primum Sofa Black Base Without Arms</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.tecta.de/F51/T10106.1/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://shop.tecta.de/media/54/7c/1a/1594103233/F51_Eiche-natur_Hallingdal-0200_01.png?ts=1594103235" alt="F51 Hallingdal 65 (0200) Eiche massiv natur by Tecta" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">F51 Hallingdal 65 (0200) Eiche massiv natur</p></div>
+          <p class="card-brand">Tecta</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/livello-corner-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS349997_livello_corner_sofa_large_textured_chenille_almond_front.jpg?v=1732033468" alt="Livello Corner Sofa 304cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Livello Corner Sofa 304cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/module-seul-canape-bridge" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Module_Chauffeuse_Coussin_beige.jpg?v=1777047924" alt="Module seul canapé BRIDGE by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Module seul canapé BRIDGE</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://verk.se/products/seating/sofas/sofa-v-mc-01/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://verk.se/wp-content/uploads/2021/02/VERK-Mia-Cullin01-1-860x937.jpg" alt="Sofa V.MC.01 by Verk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa V.MC.01</p></div>
+          <p class="card-brand">Verk</p>
+        </div>
+      </a>
+      <a class="card" href="https://verpan.com/products/cloverleaf-sofa-ext-unit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0513/1829/2651/files/Cloverleaf_Sofa_4-Modules_TON619_Detail0005_4c598785-0e2c-4a68-a2ab-c84ba39dba80.jpg?v=1739201575" alt="Cloverleaf Sofa by Verpan" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cloverleaf Sofa</p></div>
+          <p class="card-brand">Verpan</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/panorama-dine-mod-04-04-kumo-col-0380" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Panorama_DineSofa_modul4_4_Kumo0380_V2.jpg?v=1784531133" alt="Panorama Dine - Mod. 04 + 04 by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Panorama Dine - Mod. 04 + 04</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/collar-ottoman-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Collar_Ottoman_Harald_233.png?v=1743587090" alt="Collar ottoman by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collar ottoman</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/little-petra-vb2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2020/02/ATD_Packshots_134428A235A014A299_Little-Petra-VB2_Oiled-Walnut-w-Gentle-0733_Angled-Front-600x800.jpg" alt="Little Petra VB2 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Little Petra VB2</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/slow-armchair-large/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/AnotherCountry-Slow-Armchair-Front-1024x1024.jpg" alt="Slow Armchair by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Slow Armchair</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/eave-dining-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_PassageStool_TubulairePendantLarge_EaveDiningSofa_HarbourColumnDiningTable_CollapseVase_21_b159514d-a2f5-4851-a8ae-88ea9b6ce78b.jpg?v=1750339624" alt="Eave Dining Sofa by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eave Dining Sofa</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-us-tufty-time-divani.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_sofa_Tufty-Time_01.jpg" alt="Tufty Time by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tufty Time</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/pillow-sofa-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Pillow_velvet.png?v=1738660205" alt="Pillow Sofa Velvet by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pillow Sofa Velvet</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/piccolo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/piccolo-soffa.jpg?v=1705328228" alt="Piccolo soffa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Piccolo soffa</p></div>
+          <p class="card-brand">Byarums Bruk</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/cepo-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/files/Cepo-by-Sam-Baron-and-De-La-Espada-Atelier1_WEB.jpg?v=1748344884" alt="CEPO STOOL by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CEPO STOOL</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/sundae-seat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/collection-seating-web-d_sundae-seat-coda2-B.jpg?v=1759896548" alt="Sundae Seat by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sundae Seat</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://eilersen.eu/products/sofas/ash/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://eilersen.eu/media/16659/thumbnails__ash-sofa-240x98-cm-level-26-envir-with-havana-chair-without-arm-curl-07-stick-carpet-nature-puzz-and-spider.jpg" alt="Ash by Eilersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ash</p></div>
+          <p class="card-brand">Eilersen</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dase-sofa-chaise-longue-left-poppy-velvet-butter-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274461_1-bred.png?v=1788766401" alt="Dase Sofa Chaise Longue Left by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dase Sofa Chaise Longue Left</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/sofas/sofa-2-seater/boxlike-2-seater-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/26/c6/7c/69/697cc626c2b2ec97a835d240/Fogia_Boxlike_2-seater_Green_Packshot_Front.png?auto=format&amp;w=2000&amp;q=90" alt="Boxlike 2 Seater Sofa by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Boxlike 2 Seater Sofa</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/sergio-asti/sofa-zelda" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/A80446186CCA7A499805CE1F584033C9.jpg.webp" alt="Sofa Zelda by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa Zelda</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/gray-03-p3993" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19314__productGrid/gray3_clipped_rev_1@2x.png" alt=" by Gervasoni" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title"></p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/sofas/flo-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/250/flo_sofa_4_posti_1100x550.jpg" alt="Flo Sofa by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flo Sofa</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/dag/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2022/02/DAG_daybed20220204_01-1618x1080.jpg" alt="Dag dagbädd by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dag dagbädd</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-lounge/palissade-cord-lounge-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250901072039/img_20250901072039/globalassets/inriver/integration/service/palissade-cord-lounge-sofa_910x1100_brandmodel.jpg" alt="Palissade Cord Lounge Sofa by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palissade Cord Lounge Sofa</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/canape-atlas-2-seater-beige-s-1991" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/files/atlas-2seater-beige-00.jpg?v=1686318123" alt="Canapé Atlas 2 Seater beige S 1991 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Canapé Atlas 2 Seater beige S 1991</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kallemo.se/en/sida/fatoeljer-soffor/sofa-botero-en" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/01/Soffa%20Botero%20Web-01513b92.png" alt="SOFA BOTERO by Källemo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SOFA BOTERO</p></div>
+          <p class="card-brand">Källemo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/small-settee-outdoor-ottoman-2192" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/18221400_673_i_vue_c.jpg" alt="Ottoman Small settee outdoor by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ottoman Small settee outdoor</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/sofas/chemise-sofa-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/1304/1200x630/nocrop/noenlarge/align_7/CHEMISESOFABED-HIGH2.jpg.aspx" alt="Chemise Sofa Bed by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Chemise Sofa Bed</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/costume-lounge/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2024/07/Costume-lounge_sofa_outdoor_3seater_front_icona_copia-654x300.jpg" alt="Costume Lounge by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Costume Lounge</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/br_two_seater_sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/br_two_seater_sofa/Product/oak_NL0.jpg" alt="TWO SEATER SOFA by Maruni" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TWO SEATER SOFA</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/dandy-4-seater-sofa-focus" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Dandy_4-seater_Tonus_4_364_Natural_Oak_0005_027d9c83-4fae-41ba-a868-17a4a73e4d14.png?v=1756540035" alt="Dandy 4 Seater Sofa by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dandy 4 Seater Sofa</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/madda-sofa-xl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/MichaelFelix_MaddaXL_main.jpg?v=1679422632" alt="Madda sofa XL by Michael Felix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Madda sofa XL</p></div>
+          <p class="card-brand">Michael Felix</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/16_armchairs-and-sofas/247_marino/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/247.png" alt="Marino by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Marino</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/mixed-combination-b" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Modular-Sofa_PP_Modular_Sofa_Set_Mixed_Combination_B_Cognac-Leather_Low-Res_MIX.B.OA.COGSA.jpg?v=1789540829" alt="Mixed Combination B by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mixed Combination B</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/shore-modular-sofa-configuration-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1751022698-new_works_packshots_shore_modular_sofa_configuration_03_front-copy.png?h=800" alt="Shore Modular Sofa, Configuration 3 by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shore Modular Sofa, Configuration 3</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://noah-living.com/products/sitzmodul-95-beigerot" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0071/9618/0527/files/noah-living-sofa-chaise-95-p-main-image.webp?v=1718122518" alt="Noah Sofa by Noah" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Noah Sofa</p></div>
+          <p class="card-brand">Noah</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/sofa-gropius-cs1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1654008971921-PDIV270DQPEC239YXN0E/Sofa-Gropius-%288%29a.jpg" alt="Sofa Gropius CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa Gropius CS1</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/sofas/must-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2024/05/Omelette-Editions_Must_7.jpg" alt="Must sofa - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Must sofa - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/enorme-gestoffeerde-balken-hoekbank-legerstof" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2024/09/PHE_1479-1-300x300.jpg" alt="Enorme gestoffeerde balken hoekbank by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Enorme gestoffeerde balken hoekbank</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/franc-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Franc_Aug_26_150nolight.jpg?v=1789996327" alt="Franc sofa by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Franc sofa</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.pode.eu/collection/sofas/tweak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://a.storyblok.com/f/95982/704x1016/4b39abd2d5/pode-website-tweak-bank-overzicht.png" alt="Tweak by Pode" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tweak</p></div>
+          <p class="card-brand">Pode</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/felix_sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/USF12-HERO_06f67b01-e053-4067-923c-232c577c8607.jpg?v=1757585846" alt="Felix Sofa by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Felix Sofa</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/comfy-sofa-charcoal-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-furniture-marcantonio-sofa-comfy-16667.2.jpg?v=1728427408" alt="Comfy Sofa Charcoal Grey by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Comfy Sofa Charcoal Grey</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-teddy-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDVTE_01-jpg.jpg?v=1764729258" alt="Sofa velvet teddy + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet teddy + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/primum-sofa-black-base-zenso-223/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Primum-Sofa_Arm_Zenso2_223_02-400x400.png" alt="Primum Sofa Base by Sibast" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Primum Sofa Base</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.tecta.de/F51N-1-Edition-2023/f51n-2023-1/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://shop.tecta.de/media/95/81/b2/1697612235/F51N-Katrin-Greiling_Freisteller_0040.png?ts=1697612235" alt="F51N - 1 Edition 2023 by Tecta" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">F51N - 1 Edition 2023</p></div>
+          <p class="card-brand">Tecta</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/livello-corner-sofa-right-facing" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS349970_livello_corner_sofa_rhf_textured_chenille_almond_front.jpg?v=1732034277" alt="Livello Corner Sofa Right Facing 323cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Livello Corner Sofa Right Facing 323cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/canape-angle-modulable-3-a-4-places" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/3-4p-angle_meridienne-290x185_coussin_F_blanc.jpg?v=1777047575" alt="Canapé d&#x27;angle BRIDGE by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Canapé d&#x27;angle BRIDGE</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/maho-sofa-mod-22-25-navona-col-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Maho_modul22-26_Navona-col2_2_9aade01d-c4eb-4734-8180-85c5c00fca40.jpg?v=1784200194" alt="Maho Sofa - Mod. 22 + 26 by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Maho Sofa - Mod. 22 + 26</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/collar-open-end-right-arm-left-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Collar_Open_end_left_Harald_233.png?v=1743587090" alt="Collar open end right (arm left) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collar open end right (arm left)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/mayor-aj5" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2020/02/Mayor-AJ5_Oiled-walnut-w.-Karakorum-001-600x800.jpg" alt="Mayor AJ5 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mayor AJ5</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/welwyn-armchair-large/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Welwyn-Armchair-Large-01-1-1024x1024.jpg" alt="Welwyn Armchair by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Welwyn Armchair</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/eave-modular-sofa-96-configurations-11-12" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Eave_96_Boucle_02_combination_11.jpg?v=1702029066" alt="Eave Modular Sofa by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eave Modular Sofa</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-charles-carre-divani.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_sofa_Charles_Carre__01.jpg" alt="Charles Carré by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Charles Carré</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/pillow-sofa-cotton" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Pillow_cotton.png?v=1757410687" alt="Pillow Sofa Cotton by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pillow Sofa Cotton</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/jujol-soffa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/jujol_soffa.jpg?v=1705328874" alt="Jujol soffa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Jujol soffa</p></div>
+          <p class="card-brand">Byarums Bruk</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/escarpa-high-back-upholstered-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/files/Escarpa-by-Sam-Baron-and-De-La-Espada-Atelier_WEB.jpg?v=1748344754" alt="ESCARPA HIGH-BACK UPHOLSTERED CHAIR by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ESCARPA HIGH-BACK UPHOLSTERED CHAIR</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/confetti-soft-modular-lounge-chaise" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/CON-SFT-MOD--12.jpg?v=1756103327" alt="Confetti Soft Modular by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Confetti Soft Modular</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://eilersen.eu/products/sofas/aton/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://eilersen.eu/media/16660/thumbnails__aton-corner-sofa-373x292-cm-grain-18-envir-with-spider-triangle-table-bun-footstool-stick-carpet-sand-and-pu.jpg" alt="Aton by Eilersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Aton</p></div>
+          <p class="card-brand">Eilersen</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dase-sofa-chaise-longue-right-poppy-velvet-butter-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274462_1-bred.png?v=1788766327" alt="Dase Sofa Chaise Longue Right by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dase Sofa Chaise Longue Right</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/sofas/sofa-3-seater/boxlike-3-seater-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/7a/c6/7c/69/697cc67a230709357eeefc91/Fogia_Boxlike_3-seater_Blue_Packshot_Front.png?auto=format&amp;w=2000&amp;q=90" alt="Boxlike 3 Seater Sofa by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Boxlike 3 Seater Sofa</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/loll-modular-sofa-p5822" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__13458__productGrid/loll-modular_clipped_rev_1@2x.png" alt="Loll by Gervasoni" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Loll</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/sofas/mambo-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/251/mambo_sofa_1100x550.jpg" alt="Mambo Sofa by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mambo Sofa</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/julius-soffa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/03/GRSNb0530-1-1618x1080.jpg" alt="Julius soffa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Julius soffa</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/lounge/mimi-1-seater" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260629040111/img_20260629040111/globalassets/inriver/integration/service/mimi-1-seater_910x1100_brandmodel.jpg" alt="Mimi 1 Seater by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mimi 1 Seater</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/canape-atlas-2-seater-kaki-s1990" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/files/atlas-2seater-khaki-00.jpg?v=1684423189" alt="Canapé Atlas 2 Seater kaki S1990 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Canapé Atlas 2 Seater kaki S1990</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/large-settee-outdoor-ottoman-2193" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100lvz_c.jpg" alt="Ottoman Large settee outdoor by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ottoman Large settee outdoor</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/sofas/chemise-sofa-xl/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/485/1200x630/nocrop/noenlarge/align_7/chemiseXL_2.jpg.aspx" alt="Chemise XL by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Chemise XL</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/in-side_sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2024/10/Magis_in-side_sofa_product_lateral_SD3074_white_01_icona-418x300.jpg" alt="In-Side by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">In-Side</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/br_wide_two_seater_sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/br_wide_two_seater_sofa/Product/ash_NL0.jpg" alt="WIDE TWO SEATER SOFA by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">WIDE TWO SEATER SOFA</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/bam-3-seater-sofa-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/BAM_1800_Atlantis_18_Mole_01.png?v=1756633209" alt="BAM! 3 Seater Sofa by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BAM! 3 Seater Sofa</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/16_armchairs-and-sofas/294_nebulone/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/294.png" alt="Nebulone by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nebulone</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/mixed-combination-c" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Modular-Sofa_PP_Modular_Sofa_Set_Mixed_Combination_C_Cognac-Leather_Low-Res_MIX.C.OA.COGSA.jpg?v=1789537138" alt="Mixed Combination C by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mixed Combination C</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/shore-modular-sofa-configuration-4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1751022698-new_works_packshots_shore_modular_sofa_configuration_04_front-copy.png?h=800" alt="Shore Modular Sofa, Configuration 4 by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shore Modular Sofa, Configuration 4</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/sofas/savoye-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2024/05/Omelette-Editions_Savoye_Sofa_7.jpg" alt="Savoye sofa - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Savoye sofa - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-afval-50x50-hoekbank-gestoffeerd" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2024/09/PAW3HA9-300x300.jpg" alt="Afval Afval 50×50 hoekbank gestoffeerd by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval Afval 50×50 hoekbank gestoffeerd</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/ex-display-pendel-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/PendelSofa.jpg?v=1779282936" alt="Pendel sofa by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pendel sofa</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.pode.eu/collection/sofas/fold" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://a.storyblok.com/f/95982/704x1016/8e5534a73c/pode-website-fold-overzicht-1.png" alt="Fold by Pode" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fold</p></div>
+          <p class="card-brand">Pode</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/yazmine-loveseat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/USF09-HERO.jpg?v=1694774251" alt="Yazmine Loveseat by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Yazmine Loveseat</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/sofa-two-seater-snakes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Furniture-Toiletpaper-magazine-sofa-2-seaters-160925.jpg?v=1728427692" alt="Sofa Two Seater Snakes by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa Two Seater Snakes</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-tangerine-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDVT_01-jpg.jpg?v=1764729252" alt="Sofa velvet tangerine + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet tangerine + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/glides-for-primum-sofa-lounge/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Glides-1-400x400.png" alt="Glides for Primum Sofa &amp; Lounge by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Glides for Primum Sofa &amp; Lounge</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.tecta.de/F51N-2-Edition-2023/f51n-2023-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://shop.tecta.de/media/f3/97/2f/1697612235/F51N-Katrin-Greiling_Freisteller_0038.png?ts=1697612235" alt="F51N - 2 Edition 2023 by Tecta" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">F51N - 2 Edition 2023</p></div>
+          <p class="card-brand">Tecta</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/livello-corner-sofa-left-facing" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS349943_livello_corner_sofa_lhf_textured_chenille_almond_front.jpg?v=1732033844" alt="Livello Corner Sofa Left Facing 323cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Livello Corner Sofa Left Facing 323cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/canape-modulable-3-a-4-places" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/3-4p_droit-290x105_coussin_F_gris.jpg?v=1777047388" alt="Canapé BRIDGE by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Canapé BRIDGE</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/maho-sofa-mod-21-25-patrol-col-cognac" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Maho_modul21-25_Patrol-Cognac_2_5d677179-4853-4e22-97e7-873708bb1f79.jpg?v=1784199567" alt="Maho Sofa - Mod. 21 + 25 by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Maho Sofa - Mod. 21 + 25</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/collar-open-end-left-arm-right-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Collar_Open_end_right_Harald_233.png?v=1743587090" alt="Collar open end left (arm right) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collar open end left (arm right)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/mayor-aj6" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2019/08/ATD_Packshots_134466A235A057A988_Mayor-AJ6_Oiled-Oak-w-Vidar-0743_Front-1-600x800.jpg" alt="Mayor AJ6 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mayor AJ6</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/welwyn-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/230515-anothercountry0054-1-WEB-1024x1024.jpg" alt="Welwyn Sofa by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Welwyn Sofa</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/eave-seamline-modular-sofa-86-4-seater-configuration-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/9989600-000000ZZ_Front_070ca3f6-de5c-4fd4-b379-2ef68d88d923.jpg?v=1724937085" alt="Eave Seamline Modular Sofa 86 by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eave Seamline Modular Sofa 86</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-b-b-atoll-soft-divani.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_sofa_BeB-Atoll-Soft_01_4.jpg" alt="B&amp;B Atoll Soft by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">B&amp;B Atoll Soft</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/pillow-sofa-outdoor-canva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Pillow_canvas_6fe0f17c-ee7c-4b72-98ee-1a0469a7b6fc.jpg?v=1738239030" alt="Pillow Sofa Canvas by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pillow Sofa Canvas</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/byarum-soffa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarumsoffa.jpg?v=1705327150" alt="Byarum soffa by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Byarum soffa</p></div>
+          <p class="card-brand">Byarums Bruk</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/tronco-high-back-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/files/Tronco-by-Sam-Baron-and-De-La-Espada-Atelier_WEB.jpg?v=1748344923" alt="TRONCO HIGH-BACK CHAIR by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TRONCO HIGH-BACK CHAIR</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/cabin-modular-lounge-5-5-seater-corner-left" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/CAB-MOD-THUMBNAIL-C8.jpg?v=1756103166" alt="Cabin Modular by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cabin Modular</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://eilersen.eu/products/sofas/aton-mini/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://eilersen.eu/media/17494/thumbnails__0001_aton-mini-sofa-236x93-path-01-envir-with-havana-chair-stick-carpet-spider-square-table-and-bun-footstoo.jpg" alt="Aton Mini by Eilersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Aton Mini</p></div>
+          <p class="card-brand">Eilersen</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/catena-sofa-connect-corner-l200-louisiana-sand-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273563_1-bred.png?v=1772690797" alt="Catena Sofa Connect Corner L200 by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Catena Sofa Connect Corner L200</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/sofas/sofa-25-seater/dini-25-seater-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/b6/c6/7c/69/697cc6b6c2b2ec97a835d26a/Fogia_Dini_Vintage Cognac_Black Legs_Packshot_Front.png?auto=format&amp;w=2000&amp;q=90" alt="Dini 2.5 Seater Sofa by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dini 2.5 Seater Sofa</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/nuvola-sofa-p3688" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19275__productGrid/nuvola-10_12_clipped_rev_1@2x.png" alt="Nuvola by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nuvola</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/sofas/leisure-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/193/leisure-sofa_rettangolare_1100x550.jpg" alt="Leisure Sofa by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Leisure Sofa</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/kvilt/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/6160_Kvilt_Nina-Jobs_1-1440x1080.jpg" alt="Kvilt soffa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kvilt soffa</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/lounge/amanta-1-seater" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260202030942/img_20260202030942/globalassets/inriver/integration/service/amanta-1-seater_910x1100_brandmodel2.jpg" alt="Amanta 1 Seater by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Amanta 1 Seater</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/canape-atlas-2-seater-vert-s1989" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/files/atlas-2seater-green-00.jpg?v=1684406371" alt="Canapé Atlas 2 Seater vert S1989 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Canapé Atlas 2 Seater vert S1989</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/settee-murtoli-2668" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/11460500_561_i_vue_c.jpg" alt="Murtoli Settee by Ligne Roset" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Murtoli Settee</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products-materials/sofas/clan-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/10458/1200x630/nocrop/noenlarge/align_4/2023-Living-Divani-Clan-Sofa-1.jpg.aspx" alt="Clan by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Clan</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/officina_sofa2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2017/10/Magis_officina_2seater_product_front_SD2257_grey_globo_01.png" alt="Officina by Magis" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Officina</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_armless_angled_sofa_left/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_armless_angled_sofa_left/Product/hr_armless_angled_sofa_left.jpg" alt="ARMLESS ANGLED SOFA Left by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARMLESS ANGLED SOFA Left</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/dandy-2-seater-sofa-focus" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Dandy_2-seater_Atlantis_18_Mole_Black_Stained_Oak_0001_3154bf2f-5dcb-4e84-a532-c0925d6370cb.png?v=1756201004" alt="Dandy 2 Seater Sofa by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dandy 2 Seater Sofa</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/mixed-combination-d" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Modular-Sofa_PP_Modular_Sofa_Set_Mixed_Combination_D_Cognac-Leather_Low-Res_MIX.D.OA.COGSA.jpg?v=1789533656" alt="Mixed Combination D by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mixed Combination D</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/shore-modular-sofa-configuration-5" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1751022699-new_works_packshots_shore_modular_sofa_configuration_05_front-copy.png?h=800" alt="Shore Modular Sofa, Configuration 5 by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shore Modular Sofa, Configuration 5</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/gestoffeerde-balkenbank-wol" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2024/09/PHE_6226-thumb-300x300.jpg" alt="Gestoffeerde balkenbank by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gestoffeerde balkenbank</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/ex-display-garagh-sofa-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/GarahSofalandscape_1.jpg?v=1779276573" alt="Garagh sofa by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Garagh sofa</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.pode.eu/collection/sofas/edit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://a.storyblok.com/f/95982/704x1016/e21bdfcd9c/pode-website-edit-overzicht-1.png" alt="Edit by Pode" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Edit</p></div>
+          <p class="card-brand">Pode</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/dajo-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/USF08-COM-HERO.jpg?v=1745922070" alt="Dajo Sofa by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dajo Sofa</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/sofa-three-seater-snakes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Furniture-Toiletpaper-magazine-sofa-3-seaters-161095-1.jpg?v=1728427702" alt="Sofa Three Seater Snakes by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa Three Seater Snakes</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-shade-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDVS_01-jpg.jpg?v=1764729262" alt="Sofa velvet shade + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet shade + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.tecta.de/F51N-3-Edition-2023/f51n-2023-3/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://shop.tecta.de/media/fc/72/dc/1697612235/F51N-Katrin-Greiling_Freisteller_0037.png?ts=1697612235" alt="F51N - 3 Edition 2023 by Tecta" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">F51N - 3 Edition 2023</p></div>
+          <p class="card-brand">Tecta</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/dove-3-seater-sofa-boho-400" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS345578.jpg?v=1725979669" alt="Dove 3-Seater Sofa Boho 400 by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dove 3-Seater Sofa Boho 400</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/canape-dangle-easy-3-a-4-places" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/EASY-canap_C3_A9-3placesottoman-NoirGraphite-BleuMarine1.jpg?v=1777036604" alt="Canapé d&#x27;angle EASY by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Canapé d&#x27;angle EASY</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/edge-v1-sofa-mod-15-patrol-col-cognac" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Edge_V1_Sofa_modul13_ParmaCognac_2.jpg?v=1784193155" alt="Edge V1 Sofa - Mod. 15 by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Edge V1 Sofa - Mod. 15</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/collar-3-seater-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Collar_3-Seater_Harald_233.png?v=1743587090" alt="Collar 3-seater by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collar 3-seater</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/fly-sc12" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2019/11/Fly-SC_12-front-600x800.png" alt="Fly SC12 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fly SC12</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/slow-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/220411-ANOTHER-COUNTRY28661-1024x1024.jpg" alt="Slow Sofa by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Slow Sofa</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/offset-sofa-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_Offset_Sofa_Bed_Duomo_Rug_Plinth_Low_Reverse_Table_Lamp_1.jpg?v=1723036088" alt="Offset Sofa Bed by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Offset Sofa Bed</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-b-b-atoll-divani.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_sofa_BeB-Atoll_01.jpg" alt="B&amp;B Atoll by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">B&amp;B Atoll</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/pillow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Pillow_leathercopia.jpg?v=1738151559" alt="Pillow Sofa Leather by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pillow Sofa Leather</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/musgo-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/files/Musgo-by-Sam-Baron-and-De-La-Espada-Atelier2_WEB.jpg?v=1747914192" alt="MUSGO SOFA by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MUSGO SOFA</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/cabin-soft-modular-lounge-3-seater-chaise-left" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/CAB-SFT-C-12.jpg?v=1756103194" alt="Cabin Soft Modular by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cabin Soft Modular</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://eilersen.eu/products/sofas/baseline/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://eilersen.eu/media/19706/baseline-sofa-with-chaise-longue-325x160-100-cm-roth-27-envir-with-spider-table-and-havana-without-arms-152782-til-thumbnail.jpg" alt="Baseline by Eilersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Baseline</p></div>
+          <p class="card-brand">Eilersen</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/catena-sofa-chaise-longue-right-l601-louisiana-sand-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273575_1-bred.png?v=1772690748" alt="Catena Sofa Chaise Longue Right L601 by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Catena Sofa Chaise Longue Right L601</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/sofas/sofa-2-seater/jord-2-seater-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/e8/0e/71/69/69710ee88f45f25ab420cb09/FogiaJord 2 seat RAL 1013-Moss 0013-Oak lacqueredFront.png?auto=format&amp;w=2000&amp;q=90" alt="Jord 2 Seater Sofa by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Jord 2 Seater Sofa</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/saia-sofa-p6511" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__11648__productGrid/saia-12@2x.png" alt="Saia by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Saia</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/sofas/abbracci-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/144/Abbracci_Sofa_1100x550.jpg" alt="Abbracci Sofa by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Abbracci Sofa</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/neptunus-soffa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARS0400-1350x1080.jpg" alt="Neptunus soffa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Neptunus soffa</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/lounge/can-1-seater" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422052410/img_20250422052410/globalassets/inriver/integration/service/can-1-seater_1220x1220_brandmodel2.jpg" alt="Can 1 Seater by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Can 1 Seater</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/canape-atlas-2-seater-bleu-marine-s1988" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/files/atlas-2seater-navy-blue-0001.jpg?v=1684232572" alt="Canapé Atlas 2 Seater bleu marine S1988 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Canapé Atlas 2 Seater bleu marine S1988</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/small-settee-lapel-4744" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100gmi_c.jpg" alt="Lapel Small settee by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lapel Small settee</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/sofas/dumas/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/3121/1200x630/nocrop/noenlarge/align_7/Dumas--1-.jpg.aspx" alt="Dumas by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dumas</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/riace/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2023/03/Magis_riace_sofa_product_lateral_Kvadrat_972_icona-1-555x300.png" alt="Riace by Magis" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Riace</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_armless_angled_sofa_right/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_armless_angled_sofa_right/Product/hr_armless_angled_sofa_right.jpg" alt="ARMLESS ANGLED SOFA Right by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARMLESS ANGLED SOFA Right</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/bam-2-seater-sofa-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/BAM_1200_Atlantis_18_Mole_01_7d8c6b7e-dd73-4b54-9e66-dfb6b6e5cc87.png?v=1756634063" alt="BAM! 2 Seater Sofa by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BAM! 2 Seater Sofa</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/3-seater-sofa-with-sides-and-1-side-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Modular-Sofa_PP_Modular_Sofa_Set_3_Seater_Sofa_with_sides_1_side_table_Cognac-Leather_Low-Res_CS.3.1XTAB.OA.COGSA.jpg?v=1789555249" alt="3 Seater Sofa with Sides + 1 Side Table by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">3 Seater Sofa with Sides + 1 Side Table</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/shore-modular-sofa-configuration-6" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1751022699-new_works_packshots_shore_modular_sofa_configuration_06_front-copy.png?h=800" alt="Shore Modular Sofa, Configuration 6 by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shore Modular Sofa, Configuration 6</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/bank-in-sloophout-met-rib-stof" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2024/04/PHE_6896-thumb-300x300.jpg" alt="Bank in Sloophout met Ribstof by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bank in Sloophout met Ribstof</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/rydal-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Rydal_Sept25_0052_2_3cc8d9e1-1b65-4a81-a6eb-7d2a53b691ec.jpg?v=1764237297" alt="Rydal sofa by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rydal sofa</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.pode.eu/collection/sofas/melloo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://a.storyblok.com/f/95982/704x1016/bfae094a62/pode-website-melloo-overzicht.png" alt="Melloo by Pode" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Melloo</p></div>
+          <p class="card-brand">Pode</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/small-corbeille-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/USF03S-HERO.jpg?v=1761139991" alt="Small Corbeille sofa by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Small Corbeille sofa</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/sofa-two-seater-sea-girl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-toiletpaper-magazine-furniture-Sofa-16096-tp_sofa_2_donnamare_2z6a2466.jpg?v=1728428146" alt="Sofa Two Seater Sea Girl by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa Two Seater Sea Girl</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-rose-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDVR_01-jpg.jpg?v=1764729252" alt="Sofa velvet rose + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet rose + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.tecta.de/F51N-4-Edition-2023/f51n-2023-4/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://shop.tecta.de/media/21/8b/27/1697612235/F51N-Katrin-Greiling_Freisteller_0039.png?ts=1697612235" alt="F51N - 4 Edition 2023 by Tecta" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">F51N - 4 Edition 2023</p></div>
+          <p class="card-brand">Tecta</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/tamilla-2-seater-oak-oatmeal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS382520_1.jpg?v=1775820323" alt="Tamilla 2-Seater Sofa Oak &amp; Oatmeal by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tamilla 2-Seater Sofa Oak &amp; Oatmeal</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/housse-individuelle-pour-canape-easy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/TT_SOFA_3SEATER_BLACK_61168_F.png?v=1777036437" alt="Housse individuelle pour canapé EASY by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Housse individuelle pour canapé EASY</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/edge-v1-sofa-mod-25-parma-col-cognac" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Edge_V1_Sofa_modul25_PatrolCognac_2_3e8a96f6-5a8e-4661-bf42-009af777c9fe.jpg?v=1784192226" alt="Edge V1 Sofa - Mod. 25 by Wendelbo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Edge V1 Sofa - Mod. 25</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/collar-2-5-seater-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Collar_2.5-Seater_Harald_233.png?v=1743587091" alt="Collar 2.5-seater by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collar 2.5-seater</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/fly-sc3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2019/08/Fly-SC3_side-smoked-2-600x800.png" alt="Fly SC3 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fly SC3</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/ori-sofa-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/guestbed-another-country-photo-credit-david-brook-201948-1-1024x1024.jpg" alt="Ori Sofa Bed by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ori Sofa Bed</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/mingle-sofa-sheepskin" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/byLassen_Mingle_2.jpg?v=1675774331" alt="Mingle Sofa by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mingle Sofa</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-us-camaleonda-divani.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_sofa_Camaleonda_04.jpg" alt="Camaleonda by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Camaleonda</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/masheb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/Masheb_a719274b-57d7-4236-b506-94e269d8810b.png?v=1756387632" alt="Masheb Sofa by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Masheb Sofa</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/138sq-azores-lounge-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/files/138SQ-Azores-Lounge-Armchair-by-Luca-Nichetto-in-Danish-oiled-walnut-and-Nalia-270-fabric_web.jpg?v=1743410985" alt="AZORES LOUNGE ARMCHAIR by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AZORES LOUNGE ARMCHAIR</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/sundae-modular-left-end" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/EL-CODA-242-D-LR.jpg?v=1756103317" alt="Sundae Modular by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sundae Modular</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://eilersen.eu/products/sofas/bean/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://eilersen.eu/media/19526/overview-image-370-x-300.png" alt="Bean by Eilersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bean</p></div>
+          <p class="card-brand">Eilersen</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/catena-sofa-connect-corner-s200-louisiana-sand-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/catena_sofa_connect_corner_s200_louisiana_sand_chocolate_1_1x_1858bb08-24bd-463d-8b5c-b5a1df132122.webp?v=1775818258" alt="Catena Sofa Connect Corner S200 by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Catena Sofa Connect Corner S200</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/sofas/sofa-2-seater/niche-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/72/d3/ab/6a/6aabd3729715b41771e9ecdb/Fogia pack shoot Niche Sofa RAL 9005-Upholstery Vintage Concrete-Front.png?auto=format&amp;w=2000&amp;q=90" alt="Niche Sofa by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Niche Sofa</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/samet-sofa-p18791" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__16145__productGrid/samet@2x.png" alt="Samet by Gervasoni" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Samet</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/sofas/abbracci-modular-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/211/Abbracci_Modular_Sofa_1100x5501.jpg" alt="Abbracci Modular Sofa by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Abbracci Modular Sofa</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/simris-soffa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2024/02/Gärsnäs-_SIMRIS-2-sits-soffa_01-1-1620x1080.jpg" alt="Simris soffa by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Simris soffa</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/outdoor-living/outdoor-market-by-jasper-morrison/outdoor-market-folding-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260113115219/img_20260113115219/globalassets/inriver/integration/service/outdoor-market-folding-sofa_910x1100_brandmodel.jpg" alt="Outdoor Market Folding Sofa by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outdoor Market Folding Sofa</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/canape-timber-4-seater-gris" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/products/timber-4seater-grey-01.jpg?v=1629450332" alt="Canapé Timber 4 Seater gris S1062 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Canapé Timber 4 Seater gris S1062</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/small-settee-ecru-charcoal-structure-serpentine-1873" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10262096_i_vue_c.jpg" alt="Serpentine Small settee ecru / charcoal structure by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serpentine Small settee ecru / charcoal structure</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/sofas/easy-lipp/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/2241/1200x630/nocrop/noenlarge/align_4/00.jpg.aspx" alt="Easy Lipp by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Easy Lipp</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/traffic-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2015/02/Magis_traffic_2seater_product_lateral_SD1142_black_kvadrat_coda_01-318x300.png" alt="Traffic 2 by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Traffic 2</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_armless_sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_armless_sofa/Product/hr_armless_sofa.jpg" alt="ARMLESS SOFA by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARMLESS SOFA</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/dandy-3-seater-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Dandy_3-seater_Atlantis_18_Mole_Black_Stained_Oak_0001_0b299950-3660-4e1d-a6a7-b9d11fbbaccd.png?v=1756461584" alt="Dandy 3 Seater Sofa by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dandy 3 Seater Sofa</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/3-seater-sofa-with-sides-and-chaise-longue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Modular-Sofa_PP_Modular_Sofa_Set_3_Seater_Sofa_with_sides_Chaise_Longue_Cognac-Leather_Low-Res_CS.3.CL.OA.COGSA.jpg?v=1789551673" alt="3 Seater Sofa with Sides + Chaise Longue by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">3 Seater Sofa with Sides + Chaise Longue</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/shore-modular-sofa-configuration-7" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1750942435-new-works_lifestyle_44240_44250_44220_44252_shore-modular-sofa.tif?h=800" alt="Shore Modular Sofa, Configuration 7 by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shore Modular Sofa, Configuration 7</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/even-dik-en-breed-bank-gestoffeerd" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2018/04/even-breed-en-dik-bankje-W.jpg" alt="Even-dik-en-breed-bank gestoffeerd by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Even-dik-en-breed-bank gestoffeerd</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/moreau-slipcover-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Moreau-pleated_25_034LR.jpg?v=1744642704" alt="Moreau slipcover sofa by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Moreau slipcover sofa</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.pode.eu/collection/sofas/nivti" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://a.storyblok.com/f/95982/704x1016/33b8488b92/pode-website-nivti-bank-overzicht.png" alt="Nivti by Pode" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nivti</p></div>
+          <p class="card-brand">Pode</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/hall_sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/USF05-HERO.jpg?v=1761140044" alt="Hall Sofa by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hall Sofa</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/sofa-two-seater-shit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-toiletpaper-magazine-furniture-Sofa-16094-tp_sofa_2_shit_2z6a2456.jpg?v=1728428165" alt="Sofa Two Seater Shit by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa Two Seater Shit</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sofa-velvet-mole-frame-tulipwood-stained-dark-ono-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-A8522003TDVM_01-jpg.jpg?v=1764729249" alt="Sofa velvet mole + frame tulipwood stained dark Ono 3 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa velvet mole + frame tulipwood stained dark Ono 3</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.tecta.de/F51N-5-Edition-2023/f51n-2023-5/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://shop.tecta.de/media/f1/e2/e8/1697612235/F51N-Katrin-Greiling_Freisteller_0036.png?ts=1697612235" alt="F51N - 5 Edition 2023 by Tecta" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">F51N - 5 Edition 2023</p></div>
+          <p class="card-brand">Tecta</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/tamilla-2-seater-oak-sage" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS382521_1.jpg?v=1775820291" alt="Tamilla 2-Seater Sofa Oak &amp; Sage by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tamilla 2-Seater Sofa Oak &amp; Sage</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/set-de-housses-pour-canape-easy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Sofa_housses_blue-1-scaled.jpg?v=1777036173" alt="Set de housses pour canapé EASY by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Set de housses pour canapé EASY</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/levanto-sofa-mod-3-14-cifrado-col-0741" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Levanto_Sofa_Mod.3_14_Cifradocol.0741_V4_2.jpg?v=1780986632" alt="Levanto Sofa - Mod. 3 + 14 by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Levanto Sofa - Mod. 3 + 14</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/collar-2-seater-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Collar_2-Seater_Harald_233.png?v=1743587091" alt="Collar 2-seater by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collar 2-seater</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/fly-sc2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2019/02/ATD_Retail_2021_Fly_copped-600x800.jpg" alt="Fly SC2 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fly SC2</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/day-bed-four-green/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Day-Bed-Four-Green1-1024x1024.jpg" alt="Day Bed Four by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Day Bed Four</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/eave-modular-sofa-30-in" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Battus_Throw_Eave_Modular_Pouf_Boucle_11.jpg?v=1693314154" alt="Eave Modular Pouf by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eave Modular Pouf</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-us-charles-divani.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_sofa_Charles_01.jpg" alt="Charles by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Charles</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/sausage" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Sausage-sofa_Willo_Perron_11mgrey_4f57434f-2d6f-4f9b-8a9d-1faff3bf3a88.png?v=1789395184" alt="Sausage Sofa by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sausage Sofa</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/182-albireo-sofa-daybed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/files/182-Albireo-Sofa-by-Anthony-Guerree_19.jpg?v=1715161939" alt="ALBIREO SOFA DAYBED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ALBIREO SOFA DAYBED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/confetti-modular-lounge-01-upholstered-base" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/con-mod-open-zero-0001-uph-base_9561557b-6375-4743-8675-bc30c41f2466.jpg?v=1756103344" alt="Confetti Modular by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Confetti Modular</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://eilersen.eu/products/sofas/block/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://eilersen.eu/media/19708/block-cornersofa-400x322-cm-pond-27-envir-with-ares-centre-section-with-two-arms-and-spider-table-152592-thumbnail.jpg" alt="Block by Eilersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Block</p></div>
+          <p class="card-brand">Eilersen</p>
+        </div>
+      </a></div>
+  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/browse/sofas-2.html">2</a><a href="/browse/sofas-3.html">3</a><a href="/browse/sofas-2.html" rel="next">Next &rarr;</a></nav>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

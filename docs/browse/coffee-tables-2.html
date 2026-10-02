@@ -1,0 +1,1441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Coffee Tables - page 2 — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="519 real coffee tables from independent makers, listed in full (page 2 of 2). Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/browse/coffee-tables-2.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Coffee Tables - page 2 — Formground">
+<meta property="og:description" content="519 real coffee tables from independent makers, listed in full (page 2 of 2). Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/browse/coffee-tables-2.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Coffee Tables - page 2 — Formground">
+<meta name="twitter:description" content="519 real coffee tables from independent makers, listed in full (page 2 of 2). Every result links straight to the maker&#x27;s own site.">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Browse", "item": "https://formground.com/browse/"}, {"@type": "ListItem", "position": 3, "name": "Coffee Tables", "item": "https://formground.com/browse/coffee-tables.html"}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <h1>Coffee Tables</h1>
+  <p class="category-intro">519 coffee tables from independent makers - page 2 of 2. Every result links straight to the maker's own site.</p>
+  <div class="grid">
+      <a class="card" href="https://www.galeriekreo.com/en/piece/gianfranco-frattini/coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/AFAA805262C36F4A81E8C45AD3469AA6.jpg.webp" alt="Coffee table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/5_coffee-tables/270_pinto/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/270.png" alt="Pinto by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pinto</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/freyja-coffee-table-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1671205554806-VIL8WVB3DHA92OT2DZLS/FREYJA+COFFEE+TABLE+1_Black+stained+Ashwood+%283%29b.jpg" alt="Freyja Coffee Table 1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Freyja Coffee Table 1</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/donker-salonblok-hoogglans-gelakt" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2018/09/02_Dark_Waste_coffee_Cube_high-gloss-perspective01-300x300.jpg" alt="Donker afvalsalonblok in sloophout by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Donker afvalsalonblok in sloophout</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/stanley_coffee_table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/products/CFT16-VER-CLR-HERO.jpg?v=1638271624" alt="Stanley Coffee Table by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stanley Coffee Table</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/table-basse-oblong-plastique-recycle-venezia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-oblongue-venezia-100x50-bleunuit.jpg?v=1777031166" alt="Table basse oblongue TIPTOE 100x50cm by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse oblongue TIPTOE 100x50cm</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/glyph-coffee-table-coffee-table-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Glyph_coffeetable_1.jpg?v=1742562733" alt="Glyph Coffee Table - Coffee Table by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Glyph Coffee Table - Coffee Table</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/ita-os3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2024/10/Ita-Coffee-Table-OS3_Veneer-Dark-Stained-Oak-w.-Dark-Stained-Oak-Legs_Angled-Front-600x800.png" alt="Ita OS3 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ita OS3</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/big-foot-table-tall-coffee" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18394214_247001_-_Big_Foot_Table_Tall_-_Coffee_1.jpg?v=1782993424" alt="Big Foot Table by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Big Foot Table</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-tobi-ishi-tavolini.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_small_table_Tobi-Ishi-22_03.jpg" alt="Tobi Ishi by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tobi Ishi</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/product/size" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_size-bar-l901-90.jpg" alt="Size L901-90 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Size L901-90</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-new-corner" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/284/T_corner-photoshop-.jpg" alt="Table basse New Corner by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse New Corner</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/insert-coffee-table-black-stained-ash" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/666403_1100332775_1.png?v=1762174957" alt="Insert Coffee Table by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Insert Coffee Table</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fleurstudios.com/products/palermo-coffee-table-brushed-stainless-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1002/1073/7523/files/FleurStudiosPalermoCoffeeTable2.jpg?v=1781048266" alt="Palermo Stainless Steel Coffee Table by Fleur Studios" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palermo Stainless Steel Coffee Table</p></div>
+          <p class="card-brand">Fleur Studios</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/coffee-side-tables/coffee-table/winwin-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/a8/c7/7c/69/697cc7a8230709357eeefd18/Fogia_Winwin_Table_Oak-Clear Glass_Packshot_Front.jpg.png?auto=format&amp;w=2000&amp;q=90" alt="Winwin Coffee Table by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Winwin Coffee Table</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/guillaume-bardet/coffee-table-100" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/546F72DC97EBB74AABA76D2371F16331.jpg.webp" alt="Coffee Table 100 by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Coffee Table 100</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/5_coffee-tables/296_plautino/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/296.png" alt="Plautino by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Plautino</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/high-coffee-table-brandt-cs1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1585756330151-E4AAD798ZW70DK3JHQVD/_Brandt+Coffee+table+High+CS1_03.jpg" alt="High Coffee Table Brandt CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">High Coffee Table Brandt CS1</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-salontafel-in-plaatmateriaalhoogglans-wit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2018/01/Afvalsalonblok-wit-met-messing-rand-002_W-e1544021368155-300x300.jpg" alt="Afval salontafel in plaatmateriaal hoogglans wit by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval salontafel in plaatmateriaal hoogglans wit</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/giacometti_coffee_table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/products/CFT01-VSG-LIM-HERO.jpg?v=1638270880" alt="Giacometti Coffee Table by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Giacometti Coffee Table</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/table-basse-galet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-galet-chene-massif-120x75-griseuca.jpg?v=1777028923" alt="Table basse TIPTOE 120x75cm by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse TIPTOE 120x75cm</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/floema-coffee-table-medium-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Floema_Coffeetable_M_Walnut_1.jpg?v=1759909862" alt="Floema Coffee Table - Medium by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Floema Coffee Table - Medium</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/sett-ln12" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2020/09/Sett-LN12_Smoked-cast-glass-w.-Dark-Chrome-600x800.jpg" alt="Sett LN12 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sett LN12</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/big-foot-coffee-table-big-bone-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18394220_233007_-_Big_Foot_Coffee_Table_Big_-_Bone_White_1.jpg?v=1774544276" alt="Big Foot Coffee Table by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Big Foot Coffee Table</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-diesis-tavolini.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_small-table_Diesis_01.jpg" alt="Diesis by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Diesis</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/product/size" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_size-bar-l901-107.jpg" alt="Size L901-107 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Size L901-107</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-blackboard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/256/T_img-5529.jpg" alt="Table basse Blackboard by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Blackboard</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/mineral-coffee-table-bianco-curia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/302710_1101142824_11.png?v=1762183006" alt="Mineral Coffee Table by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mineral Coffee Table</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fleurstudios.com/products/oslo-large-round-stainless-steel-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1002/1073/7523/files/OsloCoffeeTable2.jpg?v=1781050418" alt="Oslo Stainless Steel Large Coffee Table by Fleur Studios" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oslo Stainless Steel Large Coffee Table</p></div>
+          <p class="card-brand">Fleur Studios</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jean-baptiste-fastrez/comet-round-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/58BAE9089FA55046AC10A090CB858C26.jpg.webp" alt="Comet round coffee table by Galerie Kreo" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Comet round coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/5_coffee-tables/252_soda/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/252.png" alt="Soda by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Soda</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/low-coffee-table-brandt-cs1-93ngz" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1585778109582-99IL3SA1XEPCRY0GT6B9/_Brandt+Coffee+table+Small+CS1_05.jpg" alt="Low Coffee Table Brandt CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Low Coffee Table Brandt CS1</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/kantine-salontafel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2018/05/02_Kantine_salontafel_perspective01_THUMBNAIL-300x300.jpg" alt="Kantine salontafel by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kantine salontafel</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/logan_oval_coffee_table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/products/CFT15-CAR-CCP-HERO.jpg?v=1635495540" alt="Logan Oval Coffee Table by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Logan Oval Coffee Table</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/table-basse-surf" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-surf-chene-massif-120x48-griseuca.jpg?v=1777028658" alt="Table basse TIPTOE 120x48cm by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse TIPTOE 120x48cm</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/floema-coffee-table-large-black-laminate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Floema_Coffeetable_L_Laminate_black_1.jpg?v=1759909801" alt="Floema Coffee Table - Large by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Floema Coffee Table - Large</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/sett-ln13" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2020/09/Sett-LN13_Verde-Guatemala-Marble-w.-Dark-Chrome-600x800.jpg" alt="Sett LN13 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sett LN13</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/pillar-table-tall-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18345456_201024_-_Pillar_Coffee_Table_Tall_-_Brass.jpg?v=1782396153" alt="Pillar Table by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pillar Table</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/product/size" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_size-l904.jpg" alt="Size L904 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Size L904</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-slice" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/190/T_190-6.jpg" alt="Table basse Slice by Eric Schmitt Studio" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Slice</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/feve-coffee-table-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/597179_1104266418_15.png?v=1762180762" alt="Feve Coffee Table by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Feve Coffee Table</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fleurstudios.com/products/oslo-medium-round-stainless-steel-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1002/1073/7523/files/OsloMediumCoffeeTable-2.jpg?v=1790135714" alt="Oslo Stainless Steel Medium Coffee Table by Fleur Studios" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oslo Stainless Steel Medium Coffee Table</p></div>
+          <p class="card-brand">Fleur Studios</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/crescendo-black-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/C89D65AB4833BB4E9DBF99005F9BC484.jpg.webp" alt="Crescendo Coffee Table by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Crescendo Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/5_coffee-tables/310_soda-iced/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/310.png" alt="Soda Iced by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Soda Iced</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/high-coffee-table-brandt-limited-edition-csl3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1663696266794-H5MCCJH43QS0W7Q2GMS1/2a.jpg" alt="High Coffee Table Brandt CSL3 Numbered Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">High Coffee Table Brandt CSL3 Numbered Edition</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/salontafel-ovaal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2022/05/01_Salontafel_ovaal_100x60x45cm_front01_THUMBNAIL-300x300.jpg" alt="Salontafel ovaal by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Salontafel ovaal</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/pied-de-table-basse" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Tiptoe_Pied43_GrisEucalyptus.jpg?v=1777024818" alt="Pied de table basse by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pied de table basse</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/expose-coffee-table-medium-medium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Expose_Coffee_M.jpg?v=1741634489" alt="Expose Coffee Table by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Expose Coffee Table</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/in-between-sk24" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/In-Between-SK24_Black-Lacquered-Oak-600x800.png" alt="In Between SK24 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">In Between SK24</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/product/size" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_size-coffee-table-l905-40.jpg" alt="Size L905-42 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Size L905-42</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-corner" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/162/T_162-1.jpg" alt="Table basse Corner by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Corner</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/level-coffee-table-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/336175_1104267250_1.png?v=1762181067" alt="Level Coffee Table by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Level Coffee Table</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jean-baptiste-fastrez/crocodile-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/8C49A8B8612AEE4BB3C870696A112A4D.jpg.webp" alt="Crocodile coffee table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Crocodile coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/5_coffee-tables/273_soda-oval/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/273.png" alt="Soda Oval by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Soda Oval</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/high-coffee-table-brandt-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1630615986593-DVQX45JD6VXAIS8POCGQ/HIGH+COFFEE+TABLE+BRANDT+CS2+%281%29+b.jpg" alt="High Coffee Table Brandt CS2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">High Coffee Table Brandt CS2</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/aluminium-salontafel-rond" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2022/03/03_Small_aluminum_table_front03_THUMBNAIL-300x300.jpg" alt="Aluminium salontafel rond by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Aluminium salontafel rond</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/table-basse-brooklyn" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-ronde-90cm-chene-massif-noirgraphite_d0ca8793-54f9-4b96-9e21-22549c348cf6.jpg?v=1774597965" alt="Table basse ronde TIPTOE Ø 90cm by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse ronde TIPTOE Ø 90cm</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/collect-coffee-table-small-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Collect_Coffetable_S_1.jpg?v=1743580955" alt="Collect Coffee Table by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collect Coffee Table</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/in-between-sk23" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/In-Between-SK23_Oiled-Oak-600x800.png" alt="In Between SK23 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">In Between SK23</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/product/size" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_size-l905.jpg" alt="Size L905-72 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Size L905-72</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-lac" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/148/T_148.jpg" alt="Table basse Lac by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Lac</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/staffa-coffee-table-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/724945_1104267970_10.png?v=1762181183" alt="Staffa Coffee Table by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Staffa Coffee Table</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/hella-jongerius/dragonfly-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F68B713BC7E5DA40A8029D31D52E93C6.jpg.webp" alt="Dragonfly Coffee Table by Galerie Kreo" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dragonfly Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/5_coffee-tables/272_soda-sq/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/272.png" alt="Soda SQ by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Soda SQ</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/low-coffee-table-brandt-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1630621281968-BI06T33LYU2I58AZVVLT/LOW+COFFEE+TABLE+BRANDT+CS2+%282%29+b.jpg" alt="Low Coffee Table Brandt CS2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Low Coffee Table Brandt CS2</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afvalsalonblok-maatwerk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2021/06/02_Donker_salonblok_maatwerk_210477_perspective01_THUMBNAIL-300x300.jpg" alt="Afvalsalonblok by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afvalsalonblok</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/drop-leaf-hm5" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2020/02/Drop-Leaf_HM5_Walnut_02-600x800.png" alt="Drop Leaf HM5 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Drop Leaf HM5</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/product/size" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_size-bar-l905-107.jpg" alt="Size Bar L905-90/107 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Size Bar L905-90/107</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-saturne" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/153/T_153-1.jpg" alt="Table basse Saturne by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Saturne</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/tarn-coffee-table-dark-stained-beech" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/127572_1104270014_1.png?v=1762179219" alt="Tarn Coffee Table by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tarn Coffee Table</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/alessandro-mendini/firenze-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/6087198E0E0999478F630296F4F0ABE3.jpg.webp" alt="Firenze coffee table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Firenze coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/5_coffee-tables/303_striche/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/303.png" alt="Striche by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Striche</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/tables/baby-table-paul" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1707856302817-T5J1OC8HHDS2TG7JA6V2/Baby-Paul-Table--%281%29+a.jpg" alt="Baby Paul Table by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Baby Paul Table</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afvalsalonblok-met-krukjes-maatwerk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2021/02/05_Afval_Blok_perspective05-VK-300x300.jpg" alt="Afvalsalonblok met krukjes by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afvalsalonblok met krukjes</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/pinwheel-hm7" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2020/02/Pinwheel_HM7_Walnut_02-600x800.png" alt="Pinwheel HM7 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pinwheel HM7</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/product/size" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_size-l905-1.jpg" alt="Size L906 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Size L906</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-bracket" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/117/T_bracket-inclin-.jpg" alt="Table basse Bracket by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Bracket</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/burl-storage-coffee-table-dark-stained-burl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/235714_1104272383_1.png?v=1762178138" alt="Burl Storage Coffee Table by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Burl Storage Coffee Table</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/ronan-bouroullec/flou-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/EB7FE0564BD2EB41B06DC75573B93F59.jpg.webp" alt="Flou Coffee Table Color by Galerie Kreo" loading="lazy"><span class="variant-badge">5 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flou Coffee Table Color</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/5_coffee-tables/271_superpop/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/271.png" alt="Superpop by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Superpop</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afvalsalontafel-maatwerk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2020/09/03_Afvalsalontafel_side-thumbnail-300x300.jpg" alt="Afvalsalontafel by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afvalsalontafel</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/palette-jh7" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2019/11/Palette-JH-7-black-600x800.png" alt="Palette JH7 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palette JH7</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/product/size" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/04/studio_size-l916-2-batch2.jpg" alt="Size 40 L915 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Size 40 L915</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-goodboy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/122/T_122-1.jpg" alt="Table basse Goodboy by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Goodboy</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/ronan-bouroullec/flou-coffee-table-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/4A294CAB98E1EF4AB93D6DED7BC7727C.jpg.webp" alt="Flou Coffee Table by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flou Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/5_coffee-tables/304_toblo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/304.png" alt="Toblo by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Toblo</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-plaatmateriaal-salonblok-maatwerk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2020/07/05_Afvalsalonblok_plaatmateriaal_side-thumbnail-300x300.jpg" alt="Afval plaatmateriaal salonblok by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval plaatmateriaal salonblok</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/palette-jh25" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2019/08/Palette-JH25_black-600x800.png" alt="Palette JH25 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palette JH25</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/product/veva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/04/studio_veva-low-l440-52-6-batch2.jpg" alt="VEVA LOW L440 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">VEVA LOW L440</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-frame-bas" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/109/T_img4858-72dpi.jpg" alt="Table Frame Basse by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table Frame Basse</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/ronan-bouroullec/flou-coffee-table-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/2CA4D676D1849F4994EE4365567DC51D.jpg.webp" alt="Flou Coffee Table Large by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flou Coffee Table Large</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/5_coffee-tables/265_totot/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/265.png" alt="Tototò by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tototò</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-afval-anders-salontafel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2019/08/PHE_1763-wit-achtergrond--300x300.jpg" alt="afval afval 50×50 salontafel by Piet Hein Eek" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">afval afval 50×50 salontafel</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/in-between-sk14" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2020/07/In-Between-SK14-Black-600x800.png" alt="In Between SK14 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">In Between SK14</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/product/veva" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_veva-high-l441-1.jpg" alt="VEVA HIGH L441 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">VEVA HIGH L441</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-pipe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/111/T_111.jpg" alt="Table basse Pipe by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Pipe</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/ronan-bouroullec/flou-coffee-table-large-color" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/682FFCB4C5329F47B1A4EF9A9953FA45.jpg.webp" alt="Flou Coffee Table Large Color by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flou Coffee Table Large Color</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/5_coffee-tables/109_zero/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/109.png" alt="Zero by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Zero</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/enorme-balken-salonblok" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2018/10/PHE_0629-700px-1.jpg" alt="Enorme balken salonblok by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Enorme balken salonblok</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/in-between-sk15" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2020/07/In-Between-SK15-Smoked-Oiled-Oak-600x800.png" alt="In Between SK15 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">In Between SK15</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-bracelet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/085/T_085-2.jpg" alt="Table basse Bracelet by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Bracelet</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/fraction-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F08CFA1FBF35E54A8B840D7633928E52.jpg.webp" alt="Fraction Coffee Table by Galerie Kreo" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fraction Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/5_coffee-tables/264_zigo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/264.png" alt="Zigo by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Zigo</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-salonblok-groentinten" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2018/02/afvalsalonblok-groen-ronde-randjes-W.jpg" alt="Afval salonblok in groentinten by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval salonblok in groentinten</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-celeste" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/087/T_photo-192-new-fond-gris.jpg" alt="Table basse Céleste by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Céleste</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/rene-jean-caillette/gc56-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/328BF52E2CD5934D8507A381E8D336A5.jpg.webp" alt="GC56 coffee table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">GC56 coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-salonblok-in-eiken" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2017/05/afval-salonblok-in-eiken-vooraanzicht-W.jpg" alt="Afval salonblok in eiken by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval salonblok in eiken</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-arch" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/055/T_055.jpg" alt="Table basse Arch by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Arch</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/hella-jongerius/gemstone-coffee-table-model-l" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/1CAF8570671EB449880018E30939D8C3.jpg.webp" alt="Gemstone Coffee Table - Model L by Galerie Kreo" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gemstone Coffee Table - Model L</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/nyc-watertoren-salontafel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2017/01/wateertoren-salonblok.jpg" alt="NYC watertoren salontafel by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NYC watertoren salontafel</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-big-square" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/059/T_059.jpg" alt="Table basse Big Square by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Big Square</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/roger-capron/geometrical-set-of-1-coffee-table-3-side-tables" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/90543F1337697949A1C8AC2E009D320A.jpg.webp" alt="Geometrical, Set of 1 coffee table &amp; 3 side tables by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Geometrical, Set of 1 coffee table &amp; 3 side tables</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/salonblok-van-afvalconstructiestaal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/11/afvalconstructiestalen-salonblokken_PHE-W.jpg" alt="Salonblok van afvalconstructiestaal by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Salonblok van afvalconstructiestaal</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-cornelius" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/062/T_062.jpg" alt="Table basse Cornelius by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Cornelius</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/ronan-and-erwan-bouroullec/geta-noire-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/DA71AC7EB5B00546AA6DB27DDB9BF790.jpg.webp" alt="Geta Noire Coffee Table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Geta Noire Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-afval-salontafel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/10/afval-afval-salontafel_edited_1500px-300x300.jpg" alt="Afval afval 40 x 40 salontafel by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval afval 40 x 40 salontafel</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-curve" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/065/T_065-1.jpg" alt="Table basse Curve by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Curve</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/hakone-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/647C2FDDB4083847A5F1606A750E4FD2.jpg.webp" alt="Hakone Coffee table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hakone Coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-afval-salonbolk-set-van-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2019/07/exempla-salonblok-01-300x300.jpg" alt="Afval afval 40 x 40 salonblok by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval afval 40 x 40 salonblok</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-geko" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/067/T_067.jpg" alt="Table basse Geko by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Geko</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jaime-hayon/hymy-oval-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/B49070B7F5F9A94084EB4F97B5318DB6.jpg.webp" alt="Hymy Oval coffee table by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hymy Oval coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/salonblok-koper" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/10/koperen-salonblok-W.jpg" alt="Salonblok koper by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Salonblok koper</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-naja" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/070/T_070-1.jpg" alt="Table basse Naja by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Naja</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jaime-hayon/hymy-round-coffee-table-black-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/D8135EEAA342F54BB8C2E968E8096D75.jpg.webp" alt="Hymy Round coffee table - Black &amp; White by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hymy Round coffee table - Black &amp; White</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/keramiek-salontafel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/11/keramiek-salontafel.jpg" alt="Keramiek salontafel by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Keramiek salontafel</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-one-way" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/071/T_2t6a8794-copie-2hd.jpg" alt="Table basse One Way by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse One Way</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jaime-hayon/hymy-round-coffee-table-multicolored" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/D8C9317A2C9A1246A4DA907EDD7056F0.jpg.webp" alt="Hymy Round coffee table - Multicolored by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hymy Round coffee table - Multicolored</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-afval-salonblok" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/11/exempla-salonblok-01.jpg" alt="Afval afval salonblok by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval afval salonblok</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-patch" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/072/T_2t6a0523-copie.jpg" alt="Table basse Patch by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Patch</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ignotus-nomen-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/AD5DE5A3D68DCD4D93B0312527385021.jpg.webp" alt="Ignotus Nomen Coffee Table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ignotus Nomen Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/boomstam-45-graden-salontafel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/02/salonblok45-graden-W.jpg" alt="Boomstam 45 graden salontafel by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Boomstam 45 graden salontafel</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-bague" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/040/T_040-1.jpg" alt="Table basse Bague by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Bague</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/marco-campardo/jello-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/51904164B6D19B498CA706336E080AE1.jpg.webp" alt="Jello Coffee table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Jello Coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-x" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/049/T_049.jpg" alt="Table basse X by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse X</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/marco-campardo/jello-round-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/453987F137343D4D95DCFB3F7B897791.jpg.webp" alt="Jello Round Coffee table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Jello Round Coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-cloud" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/026/T_026.jpg" alt="Table basse Cloud by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Cloud</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/doshi-levien/kinari-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/0E4FD49CBD81464EA4DFAF03F81DE8D6.jpg.webp" alt="Kinari Coffee Table by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kinari Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-couteau" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/027/T_027.jpg" alt="Table basse Couteau by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Couteau</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/large-c-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/AC41BB19D67251499EE2CC3FFAED50FA.jpg.webp" alt="Large C Coffee Table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Large C Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-recta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/033/T_033.jpg" alt="Table basse Recta by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Recta</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/gianfranco-frattini/large-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/FA06E70F0057B845B717F39D5DD26041.jpg.webp" alt="Large Coffee table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Large Coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-umberto" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/014/T_014.jpg" alt="Table basse Umberto by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Umberto</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/large-db-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/4B74455C51771B40A96765D63DCAA573.jpg.webp" alt="Large DB Coffee Table by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Large DB Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_tables-basses_table-basse-ove" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/208/T_208.jpg" alt="Table basse Ove by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table basse Ove</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/large-r-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/C194BD4E40A41A46B989B5A49C94DA9B.jpg.webp" alt="Large R Coffee Table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Large R Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/roger-capron/lave-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/DB91749DA0FC2A4197BF064D975CF80D.jpg.webp" alt="Lave coffee table by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lave coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/medium-t-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/8598AEE0D2D79441A35177B776DF5DE3.jpg.webp" alt="Medium T Coffee Table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Medium T Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/medium-w-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/B6B5545DD9065940A60EDA40C231EA88.jpg.webp" alt="Medium W Coffee Table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Medium W Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/hella-jongerius/niebla-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/C02528190E9A46478E6276C7678CA804.jpg.webp" alt="Niebla Coffee Table by Galerie Kreo" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Niebla Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jaime-hayon/niko-niko-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/72972BEB994C7145AC106E1A72675E2E.jpg.webp" alt="Niko Niko Coffee Table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Niko Niko Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/alessandro-and-giorgio-mendini-and-gregori/ollo-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/44B9A9D702D40A4B9473604C3824AFF1.jpg.webp" alt="Ollo coffee table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ollo coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jaime-hayon/organism-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/8DE1018DF4B817458C3FD900898273CA.jpg.webp" alt="Organism coffee table by Galerie Kreo" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Organism coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/alessandro-mendini/perugia-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/CF4331DB62FAC54B83C54ED448413D85.jpg.webp" alt="Perugia Coffee Table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Perugia Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/david-dubois/reflect-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/47777E039C38564F9B01672DC10CA74C.jpg.webp" alt="Reflect Coffee Table by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Reflect Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/david-dubois/strap-coffee-table-multicolour" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/13E35A4BE076D74BA74A81DE79C57883.jpg.webp" alt="Strap‘‘ Coffee Table multicolour by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Strap‘‘ Coffee Table multicolour</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/brynjar-sigurdarson/the-silent-village-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/C094B2456FFED84BA2EDD301926C311D.jpg.webp" alt="The Silent Village Coffee table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">The Silent Village Coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/hella-jongerius/tiles-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/B14B8F180A2067429A712F04BE64127C.jpg.webp" alt="Tiles coffee table by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tiles coffee table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-capsula-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/A3F4E140DB6DF0448864FB99758BC789.jpg.webp" alt="Translation Capsula Coffee Table by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Translation Capsula Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-discolo-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F918C902FBADD54EBAAA787DAF5AB153.jpg.webp" alt="Translation Discolo Coffee Table by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Translation Discolo Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-poligono-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/647C03243C2C47408823E5F0CEE362D0.jpg.webp" alt="Translation Poligono Coffee Table by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Translation Poligono Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-quadro-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/1C2BE5D368EBB2488A73BC86FAD4F90A.jpg.webp" alt="Translation Quadro Coffee Table by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Translation Quadro Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/translation-triangolo-coffee-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F79B2958C2F10A43BAA4CED0B0780883.jpg.webp" alt="Translation Triangolo Coffee Table by Galerie Kreo" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Translation Triangolo Coffee Table</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a></div>
+  <nav class="pager" aria-label="Pages"><a href="/browse/coffee-tables.html" rel="prev">&larr; Prev</a><a href="/browse/coffee-tables.html">1</a><span class="current" aria-current="page">2</span></nav>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

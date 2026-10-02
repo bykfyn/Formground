@@ -2882,6 +2882,66 @@ def _fetch_dcw_category_overrides(base_url):
     return category_by_handle, outdoor_handles
 
 
+# Dutch object nouns, matched as the END of a word (Dutch builds compounds
+# head-last: "kantinetafel", "salontafel", "tegelkast" are all kinds of
+# tafel/kast). Ordered most-specific-first - the first entry whose
+# suffix a word ends with wins. Built from Piet Hein Eek's real catalog
+# (845 products, confirmed 2026-10-02): its WooCommerce tags are Dutch
+# collection/room words ("Collectie, Meubels, Tafels") that match none
+# of the English category vocabulary, so 841 of 845 were unreachable by
+# any category page. Deliberately conservative on the ambiguous ones:
+# "bank" means sofa OR bench in Dutch and stays out of this table (see
+# _infer_category_from_dutch_keywords), and "kantinetafel" (the brand's
+# signature canteen table) is a plain Table, not claimed as a Dining
+# Table the brand never calls it.
+DUTCH_HEAD_NOUNS = (
+    ("eetkamertafel", "Dining Table"), ("eettafel", "Dining Table"),
+    ("salontafel", "Coffee Table"), ("salonblok", "Coffee Table"),
+    ("bijzettafel", "Side Table"), ("nachtkastje", "Bedside Table"),
+    ("kroonluchter", "Chandelier"), ("hanglamp", "Pendant Lamp"),
+    ("staande lamp", "Floor Lamp"), ("tafellamp", "Table Lamp"),
+    ("wandlamp", "Wall Lamp"), ("vloerlamp", "Floor Lamp"),
+    ("lamp", "Lamp"), ("zakfauteuil", "Armchair"), ("fauteuil", "Armchair"),
+    ("stoel", "Chair"), ("kruk", "Stool"), ("bankje", "Bench"),
+    ("dressoir", "Sideboard"), ("bureau", "Desk"), ("spiegel", "Mirror"),
+    ("kast", "Cabinet"), ("kastje", "Cabinet"), ("tafel", "Table"),
+    ("tafeltje", "Side Table"), ("bed", "Bed"), ("tapijt", "Rug"),
+)
+
+
+# "bank" compounds that are not seating: workbench, "sound bank" (a
+# named art piece) and the sales-counter display unit.
+DUTCH_NOT_SEATING_BANKS = {"werkbank", "klankbank", "verkooptoonbank"}
+DUTCH_UPHOLSTERY_CUES = ("gestoffeerd", "velours", "legerstof", "ribstof", "modulaire")
+
+
+def _infer_category_from_dutch_keywords(product_name):
+    text = product_name.lower()
+    for phrase, category in DUTCH_HEAD_NOUNS:
+        if " " in phrase:
+            if phrase in text:
+                return category
+    # Earliest word in the title that ends in a known noun wins - the
+    # subject comes first in these titles ("Kantinetafel in sloophout
+    # met Eenmallampen" is a table, not a lamp).
+    for word in re.findall(r"[a-zà-ÿ]+", text):
+        if word.endswith("bank") and word not in DUTCH_NOT_SEATING_BANKS:
+            # Dutch "bank" is both sofa and bench. Piet Hein Eek's real
+            # titles (49 of them, checked one by one 2026-10-02) split
+            # cleanly: an upholstery cue or a corner ("hoekbank") means
+            # a sofa; the rest are timber/steel benches (balkenbank,
+            # boomstambank, kantinebank, klepbank). No cue -> Bench, the
+            # conservative call - a bench is certainly seating, a sofa
+            # claim would put a plank on the Sofas page.
+            if "hoekbank" in word or any(c in text for c in DUTCH_UPHOLSTERY_CUES):
+                return "Sofa"
+            return "Bench"
+        for phrase, category in DUTCH_HEAD_NOUNS:
+            if " " not in phrase and word.endswith(phrase):
+                return category
+    return None
+
+
 def _infer_category_from_name(product_name, current_category, brand_name=None):
     # A purely-numeric category is never a real category name for any
     # brand - confirmed live 2026-09-29 on Design House Stockholm, whose
@@ -2917,6 +2977,13 @@ def _infer_category_from_name(product_name, current_category, brand_name=None):
         if french_match:
             return french_match
         stripped_category = ""
+    if brand_name == "Piet Hein Eek":
+        # Its own tags are Dutch collection/room words, never an object
+        # type, so the name is the signal - and a miss keeps the raw
+        # tags rather than blanking them (they're the only info left).
+        dutch_match = _infer_category_from_dutch_keywords(product_name)
+        if dutch_match:
+            return dutch_match
     is_unhelpful = stripped_category.lower() in UNHELPFUL_CATEGORIES or stripped_category.isdigit()
     if not is_unhelpful:
         return current_category
@@ -3137,6 +3204,14 @@ def _looks_like_a_maintenance_item(title):
         # (loose upholstery pads), "Meterware" (raw material sold by the
         # metre - wall profile/edge-block stock, not a finished object).
         "ersatz", "gleiter", "polsterauflage", "meterware",
+        # Seletti's "SHIT Necklace with pendant"/"SINK PLUNGER Necklace with
+        # pendant" (confirmed live 2026-10-02 while building the /browse/
+        # Pendant Lamps page - both sat in the "Pendant" category and
+        # would have been listed as lighting): the same fashion-jewelry
+        # sideline as its already-excluded earrings above. Scoped to this
+        # exact phrase, NOT a bare "necklace" (BD Barcelona's "Trivet
+        # Necklace" is a real design object - see "chain necklace silver").
+        "necklace with pendant",
     )
     title_lower = title.lower()
     if any(kw in title_lower for kw in keywords):
@@ -6566,7 +6641,14 @@ def extract_galerie_kreo(brand):
             "brand_url": brand["url"],
             "product_name": name,
             "product_url": f"{domain}{href}",
-            "category": "",
+            # Name inference was never wired in here, so all 1,011 rows
+            # were blank (confirmed 2026-10-02 during the A/C category-
+            # page completeness check - 89 coffee tables, 4 dining
+            # tables and ~50 lamps invisible to every category page).
+            # Recovers about half; the rest are bare catalogue numbers
+            # ("1008 GM", "2024") with no object word anywhere in the
+            # title and stay blank - the listing page carries no type.
+            "category": _infer_category_from_name(name, "", brand["name"]),
             "material_options": [],
             "dimensions": "",
             "notes": "",
