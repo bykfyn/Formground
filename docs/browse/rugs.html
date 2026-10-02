@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rugs — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="633 real rugs from independent makers, listed in full (page 1 of 2). Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/browse/rugs.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Rugs — Formground">
+<meta property="og:description" content="633 real rugs from independent makers, listed in full (page 1 of 2). Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/browse/rugs.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rugs — Formground">
+<meta name="twitter:description" content="633 real rugs from independent makers, listed in full (page 1 of 2). Every result links straight to the maker&#x27;s own site.">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-group { max-width: 520px; margin: 32px auto 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Browse", "item": "https://formground.com/browse/"}, {"@type": "ListItem", "position": 3, "name": "Rugs", "item": "https://formground.com/browse/rugs.html"}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <h1>Rugs</h1>
+  <p class="category-intro">633 rugs from independent makers - page 1 of 2. Every result links straight to the maker's own site.</p>
+  <div class="grid">
+      <a class="card" href="https://www.andtradition.com/products/cruise-ap11" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2022/08/ATD_Retail_2022_Develius-EV1-EV7_Cruise-AP11_Tung-JA3-600x800.jpg" alt="Cruise AP11 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cruise AP11</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/mojave-rug-by-armadillo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country-Mojave-Cashew-01-1024x1024.jpg" alt="Mojave Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mojave Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/bubble-rug-offwhite" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/Arturel_Showroom19674_Web_Web_1.jpg?v=1764176086" alt="Bubble Rug by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bubble Rug</p></div>
+          <p class="card-brand">Arturel</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/wedge-origami-matta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/files/Wedge-Origami.jpg?v=1770037881" alt="Wedge Origami matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wedge Origami matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/gravel-rug-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Gravel-Rug-Light-Grey_5734a4d1-0af5-4155-96ac-b0b0c3c7397e.jpg?v=1603348624" alt="Gravel Rug by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gravel Rug</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-timo-complementi-tappeti-beb.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_accessory_Timo_01.jpg" alt="Timo by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Timo</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://dannykaplanstudio.com/products/collage-rug-edition-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0604/7773/5136/files/20250310_DANNYKAPLAN6565_1_4826fbbd-4a76-4878-819f-57783bdad99f.jpg?v=1746201853" alt="Collage Rug, Edition 1 by Danny Kaplan Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collage Rug, Edition 1</p></div>
+          <p class="card-brand">Danny Kaplan Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/fields-rug-200x300-cm-gree-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/2402-6029-FieldsGreenGrey200x300.jpg?v=1743062841" alt="Fields Rug by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fields Rug</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/overlay-rug-large-runner-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/collection-page-rugs-overlay-rugs-runner-olive.jpg?v=1738302098" alt="Overlay Runner by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Overlay Runner</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-elin-oval-horizon-blue-92x150cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2026/01/45594-Rug-Elin-oval-soft-blue-92x150cm-300x300.png" alt="Rug Elin oval horizon blue 92x150cm by Dixie" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Elin oval horizon blue 92x150cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/palette-rug-terra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_palette_rug_terra_1.jpg?v=1786107129" alt="Palette Rug Terra by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palette Rug Terra</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_autres_tapis-roman" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/233/T_233-01.jpg" alt="Tapis Roman by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tapis Roman</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rime-wall-rug-110-x-145-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274627_1.png?v=1788766356" alt="Rime Wall Rug by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rime Wall Rug</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/skiers-embroidered-table-runner-nature" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/10800-6_Skiers_Table_Runner_FLD_2.webp?v=1778061606" alt="SKIERS EMBROIDERED TABLE RUNNER by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SKIERS EMBROIDERED TABLE RUNNER</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/beni-runner-rug-sand-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/BENI-x-FRAMA-Sand-Small-Runner_3d46543a-e7ee-4345-9a6a-e14544835893.webp?v=1752149001" alt="Beni x FRAMA Runner Rug | Sand | Small by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Beni x FRAMA Runner Rug | Sand | Small</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://gad.se/musmatta-i-lader/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gad.se/wp-content/uploads/2025/05/musmatta-lader-250x250.jpg" alt="Musmatta i läder by G.A.D" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Musmatta i läder</p></div>
+          <p class="card-brand">G.A.D</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/outdoor/eco-rug-p5638" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__27303__productGrid/rug-eco-02-green_clipped_rev_1@2x.png" alt="Eco by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eco</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/rugs/dune-rectangular-rugs" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/266/dune_rectangular_rugs_700x7001.jpg" alt="Dune Rectangular Rugs by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dune Rectangular Rugs</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/duorug-rmdms" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1662834488324-7UI45ULAF7Y8HR1O7U60/083_ben-blood-2003.jpg" alt="Duo Rug Light Grey Wool (In Stock) by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Duo Rug Light Grey Wool (In Stock)</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://gubi.com/en/se/products/mategot-coat-rack" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.thorcommerce.io/gubi/5a2380b0f5a2645302731792207aa15e/10013864_FRT_Mategot+CoatRack_Ochre.png" alt="Matégot Coat Rack by Gubi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Matégot Coat Rack</p></div>
+          <p class="card-brand">Gubi</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/bathroom/stripe-bath-mat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260629033214/img_20260629033214/globalassets/inriver/integration/service/stripe-bath-mat_1220x1220_brandmodel.jpg" alt="Stripe Bath Mat by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stripe Bath Mat</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/132000073" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/132000073.jpg?v=1756995607" alt="Contemporary Kelim Rug by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Contemporary Kelim Rug</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/rug-mescal-3487" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10050175_i_vue_c.jpg" alt="Mescal Rug by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mescal Rug</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/found-rug-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKS_0326061.jpg?v=1783589044" alt="FOUND RUG 02 by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FOUND RUG 02</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/nabla-300-x-400" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/Nabla_Closeup_02_lowres_02e660a3-acfe-400d-b23d-f84bab892c3f.jpg?v=1710328538" alt="Nabla 300 x 400 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nabla 300 x 400</p></div>
+          <p class="card-brand">Made by Hand</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/south-carpets/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2023/12/Magis_south_carpet_product_detail_AC960_dark-red_02_icona-300x300.jpg" alt="South by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">South</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/stone-with-stiches-escape-kelim" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Escape_kelim_stone_with_stitches.jpg?v=1720528971" alt="Escape Kelim by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Escape Kelim</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mercoeur-edition.com/products/rug-marigny" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.prod.website-files.com/65f8e4972094d2411f63ed1d/6a6724e13d3a7b6cc172e569_Mercoeur_Thumbnail_MARIGNY-Rug.webp" alt="Marigny Rug by Mercoeur Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Marigny Rug</p></div>
+          <p class="card-brand">Mercoeur Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/tapis/26-67-tapis-tiger-grand.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/193-home_default/tapis-tiger-grand.jpg" alt="Large Tiger Rug by Moustache" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Large Tiger Rug</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/knot-rug-200x300-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1779212511-new-works_website_images_knot-rug.png?h=800" alt="Knot Rug 200x300 by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Knot Rug 200x300</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://parenpar.com.ar/productos/iloxpar-en-par-alfombra-arg/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="http://acdn-us.mitiendanube.com/stores/005/991/341/products/parenpar4256-490bec41c0ac0a601717440350261753-640-0.webp" alt="ILOxPar en Par · Alfombra ARG by Par en Par" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ILOxPar en Par · Alfombra ARG</p></div>
+          <p class="card-brand">Par en Par</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/oudetapijtentapijttegeltapijt" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/06/tapijt-01-1.jpg" alt="Oudetapijtentapijttegeltapijt by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oudetapijtentapijttegeltapijt</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/keller-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Keller_rug_floor_edit.jpg?v=1725870870" alt="Keller rug by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Keller rug</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/toiletpaper-pets-bath-mat-cat-surprise" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/18183_CAT_SURPRISE_TP_PETS_1.jpg?v=1788431064" alt="TOILETPAPER PETS BATH MAT by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TOILETPAPER PETS BATH MAT</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/edge-hampamatta-provbit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/edge_sample.jpg?v=1788343370" alt="Edge hampamatta provbit by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Edge hampamatta provbit</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-mini-diamond-kilim-rug-ink-200-x-300cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/e702e3d6834f4af44074af22d46ea48d8c2322e7_TCS25286_2f2b1aa4-26e6-4745-a4fa-6ebefa296a7a.jpg?v=1787741404" alt="Outlet Mini Diamond Kilim Rug Ink 200 x 300cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outlet Mini Diamond Kilim Rug Ink 200 x 300cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/rombo-mat-60-x-90-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_RomboMat__60x90__Brown.png?v=1749720484" alt="Rombo mat (60 X 90) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rombo mat (60 X 90)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/cruise-ap12" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2022/01/Cruise-AP12-Aden-desert-beige-600x800.png" alt="Cruise AP12 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cruise AP12</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/odessa-rug-by-armadillo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country-Odessa-Arborio-01-1024x1024.jpg" alt="Odessa Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Odessa Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/stone-rug-ivory-cobolt" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/RUG_PACK_4.jpg?v=1734019573" alt="Stone rug by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stone rug</p></div>
+          <p class="card-brand">Arturel</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/o-matta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/files/O-matta-Matz-Borgstrom-2.jpg?v=1734517879" alt="O matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">O matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/tile-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_Tile_Rug_Brasilia_Lounge_Chair_Low_Back_Releve_Platter_Plinth_Tall_1.jpg?v=1770976748" alt="Tile Rug by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tile Rug</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-riso-complementi-tappeti-beb.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_accessory_Riso_01.jpg" alt="Riso by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Riso</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://dannykaplanstudio.com/products/collage-rug-edition-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0604/7773/5136/files/20250310_DANNYKAPLAN6561_1.jpg?v=1746201821" alt="Collage Rug, Edition 2 by Danny Kaplan Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collage Rug, Edition 2</p></div>
+          <p class="card-brand">Danny Kaplan Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/basket-rug-245x300-cm-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/2503-0400-edit.jpg?v=1774479673" alt="Basket Rug by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Basket Rug</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/overlay-rug-large-rectangle-burgundy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/collection-page-rugs-overlay-rugs-large-burgundy.jpg?v=1738302101" alt="Overlay Rug by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Overlay Rug</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-elin-natural-grey-d150cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2024/08/45588_Rug-Elin-natural-grey-d150cm-300x300.png" alt="Rug Elin d150cm by Dixie" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Elin d150cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/palette-rug-mule" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_palette_rug_mule_1.jpg?v=1786107185" alt="Palette Rug Mole by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palette Rug Mole</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/harvest-wall-rug-dark-chocolate" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274419_1.png?v=1788766340" alt="Harvest Wall Rug by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Harvest Wall Rug</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/cat-pot-mat-black-white-21-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/PM-CAT21_Pot_Mat_CAT_FLD_3.webp?v=1780994271" alt="CAT POT MAT by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CAT POT MAT</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/outdoor/guna-rug-p5633" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__13470__productGrid/guna-03@2x.png" alt="Guna by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Guna</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/rugs/dune-round-rugs" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/267/dune_round_rugs_700x7001.jpg" alt="Dune Round Rugs by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dune Round Rugs</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/poolrugsmall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1665691544597-3JIFUQ01VW0DEMJV102B/GrainPoolRug_SM_Above_NW33.jpg" alt="Pool Rug Small by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pool Rug Small</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://gubi.com/en/se/products/mategot-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.thorcommerce.io/gubi/4c09a29ba30a523072ad7033fe8d3521/10013862_FRT_Mategot_FlowerPot_21_SoftBlack_0001_Mategot_Bowl_SoftBlack.png" alt="Matégot Bowl by Gubi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Matégot Bowl</p></div>
+          <p class="card-brand">Gubi</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/bathroom/check-bath-mat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260310025139/img_20260310025139/globalassets/inriver/integration/service/check-bath-mat_910x1100_brandmodel.jpg" alt="Check Bath Mat by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Check Bath Mat</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/200202254" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/200202254.jpg?v=1756995662" alt="Oru Loom Rug by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oru Loom Rug</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/rug-july-2740" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10050162_i_vue_c.jpg" alt="July Rug by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">July Rug</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/found-rug-01-sb" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKS_0326143.jpg?v=1783588919" alt="FOUND RUG 01 by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FOUND RUG 01</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/nabla-200-x-300" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/Nabla_Closeup_02_lowres_72ccb077-58ac-443e-b78e-63b2ac91ad7c.jpg?v=1710327038" alt="Nabla 200 x 300 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nabla 200 x 300</p></div>
+          <p class="card-brand">Made by Hand</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/volentieri/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2019/07/Volentieri_icona.png" alt="Volentieri by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Volentieri</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/sun-symmetry" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Symmetry_LoftKolasinski_sun-final.jpg?v=1753779810" alt="Symmetry by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Symmetry</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mercoeur-edition.com/products/silent-drough-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.prod.website-files.com/65f8e4972094d2411f63ed1d/6a67253b9f359440cf696d18_Mercoeur_Thumbnail_SECHERESSE%20SILENCIEUSE-Rug.webp" alt="Silent Drought Rug by Mercoeur Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Silent Drought Rug</p></div>
+          <p class="card-brand">Mercoeur Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/tapis/27-68-tapis-tiger-petit.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/196-home_default/tapis-tiger-petit.jpg" alt="Tiger Rug by Moustache" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tiger Rug</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/knot-rug-300x400-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1772806853-new-works_website_images25.png?h=800" alt="Knot Rug 300x400 by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Knot Rug 300x400</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/ray-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Ray_Rug_211442_LR.jpg?v=1725875344" alt="Ray rug by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ray rug</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/basket-rug-©gg-x-seletti" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Stampa1_SELETTI_Giacomo-Giannini__Basket.jpg?v=1778494077" alt="“Basket” Rug by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">“Basket” Rug</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/graphic-hemp-rug-sample" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/graphic_sample_24698a23-8ea4-4199-a94a-48d022bd203d.jpg?v=1787642802" alt="Graphic hampamatta provbit by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Graphic hampamatta provbit</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-macrame-rug-green-cream-200-x-300cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS403679_1.jpg?v=1773161416" alt="Outlet Macrame Rug Green &amp; Cream 200 x 300cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outlet Macrame Rug Green &amp; Cream 200 x 300cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/rombo-mat-40-x-60-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_RomboMat__40x60__Brown.png?v=1749720484" alt="Rombo mat (40 X 60) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rombo mat (40 X 60)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/cruise-ap23" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/Cruise-Rug-AP23_Colombo-Grey-Blue_Up-600x800.jpg" alt="Cruise AP23 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cruise AP23</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/palus-rug-by-armadillo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country-Palus-Anise-with-Ochre-Line-01-1024x1024.jpg" alt="Palus Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palus Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/arch-rug-soft-olive" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/RUG_PACK_6_a0114f8d-664f-43cc-9b7d-4f9be803a1c8.jpg?v=1734020213" alt="Arch rug by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arch rug</p></div>
+          <p class="card-brand">Arturel</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/asplund-art-rug-collection" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/files/Art-Rug-Collection-bok-2.jpg?v=1733137270" alt="Asplund/Åman Art Rug Collection by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Asplund/Åman Art Rug Collection</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/duomo-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_Offset_Sofa_Bed_Duomo_Rug_Plinth_Low_Reverse_Table_Lamp_1_5911963a-690c-4a72-b30d-7b322f85508c.jpg?v=1725262429" alt="Duomo Rug by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Duomo Rug</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-istos-complementi-tappeti-beb.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_accessory_Istos_01_1.jpg" alt="Istos by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Istos</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://dannykaplanstudio.com/products/collage-rug-edition-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0604/7773/5136/files/20250310_DANNYKAPLAN6543_2.jpg?v=1746200282" alt="Collage Rug, Edition 3 by Danny Kaplan Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collage Rug, Edition 3</p></div>
+          <p class="card-brand">Danny Kaplan Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/bjork-rug-80x250-cm-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/1656-0400.jpg?v=1736954333" alt="Björk Rug by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Björk Rug</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-elin-natural-grey-d125cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2024/08/45587_Rug-Elin-natural-grey-d125cm-300x300.png" alt="Rug Elin d125cm by Dixie" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Elin d125cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/palette-rug-tan" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_palette_rug_tan_1.jpg?v=1786107248" alt="Palette Rug Tan by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palette Rug Tan</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/norte-grid-rug-160-x-235-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274324_1.png?v=1788769276" alt="Norte Grid Rug by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Norte Grid Rug</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/mouse-pot-mat-white-black-21-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/1010-CM_Child_Apron_CAT_AND_MOUSE_PM-MOU21_MOUSE_potmat_FLD.webp?v=1780990614" alt="MOUSE POT MAT by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MOUSE POT MAT</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/next-rug-p3713" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__14293__productGrid/next999_clipped_rev_1@2x.png" alt="Next by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Next</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/rugs/plumose-rugs" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/227/plumose_rugs_700x7001.jpg" alt="Plumose Rugs by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Plumose Rugs</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/duorug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1666134486853-B38SED9MTA5B81VP3WLN/GrainDuoRug_Above_NW30.jpg" alt="Duo Rug by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Duo Rug</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://gubi.com/en/se/products/gubi-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.thorcommerce.io/gubi/8d68a2d98ed8805cd7221aa7648bac52/10110158_FRT_GUBI+Rug_300x250_Aubergine.png" alt="GUBI Rug by Gubi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">GUBI Rug</p></div>
+          <p class="card-brand">Gubi</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/haze-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260113124237/img_20260113124237/globalassets/inriver/integration/service/haze-rug_910x1100_brandmodel.jpg" alt="Haze Rug by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Haze Rug</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/rug-indoor-outdoor-rectangular-siesta-2460" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10050121_i_vue_c.jpg" alt="Siesta Rug indoor / outdoor rectangular by Ligne Roset" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Siesta Rug indoor / outdoor rectangular</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/found-rug-06" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKS_0326183.jpg?v=1783588969" alt="FOUND RUG 06 by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FOUND RUG 06</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/nabla-170-x-240" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/Nabla_Closeup_02_lowres_5be5a1b4-73e1-44cf-aa5e-41018d8288a3.jpg?v=1710326764" alt="Nabla 170 x 240 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nabla 170 x 240</p></div>
+          <p class="card-brand">Made by Hand</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/hay-trellis" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/028_Massimo_LinnenRug_Natural.jpg?v=1751531946" alt="Trellis by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Trellis</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/accueil/816-823-strix.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/4271-home_default/strix.jpg" alt="Strix rug by Moustache" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Strix rug</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/sway-rug-200x300-oat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1779211711-new-works_website_images_sway-rug.png?h=800" alt="Sway Rug 200x300 by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sway Rug 200x300</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/pace-i-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Pace-I_Rug_211078_LR.jpg?v=1725873229" alt="Pace rug by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pace rug</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/sfasciacarrozze-rug-©gg-x-seletti" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Stampa2_SELETTI_Giacomo-Giannini__Sfasciacarrozze_copia.png?v=1778493978" alt="“Sfasciacarrozze” Rug by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">“Sfasciacarrozze” Rug</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/hampa-ull-mattprov-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Hemp_wool_stripe_sample_1_72d3bd81-cc9a-4f28-a7fa-6ff0ca0dcaeb.jpg?v=1787642948" alt="Hampa/ullmatta provbit by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hampa/ullmatta provbit</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-macrame-rug-green-cream-170-x-240cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS403679_1.jpg?v=1773161416" alt="Outlet Macrame Rug Green &amp; Cream 170 x 240cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outlet Macrame Rug Green &amp; Cream 170 x 240cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/rombo-rug-170-x-240-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Rombo__170x240__Brown.png?v=1751630359" alt="Rombo rug (170 X 240) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rombo rug (170 X 240)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/the-moor-ap18" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2023/08/The-Moor-AP18_Beige_Dew_fringe-600x800.png" alt="The Moor AP18 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">The Moor AP18</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/river-ticking-stripe-rug-by-armadillo-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country-Paragon-Birch-01-1024x1024.jpg" alt="Paragon Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Paragon Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://arturel.com/products/wave-rug-soft-olive" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0724/5011/3752/files/RUG_PACK_1_67a61d53-58cc-42c6-9e18-b598e1eb7808.jpg?v=1734020214" alt="Wave rug by Arturel" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wave rug</p></div>
+          <p class="card-brand">Arturel</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/lines-matta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/files/Lines-matta-Blue.jpg?v=1704188632" alt="Lines matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lines matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/houkime-rug-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Houkime_Rug_2.jpg?v=1678871401" alt="Houkime Rug Midnight Blue by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Houkime Rug Midnight Blue</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-cratis-complementi-tappeti-beb.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_accessory_Cratis_01_4.jpg" alt="Cratis by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cratis</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/level-rug-250x350-cm-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/2814-6000_62b464fe-931a-4677-9604-97f1d310cfb1.jpg?v=1738245812" alt="Level Rug by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Level Rug</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/en/product/rug-elin-oval-black-150x92cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2024/08/45584_Rug-Elin-oval-black-150x92cm-300x300.png" alt="Rug Elin oval 150x92cm by Dixie" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Elin oval 150x92cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/palette-rug-taupe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_palette_rug_taupe_1.jpg?v=1786107291" alt="Palette Rug Taupe by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palette Rug Taupe</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rabbit-tufted-rug-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274228_1.png?v=1788769325" alt="Rabbit Tufted Rug by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rabbit Tufted Rug</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/water-lilies-table-runner-150x45-cm-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/65112-6_Table_runner_WATER_LILIES_4_FLD.jpg?v=1772193628" alt="WATER LILIES TABLE RUNNER by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">WATER LILIES TABLE RUNNER</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/rugs/connect-rugs" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/208/connect_rugs_700x7001.jpg" alt="Connect Rugs by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Connect Rugs</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/landsruglarge" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1663623806054-L0CWQPR4BA6E5OM4XZFA/Grain_Lands1_Above.jpg" alt="Lands Rug Large by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lands Rug Large</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/3-colour-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250901045440/img_20250901045440/globalassets/inriver/integration/service/3-colour-rug_910x1100_brandmodel.jpg" alt="3 Colour Rug by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">3 Colour Rug</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/rug-terracotta-wave-4568" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100gnq_c.jpg" alt="Wave Rug terracotta by Ligne Roset" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wave Rug terracotta</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/found-rug-03" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKS_0326057.jpg?v=1783588953" alt="FOUND RUG 03 by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FOUND RUG 03</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://madebyhand.dk/products/nabla-140-x-200" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/4271/3675/files/Nabla_Closeup_02_lowres_2443b67a-bc02-4cd5-9c3c-28b090d7f05c.jpg?v=1710326595" alt="Nabla 140 x 200 by Made by Hand" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nabla 140 x 200</p></div>
+          <p class="card-brand">Made by Hand</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/dark-brown-atoll" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/dark-brown_9e5c8ed8-ac59-4872-b865-8c4fa1c98cf0.jpg?v=1770379123" alt="Atoll by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Atoll</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/sway-rug-250x350-oat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1772806856-new-works_website_images45.png?h=800" alt="Sway Rug 250x350 by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sway Rug 250x350</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/holiday-at-the-seaside-18-rug-©gg-x-seletti" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Stampa3_SELETTI_Giacomo-Giannini__Holiday-at-the-seaside-_-18.jpg?v=1779116633" alt="“Holiday at the seaside # 18” Rug by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">“Holiday at the seaside # 18” Rug</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/mattprov-hampamatta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/hemp-rug-sample-set-of-5.jpg?v=1787642940" alt="Hampamatta provbit by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hampamatta provbit</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-macrame-rug-green-cream-140-x-200cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS403679_1.jpg?v=1773161416" alt="Outlet Macrame Rug Green &amp; Cream 140 x 200cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outlet Macrame Rug Green &amp; Cream 140 x 200cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/rombo-rug-90-x-140-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Rombo__90x140__Brown_165eba35-ee0c-4351-be0a-2dbb13b27d5a.png?v=1751630379" alt="Rombo rug (90 X 140) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rombo rug (90 X 140)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/the-moor-ap19" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2024/04/The-Moor-AP19_Green_Pine_fringe-600x800.jpg" alt="The Moor AP19 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">The Moor AP19</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/genoa-rug-by-armadillo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country-Genoa-01-1024x1024.jpg" alt="Genoa Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Genoa Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/classic-minimum" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/files/Classic-Minimum-A-knot_9318fcbc-5fa6-49ca-8835-b19c51c89beb.jpg?v=1684247107" alt="Classic Minimum matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Classic Minimum matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/houkime-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/Houkime_rug4.jpg?v=1604571268" alt="Houkime Rug Beige by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Houkime Rug Beige</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-caldes-complementi-tappeti-beb.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_accessory_Caldes_01_4.jpg" alt="Caldes by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Caldes</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/en/product/rug-elin-oval-brick-150x92cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2023/08/45583-Rug-Elin-Oval-Brick-150x92cm-300x300.png" alt="Rug Elin oval brick 150x92cm by Dixie" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Elin oval brick 150x92cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/palette-rug-camel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_palette_rug_camel_1.jpg?v=1786107556" alt="Palette Rug Camel by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palette Rug Camel</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/seifa-rug-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274130_1.png?v=1788773248" alt="Seifa Rug by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Seifa Rug</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/palms-linen-table-runner" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/55112-6_Table_runner_PALMS_2_FLD.webp?v=1765808574" alt="PALMS LINEN TABLE RUNNER by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">PALMS LINEN TABLE RUNNER</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/rugs/triple-waves-rectangular-rugs" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/209/triple_waves_rectangular_700x7001.jpg" alt="Triple Waves Rectangular Rugs by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Triple Waves Rectangular Rugs</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/landsrugsmall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1663623610969-JV683AXVELVRJ5GQN2VX/Grain_LandsSm_Above.jpg" alt="Lands Rug Small by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lands Rug Small</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/crayon-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260730020311/img_20260730020311/globalassets/inriver/integration/service/crayon-rug_910x1100_brandmodel.jpg" alt="Crayon Rug by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Crayon Rug</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/rug-gingembre-wave-4567" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100gnk_c.jpg" alt="Wave Rug gingembre by Ligne Roset" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wave Rug gingembre</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/taupe-earth-handtuft" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/014_Massimo_Earth_Taupe.jpg?v=1738826884" alt="Earth Handtuft by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Earth Handtuft</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/rectangular-rug-scissors" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/18212-toiletpaper-rug-scissor.png?v=1758629960" alt="Rectangular Rug SCISSORS by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rectangular Rug SCISSORS</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/graphic-hampamatta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Graphic_stor_2_brus.jpg?v=1787642635" alt="Graphic hampamatta by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Graphic hampamatta</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-juniper-rug-taupe-200-x-300cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS403709_1.jpg?v=1773155490" alt="Outlet Juniper Rug Taupe  200 x 300cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outlet Juniper Rug Taupe  200 x 300cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/rombo-rug-75-x-200-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_AW25_Rombo_Rug_2.jpg?v=1759827653" alt="Rombo rug (75 X 200) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rombo rug (75 X 200)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/collect-rug-sc84" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2023/06/Collect-Rug-SC85_Camel_2-600x800.jpg" alt="Collect | Rug SC84 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collect | Rug SC84</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/river-ticking-stripe-rug-by-armadillo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Armadillo_topshot22_RIVER_NATURAL_WIDE_213043-1024x1024.jpg" alt="River Ticking Stripe Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">River Ticking Stripe Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/sahara-matta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/Sahara-matta-Potato.jpg?v=1659527205" alt="Sahara matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sahara matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-milos-complementi-tappeti-beb.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_accessory_Milos_01.jpg" alt="Milos by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Milos</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/en/product/rug-elin-oval-striped-natural-150x92cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2023/08/45579-Rug-Elin-Oval-Striped-Natuaral150x92cm-300x300.png" alt="Rug Elin oval striped natural 150x92cm by Dixie" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Elin oval striped natural 150x92cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/palette-rug-rust" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_palette_rug_rust_01_298fec9b-d3a9-4bbe-91c0-3d0ba4e3870d.jpg?v=1781515100" alt="Palette Rug Rust by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palette Rug Rust</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/udo-rug-tan-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273879_1.png?v=1788868755" alt="Udo Rug by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Udo Rug</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/waves-pot-mat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/PM-WAVE21_Pot_mat_WAVE_FLD_79fbdddb-2928-4d6e-a41f-5043045a6288.webp?v=1772713475" alt="WAVE POT MAT by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">WAVE POT MAT</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/rugs/triple-waves-round-rugs" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/210/triple_waves_round_700x7001.jpg" alt="Triple Waves Round Rugs by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Triple Waves Round Rugs</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/sagecedarwood-rzr5s-y5mp4-mb4hm-rlpns-sb4yc-j8j5y-rdtcc" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1665007062697-BZHOB4E0E3PR64IALYMX/110_ben-blood-2070.jpg" alt="Link Rug Small by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Link Rug Small</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/shift-kelim-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260914031413/img_20260914031413/globalassets/inriver/integration/service/shift-kelim-rug_910x1100_brandmodel.jpg" alt="Shift Kelim Rug by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shift Kelim Rug</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/rug-round-twist-4566" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100go0_c.jpg" alt="Twist Rug round by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Twist Rug round</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/dark-oak-karma-wool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/018_Massimo_KarmaWool_DarkOak_8892121f-a194-45fb-9feb-57ab87be6ce3.jpg?v=1770379127" alt="Karma Wool by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Karma Wool</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/rectangular-rug-phones" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/18211_Phone_RectangularRug_1_1.jpg?v=1758629769" alt="Rectangular Rug PHONES by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rectangular Rug PHONES</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/provbit-sumak-hampamatta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/sumak-sampleset-group.jpg?v=1787645315" alt="Sumak hampamatta provbit by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sumak hampamatta provbit</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-juniper-rug-rust-200-x-300cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS403695_1.jpg?v=1773076806" alt="Outlet Juniper Rug Rust  200 x 300cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outlet Juniper Rug Rust  200 x 300cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/kyoto-rug-o-250-cm-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Kyoto__O250__Offwhite.png?v=1743412089" alt="Kyoto rug (Ø: 250 cm) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kyoto rug (Ø: 250 cm)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/collect-rug-sc85" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/08/ATD_Retail_2023_Collect-Rug-SC84-SC85_X-HM10-1-600x800.jpg" alt="Collect | Rug SC85 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collect | Rug SC85</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/agra-rug-by-armadillo-copy/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Armadillo_Agra_Marlin_TopShot-1024x1024.jpg" alt="Agra Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Agra Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/marc-matta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/files/Marc-matta-1_31727c0a-00f0-44ed-8a58-cd0aedaea01b.jpg?v=1727784136" alt="Marc matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Marc matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-auris-complementi-tappeti-beb.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_accessory_Auris_01_1.jpg" alt="Auris by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Auris</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-ella-black-natural-d150cm-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2021/09/45554-Rug-Ella-jute-black-natural-d150cm-300x300.png" alt="Rug Ella / d150cm by Dixie" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Ella / d150cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/palette-rug-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_palette_rug_ivory_01_d0d6686a-0735-47bc-8abf-c8b98517d51f.jpg?v=1781515084" alt="Palette Rug Ivory by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palette Rug Ivory</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/stille-tufted-runner-dark-pecan" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273953_1.png?v=1788769927" alt="Stille Tufted Runner by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stille Tufted Runner</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/woman-at-sea-pot-mat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/PM-WOM21_Pot_mat_WOMAN_AT_SEA_FLD.webp?v=1765807624" alt="WOMAN BY THE SEA POT MAT by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">WOMAN BY THE SEA POT MAT</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/linkrunner" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1665008192757-5P25V7OQCHLU3W6YKUOC/104_ben-blood-2054.jpg" alt="Link Runner by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Link Runner</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/check-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250915015745/img_20250915015745/globalassets/inriver/integration/service/check-rug_910x1100_brandmodel.jpg" alt="Check Rug by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Check Rug</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/rug-tapiola-4216" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100e97_c.jpg" alt="Tapiola Rug by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tapiola Rug</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/soil-ground" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/ground-rug-soil.jpg?v=1728029567" alt="Ground by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ground</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/rectangular-rug-lipsticks-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/18010_seletti-tappeto-lipsticks.jpg?v=1758629471" alt="Rectangular Rug LIPSTICKS BLACK by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rectangular Rug LIPSTICKS BLACK</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/sumak-spot-hampamatta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Sumak_spot_stor_2eb19ea6-c044-44b6-8a4d-3a094e28a3e7.jpg?v=1787645353" alt="Sumak spot hampamatta by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sumak spot hampamatta</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-juniper-rug-rust-170-x-240cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS403695_1.jpg?v=1773076806" alt="Outlet Juniper Rug Rust 170 X 240cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outlet Juniper Rug Rust 170 X 240cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/kyoto-rug-o-200-cm-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Kyoto__O200__Offwhite.png?v=1743412091" alt="Kyoto rug (Ø: 200 cm) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kyoto rug (Ø: 200 cm)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/the-moor-ap5" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2019/08/Moor_Rug_AP5-Pine-600x800.png" alt="The Moor AP5 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">The Moor AP5</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/trellis-rug-by-armadillo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/ARM_Trellis_Natural__Bison_0302_deepetch_white_R1-1024x1024.jpg" alt="Trellis Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Trellis Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/golden-section-matta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/Golden-Section-Rosa.jpg?v=1649666824" alt="Golden Section matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Golden Section matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-ella-white-natural-d125cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2021/09/45539-Rug-Ella-jute-white-natural-d125cm-300x300.png" alt="Rug Ella / d125cm by Dixie" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Ella / d125cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/palette-rug-sand" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_palette_rug_sand_01_fd6c82ee-a2b9-47c9-8679-12d7da7dcc33.jpg?v=1781515083" alt="Palette Rug Sand by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palette Rug Sand</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/norte-rug-o120-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274123_1.png?v=1788770266" alt="Norte Rug by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Norte Rug</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/bouquet-jacquard-woven-table-runner-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/54112-6_Table_runner_BOUQUET_1_FLD.webp?v=1764171816" alt="BOUQUET LINEN TABLE RUNNER by Fine Little Day" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BOUQUET LINEN TABLE RUNNER</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/linkruglarge" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1665007571978-E4JQCF8Y025GQAXHSIYR/075_ben-blood-1982.jpg" alt="Link Rug Large by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Link Rug Large</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/moir-runner" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250423020808/img_20250423020808/globalassets/inriver/integration/service/moire-runner_910x1100_brandmodel2.jpg" alt="Moiré Runner by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Moiré Runner</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/rugs/rug-topographie-4053" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10051485_i_vue_c.jpg" alt="Topographie Rug by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Topographie Rug</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/natural-strong-vintage" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Vintage-1.jpg?v=1720529409" alt="Vintage by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vintage</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/rectangular-rug-snakes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/18073_Seletti_TP_rug_snakes_1.jpg?v=1758629217" alt="Rectangular Rug SNAKES by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rectangular Rug SNAKES</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/sumak-spot-hemp-rug-sample" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Sumak_spot_sample_878e4eb6-9055-4158-b34f-bb881b24e04c.jpg?v=1787645368" alt="Sumak spot hampamatta provbit by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sumak spot hampamatta provbit</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-bikaner-melange-wool-rug-170-x-240cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS320313_1_c3c96d09-22cb-4967-823e-74450f84f16c.jpg?v=1787741388" alt="Outlet Bikaner Melange Wool Rug 170 x 240cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outlet Bikaner Melange Wool Rug 170 x 240cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/kyoto-rug-210-x-340-cm-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Kyoto_Oval_Grey.png?v=1743412092" alt="Kyoto rug (210 x 340 cm) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kyoto rug (210 x 340 cm)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/the-moor-ap6" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2019/11/Moor_Rug_AP6-Heather-600x800.png" alt="The Moor AP6 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">The Moor AP6</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/faroe-rug-by-armadillo-copy-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Faroe_Foal_040923_307328-1024x1024.jpg" alt="Faroe Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Faroe Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/maze-matta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/Maze_tuft_200x200_Potato_15_01carpet.png?v=1770431870" alt="Maze matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Maze matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-lily-natural-160x230cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2024/12/45153_Rug-Lily-natural-160x230cm-300x300.png" alt="Rug Lily natural 160x230cm by Dixie" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Lily natural 160x230cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/lisboa-rug-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_lisboa_rug_multi_natural_01.png?v=1779279557" alt="Lisboa Rug Multi by Dusty Deco" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisboa Rug Multi</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/stille-tufted-rug-dark-pecan" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273954_1.png?v=1788769896" alt="Stille Tufted Rug by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stille Tufted Rug</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/leaves-linen-table-runner-blue-47x180-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/63112-6_Table_Runner_LEAVES_blue6_FLD.webp?v=1770721771" alt="LEAVES LINEN TABLE RUNNER by Fine Little Day" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LEAVES LINEN TABLE RUNNER</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/quiltrug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1665692074923-J0TMY7C3SPZRLVTPJ9E2/GrainQuiltRug_Lg3_Above.jpg" alt="Quilt Rug by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Quilt Rug</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/door-mat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422015237/img_20250422015237/globalassets/inriver/integration/service/door-mat_910x1100_brandmodel2.jpg" alt="Door Mat by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Door Mat</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/rugs/rug-hypothese-3991" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100dv1_c.jpg" alt="Hypothese Rug by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hypothese Rug</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/cream-bubbles" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Bubbles-Cream.jpg?v=1770379127" alt="Bubbles by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bubbles</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/rectangular-rug-lady-on-carpets" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/18213_LadyOnCarpet_RectangularRug.jpg?v=1758625211" alt="Rectangular Rug LADY ON CARPETS by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rectangular Rug LADY ON CARPETS</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/taupo-ullmatta-provbit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Taupo_sample.jpg?v=1787647226" alt="Taupo ullmatta provbit by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Taupo ullmatta provbit</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-macrame-rug-ochre-cream-300-x-400cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS403689_1.jpg?v=1773161658" alt="Outlet Macrame Rug Ochre &amp; Cream 300 x 400cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outlet Macrame Rug Ochre &amp; Cream 300 x 400cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/tact-rug-90-x-140-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Tact__90x140__Brown.png?v=1743412082" alt="Tact rug (90 X 140) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tact rug (90 X 140)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/the-moor-ap7" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2020/01/ATD_lifestyle_2020_The-Moor_AP5_Develius_EV1-EV7_web-600x800.jpg" alt="The Moor AP7 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">The Moor AP7</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/cable-rug-by-armadillo-copy/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Cable_Seed_Topshot-1024x1024.jpg" alt="Cable Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cable Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/fish-carpet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/files/Fish-Rose-83-Asplund.jpg?v=1758634624" alt="Fish matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fish matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-esther-star-d120-cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2024/08/45149_Rug-Esther-star-d120cm-300x300.png" alt="Rug Esther star d120 cm by Dixie" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Esther star d120 cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/wild-cat-burnt-brown-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_PRODUCT_JAN_WILD_CAT_BURNT_BROWN_200X300_0427.jpg?v=1759997901" alt="Wildcat Rug Burnt Brown by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wildcat Rug Burnt Brown</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/udo-runner-tan-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273878_1.png?v=1788868746" alt="Udo Runner by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Udo Runner</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/gran-linen-table-runner-dark-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/75112-6_Tablerunner_GRAN_1_FLD.webp?v=1768554821" alt="GRAN LINEN TABLE RUNNER by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">GRAN LINEN TABLE RUNNER</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/quiltrunner" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1666133679526-NS8XPXA7BR9ZGEET9R8J/GrainQuiltRug_Runner_Above.jpg" alt="Quilt Runner by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Quilt Runner</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/channel-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250423124708/img_20250423124708/globalassets/inriver/integration/service/channel-rug_910x1100_brandmodel2.jpg" alt="Channel Rug by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Channel Rug</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/rugs/rug-feuillage-3985" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10052287_i_vue_c.jpg" alt="Feuillage Rug by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Feuillage Rug</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/natural-kelim-handwoven-traditional-kelim" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Natural-kelim1-1.jpg?v=1720007650" alt="Natural Kelims by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Natural Kelims</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/rectangular-rug-two-of-spade" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/18077_seletti_tappeto-two-of-spades.jpg?v=1758624886" alt="Rectangular Rug TWO OF SPADE by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rectangular Rug TWO OF SPADE</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/winton-ullmatta-provbit-30x30" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Winton_sample.jpg?v=1787648560" alt="Winton ullmatta provbit by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Winton ullmatta provbit</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-juniper-rug-rust-300-x-400cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS403695_1.jpg?v=1773076806" alt="Outlet Juniper Rug Rust  300 x 400cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outlet Juniper Rug Rust  300 x 400cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/tact-rug-200-x-300-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_AW23_Tact_f3fe3227-99af-4894-9e58-d07e2dabe844.jpg?v=1743412077" alt="Tact rug (200 X 300) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tact rug (200 X 300)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/the-moor-ap8" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2019/08/Moor_Rug_AP8-Grey-Thunder-600x800.png" alt="The Moor AP8 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">The Moor AP8</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/reed-rug-by-armadillo-copy/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Reed_Natural_Topshot-1024x1024.jpg" alt="Reed Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Reed Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/badrumsmatta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/bathmat_asplundstore.jpg?v=1594214062" alt="Badrumsmatta Ishikoro by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Badrumsmatta Ishikoro</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-astrid-marble-240x300cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2023/08/37987-Rug-Astrid-marble-240x300cmx-300x300.png" alt="Rug Astrid 240x300cm by Dixie" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Astrid 240x300cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/wild-cat-ash-black-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_PRODUCT_JAN_WILD_CAT_ASH_BLACK_200X300_0416.jpg?v=1759997857" alt="Wildcat Rug Ash Black by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wildcat Rug Ash Black</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/skye-tufted-rug-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273756_1.png?v=1788769916" alt="Skye Tufted Rug by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Skye Tufted Rug</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/pot-mat-cork-smiley-happy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/OC-PM-SMI_Cork_pot_mat_SMILE_2_FLD.webp?v=1762438959" alt="POT MAT CORK by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">POT MAT CORK</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/quiltmat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1666133382096-T23ZUZSTUVD04TNQUNGI/GrainQuiltRug_Mat2_Above.jpg" alt="Quilt Mat by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Quilt Mat</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/door-mat-long" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250423123306/img_20250423123306/globalassets/inriver/integration/service/door-mat-long_910x1100_brandmodel2.jpg" alt="Door Mat Long by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Door Mat Long</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/rugs/rug-blue-blur-3968" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100e80_c.jpg" alt="Blur Rug by Ligne Roset" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Blur Rug</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/smoked-caramel-vein-surface" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Vein-Smoked-Caramel-scaled.jpg?v=1720529627" alt="Vein - Surface by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vein - Surface</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/rectangular-rug-sea-girl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/18074_Girlinthesea.jpg?v=1758624558" alt="Rectangular Rug SEA GIRL by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rectangular Rug SEA GIRL</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/nelson-ullmatta-prov" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Nelson_sample.jpg?v=1787650064" alt="Nelson ullmatta provbit by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nelson ullmatta provbit</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-juniper-rug-taupe-300-x-400cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS403709_1.jpg?v=1773155490" alt="Outlet Juniper Rug Taupe  300 x 400cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outlet Juniper Rug Taupe  300 x 400cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/tact-rug-170-x-240-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Tact__170x240__Brown.png?v=1743412080" alt="Tact rug (170 X 240) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tact rug (170 X 240)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/mesa-rug-by-armadillo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Armadillo_22_MESA_NATURAL-_TOP_214035-1024x1024.jpg" alt="Mesa Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mesa Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/bend-matta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/Skarmavbild2020-06-27kl.18.47.25.png?v=1593276883" alt="Bend matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bend matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-astrid-marble-160x230cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2023/08/37985-Rug-Astrid-Marble-160x230cm-300x300.png" alt="Rug Astrid 160x230cm by Dixie" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Astrid 160x230cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/beaten-track-ginger-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_PRODUCT_JAN_BEATEN_TRACK_GINGER_0435.jpg?v=1759997833" alt="Beaten Track Rug Ginger by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Beaten Track Rug Ginger</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/foundation-runner-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273172_1.png?v=1772689758" alt="Foundation Runner by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Foundation Runner</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/rutan-pot-mat-red-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/PM-RUTA21-RB_Pot_mat_RUTAN_blue3_FLD.webp?v=1761145758" alt="RUTAN POT MAT by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">RUTAN POT MAT</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/wallingrug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1666134940640-US4PA1H4BFEANQF19HBL/GrainLandsRug_Wall.jpg" alt="Walling Rug - Archival by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Walling Rug - Archival</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/coco-door-mat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250818124852/img_20250818124852/globalassets/inriver/integration/service/coco-door-matt-family_910x1100_brandmodel.jpg" alt="Coco Door Mat by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Coco Door Mat</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/rugs/rug-poudre-strata-3946" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100e93_c.jpg" alt="Strata Rug poudré by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Strata Rug poudré</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/forest-green-vein-surface" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Vein-Forest-Green-scaled.jpg?v=1720529596" alt="Forest Green- Vein- Surface by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Forest Green- Vein- Surface</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/cotton-table-runner-cm-50x150-acqua" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/MG_3657-Photoroom.jpg?v=1747060819" alt="Cotton table runner by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cotton table runner</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/edge-hampamatta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Edge_stor_0f46fb21-6300-4d2e-9c4a-104f573adbe8.jpg?v=1787640399" alt="Edge hampamatta by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Edge hampamatta</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/mini-diamond-kilim-ink-170-x-240cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/e702e3d6834f4af44074af22d46ea48d8c2322e7_TCS25286.jpg?v=1705927581" alt="Mini Diamond Kilim Rug Ink 170 x 240cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mini Diamond Kilim Rug Ink 170 x 240cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/kyoto-rug-90-x-140-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Kyoto__90x140__Offwhite.png?v=1743412184" alt="Kyoto rug (90 X 140) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kyoto rug (90 X 140)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/sequoia-rug-by-armadillo-copy/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Sequoia_Natural_Topshot-1024x1024.jpg" alt="Sequoia Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sequoia Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/bliss-matta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/Skarmavbild2020-06-27kl.19.24.43.png?v=1593279101" alt="Bliss matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bliss matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-astrid-natural-190x290cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2023/08/37982-Rug-Astrid-naturel-190x290cm-300x300.png" alt="Rug Astrid natural 190x290cm by Dixie" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Astrid natural 190x290cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/beaten-track-adobe-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_PRODUCT_JAN_BEATEN_TRACK_ADOBE_0429.jpg?v=1776431758" alt="Beaten Track Rug Adobe by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Beaten Track Rug Adobe</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sen-rug-parchment-chestnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272752_1.png?v=1772689741" alt="Sen Rug by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sen Rug</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/rutig-jacquardvavd-bordslopare-gron" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/tablerunner_rutig_green_finelittleday2.jpg?v=1757341807" alt="RUTIG JACQUARD WOVEN TABLE RUNNER by Fine Little Day" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">RUTIG JACQUARD WOVEN TABLE RUNNER</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/quiltrug-sn275" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1665692063181-BX1TQ3C6254QYANI40F8/GrainQuiltRug_Lg2_Above.jpg" alt="Quilt Rug Olive Cream Wool Poly (In Stock) by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Quilt Rug Olive Cream Wool Poly (In Stock)</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/tapis" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422034744/img_20250422034744/globalassets/inriver/integration/service/tapis_910x1100_brandmodel2.jpg" alt="Tapis by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tapis</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/rugs/rug-sandmist-3939" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100e8w_c.jpg" alt="Sandmist Rug by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sandmist Rug</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/smoked-caramel-drops-surface" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Drops-Smoked-Caramel-scaled.jpg?v=1720529581" alt="Drops - Surface by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Drops - Surface</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/rectangular-rug-fingers" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Toiletpapermagazine-Rug-18060-1.jpg?v=1728425979" alt="Rectangular Rug Fingers by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rectangular Rug Fingers</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/sumak-hampamatta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Sumak_brown_300x400_b75b03f1-f54a-4490-bfaf-dd586fd177d6.jpg?v=1768307496" alt="Sumak hampamatta by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sumak hampamatta</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/mini-diamond-kilim-charcoal-pollen-170-x-240cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS25290_1.jpg?v=1707852332" alt="Mini Diamond Kilim Rug Charcoal &amp; Pollen 170 x 240cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mini Diamond Kilim Rug Charcoal &amp; Pollen 170 x 240cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/kyoto-rug-240-x-170-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Kyoto__240x170__Offwhite.png?v=1743412186" alt="Kyoto rug (240 X 170) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kyoto rug (240 X 170)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/willow-rug-by-armadillo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/ARM_Willow_Cumin_Topshot-1024x1024.jpg" alt="Willow Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Willow Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/wedge-2-matta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/Wedge-2-Thunder.jpg?v=1738597154" alt="Wedge 2 matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wedge 2 matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-jenny-nat-grey-w-border-d150cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2022/12/37978-Rug-Jenny-nat.grey-w-border-d150cm-300x300.png" alt="Rug Jenny nat.grey w border d150cm by Dixie" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Jenny nat.grey w border d150cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/manuela-rug-sage" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_PRODUCT_JAN_27_RUG_MANUELLA_SAGE_0026.jpg?v=1740040929" alt="Manuela Rug Sage by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Manuela Rug Sage</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/apple-tufted-rug-tea-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272748_1.png?v=1772689694" alt="Apple Tufted Rug by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Apple Tufted Rug</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/randig-bordslopare-linne" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/49112-6_Randig_Table_Runner_FLD.jpg?v=1762955230" alt="RANDIG LINEN TABLE RUNNER by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">RANDIG LINEN TABLE RUNNER</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/poolruglarge-w7l4y" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1665693910794-D3X39WGAFJSMWAHZ9L11/GrainPoolRug_Above_NW31.jpg" alt="Pool Rug Large by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pool Rug Large</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/tapis-mat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422103839/img_20250422103839/globalassets/inriver/integration/service/tapis-mat_1220x1220_brandmodel2.jpg" alt="Tapis Mat by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tapis Mat</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/rugs/rug-ecru-quiet-3925" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10050115_i_vue_c.jpg" alt="Quiet Rug ecru by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Quiet Rug ecru</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/volcano-dust-structures-2-0" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Structures1-scaled.jpg?v=1720529536" alt="Structures 2.0 by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Structures 2.0</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/rug-dartboard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Studio-Job-Rugs-18120-1.jpg?v=1728426909" alt="Rug Dartboard by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Dartboard</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/hampa-ullmatta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Hemp_wool_170x240_d8238fd9-f05c-446b-bf1f-80e5c43e789c.jpg?v=1768307073" alt="Hampa/ullmatta by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hampa/ullmatta</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/bikaner-melange-wool-rug-300-x-400cm-display-only" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS320314_1.jpg?v=1710857721" alt="Bikaner Melange Wool Rug 300 x 400cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bikaner Melange Wool Rug 300 x 400cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/kyoto-rug-200-x-80-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Kyoto__200x80__Offwhite.png?v=1743412187" alt="Kyoto rug (200 X 80) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kyoto rug (200 X 80)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/eden-rug-by-armadillo-copy/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Armadillo_23_EDEN_GRANADA_TOPSHOT_277281-1024x1024.jpg" alt="Eden Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eden Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/obi-matta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/files/Obi-large.jpg?v=1763393760" alt="Obi matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Obi matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-jenny-nat-grey-w-border-d250cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2022/12/37977-Rug-Jenny-nat.grey-w-border-d250cm-300x300.png" alt="Rug Jenny nat.grey w border d250cm by Dixie" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Jenny nat.grey w border d250cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/manuela-rug-warm-vanilla" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_PRODUCT_JAN_27_RUG_MANUELLA_WARM_VANILLA_0018.jpg?v=1740040795" alt="Manuela Rug Warm Vanilla by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Manuela Rug Warm Vanilla</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sen-runner-parchment-indigo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272768_1.png?v=1772689674" alt="Sen Runner by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sen Runner</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/naver-pot-mat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/PM-NAV21_Pot_mat_NAVER_2_Fine_Little_Day.webp?v=1774872907" alt="NÄVER POT MAT by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NÄVER POT MAT</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/landsruglarge-2je97" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1666134288791-3U94H64LXDFNRE151G7V/Grain_Lands2_Above.jpg" alt="Lands Rug Large Light Grey / Dark Grey Wool (In Stock) by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lands Rug Large Light Grey / Dark Grey Wool (In Stock)</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/flooring/raw-rug-no-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422034033/img_20250422034033/globalassets/inriver/integration/service/raw-rug-no-2_1220x1220_brandmodel2.jpg" alt="Raw Rug No. 2 by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Raw Rug No. 2</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/rugs/rug-mirage-3909" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100e8q_c.jpg" alt="Mirage Rug by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mirage Rug</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/bloom-affinity" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Bloom.jpg?v=1770379125" alt="Affinity by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Affinity</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/rectangular-rug-lipstick-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/18076_seletti-tappeto-lipsticks.jpg?v=1728432901" alt="Rectangular Rug Lipstick Black by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rectangular Rug Lipstick Black</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/harlequin-hampamatta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Harlequin_bleached_e341fa8c-6514-4df6-b9db-334c5531c34b.jpg?v=1768307067" alt="Harlequin hampamatta by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Harlequin hampamatta</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/marlon-rug-navy-7-sizes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS408843_1.jpg?v=1779977145" alt="Marlon Rug Navy (7 sizes) by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Marlon Rug Navy (7 sizes)</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/kyoto-rug-200-x-300-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Kyoto__200x300__Offwhite.png?v=1743412189" alt="Kyoto rug (200 X 300) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kyoto rug (200 X 300)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/etoile-rug-by-armadillo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Armadillo_HouseOfGrey_Rugs_EllipseCollection_Etoile_Porcelain-1024x1024.jpg" alt="Etoile Rug by Armadillo by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etoile Rug by Armadillo</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/web-matta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/Webb_carpet_marie_louise_hellgren_asplund.jpg?v=1630574204" alt="Web matta by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Web matta</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.dixie.se/produkt/rug-jenny-nat-grey-240x300cm/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.dixie.se/uploads/2022/12/37976-Rug-Jenny-nat.grey-240x300cm-300x300.png" alt="Rug Jenny nat.grey 240x300cm by Dixie" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rug Jenny nat.grey 240x300cm</p></div>
+          <p class="card-brand">Dixie</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/manuela-rug-light-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_PRODUCT_JAN_27_RUG_MANUELLA_LIGHT_BEIGE_0033_1edf23cf-3e08-463e-952c-3a27b79f2cd2.jpg?v=1746704073" alt="Manuela Rug Light Beige by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Manuela Rug Light Beige</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/ekko-bath-mat-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272802_1.png?v=1772689604" alt="Ekko Bath Mat by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ekko Bath Mat</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/hogtid-pot-mat-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/Pot_mat_HOGTID_blue_Fine_Little_Day.webp?v=1761136236" alt="HÖGTID POT MAT by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">HÖGTID POT MAT</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/landsrugsmall-sf28k" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1681240619374-QFFBOUSZ8TZM61BUMN9N/Grain_LandsSm2_Above.jpg" alt="Lands Rug Small Papyrus / Basil Sunbrella (In Stock) by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lands Rug Small Papyrus / Basil Sunbrella (In Stock)</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/rugs/rug-ottone-3608" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100b4t_c.jpg" alt="Ottone Rug by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ottone Rug</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://massimo.dk/products/cream-loro-hanknotted-rug" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/0107/9126/files/Monte-Cream.jpg?v=1770379127" alt="Loro by Massimo Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Loro</p></div>
+          <p class="card-brand">Massimo Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/rectangular-rug-trumpets" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/18075_seletti-tappeto-trumpets.jpg?v=1728432892" alt="Rectangular Rug Trumpets by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rectangular Rug Trumpets</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/braided-jute-dorrmatta" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Braided_jute_rug_45x75_multi_-_webb_1.jpg?v=1764155485" alt="Braided jute dörrmatta by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Braided jute dörrmatta</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/marlon-runner-natural-70-x-250cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS387551_1_d978600f-642c-42d8-bd69-99bee8c0f814.jpg?v=1778579467" alt="Marlon Runner 70 x 250cm by The Conran Shop" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Marlon Runner 70 x 250cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/tint-rug-200-x-300" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/products/WOUD_Lifestyle_2021_SS21_La_terra_Lean_Tint_1_001e600f-b1f9-4e74-ac29-213a493f0054.jpg?v=1743412251" alt="Tint rug (200 X 300) by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tint rug (200 X 300)</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a></div>
+  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/browse/rugs-2.html">2</a><a href="/browse/rugs-2.html" rel="next">Next &rarr;</a></nav>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/browse/">Browse</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

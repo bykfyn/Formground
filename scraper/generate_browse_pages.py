@@ -127,8 +127,16 @@ BROWSE_CATEGORIES = [
     {"slug": "candles", "title": "Candles", "group": "Objects",
      "intents": [{"category": "candle"}], "related": ["candle-holders"]},
     {"slug": "glass", "title": "Glass", "group": "Objects", "intent": {"category": "glass"}},
+    {"slug": "vases", "title": "Vases", "group": "Objects", "intent": {"category": "vase"}},
+    {"slug": "bowls", "title": "Bowls", "group": "Objects", "intent": {"category": "bowl"}},
+    {"slug": "plates", "title": "Plates", "group": "Objects", "intent": {"category": "plate"}},
+    {"slug": "trays", "title": "Trays", "group": "Objects", "intent": {"category": "tray"}},
+    # Soft furnishings
+    {"slug": "rugs", "title": "Rugs", "group": "Soft furnishings", "intent": {"category": "rug"}},
+    {"slug": "cushions", "title": "Cushions", "group": "Soft furnishings", "intent": {"category": "cushion"}},
+    {"slug": "blankets", "title": "Blankets and Throws", "group": "Soft furnishings", "intent": {"category": "blanket"}},
 ]
-GROUP_ORDER = ["Lighting", "Seating", "Tables and desks", "Storage, beds and mirrors", "Objects"]
+GROUP_ORDER = ["Lighting", "Seating", "Tables and desks", "Storage, beds and mirrors", "Soft furnishings", "Objects"]
 CATEGORY_BY_SLUG = {c["slug"]: c for c in BROWSE_CATEGORIES}
 
 

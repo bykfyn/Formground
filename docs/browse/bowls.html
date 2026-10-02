@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bowls — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="675 real bowls from independent makers, listed in full (page 1 of 3). Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/browse/bowls.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Bowls — Formground">
+<meta property="og:description" content="675 real bowls from independent makers, listed in full (page 1 of 3). Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/browse/bowls.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Bowls — Formground">
+<meta name="twitter:description" content="675 real bowls from independent makers, listed in full (page 1 of 3). Every result links straight to the maker&#x27;s own site.">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-group { max-width: 520px; margin: 32px auto 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Browse", "item": "https://formground.com/browse/"}, {"@type": "ListItem", "position": 3, "name": "Bowls", "item": "https://formground.com/browse/bowls.html"}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <h1>Bowls</h1>
+  <p class="category-intro">675 bowls from independent makers - page 1 of 3. Every result links straight to the maker's own site.</p>
+  <div class="grid">
+      <a class="card" href="https://www.andtradition.com/products/tradition-collect-bowl-sc82" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2022/08/Collect-Bowl-SC82_Clear-600x800.png" alt="Collect | Bowl SC82 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collect | Bowl SC82</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/baburu-bowl-medio-almond" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21974095_263043_Baburu_Bowl_Medio_-_Almond_1.jpg?v=1781652369" alt="Baburu Bowl by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Baburu Bowl</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/joy-n-1-centrepiece-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/CR01-37-gold-01.jpg?v=1789114686" alt="Joy n.1 by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Joy n.1</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/echasse-base-for-bowl-brushed-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/4798949_Echasse-bowl_Pack.jpg?v=1705064971" alt="Echasse base for bowl by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Echasse base for bowl</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://bitossiceramiche.it/products/boletto-figura-di-maialino" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/6984/9030/files/RiminiBlu_ZZ999_205_02_def4522e-5f25-4779-b18a-2a8ba72bb609.webp?v=1743752393" alt="Boletto by Bitossi Ceramiche" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Boletto</p></div>
+          <p class="card-brand">Bitossi Ceramiche</p>
+        </div>
+      </a>
+      <a class="card" href="https://dannykaplanstudio.com/products/ella-footed-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0604/7773/5136/files/Anthracite_NewFootedBowl_11.jpg?v=1702322799" alt="Ella Footed Bowl by Danny Kaplan Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ella Footed Bowl</p></div>
+          <p class="card-brand">Danny Kaplan Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.deceresstudio.com/nura-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/60c6c7d303b6bb345051e428/0c4664fc-fa39-4b73-8a58-bf1566968626/Deceres_Nura+Bowls-Bronze_03.jpg" alt="Nura Bowl by Deceres Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nura Bowl</p></div>
+          <p class="card-brand">Deceres Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/elsa-beskow-bowl-set" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/Beskow-bundle-bowl.png?v=1782390233" alt="Elsa Beskow Bowl by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elsa Beskow Bowl</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://editions-midi.com/produit/bugadiero/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://editions-midi.com/wp-content/uploads/2022/06/HDmidi22-1024-OK-576x720.jpg" alt="Bugadiero by Editions Midi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bugadiero</p></div>
+          <p class="card-brand">Editions Midi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/toky-bowl-o13-dark-buff" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274558_1.png?v=1788766558" alt="Toky Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Toky Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/tall-skal-vit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/T1201-W_Tall_Bowl_FLD.webp?v=1761141984" alt="TALL BOWL by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TALL BOWL</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/otto-ceramic-shallow-bowl-natural-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-Otto-Stoneware-Shallow-Bowl-S-Packshot-1_3c70a843-dbb5-42c0-a6f6-6efdbf51beaa.png?v=1722845899" alt="Otto Ceramic Shallow Bowl | Natural | Small by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Otto Ceramic Shallow Bowl | Natural | Small</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/olivier-gagnere/vallauris-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/184B04C2A33E89409C00F719F6AB9975.jpg.webp" alt="Vallauris Bowl by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vallauris Bowl</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/tsumugi-br-茶椀-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/ChatGPTImage2026_9_9_13_39_48.png?v=1788928826" alt="TSUMUGI 茶椀 by GATOMIKIO" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TSUMUGI 茶椀</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/dogs/hay-dogs-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260603093334/img_20260603093334/globalassets/inriver/integration/service/hay-dogs-bowl_910x1100_brandmodel.jpg" alt="Hay Dogs Bowl by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hay Dogs Bowl</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.jongoulder.com/broached-sewingbowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6510bcbab829ad7b19b6c675/c96339f0-34da-49f6-a10e-662c4a0c616a/Sewing+Bowl+01.jpg" alt="Broached - Sewing Bowl by Jon Goulder" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Broached - Sewing Bowl</p></div>
+          <p class="card-brand">Jon Goulder</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/119000102" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/119000102.jpg?v=1774434060" alt="Setomono Bowl Set S by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Setomono Bowl Set S</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/vases-and-bowls/2-piece-set-1-vase-1-bowl-small-bolet-3864" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/11230346_i_vue_c.jpg" alt="Bolet 2-piece set (1 vase + 1 bowl) small by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bolet 2-piece set (1 vase + 1 bowl) small</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/metal-champagne-bowl-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKS_52127.jpg?v=1783589651" alt="METAL CHAMPAGNE BOWL 02 by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">METAL CHAMPAGNE BOWL 02</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/oval-nesting-bowls-in-ebonised-walnut-set-of-three-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/luke-hope-design-oval-nesting-bowls-in-walnut-set-of-three-3.jpg?v=1790478551" alt="Oval nesting bowls in walnut by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oval nesting bowls in walnut</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mokkoamsterdam.com/taes-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5e73916b28f23d676eebaddd/9eb66516-7e5b-48f9-be25-76cda4e8d143/Taes+Bowl+side+A+-+front+view+-+LIGHT+-+by+Thomas+van+Schaik.jpg" alt="Taes Bowl by Mokko Amsterdam" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Taes Bowl</p></div>
+          <p class="card-brand">Mokko Amsterdam</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/spot-moulded-sustainable-leather-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/SPOTbowl_1_9176a833-9bce-4feb-adc0-2f544a48c3e7.jpg?v=1762340689" alt="SPOT Leather Bowl by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SPOT Leather Bowl</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/frukostskal-liten-oland" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/GP0218748_5fb448ec-c856-488b-8d4d-2581341f7710.png?v=1788347248" alt="Randig frukostskål liten Öland by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Randig frukostskål liten Öland</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://project213a.com/products/alfonso-fruit-bowl-6" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0531/5395/6002/products/Project_213a_AlfonsoBowl_graphite5.jpg?v=1657011732" alt="Alfonso Fruit Bowl by Project 213A" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alfonso Fruit Bowl</p></div>
+          <p class="card-brand">Project 213A</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/nicholai-wiig-hansen-stroem-bowl-large-bowl-strong-coral" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/products/Nicholai_Wiig-Hansen_-_Stroem_-_bowl_-_large-Bowl-R1005-Strong_coral.jpg?v=1679570113" alt="Nicholai Wiig-Hansen - Strøm - bowl - large by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nicholai Wiig-Hansen - Strøm - bowl - large</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/newlithic-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/10553_NEWLITHIC_BOWL_FRANCESCODECIO.jpg?v=1756800837" alt="Newlithic Bowl by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Newlithic Bowl</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-lid-green-palm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026528-500_01-jpg.jpg?v=1789046162" alt="Bowl &amp; lid green Palm by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl &amp; lid green Palm</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.shibui.ch/product-page/icecube" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://static.wixstatic.com/media/62b04d_b6dc1dec3862440691c431616668281a.jpg/v1/fit/w_500,h_500,q_90/file.jpg" alt="iceCube by Shibui" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">iceCube</p></div>
+          <p class="card-brand">Shibui</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/sibast-steel-bowl/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Small_and_big_contour_bowl_on_lovely_table-400x400.webp" alt="Sibast steel bowl by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sibast steel bowl</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/elio-skal-pa-fot" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/elio_bowl_on_foot_group_web.jpg?v=1790322128" alt="Elio skål på fot by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elio skål på fot</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/bea-bowl-pale-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS408952_1.jpg?v=1786540921" alt="Bea Bowl Pale blue by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bea Bowl Pale blue</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/wing-bowl-big-bone-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/22016939_221007_Wing-Bowl_Big-Bone-White-Mood_1.jpg?v=1780960739" alt="Wing Bowl by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wing Bowl</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/delight-stand" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_NZ05-GR.jpg?v=1789114768" alt="Delight by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Delight</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/taper-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_Taper_Bowl_Plinth_Tall_31.jpg?v=1725266170" alt="Taper Bowl by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Taper Bowl</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://bitossiceramiche.it/products/bolopatricia-urquiola-merlate-urq00102-bordeaux-glicine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/6984/9030/files/Patricia_Urquiola_URQ00102_03.webp?v=1743693225" alt="Bolo by Bitossi Ceramiche" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bolo</p></div>
+          <p class="card-brand">Bitossi Ceramiche</p>
+        </div>
+      </a>
+      <a class="card" href="https://dannykaplanstudio.com/products/low-footed-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0604/7773/5136/products/IMG3354.jpg?v=1652828511" alt="Low Footed Bowl by Danny Kaplan Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Low Footed Bowl</p></div>
+          <p class="card-brand">Danny Kaplan Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.deceresstudio.com/parra-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/60c6c7d303b6bb345051e428/7418a887-447a-4c5e-89e6-9245d2ca1d6c/Deceres_Parra+Bowls-Bronze_02.jpg" alt="Parra Bowl by Deceres Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Parra Bowl</p></div>
+          <p class="card-brand">Deceres Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/blond-soup-cereal-bowl-60-cl-white-stripe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/1062-0101_b2247a9f-5143-4e40-a435-623d1e399f4b.jpg?v=1737588754" alt="Blond Soup Bowl by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Blond Soup Bowl</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/ripple-kids-bowls-set-of-2-blush" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274594_1.png?v=1788766443" alt="Ripple Kids Bowls by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ripple Kids Bowls</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/otto-ceramic-shallow-bowl-natural-medium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-Otto-Stoneware-Shallow-Bowl-M-Packshot-1_9cfa27d4-f584-4a9f-b4f7-9b5915218324.png?v=1722845888" alt="Otto Ceramic Shallow Bowl | Natural | Medium by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Otto Ceramic Shallow Bowl | Natural | Medium</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/mw-z-br-bowl-005" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_3a0561f1-5004-4639-8f63-1faf724d869c.jpg?v=1747184709" alt="MW-Z Bowl 005 by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MW-Z Bowl 005</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/kitchen--dining/tableware/glass-dessert-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260113112843/img_20260113112843/globalassets/inriver/integration/service/glass-dessert-bowl_910x1100_brandmodel.jpg" alt="Glass Dessert Bowl by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Glass Dessert Bowl</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/127500140" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/127500140.jpg?v=1756995603" alt="Column Bowl by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Column Bowl</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/vases-and-bowls/fruit-bowl-pression-2441" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/11230221_i_vue_c.jpg" alt="Pression Fruit bowl by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pression Fruit bowl</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/balloon-bowl-06-ceramic-sanded-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKS_028494.jpg?v=1783588712" alt="BALLOON BOWL 06 CERAMIC SANDED GREY by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BALLOON BOWL 06 CERAMIC SANDED GREY</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/oval-palm-bowl-in-vintage-black-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/luke-hope-design-oval-palm-bowl-in-vintage-black-walnut-5.jpg?v=1790478688" alt="Oval palm bowl in vintage black walnut by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oval palm bowl in vintage black walnut</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/furna-basket" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/MOR-109_arranjada.jpg?v=1768224030" alt="FURNA Baskets by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FURNA Baskets</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/stor-serveringsskal-keramik" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/serveringsskal_creme_blank_paradis_1.png?v=1788872951" alt="Serveringsskål stor by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serveringsskål stor</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/small-bowl-bowl-salsa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Nicholai_Wiig-Hansen_-_Stroem_-_bowl_-_small-Bowl-R1003-salsa.jpg?v=1719485121" alt="Nicholai Wiig-Hansen - Strøm - bowl - small by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nicholai Wiig-Hansen - Strøm - bowl - small</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/kintsugi-salad-bowl-03" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Kintsugi_salad_bowlIMG_0008.jpg?v=1728429320" alt="Kintsugi Salad Bowl 03 by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kintsugi Salad Bowl 03</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-lid-medium-mix-flamboyance" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026501-999_01-jpg.jpg?v=1789046145" alt="Bowl &amp; lid medium mix Flamboyance by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl &amp; lid medium mix Flamboyance</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/elio-cylinder-skal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/web_Elio_yellow_image_76535d60-c9de-4f91-bf67-bfea3179c469.jpg?v=1790340953" alt="Elio cylinder skål by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elio cylinder skål</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/bea-bowl-taupe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS408952_1-1.jpg?v=1786540938" alt="Bea Bowl Taupe by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bea Bowl Taupe</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/enkei-salt-bowl-earth" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18499567_251060_Enkei_Salt_Bowl_-_Earth_-_1.jpg?v=1789565845" alt="Enkei Salt Bowl by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Enkei Salt Bowl</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/maya-round-basket-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/7320-25_01.jpg?v=1744033762" alt="Maya by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Maya</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/rond-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Rond_Bowl_Wood_2.jpg?v=1664267932" alt="Rond Bowl by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rond Bowl</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://dannykaplanstudio.com/products/serve-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0604/7773/5136/products/Serve_Bowl_12.5_Anthracite_422H_50.jpg?v=1652828573" alt="Serve Bowl by Danny Kaplan Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serve Bowl</p></div>
+          <p class="card-brand">Danny Kaplan Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.deceresstudio.com/tado-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/60c6c7d303b6bb345051e428/d7b587e4-662b-4f91-b346-d72a524ae4de/Deceres_Casa+Kimisa-Web-16.jpg" alt="Tado Bowl by Deceres Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tado Bowl</p></div>
+          <p class="card-brand">Deceres Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/blond-small-bowl-30-cl-white-stripe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/1061-0101_1ef57c7b-a65f-4880-8f08-eb8e44315032.jpg?v=1737588708" alt="Blond Small Bowl by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Blond Small Bowl</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/ripple-serving-bowls-set-of-4-blush" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274222_1.png?v=1788769076" alt="Ripple Serving Bowls by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ripple Serving Bowls</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/otto-ceramic-shallow-bowl-natural-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-Otto-Stoneware-Shallow-Bowl-L-Packshot-1_a8bd7caa-789f-495d-a1c2-2136f0c35e2e.png?v=1722845884" alt="Otto Ceramic Shallow Bowl | Natural | Large by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Otto Ceramic Shallow Bowl | Natural | Large</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/mw-z-br-bowl-004" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_8dd7b39b-5617-4555-b2ab-61fcc13644b1.jpg?v=1747184662" alt="MW-Z Bowl 004 by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MW-Z Bowl 004</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/kitchen--dining/tableware/la-pittura-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260914035447/img_20260914035447/globalassets/inriver/integration/service/la-pittura-bowl_1220x1220_brandmodel.jpg" alt="La Pittura Bowl by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">La Pittura Bowl</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/132000040" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/132000040.jpg?v=1756995602" alt="Opal Bowl S by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Opal Bowl S</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/vases-and-bowls/2-piece-set-1-vase-1-bowl-large-bolet-3865" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/11230348_i_vue_c.jpg" alt="Bolet 2-piece set (1 vase + 1 bowl) large by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bolet 2-piece set (1 vase + 1 bowl) large</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/balloon-bowl-05-ceramic-sanded-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKS_028652.jpg?v=1783588710" alt="BALLOON BOWL 05 CERAMIC SANDED GREY by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BALLOON BOWL 05 CERAMIC SANDED GREY</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/oval-nesting-bowls-in-vintage-black-walnut-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/luke-hope-design-oval-nesting-bowls-in-ebonised-walnut-1.jpg?v=1790081195" alt="Oval nesting bowls in ebonised walnut by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oval nesting bowls in ebonised walnut</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/covo-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/COVOOak1_1200.jpg?v=1761836806" alt="COVO Bowl by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">COVO Bowl</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/liten-serveringsskal-keramik" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/104.png?v=1788514170" alt="Serveringsskål liten by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serveringsskål liten</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/nicholai-wiig-hansen-stroem-bowl-medium-bowl-strong-coral" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/products/Nicholai_Wiig-Hansen_-_Stroem_-_bowl_-_medium-Bowl-R1004-Strong_coral.jpg?v=1679570080" alt="Nicholai Wiig-Hansen - Strøm - bowl - medium by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nicholai Wiig-Hansen - Strøm - bowl - medium</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/kintsugi-salad-bowl-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Kintsugi_salad_bowlIMG_0012.jpg?v=1726605647" alt="Kintsugi Salad Bowl 02 by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kintsugi Salad Bowl 02</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-lid-small-mix-flamboyance" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026500-999_01-jpg.jpg?v=1789046145" alt="Bowl &amp; lid small mix Flamboyance by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl &amp; lid small mix Flamboyance</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/elio-skal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Elio_bowl_group_-_webb_2.jpg?v=1790318282" alt="Elio skål by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elio skål</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/uri-bowl-citrine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS408944_1.jpg?v=1786540367" alt="Uri Bowl Citrine by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Uri Bowl Citrine</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/native-bowl-petit-low-birch" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18334181_251073_-_Native_Bowl_Petit_Low_-_Birch_-_1.jpg?v=1782395424" alt="Native Bowl by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Native Bowl</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/itsumo-pet-yunoki-ware-dog-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_NF15S-2.jpg?v=1773665702" alt="Itsumo pet Yunoki ware by Alessi" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Itsumo pet Yunoki ware</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/releve-platter" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/MENU_Releve_Platter_2.jpg?v=1694093111" alt="Relevé Platter by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Relevé Platter</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://dannykaplanstudio.com/products/tall-footed-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0604/7773/5136/products/IMG3348.jpg?v=1649705974" alt="Tall Footed Bowl by Danny Kaplan Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tall Footed Bowl</p></div>
+          <p class="card-brand">Danny Kaplan Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.deceresstudio.com/teneo-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/60c6c7d303b6bb345051e428/8f1cd88a-2177-4575-a728-5535023606ac/Deceres_Coba+Small-Teneo+Bowl-03-min.jpg" alt="Teneo Bowl by Deceres Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Teneo Bowl</p></div>
+          <p class="card-brand">Deceres Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/bellure-bowl-o17-brass-finish" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273993_1.png?v=1788770000" alt="Bellure Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bellure Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/otto-ceramic-shallow-bowl-natural-extra-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-Otto-Stoneware-Shallow-Bowl-XS-Packshot-1_6927e948-750e-4673-8a28-059e1b08ffd1.png?v=1722845869" alt="Otto Ceramic Shallow Bowl | Natural | Extra Small by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Otto Ceramic Shallow Bowl | Natural | Extra Small</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/mw-z-br-bowl-003" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_53682744-d9b0-46db-82e7-9f1cda152f17.jpg?v=1747184616" alt="MW-Z Bowl 003 by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MW-Z Bowl 003</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/kitchen--dining/tableware/barro-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260214101020/img_20260214101020/globalassets/inriver/integration/service/barro-bowl_910x1100_brandmodel.jpg" alt="Barro Bowl by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Barro Bowl</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/112300500" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/112300500.jpg?v=1756995592" alt="Bowl Flowerpot S by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl Flowerpot S</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/vases-and-bowls/fruit-bowl-empreintes-4535" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/11010209_i_vue_c.jpg" alt="Empreintes Fruit bowl by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Empreintes Fruit bowl</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/metal-champagne-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKS_52095.jpg?v=1783589651" alt="METAL CHAMPAGNE BOWL 01 by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">METAL CHAMPAGNE BOWL 01</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/pinch-put-pot-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Pinch-put-pot-walnut-1-LukeHope.jpg?v=1778229315" alt="Pinch &amp; put pot in walnut by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pinch &amp; put pot in walnut</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/skal-mini-keramik-oland" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/Paradisverkstaden_grandpa_skal_liten_havre_ad197875-9963-4aa0-b38b-9c70d4ae6078.png?v=1788339091" alt="Skål mini by Paradisverkstaden" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Skål mini</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/relae-bowl-large-rubine-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/products/Nicholai_Wiig-Hansen_-_Relae_-_glass_bowl_-_large-Bowl-R1015-rubine_red.jpg?v=1672918276" alt="Nicholai Wiig-Hansen - Relæ - glass bowl - large by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nicholai Wiig-Hansen - Relæ - glass bowl - large</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/kintsugi-bowl-03" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Marcantonio-Kintsugi-096333.jpg?v=1728857049" alt="Kintsugi Fruit Bowl 03 by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kintsugi Fruit Bowl 03</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/cereal-bowl-green-purple-charly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B8926304-521_01-jpg.jpg?v=1786453545" alt="Cereal bowl green by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cereal bowl green</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/vince-skal-m" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Vince_bowl_small_-_cup_-_lagonna_glass.jpg?v=1788331956" alt="Vince skål by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vince skål</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/uri-bowl-clementine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS408943_1.jpg?v=1786540421" alt="Uri Bowl Clementine by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Uri Bowl Clementine</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/native-bowl-set-birch" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18334169_246005_Native_Bowl_Set_-_Birch_-_1.jpg?v=1788392112" alt="Native Bowl Set by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Native Bowl Set</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/itsumo-small-bowl-4-pieces" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_NF07-54.jpg?v=1715871417" alt="Itsumo by Alessi" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Itsumo</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/echasse-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/Echasse_bowl.jpg?v=1607956943" alt="Échasse Bowl by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Échasse Bowl</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/bellure-centrepiece-bowl-gift-set-rustic-bronze" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272110_1104272111.webp?v=1777024654" alt="Bellure Centrepiece &amp; Bowl Gift Set by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bellure Centrepiece &amp; Bowl Gift Set</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/otto-ceramic-shallow-bowl-natural-extra-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-Otto-Stoneware-Shallow-Bowl-XL-Packshot-1_3ff5dd26-eb21-4176-b204-8552b4cc62b6.png?v=1722845866" alt="Otto Ceramic Shallow Bowl | Natural | Extra Large by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Otto Ceramic Shallow Bowl | Natural | Extra Large</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/mw-z-br-bowl-002" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_844b0542-006e-4d1b-848b-bf795ef28b2b.jpg?v=1747184562" alt="MW-Z Bowl 002 by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MW-Z Bowl 002</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/kitchen--dining/tableware/barro-salad-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260214102241/img_20260214102241/globalassets/inriver/integration/service/barro-salad-bowl_910x1100_brandmodel3.jpg" alt="Barro Salad Bowl by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Barro Salad Bowl</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/balloon-bowl-05-sanded-ocker" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/BALLOON_05_SANDED_OCKER_NEW.jpg?v=1783589734" alt="BALLOON BOWL 05 SANDED OCKER by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BALLOON BOWL 05 SANDED OCKER</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/medium-bowl-and-chopsticks-set-rippled-sycamore-set" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/luke-hope-design-oval-nesting-bowls-in-sycamore-wood-6._97dfe7d3-0388-409c-91e7-3a7a3235eee3.jpg?v=1790497430" alt="Oval nesting bowls in sycamore by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oval nesting bowls in sycamore</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/frukostskal-stor-oland" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/GP012_x2_5f57ce02-62a2-47fe-a56d-d44c2913f6f3.png?v=1788180484" alt="Frukostskål stor by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Frukostskål stor</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/relae-bowl-small-rubine-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/products/Nicholai_Wiig-Hansen_-_Relae_-_glass_bowl_-_small-Bowl-R1014-rubine_red.jpg?v=1672918167" alt="Nicholai Wiig-Hansen - Relæ - glass bowl - small by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nicholai Wiig-Hansen - Relæ - glass bowl - small</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/kintsugi-bowl-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Marcantonio-Kintsugi-096312.jpg?v=1728857049" alt="Kintsugi Fruit Bowl 01 by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kintsugi Fruit Bowl 01</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/cereal-bowl-green-charly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B8926304-500_01-jpg.jpg?v=1786453544" alt="Cereal bowl Charly by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cereal bowl Charly</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/teak-skal-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Teak_group_2_-_webb.jpg?v=1787647254" alt="Teak skål by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Teak skål</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/yip-footed-bowl-orange" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS408949_1.jpg?v=1786540469" alt="Yip Footed Bowl Orange by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Yip Footed Bowl Orange</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/curve-bowl-mini-dark-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18500766_233036_Curve_Bowl_Mini_Dark_Grey_1.jpg?v=1775568029" alt="Curve Bowl by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Curve Bowl</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/dear-charlie-banana-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01_JT01_12597198-b85d-46c0-a54a-f2472623ca14.jpg?v=1599876716" alt="Dear Charlie by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dear Charlie</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sol-salad-servers-salad-bowl-gift-set" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104270709_1104270710.webp?v=1777022282" alt="Sol Salad Servers &amp; Salad Bowl Gift Set by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sol Salad Servers &amp; Salad Bowl Gift Set</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/otto-ceramic-bowls-set-of-two-white-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-Otto-Stoneware-Bowl-S-White-Packshot-2.png?v=1722846156" alt="Otto Ceramic Bowls Set of Two | Small by Frama" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Otto Ceramic Bowls Set of Two | Small</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/utena-br-bowl-001" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_40e83173-8265-45ee-88d3-8c7f4161d149.jpg?v=1747184283" alt="MW-Z Bowl 001 by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MW-Z Bowl 001</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/kitchen--dining/tableware/sobremesa-serving-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260521073534/img_20260521073534/globalassets/inriver/integration/service/sobremesa-serving-bowl_910x1100_brandmodel.jpg" alt="Sobremesa Serving Bowl by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sobremesa Serving Bowl</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/balloon-bowl-06-sanded-ocker" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/BALLOON_06_Sanded_Ocker_New.jpg?v=1783589734" alt="BALLOON BOWL 06 SANDED OCKER by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BALLOON BOWL 06 SANDED OCKER</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/medium-bowl-and-spoon-set-in-rippled-sycamore" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/luke-hope-design-sycamore-nesting-bowls-set-of-four-6.jpg?v=1790499874" alt="Nesting bowls in sycamore by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nesting bowls in sycamore</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/frukostskal-grafit-randig" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/GP0218738.png?v=1754470616" alt="Randig frukostskål liten by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Randig frukostskål liten</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/nicholai-wiig-hansen-stroem-miniature-bowl-bowl-vibrant-orange" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Nicholai_Wiig-Hansen_-_stroem_miniature_-_bowl-Bowl-R1059-vibrant_orange.jpg?v=1698999332" alt="Nicholai Wiig-Hansen - strøm miniature - bowl by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nicholai Wiig-Hansen - strøm miniature - bowl</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/kintsugi-salad-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Kintsugi_salad_bowlIMG_0010.jpg?v=1728429320" alt="Kintsugi Salad Bowl 01 by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kintsugi Salad Bowl 01</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/cereal-bowl-purple-orange-charly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B8926304-406_01-jpg.jpg?v=1786453538" alt="Cereal bowl purple by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cereal bowl purple</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/centro-skal-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Centro_wheat_group_-_webb_-_2_e5540fd3-1d61-46b5-809e-c2183b4d585a.jpg?v=1779806355" alt="Centro skål by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Centro skål</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/yip-footed-bowl-mint" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS408948_1.jpg?v=1786540516" alt="Yip Footed Bowl Mint by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Yip Footed Bowl Mint</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/duck-bowl-mini-bone-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18503039_221016_-_Duck_Bowl_Mini_-_Bone_White.jpg?v=1774541379" alt="Duck Bowl by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Duck Bowl</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/discolo-centrepiece" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01_ITM03-GR.jpg?v=1701367007" alt="Discolo by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Discolo</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/koyo-bowls-o8-5-set-of-2-dark-brown-buff" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272619_1.png?v=1772690410" alt="Koyo Bowls by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Koyo Bowls</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/otto-ceramic-bowls-set-of-two-white-medium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-Otto-Stoneware-Bowl-M-White-Packshot-2.png?v=1722846122" alt="Otto Ceramic Bowls Set of Two | Medium by Frama" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Otto Ceramic Bowls Set of Two | Medium</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/utena-br-bowl-ll" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_95268989-33e5-4f3e-ac0e-da46cc324f0b.jpg?v=1747183685" alt="UTENA Bowl（LL） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">UTENA Bowl（LL）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/outdoor-living/outdoor-market-by-jasper-morrison/outdoor-market-steel-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260113120710/img_20260113120710/globalassets/inriver/integration/service/outdoor-market-steel-bowl_910x1100_brandmodel.jpg" alt="Outdoor Market Steel Bowl by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outdoor Market Steel Bowl</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/sophia-roe-vintage-bowl-clear" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/SOPHIA_LOUISE_COLLECTION35239_f42151c3-902b-4d6c-8d51-8d0450d2729a.jpg?v=1783589471" alt="S.R. VINTAGE BOWL DECO CLEAR by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">S.R. VINTAGE BOWL DECO CLEAR</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/triangular-bowl-in-sycamore" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Triangular-bowl-sycamore-1-LukeHope.jpg?v=1778048291" alt="Triangular bowl in sycamore by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Triangular bowl in sycamore</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/fat-skal-bark-mellan-23cm-golden-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/RE0557200.png?v=1770883054" alt="Fat/Skål Bark Mellan 23cm Golden Brown by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fat/Skål Bark Mellan 23cm Golden Brown</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/omar-bowl-large-tawny" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/products/Omar_Sosa_-_Omar_-_bowl_02_-_large-Bowl-R1035-Tawny.jpg?v=1672923429" alt="Omar Sosa - Omar - bowl 02 - large by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Omar Sosa - Omar - bowl 02 - large</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/enamel-bowl-apple" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_TOILETPAPER-Bowls-Apple-16993-1-1.jpg?v=1728425003" alt="Enamel Bowl Apple by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Enamel Bowl Apple</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-blue-green-look-at-me" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2626007-605_01-jpg.jpg?v=1787619946" alt="Bowl blue by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl blue</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/toledo-skal-mini-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Toledo_bowl_mini_-_webb_1.jpg?v=1779717258" alt="Toledo skål Mini by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Toledo skål Mini</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/uri-bowl-forest-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS408945_1.jpg?v=1786540307" alt="Uri Bowl Forest Green by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Uri Bowl Forest Green</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/osaka-bowl-mini-light-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/111211_Osaka_Bowl_Mini_-_Light_Grey_1.jpg?v=1756281719" alt="Osaka Bowl by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Osaka Bowl</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/coppa-camuna-centrepiece" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_ITM24.jpg?v=1717406055" alt="Coppa Camuna by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Coppa Camuna</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/fountain-glass-bowl-19-frosted" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272628_1.png?v=1772690402" alt="Fountain Glass Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fountain Glass Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/utena-br-bowl-l" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_7eb66213-1e54-4887-9869-0da0f09bcdf4.jpg?v=1747183615" alt="UTENA Bowl（L） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">UTENA Bowl（L）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/outdoor-living/outdoor-market-by-jasper-morrison/outdoor-market-steel-bowl-with-lid" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260113121540/img_20260113121540/globalassets/inriver/integration/service/outdoor-market-steel-bowl-with-lid_910x1100_brandmodel.jpg" alt="Outdoor Market Steel Bowl With Lid by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outdoor Market Steel Bowl With Lid</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/sophia-roe-vintage-bowl-black-plain" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/SOPHIA_LOUISE_COLLECTION35331_bf301816-752d-47c9-9405-a22a81e35da8.jpg?v=1783589469" alt="S.R. VINTAGE BOWL PLAIN BLACK by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">S.R. VINTAGE BOWL PLAIN BLACK</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/moon-bowl-in-sycamore" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/luke-hope-design-tilted-crescent-bowl-in-sycamore-30.jpg?v=1790318319" alt="Tilted crescent bowl in sycamore by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tilted crescent bowl in sycamore</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/fat-skal-bark-mellan-brun" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/paradisverktaden_bild_kommer_snart_4dde886f-30a8-44d3-85b0-485202e73bb0.png?v=1770116487" alt="Fat/Skål Bark Mellan 23cm Brun by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fat/Skål Bark Mellan 23cm Brun</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/omar-bowl-small-tawny" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/products/Omar_Sosa_-_Omar_-_bowl_01_-_small-Bowl-R1034-Tawny.jpg?v=1672923199" alt="Omar Sosa - Omar - bowl 01 - small by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Omar Sosa - Omar - bowl 01 - small</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/enamel-bowl-eye" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_TOILETPAPER-Bowls-eye-16994-1-1.jpg?v=1728425024" alt="Enamel Bowl Eye by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Enamel Bowl Eye</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-yellow-look-at-me" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2626006-200_01-jpg.jpg?v=1787619946" alt="Bowl yellow Look At Me by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl yellow Look At Me</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/toledo-skal-small-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Toledo_bowl_small_-_webb_1.jpg?v=1779717279" alt="Toledo skål Small by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Toledo skål Small</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/home-lab-dish-amber-13-5cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS387602_1.jpg?v=1762175960" alt="Home Lab Dish Amber 13.5cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Home Lab Dish Amber 13.5cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/edges-cake-stand" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01_ITM06.jpg?v=1701366998" alt="Edges by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Edges</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sonae-bowl-o30-grey-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273002_1.png?v=1772689232" alt="Sonae Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sonae Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/utena-br-bowl-m" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_4dcadf9a-8c88-4eeb-b2e8-5986a67d565a.jpg?v=1747183504" alt="UTENA Bowl（M） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">UTENA Bowl（M）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/sophia-roe-vintage-bowl-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/SOPHIA_LOUISE_COLLECTION35335_57ee3697-50a2-4dca-9ad9-16ec6cc970d7.jpg?v=1783589471" alt="S.R. VINTAGE BOWL DECO BLACK by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">S.R. VINTAGE BOWL DECO BLACK</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/bowl-in-vintage-black-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Bowl-vintage-black-walnut-2-LukeHope.jpg?v=1778042436" alt="Bowl in vintage black walnut by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl in vintage black walnut</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/grotskal-havre" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/grotskal_paradis_2048_2.webp?v=1764232050" alt="Grötskål med linjer by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Grötskål med linjer</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/alev-bowl-01-small-twilight-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/products/Alev_Ebuzziya_Siesbye_-_Alev_-_bowl_01_-_small-Bowl-R1021-twilight_blue.jpg?v=1672922374" alt="Alev Ebüzziya Siesbye - Alev - bowl 01 - small by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alev Ebüzziya Siesbye - Alev - bowl 01 - small</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/enamel-bowl-horse" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_TOILETPAPER-Bowls-Horse-16990-1.jpg?v=1728425014" alt="Enamel Bowl Horse by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Enamel Bowl Horse</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/serving-bowl-02-white-blue-line-up" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026404-026_01-jpg.jpg?v=1786453468" alt="Serving bowl 02 white by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serving bowl 02 white</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/toledo-salladsskal-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Toledo_salad_bowl_medium_-_webb_1.jpg?v=1779717294" alt="Toledo salladsskål by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Toledo salladsskål</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/home-lab-dish-clear-13-5cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS387601_1.jpg?v=1762175840" alt="Home Lab Dish Clear 13.5cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Home Lab Dish Clear 13.5cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/opus-centrepiece-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/GV32-05.jpg?v=1762878558" alt="Opus by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Opus</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/fountain-pedestal-bowl-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272746_1.png?v=1772688684" alt="Fountain Pedestal Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fountain Pedestal Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/utena-br-bowl-s" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_1f442dc8-f8ea-4bf6-85a6-d260ff6e3bbf.jpg?v=1747183145" alt="UTENA Bowl（S） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">UTENA Bowl（S）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/sophia-roe-small-shallow-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/260515_SOPHIAROE_15_0648.jpg?v=1783589890" alt="S.R. SMALL SHALLOW BOWL by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">S.R. SMALL SHALLOW BOWL</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/mini-bowl-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Mini-bowl-walnut-1-LukeHope.jpg?v=1778040332" alt="Mini bowl in walnut by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mini bowl in walnut</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/mjolkkanna-plus-miniskal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/kanna_plus_skal_paradisverkstaden_3.png?v=1760617805" alt="Mjölkkanna plus miniskål by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mjölkkanna plus miniskål</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/alev-bowl-01-large-twilight-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/products/Alev_Ebuzziya_Siesbye_-_Alev_-_bowl_01_-_large-Bowl-R1022-twilight_blue.jpg?v=1672922394" alt="Alev Ebüzziya Siesbye - Alev - bowl 01 - large by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alev Ebüzziya Siesbye - Alev - bowl 01 - large</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/enamel-bowl-toad" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_TOILETPAPER-Bowls-frog-16995-1.jpg?v=1728425034" alt="Enamel Bowl Toad by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Enamel Bowl Toad</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/serving-bowl-01-white-blue-line-up" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026402-026_01-jpg.jpg?v=1786453462" alt="Serving bowl 01 white by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serving bowl 01 white</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/rivoli-serveringsskal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/rivoli-serving-bowl.jpg?v=1779716957" alt="Rivoli serveringsskål by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rivoli serveringsskål</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/home-lab-small-dish-clear-10cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS387604_3.jpg?v=1762175375" alt="Home Lab Small Dish Clear 10cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Home Lab Small Dish Clear 10cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/compressioni-centrepiece" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/ITM16.jpg?v=1701366943" alt="Compressioni by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Compressioni</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sol-salad-bowl-sugar-kelp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/186038_1104270710_1.png?v=1762178845" alt="Sol Salad Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sol Salad Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/aeka-footedflatbowl-l" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_74aa11fd-5197-41ca-a751-57c6ace72d1a.jpg?v=1728000505" alt="AEKA Object Footed Flat Bowl（L） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AEKA Object Footed Flat Bowl（L）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/sophia-roe-large-shallow-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/SOPHIA_LOUISE_COLLECTION35389_a363069c-f4e5-4dca-9031-9787c60924b7.jpg?v=1783589471" alt="S.R. LARGE SHALLOW BOWL by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">S.R. LARGE SHALLOW BOWL</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/nesting-bowls-in-walnut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Nesting-bowls-walnut-1-LukeHope.jpg?v=1790483586" alt="Nesting bowls in walnut by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nesting bowls in walnut</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/raku-skal-mini-pa-fot" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/raku_paradis_9_d453285a-a43b-41f5-9329-00feabb2bf75.png?v=1760016623" alt="Raku skål mini på fot by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Raku skål mini på fot</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hybrid-sugar-bowl-maurilia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_HYBRID-Art-de-la-Table-Maurilia-09748-3.jpg?v=1728425526" alt="Hybrid Sugar Bowl Maurilia by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hybrid Sugar Bowl Maurilia</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/salad-bowl-shanti-white-perfect-imperfection" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9711108_01-jpg.jpg?v=1752552716" alt="Salad Bowl Shanti white Perfect Imperfection by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Salad Bowl Shanti white Perfect Imperfection</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/rivoli-skal-small-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/rivoli-small-bowl-1.jpg?v=1779716240" alt="Rivoli skål small by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rivoli skål small</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/home-lab-small-dish-blue-10cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS387606_1.jpg?v=1762175234" alt="Home Lab Small Dish Blue 10cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Home Lab Small Dish Blue 10cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/blow-up-citrus-basket" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01_FC03_ccb06a53-fd79-49a5-aff6-cfaa84b8f59a.jpg?v=1599876693" alt="Blow up by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Blow up</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sekki-bowl-medium-cream" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/403507_100586209_1.png?v=1762184086" alt="Sekki Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sekki Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/aeka-footedflatbowl-s" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_c40d6494-19fc-441b-a94e-afbf4971c68a.jpg?v=1728001448" alt="AEKA Object Footed Flat Bowl（S） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AEKA Object Footed Flat Bowl（S）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/sophia-roe-bowl-with-handle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/SOPHIA_LOUISE_COLLECTION35144_ed407648-2df7-4e93-974f-56c074dc558b.jpg?v=1783589456" alt="S.R. BOWL WITH HANDLE by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">S.R. BOWL WITH HANDLE</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/walnut-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Walnut-bowl-2-lukehope_1.jpg?v=1777370378" alt="Walnut bowl by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Walnut bowl</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/raku-skal-mini-mix" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/raku_paradis_23_e9dc7ca5-e90d-4fa1-b137-d4440863e365.png?v=1760016254" alt="Raku skål mini by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Raku skål mini</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hybrid-bowl-bauci" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_HYBRID-069-copy.jpg?v=1728425627" alt="Hybrid Bowl Bauci by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hybrid Bowl Bauci</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-sjanti-s-white-perfect-imperfection" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9709019_01-jpg.jpg?v=1764732198" alt="Bowl Sjanti S white Perfect Imperfection by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl Sjanti S white Perfect Imperfection</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/rivoli-skal-mini-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Rivoli_bowl_mini_-_webb.jpg?v=1779716179" alt="Rivoli skål Mini by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rivoli skål Mini</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/home-lab-small-dish-amber-10cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS387605_1.jpg?v=1762861495" alt="Home Lab Small Dish Amber 10cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Home Lab Small Dish Amber 10cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/la-bella-tavola-and-my-beautiful-china-soup-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_ES22-2.jpg?v=1772035691" alt="La Bella Tavola and My Beautiful China by Alessi" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">La Bella Tavola and My Beautiful China</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/scape-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/853745_4238_1.png?v=1762182595" alt="Scape Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scape Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/matevari-zelkova_largebowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_bd52b825-0379-4331-8799-d72b1bf2d9a2.jpg?v=1728003027" alt="MATEVARI 欅 by GATOMIKIO" loading="lazy"><span class="variant-badge">5 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MATEVARI 欅</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/evolution-presentation-bowl-in-sycamore" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Evolution-presentation-bowl-sycamore-1-LukeHope.jpg?v=1790488239" alt="Evolution presentation bowl in sycamore by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Evolution presentation bowl in sycamore</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/frukostskal-oland-set-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/skalar_3_paradisverkstaden_2048_2048.jpg?v=1776686341" alt="Frukostskål Öland set 3 sommar by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Frukostskål Öland set 3 sommar</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hybrid-salad-bowl-ersilia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_HYBRID-Art-de-la-Table-Ersilia-09769-1.jpg?v=1728425618" alt="Hybrid Salad Bowl Ersilia by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hybrid Salad Bowl Ersilia</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-hachi-boru-white-perfect-imperfection" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9709017_01-jpg.jpg?v=1764732200" alt="Bowl Hachi-boru white Perfect Imperfection by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl Hachi-boru white Perfect Imperfection</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/rivoli-salladsskal-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/rivoli-salad-bowl-medium.jpg?v=1779716262" alt="Rivoli salladsskål by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rivoli salladsskål</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/fade-serve-bowl-milk-19cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS348853_1.jpg?v=1758880660" alt="Fade Serve Bowl Milk 19cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fade Serve Bowl Milk 19cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/la-bella-tavola-soup-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_ES21-2.jpg?v=1772035623" alt="La Bella Tavola by Alessi" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">La Bella Tavola</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/alza-bowl-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/824208_4242_10.png?v=1762182669" alt="Alza Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alza Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/sakura-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_c17367e1-0cb2-447f-bca9-a934aebd59db.jpg?v=1728003517" alt="SAKURA  椀 by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SAKURA  椀</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/squared-bowl-in-sycamore" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Squared-bowl-sycamore-2-LukeHope.jpg?v=1777435532" alt="Squared bowl in sycamore by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Squared bowl in sycamore</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/skal-stor-havre-creme" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/skal_stor_Oland_paradisverkstaden_2048_2048.jpg?v=1781013969" alt="Skål stor 20cm havre/creme by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Skål stor 20cm havre/creme</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hybrid-salad-bowl-zaira" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_HYBRID-Art-de-la-Table-Zaira-09761-1.jpg?v=1728425608" alt="Hybrid Salad Bowl Zaira by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hybrid Salad Bowl Zaira</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-kohachi-white-perfect-imperfection" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9709016_01-jpg.jpg?v=1764732197" alt="Bowl Kohachi white Perfect Imperfection by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl Kohachi white Perfect Imperfection</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/granada-skal-small-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Granada_bowl_small_-_webb_1.jpg?v=1779714977" alt="Granada skål Small by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Granada skål Small</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/fade-small-dish-milk-9cm-set-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS348857_1_full_bleed.jpg?v=1758880556" alt="Fade Small Dish Milk 9cm (Set of 2) by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fade Small Dish Milk 9cm (Set of 2)</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/ku-salad-serving-bowl-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/TI05_38_01_2.jpg?v=1734539968" alt="KU by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">KU</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/flow-bowl-off-white-speckle-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/92732_1104264626_1.png?v=1762182267" alt="Flow Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flow Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/karmi-seat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_124e94dc-7c20-4f24-9aa7-79d6913415c8.jpg?v=1728002244" alt="KARMI 座 by GATOMIKIO" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">KARMI 座</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/oval-palm-bowl-in-sycamore" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/luke-hope-design-oval-palm-bowl-in-sycamore-3.jpg?v=1790490085" alt="Pair of oval palm bowls set in sycamore by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pair of oval palm bowls set in sycamore</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/skal-stor-fin-rand-brun" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/GP0328787_f96a9c7b-cb49-4bac-bd80-55192bf0848b.png?v=1740553508" alt="Skål stor 20cm fin rand/brun by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Skål stor 20cm fin rand/brun</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hybrid-bowl-eutropia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_HYBRID-072-copy.jpg?v=1728425645" alt="Hybrid Bowl Eutropia by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hybrid Bowl Eutropia</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-marcel-l-black-les-objets-mouleversants" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9224402-900_01-jpg.jpg?v=1752552588" alt="Bowl Marcel L Les Objets Mouleversants by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl Marcel L Les Objets Mouleversants</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/granada-skal-mini-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Granada_bowl_mini_-_webb_1.jpg?v=1779714798" alt="Granada skål Mini by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Granada skål Mini</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/fade-bowl-milk-10cm-set-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS348855_1.jpg?v=1758880491" alt="Fade Bowl Milk 10cm (Set of 2) by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fade Bowl Milk 10cm (Set of 2)</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/mediterraneo-fruit-holder-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_ESI01-GD.png?v=1734517313" alt="Mediterraneo by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mediterraneo</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/oyster-bowl-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/495207_1104264689_1.png?v=1762182416" alt="Oyster Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oyster Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/koton-container_u" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_3ebee807-7bf8-430e-8c60-c0308dfe1951.jpg?v=1728002900" alt="KOTON U Type by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">KOTON U Type</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/medium-bowl-in-sycamore" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Medium-bowl-sycamore-4-LukeHope.jpg?v=1777456418" alt="Medium bowl in sycamore by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Medium bowl in sycamore</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/skal-stor-brun" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/paradis_oland_skaL_stor_brun_2.png?v=1738329474" alt="Skål stor 20cm havre/brun by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Skål stor 20cm havre/brun</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hybrid-bowl-despina" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_HYBRID-076-copy.jpg?v=1728425636" alt="Hybrid Bowl Despina by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hybrid Bowl Despina</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-marcel-m-black-les-objets-mouleversants" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9224401-900_01-jpg.jpg?v=1764734320" alt="Bowl Marcel M Les Objets Mouleversants by Serax" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl Marcel M Les Objets Mouleversants</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/bon-salladskal-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Bon_salad_bowl.jpg?v=1779709717" alt="Bon salladskål by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bon salladskål</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/fade-bowl-milk-13cm-set-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS348854_1.jpg?v=1758877791" alt="Fade Bowl Milk 13cm (Set of 2) by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fade Bowl Milk 13cm (Set of 2)</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/vimini-basket" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_BM21-21.jpg?v=1721835424" alt="Vimini by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vimini</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/omhu-bowl-large-off-whitecharcoal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/731310_1104266247_1.png?v=1762180608" alt="Omhu Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Omhu Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/koton-container_y" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_482ae230-f139-47af-a60e-b3bbe35d7095.jpg?v=1728002930" alt="KOTON Y Type by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">KOTON Y Type</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukehope.com/products/palm-bowl-dark-sycamore" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0959/4434/3891/files/Palm-bowl-dark-sycamore-1-LukeHope.jpg?v=1777526442" alt="Palm bowl in dark sycamore by Luke Hope" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palm bowl in dark sycamore</p></div>
+          <p class="card-brand">Luke Hope</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/frukostskal-havre-creme-x2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/Skal_oland_cream_2_2048.png?v=1734531446" alt="Frukostskål liten by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Frukostskål liten</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hybrid-fruit-bowl-olinda" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_HYBRID-044-copy.jpg?v=1728425662" alt="Hybrid Fruit Bowl Olinda by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hybrid Fruit Bowl Olinda</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-marcel-s-black-les-objets-mouleversants" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9224400-900_01-jpg.jpg?v=1764734318" alt="Bowl Marcel S Les Objets Mouleversants by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl Marcel S Les Objets Mouleversants</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/bon-skal-small-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/bon-bowl-small.jpg?v=1779709640" alt="Bon skål Small by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bon skål Small</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/fade-serve-bowl-cacao-19cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS348965_1.jpg?v=1769512184" alt="Fade Serve Bowl Cacao 19cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fade Serve Bowl Cacao 19cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/wowl-dog-bowl-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/BW13-B-21-01.jpg?v=1711535062" alt="Wowl by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wowl</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/nium-bowl-large-dark-sage" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/373421_1104269042_1.png?v=1762180564" alt="Nium Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nium Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/tasai-bowl_l" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_6cf772a3-e96e-4b1e-bd52-cca2ab5c77ba.jpg?v=1728003926" alt="TASAI ボウル（L） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TASAI ボウル（L）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/raku-skal-med-lock" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/raku_paradis_8.png?v=1760007018" alt="Raku skål med lock by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Raku skål med lock</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hybrid-fruit-bowl-irene" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_HYBRID-045-copy.jpg?v=1728425654" alt="Hybrid Fruit Bowl Irene by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hybrid Fruit Bowl Irene</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/serving-bowl-oval-l-magical-blossom-white-black-unity" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9224226-008_01_310326-jpg.jpg?v=1775091850" alt="Serving bowl oval L magical blossom white by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serving bowl oval L magical blossom white</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/bon-skal-mini-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/bon-bowl-mini.jpg?v=1779709581" alt="Bon skål mini by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bon skål mini</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/fade-small-dish-cacao-9cm-set-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS348969_1.jpg?v=1758881952" alt="Fade Small Dish Cacao 9cm (Set of 2) by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fade Small Dish Cacao 9cm (Set of 2)</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/human-collection-salad-set" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01-1_BMGS02.jpg?v=1637257752" alt="Human collection by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Human collection</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/fountain-bowl-small-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/270209_1104269013_1.png?v=1762180531" alt="Fountain Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fountain Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/tasai-bowl_m" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_2503f8f2-1443-446f-9df6-375d17e16ca1.jpg?v=1728003939" alt="TASAI ボウル（M） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TASAI ボウル（M）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/salladsskal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/Paradis_morgon_servis_2048_d7dc2691-f004-4ed4-a406-b48e440ec6bf.png?v=1744806468" alt="Salladsskål by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Salladsskål</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/hybrid-fruit-bowl-cloe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_HYBRID-039-copy.jpg?v=1728425671" alt="Hybrid Fruit Bowl Cloe by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hybrid Fruit Bowl Cloe</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/serving-bowl-oval-s-magical-blossom-white-black-unity" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9224225-008_01_310326-jpg.jpg?v=1775091848" alt="Serving bowl oval S magical blossom white by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serving bowl oval S magical blossom white</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/granada-salladsskal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Granada_salad_bowl_-_webb_1.jpg?v=1768466479" alt="Granada salladsskål by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Granada salladsskål</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/fade-bowl-cacao-10cm-set-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS348967_1.jpg?v=1759324140" alt="Fade Bowl Cacao 10cm (Set of 2) by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fade Bowl Cacao 10cm (Set of 2)</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/a404-sugar-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01-1_A404.jpg?v=1599879069" alt="A404 by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">A404</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/tumbled-bowl-stainless-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/903952_1104268741_1.png?v=1762180361" alt="Tumbled Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tumbled Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/tasai-bowl_s" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_f9ea713c-378f-4576-a251-98c3447d102d.jpg?v=1728003951" alt="TASAI ボウル（S） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TASAI ボウル（S）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/morgon-gra-liten-skal-h-6-6cm-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/products/paradisverkstaden_morgongra_skal_liten_cream.png?v=1740742173" alt="Skål liten by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Skål liten</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/estetico-quotidiano-the-large-salad-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-ArtdelaTable-EsteticoQuotidiano-10583-1.jpg?v=1728425698" alt="Estetico Quotidiano The Large Salad Bowl by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Estetico Quotidiano The Large Salad Bowl</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-low-m-enchanted-garden-white-black-unity" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9224222-008_01_310326-jpg.jpg?v=1775091845" alt="Bowl low M enchanted garden white by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl low M enchanted garden white</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/elba-skal-globe" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Elba_bowl_globe_green_-_webb_1.jpg?v=1768816652" alt="Elba skål Globe by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elba skål Globe</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/fade-bowl-cacao-13cm-set-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS348966_1.jpg?v=1758881585" alt="Fade Bowl Cacao 13cm (Set of 2) by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fade Bowl Cacao 13cm (Set of 2)</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/girotondo-fruit-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01_KK05.jpg?v=1652871048" alt="Girotondo by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Girotondo</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/ryu-bowl-28-sand-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/989847_1104268408_3.png?v=1762180386" alt="Ryu Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ryu Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/waqwa-bowl_ll" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_7931e185-51d0-406b-8a50-89aadf6bd1b4.jpg?v=1728005427" alt="WAQWA BOWL（LL） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">WAQWA BOWL（LL）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/lantliv-skal-mini-gra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/paradis_lantliv_skal_mini.png?v=1744807664" alt="Skål med pip mini by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Skål med pip mini</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/estetico-quotidiano-the-soup-bowl-set-of-6" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-ArtdelaTable-EsteticoQuotidiano-10636-1.jpg?v=1728425752" alt="Estetico Quotidiano The Soup Bowl Set of 6 by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Estetico Quotidiano The Soup Bowl Set of 6</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-low-s-enchanted-garden-white-black-unity" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9224221-008_01_310326-jpg.jpg?v=1775091840" alt="Bowl low S enchanted garden white by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl low S enchanted garden white</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/elba-skal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Elba_bowl_XS_sand_beige_-_webb_1_dd83dae5-038e-48c0-92df-e17827767db5.jpg?v=1768816785" alt="Elba skål by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elba skål</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/fade-serve-bowl-oatmeal-19cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS348953_1.jpg?v=1758883564" alt="Fade Serve Bowl Oatmeal 19cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fade Serve Bowl Oatmeal 19cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/ac04-fruit-bowl-colander" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/01_AC04_899a776d-9bfe-4d7f-9002-9ff59d11f76d.jpg?v=1599877007" alt="AC04 by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AC04</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/serena-bowl-o18-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/741997_1104268099_1.png?v=1762180800" alt="Serena Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serena Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/waqwa-bowl_l" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_653ee525-c4eb-42f0-9836-5e78647fa220.jpg?v=1728005440" alt="WAQWA BOWL（L） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">WAQWA BOWL（L）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/lantliv-frukostskal-havre" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/Paradisverkstaden_lantliv_havre.png?v=1744796095" alt="Frukostskål by Paradisverkstaden" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Frukostskål</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/estetico-quotidiano-the-fruit-dessert-bowl-set-of-6" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-ArtdelaTable-EsteticoQuotidiano-10637-2.jpg?v=1728425770" alt="Estetico Quotidiano The Fruit &amp; Dessert Bowl Set of 6 by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Estetico Quotidiano The Fruit &amp; Dessert Bowl Set of 6</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-low-l-enchanted-garden-white-black-unity" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9224220-008_01_310326-jpg.jpg?v=1775091837" alt="Bowl low L enchanted garden white by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl low L enchanted garden white</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/fenix-skal-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Fenix_bowl_small_webb.jpg?v=1764669941" alt="Fenix skål small by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fenix skål small</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/fade-small-dish-oatmeal-9cm-set-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS348957_1.jpg?v=1758883305" alt="Fade Small Dish Oatmeal 9cm (Set of 2) by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fade Small Dish Oatmeal 9cm (Set of 2)</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/santany-bowl-o95-aluminium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/312742_1104270696_1.png?v=1762178719" alt="Santany Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Santany Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/waqwa-bowl_m" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_61dda1d5-b6f6-4186-b72a-bf21a80d67d8.jpg?v=1728005454" alt="WAQWA BOWL（M） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">WAQWA BOWL（M）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/karl-2-pip-mellan" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/products/Lantliv_Karl_2pip_Mellan_Miljo.jpg?v=1767772578" alt="Skål med pip mellan by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Skål med pip mellan</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/estetico-quotidiano-the-small-salad-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-ArtdelaTable-EsteticoQuotidiano-10638-2.jpg?v=1728425780" alt="Estetico Quotidiano The Small Salad Bowl by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Estetico Quotidiano The Small Salad Bowl</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bowl-low-xs-butterfly-ballet-white-black-unity" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9224215-008_01_310326-jpg.jpg?v=1775091835" alt="Bowl low XS butterfly ballet white by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl low XS butterfly ballet white</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/fenix-serveringsskal-medium-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Fenix_serving_bowl_medium_webb.jpg?v=1764668601" alt="Fenix serveringsskål medium by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fenix serveringsskål medium</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/fade-bowl-oatmeal-10cm-set-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS348955_1.jpg?v=1758883225" alt="Fade Bowl Oatmeal 10cm (Set of 2) by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fade Bowl Oatmeal 10cm (Set of 2)</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/erena-bowl-o24-cream" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/120012_1104270738_1.png?v=1762178900" alt="Erena Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Erena Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/waqwa-bowl_s" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_773d96f8-78a8-478a-adbf-90793af60bb7.jpg?v=1728005466" alt="WAQWA BOWL（S） by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">WAQWA BOWL（S）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/lowkey-sockerskal-natur-d-7-8" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/products/Lowkey_Sockerskal_Natur.png?v=1629296052" alt="Sockerskål by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sockerskål</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/estetico-quotidiano-ice-cream-set-of-6-bowls" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-ArtdelaTable-EsteticoQuotidiano-10642-3.jpg?v=1728425870" alt="Estetico Quotidiano Ice Cream set of 6 Bowls by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Estetico Quotidiano Ice Cream set of 6 Bowls</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sugar-bowl-blossom-milk-midnight-flowers" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9223140-403_01-jpg.jpg?v=1764733184" alt="Sugar bowl Blossom milk Midnight Flowers by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sugar bowl Blossom milk Midnight Flowers</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/fenix-serveringsskal-mini" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Fenix_serving_bowl_mini_webb.jpg?v=1764602191" alt="Fenix serveringsskål mini by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fenix serveringsskål mini</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/fade-bowl-oatmeal-13cm-set-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS348954_1.jpg?v=1758882630" alt="Fade Bowl Oatmeal 13cm (Set of 2) by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fade Bowl Oatmeal 13cm (Set of 2)</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dedali-bowl-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/213399_1104270712_1.png?v=1762178737" alt="Dedali Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dedali Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/sinafu-footeddish_70-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_d59718db-654d-4ecd-8eac-b6bc6afcfbb1.jpg?v=1728003631" alt="SINAFU 7.0 高台盛器（羽反） by GATOMIKIO" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SINAFU 7.0 高台盛器（羽反）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/lowkey-skal-liten-natur-d-12-5cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/products/Lowkey_Skal_Natur.png?v=1629295932" alt="Skål liten 12 cm by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Skål liten 12 cm</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/cosmic-diner-lunar-salad-bowl" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Dieselliving-Lunar-Salad-CosmicDiner-10876.jpg?v=1728426322" alt="Cosmic Diner Lunar Salad bowl by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cosmic Diner Lunar Salad bowl</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/sugar-bowl-anemone-milk-midnight-flowers" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B9223140-307_01-jpg.jpg?v=1764733176" alt="Sugar bowl Anemone milk Midnight Flowers by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sugar bowl Anemone milk Midnight Flowers</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/fenix-serveringsskal-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Fenix_serving_bowl_large_webb.jpg?v=1764602742" alt="Fenix serveringsskål Large by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fenix serveringsskål Large</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/istria-oak-snack-bowl-15-x-7cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS343280_1.jpg?v=1747844824" alt="Istria Snack Bowl Oak 15 x 7cm by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Istria Snack Bowl Oak 15 x 7cm</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/erena-serving-bowl-o32-cream" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/235725_1104270740_1.png?v=1762178987" alt="Erena Serving Bowl by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Erena Serving Bowl</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/sinafu-footeddish_60-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_12e591e2-376a-4791-a354-f02202408b2e.jpg?v=1728003608" alt="SINAFU 6.0 高台盛器（羽反） by GATOMIKIO" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SINAFU 6.0 高台盛器（羽反）</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/skymning-till-mork-skal-med-lock-liten-h-8-5cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/products/Mork_Skal_lock_Liten.png?v=1632489895" alt="Skål med lock liten by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Skål med lock liten</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a></div>
+  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/browse/bowls-2.html">2</a><a href="/browse/bowls-3.html">3</a><a href="/browse/bowls-2.html" rel="next">Next &rarr;</a></nav>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/browse/">Browse</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

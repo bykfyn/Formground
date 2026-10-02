@@ -2703,6 +2703,8 @@ def _infer_category_from_english_keywords(product_name):
         # _category_matches. Irregular plurals (box -> boxes, not
         # "boxs") get their own explicit keyword entry instead of a
         # more complex pluralizer.
+        if phrase in ("throw", "blanket") and ("cushion" in text or "pillow" in text):
+            continue  # "Throw Cushion" is a cushion, not a throw blanket
         if re.search(rf"\b{re.escape(phrase)}s?\b", text):
             if phrase == "glass" and not _is_drinking_glass_name(text):
                 # "glass" is a material far more often than a type ("Glass
@@ -3131,6 +3133,8 @@ def _fix_glass_material_tag(product_name, category):
     drinking glass is the material word mis-read as a type (Sekt's and
     HAY's glass pendants, In Common With's Murano fixtures, Seletti's
     "Glass Candle"): retype from the name when it says something else."""
+    if (category or "").strip().lower() == "blanket" and re.search(r"cushion|pillow", product_name, re.I):
+        return "Cushion"
     if (category or "").strip().lower() != "glass":
         return category
     lower = product_name.lower()
