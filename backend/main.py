@@ -32,7 +32,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from analytics import log_event
 from query_engine import (
-    BRAND_COUNTRIES, BRAND_TIERS, discover, search, search_full, search_more, shape_agent_product,
+    BRAND_COUNTRIES, BRAND_TIERS, brand_status, discover, search, search_full, search_more, shape_agent_product,
 )
 
 AGENT_PRODUCT_SCHEMA = {
@@ -127,6 +127,7 @@ def _brand_dims(brand):
     return {
         "brand_tier": BRAND_TIERS.get(brand, "independent"),
         "brand_country": BRAND_COUNTRIES.get(brand),
+        "brand_status": brand_status(brand),
     }
 
 

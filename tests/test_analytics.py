@@ -71,6 +71,16 @@ class PageClassificationTests(unittest.TestCase):
         self.assertEqual(main._brand_dims("A Brand That Does Not Exist")["brand_tier"], "independent")
         self.assertEqual(main._brand_dims(None), {})
 
+    def test_brand_status_defaults_to_scraped_and_is_stamped(self):
+        self.assertEqual(main._brand_dims("Serax")["brand_status"], "scraped")
+        import query_engine
+        query_engine.BRAND_STATUS["Serax"] = "approved"
+        try:
+            self.assertEqual(main._brand_dims("Serax")["brand_status"], "approved")
+            self.assertEqual(main._brand_dims("Cozmo")["brand_status"], "scraped")
+        finally:
+            query_engine.BRAND_STATUS.pop("Serax", None)
+
 
 @unittest.skipUnless(HAVE_DEPS, "backend web dependencies not installed")
 class EventEndpointTests(unittest.TestCase):

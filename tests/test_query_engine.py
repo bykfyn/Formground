@@ -627,5 +627,28 @@ class AgentProductShapeTests(unittest.TestCase):
         self.assertTrue(set(qe.BRAND_PRICING.values()) <= {"on_request", "dealer_priced"})
 
 
+class BrandStatusTests(unittest.TestCase):
+    """Sheerd listing state: "scraped" (default) or "approved" - only the
+    exact value "approved" promotes; nothing is approved yet."""
+
+    def test_default_is_scraped(self):
+        self.assertEqual(qe.brand_status("A Brand With No Status"), "scraped")
+
+    def test_values_in_brands_json_are_valid_and_nothing_is_approved_yet(self):
+        import json
+        brands = json.loads(qe.BRANDS_PATH.read_text())
+        for b in brands:
+            if "status" in b:
+                self.assertIn(b["status"], qe.BRAND_STATUS_VALUES, b["name"])
+        self.assertEqual(qe.BRAND_STATUS, {})  # update when the first brand is approved
+
+    def test_agent_payload_does_not_expose_status_yet(self):
+        out = qe.shape_agent_product({
+            "product_name": "P", "brand": "B", "brand_url": "u", "product_url": "u", "category": "",
+            "link_dead": 0, "price": None, "currency": None,
+        })
+        self.assertNotIn("status", out)
+
+
 if __name__ == "__main__":
     unittest.main()

@@ -93,6 +93,7 @@ SCHEMA = [
     bigquery.SchemaField("target_type", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("brand_tier", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("brand_country", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("brand_status", "STRING", mode="NULLABLE"),  # scraped / approved, added 2026-10-02
 ]
 
 _SCHEMA_TYPES = {f.name: f.field_type for f in SCHEMA}

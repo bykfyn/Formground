@@ -206,6 +206,39 @@ def _load_brand_pricing() -> dict:
 BRAND_PRICING = _load_brand_pricing()
 
 
+# A maker's listing state in the Sheerd repository model (2026-10-02 strategy
+# session): "scraped" - collected from the maker's public site, the state of
+# every brand today - or "approved" - the maker's listing has been verified
+# and approved (free self-serve approval via a back-office diagnostic, paid
+# tiers above it, later). "Shown on Formground" is a separate, third state
+# that already exists as the `hidden` flag above (a brand is shown unless
+# hidden), so it is not duplicated here. Stored as the optional "status"
+# field in brands.json; absence means "scraped". Built ahead of use: nothing
+# sets "approved" yet, it is stamped on analytics events so the history
+# accumulates, and it is deliberately NOT in the public /agent/search payload
+# or docs until the approval mechanism is real.
+BRAND_STATUS_VALUES = ("scraped", "approved")
+
+
+def _load_brand_status() -> dict:
+    """Brand -> "approved", for the (currently empty) set of approved
+    brands. Anything else, including a typo, stays "scraped": a value is
+    only ever promoted by writing exactly "approved"."""
+    try:
+        brands = json.loads(BRANDS_PATH.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+    return {b["name"]: "approved" for b in brands if b.get("status") == "approved"}
+
+
+BRAND_STATUS = _load_brand_status()
+
+
+def brand_status(brand: str) -> str:
+    """"approved" or "scraped" - see BRAND_STATUS_VALUES."""
+    return BRAND_STATUS.get(brand, "scraped")
+
+
 def price_status(product: dict) -> str:
     """"listed" (price AND currency stored), "on_request", "dealer_priced",
     or "unknown". A product-level price always wins over a brand-level
