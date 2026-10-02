@@ -2942,6 +2942,122 @@ def _infer_category_from_dutch_keywords(product_name):
     return None
 
 
+# Foreign-language object-type words (Swedish/Danish/Norwegian, Spanish,
+# Italian, German, French) mapped to the English type tags the search and
+# /browse/ pages match on. Measured 2026-10-02: ~1,450 products carried a
+# category tag or name in one of these languages and so matched no English
+# type term. Stems of 4+ letters match as a word suffix (Swedish/German
+# compounds: "matbord", "Beistelltisch"); anything in
+# FOREIGN_EXACT_ONLY_STEMS must be the whole word, because as a suffix it
+# collides with English or with other meanings (German "bank" is also
+# "workbench"/"sound bank", "regal" is an English adjective).
+FOREIGN_EXACT_ONLY_STEMS = {"bank", "regal", "decke", "fat", "vas", "pall", "filt", "sofa", "letto", "skap", "mesa"}
+FOREIGN_TYPE_WORDS = (
+    # multi-word phrases first (checked as substrings)
+    ("lámpara de sobremesa", "Table Lamp"), ("lámpara de pie", "Floor Lamp"),
+    ("mesas auxiliares", "Side Table"), ("mesa auxiliar", "Side Table"),
+    ("mesa de centro", "Coffee Table"), ("table basse", "Coffee Table"),
+    ("mesa de luz", "Bedside Table"),
+    ("applique murale", "Wall Lamp"), ("lampe à poser", "Table Lamp"),
+    # Swedish / Danish / Norwegian
+    ("bordslampa", "Table Lamp"), ("bordlampe", "Table Lamp"), ("golvlampa", "Floor Lamp"),
+    ("gulvlampe", "Floor Lamp"), ("taklampa", "Ceiling Lamp"), ("loftlampe", "Ceiling Lamp"),
+    ("vägglampa", "Wall Lamp"), ("væglampe", "Wall Lamp"), ("pendel", "Pendant"),
+    ("lampa", "Lamp"), ("lampe", "Lamp"),
+    ("matbord", "Dining Table"), ("spisebord", "Dining Table"), ("soffbord", "Coffee Table"),
+    ("sofabord", "Coffee Table"), ("sidobord", "Side Table"), ("sängbord", "Bedside Table"),
+    ("skrivbord", "Desk"), ("bord", "Table"),
+    ("fåtölj", "Armchair"), ("lænestol", "Armchair"), ("stol", "Chair"), ("pall", "Stool"),
+    ("taburet", "Stool"), ("bänk", "Bench"), ("bænk", "Bench"), ("soffa", "Sofa"),
+    ("säng", "Bed"), ("seng", "Bed"), ("skänk", "Sideboard"), ("skap", "Cabinet"),
+    ("skåp", "Cabinet"), ("hylla", "Shelving"), ("hylde", "Shelving"), ("speil", "Mirror"),
+    ("spegel", "Mirror"), ("spejl", "Mirror"), ("dörrmatta", "Rug"), ("matta", "Rug"),
+    ("tæppe", "Rug"), ("kuddfodral", "Cushion"), ("kudde", "Cushion"), ("pude", "Cushion"),
+    ("pläd", "Blanket"), ("filt", "Blanket"), ("vas", "Vase"), ("skål", "Bowl"),
+    ("ljusstake", "Candle Holder"), ("lysestage", "Candle Holder"), ("kruka", "Planter"),
+    ("bricka", "Tray"), ("klocka", "Clock"),
+    # Spanish
+    ("sillas", "Chair"), ("silla", "Chair"), ("sillón", "Armchair"), ("butaca", "Armchair"),
+    ("taburete", "Stool"), ("banco", "Bench"), ("mesas", "Table"), ("mesa", "Table"),
+    ("lámpara", "Lamp"), ("aplique", "Wall Lamp"), ("espejo", "Mirror"), ("alfombra", "Rug"),
+    ("cojín", "Cushion"), ("estantería", "Shelving"), ("aparador", "Sideboard"), ("cama", "Bed"),
+    # Italian
+    ("tavolini", "Side Table"), ("tavolino", "Side Table"), ("tavoli", "Table"), ("tavolo", "Table"),
+    ("sedie", "Chair"), ("sedia", "Chair"), ("poltrone", "Armchair"), ("poltrona", "Armchair"),
+    ("divani", "Sofa"), ("divano", "Sofa"), ("credenze", "Sideboard"), ("credenza", "Sideboard"),
+    ("sgabello", "Stool"), ("panca", "Bench"), ("lampada", "Lamp"), ("specchio", "Mirror"),
+    ("tappeto", "Rug"), ("letto", "Bed"), ("libreria", "Shelving"),
+    # German
+    ("kissen", "Cushion"), ("tisch", "Table"), ("stuhl", "Chair"), ("sessel", "Armchair"),
+    ("hocker", "Stool"), ("leuchte", "Lamp"), ("spiegel", "Mirror"), ("teppich", "Rug"),
+    ("bank", "Bench"), ("regal", "Shelving"), ("decke", "Blanket"),
+    # French
+    ("chaise", "Chair"), ("fauteuil", "Armchair"), ("canapé", "Sofa"), ("tabouret", "Stool"),
+    ("miroir", "Mirror"), ("tapis", "Rug"), ("suspension", "Pendant"), ("lampadaire", "Floor Lamp"),
+)
+
+
+def _infer_category_from_foreign_keywords(text):
+    text = (text or "").lower()
+    # Non-seating "bank" (exact-only stem above) in English product names.
+    for junk in ("money bank", "piggy bank", "power bank"):
+        text = text.replace(junk, " ")
+    if "lámpara" in text or "lampara" in text:
+        if " de mesa" in text:
+            return "Table Lamp"
+        if " de pie" in text:
+            return "Floor Lamp"
+    for phrase, category in FOREIGN_TYPE_WORDS:
+        if " " in phrase and phrase in text:
+            return category
+    for word in re.findall(r"[a-zà-ÿ]+", text):
+        for stem, category in FOREIGN_TYPE_WORDS:
+            if " " in stem:
+                continue
+            if word == stem:
+                return category
+            if stem not in FOREIGN_EXACT_ONLY_STEMS and len(stem) >= 4 and word.endswith(stem):
+                return category
+    return None
+
+
+def _backfill_foreign_category(product_name, category):
+    """
+    Universal safety net applied in run()'s save loop: when the category
+    tag carries no English object type, derive one from foreign-language
+    words in the tag, then the name, and PREPEND it ("Chair, Mobiliario,
+    Sillas") so the brand's original tags stay intact for provenance and
+    _category_matches still sees them. Returns the category unchanged
+    when it already has an English type or nothing matches. Idempotent.
+    """
+    category = category or ""
+    if category.strip() and _infer_category_from_english_keywords(category):
+        return category
+    # "banco da lavoro" is an Italian workbench, not a bench to sit on.
+    if "da lavoro" in product_name.lower():
+        return category
+    # An English compound in the name ("Pyramid Table Lamp") is more
+    # specific than a generic foreign tag ("lampa"): bare one-word English
+    # keywords are NOT trusted here ("Kissen 40x60 Mill" is not a mill).
+    english = _infer_category_from_english_keywords(product_name)
+    english_compound = english if english and any(
+        " " in p and p in product_name.lower() and c == english
+        for p, c in ENGLISH_OBJECT_TYPE_KEYWORDS) else None
+    if "lampshade" in category.lower():
+        return category
+    # A single tag ("Matta", "soffbord") is the brand's own type word, so
+    # it outranks the name ("Sphere Sofa Table" is a soffbord, not a
+    # sofa). A multi-tag list ("Bord, PALLAR, ROOTS") is a menu of
+    # categories the product merely sits in, so the name decides.
+    multi_tag = category.count(",") >= 1
+    from_tag = _infer_category_from_foreign_keywords(category) if category.strip() else None
+    from_name = _infer_category_from_foreign_keywords(product_name)
+    found = english_compound or ((from_name or from_tag) if multi_tag else (from_tag or from_name))
+    if not found or found.lower() in {t.strip().lower() for t in category.split(",")}:
+        return category
+    return f"{found}, {category}" if category.strip() else found
+
+
 def _infer_category_from_name(product_name, current_category, brand_name=None):
     # A purely-numeric category is never a real category name for any
     # brand - confirmed live 2026-09-29 on Design House Stockholm, whose
@@ -8751,6 +8867,8 @@ def run(brand_name=None):
                 image_override = MANUAL_IMAGE_OVERRIDES.get((brand["name"], product["product_name"]))
                 if image_override:
                     product["image_url"] = image_override
+                if not override:
+                    product["category"] = _backfill_foreign_category(product["product_name"], product["category"])
                 if _is_out_of_scope_product(product["product_name"], product["category"], brand["name"], sibling_names_lower):
                     continue
                 save_product(conn, product)
