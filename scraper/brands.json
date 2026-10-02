@@ -1353,17 +1353,35 @@
   },
   {
     "name": "Astraeus Clarke",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://www.astraeusclarke.com",
+    "platform": "site_pages",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24 during a Google Ads lighting-category candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (astraeusclarke.com) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), alongside several other independent designer-makers sourced the same way (see Luke Malaney, Anna Dawson, Arvo Ray) - worth building as one shared scraper filtered by vendor."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN site, read page by page with the generic site-pages extractor (config in site_pages). No products feed on this site; robots.txt is respected.",
+    "site_pages": {
+      "sitemap_url": "https://www.astraeusclarke.com/sitemap-0.xml",
+      "include": [
+        "^/(furniture|lighting|objects)/[^/]+/?$"
+      ],
+      "name_strip": "(?<=Silhouette Vase)\\s+.*$|(?<=Staccato Chandelier)\\s+\\d+$|(?<=Parlor Sock)\\s+\\w+$",
+      "default_category_by_path": {
+        "/lighting/": "Light"
+      }
+    }
   },
   {
     "name": "Luke Malaney",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://www.lukemalaney.com",
+    "platform": "site_pages",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24 during a Google Ads lighting-category candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (lukemalaney.com) is portfolio-only; confirmed vendor on shop.sightunseen.com (see Astraeus Clarke note)."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN site, read page by page with the generic site-pages extractor (config in site_pages). No products feed on this site; robots.txt is respected.",
+    "site_pages": {
+      "include": [
+        "^/work/[^/]+$"
+      ],
+      "exclude": [
+        "custom-commission"
+      ]
+    }
   },
   {
     "name": "Llot Llov",
@@ -1375,10 +1393,23 @@
   },
   {
     "name": "Anna Dawson",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://studioannadawson.com",
+    "platform": "site_pages",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24 during a Google Ads lighting-category candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (studioannadawson.com) appears non-transactional; confirmed vendor on shop.sightunseen.com (see Astraeus Clarke note)."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN site, read page by page with the generic site-pages extractor (config in site_pages). No products feed on this site; robots.txt is respected.",
+    "site_pages": {
+      "include": [
+        "^/[a-z0-9-]+$"
+      ],
+      "exclude": [
+        "^/(home|about|contact|press|cart|search|inquire|shop|collection|collections|terms-and-conditions|general-care|faq|trade|spaces|custom-items|publications-exhibitions|studiosale|objects|all-objects|catalog)/?$",
+        "^/(main|main-mobile|footer|footer-mobile|items-1|lighting-products)$",
+        "^/furniture$"
+      ],
+      "price_regex": "\\$\\s?(\\d[\\d,]*)",
+      "price_currency": "USD",
+      "default_category": "Light"
+    }
   },
   {
     "name": "Danny Kaplan Studio",
@@ -1400,8 +1431,9 @@
     "name": "Arvo Ray",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24 during a Google Ads lighting-category candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (arvoraystudio.com) is portfolio-only; confirmed vendor on shop.sightunseen.com (see Astraeus Clarke note)."
+    "scrapable": false,
+    "notes": "Hidden 2026-10-02 (user decision): was sourced from the Sight Unseen retailer shop, which is a sourcing list only; own-site research: own site is an unlabeled photo landing page with no named pieces. Existing data kept; unhide when a usable own site exists.",
+    "hidden": true
   },
   {
     "name": "Farrah Sit",
@@ -1843,241 +1875,354 @@
   },
   {
     "name": "Cultivation Objects",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://cultivationobjects.com",
+    "platform": "woocommerce",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN WooCommerce store (public Store API). Scraped with the generic WooCommerce extractor."
   },
   {
     "name": "Laun",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://www.laun.studio",
+    "platform": "site_pages",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN site, read page by page with the generic site-pages extractor (config in site_pages). No products feed on this site; robots.txt is respected.",
+    "site_pages": {
+      "listing_urls": [
+        "/objects"
+      ],
+      "include": [
+        "^/[a-z0-9-]+$"
+      ],
+      "exclude": [
+        "^/(home|about|contact|press|cart|search|inquire|shop|collection|collections|terms-and-conditions|general-care|faq|trade|spaces|custom-items|publications-exhibitions|studiosale|objects|all-objects|catalog)/?$",
+        "^/assets"
+      ]
+    }
   },
   {
     "name": "Orlando Pippig",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://orlandopippig.com",
+    "platform": "site_pages",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN site, read page by page with the generic site-pages extractor (config in site_pages). No products feed on this site; robots.txt is respected.",
+    "site_pages": {
+      "listing_urls": [
+        "/collection"
+      ],
+      "include": [
+        "^/[a-z0-9_-]+$"
+      ],
+      "exclude": [
+        "^/(home|about|contact|press|cart|search|inquire|shop|collection|collections|terms-and-conditions|general-care|faq|trade|spaces|custom-items|publications-exhibitions|studiosale|objects|all-objects|catalog)/?$",
+        "^/(closet)$",
+        "^/s/"
+      ],
+      "type_hints": {
+        "/tl-01": "Table Lamp",
+        "/al-01": "Shelving",
+        "/al-02": "Console Table",
+        "/al-03": "Coffee Table"
+      }
+    }
   },
   {
     "name": "Studio Vraco",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://studiovraco.com",
+    "platform": "woocommerce",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN WooCommerce store (public Store API). Scraped with the generic WooCommerce extractor."
   },
   {
     "name": "Known Work",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://knownworkstudio.com",
+    "platform": "woocommerce",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN WooCommerce store (public Store API). Scraped with the generic WooCommerce extractor."
   },
   {
     "name": "Ceramics Furniture Plants",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Scraping of the Sight Unseen retailer shop stopped 2026-10-02 (user decision: it is a sourcing list only). Own-site research found a portfolio-style or hard-to-read own site, so no own-site extractor was built; existing data stays visible but frozen. Replace with an own-site extractor or hide."
   },
   {
     "name": "Objects & Ideas",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Scraping of the Sight Unseen retailer shop stopped 2026-10-02 (user decision: it is a sourcing list only). Own-site research found a portfolio-style or hard-to-read own site, so no own-site extractor was built; existing data stays visible but frozen. Replace with an own-site extractor or hide."
   },
   {
     "name": "Sunfish",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Scraping of the Sight Unseen retailer shop stopped 2026-10-02 (user decision: it is a sourcing list only). Own-site research found a portfolio-style or hard-to-read own site, so no own-site extractor was built; existing data stays visible but frozen. Replace with an own-site extractor or hide."
   },
   {
     "name": "Michael Felix",
-    "url": "https://shop.sightunseen.com",
+    "url": "https://www.michaelfelix.com",
     "platform": "shopify",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN Shopify store - own-site research found a working /products.json. Scraped with the generic Shopify extractor."
   },
   {
     "name": "Alexis & Ginger",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://alexis-and-ginger.com",
+    "platform": "site_pages",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN site, read page by page with the generic site-pages extractor (config in site_pages). No products feed on this site; robots.txt is respected.",
+    "site_pages": {
+      "listing_urls": [
+        "/all-objects",
+        "/objects-seating",
+        "/objects-tables",
+        "/objects-lighting",
+        "/cabinets",
+        "/objects-mirrors"
+      ],
+      "include": [
+        "^/[a-z0-9-]+$"
+      ],
+      "exclude": [
+        "^/(home|about|contact|press|cart|search|inquire|shop|collection|collections|terms-and-conditions|general-care|faq|trade|spaces|custom-items|publications-exhibitions|studiosale|objects|all-objects|catalog)/?$",
+        "^/(amulet|flora-fauna|sonnet|silhouette-collection|the-ode|petra-x-a-and-g|objects-.*|collections|all-collections)$",
+        "^/cabinets$"
+      ],
+      "price_regex": "\\$\\s?(\\d[\\d,]*)",
+      "price_currency": "USD"
+    }
   },
   {
     "name": "Studio Sam Klemick",
-    "url": "https://shop.sightunseen.com",
+    "url": "https://studiosamklemick.com",
     "platform": "shopify",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN Shopify store - own-site research found a working /products.json. Scraped with the generic Shopify extractor."
   },
   {
     "name": "Nice Condo",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Scraping of the Sight Unseen retailer shop stopped 2026-10-02 (user decision: it is a sourcing list only). Own-site research found a portfolio-style or hard-to-read own site, so no own-site extractor was built; existing data stays visible but frozen. Replace with an own-site extractor or hide."
   },
   {
     "name": "Nazara Lazaro",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Hidden 2026-10-02 (user decision): was sourced from the Sight Unseen retailer shop, which is a sourcing list only; own-site research: own site refuses scripted requests (403). Existing data kept; unhide when a usable own site exists.",
+    "hidden": true
   },
   {
     "name": "Mike Ruiz-Serra",
-    "url": "https://shop.sightunseen.com",
+    "url": "https://mikeruizserra.com",
     "platform": "shopify",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN Shopify store - own-site research found a working /products.json. Scraped with the generic Shopify extractor."
   },
   {
     "name": "YSH Studio",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Hidden 2026-10-02 (user decision): was sourced from the Sight Unseen retailer shop, which is a sourcing list only; own-site research: no live own site found. Existing data kept; unhide when a usable own site exists.",
+    "hidden": true
   },
   {
     "name": "Clay Brown",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Scraping of the Sight Unseen retailer shop stopped 2026-10-02 (user decision: it is a sourcing list only). Own-site research found a portfolio-style or hard-to-read own site, so no own-site extractor was built; existing data stays visible but frozen. Replace with an own-site extractor or hide."
   },
   {
     "name": "Juntos Projects",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://www.juntosprojects.com",
+    "platform": "site_pages",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN site, read page by page with the generic site-pages extractor (config in site_pages). No products feed on this site; robots.txt is respected.",
+    "site_pages": {
+      "listing_urls": [
+        "/collection"
+      ],
+      "include": [
+        "^/[a-z0-9-]+$"
+      ],
+      "exclude": [
+        "^/(home|about|contact|press|cart|search|inquire|shop|collection|collections|terms-and-conditions|general-care|faq|trade|spaces|custom-items|publications-exhibitions|studiosale|objects|all-objects|catalog)/?$"
+      ]
+    }
   },
   {
     "name": "Rest Energy",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Hidden 2026-10-02 (user decision): was sourced from the Sight Unseen retailer shop, which is a sourcing list only; own-site research: own site's robots.txt disallows all crawling. Existing data kept; unhide when a usable own site exists.",
+    "hidden": true
   },
   {
     "name": "LOEHR",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Hidden 2026-10-02 (user decision): was sourced from the Sight Unseen retailer shop, which is a sourcing list only; own-site research: own site is JS-rendered, and LOEHR is a design house (large-brands rule), not a small studio. Existing data kept; unhide when a usable own site exists.",
+    "hidden": true
   },
   {
     "name": "LikeMindedObjects",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://www.likemindedobjects.com",
+    "platform": "site_pages",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN site, read page by page with the generic site-pages extractor (config in site_pages). No products feed on this site; robots.txt is respected.",
+    "site_pages": {
+      "include": [
+        "^/shop/p/"
+      ],
+      "require_type": true,
+      "exclude_names": [
+        "t-shirt",
+        "pants",
+        "bug spray",
+        "\\bbook\\b",
+        "insert",
+        "inventions"
+      ]
+    }
   },
   {
     "name": "Steven Bukowski",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Scraping of the Sight Unseen retailer shop stopped 2026-10-02 (user decision: it is a sourcing list only). Own-site research found a portfolio-style or hard-to-read own site, so no own-site extractor was built; existing data stays visible but frozen. Replace with an own-site extractor or hide."
   },
   {
     "name": "Studio Mignone",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://studiomignone.com",
+    "platform": "site_pages",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN site, read page by page with the generic site-pages extractor (config in site_pages). No products feed on this site; robots.txt is respected.",
+    "site_pages": {
+      "include": [
+        "^/collection/[^/]+$"
+      ],
+      "name_strip": "\\s+(gloss|matte|satin|matt)\\b.*$",
+      "type_hints": {
+        "tavolo": "Table"
+      }
+    }
   },
   {
     "name": "Nicholas Bijan Pourfard",
-    "url": "https://shop.sightunseen.com",
+    "url": "https://nbijan.design",
     "platform": "shopify",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN Shopify store - own-site research found a working /products.json. Scraped with the generic Shopify extractor."
   },
   {
     "name": "Ryan Jones Studio",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Hidden 2026-10-02 (user decision): was sourced from the Sight Unseen retailer shop, which is a sourcing list only; own-site research: no own site found. Existing data kept; unhide when a usable own site exists.",
+    "hidden": true
   },
   {
     "name": "Jesse Groom",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Scraping of the Sight Unseen retailer shop stopped 2026-10-02 (user decision: it is a sourcing list only). Own-site research found a portfolio-style or hard-to-read own site, so no own-site extractor was built; existing data stays visible but frozen. Replace with an own-site extractor or hide."
   },
   {
     "name": "Lland",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://www.rachelshillander.com",
+    "platform": "site_pages",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN site, read page by page with the generic site-pages extractor (config in site_pages). No products feed on this site; robots.txt is respected.",
+    "site_pages": {
+      "include": [
+        "^/catalog/p/"
+      ],
+      "require_type": true,
+      "exclude": [
+        "^/catalog/p/(sale-|studiosale-)"
+      ],
+      "exclude_names": [
+        "knob",
+        "nutz",
+        "^ferrari$"
+      ]
+    }
   },
   {
     "name": "Charles Constantine",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Scraping of the Sight Unseen retailer shop stopped 2026-10-02 (user decision: it is a sourcing list only). Own-site research found a portfolio-style or hard-to-read own site, so no own-site extractor was built; existing data stays visible but frozen. Replace with an own-site extractor or hide."
   },
   {
     "name": "Jackrabbit Studio",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Scraping of the Sight Unseen retailer shop stopped 2026-10-02 (user decision: it is a sourcing list only). Own-site research found a portfolio-style or hard-to-read own site, so no own-site extractor was built; existing data stays visible but frozen. Replace with an own-site extractor or hide."
   },
   {
     "name": "Ian Cochran",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Scraping of the Sight Unseen retailer shop stopped 2026-10-02 (user decision: it is a sourcing list only). Own-site research found a portfolio-style or hard-to-read own site, so no own-site extractor was built; existing data stays visible but frozen. Replace with an own-site extractor or hide."
   },
   {
     "name": "Seer Studio",
-    "url": "https://shop.sightunseen.com",
-    "platform": "shopify",
+    "url": "https://seer-studio.com",
+    "platform": "site_pages",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN site, read page by page with the generic site-pages extractor (config in site_pages). No products feed on this site; robots.txt is respected.",
+    "site_pages": {
+      "include": [
+        "^/furniture/[^/]+$"
+      ],
+      "type_hints": {
+        "dining": "Dining Table"
+      }
+    }
   },
   {
     "name": "David Vu Studio",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Scraping of the Sight Unseen retailer shop stopped 2026-10-02 (user decision: it is a sourcing list only). Own-site research found a portfolio-style or hard-to-read own site, so no own-site extractor was built; existing data stays visible but frozen. Replace with an own-site extractor or hide."
   },
   {
     "name": "Objects for Objects",
-    "url": "https://shop.sightunseen.com",
+    "url": "https://objectsforobjects.com",
     "platform": "shopify",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN Shopify store - own-site research found a working /products.json. Scraped with the generic Shopify extractor."
   },
   {
     "name": "Kouros Maghsoudi",
-    "url": "https://shop.sightunseen.com",
+    "url": "https://www.kourosmaghsoudi.com",
     "platform": "shopify",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "notes": "Moved 2026-10-02 from the Sight Unseen retailer shop (a sourcing list only) to the maker's OWN Shopify store - own-site research found a working /products.json. Scraped with the generic Shopify extractor."
   },
   {
     "name": "Nifemi Ogunro",
     "url": "https://shop.sightunseen.com",
     "platform": "shopify",
-    "scrapable": true,
-    "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Own site (if any) is portfolio-only with no shop; confirmed as a real vendor on the shop.sightunseen.com Shopify storefront (clean /products.json), same shared-store vendor-filter mechanism already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray."
+    "scrapable": false,
+    "notes": "Hidden 2026-10-02 (user decision): was sourced from the Sight Unseen retailer shop, which is a sourcing list only; own-site research: own site has no per-piece pages (JS-rendered portfolio). Existing data kept; unhide when a usable own site exists.",
+    "hidden": true
   },
   {
     "name": "Fredericia",

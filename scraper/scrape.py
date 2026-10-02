@@ -29,6 +29,8 @@ import datetime
 import gzip
 import html
 import json
+from urllib.parse import urlsplit
+import urllib.robotparser
 import re
 import sqlite3
 import time
@@ -3158,6 +3160,13 @@ def _load_brand_currency():
         return {}
 
 
+def _tidy_category(category):
+    """Strip stray trailing separators from a category tag. Studio Sam
+    Klemick's own product_type is literally "Chair/" (2026-10-02), which
+    never matches the "chair" type; harmless for every clean value."""
+    return re.sub(r"[\s/,;|\-]+$", "", category or "")
+
+
 def _backfill_foreign_category(product_name, category):
     """
     Universal safety net applied in run()'s save loop: when the category
@@ -3536,6 +3545,10 @@ OUT_OF_SCOPE_CATEGORIES = {
     # a broader sweep). "Apparel" is a literal, unambiguous category
     # value - no real design object is ever tagged with it.
     "apparel",
+    # Objects for Objects sells a logo sweatshirt and t-shirt through the
+    # same store as its furniture (own-site migration, 2026-10-02) - the
+    # literal category "Clothing" is never a design object.
+    "clothing",
 }
 
 # Unlike OUT_OF_SCOPE_CATEGORIES above, "Upholstery" isn't safe to
@@ -3551,6 +3564,22 @@ OUT_OF_SCOPE_CATEGORIES = {
 # a bare category set.
 OUT_OF_SCOPE_CATEGORIES_BY_BRAND = {
     ("Audo", "upholstery"),
+}
+
+# Name keywords that mark a listing as hardware, audio gear or a cover - not
+# furniture, lighting or an object - for brands whose own store mixes them
+# in (own-site migration from the Sight Unseen shop, 2026-10-02, checked
+# against each store's real listings): cabinet knobs/pulls/handles and a
+# sound system (Mike Ruiz-Serra), a speaker pair and a chair cover (Kouros
+# Maghsoudi), Petra drawer pulls (Known Work), Moki knobs and handles
+# (Cultivation Objects). Same "component or accessory, not a design object"
+# reasoning as the bulb and cover exclusions above. Brand-scoped because a
+# bare "pull"/"handle" is a legitimate word in other brands' product names.
+OUT_OF_SCOPE_NAME_KEYWORDS_BY_BRAND = {
+    "Mike Ruiz-Serra": ("knob", " pull", "handle", "sound system"),
+    "Kouros Maghsoudi": ("speaker", "hairy sock"),
+    "Known Work": ("petra",),
+    "Cultivation Objects": ("moki", " book"),
 }
 
 
@@ -3661,6 +3690,10 @@ def _is_out_of_scope_product(name, category, brand=None, sibling_names_lower=())
     if brand and (brand, category_lower) in OUT_OF_SCOPE_CATEGORIES_BY_BRAND:
         return True
     name_lower = name.strip().lower()
+    if brand in OUT_OF_SCOPE_NAME_KEYWORDS_BY_BRAND and any(
+        kw in f" {name_lower}" for kw in OUT_OF_SCOPE_NAME_KEYWORDS_BY_BRAND[brand]
+    ):
+        return True
     if name_lower == "test product":
         return True
     if "underlay" in name_lower:
@@ -8569,6 +8602,245 @@ def extract_blond(brand):
     return products
 
 
+# ---------------------------------------------------------------------------
+# GENERIC SITE-PAGES EXTRACTOR
+# For small studios whose own site has no products feed (Squarespace, Cargo,
+# static sites): find each piece's page, then read its title, image and price
+# from the page itself. Driven by an optional "site_pages" block on the
+# brand's brands.json entry, so adding a brand is configuration, not code:
+#   sitemap_url   optional, default {url}/sitemap.xml (follows sitemap indexes)
+#   listing_urls  optional list of paths; when given, pieces are the same-site
+#                 links FOUND ON those pages (for flat-slug sites whose
+#                 sitemap mixes pieces with navigation)
+#   include       list of regexes a piece's URL PATH must match (any)
+#   exclude       list of regexes that remove a path (navigation, press...)
+#   exclude_names list of regexes removing a piece by display name
+#   name_strip    regex stripped from names, collapsing colourway pages
+#   price_regex   optional regex (ONE price group) read from the visible text
+#                 when the page has no schema.org Offer; with price_currency
+#   type_hints    {word: category} checked FIRST against name+path, for sites
+#                 whose names carry a type the keyword map misses ("... Dining")
+#   default_category / default_category_by_path  type for pieces the name and
+#                 type_hints could not classify (a lighting-only studio; a
+#                 "/lighting/" section)
+#   require_type  drop pieces whose name gives no recognizable object type
+#                 (for mixed stores that also sell T-shirts, books, kits)
+# Respects robots.txt (a disallowed page is never fetched; a site that
+# disallows everything yields nothing), one request at a time, 0.6s apart.
+# Never uses ?format=json (Squarespace disallows it in robots.txt). Prices:
+# schema.org Offer only, and only when > 0 - "Starting at"/"From" figures and
+# inquiry pages are left unpriced rather than guessed.
+# ---------------------------------------------------------------------------
+SITE_PAGES_DELAY = 0.6
+SITE_PAGES_MAX_PAGES = 150
+_ASSET_SUFFIXES = (".css", ".js", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".pdf", ".xml", ".ico", ".json", ".webmanifest")
+
+
+def _page_meta(page_html, prop):
+    m = (re.search(rf'<meta[^>]+(?:property|name)=["\']{re.escape(prop)}["\'][^>]+content=["\']([^"\']*)', page_html, re.I)
+         or re.search(rf'<meta[^>]+content=["\']([^"\']*)["\'][^>]+(?:property|name)=["\']{re.escape(prop)}["\']', page_html, re.I))
+    return html.unescape(m.group(1)).strip() if m else None
+
+
+def _clean_page_title(raw):
+    """"Masonry Stool — LA.LLand" / "X | ASTRAEUS CLARKE" -> "Masonry Stool".
+    Splits only on an em/en dash or a pipe (a hyphen is part of real names)."""
+    name = re.split(r"\s+[\u2014\u2013|]\s+", html.unescape(raw or "").strip())[0]
+    name = re.sub(r"\s+", " ", name).strip()
+    if name.isupper() and len(name) > 3:
+        # str.title() would give "Lev'S Chair"; capitalize each word whole.
+        # model codes ("TL - 01", "OP - T03") stay as the maker writes them
+        name = re.sub(r"[A-Za-z0-9]+(?:'[A-Za-z]+)?",
+                      lambda m: m.group(0) if (len(m.group(0)) <= 2 or any(c.isdigit() for c in m.group(0)))
+                      else m.group(0).capitalize(), name)
+    return name
+
+
+_PAGE_IMG_RE = re.compile(r'(?:src|data-src|data-image)=["\'](https?://[^"\']+|//[^"\']+)["\']')
+
+
+def _page_image(page_html, name, base):
+    """A piece's photo: og:image when the page has one; otherwise (newer
+    Squarespace templates have none) the first content image AFTER the
+    piece's name in the page body, else the first content image anywhere.
+    Logos/icons are never chosen."""
+    image = _page_meta(page_html, "og:image") or ""
+    if not image:
+        lower = page_html.lower()
+        body = page_html[lower.find("<body"):] if "<body" in lower else page_html
+        at = body.lower().find(name.lower())
+        for segment in ((body[at:] if at >= 0 else ""), body):
+            for url in _PAGE_IMG_RE.findall(segment):
+                if re.search(r"logo|icon|favicon|sprite", url, re.I):
+                    continue
+                if re.search(r"squarespace-cdn\.com/content|static1\.squarespace\.com|cargo\.site|\.(jpe?g|png|webp)(\?|$)", url, re.I):
+                    image = url
+                    break
+            if image:
+                break
+    if image.startswith("//"):
+        image = "https:" + image
+    elif image.startswith("/"):
+        image = base + image
+    return image
+
+
+def _site_sitemap_paths(base, sitemap_url):
+    urls, queue, seen = [], [sitemap_url or f"{base}/sitemap.xml"], set()
+    while queue and len(seen) < 6:
+        sm = queue.pop(0)
+        if sm in seen:
+            continue
+        seen.add(sm)
+        try:
+            resp = requests.get(sm, headers=HEADERS, timeout=20)
+        except requests.RequestException:
+            continue
+        if resp.status_code != 200:
+            continue
+        for loc in re.findall(r"<loc>([^<]+)</loc>", resp.text):
+            (queue if loc.endswith(".xml") else urls).append(loc)
+        time.sleep(0.3)
+    paths = []
+    for u in urls:
+        parts = urlsplit(u)
+        paths.append(parts.path or "/")
+    return paths
+
+
+def _site_listing_paths(base, listing_urls):
+    paths = []
+    for path in listing_urls:
+        try:
+            resp = requests.get(base + path, headers=HEADERS, timeout=20)
+        except requests.RequestException:
+            continue
+        if resp.status_code != 200:
+            continue
+        for href in re.findall(r'href=["\']([^"\']+)["\']', resp.text):
+            href = html.unescape(href).split("#")[0].split("?")[0]
+            if href.startswith(base):
+                href = href[len(base):] or "/"
+            if href.startswith("/") and not href.startswith("//"):
+                paths.append(href)
+        time.sleep(0.3)
+    return paths
+
+
+def _filter_site_paths(paths, cfg):
+    include = [re.compile(r) for r in cfg.get("include", [])]
+    exclude = [re.compile(r) for r in cfg.get("exclude", [])]
+    out, seen = [], set()
+    for path in paths:
+        key = path.rstrip("/") or "/"
+        if key == "/" or key in seen or key.lower().endswith(_ASSET_SUFFIXES):
+            continue
+        if include and not any(r.search(path) for r in include):
+            continue
+        if any(r.search(path) for r in exclude):
+            continue
+        seen.add(key)
+        out.append(path)
+    return out[:SITE_PAGES_MAX_PAGES]
+
+
+def _site_robots(base):
+    """A urllib RobotFileParser built from OUR fetch of robots.txt (the
+    stdlib's own fetch uses a default agent some sites refuse). No robots
+    file or no rules = everything allowed."""
+    rp = urllib.robotparser.RobotFileParser()
+    try:
+        resp = requests.get(f"{base}/robots.txt", headers=HEADERS, timeout=15)
+        rp.parse(resp.text.splitlines() if resp.status_code == 200 else [])
+    except requests.RequestException:
+        rp.parse([])
+    return rp
+
+
+def extract_site_pages(brand):
+    cfg = brand.get("site_pages") or {}
+    base = brand["url"].rstrip("/")
+    robots = _site_robots(base)
+    if not robots.can_fetch("FormgroundBot", base + "/"):
+        print(f"  {brand['name']}: robots.txt disallows crawling - skipping.")
+        return []
+    if cfg.get("listing_urls"):
+        paths = _site_listing_paths(base, cfg["listing_urls"])
+    else:
+        paths = _site_sitemap_paths(base, cfg.get("sitemap_url"))
+    paths = _filter_site_paths(paths, cfg)
+    exclude_names = [re.compile(r, re.I) for r in cfg.get("exclude_names", [])]
+    name_strip = re.compile(cfg["name_strip"], re.I) if cfg.get("name_strip") else None
+
+    products, seen_names = [], set()
+    brand_start = time.monotonic()
+    for i, path in enumerate(paths):
+        if time.monotonic() - brand_start > MAX_SECONDS_PER_BRAND - 20:
+            print(f"  {brand['name']}: hit the time budget after {i} of {len(paths)} pages.")
+            break
+        url = base + path
+        if not robots.can_fetch("FormgroundBot", url):
+            continue
+        if i:
+            time.sleep(SITE_PAGES_DELAY)
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+        except requests.RequestException:
+            continue
+        if resp.status_code in BLOCK_STATUS_CODES:
+            raise ScrapeBlockedError(url, resp.status_code)
+        if resp.status_code != 200:
+            continue
+        name = _clean_page_title(_page_meta(resp.text, "og:title") or "")
+        image = _page_image(resp.text, name, base)
+        if name_strip:
+            name = name_strip.sub("", name).strip()
+        if not name or not image or name.lower() in seen_names:
+            continue
+        if any(r.search(name) for r in exclude_names):
+            continue
+        category = ""
+        for hint_word, hint_category in (cfg.get("type_hints") or {}).items():
+            if hint_word in f"{name} {path}".lower():
+                category = hint_category
+                break
+        category = category or _infer_category_from_name(name, "", brand["name"])
+        if cfg.get("require_type") and not category:
+            continue
+        if not category:
+            # a lighting-only studio's untyped pieces are lighting; or a
+            # section of the site implies the type ("/lighting/...")
+            category = cfg.get("default_category", "")
+            for prefix, section_category in (cfg.get("default_category_by_path") or {}).items():
+                if path.startswith(prefix):
+                    category = section_category
+                    break
+        price, currency = None, None
+        for offer_currency, prices in extract_page_offers(resp.text):
+            if prices and prices[0] > 0:
+                price, currency = prices[0], offer_currency
+                break
+        if price is None and cfg.get("price_regex"):
+            # Visible price for sites with no structured data. The FIRST
+            # match wins; a "from"/"starting at" figure is a base price for
+            # a configurable piece, not the price, so it is skipped.
+            visible = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[^>]*>.*?</\1>", "", resp.text, flags=re.S | re.I)))
+            match = re.search(cfg["price_regex"], visible)
+            if match and not re.search(r"(from|starting at)\s*$", visible[max(0, match.start() - 14):match.start()], re.I):
+                value = _parse_price(match.group(1))
+                if value and value > 0:
+                    price, currency = value, cfg.get("price_currency")
+        seen_names.add(name.lower())
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"],
+            "product_name": name, "product_url": url,
+            "category": category or "", "material_options": [],
+            "dimensions": "", "notes": "", "image_url": image, "designer": "",
+            "price": price, "currency": currency,
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -8702,10 +8974,10 @@ EXTRACTORS = {
     "Antidark": extract_woocommerce,
     "Le Klint": extract_shopify,
     "Frangere Studio": extract_shopify,
-    "Astraeus Clarke": extract_shopify,
-    "Luke Malaney": extract_shopify,
+    "Astraeus Clarke": extract_site_pages,
+    "Luke Malaney": extract_site_pages,
     "Llot Llov": extract_woocommerce,
-    "Anna Dawson": extract_shopify,
+    "Anna Dawson": extract_site_pages,
     "Arvo Ray": extract_shopify,
     "Ceramicah": extract_shopify,
     "Palefire Studio": extract_shopify,
@@ -8745,36 +9017,36 @@ EXTRACTORS = {
     "Tell Me More": extract_shopify,
     # shop.sightunseen.com vendors - same shared-storefront vendor filter
     # already built for Astraeus Clarke/Luke Malaney/Anna Dawson/Arvo Ray.
-    "Cultivation Objects": extract_shopify,
-    "Laun": extract_shopify,
-    "Orlando Pippig": extract_shopify,
-    "Studio Vraco": extract_shopify,
-    "Known Work": extract_shopify,
+    "Cultivation Objects": extract_woocommerce,
+    "Laun": extract_site_pages,
+    "Orlando Pippig": extract_site_pages,
+    "Studio Vraco": extract_woocommerce,
+    "Known Work": extract_woocommerce,
     "Ceramics Furniture Plants": extract_shopify,
     "Objects & Ideas": extract_shopify,
     "Sunfish": extract_shopify,
     "Michael Felix": extract_shopify,
-    "Alexis & Ginger": extract_shopify,
+    "Alexis & Ginger": extract_site_pages,
     "Studio Sam Klemick": extract_shopify,
     "Nice Condo": extract_shopify,
     "Nazara Lazaro": extract_shopify,
     "Mike Ruiz-Serra": extract_shopify,
     "YSH Studio": extract_shopify,
     "Clay Brown": extract_shopify,
-    "Juntos Projects": extract_shopify,
+    "Juntos Projects": extract_site_pages,
     "Rest Energy": extract_shopify,
     "LOEHR": extract_shopify,
-    "LikeMindedObjects": extract_shopify,
+    "LikeMindedObjects": extract_site_pages,
     "Steven Bukowski": extract_shopify,
-    "Studio Mignone": extract_shopify,
+    "Studio Mignone": extract_site_pages,
     "Nicholas Bijan Pourfard": extract_shopify,
     "Ryan Jones Studio": extract_shopify,
     "Jesse Groom": extract_shopify,
-    "Lland": extract_shopify,
+    "Lland": extract_site_pages,
     "Charles Constantine": extract_shopify,
     "Jackrabbit Studio": extract_shopify,
     "Ian Cochran": extract_shopify,
-    "Seer Studio": extract_shopify,
+    "Seer Studio": extract_site_pages,
     "David Vu Studio": extract_shopify,
     "Objects for Objects": extract_shopify,
     "Kouros Maghsoudi": extract_shopify,
@@ -9192,6 +9464,7 @@ def run(brand_name=None):
                 if image_override:
                     product["image_url"] = image_override
                 if not override:
+                    product["category"] = _tidy_category(product["category"])
                     product["category"] = _normalize_candle_holder(product["product_name"], product["category"])
                     product["category"] = _normalize_footstool(product["product_name"], product["category"])
                     product["category"] = _fix_glass_material_tag(product["product_name"], product["category"])

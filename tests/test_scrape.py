@@ -390,5 +390,14 @@ class PriceFromPageTests(unittest.TestCase):
         self.assertEqual(scrape._parse_price("DKK\xa03,995"), 3995.0)
 
 
+class TidyCategoryTests(unittest.TestCase):
+    def test_strips_trailing_separators_only(self):
+        self.assertEqual(scrape._tidy_category("Chair/"), "Chair")
+        self.assertEqual(scrape._tidy_category("Chair/ "), "Chair")
+        self.assertEqual(scrape._tidy_category("Sofa, Armchair"), "Sofa, Armchair")
+        self.assertEqual(scrape._tidy_category("Coat/Hat Stand"), "Coat/Hat Stand")
+        self.assertEqual(scrape._tidy_category(None), "")
+
+
 if __name__ == "__main__":
     unittest.main()
