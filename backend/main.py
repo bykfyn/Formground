@@ -28,7 +28,7 @@ from fastapi import Body, FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
 from analytics import log_event
-from query_engine import discover, search, search_full, search_more
+from query_engine import discover, search, search_full, search_more, shape_agent_product
 
 app = FastAPI(title="Formground")
 
@@ -97,19 +97,7 @@ def agent_search(q: str = Query(..., description="Structured or natural language
     schema.org Product objects for machine consumption.
     """
     results = search(q)
-    shaped = [
-        {
-            "@type": "Product",
-            "name": r["product_name"],
-            "brand": {"@type": "Brand", "name": r["brand"]},
-            # Falls back to the brand's homepage if check_links.py has
-            # flagged this product page as a confirmed 404, so an agent
-            # never gets handed a dead link between full scrapes.
-            "url": r["brand_url"] if r["link_dead"] else r["product_url"],
-            "category": r["category"],
-        }
-        for r in results
-    ]
+    shaped = [shape_agent_product(r) for r in results]
     return {"query": q, "results": shaped}
 
 

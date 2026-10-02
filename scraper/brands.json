@@ -82,7 +82,9 @@
     "platform": "custom",
     "scrapable": true,
     "notes": "Revisited 2026-09-29 (user-provided /en/indoor-lighting/ URL) - the old deferral assumed ~98 per-product page visits were needed, but that one overview page alone server-renders the entire real catalog (89 real cards confirmed) in a single fetch, no per-product visits needed. Real category/name/image all in one clean block. Includes a real \"portable-lamps\" type, relevant to the cordless/rechargeable lamp keyword work.",
-    "tier": "established"
+    "tier": "established",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "GATOMIKIO",
@@ -155,7 +157,9 @@
     "scrapable": true,
     "notes": "Custom AJAX products.json (returns an HTML fragment, not structured JSON). Its page param is silently ignored - every page number returns the same first 24 products, and hasMorePages is always true regardless - so only that single reliable page is scraped. Real catalog is almost certainly larger; ~24 products is a known partial-coverage limitation, not a bug.",
     "country": "Italy",
-    "tier": "established"
+    "tier": "established",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Anna Löwenhielm Ceramics",
@@ -196,7 +200,9 @@
     "scrapable": true,
     "notes": "robots.txt allows everything, no bot-specific blocks. No product API, but /en/products/ server-renders the full catalog (266 items, name+image+link) in one fetch - same shape as H. Bigeleisen/Yird Ceramics. ~129 of 266 are marked Discontinued Models (pc10/is-ceased class) and excluded.",
     "country": "Germany",
-    "tier": "established"
+    "tier": "established",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Källemo",
@@ -544,7 +550,9 @@
     "platform": "custom",
     "scrapable": true,
     "notes": "Next.js site (UK) - no robots.txt file exists (a 404 falls through to a real page, not a block). Product-grid images lazy-load via a base64 placeholder swapped by JS, but a <noscript><img alt=\"name\" src=\"real image\"> fallback is already server-rendered next to each one, giving clean name+image with no per-product fetch. One listing page per the site's own 7 top-level categories (cabinets, chairs, lighting, mirrors, sofas-and-armchairs, tables, decorative) covers the whole catalog. Country confirmed via /pages/find-us: \"Headquartered in London and fabricated across Europe...\"",
-    "country": "United Kingdom"
+    "country": "United Kingdom",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Gubi",
@@ -709,7 +717,9 @@
     "scrapable": true,
     "notes": "Single /en/pieces/ listing page server-renders all 985 pieces (name+designer+image), confirmed working. Address confirmed via /en/contact: Galerie kreo, 31 rue Dauphine, 75006 Paris (also has a London location, Paris used as primary).",
     "country": "France",
-    "tier": "established"
+    "tier": "established",
+    "pricing": "on_request",
+    "pricing_basis": "explicit on-request wording on product pages (checked 2026-10-02)"
   },
   {
     "name": "Workstead",
@@ -725,7 +735,9 @@
     "platform": "custom",
     "scrapable": true,
     "notes": "No robots.txt. Full 223-product catalog listed on one /en/product/ page, confirmed working. Country not included - no confirmed address found on-site during triage (2026-09-13); the company is Japan-based per general knowledge only, not confirmed via the site itself. Country confirmed via /en/: \"Maruni Wood Industry Inc. | Hiroshima, Japan\" in the page footer.",
-    "country": "Japan"
+    "country": "Japan",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Petite Friture",
@@ -767,7 +779,9 @@
     "platform": "wix",
     "scrapable": true,
     "notes": "Wix Stores - store-products-sitemap.xml (12 real products) confirmed working despite the storefront normally being too client-rendered to scrape. Small catalog, genuinely a small studio. robots.txt Allow: / for User-agent: *, only blocks PetalBot by name. Country not included - no confirmed address found on-site during triage (2026-09-13). Country confirmed via /contact: Rue Saint-Joseph 16, 1227 Carouge (Geneva).",
-    "country": "Switzerland"
+    "country": "Switzerland",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Ghidini 1961",
@@ -775,7 +789,9 @@
     "platform": "prestashop",
     "scrapable": true,
     "notes": "PrestaShop, no robots.txt restrictions. Product listing cards already have name+designer+image+link, no per-product fetch needed. 3 of 11 shop categories have a real caching quirk (page loads fine but shows zero cards on the first fetch, reliably shows real ones on a re-fetch) - handled with a retry, not a block. Address confirmed via product-page footer: Ghidini Giuseppe Bosco S.p.A, Via Gabriele D'Annunzio 27, 25069 Villa Carcina (BS), Italy.",
-    "country": "Italy"
+    "country": "Italy",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Asplund",
@@ -824,7 +840,9 @@
     "platform": "custom",
     "scrapable": true,
     "notes": "Real catalog confirmed 2026-09-22 via a dedicated product sitemap (sitemap_products_en_EN_0.xml, ~136 real products once finish-variant URLs are excluded). Listing pages are a heavy React app (~4.5MB decompressed, but gzip brings real wire transfer to ~260KB - not actually expensive to fetch) with an only-partially-complete Algolia index embedded, not reliable to parse directly - each product's own page is fetched individually instead, real and server-rendered (clean og:title, real <img> tags from images.fogia.com). Category comes from the URL's own subcategory segment (e.g. /shelves-storage/shelf/... -> Shelving), which is a cleaner signal than the product name for this brand. robots.txt only disallows /api/.",
-    "country": "Sweden"
+    "country": "Sweden",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Blå Station",
@@ -857,7 +875,9 @@
     "platform": "custom",
     "scrapable": true,
     "notes": "Sourced 2026-09-22 from Interior Cluster Sweden's member list. Webflow site, no product API, but a real sitemap.xml lists all 68 real /product/ pages directly (a small, manageable catalog - handcrafted solid-wood furniture, mostly a handful of base designs across wood-finish variants). Each product page's own <h1> (cg-product-name) is a clean '{code} | {category text} | {finish}' string, used directly as the category signal rather than guessing from the product name. No per-product designer credit found on the site.",
-    "country": "Sweden"
+    "country": "Sweden",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Ingridsdotter",
@@ -1148,7 +1168,9 @@
     "url": "https://sekterism.com",
     "platform": "squarespace",
     "scrapable": true,
-    "notes": "Sourced 2026-09-24 during a Google Ads lighting-category candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Tiny artisan catalog. Squarespace's own AI-crawler boilerplate robots.txt, not a dedicated block - the documented 'proceed' case."
+    "notes": "Sourced 2026-09-24 during a Google Ads lighting-category candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Tiny artisan catalog. Squarespace's own AI-crawler boilerplate robots.txt, not a dedicated block - the documented 'proceed' case.",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Hyfer Objects",
@@ -1187,7 +1209,9 @@
     "platform": "custom",
     "scrapable": true,
     "country": "New Zealand",
-    "notes": "Sourced 2026-09-24 during a Google Ads lighting-category candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Real server-rendered content confirmed (heavy embedded product data on /en/furniture/)."
+    "notes": "Sourced 2026-09-24 during a Google Ads lighting-category candidate push (retailer/editorial sourcing); triaged per Brand_Scraping_Triage_Checklist.md. Real server-rendered content confirmed (heavy embedded product data on /en/furniture/).",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "HKliving",
@@ -1228,7 +1252,9 @@
     "platform": "custom",
     "scrapable": true,
     "country": "Italy",
-    "notes": "Sourced 2026-09-24 during a Google Ads lighting-category candidate push. Build 2026-09-25 (user re-requested): bespoke extract_miniforms - the /en/products/all/ page looked JS-rendered at first glance (a nearby search-widget snippet has no name), but its real product grid (div.grid-prodotti) is genuinely server-rendered with name/image/link for all 117 products in one fetch, no pagination needed."
+    "notes": "Sourced 2026-09-24 during a Google Ads lighting-category candidate push. Build 2026-09-25 (user re-requested): bespoke extract_miniforms - the /en/products/all/ page looked JS-rendered at first glance (a nearby search-widget snippet has no name), but its real product grid (div.grid-prodotti) is genuinely server-rendered with name/image/link for all 117 products in one fetch, no pagination needed.",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Gervasoni",
@@ -1237,7 +1263,9 @@
     "scrapable": true,
     "country": "Italy",
     "notes": "Sourced 2026-09-24, held 2026-09-25 (buildable but flat cutout-style images). Built 2026-09-29 during a paid-traffic keyword-support push. www.gervasoni1882.com 404s - real domain is gervasoni1882.com (no www), redirects to /en. Bespoke extractor (extract_gervasoni) - /en/indoor/products lists the entire real indoor catalog on one page (141 products, no pagination), each card giving a real category type via its own .item-prod__collection text (a design like Brick spans several real types - chair, mirror, ottoman, table - so the category page it appears under is not a reliable category source). Images are flat cutout renders on a transparent ground, not lifestyle photos - real but lower quality, same pattern as Kallemo. Indoor only, not outdoor.",
-    "tier": "established"
+    "tier": "established",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Antidark",
@@ -2392,7 +2420,9 @@
     "platform": "custom",
     "scrapable": true,
     "country": "Italy",
-    "notes": "Triaged 2026-09-25: buildable, moderate effort. Built 2026-09-30 - real server-rendered product pages under /it/prodotti/{category}/{slug}, clean <title> + og:image. 7 real categories crawled (sistemi, tavoli, sedute, imbottiti, tavolini-consolle, complementi, outdoor); \"novita-2026\" and \"configuratore\" are nav links, not real categories of their own."
+    "notes": "Triaged 2026-09-25: buildable, moderate effort. Built 2026-09-30 - real server-rendered product pages under /it/prodotti/{category}/{slug}, clean <title> + og:image. 7 real categories crawled (sistemi, tavoli, sedute, imbottiti, tavolini-consolle, complementi, outdoor); \"novita-2026\" and \"configuratore\" are nav links, not real categories of their own.",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Kristalia",
@@ -2463,7 +2493,9 @@
     "scrapable": true,
     "country": "Denmark",
     "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push. Pilot build 2026-09-25: bespoke extract_hay crawls the site's own category/collection listing pages (real server-rendered cards with name/image/price, no per-product-page fetch needed) instead of its 1,414-URL product sitemap - see extract_hay's own docstring in scrape.py for the full reasoning, including why About A Chair's numbered variants are kept as separate real priced products rather than collapsed.",
-    "tier": "established"
+    "tier": "established",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Håg",
@@ -2663,7 +2695,9 @@
     "scrapable": true,
     "country": "France",
     "notes": "Sourced 2026-09-24/25 during a furniture/objects candidate push. Build 2026-09-25: bespoke extract_ligne_roset crawls the site's own 24 category listing pages (real server-rendered cards with name/image, real server-side pagination via ?page=N) instead of its 3,051-URL product sitemap - same approach as HAY, see extract_ligne_roset's docstring in scrape.py.",
-    "tier": "established"
+    "tier": "established",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Abyss & Habidecor",
@@ -2946,7 +2980,9 @@
     "platform": "custom",
     "scrapable": true,
     "country": "Netherlands",
-    "notes": "User-requested 2026-09-25 (as 'Podedesignfurniture'). Real domain is pode.eu, not podedesignfurniture.com (doesn't resolve). Bespoke extract_pode - each of 6 category pages (armchairs, sofas, corner-sofas, tables, lighting, accessories) is server-rendered with real product cards (Storyblok CMS) despite an animated fade-in effect. ~35 real products, one fetch per category, no pagination needed."
+    "notes": "User-requested 2026-09-25 (as 'Podedesignfurniture'). Real domain is pode.eu, not podedesignfurniture.com (doesn't resolve). Bespoke extract_pode - each of 6 category pages (armchairs, sofas, corner-sofas, tables, lighting, accessories) is server-rendered with real product cards (Storyblok CMS) despite an animated fade-in effect. ~35 real products, one fetch per category, no pagination needed.",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Cozmo",
@@ -3023,7 +3059,9 @@
     "scrapable": true,
     "country": "Italy",
     "notes": "Sourced 2026-09-29 during a paid-traffic keyword-support push (round/coffee/side/dining table + sofa categories). Bespoke extractor (extract_bb_italia) - Magento storefront, no product API. 25 real indoor-furniture category listing pages (BB_ITALIA_CATEGORIES) each server-render their full product grid, no pagination found on any checked. Real, prestigious house lines confirmed (Husk by Patricia Urquiola, Charles by Antonio Citterio, Le Bambole, Tobi Ishi). Indoor only, not outdoor, to stay within budget and match target categories - designer credit not captured (would need a per-product visit for ~150+ items, over budget).",
-    "tier": "established"
+    "tier": "established",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Noom",
@@ -3050,7 +3088,9 @@
     "scrapable": true,
     "country": "Denmark",
     "notes": "Sourced 2026-09-29 via Swedish stockist cross-reference (Svenssons/Glashuset i Malmo carry it) during a market-framing check. eilersen.dk redirects to eilersen.com (near-empty landing page) - the real live storefront is eilersen.eu (user-provided). Bespoke extractor (extract_eilersen) - old TYPO3-flavored custom site, no product API, but 7 real category pages server-render their full grid (root-relative hrefs, missed by an absolute-URL-only check at first). /products/table-tops/ deliberately excluded - those are material swatches for a table top surface, not standalone products.",
-    "tier": "established"
+    "tier": "established",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Fleur Studios",
@@ -3130,7 +3170,9 @@
     "platform": "custom",
     "scrapable": true,
     "country": "New Zealand",
-    "notes": "User-provided 2026-09-29. Custom site, no product API, but /en/furniture/ and /en/lighting/ each server-render their full real grid (12 + 12 = 24 real products, no pagination). Genuinely high quality - real named-designer credits (Sacha Sofa is by Philippe Malouin), directly relevant to target keywords (Sacha Sofa is explicitly described as available in 2 or 3 seater; Fulcrum Lamp/Phase Table Light are real table lamps; Bloom Floor Light is a real floor lamp)."
+    "notes": "User-provided 2026-09-29. Custom site, no product API, but /en/furniture/ and /en/lighting/ each server-render their full real grid (12 + 12 = 24 real products, no pagination). Genuinely high quality - real named-designer credits (Sacha Sofa is by Philippe Malouin), directly relevant to target keywords (Sacha Sofa is explicitly described as available in 2 or 3 seater; Fulcrum Lamp/Phase Table Light are real table lamps; Bloom Floor Light is a real floor lamp).",
+    "pricing": "dealer_priced",
+    "pricing_basis": "dealer/retailer/store-locator wording on product pages, no cart (auto-detected 2026-10-02, unconfirmed)"
   },
   {
     "name": "Deceres Studio",

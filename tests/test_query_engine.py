@@ -573,5 +573,59 @@ class FilterHousesTests(unittest.TestCase):
         self.assertEqual(result, [])
 
 
+class AgentProductShapeTests(unittest.TestCase):
+    """/agent/search's object shape: an Offer only with price AND currency,
+    and priceStatus explaining the absence otherwise."""
+
+    BASE = {
+        "product_name": "Test Lamp", "brand": "SomeBrand", "brand_url": "https://b.example",
+        "product_url": "https://b.example/p", "category": "Table Lamp", "link_dead": 0,
+        "price": None, "currency": None, "image_url": "https://b.example/i.jpg",
+        "material_options": "[]", "designer": None,
+    }
+
+    def shape(self, **over):
+        return qe.shape_agent_product({**self.BASE, **over})
+
+    def test_listed_has_offer_and_currency(self):
+        out = self.shape(price=599.0, currency="EUR")
+        self.assertEqual(out["priceStatus"], "listed")
+        self.assertEqual(out["offers"], {"@type": "Offer", "price": "599.00", "priceCurrency": "EUR"})
+
+    def test_price_without_currency_is_not_listed(self):
+        out = self.shape(price=599.0, currency=None)
+        self.assertEqual(out["priceStatus"], "unknown")
+        self.assertNotIn("offers", out)
+
+    def test_brand_pricing_status_applies_without_price(self):
+        qe.BRAND_PRICING["POABrand"] = "on_request"
+        try:
+            out = self.shape(brand="POABrand")
+            self.assertEqual(out["priceStatus"], "on_request")
+            self.assertNotIn("offers", out)
+            # a product-level price still wins over the brand-level status
+            self.assertEqual(self.shape(brand="POABrand", price=10.0, currency="SEK")["priceStatus"], "listed")
+        finally:
+            del qe.BRAND_PRICING["POABrand"]
+
+    def test_unknown_brand_without_price_is_unknown(self):
+        self.assertEqual(self.shape()["priceStatus"], "unknown")
+
+    def test_optional_fields_omitted_not_null(self):
+        out = self.shape()
+        for key in ("material", "creator", "makerCountry"):
+            self.assertNotIn(key, out)
+        out = self.shape(material_options='["Oak", "Brass"]', designer="A Designer")
+        self.assertEqual(out["material"], ["Oak", "Brass"])
+        self.assertEqual(out["creator"], {"@type": "Person", "name": "A Designer"})
+
+    def test_dead_link_falls_back_to_brand_homepage(self):
+        self.assertEqual(self.shape(link_dead=1)["url"], "https://b.example")
+
+    def test_seeded_brands_json_values_are_valid(self):
+        self.assertEqual(qe.BRAND_PRICING.get("Galerie Kreo"), "on_request")
+        self.assertTrue(set(qe.BRAND_PRICING.values()) <= {"on_request", "dealer_priced"})
+
+
 if __name__ == "__main__":
     unittest.main()

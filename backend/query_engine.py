@@ -184,6 +184,73 @@ def _load_brand_tiers() -> dict:
 
 BRAND_TIERS = _load_brand_tiers()
 
+
+def _load_brand_pricing() -> dict:
+    """
+    Brand -> "on_request" or "dealer_priced", from the optional "pricing"
+    field in brands.json (same source/shape as BRAND_COUNTRIES). A missing
+    price is often the CORRECT data: some makers price on application or
+    build to commission, and others sell only through dealers who set the
+    price (73 of 219 brands had no stored price at all, 2026-10-02). A
+    brand with no field makes no claim - its products are "listed" when
+    they carry a price and verified currency, otherwise "unknown". Never
+    inferred from the absence of a price.
+    """
+    try:
+        brands = json.loads(BRANDS_PATH.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {}
+    return {b["name"]: b["pricing"] for b in brands if b.get("pricing") in ("on_request", "dealer_priced")}
+
+
+BRAND_PRICING = _load_brand_pricing()
+
+
+def price_status(product: dict) -> str:
+    """"listed" (price AND currency stored), "on_request", "dealer_priced",
+    or "unknown". A product-level price always wins over a brand-level
+    status, and a price without a verified currency is not "listed"."""
+    if product.get("price") and product.get("currency"):
+        return "listed"
+    return BRAND_PRICING.get(product["brand"], "unknown")
+
+
+def shape_agent_product(r: dict) -> dict:
+    """One search result as the schema.org-Product-shaped object
+    /agent/search returns. An Offer appears only when price and currency
+    are both stored (never a guessed currency, never a converted price);
+    priceStatus says why there is no Offer otherwise. Optional fields are
+    omitted rather than null so an agent only sees what is real."""
+    out = {
+        "@type": "Product",
+        "name": r["product_name"],
+        "brand": {"@type": "Brand", "name": r["brand"]},
+        # Falls back to the brand's homepage if check_links.py has
+        # flagged this product page as a confirmed 404, so an agent
+        # never gets handed a dead link between full scrapes.
+        "url": r["brand_url"] if r.get("link_dead") else r["product_url"],
+        "category": r["category"],
+        "priceStatus": price_status(r),
+        "tier": BRAND_TIERS.get(r["brand"], "independent"),
+    }
+    if r.get("image_url"):
+        out["image"] = r["image_url"]
+    if out["priceStatus"] == "listed":
+        out["offers"] = {"@type": "Offer", "price": f'{r["price"]:.2f}', "priceCurrency": r["currency"]}
+    materials = r.get("material_options")
+    if isinstance(materials, str):
+        try:
+            materials = json.loads(materials or "[]")
+        except ValueError:
+            materials = []
+    if materials:
+        out["material"] = materials
+    if r.get("designer"):
+        out["creator"] = {"@type": "Person", "name": r["designer"]}
+    if BRAND_COUNTRIES.get(r["brand"]):
+        out["makerCountry"] = BRAND_COUNTRIES[r["brand"]]
+    return out
+
 # Real country values confirmed present in brands.json as of 2026-09-28
 # (see BRAND_COUNTRIES) mapped from how someone actually asks for them -
 # a region/demonym is not a literal country name, so this needs its own
