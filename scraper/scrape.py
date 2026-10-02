@@ -3084,6 +3084,30 @@ def _normalize_candle_holder(product_name, category):
     return ", ".join(["Candle Holder"] + kept)
 
 
+# A footstool is its own type, not a kind of stool to sit on: it is the
+# companion to an armchair or lounge chair, made for resting feet. Measured
+# 2026-10-02: 54 were already tagged Footstool, but 17 more carried a
+# "Stool"/"Armchair"/"Ottomans" tag or none. A footstool word in the NAME
+# decides; sets ("Lounge Chair and Footstool"), combined seat/footrests and
+# seat pads are left alone.
+FOOTSTOOL_NAME_RE = re.compile(r"foot ?stool|footrest|fotpall|repose-pieds|fodskammel", re.I)
+FOOTSTOOL_DROP_TAGS = {"stool", "stools", "armchair", "armchairs", "outdoor chair"}
+
+
+def _normalize_footstool(product_name, category):
+    category = category or ""
+    tags = [t.strip() for t in category.split(",") if t.strip()]
+    if {t.lower() for t in tags} & {"footstool", "footstools"}:
+        return category
+    lower = product_name.lower()
+    if not FOOTSTOOL_NAME_RE.search(product_name):
+        return category
+    if any(x in lower for x in ("seat pad", "cushion", " and footstool", "seat/footrest", "& footstool")):
+        return category
+    kept = [t for t in tags if t.lower() not in FOOTSTOOL_DROP_TAGS]
+    return ", ".join(["Footstool"] + kept)
+
+
 def _backfill_foreign_category(product_name, category):
     """
     Universal safety net applied in run()'s save loop: when the category
@@ -8932,6 +8956,7 @@ def run(brand_name=None):
                     product["image_url"] = image_override
                 if not override:
                     product["category"] = _normalize_candle_holder(product["product_name"], product["category"])
+                    product["category"] = _normalize_footstool(product["product_name"], product["category"])
                     if not (product["category"] or "").strip():
                         product["category"] = _infer_category_for_blank(product["product_name"], brand["name"]) or ""
                     product["category"] = _backfill_foreign_category(product["product_name"], product["category"])
