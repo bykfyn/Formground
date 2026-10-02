@@ -3055,6 +3055,35 @@ def _infer_category_for_blank(product_name, brand_name=None):
     return _infer_category_from_english_keywords(product_name)
 
 
+# Candle holders and candles are distinct categories. Measured 2026-10-02:
+# 43 holders carried a tag that does not match "candle holder" -
+# "Candleholder(s)" (no space), candlestick/candelabra names, Norwegian
+# "lysestake", or a wrong tag (Candles, Box, Rugs, blank). A holder-word in
+# the NAME is decisive, so the type is set first and any plain "candle"
+# tags are dropped, keeping the two pages from overlapping.
+CANDLE_HOLDER_NAME_RE = re.compile(
+    r"candle ?holder|candlestick|candelabr|tealight holder|t-light holder|votive holder|"
+    r"bougeoir|ljusstak|lysestak|lysestage|portacandela", re.I)
+CANDLE_ONLY_TAGS = {"candle", "candles", "scented candle", "scented candles", "candles & diffusers"}
+
+
+def _normalize_candle_holder(product_name, category):
+    category = category or ""
+    tags = [t.strip() for t in category.split(",") if t.strip()]
+    tag_set = {t.lower() for t in tags}
+    if tag_set & {"candle holder", "candle holders"}:
+        return category
+    named_holder = CANDLE_HOLDER_NAME_RE.search(product_name) and "console" not in product_name.lower()
+    tagged_holder = any(re.search(r"candle ?holder|candlestick|candelabr", t) for t in tag_set)
+    if not (named_holder or tagged_holder):
+        return category
+    kept = [t for t in tags if t.lower() not in CANDLE_ONLY_TAGS and not re.search(r"\bcandles?$", t.lower())]
+    if named_holder:
+        # A wrong specific tag ("Box", "Rugs") loses to an explicit holder name.
+        kept = [t for t in kept if t.lower() not in {"box", "rugs", "rug", "bowl", "objects", "accessories"}]
+    return ", ".join(["Candle Holder"] + kept)
+
+
 def _backfill_foreign_category(product_name, category):
     """
     Universal safety net applied in run()'s save loop: when the category
@@ -8902,6 +8931,7 @@ def run(brand_name=None):
                 if image_override:
                     product["image_url"] = image_override
                 if not override:
+                    product["category"] = _normalize_candle_holder(product["product_name"], product["category"])
                     if not (product["category"] or "").strip():
                         product["category"] = _infer_category_for_blank(product["product_name"], brand["name"]) or ""
                     product["category"] = _backfill_foreign_category(product["product_name"], product["category"])
