@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candle Holders — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="258 real candle holders from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/browse/candle-holders.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Candle Holders — Formground">
+<meta property="og:description" content="258 real candle holders from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/browse/candle-holders.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Candle Holders — Formground">
+<meta name="twitter:description" content="258 real candle holders from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-group { max-width: 520px; margin: 32px auto 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Browse", "item": "https://formground.com/browse/"}, {"@type": "ListItem", "position": 3, "name": "Candle Holders", "item": "https://formground.com/browse/candle-holders.html"}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <h1>Candle Holders</h1>
+  <p class="category-intro">258 candle holders from independent makers. Every result links straight to the maker's own site. See also: <a href="/browse/candles.html">candles</a>.</p>
+  <div class="grid">
+      <a class="card" href="https://www.andtradition.com/products/candleholder-sc57-sc59" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/01/Collect-Candleholder_SC57_SC58_SC59-600x800.png" alt="Collect | Candleholders SC57-SC59 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collect | Candleholders SC57-SC59</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/cube-candle-holder-high-glazed-birch" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/20233516_262016_Cube_Candle_Holders_-_High_Glaze_Birch_1.jpg?v=1781010474" alt="Cube Candle Holders by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cube Candle Holders</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/delight-candlestick-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_NZ07-GR.jpg?v=1789114748" alt="Delight by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Delight</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://annalowenhielm.se/products/carol-candle-holder-incl-shipping" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0579/6016/9666/files/DSC_0291.jpg?v=1774266796" alt="Ljusstake by Anna Löwenhielm Ceramics" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ljusstake</p></div>
+          <p class="card-brand">Anna Löwenhielm Ceramics</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/another-country-tealight-holder-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Tealigth-Holder-Black-Another-Country-Photo-Credit-Yeshen-Venema-web-ready-21.11.185304-1024x1024.jpg" alt="Another Country Tealight Holder by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Another Country Tealight Holder</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/tiili-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-tiili-candleholder-green-gloss.jpg?v=1777890708" alt="Tiili Candleholder by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tiili Candleholder</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://artetica.it/products/candlestick" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/1597/1665/files/candlestick-by-artetica-design-by-artetica-ob04b-5857994.jpg?v=1763135377" alt="Candlestick by Artetica" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candlestick</p></div>
+          <p class="card-brand">Artetica</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/lucia-ljusstake-silver" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/Lucia-Silver-props.jpg?v=1675696962" alt="Lucia ljusstakar by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lucia ljusstakar</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/kubus-4-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Kubus_Candle_Holder.jpg?v=1757062592" alt="Kubus 4 by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kubus 4</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/baton-tall-candle-holder-with-diffuser" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Baton_Candleholder-diffuser-alabastro_Ronan-Bouroullec_1.jpg?v=1724916396" alt="Baton Candle Holder With Diffuser In Alabaster by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Baton Candle Holder With Diffuser In Alabaster</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candle-holder-cassata-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/CA003-3.jpg?v=1785247007" alt="Candle Holder Cassata by Buro Berger" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Holder Cassata</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/adventsljusstake-ljusstake" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/adventsstakeljusstake.jpg?v=1705328708" alt="Adventsljusstake &amp; ljusstake by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Adventsljusstake &amp; ljusstake</p></div>
+          <p class="card-brand">Byarums Bruk</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/turn-candelabrum-dark-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/3042-5900_Hover.jpg?v=1760441443" alt="Turn Candelabrum by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Turn Candelabrum</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/totem-candle-holder-tall-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_totem_high_grey_01.jpg?v=1773749915" alt="Totem Candle Holder Tall by Dusty Deco" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Totem Candle Holder Tall</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_objets_bougeoir-elephant-carre-et-rond" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/470/T_2t6a9839-copie.jpg" alt="Bougeoir Elephant carré &amp; rond by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bougeoir Elephant carré &amp; rond</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/damo-candle-holder-16-clear" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274408_1.png?v=1788766267" alt="Damo Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Damo Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/loop-candleholder-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/candle_holder_LOOP_FLD.webp?v=1765295166" alt="LOOP CANDLEHOLDER by Fine Little Day" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LOOP CANDLEHOLDER</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/fundament-candle-holders-set-of-three-brushed-stainless-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/FRAMAFundamentCandleHolderSetPackshot.webp?v=1727352915" alt="Fundament Candle Holder Set of Three | Stainless Steel by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fundament Candle Holder Set of Three | Stainless Steel</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/ronan-bouroullec/candelabra-single" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F626F1D055C6654E8337DCA87206F3EE.jpg.webp" alt="Candelabra Single by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candelabra Single</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/stickcandleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1657757686409-Y12BJNHLWKS47RCV4FU8/Stick%2B-%2BGroup1.jpg" alt="Stick Candle Holder by Grain" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stick Candle Holder</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://gubi.com/en/se/products/candlestick" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.thorcommerce.io/gubi/18af03a8c309b9c6eace96b399fb23a2/10015911_FRT_Candlestick_17cm_Antique+Brass.png" alt="Candlestick by Gubi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candlestick</p></div>
+          <p class="card-brand">Gubi</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/flare-steel-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260629032806/img_20260629032806/globalassets/inriver/integration/service/flare-steel-candleholder_910x1100_brandmodel.jpg" alt="Flare Candleholder by HAY" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flare Candleholder</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/126100200" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/126100200.jpg?v=1756995602" alt="Mesh Candle Holder by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mesh Candle Holder</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.lachambredami.com/product-page/bougeoir-pivoine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://static.wixstatic.com/media/4a6aa5_b1ac0d652ad047b49b96f2ba29e8783f~mv2.png/v1/fit/w_500,h_500,q_90/file.png" alt="Bougeoir Pivoine by La Chambre d&#x27;Ami" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bougeoir Pivoine</p></div>
+          <p class="card-brand">La Chambre d&#x27;Ami</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/vases-and-bowls/stem-holder-candle-holder-nym-5079" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/11230690_i_vue_c.jpg" alt="Nym Stem holder / candle holder by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nym Stem holder / candle holder</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/city-light-3-archive" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKSHOTS_0908.jpg?v=1783588736" alt="CITY LIGHT 3 by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CITY LIGHT 3</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/pinci-candle-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Candle_Holder_02.0008.png?v=1758015348" alt="Pinci Candle Holder by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pinci Candle Holder</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://matisipiora.com/product/cosmic-candle-holder/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://matisipiora.com/wp-content/uploads/2025/04/cosmic-candle-main-1-1-400x500.webp" alt="Cosmic Candle Holder by Mati Sipiora" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cosmic Candle Holder</p></div>
+          <p class="card-brand">Mati Sipiora</p>
+        </div>
+      </a>
+      <a class="card" href="https://minimalux.com/products/candle-tealight-holder-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/C1-SS-2.jpg?v=1712562694" alt="Candle by Minimalux" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle</p></div>
+          <p class="card-brand">Minimalux</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mokkoamsterdam.com/acer-candleholder-r2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5e73916b28f23d676eebaddd/39a51078-e485-4f49-887c-a5806bb30b4b/Acer+Candle+Holder+R2+setting+shot+at+studio+on+Acer+Capsule+table+and+Acer+dining+sofa+background.jpg" alt="Acer Candle Holder R:2 by Mokko Amsterdam" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Acer Candle Holder R:2</p></div>
+          <p class="card-brand">Mokko Amsterdam</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/flores-set-2x-minimalist-flower-form-candleholder-in-iron" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/FLORES_candle_holder_conjunto_com_velas_imagem_pequena.jpg?v=1761836479" alt="FLORES Set by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FLORES Set</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/copy-of-neb-candlestick-with-tray-04" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Candlestick2.jpg?v=1612388725" alt="NEB Candlestick With Tray 04 by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NEB Candlestick With Tray 04</p></div>
+          <p class="card-brand">No Early Birds</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.northern.no/products/monolith-candle-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0837/2250/2463/files/Monolith_green-marble_pair_Northern_ph_Chris_Tonnesen-High-res.jpg?v=1752567928" alt="Monolith lysestake by Northern" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Monolith lysestake</p></div>
+          <p class="card-brand">Northern</p>
+        </div>
+      </a>
+      <a class="card" href="https://parenpar.com.ar/productos/candelabro-morf-4/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="http://acdn-us.mitiendanube.com/stores/005/991/341/products/parenpar4394-25585e2d5834040c3e17440700654080-640-0.webp" alt="Candelabro Morf 4 by Par en Par" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candelabro Morf 4</p></div>
+          <p class="card-brand">Par en Par</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/bark-ljusstake-mellan" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/RE080B8700_2.png?v=1770129721" alt="Bark Ljusstake Mellan by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bark Ljusstake Mellan</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.pulkra.it/en/product/compage-candle-holder/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.pulkra.it/wp-content/uploads/2023/12/25016-PLK-RAW-COMPAGE_CH-1-300x300.jpg" alt="Compage Candle Holder by Pulkra" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Compage Candle Holder</p></div>
+          <p class="card-brand">Pulkra</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/michael-kvium-jam-candleholder-candleholder-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Michael_Kvium_-_Jam_-_candleholder-candleholder-R1011-Yellow.jpg?v=1765830395" alt="Michael Kvium - Jam - candleholder by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Michael Kvium - Jam - candleholder</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://rubn.com/products/joey-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1049/4646/7165/files/Joey_Candle_Set_of_3_Gunmetal_fd56b926-739f-4044-986c-150fec451e9c.png?v=1780558266" alt="Joey Candle by Rubn" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Joey Candle</p></div>
+          <p class="card-brand">Rubn</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/blue-taper-candle-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14099B_Candle_Holder_Blu_2.jpg?v=1763041724" alt="Taper candle holder by Seletti" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Taper candle holder</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-l-white-black-carte-blanche" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B0126020-008_040826_01.jpg?v=1785849058" alt="Candle holder L white by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder L white</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tamo.design/products/rokk-candle-holder-dark-emperador" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/rokk_dark_1.jpg?v=1769780481" alt="ROKK candle holder by Tamo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ROKK candle holder</p></div>
+          <p class="card-brand">Tamo</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/boule-vaggljusstake-blockljus" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Boule_block_wall_sconce_-_webb_2.jpg?v=1790170221" alt="Boule väggljusstake blockljus by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Boule väggljusstake blockljus</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/wardour-stubby-candlestick-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS387642_1.jpg?v=1756998038" alt="Wardour Stubby Candlestick Green by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wardour Stubby Candlestick Green</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tolix.com/products/grand-bougeoir-blanc-perle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/GRANDBOUGEOIR_BLANCPERLE_VUEDEFACE_1.jpg?v=1772394589" alt="Grand bougeoir avec bougie à la cire d&#x27;abeille by Tolix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Grand bougeoir avec bougie à la cire d&#x27;abeille</p></div>
+          <p class="card-brand">Tolix</p>
+        </div>
+      </a>
+      <a class="card" href="https://utilitariomexicano.com/products/10010012625" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1216/6402/products/candelabro-2.jpg?v=1571458202" alt="CANDELABRO ALTA TENSIÓN by Utilitario Mexicano" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CANDELABRO ALTA TENSIÓN</p></div>
+          <p class="card-brand">Utilitario Mexicano</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/jeu-de-des-3-candle-holder-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Jeudedes_Green_3B.png?v=1743412136" alt="Jeu de dés 3 candle holder by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Jeu de dés 3 candle holder</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/momento-candleholder-jh39" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2023/05/Momento-Candleholder-JH39_Red-Brown_Azure_Ivory_Poppy-Red_2-600x800.jpg" alt="Momento | Candleholder JH39 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Momento | Candleholder JH39</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/cube-candle-holder-silver-travertine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/262012_Cube_Candle_Holders_-_Silver_Travertine_1.jpg?v=1789559402" alt="Cube Candle Holder by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cube Candle Holder</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/another-country-candle-holder-black-short/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/BlackShortWithCandelsCC-1-1024x1024.jpg" alt="Another Country Candle Holder by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Another Country Candle Holder</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/lucia-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-secrets-of-finland-lucia-candleholder.jpg?v=1777551005" alt="Lucia Candleholder by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lucia Candleholder</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/fyr-candle-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/070747-100_X165212_10_1599532271.jpg?v=1616163686" alt="Fyr Candle Holder by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fyr Candle Holder</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/kubus-8-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/BL10108_Kubus8_White_With_Candle_Angle_300_b691b276-1574-4883-8d43-88ac145a598b.jpg?v=1699961375" alt="Kubus 8 by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kubus 8</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/baton-candle-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Baton_candle-holder_Ronan_Bouroullec_1.png?v=1721641574" alt="Baton Candle Holder by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Baton Candle Holder</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candle-holder-cassata-amber" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/CA003-1.jpg?v=1785246225" alt="Candle Holder Cassata amber by Buro Berger" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Holder Cassata amber</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/me-to-you-candle-holder-3-pack-silver" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/2752-9100.jpg?v=1737555428" alt="Me to You Candle Holder by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Me to You Candle Holder</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/totem-candle-holder-low-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DustyDecoTotemeCandleHolderGrey01.png?v=1769775551" alt="Totem Candle Holder Low by Dusty Deco" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Totem Candle Holder Low</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/agape-floor-candle-holder-aluminium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274273_1.png?v=1788769643" alt="Agapé Floor Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Agapé Floor Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/loop-candleholder-purple" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/Candleholder_LOOP_purple_FLD.webp?v=1764671322" alt="LOOP CANDLEHOLDER PURPLE by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LOOP CANDLEHOLDER PURPLE</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/fundament-candle-holder-stainless-steel-form-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/FRAMAFundamentCandleHolderPackshot2.webp?v=1727350372" alt="Fundament Candle Holder | Stainless Steel | Form 2 by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fundament Candle Holder | Stainless Steel | Form 2</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/ronan-bouroullec/candelabra-triple" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/BAAD07C85B5DE4429C992068F74EF4EF.jpg.webp" alt="Candelabra Triple by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candelabra Triple</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/disc-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260629031512/img_20260629031512/globalassets/inriver/integration/service/disc-candleholder_910x1100_brandmodel.jpg" alt="Disc Candleholder by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Disc Candleholder</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/132000218" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/132000218.jpg?v=1756995652" alt="Coherent Candle Holder by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Coherent Candle Holder</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/metal-champagne-candle-holder-low" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/METAL_CHAMPAGNE_CANDLE_HOLDER_-_EDITED_2.jpg?v=1783589589" alt="METAL CHAMPAGNE CANDLE HOLDER by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">METAL CHAMPAGNE CANDLE HOLDER</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://minimalux.com/products/floor-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/C6-SS-web-01.jpg?v=1712655548" alt="Floor Candleholder by Minimalux" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Floor Candleholder</p></div>
+          <p class="card-brand">Minimalux</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mokkoamsterdam.com/acer-candleholder-r4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5e73916b28f23d676eebaddd/48cc7f20-a06f-4630-bd20-c434828c9523/LoveHouse_05102025-200-Edit-2.jpg" alt="Acer Candle Holder R:4 by Mokko Amsterdam" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Acer Candle Holder R:4</p></div>
+          <p class="card-brand">Mokko Amsterdam</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/flores-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/FLORES_candle_holder_conjunto_com_velas_imagem_pequena.jpg?v=1761836479" alt="FLORES Candleholder by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FLORES Candleholder</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/copy-of-neb-candlestick-with-tray-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Candlestick1.jpg?v=1612388716" alt="NEB Candlestick With Tray 02 by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NEB Candlestick With Tray 02</p></div>
+          <p class="card-brand">No Early Birds</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.northern.no/products/granny-candle-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0837/2250/2463/files/Granny_brass_pair_on_mass_Northern_photo_Chris_Tonnesen-High-res.jpg?v=1752568022" alt="Granny lysestake by Northern" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Granny lysestake</p></div>
+          <p class="card-brand">Northern</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/bark-ljusstake-hog" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/bark_ljusstake_paradisverkstaden_2048_2048_2f46a353-9e57-4047-8955-45c6ac8b2fd1.jpg?v=1770131197" alt="Bark Ljusstake Hög by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bark Ljusstake Hög</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/blue-candle-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14100B_Taper_Candle_Holder_Blu_2.jpg?v=1763041200" alt="candle holder by Seletti" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">candle holder</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-m-white-black-carte-blanche" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B0126019-008_040826_01.jpg?v=1785849057" alt="Candle holder M white by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder M white</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tamo.design/products/trilo-candle-holder-travertine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/TRAWERTYN_Swiecznik_2.jpg?v=1769762218" alt="TRILO candle holder by Tamo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TRILO candle holder</p></div>
+          <p class="card-brand">Tamo</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/nimo-ljusstake" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/nimo_desert_yellow_image.jpg?v=1790341261" alt="Nimo ljusstake by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nimo ljusstake</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/wardour-stubby-candlestick-burgundy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS387643_1.jpg?v=1756998205" alt="Wardour Stubby Candlestick Burgundy by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wardour Stubby Candlestick Burgundy</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tolix.com/products/petit-bougeoir-blanc-perle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/PETITBOUGEOIR_BLANCPERLE_VUEDEFACE_1.jpg?v=1772394653" alt="Petit bougeoir avec bougie à la cire d&#x27;abeille by Tolix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Petit bougeoir avec bougie à la cire d&#x27;abeille</p></div>
+          <p class="card-brand">Tolix</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/jeu-de-des-2-candle-holder-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Jeudedes_Green_2A.png?v=1743412140" alt="Jeu de dés 2 candle holder by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Jeu de dés 2 candle holder</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/votive-av20" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2022/01/Votive-AV20.--600x800.jpg" alt="Votive AV20 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Votive AV20</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/w-candle-holder-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18507598_233038_-_W_Candle_Holder_-_Black_-_1.jpg?v=1774539209" alt="W Candle Holder by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">W Candle Holder</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/another-country-ceramic-candlestick/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/another-ceramic-candlestick-marie-dessuant-oak-001-1024x1024.jpeg" alt="Another Country Ceramic Candlestick by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Another Country Ceramic Candlestick</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/lucius-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-secrets-of-finland-lucius-candleholder.jpg?v=1777551026" alt="Lucius Candleholder by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lucius Candleholder</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/fyr-ljusstake" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/Fyr-Blueberry-Marimekko.jpg?v=1636034351" alt="Fyr ljusstake by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fyr ljusstake</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/interconnect-candle-holder-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_Interconnect_Candle_Holder_Small_21.jpg?v=1723031859" alt="Interconnect Candle Holder by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Interconnect Candle Holder</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/baton-tall-candle-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Baton_Tall-candle-holderRonan_Bouroullec_1.png?v=1721641180" alt="Baton Tall Candle Holder by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Baton Tall Candle Holder</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-bole-large-amber-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/CA002-5.jpg?v=1733760139" alt="Candleholder Bole large amber by Buro Berger" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Bole large amber</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/pop-up-candle-holder-christmas-goat-stainless-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/2795-8900.jpg?v=1737555528" alt="Pop-Up Candle Holder by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pop-Up Candle Holder</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/dd-sphere-candle-holder-10-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_2303_PRODUCT_CANDLE_HOLDER_SPHERE_10_GREY_1182.jpg?v=1738764405" alt="Sphere Candle Holder 10 by Dusty Deco" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sphere Candle Holder 10</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/holly-leaf-candle-holder-silver" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274444_1.png?v=1788766418" alt="Holly Leaf Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Holly Leaf Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/kristine-thenman-ljusstake" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/Candleholder_Kristine_Thenman_1_Fine_Little_Day.webp?v=1757341530" alt="KRISTINE THENMAN CANDLEHOLDER by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">KRISTINE THENMAN CANDLEHOLDER</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/fundament-candle-holder-stainless-steel-form-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/FRAMAFundamentCandleHolderPackshot1.webp?v=1727350383" alt="Fundament Candle Holder | Stainless Steel | Form 3 by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fundament Candle Holder | Stainless Steel | Form 3</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/wire-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250917015046/img_20250917015046/globalassets/inriver/integration/service/wire-candleholder_910x1100_brandmodel2.jpg" alt="Wire Candleholder by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wire Candleholder</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/132000217" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/132000217-1.jpg?v=1768488031" alt="Rock Candle Holder by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rock Candle Holder</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/gallery-object-candle-tall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKSHOTS_1011.jpg?v=1783588737" alt="GALLERY OBJECT CANDLE HOLDER TALL by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">GALLERY OBJECT CANDLE HOLDER TALL</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://minimalux.com/products/pillar-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/C5-SS-100-01.jpg?v=1712585117" alt="Pillar Candleholder by Minimalux" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pillar Candleholder</p></div>
+          <p class="card-brand">Minimalux</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mokkoamsterdam.com/taes-candle-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5e73916b28f23d676eebaddd/96b4f1c8-83b5-416f-99fa-fe97081ce0c1/TrebborAndersom+for+Mokko-29.jpg" alt="Taes Candle Holder by Mokko Amsterdam" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Taes Candle Holder</p></div>
+          <p class="card-brand">Mokko Amsterdam</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/leve-candle-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/MOR-513_arranjada_4x32000_07d6e0fa-447d-440e-a85d-283624c047bf.jpg?v=1770726848" alt="LEVE Candle Holder by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LEVE Candle Holder</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-candlestick-with-tray" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Candlestick3.jpg?v=1612388707" alt="NEB Candlestick With Tray 01 by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NEB Candlestick With Tray 01</p></div>
+          <p class="card-brand">No Early Birds</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/ljusstake-stjarna-raku" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/raku_paradis_11.png?v=1760096822" alt="Ljusstake stjärna Raku by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ljusstake stjärna Raku</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/vitamin-aubergine-candelabra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Melanzana_candele_accese.jpg?v=1730997283" alt="Vitamin Aubergine Candelabra by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vitamin Aubergine Candelabra</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-s-white-black-carte-blanche" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B0126018-008_040826_01.jpg?v=1785849049" alt="Candle holder S white by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder S white</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/lou-ljusstake" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/lou_grey.jpg?v=1788422135" alt="Lou ljusstake by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lou ljusstake</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/wardour-candlestick-burgundy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS337718_1.jpg?v=1756998745" alt="Wardour Candlestick Burgundy by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wardour Candlestick Burgundy</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/jeu-de-des-1-candle-holder-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Jeudedes_Green_1B.png?v=1743412144" alt="Jeu de dés 1 candle holder by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Jeu de dés 1 candle holder</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/brick-candle-holder-tall-limestone" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18508790_233077_-_Brick_Candle_Holder_Tall_-_Limestone_-_1.jpg?v=1781856892" alt="Brick Candle Holder by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Brick Candle Holder</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/grace-ljusstake" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/LjusstakeGraceavClaessonKoivistoRuneforASPLUNDCollection.jpg?v=1717234880" alt="Grace ljusstake by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Grace ljusstake</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/line-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Plinth_Pedestal_Kubus_Line_Candle_Holder_2_copy2.jpg?v=1676883108" alt="Kubus Line by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kubus Line</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-bole-large-green-jade" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/CA002-6.jpg?v=1733760504" alt="Candleholder Bole large by Buro Berger" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Bole large</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/shell-candle-holder-silver" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/1004-9100.jpg?v=1736937055" alt="Shell Candle Holder by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shell Candle Holder</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/dd-sphere-candle-holder-12-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_2303_PRODUCT_CANDLE_HOLDER_SPHERE_12_RED_1192.jpg?v=1738764406" alt="Sphere Candle Holder 12 by Dusty Deco" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sphere Candle Holder 12</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/eddy-3-wall-candle-holder-mirror-polished" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273951_1.png?v=1788867691" alt="Eddy 3 Wall Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eddy 3 Wall Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://finelittleday.com/products/malwina-kleparska-stor-ljusstake" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0912/5137/6472/files/candleholder_malwina_white_1_Fine_Little_Day.webp?v=1757341527" alt="MALWINA KLEPARSKA LARGE CANDLEHOLDER by Fine Little Day" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MALWINA KLEPARSKA LARGE CANDLEHOLDER</p></div>
+          <p class="card-brand">Fine Little Day</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/fundament-candle-holder-stainless-steel-form-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/FRAMAFundamentCandleHolderPackshot3.webp?v=1727350360" alt="Fundament Candle Holder | Stainless Steel | Form 1 by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fundament Candle Holder | Stainless Steel | Form 1</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/tiny-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250423023436/img_20250423023436/globalassets/inriver/integration/service/tiny-candleholder_910x1100_brandmodel2.jpg" alt="Tiny Candleholder by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tiny Candleholder</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/gallery-object-candle-low" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKSHOTS_1145.jpg?v=1783588736" alt="GALLERY OBJECT CANDLE HOLDER LOW by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">GALLERY OBJECT CANDLE HOLDER LOW</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://minimalux.com/products/u-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/u-candleholder-brass_bf3e0a0e-362b-4b3c-9278-3f157e8a458a.jpg?v=1699549640" alt="U Candleholder by Minimalux" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">U Candleholder</p></div>
+          <p class="card-brand">Minimalux</p>
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/copy-of-neb-candelabra-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/12161-4d44e177dc854d57a73c3328d0eacd41.jpg?v=1740070561" alt="NEB Candelabra by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NEB Candelabra</p></div>
+          <p class="card-brand">No Early Birds</p>
+        </div>
+      </a>
+      <a class="card" href="https://paradisverkstaden.se/products/trave-frohus-ljusstake" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0537/7494/2398/files/Glasstrut_3_Fro_2.png?v=1709642531" alt="Trave Fröhus Ljusstake by Paradisverkstaden" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Trave Fröhus Ljusstake</p></div>
+          <p class="card-brand">Paradisverkstaden</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/vitamin-cucumber-candlestick" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Zucchina_fronte_candela_accesa.jpg?v=1730997158" alt="Vitamin Cucumber Candlestick by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vitamin Cucumber Candlestick</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-set-3-chessboard-les-objets-mouleversants" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B8924007-999_01-jpg.png?v=1764734310" alt="Candle holder set/3 Chessboard Les Objets Mouleversants by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder set/3 Chessboard Les Objets Mouleversants</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/toulouse-ljusstake-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/toulose_old_house_web.jpg?v=1788436971" alt="Toulouse ljusstake by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Toulouse ljusstake</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/wardour-candlestick-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS335825_1_7b8468ac-54f7-4cc4-b9b9-d91f9b99ab4e.jpg?v=1756999032" alt="Wardour Candlestick Green by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wardour Candlestick Green</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/cobra-candle-holder-bone-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18509078_223072_-_Cobra_Candle_Holder_-_Bone_White_-_1.jpg?v=1774539200" alt="Cobra Candle Holder by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cobra Candle Holder</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/lightin" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Kubus_Light_In.jpg?v=1675775241" alt="Light&#x27;In by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Light&#x27;In</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-bole-medium-green-blue-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/CA002-3A.jpg?v=1733760988" alt="Candleholder Bole medium amber by Buro Berger" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Bole medium amber</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/dd-pyramid-candle-holders-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_2303_PRODUCT_PYRAMID_CANDLE_HOLDER_SET_RED_ALTERNATIVE_CROP_1_1040.jpg?v=1738764409" alt="Pyramid Candle Holders by Dusty Deco" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pyramid Candle Holders</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/shell-wall-candle-holder-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274173_1.png?v=1788769403" alt="Shell Wall Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shell Wall Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/ornament-candle-holder-steel-round" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2222_52118fb52e-ornament_candle_holder4-original_0035e5b9-c9d2-4cd0-962c-3ff38ee699d1.png?v=1722510628" alt="Ornament Candle Holder | Stainless Steel | Round by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ornament Candle Holder | Stainless Steel | Round</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/mattone-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260611031143/img_20260611031143/globalassets/inriver/integration/service/mattone-candleholder_910x1100_brandmodel.jpg" alt="Mattone Candleholder by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mattone Candleholder</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://minimalux.com/products/o-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/O-A1.jpg?v=1712752482" alt="O Candleholder by Minimalux" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">O Candleholder</p></div>
+          <p class="card-brand">Minimalux</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/vitamin-banana-candlestick" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Candela_banana_frontale_candela_accesa.jpg?v=1730996955" alt="Vitamin Banana Candlestick by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vitamin Banana Candlestick</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-no3-green-les-objets-mouleversants" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B8924003-500_01.jpg?v=1764734330" alt="Candle holder n°3 green Les Objets Mouleversants by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder n°3 green Les Objets Mouleversants</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/boule-vaggljusstake-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Boule_wall_sconce_1.jpg?v=1788256259" alt="Boule väggljusstake by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Boule väggljusstake</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/tube-candle-holder-big-bone-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/223074_Tube_big_white_mood_2048.jpg?v=1759394551" alt="Tube Candle Holder by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tube Candle Holder</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/kubus-8-raw-limited" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/byLassen_Kubus_8_Raw_Candles_3.jpg?v=1675775509" alt="Kubus 8 Raw by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kubus 8 Raw</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-bole-medium-green-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/CA002-4.jpg?v=1733760925" alt="Candleholder Bole medium by Buro Berger" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Bole medium</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/dd-arco-candle-holder-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_2303_PRODUCT_ARCO_CANDLE_HOLDER_GREY_0951.jpg?v=1738764423" alt="Arco Candle Holder by Dusty Deco" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arco Candle Holder</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/bellure-ring-candle-holder-brass-finish" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273900_1.png?v=1788770406" alt="Bellure Ring Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bellure Ring Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/ornament-candle-holder-steel-long" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2220_4b326ea9d8-ornament_candle_holder-long9-original.png?v=1722510594" alt="Ornament Candle Holder | Stainless Steel | Long by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ornament Candle Holder | Stainless Steel | Long</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/column-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260914032840/img_20260914032840/globalassets/inriver/integration/service/column-candleholder_910x1100_brandmodel.jpg" alt="Column Candleholder by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Column Candleholder</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://minimalux.com/products/a-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/A-A1_105d4aa9-fa67-45d4-a452-540c873a1cc2.jpg?v=1712752693" alt="A Candleholder by Minimalux" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">A Candleholder</p></div>
+          <p class="card-brand">Minimalux</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/vitamin-carrot-candlestick" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Candela_carota_accesa.jpg?v=1730996759" alt="Vitamin Carrot Candlestick by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vitamin Carrot Candlestick</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-no2-red-white-les-objets-mouleversants" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B8924002-305_01.png?v=1752551833" alt="Candle holder n°2 red/white Les Objets Mouleversants by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder n°2 red/white Les Objets Mouleversants</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/boule-ljusstake-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Boule_Twister_group_1.jpg?v=1787579797" alt="Boule ljusstake by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Boule ljusstake</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/kubus-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Kubus_T_7e2ea02c-0e17-47a1-93c2-8e0a57086895.jpg?v=1676028436" alt="Kubus 1 by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kubus 1</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-bole-small-amber-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/CA002-1.jpg?v=1733761385" alt="Candleholder Bole small amber by Buro Berger" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Bole small amber</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/bellure-candle-holder-brass-finish" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273899_1.png?v=1788770506" alt="Bellure Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bellure Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/arcs-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20251204042906/img_20251204042906/globalassets/inriver/integration/service/arcs-candleholder_910x1100_brandmodel.jpg" alt="Arcs Candleholder by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arcs Candleholder</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/machine-collection-transmission-candlestick-h-43-5" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti_DIESEL_MachineCollection-10952-1.jpg?v=1728855963" alt="Machine Collection Transmission Candlestick h. 43,5 by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Machine Collection Transmission Candlestick h. 43,5</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-no1-black-white-les-objets-mouleversants" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B8924001-909_01.jpg?v=1764734336" alt="Candle holder n°1 black/white Les Objets Mouleversants by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder n°1 black/white Les Objets Mouleversants</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/twist-golvljusstake-80-cm-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Twist_floor_candle_holder_80_cm_-_webb_1.jpg?v=1768307543" alt="Twist golvljusstake by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Twist golvljusstake</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/kubus-base" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/byLassen_Kubus_4_Candles_Base_For_Kubus_4_Matchbo_Cover_Matchbox_Snuffer_21b1a915-80e9-4307-8918-053fdfbf06d9.jpg?v=1675775819" alt="Kubus Base by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kubus Base</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-bole-small-blue-aqua" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/CA002-2.jpg?v=1733761078" alt="Candleholder Bole small blue-aqua by Buro Berger" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Bole small blue-aqua</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/eddy-wall-candle-holder-mirror-polished" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273950_1.png?v=1788867709" alt="Eddy Wall Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eddy Wall Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/tube-candleholder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260914033433/img_20260914033433/globalassets/inriver/integration/service/tube-candleholder_910x1100_brandmodel2.jpg" alt="Tube Candleholder by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tube Candleholder</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/machine-collection-transmission-candlestick" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/10954_Transmission_Candelstick-Machine-Collection-DLwS.png?v=1734691891" alt="Machine Collection Transmission Candlestick h. 26 by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Machine Collection Transmission Candlestick h. 26</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-ass-2-blue-silos" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325302-600_01-jpg.jpg?v=1755789640" alt="Candle holder ass/2 Silos by Serax" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder ass/2 Silos</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/boule-oval-vaggljusstake-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Boule_oval_wall_sconce_-_webb_1_2ec30c7e-28d9-402d-8b53-e5c195294cd8.jpg?v=1768306906" alt="Boule oval väggljusstake by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Boule oval väggljusstake</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/kubus-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/bylassen_Kubus_1_Candles_c14fe029-54bc-4f2f-931b-60915c3695b0.jpg?v=1760534288" alt="Kubus Candles by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kubus Candles</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-clean-cut-3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/products/Kandelaar1_F_1275x850_fa172c6b-0edc-406e-9d76-b0bb8bf3d769.jpg?v=1665326333" alt="Candleholder Clean Cut 3 by Buro Berger" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Clean Cut 3</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/oak-leaf-christmas-tree-candle-holders-set-of-4-silver" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273660_1.png?v=1788770552" alt="Oak Leaf Christmas Tree Candle Holders by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oak Leaf Christmas Tree Candle Holders</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-ass-2-orange-silos" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325302-350_01-jpg.jpg?v=1755789637" alt="Candle holder ass/2 orange Silos by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder ass/2 orange Silos</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://tellmemore.se/products/travertin-ljusstake" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0978/2031/1901/files/Travertine_candle_holders.jpg?v=1764323897" alt="Travertine ljusstake by Tell Me More" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Travertine ljusstake</p></div>
+          <p class="card-brand">Tell Me More</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/clip-candle-holder-wall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Clip_Candle_Holder_Wall.jpg?v=1664270446" alt="Clip Candle Holder by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Clip Candle Holder</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-clean-cut-5" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/products/Kandelaar2_F_1275x850_abfac24e-69e8-40e8-b817-2af0425d74ee.jpg?v=1664993775" alt="Candleholder Clean Cut 5 by Buro Berger" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Clean Cut 5</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/forest-christmas-tree-candle-holders-set-of-4-silver" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273661_1.png?v=1788770512" alt="Forest Christmas Tree Candle Holders by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Forest Christmas Tree Candle Holders</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-ass-2-burgundy-silos" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325302-310_01-jpg.jpg?v=1755789634" alt="Candle holder ass/2 burgundy Silos by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder ass/2 burgundy Silos</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/flambeau-candle-holder-wall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Flambeau_Candle_Holder_Wall_2.jpg?v=1664270167" alt="Flambeau Candle Holder by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flambeau Candle Holder</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-clean-cut-7" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/products/Kandelaar3_B_1275x850_da28857b-8141-4069-b3a3-fb17efdcacb7.jpg?v=1664993435" alt="Candleholder Clean Cut 7 by Buro Berger" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Clean Cut 7</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/valse-candle-holder-low-black-pure-candles-set-of-4-roseate-blend-gift-set" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104269432_1104269436.webp?v=1777024041" alt="Valse Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Valse Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-06-beige-molly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325107-100_01-jpg.jpg?v=1752551275" alt="Candle holder 06 beige Molly by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 06 beige Molly</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/duca-candle-holder" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Duca_Candle_Holder.jpg?v=1610453368" alt="Duca Candle Holder by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Duca Candle Holder</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-bole-small-red-bordeaux-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/CA001-3.jpg?v=1733762651" alt="Candleholder Bole small red-bordeaux by Buro Berger" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Bole small red-bordeaux</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/agape-wall-tealight-holder-candle-holder-gift-set-brass-finish" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104270023_1104270022.webp?v=1777022182" alt="Agapé Wall Tealight Holder &amp; Candle Holder Gift Set by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Agapé Wall Tealight Holder &amp; Candle Holder Gift Set</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-05-beige-molly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325106-100_01-jpg.jpg?v=1752551274" alt="Candle holder 05 beige Molly by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 05 beige Molly</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-bole-small-blue-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/Zeven-_Maikel_Thijssen_Photography_-_001.jpg?v=1780496384" alt="Candleholder Bole small by Buro Berger" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Bole small</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/newel-modular-candle-holder-set-of-4-rosso" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/297352_1104272064_2.png?v=1762177985" alt="Newel Modular Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Newel Modular Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-04-beige-molly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325105-100_01-jpg.jpg?v=1752551268" alt="Candle holder 04 beige Molly by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 04 beige Molly</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-bole-small-red-bordeaux" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/CA001-5.jpg?v=1733762539" alt="Candleholder Bole medium pink-red by Buro Berger" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Bole medium pink-red</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/soothe-block-candle-holder-aluminium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/91478_1104271982_1.png?v=1762177869" alt="Soothe Block Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Soothe Block Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/tealight-holder-ass-3-glazed-molly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325103-999_01-jpg.jpg?v=1752551265" alt="Tealight holder by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tealight holder</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-bole-large-blue-yellow" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/files/CA001-6.jpg?v=1733762418" alt="Candleholder Bole large red-pink by Buro Berger" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Bole large red-pink</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dedali-candle-holder-off-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/327913_1104271093_1.png?v=1762178427" alt="Dedali Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dedali Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-03-ass-3-glazed-molly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325102-999_01-jpg.jpg?v=1752551261" alt="Candle holder 03 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 03</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.buroberger.nl/products/candleholder-atol-small-orange-red" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0542/3952/7091/products/Vier-MaikelThijssenPhotography-004.jpg?v=1648493766" alt="Candleholder Atol small orange-red by Buro Berger" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candleholder Atol small orange-red</p></div>
+          <p class="card-brand">Buro Berger</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/agape-wall-tealight-holder-aluminium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/388323_1104271776_1.png?v=1762175128" alt="Agapé Wall Tealight Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Agapé Wall Tealight Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-02-ass-3-glazed-molly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325101-999_01-jpg.jpg?v=1752551258" alt="Candle holder 02 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 02</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/agape-wall-candle-holder-aluminium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/501592_1104271775_1.png?v=1762178919" alt="Agapé Wall Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Agapé Wall Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-01-ass-3-glazed-molly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325100-999_01-jpg.jpg?v=1752551258" alt="Candle holder 01 by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 01</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/candle-holder-circle-black-brass-small" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/136702_5757_1.png?v=1762183767" alt="Candle Holder Circle by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Holder Circle</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-l-beige-mira" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325008-100_01-jpg.jpg?v=1764734677" alt="Candle holder L beige Mira by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder L beige Mira</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/stone-christmas-tree-candle-holders-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/175952_1104265902_1.png?v=1762181310" alt="Stone Christmas Tree Candle Holders by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stone Christmas Tree Candle Holders</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-s-beige-mira" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325007-100_01-jpg.jpg?v=1764734679" alt="Candle holder S beige Mira by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder S beige Mira</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/balance-candle-holder-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/309013_5735_1.png?v=1762184143" alt="Balance Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Balance Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-box-beige-mira" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7325006-100_01-jpg.jpg?v=1752551247" alt="Candle holder &amp; box beige Mira by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder &amp; box beige Mira</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/avant-candelabra-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/239448_100554101_1.png?v=1762183325" alt="Avant Candelabra by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Avant Candelabra</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-green-cosas-lindas" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7324209-500_01.jpg?v=1752551209" alt="Candle holder Cosas lindas by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder Cosas lindas</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/bowl-candle-holder-ceramic-dark-grey-large" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/345381_1104264161_10.png?v=1762181970" alt="Bowl Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bowl Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-l-red-brown-marie-ann" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7324015-301_01-jpg.jpg?v=1764734299" alt="Candle holder L red brown Marie-Ann by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder L red brown Marie-Ann</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dito-candle-holder-single-dark-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/293144_1104264697_1.png?v=1762182144" alt="Dito Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dito Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-s-red-brown-marie-ann" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7324014-301_01-jpg.jpg?v=1764734301" alt="Candle holder S red brown Marie-Ann by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder S red brown Marie-Ann</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/forest-candle-holder-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/64814_1104264685_1.png?v=1762181564" alt="Forest Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Forest Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/tealight-holders-ass-3-beige-molly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7323216-100_01-jpg.jpg?v=1752551156" alt="Tealight holder ass/3 beige Molly by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tealight holder ass/3 beige Molly</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/luce-candle-holder-clear" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/221134_1104264802_1.png?v=1762182993" alt="Luce Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Luce Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holders-03-ass-3-beige-molly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7323215-100_01-jpg.jpg?v=1764733636" alt="Candle holder 03 ass/3 beige Molly by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 03 ass/3 beige Molly</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/erode-candle-holder-black-aluminium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/421688_1104266424_1.png?v=1762180816" alt="Erode Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Erode Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holders-02-ass-3-beige-molly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7323214-100_01-jpg.jpg?v=1764733636" alt="Candle holder 02 ass/3 beige Molly by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 02 ass/3 beige Molly</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sway-candelabra-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/662252_1104266338_1.png?v=1762181432" alt="Sway Candelabra by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sway Candelabra</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-l-grey-werk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7225003-813_01-jpg.jpg?v=1764734521" alt="Candle holder L grey Werk by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder L grey Werk</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/block-candle-holder-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/81265_1104266219_1.png?v=1762180829" alt="Block Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Block Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-s-grey-werk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7225002-813_01-jpg.jpg?v=1764734517" alt="Candle holder S grey Werk by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder S grey Werk</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/gale-candle-holder-large-blackened-aluminium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/590099_1104268695_2.png?v=1762179614" alt="Gale Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gale Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-blue-steel-candelabra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B7225001-900_01-jpg.jpg?v=1764734458" alt="Candle holder blue steel Candelabra by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder blue steel Candelabra</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/yara-candle-holder-medium-grey-pumice" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/308778_1104268188_1.png?v=1762181340" alt="Yara Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Yara Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-dark-blue-terres-de-reves" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5125001-600_01-jpg.jpg?v=1752549028" alt="Candle holder Terres de rêves by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder Terres de rêves</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/clam-candle-holder-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/638038_1104268031_1.png?v=1762181200" alt="Clam Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Clam Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-02-transparent-astarte" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4326013-050_01-jpg.jpg?v=1770948583" alt="Candle holder 02 transparent Astarté by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 02 transparent Astarté</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/kurinu-candle-holder-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/561366_1104270065_1.png?v=1762178860" alt="Kurinu Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kurinu Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-01-blue-nabucho" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4326012-600_01-jpg.jpg?v=1770948583" alt="Candle holder 01 Nabucho by Serax" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 01 Nabucho</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/ori-candle-holder-dark-stained-beech" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/105871_1104272061_1.png?v=1762177913" alt="Ori Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ori Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-01-transparent-nabucho" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4326012-050_01-jpg.jpg?v=1770948578" alt="Candle holder 01 transparent Nabucho by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 01 transparent Nabucho</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/gradia-candle-holder-round-clear" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/111726_1104272034_1.png?v=1762177927" alt="Gradia Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gradia Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-02-gray-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2324002-800_01-jpg.jpg?v=1764733994" alt="Candle holder 02 gray Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 02 gray Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/soothe-candle-holder-aluminium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/56948_1104271986_1.png?v=1762177844" alt="Soothe Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Soothe Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-01-gray-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2324001-800_01-jpg.jpg?v=1764733987" alt="Candle holder 01 gray Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 01 gray Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/soothe-4-candle-holder-brass-finish" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/95041_1104271985_1.png?v=1762177903" alt="Soothe 4 Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Soothe 4 Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-l-white-alabaster" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2323202-001_01-jpg.jpg?v=1752546653" alt="Tealight holder L white alabaster by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tealight holder L white alabaster</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/valse-floor-candle-holder-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/383323_1104269851_1.png?v=1762179903" alt="Valse Floor Candle Holder by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Valse Floor Candle Holder</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-m-white-albaster" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2323201-001_01-jpg.jpg?v=1764733306" alt="Tealight holder M white albaster by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tealight holder M white albaster</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/elysia-candelabra-brushed-stainless-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/179360_1104272380_1.png?v=1762178092" alt="Elysia Candelabra by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elysia Candelabra</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-s-white-albaster" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2323200-001_01-jpg.jpg?v=1752546645" alt="Tealight holder S white albaster by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tealight holder S white albaster</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-red-pique-fleurs" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B0925001-300_01-jpg.jpg?v=1752546127" alt="Candle holder red Pique-Fleurs by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder red Pique-Fleurs</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/candle-holder-03-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B0824406-050_01-jpg.jpg?v=1764733946" alt="Candle holder 03 Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle holder 03 Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a></div>
+  
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

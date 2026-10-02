@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desks — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="163 real desks from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/browse/desks.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Desks — Formground">
+<meta property="og:description" content="163 real desks from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/browse/desks.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Desks — Formground">
+<meta name="twitter:description" content="163 real desks from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-group { max-width: 520px; margin: 32px auto 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Browse", "item": "https://formground.com/browse/"}, {"@type": "ListItem", "position": 3, "name": "Desks", "item": "https://formground.com/browse/desks.html"}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <h1>Desks</h1>
+  <p class="category-intro">163 desks from independent makers. Every result links straight to the maker's own site.</p>
+  <div class="grid">
+      <a class="card" href="https://www.andtradition.com/products/rombe-if2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2025/04/146223A542_Rombe_IF2_Alabaster-uprights_Oak-shelves_Oak-desk-600x800.jpg" alt="Rombe IF2 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rombe IF2</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/ayrton-desk/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country_Aryton-Desk_AshWalnut_2-1024x1024.jpg" alt="Ayrton Desk by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ayrton Desk</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/tati-skrivbord-green-khaki" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/files/Tati_Desk_Green_Khaki.png?v=1743582747" alt="Tati Skrivbord by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tati Skrivbord</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/corbel-desk-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_Co_Task_Chair_Corbel_Desk_Reverse_Table_Lamp_23.jpg?v=1756285462" alt="Corbel Desk by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Corbel Desk</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-quiet-lines-complementi-scrittoi.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_complements-writing-desk_Quiet-Lines_01.jpg" alt="Quiet Lines writing desk by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Quiet Lines writing desk</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/table-b-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Desk_wall.jpg?v=1770199793" alt="Table B Desk by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Table B Desk</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/family/able" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/04/studio_able-table-desk_l55x-2.jpg" alt="Able Table Desk L561 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Able Table Desk L561</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/segment-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/DavidVu_Desk_main.jpg?v=1679346988" alt="Segment desk by David Vu Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Segment desk</p></div>
+          <p class="card-brand">David Vu Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/180l-r-deneb-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/files/180-Deneb-Desk-by-Anthony-Guerree-for-De-La-Espada_1_7e86da06-4527-4f22-a322-ca8174c7d077.jpg?v=1729679139" alt="DENEB DESK by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DENEB DESK</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/arco-desk-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/2630-8400_Hover.jpg?v=1737659017" alt="Arco Desk by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arco Desk</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://editions-midi.com/produit/bureu/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://editions-midi.com/wp-content/uploads/2024/09/HDlourmarin095015-01061-OK-V2-540x720.jpg" alt="Burèu by Editions Midi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Burèu</p></div>
+          <p class="card-brand">Editions Midi</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/feve-desk-natural-ash" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274629_1-bred.png?v=1788766347" alt="Feve Desk by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Feve Desk</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/tables/desk/big-sur-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/b1/af/7c/69/697cafb158064fd611c69db3/Fogia_BigSur_Desk_BlackOak_Anthracite Glass_Packshot_Front.png?auto=format&amp;w=2000&amp;q=90" alt="Big Sur Desk by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Big Sur Desk</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://gad.se/ala-bord/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gad.se/wp-content/uploads/2025/05/skrivbord-ek-bjork-stenskiva-250x250.jpg" alt="Ala Skrivbord by G.A.D" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ala Skrivbord</p></div>
+          <p class="card-brand">G.A.D</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/george-nelson-associates/desk-model-5494" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/EDA4BF16512837409F5E47F758764D94.jpg.webp" alt="Desk Model 5494 by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Desk Model 5494</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/gray-writing-desk-p4001" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19310__productGrid/gray-50_clipped_rev_1@2x.png" alt="Gray by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gray</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/tables/desk/cph-90-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260202060542/img_20260202060542/globalassets/inriver/integration/service/cph-90-desk_910x1100_brandmodel2.jpg" alt="CPH 90 Desk by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CPH 90 Desk</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.jongoulder.com/avoca-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6510bcbab829ad7b19b6c675/40ebd8a8-fb7c-4402-b4a1-a1c1d69e6e99/Innate+-+Desk+D.jpg" alt="Avoca - Desk by Jon Goulder" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Avoca - Desk</p></div>
+          <p class="card-brand">Jon Goulder</p>
+        </div>
+      </a>
+      <a class="card" href="https://jorispoggioli.com/design/desks/22.08.-" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://admin.jorispoggioli.com/wp-content/uploads/2025/12/Desk-1536x1229.png" alt="22.08.  by Joris Poggioli" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">22.08. </p></div>
+          <p class="card-brand">Joris Poggioli</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/parallel-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/WB_DESK.jpg?v=1772815980" alt="Parallel desk by Juntos Projects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Parallel desk</p></div>
+          <p class="card-brand">Juntos Projects</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/bureau-pastille-pastille-2-drawers-d3065" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/files/pastille-2drawers-00.jpg?v=1756902364" alt="Bureau Pastille 2 drawers D3065 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bureau Pastille 2 drawers D3065</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/132000014" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/132000014.jpg?v=1756995601" alt="Sandstone Desk Tray L by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sandstone Desk Tray L</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/chairs-carver-chairs-and-stools/desk-chair-set-of-feet-with-wheels-vik-1289" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/01219_c.jpg" alt="Vik Desk chair set of feet with wheels by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vik Desk chair set of feet with wheels</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/osis-block-desk/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/llotllov_milan_21_osis_block_desk_top-600x281.jpg" alt="OSIS Block Desk by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">OSIS Block Desk</p></div>
+          <p class="card-brand">Llot Llov</p>
+        </div>
+      </a>
+      <a class="card" href="https://mabeofurniture.com/product/kalahari-desk-with-privacy-screen-claesson-koivisto-rune-2013/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://mabeofurniture.com/wp-content/uploads/2024/09/Kalahari-Desk-With-Privacy-Screen-v1-706x1024.jpg-800x534.png" alt="Kalahari Desk With Privacy Screen by Mabeo Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kalahari Desk With Privacy Screen</p></div>
+          <p class="card-brand">Mabeo Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/lw_desk120/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_desk120/Product/oak_NL0.jpg" alt="DESK 120 by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DESK 120</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/homework-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Homework_01.0001_8dfb9d6a-a362-4857-942d-4be687a78a0a.png?v=1757597943" alt="Homework Desk by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Homework Desk</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/11_desks/315_bonbon-desk/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/315.png" alt="Bonbon Desk by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bonbon Desk</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/fold-out-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Fold-Out_Desk_PP_SS-Oak_GIF_01_FODO.gif?v=1756562313" alt="Fold-out Desk by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fold-out Desk</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/work-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/Front_Desk_-_200x100_walnut_9ee518b4-6791-4ed1-b65b-4120e7ec0eef.jpg?v=1770726429" alt="FRONT Desk by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FRONT Desk</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-writing-desk-green-leather-top" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEB_Writing_Desk_Green_leather_top.jpg?v=1786914652" alt="NEB Writing Desk by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NEB Writing Desk</p></div>
+          <p class="card-brand">No Early Birds</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/40x40-afvalbureau" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2025/06/250045-PietHeinEek-001-thumb-300x300.jpg" alt="40×40 Afvalbureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">40×40 Afvalbureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/doyle-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Doyle_20210572_ALT_LR_2_545578da-591b-4a31-8864-d55fbf9fdee0.jpg?v=1772557125" alt="Doyle desk by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Doyle desk</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/hemingway-w-drawer/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Hemingway-w.-drawer_black-top-black-legs-400x400.png" alt="Hemingway w. drawer Black Top by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hemingway w. drawer Black Top</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://tamo.design/products/piato-desk-natur-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/piato_170ae218-8c02-48bb-a477-e5e0f40b2bff.jpg?v=1751013699" alt="PIATO desk by Tamo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">PIATO desk</p></div>
+          <p class="card-brand">Tamo</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/domus-3-drawer-desk-walnut-olive-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS325368_1.jpg?v=1707150754" alt="Ex-Display Domus 3-Drawer Desk Walnut &amp; Olive Green by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ex-Display Domus 3-Drawer Desk Walnut &amp; Olive Green</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/tiptoe-x-jun-yasumoto-bureau-post" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/POST-bureau-140x70cm.jpg?v=1779355647" alt="Bureau POST by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bureau POST</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/elevate-desk-plate-1-pc-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Elevate_Desk_Black.png?v=1743412312" alt="Elevate desk plate by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elevate desk plate</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://lukaszkorol.com/products/biurko-z-jawora" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1049/3060/7436/files/DSC_9517-Edit.jpg?v=1786051538" alt="Biurko z jawora by Łukasz Korol" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Biurko z jawora</p></div>
+          <p class="card-brand">Łukasz Korol</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/rombe-if5" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2025/04/146236A545_Rombe_IF5_Anthracite-upright_Anthracite-shelves_Walnut-desk-600x800.jpg" alt="Rombe IF5 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rombe IF5</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/desk-two-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country_Desk-Two_Oak_2-1024x1024.jpg" alt="Desk Two by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Desk Two</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/vass-skrivbord" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/products/asplund_VASS_DESK_P4_Asplund_03.png?v=1625819801" alt="Vass skrivbord by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vass skrivbord</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/the-eclipse-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_Eclipse_Desk_Nonna_Lamp_Co_Task_Chair_Column_Table_Lamp_2.jpg?v=1772540875" alt="The Eclipse Desk by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">The Eclipse Desk</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-eileen-complementi-scrittoi.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_writing-desk_Eileen_01.jpg" alt="Eileen writing desk by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eileen writing desk</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/twenty-five-work-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/683F-Twenty-Five-Work-Table_6.jpg?v=1667317646" alt="TWENTY-FIVE WORK TABLE by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TWENTY-FIVE WORK TABLE</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://designhousestockholm.com/products/arco-table-glass-clear" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0865/9917/2420/files/2181-0000.jpg?v=1737659198" alt="Arco Desk glass by Design House Stockholm" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arco Desk glass</p></div>
+          <p class="card-brand">Design House Stockholm</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/feve-kids-desk-rose" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273038_1.png?v=1788771044" alt="Feve Kids Desk by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Feve Kids Desk</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jasper-morrison/doow4l-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/A8D01DA8081664419BB8A0AF6FAAA7F5.jpg.webp" alt="DOOW4L Desk by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DOOW4L Desk</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/pier-60-p24676" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__24121__productGrid/pier-60@2x.png" alt="Pier by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pier</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/tables/desk/passerelle-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250423012311/img_20250423012311/globalassets/inriver/integration/service/passerelle-desk_910x1100_brandmodel2.jpg" alt="Passerelle Desk by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Passerelle Desk</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://jorispoggioli.com/design/desks/frank-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://admin.jorispoggioli.com/wp-content/uploads/2024/12/Frank-PNG-2-1536x949.png" alt="FRANK by Joris Poggioli" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FRANK</p></div>
+          <p class="card-brand">Joris Poggioli</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/132000013" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/132000013.jpg?v=1756995601" alt="Sandstone Desk Tray M by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sandstone Desk Tray M</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-1-drawer-dita-1294" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1006cn_c.jpg" alt="Dita Desk 1 drawer by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dita Desk 1 drawer</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://mabeofurniture.com/product/saale-desk-mabeo-studio-2016/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://mabeofurniture.com/wp-content/uploads/2024/09/Saale-Desk-Mabeo-Studio-2016-v1-706x1024.jpg-800x534.png" alt="Saale Desk by Mabeo Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Saale Desk</p></div>
+          <p class="card-brand">Mabeo Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/lw_desk120_with_panel_and_drawer/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_desk120_with_panel_and_drawer/Product/oak_NL0.jpg" alt="DESK 120 (with panel and drawer) by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DESK 120 (with panel and drawer)</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/11_desks/232_jumbo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/232.png" alt="Jumbo by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Jumbo</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-writing-table-large-150x45-cm-zinc-front" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Desk_Large_Zink.jpg?v=1612389428" alt="NEB Writing Desk Large by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NEB Writing Desk Large</p></div>
+          <p class="card-brand">No Early Birds</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-afval-63x63-bureau" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2024/11/PHE_3209-thumb-1-300x300.jpg" alt="Afval Afval 63×63 Bureau by Piet Hein Eek" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval Afval 63×63 Bureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/yves-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Yves_desk_23_231_LR.jpg?v=1725812399" alt="Yves desk by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Yves desk</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/hemingway/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/EDITED-Hemingway-w.-drawer_black-top-black-legs-website-packshot-400x400.png" alt="Hemingway Black Top by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hemingway Black Top</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/domus-2-drawer-desk-walnut-olive" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS207887_1.jpg?v=1707135277" alt="Domus 2 Drawer Desk &amp; Olive by The Conran Shop" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Domus 2 Drawer Desk &amp; Olive</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/bureau-new-modern-bois" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/bureau-new-modern-chene-tiroirs-130x70-blanccreme.jpg?v=1773824489" alt="Bureau NEW MODERN by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bureau NEW MODERN</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/pavilion-av17" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/ATD_Retail_2021_Pavilion-AV17_Rely-HW41HW46-600x800.jpg" alt="Pavilion AV17 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pavilion AV17</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/hardy-desk-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country_Hardy-Desk_01-1024x1024.jpg" alt="Hardy Desk by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hardy Desk</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.asplundstore.se/products/oblique-skrivbord" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0161/9308/files/Oblique-desk-1.jpg?v=1775573229" alt="Oblique skrivbord by Asplund" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oblique skrivbord</p></div>
+          <p class="card-brand">Asplund</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/twenty-five-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/683Q-Twenty-Five-Desk-in-Danish-oiled-walnut_4.jpg?v=1681985040" alt="TWENTY-FIVE DESK by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TWENTY-FIVE DESK</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/edre-desk-dark-stained-pine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/333886_1104268306_1.png?v=1762179937" alt="Edre Desk by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Edre Desk</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/francois-bauchet/duo-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/EB895BEA48763348B6924BDD75BBEA71.jpg.webp" alt="Duo Desk by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Duo Desk</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/yaku-desk-p21504" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__18051__productGrid/yaku-61@2x.png" alt="Yaku by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Yaku</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/tables/desk/cph-190-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422041537/img_20250422041537/globalassets/inriver/integration/service/cph-190-desk_910x1100_brandmodel2.jpg" alt="CPH 190 Desk by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CPH 190 Desk</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://jorispoggioli.com/design/desks/marcello-ii" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://admin.jorispoggioli.com/wp-content/uploads/2024/07/Marcello-png-copie-2-1536x1235.png" alt="MARCELLO II by Joris Poggioli" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MARCELLO II</p></div>
+          <p class="card-brand">Joris Poggioli</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-postmoderne-3380" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1000ex_W.jpg" alt="Postmoderne Desk by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Postmoderne Desk</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/11_desks/288_nami-desk/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/288.png" alt="Nami desk by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nami desk</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-writing-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Desk_Brass.jpg?v=1611861289" alt="NEB Writing Desk Small by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NEB Writing Desk Small</p></div>
+          <p class="card-brand">No Early Birds</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afvalbureau-in-sloophout-maatwerk-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2022/10/PHE_5028-thumb-300x300.jpg" alt="Afvalbureau’s in sloophout by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afvalbureau’s in sloophout</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/menton-inlaid-leather-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Menton_inlaid_23_3493copy.jpg?v=1764699432" alt="Menton inlaid leather desk by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Menton inlaid leather desk</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/domus-2-drawer-desk-walnut-charcoal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS207886_1.jpg?v=1707135250" alt="Domus 2 Drawer Desk Walnut &amp; Charcoal by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Domus 2 Drawer Desk Walnut &amp; Charcoal</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/bureau-tiptoe-120x60cm-bois-ancien-recycle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-120x60-boisancien-noirgraphite_d37f47c7-3a30-42da-a218-0b6e722ec3db.jpg?v=1777055338" alt="Bureau TIPTOE 120x60cm by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bureau TIPTOE 120x60cm</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/pavilion-av16" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Pavilion-AV17-600x800.png" alt="Pavilion AV16 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pavilion AV16</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/desk-three-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country_Desk-Three_Oak_01-1024x1024.jpg" alt="Desk Three by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Desk Three</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/365q-orson-micro-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/365Q-ORSON-MICRO-DESK-by-Matthew-Hilton_1.jpg?v=1656321800" alt="ORSON MICRO DESK by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ORSON MICRO DESK</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sector-desk-oakbrass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/375965_1104263246_1.png?v=1762170478" alt="Sector Desk by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sector Desk</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/edward-barber-and-jay-osgerby/hakone-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/0C3FCD93193AAE47880DE9865320E3DC.jpg.webp" alt="Hakone Desk by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hakone Desk</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/tables/desk/cph-10-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422080703/img_20250422080703/globalassets/inriver/integration/service/cph-10-desk_1220x1220_brandmodel2.jpg" alt="CPH 10 Desk by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CPH 10 Desk</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://jorispoggioli.com/design/desks/orfeo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://admin.jorispoggioli.com/wp-content/uploads/2023/01/TABLES-ORFEO-transparent-ok.png" alt="ORFEO by Joris Poggioli" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ORFEO</p></div>
+          <p class="card-brand">Joris Poggioli</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-secretaire-indiscret-3598" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100ceq_c.jpg" alt="Indiscret Desk - secretaire by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Indiscret Desk - secretaire</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-bureau" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2022/06/02_Afval_Bureau_TFP_210931_perspective01THUMBNAIL-300x300.jpg" alt="Afval bureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval bureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/domus-2-drawer-desk-oak-pebble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS207885_1.jpg?v=1707923433" alt="Domus 2 Drawer Desk &amp; Pebble by The Conran Shop" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Domus 2 Drawer Desk &amp; Pebble</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etagere-bureau-unit-h180-215-l164cm-acier-thermolaque" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/DU6steel_02-02-00_Black.jpg?v=1777055158" alt="Etagère bureau UNIT by Tiptoe" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagère bureau UNIT</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/daystak-desk-rd3" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Daystak-Table-RD2-RD3-w.-Daystak-Desk-Drawer_Fenix-Verde-Comodoro-and-Beech_Angled-front-600x800.png" alt="Daystak Desk RD3 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Daystak Desk RD3</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/small-oak-desk/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country_Desk-One_01-1-1024x1024.jpg" alt="Desk One by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Desk One</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/106-harold-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/HaroldDeskbyNichettoinwalnutweb.jpg?v=1600420091" alt="HAROLD DESK by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">HAROLD DESK</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sector-desk-brackets-large-black-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/318136_1104263193_1.png?v=1762181881" alt="Sector Desk Brackets by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sector Desk Brackets</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ignotus-nomen-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/A6BBBF8E899DAF4388AE4B210788FF2E.jpg.webp" alt="Ignotus Nomen Desk by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ignotus Nomen Desk</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/lighting/table-lamp/apex-desk-clip-lamp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422111943/img_20250422111943/globalassets/inriver/integration/service/apex-desk-clip-lamp_910x1100_brandmodel2.jpg" alt="Apex Desk Clip Lamp by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Apex Desk Clip Lamp</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://jorispoggioli.com/design/desks/marcello-bold" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://admin.jorispoggioli.com/wp-content/uploads/2022/12/marcello-bold-transparent.png" alt="MARCELLO BOLD by Joris Poggioli" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MARCELLO BOLD</p></div>
+          <p class="card-brand">Joris Poggioli</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-briord-2674" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1006oz_c.jpg" alt="Briord Desk by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Briord Desk</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-afval-grid-bureau-125-x-125" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2022/05/03_125x125_Waste_waste_grid_desk_perspective02_THUMBNAIL-300x300.jpg" alt="Afval afval grid bureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval afval grid bureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/domus-3-drawer-desk-walnut-pebble" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS325369_1.jpg?v=1738844442" alt="Domus 3 Drawer Desk Walnut &amp; Pebble by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Domus 3 Drawer Desk Walnut &amp; Pebble</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/bureau-unit-h110-a-180-x-l164cm-bois-eco-certifie" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/UO3_02-00-00_White.jpg?v=1777048119" alt="Bureau UNIT by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bureau UNIT</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/palette-jh9" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2019/08/Palette-JH9-Black-600x800.png" alt="Palette JH9 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palette JH9</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/454rl-companions-writing-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/454RCompanionsWritingDeskbyStudioilseinwhiteoiledash-closedweb.jpg?v=1600420117" alt="COMPANIONS WRITING DESK by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">COMPANIONS WRITING DESK</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/little-architect-desk-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/160206_100598693_1.png?v=1762161982" alt="Little Architect Desk by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Little Architect Desk</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/david-dubois/k-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/3BC66052E4977640BC2A45508B514890.jpg.webp" alt="K Desk by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">K Desk</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://jorispoggioli.com/design/desks/marcello" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://admin.jorispoggioli.com/wp-content/uploads/2023/01/Marcello-detoure-1-1097x1536.png" alt="MARCELLO by Joris Poggioli" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MARCELLO</p></div>
+          <p class="card-brand">Joris Poggioli</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-roll-2481" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/19970050_i_vue_c.jpg" alt="Roll Desk by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Roll Desk</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-afval-60-x-60-bureau" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2021/09/05_60x60_Afval_Afval_Buro_perspective04_THUMBNAIL-300x300.jpg" alt="Afval afval 60 x 60 bureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval afval 60 x 60 bureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/domus-3-drawer-desk-walnut-charcoal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS325367_1.jpg?v=1776953762" alt="Domus 3 Drawer Desk Walnut &amp; Charcoal by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Domus 3 Drawer Desk Walnut &amp; Charcoal</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/bloc-de-rangement-wave-new-modern" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/wave-new-modern-noir_f9c9944e-aae6-4b52-84ef-fe46ad1ae8d5.jpg?v=1777042366" alt="Bloc de rangement en acier pour bureau NEW MODERN by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bloc de rangement en acier pour bureau NEW MODERN</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/060-elliot-deskdressing-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/060-ELLIOT-DESK-DRESSING-TABLE-by-Jason-Miller_1.jpg?v=1631112548" alt="ELLIOT DESK/DRESSING TABLE by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ELLIOT DESK/DRESSING TABLE</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/little-architect-desk-kit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/150896_1104270892_1.png?v=1762178317" alt="Little Architect Desk Kit by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Little Architect Desk Kit</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jasper-morrison/sdoow4l-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/DA825E85F6301546947B6420181ECEDF.jpg.webp" alt="SDOOW4L Desk by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SDOOW4L Desk</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-alando-1015" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100781_c.jpg" alt="Alando Desk by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alando Desk</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afvalbureau-in-sloophout-maatwerk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2021/04/02_Afval_Bureau_Michael_Lewis_perspective01_THUMBNAIL-300x300.jpg" alt="Afvalbureau in sloophout by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afvalbureau in sloophout</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/domus-3-drawer-desk-walnut-olive" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS325368_1.jpg?v=1707150754" alt="Domus 3 Drawer Desk Walnut &amp; Olive by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Domus 3 Drawer Desk Walnut &amp; Olive</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/bureau-mural-bois-ancien-recycle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/bureau-mural-wave-bois-ancien.jpg?v=1777041322" alt="Bureau mural TIPTOE 120x60cm by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bureau mural TIPTOE 120x60cm</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/365-orson-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/365OrsonDeskbyMatthewHiltoninblackoiledashweb.jpg?v=1600420157" alt="ORSON DESK by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ORSON DESK</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/tarn-desk-dark-stained-beech" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/125303_1104270012_1.png?v=1762178979" alt="Tarn Desk by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tarn Desk</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-white-lacquer-ursuline-71" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/005LCZ10_i_vue_c.jpg" alt="Ursuline Desk white lacquer by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ursuline Desk white lacquer</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/hotel-bureau-in-sloophout" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2021/04/02_Hotel_Desk_Sloophout_editie_perspective01_THUMBNAIL-1-300x300.jpg" alt="Hotel bureau in sloophout by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hotel bureau in sloophout</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/bureau-enfant-ardoise-vice-versa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/bureau-kids-ardoise-vert.jpg?v=1777037689" alt="Bureau enfant TIPTOE 70x50cm by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bureau enfant TIPTOE 70x50cm</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/365s-orson-compact-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/365SOrsonCompactDeskbyMatthewHiltoninDanishoiledwalnutweb2.jpg?v=1600420159" alt="ORSON COMPACT DESK by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ORSON COMPACT DESK</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-walnut-black-fenix-laminate-base-in-circular-tubing-tanis-55" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/005HCW8N_i_vue_c.jpg" alt="Tanis Desk walnut + black fenix laminate base in circular tubing by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tanis Desk walnut + black fenix laminate base in circular tubing</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/hotel-bureau-in-eiken" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2021/03/02_Hotel_Desk_Oak_Editie_perspective01_thumbnail-300x300.jpg" alt="Hotel bureau in eiken by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hotel bureau in eiken</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/pied-de-table-et-bureau-enfant-50cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/pied-50cm-kids-vert.jpg?v=1777037589" alt="Pied de table et bureau enfant by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pied de table et bureau enfant</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/370-orson-desk-accessories" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/AccessoriesforOrsonDeskbyMatthewHiltoninDanishoiledwalnut2web.jpg?v=1600420159" alt="ORSON DESK ACCESSORIES by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ORSON DESK ACCESSORIES</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-european-walnut-ursuline-72" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/005HCZ10_i_vue_c.jpg" alt="Ursuline Desk european walnut by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ursuline Desk european walnut</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/buro-in-sloophout" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2021/03/02_Hotel_Desk_perspective01-300x300.jpg" alt="Bureau in sloophout by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bureau in sloophout</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/bureau-open-space-new-modern-2-places-plastique-recycle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/NM-150x140-venezia-noir.jpg?v=1777034507" alt="Bureau open-space NEW MODERN 2 places by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bureau open-space NEW MODERN 2 places</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/756-tray-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/TrayDeskbyNeri_Huinwhiteoiledoak-openWEB.jpg?v=1600420208" alt="TRAY DESK by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TRAY DESK</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-walnut-top-base-in-black-stained-ash-ennea-4576" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100icr_c.jpg" alt="Ennéa Desk walnut top base in black stained ash by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ennéa Desk walnut top base in black stained ash</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/7-zonen-bureau" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2021/02/7-zonen-buro-VK-front-300x300.jpg" alt="7 zonen bureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">7 zonen bureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/bureau-open-space-new-modern-4-places-multiplis-blanc" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/NM-240x140-strat-noir-1_3d7870c4-49c2-4414-a2b2-98118981c9ef.jpg?v=1777034120" alt="Bureau open-space NEW MODERN 4 places by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bureau open-space NEW MODERN 4 places</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/777-drape-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/777DrapeDeskbyNeri_Huinblackpaintedashandblacknakedleatherweb.jpg?v=1611828634" alt="DRAPE DESK by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DRAPE DESK</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-top-in-black-laminate-base-in-black-stained-ash-ennea-4575" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100hy4_c.jpg" alt="Ennéa Desk top in black laminate base in black stained ash by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ennéa Desk top in black laminate base in black stained ash</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/eiken-bureau" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2020/01/Eiken-bureautje-Welcome-022-300x300.jpg" alt="Eiken bureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eiken bureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/bloc-de-rangement-wave-noir-graphite-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Monochrome-Noir.jpg?v=1774598550" alt="Bloc de rangement en acier pour bureau TIPTOE by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bloc de rangement en acier pour bureau TIPTOE</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/784-solo-desk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/784SoloDeskbyNeri_HuinDanishoiledwalnutweb.jpg?v=1616086916" alt="SOLO DESK by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SOLO DESK</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-walnut-top-brilliant-chromed-base-president-4574" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100hpa_c.jpg" alt="Président Desk walnut top brilliant chromed base by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Président Desk walnut top brilliant chromed base</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-afval-anders-buro-6" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2019/08/Waste-waste-desk-60-x-60-witvoor-1-300x300.jpg" alt="Afval afval 60×60 bureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval afval 60×60 bureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/pied-de-table-standard-75cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Tiptoe_Pied75_GrisEucalyptus.jpg?v=1774596741" alt="Pied de table et bureau by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pied de table et bureau</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/solo-desk-pencil-tray" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/793PencilTrayforSoloDeskbyNeri_Huweb.jpg?v=1600420242" alt="SOLO DESK PENCIL TRAY by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SOLO DESK PENCIL TRAY</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/wall-mounted-desk-intervalle-4179" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100e8l_c.jpg" alt="Intervalle Wall-mounted desk by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Intervalle Wall-mounted desk</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-afval-buro" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2019/08/01_Afval_afval_buro_perspective01_thumbnail-300x300.jpg" alt="Afval afval 40×40 bureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval afval 40×40 bureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/wall-mounted-desk-nubo-3320" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1000sg_c.jpg" alt="Nubo Wall-mounted desk by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nubo Wall-mounted desk</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/bureau-voor-filosoof" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2018/02/bureau-voor-filosoof-W.jpg" alt="Bureau voor filosoof by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bureau voor filosoof</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-clyde-1323" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1002zr_c.jpg" alt="Clyde Desk by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Clyde Desk</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/donker-afvalbureau-maatwerk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2018/01/03_Donkere_Afval_Bureau_perspective03_thumbnail-300x300.jpg" alt="Donker afvalbureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Donker afvalbureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/desks-and-secretaires/desk-rewrite-1255" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1001af_c.jpg" alt="Rewrite Desk by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rewrite Desk</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/dubbele-afval-afval-60x60buro-in-sloophout" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2018/01/afval-afval-buro-2-lades-open-W.jpg" alt="Afval afval 60×60 dubbel bureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval afval 60×60 dubbel bureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/bureau" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/10/buro-school-venray-W.jpg" alt="Schoolbureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Schoolbureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/vakwerktafel-erik-gutter" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/10/Crisisvakwerkbureau.jpg" alt="Vakwerk bureau voor Erik Gutter by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vakwerk bureau voor Erik Gutter</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/boomstam-burotafel-exclusief-ladenblok" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/06/boomstamburo.jpg" alt="Boomstambureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Boomstambureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/lasbureau" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2021/03/desk-chair-VK-1400px-300x300.jpg" alt="Lasbureau by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lasbureau</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a></div>
+  
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

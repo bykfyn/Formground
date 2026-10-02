@@ -1,0 +1,1778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shelving — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="233 real shelving from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/browse/shelving.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Shelving — Formground">
+<meta property="og:description" content="233 real shelving from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/browse/shelving.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Shelving — Formground">
+<meta name="twitter:description" content="233 real shelving from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-group { max-width: 520px; margin: 32px auto 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Browse", "item": "https://formground.com/browse/"}, {"@type": "ListItem", "position": 3, "name": "Shelving", "item": "https://formground.com/browse/shelving.html"}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <h1>Shelving</h1>
+  <p class="category-intro">233 shelving from independent makers. Every result links straight to the maker's own site.</p>
+  <div class="grid">
+      <a class="card" href="https://www.andtradition.com/products/alima-nds4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/ATD_Packshots_159746A602A371_Alima-NDS4_Lacquered-Oak-w-Chrome_Angled-Front-600x800.jpg" alt="Alima NDS4 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alima NDS4</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://apetersen.dk/products/bookkeeper" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0944/2990/5239/files/A-Petersen-Dan-Svarth-Bookkeeper-01.jpg?v=1761036467" alt="Bookkeeper by A. Petersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bookkeeper</p></div>
+          <p class="card-brand">A. Petersen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/blanket-chest-two/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another_Country_Blanket_Chest_Two_001-1024x1024.jpg" alt="Blanket Chest Two by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Blanket Chest Two</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-pab-contenitori-zona-giorno.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_wallsystem_Pab_01.jpg" alt="Pab by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pab</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/eclipso-shelving-system" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD-Eclipso-shelf-beige-2-sie.png?v=1760542251" alt="Eclipso Shelving Units by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eclipso Shelving Units</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/1234567-bookshelf" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/FrontWB.jpg?v=1731606806" alt="1234567 bookshelf by Clay Brown" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">1234567 bookshelf</p></div>
+          <p class="card-brand">Clay Brown</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.deceresstudio.com/gotha-bookcase" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/60c6c7d303b6bb345051e428/542860f1-210f-4d4d-8074-921b1f1a68fe/DECERES_GOTHA+WEB-04.jpg" alt="Gotha Bookcase by Deceres Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gotha Bookcase</p></div>
+          <p class="card-brand">Deceres Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://eilersen.eu/products/shelves/root-tower/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://eilersen.eu/media/17767/thumbnail__0001_luce-corner-sofa-252x220-cm-cross-36-and-wheel-footstool-spider-square-and-triangle-table-and-root-tower.jpg" alt="Root Tower by Eilersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Root Tower</p></div>
+          <p class="card-brand">Eilersen</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/kona-bookcase-3-x-2-with-3-cabinet-inserts-dark-stained-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274621_1-bred.png?v=1788766285" alt="Kona Bookcase by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kona Bookcase</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelf/arch-shelf-high" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/66/c3/7c/69/697cc366a3362c07c8f64910/Fogia-Arch High-Black-Packshot-Transparent.png?auto=format&amp;w=2000&amp;q=90" alt="Arch Shelf, High by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arch Shelf, High</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/a-line-storage-bench-90-smoked-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2026/05/Form-and-Refine_A-Line-Storage-bench-90_Smoked-oak_front-800x800.webp" alt="A Line Storage Bench 90 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">A Line Storage Bench 90</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/shelf-library-system" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/FRAMA-Shelf-Library-Configurator_f10efe26-b315-42be-b2b3-963208f65ea8.webp?v=1752148981" alt="Shelf Library System by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shelf Library System</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://gad.se/stor-stack-vagghylla/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gad.se/wp-content/uploads/2025/05/Stor-Stack-vagghylla-vitoljad-bjork-250x250.jpg" alt="Stor Stack Vägghylla by G.A.D" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stor Stack Vägghylla</p></div>
+          <p class="card-brand">G.A.D</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/ernest-race/ba-shelving-unit-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/D637EE42C44D594DADD7A2B527746B2E.jpg.webp" alt="BA shelving unit by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BA shelving unit</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/cabinets-and-bookshelves/flexor-shelving-system" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/268/flexor_shelving_system_1100x550_new.jpg" alt="Flexor Shelving System by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flexor Shelving System</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/judith-skohylla/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2025/02/Garsnas_Judith_p_07-1620x1080.jpg" alt="Judith skohylla by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Judith skohylla</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/storage/shelving-system/woody-shelving" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250423025818/img_20250423025818/globalassets/inriver/integration/service/woody-column-_910x1100_brandmodel2.jpg" alt="Woody Shelving by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Woody Shelving</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://itg.studio/products/shelf-life-cobalt-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0894/4726/8616/files/SHELFLIFE-BLUE-INTERESTINGTIMESGANG-1-BG.png?v=1741121598" alt="Shelf Life by Interesting Times Gang" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shelf Life</p></div>
+          <p class="card-brand">Interesting Times Gang</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kinandcompany.com/work/thin-shelf-double" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/31.thin-shelf-double/3.Thin Shelf Double.jpg" alt="Thin Shelf Double by Kin and Co" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Thin Shelf Double</p></div>
+          <p class="card-brand">Kin and Co</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/400400588" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/400400588.jpg?v=1780562346" alt="Curved Wall Shelf by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Curved Wall Shelf</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kallemo.se/en/sida/limiterat/wowmom-english" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/e5/WowMom_frilagd-e5222e02.png" alt="WOWMOM by Källemo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">WOWMOM</p></div>
+          <p class="card-brand">Källemo</p>
+        </div>
+      </a>
+      <a class="card" href="https://lemonfurniture.co/products/tsumo-shelf-unit-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0679/2622/9278/files/Lemon-LifestylePhotography-TsumoShelfUnit01.jpg?v=1785835848" alt="Tsumo Shelf Unit by Lemon Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tsumo Shelf Unit</p></div>
+          <p class="card-brand">Lemon Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/shelving-units/shelving-unit-dita-3327" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1005ua_W.jpg" alt="Dita Shelving unit by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dita Shelving unit</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/axis-display-unit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKS_52358.jpg?v=1783589662" alt="AXIS DISPLAY UNIT by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AXIS DISPLAY UNIT</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/360-drawer-units-on-wheels/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2015/02/Magis_360_container_product_group_AC270_bright-yellow_bright-blue_magenta_01_icona-292x300.jpg" alt="360°new by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">360°new</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_angled_open_shelf_207_left/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_angled_open_shelf_207_left/Product/oak_BNK1.jpg" alt="ANGLED OPEN SHELF 207 Left by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ANGLED OPEN SHELF 207 Left</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/shelving-system-booklet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/Shelving-System-Booklet.jpg?v=1769246442" alt="Shelving System Booklet by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shelving System Booklet</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/al-01" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/AL-01_2.jpg?v=1730146714" alt="AL-01 shelf by Orlando Pippig" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AL-01 shelf</p></div>
+          <p class="card-brand">Orlando Pippig</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/audley-shelving" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Audleyshelving_211507.jpg?v=1764934415" alt="Audley shelving by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Audley shelving</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/giacometti_bookshelf" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/CCT65-VSG-BKO-HERO.jpg?v=1725965216" alt="Giacometti Bookshelf by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Giacometti Bookshelf</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/estanteria-circular-nara/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/estantericircular1-1-600x600.jpg" alt="ESTANTERÍA CIRCULAR NARA by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ESTANTERÍA CIRCULAR NARA</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/cut-n-paste-shelf-big" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/15181_shelf_cut_paste.jpg?v=1728433198" alt="CUT &#x27;N PASTE Shelf Big by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CUT &#x27;N PASTE Shelf Big</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.shibui.ch/product-page/float" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://static.wixstatic.com/media/62b04d_ace341c557a14b07acae6f1130032b47.jpg/v1/fit/w_500,h_500,q_90/file.jpg" alt="float by Shibui" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">float</p></div>
+          <p class="card-brand">Shibui</p>
+        </div>
+      </a>
+      <a class="card" href="https://tamo.design/products/ligo-4-bookcase" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/LIGO_4_clay_2c8a96ef-e3a6-4e51-86d7-9ddf2fee0f29.jpg?v=1769854744" alt="LIGO 4 bookcase by Tamo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LIGO 4 bookcase</p></div>
+          <p class="card-brand">Tamo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/lot-3-etageres-murales-acier-pli" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/PLI_30_Beige.jpg?v=1773824821" alt="Lot de 3 étagères murales PLI en acier by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lot de 3 étagères murales PLI en acier</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n1-unlacquered-messing" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9018100U_01-jpg.jpg?v=1761517203" alt="shelf n°1 unlacquered by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">shelf n°1 unlacquered</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/stedge-extra-shelf-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_140024_Stedge_extra_shelf_80cm_Black-black.png?v=1784893417" alt="Stedge extra shelf by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stedge extra shelf</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/tone-shelf" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/YSH_ToneShelf_main.jpg?v=1679341912" alt="Tone shelf by YSH Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tone shelf</p></div>
+          <p class="card-brand">YSH Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/alima-nds5" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/ATD_Contract-Images_Collection-2026.02_Mist-AP17_Alima-NDS5_Hi-Lo-AV56_Hi-Lo-AV54_02-600x800.jpg" alt="Alima NDS5 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alima NDS5</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/wmb-bar-trolley-x-another-country/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/AnotherCountry_WMBROWNxAC-BarTrolley17-1024x1024.jpg" alt="WMB Bar Trolley x Another Country by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">WMB Bar Trolley x Another Country</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-flat-c-contenitori-zona-giorno-new.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_wallsystem_Flat-C_bookcases_02.jpg" alt="Flat.C by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flat.C</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rivan-display-shelf-35-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274237_1.png?v=1788769097" alt="Rivan Display Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rivan Display Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelf/arch-shelf-low" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/d5/c3/7c/69/697cc3d5c4748ed587e74d4c/Fogia-Arch Low-Black-Packshot-Transparent.png?auto=format&amp;w=2000&amp;q=90" alt="Arch Shelf, Low by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arch Shelf, Low</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/a-line-storage-bench-111-smoked-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2026/05/Form-and-Refine_A-line-Storage-Bench-Smoked-Oak-front-800x800.webp" alt="A Line Storage Bench 111 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">A Line Storage Bench 111</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://gad.se/staende-stack-vagghylla/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gad.se/wp-content/uploads/2026/03/6-scaled-250x250.png" alt="Stående Stack Vägghylla by G.A.D" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stående Stack Vägghylla</p></div>
+          <p class="card-brand">G.A.D</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/francois-bauchet/cellae-h1-wall-mounted-shelf" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/B1D12A9CDABB3B4AA713B6A2A14412FD.jpg.webp" alt="Cellae H1 Wall-mounted shelf by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cellae H1 Wall-mounted shelf</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/cabinets-and-bookshelves/plomis-bookshelves" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/269/Plomis_Bookshelves_1100x5501.jpg" alt="Plomis Bookshelves by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Plomis Bookshelves</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/storage/shelf/korpus-shelf" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422034913/img_20250422034913/globalassets/inriver/integration/service/korpus-shelf_910x1100_brandmodel4.jpg" alt="Korpus Shelf by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Korpus Shelf</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kinandcompany.com/work/thin-shelf-single" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/30.thin-shelf-single/1.Thin Shelf Single.jpg" alt="Thin Shelf Single by Kin and Co" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Thin Shelf Single</p></div>
+          <p class="card-brand">Kin and Co</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/400400579" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/400400579-1.jpg?v=1769597139" alt="Planar Wall Shelf S by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Planar Wall Shelf S</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/shelving-units/shelving-unit-everywhere-2274" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1002tb_c.jpg" alt="Everywhere Shelving unit by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Everywhere Shelving unit</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/elysee/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2015/02/Magis_elysee_shelving-system_product_front_LB163_LB167_oak_red_01_icona-357x300.png" alt="Elysée by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elysée</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_angled_open_shelf_207_right/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_angled_open_shelf_207_right/Product/oak_BNK1.jpg" alt="ANGLED OPEN SHELF 207 Right by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ANGLED OPEN SHELF 207 Right</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/magazine-shelving-signifly" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Magazine-Shelving_PP_MS.115.1_Oak_Black_High-Res_01_2ccc0f9e-a307-46f8-a31c-50318c560bc3.jpg?v=1706833418" alt="Magazine Shelving by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Magazine Shelving</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/post-office-shelving" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_PO-shelving_4753LR.jpg?v=1765288485" alt="Post office shelving by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Post office shelving</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/estanteria-baja-nara/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/2vicalweb-1-600x600.jpg" alt="ESTANTERÍA BAJA NARA by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ESTANTERÍA BAJA NARA</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/cut-n-paste-shelf-medium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/15180_shelf_cut_paste.jpg?v=1728433188" alt="CUT &#x27;N PASTE Shelf Medium by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CUT &#x27;N PASTE Shelf Medium</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tamo.design/products/ligo-3-bookcase" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/ligo_3_dark.jpg?v=1769854731" alt="LIGO 3 bookcase by Tamo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LIGO 3 bookcase</p></div>
+          <p class="card-brand">Tamo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etagere-murale-acier-pli" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/PLI_X1_45_Beige_ad24ea6a-b10a-443e-8819-d1b693b9b135.jpg?v=1779351728" alt="Etagère murale PLI en acier by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagère murale PLI en acier</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n4-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017103Z_01-jpg.jpg?v=1761517182" alt="shelf n°4 by Valerie Objects" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">shelf n°4</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/stedge-shelf-black-3-shelves" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_140044_Stedge_80_cm_3_shelves_Black-black.png?v=1785600028" alt="Stedge shelf by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stedge shelf</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/alima-nds6" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/ATD_Packshots_159754A603A372_Alima-NDS6_Lacquered-Walnut-w-Chrome_Angled-Front-600x800.jpg" alt="Alima NDS6 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alima NDS6</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/davenport-sideboard-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/220909-ANOTHERCOUNTRY0130-copy-b-1024x1024.jpg" alt="Davenport Sideboard by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Davenport Sideboard</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-jack-contenitori-zona-giorno-new.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_wallsystem_Jack_01.jpg" alt="Jack by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Jack</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/pear-braided-corner-shelf-h55-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274235_1.png?v=1788769257" alt="Pear Braided Corner Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pear Braided Corner Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelf/arch-shelf-mini" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/47/c4/7c/69/697cc447e6576d2d0fa9b1c6/Fogia-Arch Mini-Black-Packshot-Transparent.png?auto=format&amp;w=2000&amp;q=90" alt="Arch Shelf, Mini by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arch Shelf, Mini</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/a-line-storage-bench-68-smoked-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2026/05/Form-and-Refine_A-Line-Storage-bench-68_Smoked-oak_front-800x800.webp" alt="A Line Storage Bench 68 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">A Line Storage Bench 68</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://gad.se/stack-vagghylla/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gad.se/wp-content/uploads/2025/05/stack-vagghylla-ek-250x250.jpg" alt="Stack Vägghylla by G.A.D" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stack Vägghylla</p></div>
+          <p class="card-brand">G.A.D</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/ronan-and-erwan-bouroullec/ciel-wall-shelf-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/3493442D45956E44896B23B545C4641C.jpg.webp" alt="Ciel wall-shelf 1 by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ciel wall-shelf 1</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/cabinets-and-bookshelves/frame-bookshelves" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/142/frame_libreria_1100x550.jpg" alt="Frame Bookshelves by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Frame Bookshelves</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kinandcompany.com/work/thin-shelf-single-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/32.thin-shelf-single-2/1.Thinshelf2single.jpg" alt="Thin Shelf Single 2 by Kin and Co" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Thin Shelf Single 2</p></div>
+          <p class="card-brand">Kin and Co</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/400400576" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/400400576-1.jpg?v=1777549439" alt="Planar Wall Shelf M by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Planar Wall Shelf M</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/shelving-units/shelving-unit-with-chest-everywhere-2837" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1002nl_c.jpg" alt="Everywhere Shelving unit with chest by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Everywhere Shelving unit with chest</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/officinabookcase-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2023/03/Magis_officina_shelving_product_lateral_walnut_anthracite_01_icona-300x300.png" alt="Officina by Magis" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Officina</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_open_shelf_180/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_open_shelf_180/Product/walnut_C0.jpg" alt="OPEN SHELF 180 by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">OPEN SHELF 180</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/estanteria-nara/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/estanteria1-1-600x600.jpg" alt="ESTANTERÍA NARA by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ESTANTERÍA NARA</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/space-rocks-shelf-small-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/11016-spacerocks-diesel-1.jpg?v=1728435489" alt="Space Rocks Shelf Small by Seletti" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Space Rocks Shelf Small</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tamo.design/products/ligo-duo-3-bookcase" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/ligoduo3_kobalt.jpg?v=1769854721" alt="LIGO DUO 3 bookcase by Tamo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LIGO DUO 3 bookcase</p></div>
+          <p class="card-brand">Tamo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etagere-porte-manteau-pli-edition-core" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/PLI_slim_hooks_30cm_INOX-WEB.jpg?v=1777058685" alt="Etagère porte-manteau PLI by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagère porte-manteau PLI</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n4-mustard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017103MU_01-jpg.jpg?v=1761517181" alt="shelf n°4 mustard by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">shelf n°4 mustard</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/elevate-shelf-e-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Elevate_E_Black.png?v=1694075493" alt="Elevate shelf E by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elevate shelf E</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/guild-hm14" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2024/10/Guild-Shelf-HM14_Solid-Wood-Lacquered-Oak_Angled-Front-600x800.jpg" alt="Guild HM14 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Guild HM14</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/sideboard-two-walnut/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/3-drawer-walnut-top-walnut-doors-walnut-legs-WEB-1024x1024.jpg" alt="Sideboard Two by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sideboard Two</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-flat-c-frame-contenitori-zona-giorno.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_wallsystem_Flat-C-Frame_01.jpg" alt="Flat.C Frame by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flat.C Frame</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/apple-braided-shelf-h55-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274236_1.png?v=1788769102" alt="Apple Braided Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Apple Braided Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelf/archetto-shelf" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/84/c4/7c/69/697cc4848b206af429a89758/Fogia-Archetto-Black-Packshot-Transparent.png?auto=format&amp;w=2000&amp;q=90" alt="Archetto Shelf by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Archetto Shelf</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/taper-console-shoe-rack-18x75/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/12/Form-and-Refine_Taper-Console_Shoe-Rack_Front-800x800.webp" alt="Taper Console &amp; Shoe Rack by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Taper Console &amp; Shoe Rack</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/ignotus-nomen-shelf" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/DB076E5598F90B46A7BE94B98111FFB0.jpg.webp" alt="Ignotus Nomen Shelf by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ignotus Nomen Shelf</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/cabinets-and-bookshelves/legs-bookshelves" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/143/legs_libreria_1100x550.jpg" alt="Legs Bookshelves by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Legs Bookshelves</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/127500110" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/127500110-1.jpg?v=1760623212" alt="Foldable Floor Shelf by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Foldable Floor Shelf</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/shelving-units/wall-mounted-bookshelf-with-wooden-shelves-bibliotheque-murale-3760" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100cmv_W.jpg" alt="Bibliothèque murale Wall-mounted bookshelf with wooden shelves by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bibliothèque murale Wall-mounted bookshelf with wooden shelves</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/spike-the-wild-bunch/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2015/02/Magis_spike_product_lateral_LB1810_LB1824_black_carrara_01-1.png" alt="Spike – The Wild Bunch by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Spike – The Wild Bunch</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_open_shelf_210/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_open_shelf_210/Product/walnut_C0.jpg" alt="OPEN SHELF 210 by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">OPEN SHELF 210</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/estanteria-jude/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/estanteria-jude-3-1-1-600x600.jpg" alt="ESTANTERÍA JUDE by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ESTANTERÍA JUDE</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/space-rocks-shelf-medium-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/11007-spacerocks-diesel-1.jpg?v=1728435506" alt="Space Rocks Shelf Medium by Seletti" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Space Rocks Shelf Medium</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://tamo.design/products/ligo-duo-4-bookcase" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/LIGO_DUO_4_bone.jpg?v=1769854709" alt="LIGO DUO 4 bookcase by Tamo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LIGO DUO 4 bookcase</p></div>
+          <p class="card-brand">Tamo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etagere-murale-pli-slim-edition-core" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/PLI_slim_60cm_INOX-WEB_ead04813-213c-4068-bffa-950a000d01de.jpg?v=1777058604" alt="Etagère murale PLI Slim by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagère murale PLI Slim</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n3-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017102Z_01-jpg.jpg?v=1761516849" alt="shelf n°3 by Valerie Objects" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">shelf n°3</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/elevate-shelf-d-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Elevate_D_Black.png?v=1694075458" alt="Elevate shelf D by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elevate shelf D</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/archivo-jh43" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2023/08/Archivo-Shelving-JH43_w-Dark-Stained-Oak_Angled-Front-600x800.jpg" alt="Archivo JH43 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Archivo JH43</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/sideboard-two-small-walnut/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/2-drawer-walnut-top-ash-doors-gold-legs-WEB-1024x1024.jpg" alt="Sideboard Two Small by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sideboard Two Small</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rivan-display-bookcase-65-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273989_1.png?v=1788770469" alt="Rivan Display Bookcase by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rivan Display Bookcase</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-20-shelf-combination-w103" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/4e/e3/70/69/6970e34e3ce6ff10937d0329/FogiaBond W103 Lacquered Walnut Front.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 20 Shelf, Combination W103 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 20 Shelf, Combination W103</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/journal-organiser-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/12/Form-and-Refine_Jounal-Organiser_Oak_Perpsective-800x800.webp" alt="Journal Organiser by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Journal Organiser</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/walter-wirz/shelf" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/EF51D519C600794EA1D6959DC95E8D84.jpg.webp" alt="Shelf by Galerie Kreo" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shelf</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/132000097" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/132000097.jpg?v=1756995605" alt="Stack Wall Shelf by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stack Wall Shelf</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/shelving-units/wall-mounted-bookshelf-with-glass-shelves-bibliotheque-murale-3761" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100cmx_W.jpg" alt="Bibliothèque murale Wall-mounted bookshelf with glass shelves by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bibliothèque murale Wall-mounted bookshelf with glass shelves</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/steelwood-shelving-system/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2015/02/steelwoodShelving-300x300.png" alt="Steelwood Shelving System by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Steelwood Shelving System</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/space-rocks-shelf-big-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/11008-spacerocks-diesel-2_1.jpg?v=1728435532" alt="Space Rocks Shelf Big by Seletti" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Space Rocks Shelf Big</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etagere-murale-pli-edition-core" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/PLI_45cm_INOX-WEB_8f588e9f-d816-41c9-a71f-66ccaa96f23c.jpg?v=1777058460" alt="Etagère murale PLI by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagère murale PLI</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n3-mustard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017102MU_01-jpg.jpg?v=1761516844" alt="shelf n°3 mustard by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">shelf n°3 mustard</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/elevate-shelf-c-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Elevate_C_Black.png?v=1694075413" alt="Elevate shelf C by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elevate shelf C</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/archivo-jh44" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2024/05/Archivo-Shelving-JH44_MDF-w.-Black-Grey_Angled-Front-1-600x800.jpg" alt="Archivo JH44 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Archivo JH44</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/modern-farmhouse-hallway-bench/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country-Modern-Farmhouse-Hallway-Bench-01-1024x1024.jpg" alt="Modern Farmhouse Hallway Bench by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Modern Farmhouse Hallway Bench</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/tilem-shelf-4x6-dark-stained-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272896_1.png?v=1772690561" alt="Tilem Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tilem Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-20-shelf-combination-w106" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/ff/e3/70/69/6970e3ff3047ffde83239452/FogiaBond W106 Lacquered Walnut Front.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 20 Shelf, Combination W106 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 20 Shelf, Combination W106</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/beam-office-shelf-3-deep-brown-pine/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/12/Form-and-Refine_Beam_Wall_Office_Shelf_3_Deep-Brown_Pine_Front-1-800x800.webp" alt="Beam Office Shelf 3 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Beam Office Shelf 3</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/132000096" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/132000096-1.jpg?v=1772550976" alt="Stack Floor Shelf Mid/Bottom by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stack Floor Shelf Mid/Bottom</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/shelving-units/single-shelving-unit-white-lacquer-alliteration-2088" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/010x9_c.jpg" alt="Alliteration Single shelving unit white lacquer by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alliteration Single shelving unit white lacquer</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/tacito/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2024/11/Tacito_icon_collage_2-310x300.jpg" alt="Tacito by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tacito</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etagere-murale-bracket-en-chene-massif-edition-core" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/32x37.jpg?v=1777058361" alt="Etagère murale BRACKET en chêne massif by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagère murale BRACKET en chêne massif</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n2-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017101Z_01-jpg.jpg?v=1761516838" alt="shelf n°2 by Valerie Objects" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">shelf n°2</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/elevate-shelf-b-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Elevate_B_Black.png?v=1743412322" alt="Elevate shelf B by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elevate shelf B</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/guild-hm15" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2024/10/ATD_Retail_2025_Guild-HM15_Ita-OS1_Como-SC53_Tripod-HM9_Momento-JH41_Rely-HW41-600x800.jpg" alt="Guild HM15 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Guild HM15</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/fram-shelving-oak-medium/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/framshelvingmediumoakcc-2-1024x1024.jpg" alt="Fram Shelving by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fram Shelving</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dora-shelving-unit-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/992100_1104263261_1.png?v=1762182810" alt="Dora Shelving Unit by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dora Shelving Unit</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-20-shelf-combination-w206" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/4e/e4/70/69/6970e44e3047ffde83239489/FogiaBond W206 Lacquered Walnut Front.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 20 Shelf, Combination W206 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 20 Shelf, Combination W206</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/beam-shelf-3-deep-brown-pine/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/12/Form-and-Refine_Beam-shelf_3_Front-1-800x800.webp" alt="Beam Shelf 3 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Beam Shelf 3</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/132000095" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/132000095-1.jpg?v=1772550976" alt="Stack Floor Shelf Top by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stack Floor Shelf Top</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/shelving-units/shelving-unit-oka-2787" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/00onw_c.jpg" alt="Oka Shelving unit by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oka Shelving unit</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/theca/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2015/02/Magis_theca_product_front_AC754_natural_cherry_01-1-461x300.png" alt="Theca by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Theca</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/crochets-mureaux-pour-etagere-pli-20-a-60cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/pli-crochets-seuls-45cm-griseuca.jpg?v=1777058012" alt="Crochets muraux pour étagère PLI by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Crochets muraux pour étagère PLI</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n2-mustard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017101MU_01-jpg.jpg?v=1761516831" alt="shelf n°2 mustard by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">shelf n°2 mustard</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/elevate-shelf-a-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Elevate_A_Black.png?v=1694075332" alt="Elevate shelf A by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elevate shelf A</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/archivo-jh45" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2024/05/Archivo-Shelving-JH45_w.-Oak_Angled-Front-600x800.jpg" alt="Archivo JH45 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Archivo JH45</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/ori-planter/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Ori-Planter-1024x1024.jpg" alt="Ori Planter by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ori Planter</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/shelf-hangers-black-set-of-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/664696_4131_1.png?v=1762183732" alt="Shelf Hangers by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shelf Hangers</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-20-shelf-combination-w405" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/ce/e4/70/69/6970e4ce8f45f25ab420c0de/FogiaBond W405 Lacquered Walnut FrontR.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 20 Shelf, Combination W405 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 20 Shelf, Combination W405</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/beam-shelf-5-deep-brown-pine/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/12/Form-and-Refine_Beam-shelf_5_Deep-Brown_Pine_Front-800x800.webp" alt="Beam Shelf 5 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Beam Shelf 5</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/shelving-units/shelving-unit-marechiaro-1370" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1009as_c.jpg" alt="Marechiaro Shelving unit by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Marechiaro Shelving unit</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/tyke-the-wild-bunch/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2015/02/Magis_tyke_product_lateral_black_01-1.png" alt="Tyke – The Wild Bunch by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tyke – The Wild Bunch</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etagere-porte-manteau-en-acier" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/PLI-slim-crochets-45cm-griseucalyptus.jpg?v=1777057892" alt="Etagère porte-manteau PLI Slim en acier by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagère porte-manteau PLI Slim en acier</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n1-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017100W_01-jpg.jpg?v=1761516835" alt="shelf n°1 by Valerie Objects" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">shelf n°1</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/utility-shelf-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Utility_Oak.png?v=1743412194" alt="Utility shelf by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Utility shelf</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/hardy-console-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/1.-Hardy-Console-Oak-copy-1024x1024.jpg" alt="Hardy Console by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hardy Console</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sector-ls-natural-oakbrass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/207933_1103432852_1.png?v=1762183228" alt="Sector Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sector Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-20-shelf-combination-c405" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/a0/e6/70/69/6970e6a02052e8b80f717fa4/FogiaBond C405 Lacquered Walnut Back.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 20 Shelf, Combination C405 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 20 Shelf, Combination C405</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/taper-cube-box-34x35/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/12/Form-and-Refine_Taper-Cube-Box_34x35_Front-800x800.webp" alt="Taper Cube Box by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Taper Cube Box</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/shelving-units/shelving-unit-kujoyama-1364" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1008m3_c2.jpg" alt="Kujoyama Shelving unit by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kujoyama Shelving unit</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etagere-porte-manteau-pli-en-acier" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/PLI-classic-crochets-30cm-jaunedenaples.jpg?v=1777057557" alt="Etagère porte-manteau PLI en acier by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagère porte-manteau PLI en acier</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/shelf-n1-mustard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9017100MU_01-jpg.jpg?v=1752559479" alt="shelf n°1 mustard by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">shelf n°1 mustard</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/elevate-shelving-system-13-oak-white-pigmented-lacquered-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/Elevatesystem_13.png?v=1743412324" alt="Elevate shelving by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elevate shelving</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/tallboy-two/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Tall-Boy-1024x1024.jpg" alt="Tallboy Two by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tallboy Two</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/fracture-shelf-blackened-aluminium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/255341_1104263730_1.png?v=1762182712" alt="Fracture Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fracture Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-20-shelf-combination-w406" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/3a/e6/70/69/6970e63a9b2bb6a5a625e70d/FogiaBond W406 Lacquered Walnut Front.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 20 Shelf, Combination W406 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 20 Shelf, Combination W406</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/taper-shelf-50x98/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/12/Form-and-Refine_Taper-shelf-Case-50x98_Front-800x800.webp" alt="Taper Shelf by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Taper Shelf</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/shelving-units/shelving-unit-h-170-la-bibliotheque-fil-1280" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1005is_c.jpg" alt="La bibliotheque fil Shelving unit - h 170 by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">La bibliotheque fil Shelving unit - h 170</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/tablette-murale-pli-en-acier" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/PLI-tablette-45cm-bleuazur_47913ddc-ee85-4fc3-9927-e2a0089fa77b.jpg?v=1777057367" alt="Tablette murale PLI en acier by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tablette murale PLI en acier</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/shelf-one/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/120918-AnotherCountry-125524-scaled-1024x1024.jpg" alt="Shelf One by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shelf One</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/bon-shelf-oiled-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/470058_1104266370_5.png?v=1762181450" alt="Bon Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bon Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-modular-shelving-system" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/05/56/1d/6a/6a1d5605864db30533a71842/Bond 30 Freestanding Corner wo panels lacquered oak packshoot front.png?auto=format&amp;w=2000&amp;q=90" alt="Bond Modular Shelving System by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond Modular Shelving System</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/leaf-shelf-05x5-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/05/Form-and-Refine_Leaf-shelf-0.5x5_Oak_front-1-800x800.webp" alt="Leaf Shelf 0.5×5 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Leaf Shelf 0.5×5</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/shelving-units/shelving-unit-h-88-la-bibliotheque-fil-1279" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1005iu_c.jpg" alt="La bibliotheque fil Shelving unit - h 88 by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">La bibliotheque fil Shelving unit - h 88</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etagere-murale-pli-slim-en-acier-avec-rebord" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/PLI-slim-30cm-blanccreme.jpg?v=1777057177" alt="Etagère murale PLI Slim en acier by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagère murale PLI Slim en acier</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/peg-rail/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/120918-AnotherCountry-125524-1-scaled-1024x1024.jpg" alt="Peg Rail by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Peg Rail</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sector-rack-shelf-black-ashblack-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/149979_1104265324_1.png?v=1762175057" alt="Sector Rack Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sector Rack Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-30-shelf-combination-w406" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/48/00/13/6a/6a130048f03c9a38c9d55b93/FogiaBond 30cm W406 Lacquered Oak Front.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 30 Shelf, Combination W406 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 30 Shelf, Combination W406</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/ordinary-storage-box/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2024/11/1Form-and-Refine_Regular-Box_Front-800x800.webp" alt="Ordinary Storage Box by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ordinary Storage Box</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/bloc-portes-et-tiroirs-en-acier-unit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/UNIT_STEEL_CAISSON-BLANC.jpg?v=1777057128" alt="Bloc portes et tiroirs en acier UNIT by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bloc portes et tiroirs en acier UNIT</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/valet-stand/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/210507-AnotherCountry6112-1024x1024.jpg" alt="Valet Stand by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Valet Stand</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/slope-bookcase-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/822110_1104268916_1.png?v=1762180449" alt="Slope Bookcase by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Slope Bookcase</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-30-shelf-combination-w103" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/bb/fc/12/6a/6a12fcbbc70fbebd0927e610/FogiaBond 30cm W103 Lacquered Oak Front.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 30 Shelf, Combination W103 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 30 Shelf, Combination W103</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/taper-case-40x66/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2023/12/1Form-and-Refine_Taper-shelf_Front-scaled-800x800.webp" alt="Taper Case by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Taper Case</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etagere-unit-h180-a-215-x-l164cm-bois-eco-certifie" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/U5_02-02-02_White_6ae4cd48-ab7e-4455-9bbe-bbd847d339a7.jpg?v=1777056203" alt="Etagère UNIT by Tiptoe" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagère UNIT</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/chest-of-drawers/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Chest-of-Drawers-1024x1024.jpg" alt="Chest of Drawers Two by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Chest of Drawers Two</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/giraffe-bookcase-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/346068_1104268910_1.png?v=1762175180" alt="Giraffe Bookcase by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Giraffe Bookcase</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-30-shelf-combination-w104" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/bd/fd/12/6a/6a12fdbdf03c9a38c9d55b1a/FogiaBond 30cm W104 Lacquered Oak Front.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 30 Shelf, Combination W104 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 30 Shelf, Combination W104</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/pillar-storage-box-lid-medium-beech/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2022/12/Form-and-Refine_Pillar-Box-Lid_Medium_Beech-1-scaled-800x800.webp" alt="Pillar Storage Box Lid by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pillar Storage Box Lid</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etageres-et-plateaux-en-acier-unit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/unit-shelf-steel-graphit-black.jpg?v=1777054763" alt="Etagères et plateaux en acier UNIT by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagères et plateaux en acier UNIT</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/bedside-table-with-drawer/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/1.-Bedside-Table-Two-1024x1024.jpg" alt="Bedside Table Two by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bedside Table Two</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/lager-wall-shelf-triple-aluminium" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/693055_1104268831_1.png?v=1762179756" alt="Lager Wall Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lager Wall Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-30-shelf-combination-w106" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/3d/fe/12/6a/6a12fe3df03c9a38c9d55b3a/FogiaBond 30cm W106 Lacquered Oak Front.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 30 Shelf, Combination W106 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 30 Shelf, Combination W106</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/pillar-storage-box-medium-beech/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2022/12/Form-and-Refine_Pillar-Box_Medium_Beech_perspective-scaled-800x800.webp" alt="Pillar Storage Box by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pillar Storage Box</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etageres-et-plateaux-unit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/UNIT_bureau_classique.jpg?v=1777046576" alt="Etagères et plateaux en bois UNIT by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagères et plateaux en bois UNIT</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/pilu-shelf-large-verdant-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/839656_1104268909_1.png?v=1762180432" alt="Pilu Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pilu Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-30-shelf-combination-w303" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/4f/ff/12/6a/6a12ff4fc70fbebd0927e6d2/FogiaBond 30cm W303 Lacquered Oak Front.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 30 Shelf, Combination W303 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 30 Shelf, Combination W303</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/leaf-shelf-2x3-white-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2022/12/Form-and-Refine_Leaf-shelf_2x3_White-oak_front-kopier-scaled-800x800.webp" alt="Leaf Shelf 2×3 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Leaf Shelf 2×3</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/bloc-portes-et-tiroirs-unit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/UNIT_caisson_noir.jpg?v=1777046532" alt="Bloc portes by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bloc portes</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/horse-bookcase-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/282861_1104268913_1.png?v=1762179607" alt="Horse Bookcase by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Horse Bookcase</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-30-shelf-combination-w206" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/d7/fe/12/6a/6a12fed7f03c9a38c9d55b5e/FogiaBond 30cm W206 Lacquered Oak Front.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 30 Shelf, Combination W206 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 30 Shelf, Combination W206</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/leaf-shelf-1x3-white-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2022/12/Form-and-Refine_Leaf-shelf-1x3_White-oak_front-kopier-1-800x800.webp" alt="Leaf Shelf 1×3 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Leaf Shelf 1×3</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/lot-de-3-etageres-murales-en-chene-massif-60-a-150cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/3B6A0109-1.jpg?v=1777045157" alt="Lot de 3 étagères murales BRACKET by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lot de 3 étagères murales BRACKET</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/parade-shelf-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/845473_1104268270_1.png?v=1762180664" alt="Parade Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Parade Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/shelves-storage/shelving-system/bond-30-shelf-combination-w405" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/cc/ff/12/6a/6a12ffccf03c9a38c9d55b84/FogiaBond 30cm W405 Lacquered Oak Front.png?auto=format&amp;w=2000&amp;q=90" alt="Bond 30 Shelf, Combination W405 by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bond 30 Shelf, Combination W405</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/foyer-coat-stand-white-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2022/12/Form-and-Refine_Foyer-Coat-Stand_White-oak_front-1-kopier-scaled-800x800.webp" alt="Foyer Coat Stand by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Foyer Coat Stand</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/etagere-murale-plastique-recycle-blanc-venezia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Shelf_90_Front_RP-2-1-scaled.jpg?v=1777039029" alt="Etagère murale BRACKET by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Etagère murale BRACKET</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/leta-shelf-tea-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/316273_1104270959_1.png?v=1762178540" alt="Leta Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Leta Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/a-line-shoe-rack-35-white-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2021/12/Form-and-Refine_A_line_shoerack35_white-oak_02-kopier-scaled-800x800.webp" alt="A Line Shoe Rack 35 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">A Line Shoe Rack 35</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/plateau-en-chene-massif-pour-etagere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/plateau-console-chene-fond-gris_267998db-6bdf-4957-8e10-d7f0e4153f19.jpg?v=1777037949" alt="Plateau pour étagère BRACKET by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Plateau pour étagère BRACKET</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/slope-shelf-storm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/781711_1104267520_1.png?v=1762180813" alt="Slope Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Slope Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/echo-coat-rack-88-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2021/12/Form-and-Refine_Echo_Coatrack_88_black_Front_nb-kopier-800x800.webp" alt="Echo Coat Rack 88 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Echo Coat Rack 88</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/array-shelf-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/157274_1104271103_1.png?v=1762178493" alt="Array Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Array Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/echo-coat-rack-40-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2021/12/Form-and-Refine_Echo_Coatrack_40_black_Front_nb-kopier-800x800.webp" alt="Echo Coat Rack 40 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Echo Coat Rack 40</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dora-towel-shelf-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/487555_1104269820_1.png?v=1762179433" alt="Dora Towel Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dora Towel Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/angle-hook-steel-small/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2020/12/Form-and-Refine_Angle-Hook-Steel_small-kopier-scaled-800x800.webp" alt="Angle Hook by Form &amp; Refine" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Angle Hook</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/stagger-shelf-low-oiled-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/429013_1104269278_1.png?v=1762180132" alt="Stagger Shelf by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stagger Shelf</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/a-line-shoe-rack-white-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2020/12/Form-and-Refine_A-Line_Shoe-Rack_White-Oak_Front_nb-kopier-scaled-800x800.webp" alt="A Line Shoe Rack 72 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">A Line Shoe Rack 72</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/a-line-laundry-box-white-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2020/12/Form-and-Refine_A-Line_Loundry-box_white-oak_front_nb-scaled-800x800.webp" alt="A Line Laundry Box by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">A Line Laundry Box</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/leaf-shelf-2x2-white-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2020/12/Form-and-Refine_Leaf-shelf-2x2_White-oak_front-kopier-scaled-800x800.webp" alt="Leaf Shelf 2×2 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Leaf Shelf 2×2</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/leaf-shelf-1x2-white-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2020/12/Form-and-Refine_Leaf-shelf-1x2_White-oak_front-kopier-scaled-800x800.webp" alt="Leaf Shelf 1×2 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Leaf Shelf 1×2</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a></div>
+  
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

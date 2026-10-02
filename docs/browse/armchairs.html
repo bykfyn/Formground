@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Armchairs and Lounge Chairs — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="750 real armchairs and lounge chairs from independent makers, listed in full (page 1 of 3). Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/browse/armchairs.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Armchairs and Lounge Chairs — Formground">
+<meta property="og:description" content="750 real armchairs and lounge chairs from independent makers, listed in full (page 1 of 3). Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/browse/armchairs.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Armchairs and Lounge Chairs — Formground">
+<meta name="twitter:description" content="750 real armchairs and lounge chairs from independent makers, listed in full (page 1 of 3). Every result links straight to the maker&#x27;s own site.">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-group { max-width: 520px; margin: 32px auto 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Browse", "item": "https://formground.com/browse/"}, {"@type": "ListItem", "position": 3, "name": "Armchairs and Lounge Chairs", "item": "https://formground.com/browse/armchairs.html"}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <h1>Armchairs and Lounge Chairs</h1>
+  <p class="category-intro">750 armchairs and lounge chairs from independent makers - page 1 of 3. Every result links straight to the maker's own site. See also: <a href="/browse/footstools.html">footstools</a>.</p>
+  <div class="grid">
+      <a class="card" href="https://www.andtradition.com/products/rely-hw33-hw34" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2022/02/ATD_Packshots_134026A615_Rely-HW33_Burnt-Umber-w.-Bronzed-base_Angled-Front-600x800.jpg" alt="Rely HW33-HW34 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rely HW33-HW34</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/toe-armchair-flat-rust" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/22262503_263029_Toe_Armchair_Flat_-_Rust_1.jpg?v=1782294898" alt="Toe Armchair by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Toe Armchair</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/vale-lounge-chair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country-GF_Vale-Lounge-Chair_001-1024x1024.jpg" alt="Vale Lounge Chair by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vale Lounge Chair</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://apparatusstudio.com/products/pip-episode-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0005/7730/6687/files/APPARATUS_EPISODE_ARMCHAIR_01.jpg?v=1775490182" alt="EPISODE : ARMCHAIR by Apparatus" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">EPISODE : ARMCHAIR</p></div>
+          <p class="card-brand">Apparatus</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-400" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-armchair-400-walnut-stained-zebra-brown.jpg?v=1787567029" alt="Armchair 400 &quot;Tank&quot; by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair 400 &quot;Tank&quot;</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/the-penguin-wooden-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_Penguin_Wooden_Lounge_Chair_645.jpg?v=1780904436" alt="The Penguin Wooden Lounge Chair by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">The Penguin Wooden Lounge Chair</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-pablo-poltrone.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_armchair_Pablo_01.jpg" alt="Pablo by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pablo</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://baleri-italia.com/en/products/spunta-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.baleri-italia.com/uploads/media/1400x/04/3514-Baleri-Italia_Spunta_armchair_OF301_2025_03d.png?v=2-0" alt="Spunta Armchair by Baleri Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Spunta Armchair</p></div>
+          <p class="card-brand">Baleri Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/pillow-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/Pillow_armchair.png?v=1756291331" alt="Pillow Armchair by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pillow Armchair</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/lessebo-fatolj" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/files/LesseboFatolj_Natur_Olj_Mahogny.jpg?v=1755861934" alt="Lessebo fåtölj by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lessebo fåtölj</p></div>
+          <p class="card-brand">Byarums Bruk</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/cozmo-cozy-armchair-midnight-blue-velvet" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-Armchair-Midnight-Blue-Velvet.jpg?v=1738928306" alt="Cozy Armchair by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cozy Armchair</p></div>
+          <p class="card-brand">Cozmo</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/theia-lounge-chair-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/Theia-Natural-9.png?v=1683989117" alt="Theia lounge chair by Cultivation Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Theia lounge chair</p></div>
+          <p class="card-brand">Cultivation Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/98-6-f-outdoor-armless-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/576-98.6_F-OUTDOOR-ARMLESS-LOUNGE-CHAIR_1.jpg?v=1656325344" alt="98.6°F OUTDOOR LOUNGE CHAIR by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">98.6°F OUTDOOR LOUNGE CHAIR</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.desalto.it/it/prodotti/imbottiti/clip" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.desalto.it/ContentsFiles/Desalto_Web_03SE_Clip_Preview_01(2).png" alt="Clip by Desalto" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Clip</p></div>
+          <p class="card-brand">Desalto</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/dl-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/products/collection-page-seating-dl-lounge-chair-olive.jpg?v=1756103564" alt="DL Lounge Chair by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DL Lounge Chair</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/miles-armchair-zebra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_miles_armchair_zebra_01.jpg?v=1780415636" alt="Miles Armchair Zebra by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Miles Armchair Zebra</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://editions-midi.com/produit/bergierio/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://editions-midi.com/wp-content/uploads/2024/09/HDlourmarin090741-01014-OK-V2-540x720.jpg" alt="Bergierio by Editions Midi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bergierio</p></div>
+          <p class="card-brand">Editions Midi</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_assises_fauteuil-nyou" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/375/T_chauffeuse-nyou.jpeg" alt="Fauteuil Nyou by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil Nyou</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rico-lounge-chair-swivel-vanir-off-white-honey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104275002_1.png?v=1788768440" alt="Rico Lounge Chair by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rico Lounge Chair</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/chairs-stools/armchair/bollo-dining-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/66/e0/70/69/6970e0667991180a249ecd56/FogiaBollo Dining Chair Polished stainless steel-Ecriture 0240Front.png?auto=format&amp;w=2000&amp;q=90" alt="Bollo Dining Chair by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bollo Dining Chair</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/icon-lounge-chair-com-bespoke/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2026/07/Form-and-Refine_Icon-Lounge-Chair_Pine-COM_Front_Perspective-800x800.webp" alt="Icon Lounge Chair by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Icon Lounge Chair</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://gad.se/gothem-fatolj-hog/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gad.se/wp-content/uploads/2025/05/design-fatolj-svensk-250x250.jpg" alt="Gothem Fåtölj Hög by G.A.D" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gothem Fåtölj Hög</p></div>
+          <p class="card-brand">G.A.D</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-paulin/armchair-cm-197" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/7CC56C510FC7DA46A2D46BE1C3371041.jpg.webp" alt="Armchair CM 197 by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair CM 197</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/ghost-armchair-p3669" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__13455__productGrid/ghost-05_clipped_rev_1@2x.png" alt="Ghost by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ghost</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/brass-chairs/arch-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/248/Arch_Chair_1100x550_new.jpg" alt="Arch Armchair by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arch Armchair</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://gubi.com/en/se/products/p3-outdoor-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.thorcommerce.io/gubi/0c1a3cc5697efa8e889998ecf1c2e813/10148532_F3Q_P3+Outdoor+Lounge+Chair_Natural+Tone.png" alt="P3 Lounge Chair by Gubi" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">P3 Lounge Chair</p></div>
+          <p class="card-brand">Gubi</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/bleck-fatolj/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2017/02/LDC1395_G-1620x1080.jpg" alt="Bleck fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bleck fåtölj</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-chair/balcony-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422075900/img_20250422075900/globalassets/inriver/integration/service/balcony-armchair_910x1100_brandmodel2.jpg" alt="Balcony Armchair by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Balcony Armchair</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.heilig-objects.com/shop/seating/lcca-lounge-chair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.heilig-objects.com/wp-content/uploads/2023/02/heilig-objects-lcca-lounge-chair-gold-0005-300x300.jpg" alt="LCCA Lounge Chair by Heilig Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LCCA Lounge Chair</p></div>
+          <p class="card-brand">Heilig Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://hyferobjects.com/products/eel-lounge-chair-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0842/3361/7748/files/WEBEal_Lounge_Chair_Blond_1.jpg?v=1762949987" alt="Eel Lounge Chair by Hyfer Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eel Lounge Chair</p></div>
+          <p class="card-brand">Hyfer Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://ingridsdotter.com/skeppsholmen-armchair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://ingridsdotter.com/wp-content/uploads/brizy/imgs/Skeppsholmen_000-kopia-514x514x45x74x425x366x1693920419.png" alt="SKEPPSHOLMEN Armchair by Ingridsdotter" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SKEPPSHOLMEN Armchair</p></div>
+          <p class="card-brand">Ingridsdotter</p>
+        </div>
+      </a>
+      <a class="card" href="https://jaumeramirez.com/objects/ele-armchair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://jaumeramirez.com/wp-content/uploads/2022/04/JaumeRamirez-Ele_Armchair_0-scaled.jpg" alt="Ele Armchair by Jaume Ramirez" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ele Armchair</p></div>
+          <p class="card-brand">Jaume Ramirez</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/fauteuil-atlas-vert-a1985-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/files/atlas-light-green-01.jpg?v=1716810721" alt="Fauteuil Atlas vert clair A3052 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil Atlas vert clair A3052</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/127500155" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/127500155-1.jpg?v=1760623211" alt="Solitude Lounge Chair by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Solitude Lounge Chair</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kallemo.se/en/sida/fatoeljer-soffor/aluminium-english" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/3e/fa%CC%8Ato%CC%88lj-aluminium-3e59c345.png" alt="ALUMINIUM by Källemo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ALUMINIUM</p></div>
+          <p class="card-brand">Källemo</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/demille-outdoor-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/Laun_DemilleLounge_main.jpg?v=1681410113" alt="DeMille Indoor/Outdoor Lounge Chair by Laun" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DeMille Indoor/Outdoor Lounge Chair</p></div>
+          <p class="card-brand">Laun</p>
+        </div>
+      </a>
+      <a class="card" href="https://lemonfurniture.co/products/la-plume-armchair-za" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0679/2622/9278/files/la-plume-armchair-1_jpg_6783c78a.jpg?v=1745860960" alt="La Plume Armchair by Lemon Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">La Plume Armchair</p></div>
+          <p class="card-brand">Lemon Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/armchairs/armchair-sandra-4807" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100jnu_c.jpg" alt="Sandra Armchair by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sandra Armchair</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products-materials/armchairs/ark/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/10456/1200x630/nocrop/noenlarge/align_4/Living-Divani-Ark-1.jpg.aspx" alt="Ark by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ark</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/l5-jazz-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/L5AC_F_SL_Totale_sRGB.jpg?v=1721999113" alt="L5 Jazz armchair by LOEHR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">L5 Jazz armchair</p></div>
+          <p class="card-brand">LOEHR</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/frankie-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/260515_LOUISEROE_1_0126.jpg?v=1783589955" alt="FRANKIE ARMCHAIR by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FRANKIE ARMCHAIR</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/brut-armchair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2018/02/Magis_brut_armchair_product_front_SD2850_vidar_443_143_01.png" alt="Brut by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Brut</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/fg_armchair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/fg_armchair/Product/ash_NL0.jpg" alt="ARMCHAIR by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARMCHAIR</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/astro-armchair-w-castors" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Astro_Armchair_Castors_Ecriture_240_Black_01.png?v=1782377783" alt="Astro Armchair w Castors by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Astro Armchair w Castors</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://materdesign.com/products/the-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0260/0981/files/LoungeChair_TempImage.jpg?v=1774517360" alt="The Lounge Chair | By Space Copenhagen by Mater" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">The Lounge Chair | By Space Copenhagen</p></div>
+          <p class="card-brand">Mater</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mercoeur-edition.com/products/armchair-matera" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.prod.website-files.com/65f8e4972094d2411f63ed1d/6a672104585d346876f7822b_Mercoeur_Thumbnail_MATERA-Armchair.webp" alt="Matera Armchair by Mercoeur Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Matera Armchair</p></div>
+          <p class="card-brand">Mercoeur Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/10_armchairs_and_sofas/74_colony-armchair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/74.png" alt="Colony Armchair by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Colony Armchair</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Lounge-Chair_PP_Cognac-Leather_Low-Res_MSCLOSOCOGSA.jpg?v=1789566675" alt="Lounge Chair by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lounge Chair</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/aitai-solid-wood-frame-and-fabric-seat-armchair-by-kengo-kuma-copia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/Aitai-5.jpg?v=1767692773" alt="AITAI Wood Armchair by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AITAI Wood Armchair</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.motarasu.com/products/float-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0780/0058/7083/files/Float-Chair_3.jpg?v=1780407721" alt="Float Armchair by Motarasu" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Float Armchair</p></div>
+          <p class="card-brand">Motarasu</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/accueil/1265-5319-extra-bold-armchair-solid.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/19720-home_default/extra-bold-armchair-solid.jpg" alt="Extra Bold armchair - Solid by Moustache" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Extra Bold armchair - Solid</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/crooked-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/Nazara_Lounge_main.jpg?v=1679345005" alt="Crooked lounge chair by Nazara Lazaro" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Crooked lounge chair</p></div>
+          <p class="card-brand">Nazara Lazaro</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/may-lounge-armchair-dark-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1771583777-new_works_packshots_may_lounge_chair_green_front.png?h=800" alt="May Lounge Armchair by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">May Lounge Armchair</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/archipen-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/3adeabfc-df32-4278-91af-10175284dd1b/Archipen+Lounge+Chair+by+NOOM_web+%2817%291.jpg" alt="Archipen Lounge Chair by Noom" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Archipen Lounge Chair</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/butacas/alex-butaca/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2023/06/Omelette-Editions_Alex_Lounge_8.jpg" alt="Alex lounge - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alex lounge - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://parenpar.com.ar/productos/poltrona-nudo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="http://acdn-us.mitiendanube.com/stores/005/991/341/products/img_6059-c5d3d9a9834d13e02517846646645341-640-0.webp" alt="Poltrona Nudo by Par en Par" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Poltrona Nudo</p></div>
+          <p class="card-brand">Par en Par</p>
+        </div>
+      </a>
+      <a class="card" href="https://petitefriture.com/fr/mobilier/3338-10186-fromme-chaise-avec-accoudoirs-bleu-ciel.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://petitefriture.com/38128-home_default/fromme-chaise-avec-accoudoirs-bleu-ciel.jpg" alt="Fromme by Petite Friture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fromme</p></div>
+          <p class="card-brand">Petite Friture</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/fauteuil-van-sloophout-met-ribstof" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2024/04/PHE_6855-thumb-300x300.jpg" alt="Fauteuil van Sloophout met Ribstof by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil van Sloophout met Ribstof</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/avery-armchair-upholstered" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Avery-armchair_2021-128_SUMMER_WEB_09ba40ed-fe4c-48f7-88f9-6e5c9d3bd2f3.jpg?v=1763054803" alt="Avery armchair upholstered by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Avery armchair upholstered</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.pode.eu/collection/armchairs/tinko" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://a.storyblok.com/f/95982/704x1016/84c3f626d8/overzicht-tinko.png" alt="Tinko by Pode" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tinko</p></div>
+          <p class="card-brand">Pode</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/harding_exterior_armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/ECH04-BLB-HERO1.jpg?v=1785328614" alt="Harding Exterior Armchair by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Harding Exterior Armchair</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://project213a.com/products/bolha-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0531/5395/6002/files/Project213A_BolhaArmChair_Rattan11.jpg?v=1755007354" alt="Bolha Armchair by Project 213A" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bolha Armchair</p></div>
+          <p class="card-brand">Project 213A</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/arba-lounge-chair-lounge-chair-dark-green-base-dark-blue-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Erwan_Bouroullec_-_Arba_Lounge_chair_-_Upholstered_Spoor_leather-Lounge_chair-R1080-Dark_green_base_Spoor_dark_blue_leather.jpg?v=1747641843" alt="Erwan Bouroullec - Arba Lounge chair - Upholstered Spoor leather by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Erwan Bouroullec - Arba Lounge chair - Upholstered Spoor leather</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.resident.co.nz/en/furniture/seating/sacha-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.resident.co.nz/media/uploads/2025_07/Resident_JAN2024_Sacha_Seat_0036-websq-flip.jpg.1440x1152_q85_upscale.jpg.450x450_q85_crop-smart_upscale.jpg" alt="Sacha Armchair by Resident" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sacha Armchair</p></div>
+          <p class="card-brand">Resident</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/butaca-hood/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/BUTACAHOOD-2-600x600.jpg" alt="BUTACA HOOD by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BUTACA HOOD</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/comfy-armchair-charcoal-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Comfy-Armchair-Marcantonio-Furniture-16657-1.jpg?v=1728426824" alt="Comfy Armchair Charcoal Grey by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Comfy Armchair Charcoal Grey</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/armchair-s-aluminium-sand-august" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5020006S_01-jpg.jpg?v=1764730292" alt="Armchair S aluminium sand August by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair S aluminium sand August</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/primum-lounge-chair-without-arms-tilt-polished-alu-fluffy/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Inverse-Side-Table-Aluminium-3-400x400.webp" alt="Primum lounge chair by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Primum lounge chair</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.se-collections.com/products/sofas-and-armchairs/oshun-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://new.se-collections.com/wp-content/uploads/2021/04/Oshun-Sofa-Perennials-in-The-Loop-982-124-Sea-Salt-800x800.jpg" alt="Oshun Sofa by Sé Collections" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oshun Sofa</p></div>
+          <p class="card-brand">Sé Collections</p>
+        </div>
+      </a>
+      <a class="card" href="https://tamo.design/products/kivo-lounge-chair-ebony-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/kivo_ebony_rust.png?v=1773143283" alt="KIVO lounge chair by Tamo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">KIVO lounge chair</p></div>
+          <p class="card-brand">Tamo</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/cross-leg-lounge-chair-black-metal-legs-prescott-leather-black-ink-207" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS388132_1.jpg?v=1790159191" alt="Cross Leg Lounge Chair Prescott Leather Black Ink by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cross Leg Lounge Chair Prescott Leather Black Ink</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://thorupcopenhagen.com/products/seat-pad-for-noel-lounge-chair-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0972/7672/3527/files/ThorupCopenhagen_L99LoungeSeatPadBlackpackshotwhitebackground.jpg?v=1779108978" alt="Seat Pad for Noel Lounge Chair by Thorup Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Seat Pad for Noel Lounge Chair</p></div>
+          <p class="card-brand">Thorup Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/fauteuil-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/fauteuil-panorama-front-rouge-brique.jpg?v=1777058837" alt="Fauteuil de jardin PANORAMA by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil de jardin PANORAMA</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tolix.com/products/fauteuil-a56-acier-brut-verni" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/FAUTEUILA56_BRUTVERNI_VUEOBLIQUE_1.jpg?v=1772395488" alt="Fauteuil A56 by Tolix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil A56</p></div>
+          <p class="card-brand">Tolix</p>
+        </div>
+      </a>
+      <a class="card" href="https://vaarnii.com/products/016-maasto-dining-armchair-black-files" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/Frame_231_b73e2c13-0dea-4bb4-acab-16a33581c145.jpg?v=1769204262" alt="016 Maasto Dining Armchair Files by Vaarnii" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">016 Maasto Dining Armchair Files</p></div>
+          <p class="card-brand">Vaarnii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/armchair-black-aligned" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9021330_01-jpg.jpg?v=1761517089" alt="armchair black aligned by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">armchair black aligned</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://verpan.com/products/270-f-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0513/1829/2651/files/270LoungeChair_Natural_Side.jpg?v=1754998998" alt="Series 270 F Armchair by Verpan" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Series 270 F Armchair</p></div>
+          <p class="card-brand">Verpan</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/panorama-lounge-chair-lounge-chair-moss-col-0014" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Panorama_LoungeChair_Moss_col0014_V2.jpg?v=1786522114" alt="Panorama Lounge Chair - Lounge Chair by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Panorama Lounge Chair - Lounge Chair</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://willchoui.com/collections/per-for-h-ated" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://framerusercontent.com/images/AA7iDCiYOviaZmJlYcRnJqehM74.jpg?width=2200&amp;height=3000" alt="per.for.(H)ated by Will Choui" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">per.for.(H)ated</p></div>
+          <p class="card-brand">Will Choui</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/rely-hw38-hw44" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2022/01/ATD_Packshots_134062A616A622D905_Rely-HW39_Burnt-Umber-w-Saxion-0397-w-Aluminium-4-Star-Swivel_Angled-Front-600x800.jpg" alt="Rely HW38-HW44 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rely HW38-HW44</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/nama-lounge-chair-classic-brown-oak-aniline-leather-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21955245_264003_Nama_Lounge_Chair_Classic_Brown_Oak_-_Aniline_Leather_Black_1.jpg?v=1781652518" alt="Nama Lounge Chair by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nama Lounge Chair</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/ringstead-lounge-chair-and-footstool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Ringstead-armchair-and-footstool-5-1024x1024.jpg" alt="Ringstead Lounge Chair and Footstool by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ringstead Lounge Chair and Footstool</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/armchair-402-sheepskin" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Armchair_402_sheepskin_front.jpg?v=1781012584" alt="Armchair 402 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair 402</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/harbour-lounge-chair-star-base" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_Harbour_Lounge_Chair_Swivel_Plinth_Tall_Crescent_Shelving_H60_Tile_Rug_Releve_Platter_1.jpg?v=1771231113" alt="Harbour Lounge Chair by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Harbour Lounge Chair</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-terminal-1-poltrone.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_chaise-longue_Terminal-1_01.jpg" alt="Terminal 1 by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Terminal 1</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://baleri-italia.com/en/products/tsu-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.baleri-italia.com/uploads/media/1400x/06/4116-Baleri-Italia_Tsu_armchair_CKR320_2026_01d.png?v=1-0" alt="Tsu Armchair by Baleri Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tsu Armchair</p></div>
+          <p class="card-brand">Baleri Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/grasso-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Grasso_Black_Stephen_Burks_portada.png?v=1732103126" alt="Grasso Armchair by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Grasso Armchair</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/classic-fatolj" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/classicfatolj.jpg?v=1705328342" alt="Classic fåtölj by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Classic fåtölj</p></div>
+          <p class="card-brand">Byarums Bruk</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/hug-armchair-regular-ecru-boucle-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/white_boucle_blue_13.jpg?v=1773498355" alt="Hug Armchair (regular) by Cozmo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hug Armchair (regular)</p></div>
+          <p class="card-brand">Cozmo</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/98-6-f-outdoor-lounge-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/576S-98.6_F-OUTDOOR-LOUNGE-ARMCHAIR_1.jpg?v=1656324746" alt="98.6°F OUTDOOR LOUNGE ARMCHAIR by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">98.6°F OUTDOOR LOUNGE ARMCHAIR</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.desalto.it/it/prodotti/imbottiti/roller" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.desalto.it/ContentsFiles/Desalto_Web_03SE_Roller_Preview_01(0).png" alt="Roller by Desalto" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Roller</p></div>
+          <p class="card-brand">Desalto</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/elias-armchair-zebra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_elias_armchair_zebra_01.jpg?v=1780415769" alt="Elias Armchair Zebra by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elias Armchair Zebra</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://editions-midi.com/produit/chamineio/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://editions-midi.com/wp-content/uploads/2024/09/HDlourmarin092831-01040-OK-OK-V2-540x720.jpg" alt="Chaminèio by Editions Midi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Chaminèio</p></div>
+          <p class="card-brand">Editions Midi</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_assises_fauteuil-laquais" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/194/T_194-1.jpg" alt="Fauteuil Laquais by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil Laquais</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/orbo-lounge-chair-soft-alpaca-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274740_1.png?v=1788768507" alt="Orbo Lounge Chair by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Orbo Lounge Chair</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/chairs-stools/armchair/mono-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/e8/42/c6/69/69c642e8e13fab329337ecd0/Fogia Mono Metal Armchair Lacquered oak - RAL 9005 Front.png?auto=format&amp;w=2000&amp;q=90" alt="Mono Armchair by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mono Armchair</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/block-lounge-chair-com-bespoke/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2022/12/Form-and-Refine_Block-Lounge-Chair_White-Oak_front-kopier-scaled-800x800.webp" alt="Block Lounge Chair by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Block Lounge Chair</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://gad.se/gothem-fatolj/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gad.se/wp-content/uploads/2025/05/fatolj-skinn-svensktillverkad-250x250.jpg" alt="Gothem Fåtölj by G.A.D" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gothem Fåtölj</p></div>
+          <p class="card-brand">G.A.D</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-paulin/armchair-f551" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/62B62509E25ED744A356B6D4A2ED77BC.jpg.webp" alt="Armchair F551 by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair F551</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/gray-armchair-26-p3705" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19317__productGrid/gray-26-27_clipped_rev_1@2x.png" alt=" by Gervasoni" loading="lazy"><span class="variant-badge">5 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title"></p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/brass-chairs/bold-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/150/Bold_Armchair_1100x550_new.jpg" alt="Bold Armchair by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Armchair</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://gubi.com/en/se/products/grace-outdoor-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.thorcommerce.io/gubi/b547e907e963fcda093f04b31e2e0d27/10149825_F3Q_Grace+Outdoor+Lounge+Chair_Natural+Tone_Limonta%2C+Plutarco+221.png" alt="Grace Lounge Chair by Gubi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Grace Lounge Chair</p></div>
+          <p class="card-brand">Gubi</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/button-ii-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARSh_0007-810x1080.jpg" alt="Button fåtölj* by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Button fåtölj*</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-chair/deville-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260113014618/img_20260113014618/globalassets/inriver/integration/service/deville-armchair_910x1100_brandmodel.jpg" alt="Deville Armchair by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Deville Armchair</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://ingridsdotter.com/formula-chair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://ingridsdotter.com/wp-content/uploads/brizy/imgs/formula-fri-655x655x115x144x425x366x1685627065.png" alt="FORMULA 60 Armchair by Ingridsdotter" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FORMULA 60 Armchair</p></div>
+          <p class="card-brand">Ingridsdotter</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/fauteuil-atlas-beige-a1987" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/files/atlas-beige-00.jpg?v=1686319303" alt="Fauteuil Atlas beige A1987 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil Atlas beige A1987</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kallemo.se/en/sida/fatoeljer-soffor/bruno-english" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/f5/fa%CC%8Ato%CC%88lj-bruno-f52e8091.png" alt="BRUNO by Källemo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BRUNO</p></div>
+          <p class="card-brand">Källemo</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/ribbon-lounge-chair-in-eggplant-powdercoat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/Laun_RibbonLounge_main.jpg?v=1679355564" alt="Ribbon lounge chair by Laun" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ribbon lounge chair</p></div>
+          <p class="card-brand">Laun</p>
+        </div>
+      </a>
+      <a class="card" href="https://lemonfurniture.co/products/kent-armchair-za" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0679/2622/9278/files/kent-armchair-1_jpg.png?v=1745860791" alt="Kent Armchair by Lemon Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kent Armchair</p></div>
+          <p class="card-brand">Lemon Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/armchairs/armchair-marsala-5097" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100kjm_c.jpg" alt="Marsala Armchair by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Marsala Armchair</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products-materials/the-uncollected-collection/poltrona-02/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/8342/1200x630/nocrop/noenlarge/align_4/Living-Divani-The-Uncollected-Collection-Poltrona02-1.jpg.aspx" alt="Poltrona 02 by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Poltrona 02</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/spina-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_GALLERY75557.jpg?v=1783589519" alt="SPINA ARMCHAIR by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SPINA ARMCHAIR</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/costume/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2020/04/Magis_costume_1seater_product_front_SD5142_kvadrat_uniform_melange_green_963_01_compasso_doro-286x300.jpg" alt="Costume by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Costume</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_armchair_cushioned/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_armchair_cushioned/Product/walnut_C0.jpg" alt="ARMCHAIR (cushioned) Low/High by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARMCHAIR (cushioned) Low/High</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/astro-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Astro_Armchair_Ecriture_240_Red_01.png?v=1782396209" alt="Astro Armchair by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Astro Armchair</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://materdesign.com/products/ocean-lounge-chair-dusty-blue-by-jorgen-nanna-ditzel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0260/0981/files/Mater_09337_Ocean_Lounge_Chair_Angle_Packshot.png?v=1770213824" alt="Ocean Lounge Chair | Dusty Blue | by Jørgen &amp; Nanna Ditzel by Mater" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ocean Lounge Chair | Dusty Blue | by Jørgen &amp; Nanna Ditzel</p></div>
+          <p class="card-brand">Mater</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mercoeur-edition.com/products/armchair-crecy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.prod.website-files.com/65f8e4972094d2411f63ed1d/6a6725117be54f92516af856_Mercoeur_Thumbnail_CRECY-Armchair.webp" alt="Crecy Armchair by Mercoeur Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Crecy Armchair</p></div>
+          <p class="card-brand">Mercoeur Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/aitai-solid-wood-frame-and-fabric-seat-armchair-by-kengo-kuma" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/Aitai-1.jpg?v=1767692854" alt="AITAI Natural Wood &amp; Linen Armchair by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AITAI Natural Wood &amp; Linen Armchair</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/accueil/1249-5142-extra-bold-armchair-mixed.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/19099-home_default/extra-bold-armchair-mixed.jpg" alt="Extra Bold armchair - Mixed by Moustache" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Extra Bold armchair - Mixed</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/bukowski-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1751361378-new-works_packshot_44312_bukowski-lounge-chair_oak_sacho-moss-017_front.png?h=800" alt="Bukowski Lounge Chair by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bukowski Lounge Chair</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/archipen-lounge-chair-p5lb9" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/26f738ac-71da-4558-aa69-08125880a426/Archipen_Armchair_Wood_RAL_5003_Textile_Archive_Fabrics_The_O_Textile_Vasyl_Krychevskyi+2.jpg" alt="Archipen Lounge Chair Artistry Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Archipen Lounge Chair Artistry Edition</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/butacas/bolet/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2024/09/Omelette-Editions_Bolet_8.jpg" alt="Bolet - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bolet - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://petitefriture.com/fr/outdoor/2207-8458-fauteuildejardinweek-endbleu-gris.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://petitefriture.com/34019-home_default/fauteuildejardinweek-endbleu-gris.jpg" alt="Week-end by Petite Friture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Week-end</p></div>
+          <p class="card-brand">Petite Friture</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/superdeluxe-fauteuil" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2023/11/PHE_1646-thumb-1-300x300.jpg" alt="Superdeluxe Fauteuil by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Superdeluxe Fauteuil</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/brody-wingback-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Sept25_0031_4.jpg?v=1763115173" alt="Brody wingback armchair by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Brody wingback armchair</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.pode.eu/collection/armchairs/spot" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://a.storyblok.com/f/95982/704x1016/7c706388e3/pode-website-spot-overzicht-1.png" alt="Spot by Pode" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Spot</p></div>
+          <p class="card-brand">Pode</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/william_armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/UCH08-HERO_da9e7c44-d411-4548-a39e-e31dede09cc8.jpg?v=1754657542" alt="William Armchair by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">William Armchair</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://project213a.com/products/pericia-lounge-chair-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0531/5395/6002/files/Project213A_PericiaLoungeChair_bd3cf6ab-44e1-4526-9565-44a9e60a67b8.jpg?v=1782385427" alt="Perícia Lounge Chair by Project 213A" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Perícia Lounge Chair</p></div>
+          <p class="card-brand">Project 213A</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/arba-lounge-chair-lounge-chair-dark-green-base-green-fabric" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Erwan_Bouroullec_-_Arba_Lounge_chair_-_Upholstered_Kvadrat_Sisu-Lounge_chair-R1079-Dark_green_base_Kvadrat_Sisu_0805_green_fabric.jpg?v=1747641727" alt="Erwan Bouroullec - Arba Lounge chair - Upholstered Kvadrat Sisu by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Erwan Bouroullec - Arba Lounge chair - Upholstered Kvadrat Sisu</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.resident.co.nz/en/furniture/seating/avant-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.resident.co.nz/media/uploads/2026_06/Avant_Shot1200_00_Square.jpg.450x450_q85_crop-smart_upscale.jpg" alt="Avant Lounge Chair by Resident" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Avant Lounge Chair</p></div>
+          <p class="card-brand">Resident</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/butaca-nara/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/butaca_nara_1-1-600x600.jpg" alt="BUTACA NARA by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BUTACA NARA</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/armchair-snakes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Toiletpaper-Magazine-Armchair-16085-1.jpg?v=1728426975" alt="Armchair Snakes by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair Snakes</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/armchair-s-aluminium-eucalyptus-green-august" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5020006C_01-jpg.jpg?v=1764730294" alt="Armchair S aluminium eucalyptus green August by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair S aluminium eucalyptus green August</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/asger-lounge-chair-12/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Asger-Lounge_black-lacquered-oak_Zenso-2_207-400x400.webp" alt="Asger Lounge Chair by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Asger Lounge Chair</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.se-collections.com/products/sofas-and-armchairs/oshun-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://new.se-collections.com/wp-content/uploads/2021/04/Oshun-Armchair-front-view-800x800.jpg" alt="Oshun Armchair by Sé Collections" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oshun Armchair</p></div>
+          <p class="card-brand">Sé Collections</p>
+        </div>
+      </a>
+      <a class="card" href="https://tamo.design/products/conva-lounge-chair-boucle-wood" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/CONVAwood_1.jpg?v=1769612474" alt="CONVA lounge chair by Tamo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CONVA lounge chair</p></div>
+          <p class="card-brand">Tamo</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/cross-leg-lounge-chair-black-metal-legs-tosca-leather-cognac-1503" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS394560_1.jpg?v=1790159273" alt="Cross Leg Lounge Chair Tosca Leather Cognac by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cross Leg Lounge Chair Tosca Leather Cognac</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://thorupcopenhagen.com/products/noel-lounge-chair-blackdark-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0972/7672/3527/files/Thorup_Copenhagen_L3022_Noel_Lounge_Chair_black_dark_grey_front_packshot_white_background.jpg?v=1779095743" alt="Noel Lounge Chair by Thorup Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Noel Lounge Chair</p></div>
+          <p class="card-brand">Thorup Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/fauteuil-etude" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Chaise_ETUDE_LOUNGE_accoudoir_tissu_noir_noir_e7478673-5536-474d-bbb6-375317f237df.jpg?v=1777051556" alt="Fauteuil ETUDE by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil ETUDE</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tolix.com/products/fauteuil-mouette-acier-brut-verni" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/FAUTEUILMOUETTE_BRUTVERNI_VUEOBLIQUE_1.jpg?v=1772395578" alt="Fauteuil Mouette by Tolix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil Mouette</p></div>
+          <p class="card-brand">Tolix</p>
+        </div>
+      </a>
+      <a class="card" href="https://vaarnii.com/products/016-maasto-dining-armchair-upholstered-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/Frame_299.jpg?v=1750189363" alt="016 Maasto Dining Armchair Upholstered by Vaarnii" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">016 Maasto Dining Armchair Upholstered</p></div>
+          <p class="card-brand">Vaarnii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/lounge-chair-off-white-aligned" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9021335_01-jpg.jpg?v=1761517103" alt="lounge chair off-white aligned by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">lounge chair off-white aligned</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/ridge-lounge-chair-twisted-flower-col-0682-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Ridge_Loungechair_Baru_col0950_V2.jpg?v=1786518147" alt="Ridge - Lounge Chair by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ridge - Lounge Chair</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/rely-hw48-hw49" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2022/01/ATD_Packshots_134116A611_Rely-HW48_Midnight-w.-4-Star-Polished-Aluminium-base_Angled-Front-600x800.jpg" alt="Rely HW48-HW49 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rely HW48-HW49</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/daiku-lounge-chair-peat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/22262572_263107_Daiku_Lounge_Chair_-_Peat_1.jpg?v=1782294691" alt="Daiku Lounge Chair by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Daiku Lounge Chair</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/modern-farmhouse-occasional-chair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country-Modern-Farmhouse-Occasional-Chair-02-1024x1024.jpg" alt="Modern Farmhouse Occasional Chair by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Modern Farmhouse Occasional Chair</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/126-hallway-chair-403" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar-Hallway-chair-painted-orange-birch_a97d5cc5-3eef-4319-aafb-d4888f89a047.jpg?v=1781589280" alt="#126 Hallway Chair 403 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">#126 Hallway Chair 403</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/the-seal-lounge-chair-high-back" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Plnith_Bridge_Wing_Table_Lamp_The_Seal_High_Back_692a7d75-043c-428b-958a-8e007e863750.jpg?v=1756283987" alt="The Seal Lounge Chair by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">The Seal Lounge Chair</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-beverly-14-poltrone.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_armchair_Beverly-14_01.jpg" alt="Beverly &#x27;14 by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Beverly &#x27;14</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://baleri-italia.com/en/products/richard-iii-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.baleri-italia.com/uploads/media/1400x/09/1349-Baleri-Italia_Richard-III_poltrona_PS215AM-N_1985_01d.png?v=1-0" alt="Richard III Armchair by Baleri Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Richard III Armchair</p></div>
+          <p class="card-brand">Baleri Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/piccolo-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/piccolo.jpg?v=1705328250" alt="Piccolo fåtölj by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Piccolo fåtölj</p></div>
+          <p class="card-brand">Byarums Bruk</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/576z-98-6-f-outdoor-one-armed-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/98.6_F-OUTDOOR-ONE-ARMED-LOUNGE-CHAIR-by-Neri_Hu_6.jpg?v=1635762610" alt="98.6°F OUTDOOR ONE ARMED LOUNGE CHAIR by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">98.6°F OUTDOOR ONE ARMED LOUNGE CHAIR</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.desalto.it/it/prodotti/imbottiti/unlimited" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.desalto.it/ContentsFiles/Desalto_Web_03SE_Unlimited_Preview_01(0).png" alt="Unlimited by Desalto" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Unlimited</p></div>
+          <p class="card-brand">Desalto</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/elias-armchair-sheepskin" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_2303_PRODUCT_Elias_Armchair_Sheepskin_2447_f54b85e4-520a-4f3d-87fb-fe557ac779e1.jpg?v=1738764239" alt="Elias Armchair Sheepskin by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elias Armchair Sheepskin</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://editions-midi.com/produit/fautuei/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://editions-midi.com/wp-content/uploads/2024/09/HDlourmarin111919-01105-OK-V2-540x720.jpg" alt="Fautuei by Editions Midi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fautuei</p></div>
+          <p class="card-brand">Editions Midi</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_assises_fauteuil-kayak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/196/T_196-1.jpg" alt="Fauteuil Canoë by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil Canoë</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/buur-lounge-chair-vanir-black-honey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274592_1.png?v=1788762880" alt="Buur Lounge Chair by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Buur Lounge Chair</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/lounge-chairs-ottomans/lounge-chair/barba-club-chair-swivel-base" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/82/d8/70/69/6970d8827991180a249ecae1/FogiaBarba Club Chair Beech lacquered-Vidar 0693Front.png?auto=format&amp;w=2000&amp;q=90" alt="Barba Club Chair Swivel Base by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Barba Club Chair Swivel Base</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://gad.se/fole-fatolj/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gad.se/wp-content/uploads/2025/05/gotland-fatolj-skinn-ek-250x250.jpg" alt="Fole Fåtölj by G.A.D" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fole Fåtölj</p></div>
+          <p class="card-brand">G.A.D</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-paulin/armchair-little-tulip" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/4CFC9B5E8CED3B4A866BD0CF6FEE6F94.jpg.webp" alt="Armchair Little Tulip by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair Little Tulip</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/loll-armchair-07-p5768" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19264__productGrid/loll-07_clipped_rev_1@2x.png" alt="Loll by Gervasoni" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Loll</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/brass-chairs/katana-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/116/Katana_Armchair_1100x5501.jpg" alt="Katana Armchair by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Katana Armchair</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://gubi.com/en/se/products/flaneur-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.thorcommerce.io/gubi/39ed9ce96f5d303327d407f5ada6152a/10152485_F3Q_Flaneur+Lounge+Chair_GUBI+Boucl%C3%A9+001.png" alt="Flaneur Lounge Chair by Gubi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flaneur Lounge Chair</p></div>
+          <p class="card-brand">Gubi</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/dandy/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2017/02/GARbb0396-720x1080.jpg" alt="Dandy fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dandy fåtölj</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-chair/palissade-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250612042418/img_20250612042418/globalassets/inriver/integration/service/palissade-armchair_910x1100_brandmodel2.jpg" alt="Palissade Armchair by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palissade Armchair</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/fauteuil-atlas-kaki-a1986" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/files/atlas-khaki-00_150188e8-5a02-4514-b4ec-b07afb68db2d.jpg?v=1684695584" alt="Fauteuil Atlas kaki A1986 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil Atlas kaki A1986</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kallemo.se/en/sida/fatoeljer-soffor/vilan-english" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/bc/vilan-fa%CC%8Ato%CC%88lj-kategori-4b202113-bc2769f0.webp" alt="VILAN by Källemo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">VILAN</p></div>
+          <p class="card-brand">Källemo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/armchairs/armchair-kashima-4757" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100htv_c.jpg" alt="Kashima Armchair by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kashima Armchair</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products-materials/armchairs/clan/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/10135/1200x630/nocrop/noenlarge/align_4/202207_TommasoSartori_LivingDivani_06.jpg.aspx" alt="Clan by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Clan</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/spina-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_GALLERY75435_e05ff8ff-32e8-4347-be8b-232f129b8d3a.jpg?v=1783589510" alt="SPINA LOUNGE CHAIR by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SPINA LOUNGE CHAIR</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/in-side_armchair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2024/10/Magis_proust_product_front_SD590_orange_01_icona_prodotto-256x300.jpg" alt="In-Side by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">In-Side</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_armchair_stackable_cushioned/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_armchair_stackable_cushioned/Product/beech_NL0_cr.jpg" alt="ARMCHAIR STACKABLE (cushioned) by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARMCHAIR STACKABLE (cushioned)</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/dandy-armchair-focus" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Dandy_Armchair_Atlantis_18_Mole_Black_Stained_Oak_0001_e117cbdd-b3c9-4b01-9191-cfad177beb85.png?v=1756229733" alt="Dandy Armchair by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dandy Armchair</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://materdesign.com/products/compound-lounge-chair-uphol-seat-wood-waste-grey-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0260/0981/files/96e33718-154a-43f4-bd23-4fa7ea09fbba_5da05551-a9bc-41e6-bfc7-6718a77cc2d6.png?v=1693902909" alt="Compound Lounge Chair | Uphol. Seat | Wood Waste Grey by Mater" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Compound Lounge Chair | Uphol. Seat | Wood Waste Grey</p></div>
+          <p class="card-brand">Mater</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mercoeur-edition.com/products/pulse-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.prod.website-files.com/65f8e4972094d2411f63ed1d/6a67252ee51414619accdd32_Mercoeur_Thumbnail_PULSE-Armchair.webp" alt="Pulse Armchair by Mercoeur Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pulse Armchair</p></div>
+          <p class="card-brand">Mercoeur Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/aitai-metal-frame-and-fabric-seat-armchair-by-kengo-kuma" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/Aitai-8_59008fe9-af19-4921-afb2-551f6f2acddc.jpg?v=1770726527" alt="AITAI Metal Armchair with Upholstered Seat by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AITAI Metal Armchair with Upholstered Seat</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/furniture/1549-7240-fauteuil-bloc.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/43012-home_default/fauteuil-bloc.jpg" alt="Bloc armchair by Moustache" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bloc armchair</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/tenon-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1725290436-new-works_packshots_43010_tenon-lounge-chair_natural-oak_romo-ruskin-quill_730x645x700mm_front.png?h=800" alt="Tenon Lounge Chair by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tenon Lounge Chair</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/flock-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/181d52c3-5f82-468b-baa3-b35a6b3d8112/250606+02.png" alt="Flock Lounge Chair by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flock Lounge Chair</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/butacas/majestic-butaca/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2024/05/Omelette-Editions_Majestic_Lounge_1.jpg" alt="Majestic lounge - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Majestic lounge - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/lage-crisis-fauteuil" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2023/04/lagecrisisfauteuil-thumb-300x300.jpg" alt="Lage crisis fauteuil by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lage crisis fauteuil</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/garagh-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Garagh_4238LR.jpg?v=1725823796" alt="Garagh armchair by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Garagh armchair</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.pode.eu/collection/armchairs/bibo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://a.storyblok.com/f/95982/704x1016/7a8df52a15/pode-website-bibo-overzicht.png" alt="Bibo by Pode" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bibo</p></div>
+          <p class="card-brand">Pode</p>
+        </div>
+      </a>
+      <a class="card" href="https://project213a.com/products/bolha-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0531/5395/6002/files/Project_213A_Bolha_Lounge_Chair_3.jpg?v=1755352347" alt="Bolha Lounge Chair by Project 213A" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bolha Lounge Chair</p></div>
+          <p class="card-brand">Project 213A</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/arba-lounge-chair-lounge-chair-light-grey-base-blue-fabric" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Erwan_Bouroullec_-_Arba_Lounge_chair_-_Upholstered_Kvadrat_Vidar-Lounge_chair-R1078-Light_grey_base_Kvadrat_Vidar_0772_blue_fabric.jpg?v=1747641634" alt="Erwan Bouroullec - Arba Lounge chair - Upholstered Kvadrat Vidar by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Erwan Bouroullec - Arba Lounge chair - Upholstered Kvadrat Vidar</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.resident.co.nz/en/furniture/seating/plane-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.resident.co.nz/media/uploads/2025_05/P0.jpg.450x450_q85_crop-smart_upscale.jpg" alt="Plane Lounge Chair by Resident" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Plane Lounge Chair</p></div>
+          <p class="card-brand">Resident</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/butaca-jude/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/butaca-jude1-1-600x600.jpg" alt="BUTACA JUDE by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BUTACA JUDE</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/armchair-lipsticks" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Toiletpaper-Magazine-Armchair-16082-1.jpg?v=1728426966" alt="Armchair Lipsticks by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair Lipsticks</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/armchair-s-aluminium-black-august" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5020006B_01-jpg.jpg?v=1764730287" alt="Armchair S aluminium black August by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair S aluminium black August</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/primum-lounge-chair-20/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Web-packshots_Primum-Lounge-Chair_black_fluffy-JA2096-050_01-400x400.webp" alt="Primum Lounge Chair black base without armrest by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Primum Lounge Chair black base without armrest</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.se-collections.com/products/sofas-and-armchairs/oshun-daybed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://new.se-collections.com/wp-content/uploads/2021/04/Oshun-Daybed-Perennials-Crepe-du-jour-973-28-Blanca-Se-Leather-390-800x800.jpg" alt="Oshun Daybed by Sé Collections" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oshun Daybed</p></div>
+          <p class="card-brand">Sé Collections</p>
+        </div>
+      </a>
+      <a class="card" href="https://tamo.design/products/baoza-lounge-chair-boucle-wood" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/BAOZA_wood_packshot_bd664ebe-57a8-4101-825d-626231a51f5f.png?v=1769782807" alt="BAOZA lounge chair by Tamo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BAOZA lounge chair</p></div>
+          <p class="card-brand">Tamo</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-fold-compact-chair-twisted-yarn-cotton-blend-coconut" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS171893_Fold_compact_chair_twisted_yarn_cotton_blend_coconut_Frront.jpg?v=1790341119" alt="Outlet Fold Compact Chair Twisted Yarn Cotton Blend Coconut by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outlet Fold Compact Chair Twisted Yarn Cotton Blend Coconut</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tolix.com/products/fauteuil-lounge-patio-acier-galvanise-verni" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/FAUTEUILPATIOLOUNGE_GALVANISE_VUEOBLIQUE_1_1.jpg?v=1772396900" alt="Fauteuil lounge Patio by Tolix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil lounge Patio</p></div>
+          <p class="card-brand">Tolix</p>
+        </div>
+      </a>
+      <a class="card" href="https://vaarnii.com/products/016-maasto-dining-armchair-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/Frame_240.jpg?v=1749801327" alt="016 Maasto Dining Armchair Black by Vaarnii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">016 Maasto Dining Armchair Black</p></div>
+          <p class="card-brand">Vaarnii</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/ovata-lounge-chair-large-twisted-flower-col-0462" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Ovata_LoungeChair_L_twistedflower_2.jpg?v=1784202461" alt="Ovata Lounge Chair - Large by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ovata Lounge Chair - Large</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/rely-hw50-hw52" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/ATD_Packshots_134125A235A622D791_Rely-HW51_Saxion-0927-w-4-Star-Aluminium-Base_Angled-Front-600x800.jpg" alt="Rely HW50-HW52 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rely HW50-HW52</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/toe-chair-peat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21957654_263025_Toe_Chair_-_Peat_1.jpg?v=1782294986" alt="Toe Chair by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Toe Chair</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/hardy-armchair-oak-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Hardy-Armchair3-1024x1024.jpg" alt="Hardy Armchair by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hardy Armchair</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/116-restaurant-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Korhonen-Otto_restaurant_chair.jpg?v=1777036221" alt="#116 Restaurant Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">#116 Restaurant Chair</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/brasilia-lounge-chair-sheepskin" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/MENU_Brasilia_Lounge_Chair_Sheepskin_Brasilia_Ottoman_Plint_Cubic_383eab06-7c8d-4850-a2af-94a49ac81e42.jpg?v=1756283631" alt="Brasilia Lounge Chair by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Brasilia Lounge Chair</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-us-serie-up-2000-poltrone.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_armchair_Up-Series-2000_07.jpg" alt="Serie Up 2000 by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serie Up 2000</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/byarum-fatolj" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarum_fatolj-1.jpg?v=1705327371" alt="Byarum fåtölj by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Byarum fåtölj</p></div>
+          <p class="card-brand">Byarums Bruk</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/269-throne-lounge-chair-upholstered" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/269ThroneLoungeChairwithUpholsterybyAutobanforDeLaEspadainDanishoiledwalnutandSonar3153-web.jpg?v=1617811467" alt="THRONE LOUNGE CHAIR by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">THRONE LOUNGE CHAIR</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.desalto.it/it/prodotti/imbottiti/strong-special" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.desalto.it/ContentsFiles/Desalto_Web_03SE_Strong_Special_Preview_01.png" alt="Strong Special by Desalto" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Strong Special</p></div>
+          <p class="card-brand">Desalto</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/elias-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_2303_PRODUCT_ARMCHAIR_1938_BOUCLE_u_1655.jpg?v=1738764324" alt="Elias Armchair by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elias Armchair</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rico-piccolo-lounge-chair-swivel-soft-alpaca-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274735_1.png?v=1788768432" alt="Rico Piccolo Lounge Chair by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rico Piccolo Lounge Chair</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/lounge-chairs-ottomans/lounge-chair/barba-club-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/42/d6/70/69/6970d64287827550098cfd33/FogiaBarba Club Chair Beech lacquered-Vidar 0222Front.png?auto=format&amp;w=2000&amp;q=90" alt="Barba Club Chair by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Barba Club Chair</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/ernest-race/b3-armchair-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/AC7F1405C231984EA71A166B50726753.jpg.webp" alt="B3 Armchair (brown) by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">B3 Armchair (brown)</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/nuvola-armchair-p3687" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19274__productGrid/nuvola-05_09_clipped_rev_1@2x.png" alt="Nuvola by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nuvola</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/brass-chairs/liu-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/225/Liu_Armchair_1100x550_front.jpg" alt="Liu Armchair by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Liu Armchair</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://gubi.com/en/se/products/f300-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.thorcommerce.io/gubi/4f303a9f89b7b0480172ba4d2486970c/10132331_F3Q_F300-Lounge-Chair_Alabaster-White_Dedar%2C-Alpaca-Alto-021.png" alt="F300 Lounge Chair by Gubi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">F300 Lounge Chair</p></div>
+          <p class="card-brand">Gubi</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/emma/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARSu_0034-810x1080.jpg" alt="Emma fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Emma fåtölj</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-chair/palissade-dining-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422060400/img_20250422060400/globalassets/inriver/integration/service/palissade-dining-armchair_910x1100_brandmodel2.jpg" alt="Palissade Dining Armchair by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palissade Dining Armchair</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/fauteuil-atlas-vert-a1985" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/files/atlas-green-001.jpg?v=1684148385" alt="Fauteuil Atlas vert A1985 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil Atlas vert A1985</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kallemo.se/en/sida/fatoeljer-soffor/ingo-english" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/8b/ingo-fatolj1-8b797172.png" alt="INGO by Källemo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">INGO</p></div>
+          <p class="card-brand">Källemo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/armchairs/armchair-pumpkin-48" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/14110100_4563_i_vue_c.jpg" alt="Pumpkin Armchair by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pumpkin Armchair</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products-materials/armchairs/confident-wood/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/10461/1200x630/nocrop/noenlarge/align_4/2023-Living-Divani-Confident-Wood-1.jpg.aspx" alt="Confident &quot;Wood&quot; by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Confident &quot;Wood&quot;</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/magis-proust/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2015/02/Magis_proust_armchair_product_front_SD590_yellow_01_icona-256x300.jpg" alt="Magis Proustnew by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Magis Proustnew</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_armchair_stackable_wooden_seat/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_armchair_stackable_wooden_seat/Product/beech_NL0_cr.jpg" alt="ARMCHAIR STACKABLE (wooden seat) by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARMCHAIR STACKABLE (wooden seat)</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/crown-armchair-focus" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Crown_Armchair_Ecriture_240_02.png?v=1756137108" alt="Crown Armchair by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Crown Armchair</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://materdesign.com/products/compound-lounge-chair-uphol-seat-coffee-waste-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0260/0981/files/MATER__4.jpg?v=1719477598" alt="Compound Lounge Chair | Uphol. Seat | Coffee by Mater" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Compound Lounge Chair | Uphol. Seat | Coffee</p></div>
+          <p class="card-brand">Mater</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/2x-lisboa-minimalist-stainless-steel-armchair-with-leather-finish" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/MOR-226_arranjado_4x34000_01fa3674-0e22-494c-b571-1d0064604972.jpg?v=1772636209" alt="Set of 2 Lisboa Leather Sling Armchairs by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Set of 2 Lisboa Leather Sling Armchairs</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/armchairs/142-442-chaise-gavotte.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/1728-home_default/chaise-gavotte.jpg" alt="Gavotte Chair by Moustache" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gavotte Chair</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/flock-lounge-chair-fluffy-edition" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/c87a4c59-68cd-474b-9401-3b2c9949c704/Flock+Lounge+Chair+Fluffy+Edition+by_NOOM+%283%29+a.jpg" alt="Flock Lounge Chair Fluffy Edition by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flock Lounge Chair Fluffy Edition</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/butacas/masala-butaca/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2023/06/Omelette-Editions_Masala_Lounge_2.jpg" alt="Masala lounge - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Masala lounge - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-afval-90x90-fauteuil" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2023/04/90x90faut_thumb2-300x300.jpg" alt="Afval Afval 90 X 90 Fauteuil by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval Afval 90 X 90 Fauteuil</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/moreau-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Moreau_4227_LR.jpg?v=1747848851" alt="Moreau armchair by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Moreau armchair</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.pode.eu/collection/armchairs/sparkle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://a.storyblok.com/f/95982/800x1152/e43db4d3b4/pode-sparkle.png" alt="Sparkle by Pode" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sparkle</p></div>
+          <p class="card-brand">Pode</p>
+        </div>
+      </a>
+      <a class="card" href="https://project213a.com/products/mirror-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0531/5395/6002/products/P213a_MirrorLC6.jpg?v=1698418998" alt="Mirror Lounge Chair by Project 213A" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mirror Lounge Chair</p></div>
+          <p class="card-brand">Project 213A</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/arba-lounge-chair-lounge-chair-dark-green-base-light-grey-shell" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Erwan_Bouroullec_-_Arba_lounge_chair_-_Plywood-Lounge_chair-R1074-Dark_green_base_light_grey_shell.jpg?v=1747641159" alt="Erwan Bouroullec - Arba lounge chair - Plywood by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Erwan Bouroullec - Arba lounge chair - Plywood</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/heva-butaca/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/furniture_lounge_chairs_rihouse_francesc_rife_trebol_heva_2-1-600x600.jpg" alt="HEVA BUTACA by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">HEVA BUTACA</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/armchair-volcano" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Toiletpaper-Magazine-Armchair-16086-Volcan1.jpg?v=1728427006" alt="Armchair Volcano by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair Volcano</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/armchair-l-aluminium-sand-august" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5019002S_01-jpg.jpg?v=1764730262" alt="Armchair L aluminium sand August by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair L aluminium sand August</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/primum-lounge-chair-19/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Web-packshots_Primum-Lounge-Chair-w.-arm_black_fluffy-JA2096-050_01-400x400.webp" alt="Primum Lounge Chair black base by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Primum Lounge Chair black base</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.se-collections.com/products/sofas-and-armchairs/grace-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://new.se-collections.com/wp-content/uploads/2023/05/Grace-Armchair-1-800x800.jpg" alt="Grace Armchair by Sé Collections" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Grace Armchair</p></div>
+          <p class="card-brand">Sé Collections</p>
+        </div>
+      </a>
+      <a class="card" href="https://tamo.design/products/tori-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/canvas_fotel.jpg?v=1761033689" alt="TORI lounge chair by Tamo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TORI lounge chair</p></div>
+          <p class="card-brand">Tamo</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-arbor-armchair-grain-melange-63118" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS437039_Arbor_Amchair_Grain_63118_Front.jpg?v=1790340753" alt="Ex-Display Arbor Armchair Grain Melange 63118 by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ex-Display Arbor Armchair Grain Melange 63118</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tolix.com/products/fauteuil-patio-blanc-perle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/FAUTEUILPATIO_BLANCPERLE_VUEOBLIQUE_1.jpg?v=1772396965" alt="Fauteuil Patio by Tolix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil Patio</p></div>
+          <p class="card-brand">Tolix</p>
+        </div>
+      </a>
+      <a class="card" href="https://vaarnii.com/products/005-lounge-chair-pine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/005LoungeChair-1-Vertical.jpg?v=1749742646" alt="005 Lounge Chair by Vaarnii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">005 Lounge Chair</p></div>
+          <p class="card-brand">Vaarnii</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/collar-lounge-chair-medium-twisted-flower-col-0462" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Collar_M_twistedflower_2.jpg?v=1784190114" alt="Collar Lounge Chair - Medium by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Collar Lounge Chair - Medium</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/rely-hw53-hw54" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2022/01/ATD_Packshots_134132A612A012A271_Rely-HW54_Midnight-w-Fiord-0672-w-5-Star-Aluminium-Base_Angled-Front-600x800.jpg" alt="Rely HW53-HW54 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rely HW53-HW54</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/toe-chair-armrest-coffee-black-oak-desert" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21957793_263027_Toe_Chair_Armrest_Coffee_Black_Oak_-_Desert_1.jpg?v=1781652714" alt="Toe Chair Armrest by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Toe Chair Armrest</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/oak-hardy-rocking-chair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Hardy_Rocker_Oak_003-1024x1024.jpg" alt="Hardy Rocker by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hardy Rocker</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/121-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Erik-Bryggman-Caneweave-Armchairs.webp?v=1776794835" alt="#121 Armchair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">#121 Armchair</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/knitting-chair-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MenuMay2021-Day20075.jpg?v=1756284209" alt="Knitting Lounge Chair by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Knitting Lounge Chair</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-serie-up-poltrone-compasso-d-oro.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_armchair_Up-Oro_01.jpg" alt="Serie Up Compasso d&#x27;Oro by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serie Up Compasso d&#x27;Oro</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.desalto.it/it/prodotti/imbottiti/sum" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.desalto.it/ContentsFiles/Desalto_Web_04IM_Sum_Preview_00.png" alt="Sum by Desalto" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sum</p></div>
+          <p class="card-brand">Desalto</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/easy-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_2303_PRODUCT_EASY_CHAIR_WALNUT_0170.jpg?v=1738764356" alt="Easy Chair by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Easy Chair</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rico-kids-lounge-chair-soft-boucle-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274229_1.png?v=1788769129" alt="Rico Kids Lounge Chair by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rico Kids Lounge Chair</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/lounge-chairs-ottomans/lounge-chair/barba-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/98/da/70/69/6970da988f45f25ab420bdb8/FogiaBarba Lounge Chair Beech lacquered-Vidar 0693Front.png?auto=format&amp;w=2000&amp;q=90" alt="Barba Lounge Chair by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Barba Lounge Chair</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/alessandro-mendini/poltrona-white-gold" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/B5F573EADAA7E747BFE66ED511BF3086.jpg.webp" alt="Poltrona by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Poltrona</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/r513-p25846" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__26387__productGrid/r513@2x.png" alt="R 513 by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">R 513</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/armchairs/tasca-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/247/Tasca_Armchair_1100x550.jpg" alt="Tasca Armchair by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tasca Armchair</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://gubi.com/en/se/products/pacha-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.thorcommerce.io/gubi/cba158714d3f349f3518f2928f76a541/10062198_F3Q_Pacha_LoungeChair_Fixed_FullyUpholstered_PearlGold_Dedar_Karakorum-001_ItemNr-10062198_F3Q.png" alt="Pacha Lounge Chair by Gubi" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pacha Lounge Chair</p></div>
+          <p class="card-brand">Gubi</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/ferdinand-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/02/DUR1151-723x1080.jpg" alt="Ferdinand fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ferdinand fåtölj</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-chair/palissade-cantilever-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260113020040/img_20260113020040/globalassets/inriver/integration/service/palissade-cantilever-armchair_910x1100_brandmodel.jpg" alt="Palissade Cantilever Armchair by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palissade Cantilever Armchair</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/fauteuil-timber-vert" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/products/timber-green-01.jpg?v=1631627665" alt="Fauteuil Timber vert A1064 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil Timber vert A1064</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kallemo.se/en/sida/fatoeljer-soffor/avec-english" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/a6/fa%CC%8Ato%CC%88lj-avec-a688aa39.png" alt="AVEC by Källemo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AVEC</p></div>
+          <p class="card-brand">Källemo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/armchairs/swivelling-armchair-pumpkin-49" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/14110110_115_i_vue_c.jpg" alt="Pumpkin Swivelling armchair by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pumpkin Swivelling armchair</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products-materials/armchairs/oolong/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/10122/1200x630/nocrop/noenlarge/align_4/Oolong_TommasoSartori_LivingDivani_29.jpg.aspx" alt="Oolong by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oolong</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/nimrod/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2015/02/Magis_nimrod_product_front_SD52_purple_01-256x300.png" alt="Nimrod by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nimrod</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_armchair_wooden_seat/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_armchair_wooden_seat/Product/beech_NL0.jpg" alt="ARMCHAIR (wooden seat) Low/High by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARMCHAIR (wooden seat) Low/High</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/waiter-xl-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Armchair_Ultramarine.0001.jpg?v=1757613571" alt="Waiter XL Armchair by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Waiter XL Armchair</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://materdesign.com/products/compound-lounge-chair-full-front-uphol-wood-waste-grey" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0260/0981/files/96e33718-154a-43f4-bd23-4fa7ea09fbba_5da05551-a9bc-41e6-bfc7-6718a77cc2d6.png?v=1693902909" alt="Compound Lounge Chair | Full Front Uphol. | Wood Waste Grey by Mater" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Compound Lounge Chair | Full Front Uphol. | Wood Waste Grey</p></div>
+          <p class="card-brand">Mater</p>
+        </div>
+      </a>
+      <a class="card" href="https://mordesign.com/products/minimalist-modern-lounge-chair-in-natural-oak-allay-2-units" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/5225/9739/files/ALLAY_slider_homepage_mobile_a6962d5a-bc2f-4395-aa1d-8bd51238b5b4.jpg?v=1770725376" alt="ALLAY Set by MOR" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ALLAY Set</p></div>
+          <p class="card-brand">MOR</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/accueil/1579-chaise-n2-chair.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/43644-home_default/chaise-n2-chair.jpg" alt="LCP – Low Chair Plastic by Moustache" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LCP – Low Chair Plastic</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/butacas/nua-butaca/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2024/09/Omelette-Editions_Nua_Lounge_11.jpg" alt="Nua lounge - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nua lounge - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/even-dik-even-breed-stoel-met-hocker" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2023/01/PHE_0150-thumb-300x300.jpg" alt="Even-dik-even-breed-fauteuil met hocker by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Even-dik-even-breed-fauteuil met hocker</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/angelo-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Angelo_25_032_LR.jpg?v=1751037198" alt="Angelo armchair by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Angelo armchair</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/arba-lounge-chair-lounge-chair-light-grey-base-re-wool-grey-fabric" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Arba_Lounge_chair-Lounge_chair-R1075-Light_grey_base_re-wool_grey_fabric.jpg?v=1720014111" alt="Erwan Bouroullec - Arba Lounge chair - Upholstered Kvadrat re-wool by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Erwan Bouroullec - Arba Lounge chair - Upholstered Kvadrat re-wool</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/hamp-butaca/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/furniture_point_francesc_rife_hamp_armchair_3-1-600x600.jpg" alt="HAMP BUTACA by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">HAMP BUTACA</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/armchair-shit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Toiletpaper-Magazine-Armchair-16084-Shit11.jpg?v=1728426996" alt="Armchair Shit by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair Shit</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/armchair-l-aluminium-eucalyptus-green-august" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5019002C_01-jpg.jpg?v=1764730258" alt="Armchair L aluminium eucalyptus green August by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair L aluminium eucalyptus green August</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/primum-lounge-chair-18/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Primum-Lounge-Chair_stainless-base_ricco10-400x400.webp" alt="Primum Lounge Chair polished alu base by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Primum Lounge Chair polished alu base</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.se-collections.com/products/sofas-and-armchairs/grace-sectional-sofa" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://new.se-collections.com/wp-content/uploads/2022/04/Grace-sofa-front-square-800x800.jpg" alt="Grace Sectional Sofa by Sé Collections" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Grace Sectional Sofa</p></div>
+          <p class="card-brand">Sé Collections</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/outlet-cross-leg-lounge-chair-black-metal-legs-tosca-leather-cognac" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS338542_Cross_Leg_Lounge_Chair_Tosca_Leather_Cognac_Front.jpg?v=1790096253" alt="Ex-Display Cross Leg Lounge Chair Tosca Leather Cognac by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ex-Display Cross Leg Lounge Chair Tosca Leather Cognac</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tolix.com/products/fauteuil-ud-assise-lames-metal-blanc-perle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/FAUTEUILUDASSISELAMESMETAL-BLANCPERLE_VUEOBLIQUE_1.jpg?v=1772398340" alt="Fauteuil UD assise lames métal by Tolix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil UD assise lames métal</p></div>
+          <p class="card-brand">Tolix</p>
+        </div>
+      </a>
+      <a class="card" href="https://vaarnii.com/products/015-peace-outdoor-lounge-chair-files" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/PeaceChair-4-Vertical_jpg.jpg?v=1724228512" alt="015 Peace Outdoor Lounge Chair Files by Vaarnii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">015 Peace Outdoor Lounge Chair Files</p></div>
+          <p class="card-brand">Vaarnii</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/atli-lounge-chair-chrome-plated-legs-bosa-col-04" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Atli_LoungeChair_Chrome_Bosa.col.04_2.jpg?v=1783595297" alt="Atli Lounge Chair - Chrome-plated legs by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Atli Lounge Chair - Chrome-plated legs</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/pavilion-av13" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/01/ATD_Retail_2021_Pavilion-AV17_Pavilion-AV13-2-600x800.jpg" alt="Pavilion AV13 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pavilion AV13</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/foku-chair-peat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21953746_263023_Foku_Chair_-_Peat_1.jpg?v=1787613737" alt="Foku Chair by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Foku Chair</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/armchair-one/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/AnotherCountry-Armchair-One-Front-1024x1024.jpg" alt="Armchair One by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair One</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/120-diamond-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Bertoia-Harry-Diamond-chair-new-seat.webp?v=1776794645" alt="#120 Diamond Chair by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">#120 Diamond Chair</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/the-tired-man-textile" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/Audo_The_Tired_Man_Lounge_Chair_Triptych_Bowl_99.jpg?v=1756716406" alt="The Tired Man Lounge Chair by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">The Tired Man Lounge Chair</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-george-poltrone.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/p/r/project_armchair_George_01.jpg" alt="George by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">George</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://dustydeco.com/products/miles-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0508/9961/5951/files/DD_2303_PRODUCT_Miles_Armchair_Beige_Tresigallo_2355.jpg?v=1744019559" alt="Miles Armchair Boucle Beige by Dusty Deco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Miles Armchair Boucle Beige</p></div>
+          <p class="card-brand">Dusty Deco</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/willora-kids-lounge-chair-natural" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274005_1.png?v=1788770059" alt="Willora Kids Lounge Chair by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Willora Kids Lounge Chair</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/lounge-chairs-ottomans/lounge-chair/bollo-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/75/9e/70/69/69709e7587827550098cf21f/FogiaBollo Lounge Chair RAL 9005-Vintage RangersFront.png?auto=format&amp;w=2000&amp;q=90" alt="Bollo Lounge Chair by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bollo Lounge Chair</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/franco-albini/poltrone-pl34-purple" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/C407F21F28EBC242977D4E38BC7149A2.jpg.webp" alt="Armchair PL34 by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair PL34</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/saia-armchair-p6512" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__11647__productGrid/saia-05@2x.png" alt="Saia by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Saia</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/armchairs/flo-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/243/Flo_Armchair_1100x550.jpg" alt="Flo Armchair by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flo Armchair</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://gubi.com/en/se/products/poltrona-tria-lounge-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.thorcommerce.io/gubi/41d6b9f6e6588eca9a82eeaea600a76b/10141298_F3Q_Poltrona+Tria+Lounge+Chair_Dark+Rattan_Fully+Upholstered_GUBI%2C+Boucl%C3%A9+001.png" alt="Poltrona Tria Lounge Chair by Gubi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Poltrona Tria Lounge Chair</p></div>
+          <p class="card-brand">Gubi</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/hedwig/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/03/GRSNb0596-720x1080.jpg" alt="Hedwig fåtölj by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hedwig fåtölj</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-chair/palissade-cantilever-dining-armchair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260113015448/img_20260113015448/globalassets/inriver/integration/service/palissade-cantilever-dining-armchair_1390x800_brandmodel.jpg" alt="Palissade Cantilever Dining Armchair by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palissade Cantilever Dining Armchair</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://en.kanndesign.com/products/fauteuil-timber-gris" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0550/0574/1224/products/timber-grey-01.jpg?v=1629450140" alt="Fauteuil Timber gris A1065 by Kann Design" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fauteuil Timber gris A1065</p></div>
+          <p class="card-brand">Kann Design</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kallemo.se/en/sida/fatoeljer-soffor/ambassad-english" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/51/ambassad-fa%CC%8Ato%CC%88lj-kategori-51cd5724.png" alt="AMBASSAD by Källemo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AMBASSAD</p></div>
+          <p class="card-brand">Källemo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/armchairs/armchair-high-back-pumpkin-50" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/14110150_4561_i_vue_c.jpg" alt="Pumpkin Armchair high back by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pumpkin Armchair high back</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products-materials/armchairs/sdraio/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/9306/1200x630/nocrop/noenlarge/align_4/LivingDivani-Sdraio--4-.jpg.aspx" alt="Sdraio by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sdraio</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/officina-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2017/10/Magis_officina_armchair_product_front_SD2235_grey_torrilana_rico_989.070_01.png" alt="Officina by Magis" loading="lazy"><span class="variant-badge">4 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Officina</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a></div>
+  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/browse/armchairs-2.html">2</a><a href="/browse/armchairs-3.html">3</a><a href="/browse/armchairs-2.html" rel="next">Next &rarr;</a></nav>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

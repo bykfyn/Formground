@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beds — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="143 real beds from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/browse/beds.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Beds — Formground">
+<meta property="og:description" content="143 real beds from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/browse/beds.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Beds — Formground">
+<meta name="twitter:description" content="143 real beds from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-group { max-width: 520px; margin: 32px auto 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Browse", "item": "https://formground.com/browse/"}, {"@type": "ListItem", "position": 3, "name": "Beds", "item": "https://formground.com/browse/beds.html"}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <h1>Beds</h1>
+  <p class="category-intro">143 beds from independent makers. Every result links straight to the maker's own site.</p>
+  <div class="grid">
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/brook-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Brook_Sofa_3seat_1-1024x1024.jpg" alt="Brook Sofa by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Brook Sofa</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-sake-letti.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_bed_Sake_01.jpg" alt="Saké by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Saké</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mycozmo.com/products/cozy-bed-super-king-ecru-boucle-frame-ecru-boucle-headboard" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0565/1765/6739/files/Cozy-Bed-Super-King-Ecru-Boucle-Frame-Ecru-Boucle-Headboard.jpg?v=1738933585" alt="Cozy Bed by Cozmo" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cozy Bed</p></div>
+          <p class="card-brand">Cozmo</p>
+        </div>
+      </a>
+      <a class="card" href="https://dannykaplanstudio.com/products/paravent-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0604/7773/5136/files/DannyKaplanDelfCollection10711.jpg?v=1716233687" alt="Paravent Bed by Danny Kaplan Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Paravent Bed</p></div>
+          <p class="card-brand">Danny Kaplan Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/684s-twenty-five-upholstered-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/files/684S-Twenty-Five-Upholstered-Bed-by-De-La-Espada-Atelier-in-Danish-oiled-walnut-and-Base-012-fabric_2.jpg?v=1683563653" alt="TWENTY-FIVE UPHOLSTERED BED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TWENTY-FIVE UPHOLSTERED BED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.deceresstudio.com/somnus-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/60c6c7d303b6bb345051e428/92fceb1e-0c35-4e08-b204-0c13766083af/Deceres_Somnus+Bed-Queen-Ash+05+Black-WEB01.jpg" alt="Somnus Bed by Deceres Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Somnus Bed</p></div>
+          <p class="card-brand">Deceres Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sofi-bed-runner-parchment" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274435_1.png?v=1788766587" alt="Sofi Bed Runner by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofi Bed Runner</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://galvinbrothers.co.uk/products/bobbin-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0177/8296/files/GalvinBrothers_July2024_IndiaHobson_LR-3.jpg?v=1724856038" alt="Bobbin Bed by Galvin Brothers" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bobbin Bed</p></div>
+          <p class="card-brand">Galvin Brothers</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/dot--p21431" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__18048__productGrid/dot@2x.png" alt="Dot by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dot</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/armchairs/frame-dormeuse" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/176/Frame_Dormeuse_1100x5501.jpg" alt="Frame Day Bed by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Frame Day Bed</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/bed/connect-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422025654/img_20250422025654/globalassets/inriver/integration/service/connect-bed_1220x1220_brandmodel2.jpg" alt="Connect Bed by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Connect Bed</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://jorispoggioli.com/design/beds/gil" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://admin.jorispoggioli.com/wp-content/uploads/2024/12/GZ-RENDERING-COBRAZIL-INOX-Bed-couv-1-1536x905.png" alt="GIL by Joris Poggioli" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">GIL</p></div>
+          <p class="card-brand">Joris Poggioli</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/beds-and-bedding/bed-wider-headboard-abandon-4916" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100k1r_c.jpg" alt="Abandon Bed wider headboard by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Abandon Bed wider headboard</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/beds/avalon-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/741/1200x630/nocrop/noenlarge/align_4/avalonbed23.jpg.aspx" alt="Avalon Bed by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Avalon Bed</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/13_beds/208_shiko-magnum-/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/208.png" alt="Shiko Magnum by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shiko Magnum</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/expandable-bed-cobolt-blue" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Bed_PP_160_Cobalt-Blue_1xTable_Mattress_Low-Res.jpg?v=1772620891" alt="Expandable Bed by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Expandable Bed</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://parenpar.com.ar/productos/camacruz/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="http://acdn-us.mitiendanube.com/stores/005/991/341/products/fotos-par-en-par-eccomerce-97-1ad4b4b99ed12c31e717741146812371-640-0.webp" alt="Cama cruz by Par en Par" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cama cruz</p></div>
+          <p class="card-brand">Par en Par</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/afval-afval-76x76-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2024/01/PHE_3665-thumb-300x300.jpg" alt="Afval Afval 76×76 Bed by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Afval Afval 76×76 Bed</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/habel-bed-low-footboard-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Habel_Aug_26_152_41faeee8-9f8d-4d9e-add7-d61bba01a4ca.jpg?v=1789742958" alt="Habel bed low footboard by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Habel bed low footboard</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/stanley_dog_bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/CSB22-ORU-HERO.jpg?v=1771864485" alt="Stanley Dog Bed by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stanley Dog Bed</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/summer-bed-sheet-set-cm-250x290-optical" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/MG_3669-Photoroom.jpg?v=1747054671" alt="Summer bed sheet set by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Summer bed sheet set</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/arbor-super-king-size-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS356435.jpg?v=1741190712" alt="Arbor Bed 215cm Super King Size by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arbor Bed 215cm Super King Size</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/another-sofa-armchair/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/191129-anothercountry1385661-1024x1024.jpg" alt="Another Sofa &amp; Armchair by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Another Sofa &amp; Armchair</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-alys-letti.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_bed_Alys_01.jpg" alt="Alys by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alys</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/twenty-five-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/684-Twenty-Five-Bed-by-De-La-Espada-Atelier-in-white-oiled-oak_1.jpg?v=1681716311" alt="TWENTY-FIVE BED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TWENTY-FIVE BED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/kuku-doll-bed-doll-chair-natural-gift-set" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104271232_1104271107.webp?v=1777025733" alt="Kuku Doll Bed &amp; Doll Chair by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kuku Doll Bed &amp; Doll Chair</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/double--p21439" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__14189__productGrid/beds_doubleqs2_1@2x.png" alt="Double by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Double</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/beds-and-night-cabinets/mambo-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/270/mambo_bed_1100x550.jpg" alt="Mambo Bed by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mambo Bed</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/bed/standard-bed-slats" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422030833/img_20250422030833/globalassets/inriver/integration/service/standard-bed-slats_1220x1220_brandmodel2.jpg" alt="Standard Bed Slats by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Standard Bed Slats</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/beds-and-bedding/bed-1-wing-hypna-4887" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100bll_c2.jpg" alt="Hypna Bed 1 wing by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hypna Bed 1 wing</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/beds/chemise-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/742/1200x630/nocrop/noenlarge/align_4/01.jpg.aspx" alt="Chemise Bed by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Chemise Bed</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/13_beds/259_shiko-wien/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/259.png" alt="Shiko Wien by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shiko Wien</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/bed-90-180-cm-high" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Tall-Bed_PP_160_Sand_1xTable_Mattress_01_High-Res_6f050916-7486-467b-b31a-cc76efe4e39d.jpg?v=1751460556" alt="Bed 90 by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bed 90</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/plankenbed-in-sloophout" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2021/10/03_Plankenbed_in_sloophout_maatwerk_perspective01_THUMBNAIL-300x300.jpg" alt="Plankenbed in sloophout by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Plankenbed in sloophout</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/habel-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Habel_Aug_26_152_41faeee8-9f8d-4d9e-add7-d61bba01a4ca.jpg?v=1789742958" alt="Habel bed high footboard by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Habel bed high footboard</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/stanley_bed_end_bench" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/products/CSB11-VER-HERO.jpg?v=1678298075" alt="Stanley Bed End Bench by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stanley Bed End Bench</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/arbor-king-size-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS354233.jpg?v=1741190704" alt="Arbor Bed 215cm King Size by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arbor Bed 215cm King Size</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/slow-armchair-large/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/AnotherCountry-Slow-Armchair-Front-1024x1024.jpg" alt="Slow Armchair by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Slow Armchair</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-papilio-letti.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_bed_Papilio_01.jpg" alt="Papilio by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Papilio</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/500-bed-one" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/500-BED-ONE-by-Manuel-Aires-Mateus-8.jpg?v=1625145224" alt="BED ONE by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BED ONE</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/settle-bed-canopy-rose" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273189_1.png?v=1772688992" alt="Settle Bed Canopy by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Settle Bed Canopy</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/easy-bed-p21500" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__18167__productGrid/easy@2x.png" alt="Easy by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Easy</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/beds-and-night-cabinets/abbracci-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/231/abbracci_bed_1100x550.jpg" alt="Abbracci Bed by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Abbracci Bed</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/dogs/hay-dogs-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260331024755/img_20260331024755/globalassets/inriver/integration/service/hay-dogs-bed_910x1100_brandmodel.jpg" alt="Hay Dogs Bed by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hay Dogs Bed</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/beds-and-bedding/bed-standard-headboard-abandon-4787" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100icf_c.jpg" alt="Abandon Bed standard headboard by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Abandon Bed standard headboard</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/beds/extra-wall-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/744/1200x630/nocrop/noenlarge/align_4/01.jpg.aspx" alt="Extra Wall by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Extra Wall</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/13_beds/207_shiko-wonder/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/207.png" alt="Shiko Wonder by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Shiko Wonder</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/bed-expander-set" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Bed_PP_Expander_Low-Res.jpg?v=1685103611" alt="Bed Expander Set by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bed Expander Set</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/stapelbed-in-sloophout" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2021/04/14-kopie-300x300.jpg" alt="Stapelbed in sloophout by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stapelbed in sloophout</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/christo-four-poster-bed-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Christo4poster_4426LR_a8c246d0-5cca-4664-bcf4-74a87cca19ea.jpg?v=1764695870" alt="Christo four poster bed by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Christo four poster bed</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/logan_bed_end_bench" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/products/CSB10-NBZ-HERO.jpg?v=1678298172" alt="Logan Bed End Bench by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Logan Bed End Bench</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/welwyn-armchair-large/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Welwyn-Armchair-Large-01-1-1024x1024.jpg" alt="Welwyn Armchair by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Welwyn Armchair</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-tufty-bed-letti.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_bed_Tufty-Bed_01.jpg" alt="Tufty Bed by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tufty Bed</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/265-suite-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/265-SUITE-BED-by-Autoban_1.jpg?v=1631113786" alt="SUITE BED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SUITE BED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/kuku-doll-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1072121_100163206_10.png?v=1762183873" alt="Kuku Doll Bed by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kuku Doll Bed</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/fly--p21438" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19250__productGrid/beds_fly_clipped_rev_1@2x.png" alt="Fly by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fly</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/beds-and-night-cabinets/frame-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/233/frame_bed_1100x550.jpg" alt="Frame Bed by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Frame Bed</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/beds-and-bedding/bed-2-wings-hypna-3550" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100bll_c.jpg" alt="Hypna Bed 2 wings by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hypna Bed 2 wings</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/beds/extrasoft-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/3124/1200x630/nocrop/noenlarge/align_4/Living-Divani-extra-soft-bed_flap_moon-_sin-titulo-28.jpg.aspx" alt="Extrasoft Bed by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Extrasoft Bed</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/bed-slats" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/products/MOEBE_Bed_PP_90_Sand_Lamellas_Low-Res_abfea073-4334-48a0-be75-8a14443014fc.jpg?v=1736771009" alt="Bed Slats by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bed Slats</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/hotel-auping-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2020/10/02_AUPING_BED_01_perspective02-thumbnail-300x300.jpg" alt="Hotel Auping Bed by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hotel Auping Bed</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/christo-bed-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Christo_23_1058_ALT_NEW.jpg?v=1763115773" alt="Christo bed by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Christo bed</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/welwyn-sofa/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/230515-anothercountry0054-1-WEB-1024x1024.jpg" alt="Welwyn Sofa by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Welwyn Sofa</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-siena-letti.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_bed_Siena_01.jpg" alt="Siena by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Siena</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/113-ukeu-low-dubois-bed-no-bedsides" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/113LowDuboisBedbyNichettoinwalnutweb_017d351e-9dc1-4deb-9587-843c2daaa821.jpg?v=1600769226" alt="DUBOIS BED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DUBOIS BED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/sill-junior-bed-verdant-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/515516_1104268751_2.png?v=1762183371" alt="Sill Junior Bed by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sill Junior Bed</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/gem--p21432" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__18050__productGrid/gem-81@2x.png" alt="Gem by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gem</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/beds-and-night-cabinets/frame-bed-four-posters" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/234/frame_bed_baldacchino_1100x550.jpg" alt="Frame Bed Four Posters by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Frame Bed Four Posters</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/beds-and-bedding/bed-without-wing-hypna-3547" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100bls_c.jpg" alt="Hypna Bed without wing by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hypna Bed without wing</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products-materials/beds/floyd-hi-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/8203/1200x630/nocrop/noenlarge/align_4/Living-Divani-Next-2019-021-floyd-hi-bed-.jpg.aspx" alt="Floyd-Hi Bed by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Floyd-Hi Bed</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/bed-side-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/files/MOEBE_Bed_SP_PP_Table_Cobolt-Blue_Low-Res.jpg?v=1772631344" alt="Bed Side Table by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bed Side Table</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/eiken-boomstambed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2020/06/Massive_Wood_Bed-front-thumbnail-300x300.jpg" alt="Eiken boomstambed by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Eiken boomstambed</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/laure-bed-us" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Laure_bed_233247.jpg?v=1764686915" alt="Laure bed by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Laure bed</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/wick-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/221129-AnotherCountry0189-Web-1024x1024.jpg" alt="Wick Bed by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wick Bed</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-alys-10-letti.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_bed_Alys-10_03.jpg" alt="Alys 10 by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alys 10</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/110-ukeu-dubois-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/Dubois_9-2015web.jpg?v=1600420087" alt="DUBOIS BED TALL HEADBOARD WITH BEDSIDE TABLES by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DUBOIS BED TALL HEADBOARD WITH BEDSIDE TABLES</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/patch-bed-canopy-multi" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/278782_1104270152_1.png?v=1762179224" alt="Patch Bed Canopy by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Patch Bed Canopy</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/ghost-bed-p3674" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__11279__productGrid/ghost-80@2x.png" alt="Ghost by Gervasoni" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ghost</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/beds-and-night-cabinets/tarantino-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/232/tarantino_bed_1100x550.jpg" alt="Tarantino Bed by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tarantino Bed</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/beds-and-bedding/bed-high-headboard-desdemone-2802" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/010mz_c.jpg" alt="Desdemone Bed high headboard by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Desdemone Bed high headboard</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/beds/lipp-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/2215/1200x630/nocrop/noenlarge/align_4/01.jpg.aspx" alt="Lipp Bed by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lipp Bed</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://moebe.dk/products/bed-90-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0485/4962/6019/products/MOEBE_Bed_PP_90_Sand_1xTable_Mattress_Low-Res.jpg?v=1709295536" alt="Bed 90 cm by Moebe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bed 90 cm</p></div>
+          <p class="card-brand">Moebe</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/balken-daybed-en-zithoek-maatwerk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2019/07/04_Beam_Leather_Daybed_perspective-thumbnail-300x300.jpg" alt="Balken daybed en zithoek by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Balken daybed en zithoek</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/moreau-pleated-bed-us" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/RPPinch_MoreauBed_Sept25_00134_b64e8666-0c8b-476a-854d-9ad970129123.jpg?v=1764779832" alt="Moreau pleated bed by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Moreau pleated bed</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/series-two-cottage-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/210519-AnotherCountry6179-OAK-1024x1024.jpg" alt="Cottage Bed by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cottage Bed</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-husk-letti.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_bed_Husk_01.jpg" alt="Husk by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Husk</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/455-ukeu-companions-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/CompanionsBedbyStudioilseinwhiteoiledoakSkweb.jpg?v=1600420119" alt="COMPANIONS BED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">COMPANIONS BED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/beds-kubo-p3652" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19342__productGrid/beds-kubo_clipped_rev_1@2x.png" alt="Kubo by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kubo</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/beds-and-bedding/bed-low-headboard-desdemone-2801" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/010g2_c.jpg" alt="Desdemone Bed low headboard by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Desdemone Bed low headboard</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/beds/neowall-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/3271/1200x630/nocrop/noenlarge/align_4/Living-Divani-Neowall-bed.jpg.aspx" alt="NeoWall Bed by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NeoWall Bed</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/roos-bed-binnenzijde-gefixeerd" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/06/01_Roos_bed_perspective_new_edit_2022_THUMBNAIL-300x300.jpg" alt="Roos bed by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Roos bed</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/moreau-bed-us" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Moreau_1623.jpg?v=1764679990" alt="Moreau bed by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Moreau bed</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/another-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Bed-1024x1024.jpg" alt="Another Bed by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Another Bed</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-charles-letti.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_bed_Charles_01.jpg" alt="Charles by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Charles</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/061-ukeu-carlton-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/061-CARLTON-BED-by-Jason-Miller_1.jpg?v=1631113081" alt="CARLTON BED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CARLTON BED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/beds-lc-45-p1011" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19254__productGrid/beds_lc-45_clipped_rev_1@2x.png" alt="LC by Gervasoni" loading="lazy"><span class="variant-badge">5 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LC</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/beds-and-bedding/bed-evisa-1344" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1007xl_c.jpg" alt="Evisa Bed by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Evisa Bed</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/beds/rod-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/1896/1200x630/nocrop/noenlarge/align_4/01.jpg.aspx" alt="Rod Bed by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rod Bed</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/boomstam-juniorbed-onbehandeld" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/06/Boomstam-junior-bed_edited-300x300.jpg" alt="Boomstam juniorbed by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Boomstam juniorbed</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/olivine-bed-us" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Olivine_20221422_LR.jpg?v=1725816318" alt="Olivine bed by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Olivine bed</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/ori-sofa-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/guestbed-another-country-photo-credit-david-brook-201948-1-1024x1024.jpg" alt="Ori Sofa Bed by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ori Sofa Bed</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-b-b-atoll-letti.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_bed_BeB-Atoll_01.jpg" alt="B&amp;B Atoll by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">B&amp;B Atoll</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/351t-hepburn-side-table" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/351HepburnBedbyMatthewHiltoninblackoiledashandSunniva2132fabricwith351THepburnSideTable-nomattress-detail2web_e6bc69e8-5d2f-4139-b204-960a52cd39e1.jpg?v=1600420148" alt="HEPBURN SIDE TABLE by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">HEPBURN SIDE TABLE</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/linea--p21437" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19262__productGrid/beds-linea_clipped_rev_1@2x.png" alt="Linea by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Linea</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/beds-and-bedding/bed-frame-peter-maly-2-1277" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/00x17_c.jpg" alt="Peter maly 2 Bed frame by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Peter maly 2 Bed frame</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/beds/softwall-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/746/1200x630/nocrop/noenlarge/align_4/Softwall-Bed_TommasoSartori_LivingDivani_23.jpg.aspx" alt="Softwall Bed by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Softwall Bed</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/crisis-junior-bed-gelakt" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/06/1872-Crisis-junior-bed-blauw_edited_THUMBNAIL-300x300.jpg" alt="Crisis juniorbed by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Crisis juniorbed</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/day-bed-four-green/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Day-Bed-Four-Green1-1024x1024.jpg" alt="Day Bed Four by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Day Bed Four</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-richard-letti.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_bed_Richard_01.jpg" alt="Richard by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Richard</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/351-ukeu-hepburn-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/351HepburnBedbyMatthewHiltoninblackoiledashandSunniva2132fabricwith351THepburnSideTableweb_3a5c7ab0-1fe1-4852-9ffe-833c7218254b.jpg?v=1600420149" alt="HEPBURN BED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">HEPBURN BED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/loll-bed-p4083" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19265__productGrid/loll80_2_clipped_rev_1@2x.png" alt="Loll by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Loll</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/beds-and-bedding/bed-high-headboard-ruche-1252" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/10040p_W.jpg" alt="Ruché Bed high headboard by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ruché Bed high headboard</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products/beds/sumo-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/10451/1200x630/nocrop/noenlarge/align_4/2023-Living-Divani-Sumo-Bed-1.jpg.aspx" alt="Sumo Bed by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sumo Bed</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/plankenbed-in-sloophout-wit-gelakt-met-eiken-rand-2-pers" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/06/01_Plankenbed_in_sloophout_perspective01_thumbnail-300x300.jpg" alt="Plankenbed in sloophout wit gelakt by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Plankenbed in sloophout wit gelakt</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/sofa-one/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Another_Country_Sofa_One_Clyde_Indigo_001-copy-1024x1024.jpg" alt="Sofa One by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sofa One</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bebitalia.com/en-us/en-bamboletto-letti.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.bebitalia.com/media/catalog/product/cache/0cbc1cda9176dce8cfae6944f360251a/b/e/bebitalia_bed_Le-Bambole-06.jpg" alt="Bamboletto by B&amp;B Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bamboletto</p></div>
+          <p class="card-brand">B&amp;B Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/400-ukeu-mcqueen-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/400McQueenBedbyMatthewHiltonweb.jpg?v=1600420178" alt="MCQUEEN BED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">MCQUEEN BED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/nest--p21433" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__18166__productGrid/nest@2x.png" alt="Nest by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nest</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/beds-and-bedding/bed-low-headboard-ruche-1251" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/00p7b_W.jpg" alt="Ruché Bed low headboard by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ruché Bed low headboard</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/plankenbed-in-sloophout-1-persoons-onbehandeld" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/06/09_Plankenbed_in_sloophout_THUMBNAIL-300x300.jpg" alt="Plankenbed in sloophout 1en 2-persoons by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Plankenbed in sloophout 1en 2-persoons</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/armchair-one/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/AnotherCountry-Armchair-One-Front-1024x1024.jpg" alt="Armchair One by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Armchair One</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/782-ukeu-capo-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/782-CAPO-BED-by-Neri_Hu_1.jpg?v=1694161508" alt="CAPO BED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CAPO BED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/pad-bed-p21434" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__18168__productGrid/pad@2x.png" alt="Pad by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pad</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/plankenbed-in-eiken-2-persoons-geolied-energol" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/06/01_Bed_in_eiken_2_persoons_perspective_THUMBNAIL-300x300.jpg" alt="Plankenbed in eiken 1- en 2-persoons by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Plankenbed in eiken 1- en 2-persoons</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/day-bed-one-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/15.-Day-Bed-One-1024x1024.jpg" alt="Day Bed One by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Day Bed One</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/758-ukeu-platform-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/758PlatformBedbyNeri_Huinblackstainedashweb.jpg?v=1604424142" alt="PLATFORM BED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">PLATFORM BED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/plumeau-bed-p6522" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__11649__productGrid/plumeau@2x.png" alt="Plumeau by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Plumeau</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/crisisbed-1-persoons-onbehandeld" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2016/06/01_Crisisbed_1-persoons_front01_THUMBNAIL-300x300.jpg" alt="Crisisbed 1-persoons by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Crisisbed 1-persoons</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/solid-wood-bed/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Bed-Two-2-1024x1024.jpg" alt="Bed Two by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bed Two</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/765-ukeu-frame-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/765FrameBedbyNeri_HuforDeLaEspadainDanishoiledwalnutandMoss004-web.jpg?v=1622109451" alt="FRAME BED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FRAME BED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/simple--p21436" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__19258__productGrid/beds_simple_clipped_rev_1@2x.png" alt="Simple by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Simple</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/768-ukeu-frame-bed-with-arms" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/768_Frame_Bed_with_Arms_by_NeriHu_in_Danish_oiled_walnut_and_Foss_412_fabricweb.jpg?v=1600420224" alt="FRAME BED WITH ARMS by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FRAME BED WITH ARMS</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/strap-80-p24674" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__24116__productGrid/strap-80@2x.png" alt="Strap by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Strap</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/787-ukeu-solo-bed" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/787-SOLO-BED-IN-DANISH-OILED-WALNUT-AND-ZERO-004-FABRIC_1.jpg?v=1643190602" alt="SOLO BED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SOLO BED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://gervasoni1882.com/en/indoor/yelek-bed-p21435" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gervasoni1882.com/gervasoni/_rendering/fondo-trasparente/image-thumb__18049__productGrid/yelek_1@2x.png" alt="Yelek by Gervasoni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Yelek</p></div>
+          <p class="card-brand">Gervasoni</p>
+        </div>
+      </a></div>
+  
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

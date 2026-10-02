@@ -1,0 +1,1344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Candles — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="153 real candles from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/browse/candles.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Candles — Formground">
+<meta property="og:description" content="153 real candles from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/browse/candles.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Candles — Formground">
+<meta name="twitter:description" content="153 real candles from independent makers, listed in full. Every result links straight to the maker&#x27;s own site.">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-group { max-width: 520px; margin: 32px auto 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Browse", "item": "https://formground.com/browse/"}, {"@type": "ListItem", "position": 3, "name": "Candles", "item": "https://formground.com/browse/candles.html"}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <h1>Candles</h1>
+  <p class="category-intro">153 candles from independent makers. Every result links straight to the maker's own site. See also: <a href="/browse/candle-holders.html">candle holders</a>.</p>
+  <div class="grid">
+      <a class="card" href="https://www.andtradition.com/products/mnemonic-scented-candle-mnc5" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2024/04/MNC5-Scented-Candle_Into-the-moor_Candle-and-box-600x800.jpg" alt="Mnemonic | Scented Candle MNC5 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mnemonic | Scented Candle MNC5</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.alessi.com/products/rocc-refill-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/MA05M2-WAX.jpg?v=1760005653" alt="Rocc by Alessi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rocc</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/two-beeswax-candles-2/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/210617-AnotherCountry-ACC2744_web-1024x1024.jpg" alt="Two Thick Beeswax Candles by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Two Thick Beeswax Candles</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://apparatusstudio.com/products/candle-blocks" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0005/7730/6687/files/APPARATUS_CANDLE_BLOCKS_01.jpg?v=1763153439" alt="CANDLE BLOCKS by Apparatus" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CANDLE BLOCKS</p></div>
+          <p class="card-brand">Apparatus</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/olfacte-scented-candle-wet-ink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Olfacte_Scented_Candle_Wet_Ink..jpg?v=1664527658" alt="Olfacte Scented Candle by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Olfacte Scented Candle</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/mura-candles-set-of-4-light-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274138_1.png?v=1788770540" alt="Mura Candles by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mura Candles</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-painted-desert-170-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/FRAMA-Painted-Desert-Scented-Candle-170g-Packshot-2.webp?v=1757675800" alt="Scented Candle | Painted Desert | 170 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle | Painted Desert | 170 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jasper-morrison/candle-stick" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F3EB110F87A93E499D2DA950386D154F.jpg.webp" alt="Candle Stick by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Stick</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/slim-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260629034142/img_20260629034142/globalassets/inriver/integration/service/slim-candle_910x1100_brandmodel.jpg" alt="Slim Candle by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Slim Candle</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/accessories/candle-lamp-set-of-4-alba-4431" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/11030004_i_vue_c.jpg" alt="Alba Candle lamp set of 4 by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alba Candle lamp set of 4</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/eska-beeswax-candle-light" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/260515_SOPHIAROE_18_0810.jpg?v=1783589890" alt="ESKA BEESWAX CANDLE LIGHT by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ESKA BEESWAX CANDLE LIGHT</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/melt-d-triple-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/11166_MELT-DTRIPLE_DIESELLIVIINGWITHSELETTI_1.jpg?v=1764664107" alt="Melt-D TRIPLE candle by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Melt-D TRIPLE candle</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-concrete-amore" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525111-813_120126_01.jpg?v=1768269864" alt="Scented candle concrete Amore by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle concrete Amore</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/candle-31-burnt-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS387681_1.jpg?v=1768992295" alt="TCS Scented Candle 31 Burnt Leather by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TCS Scented Candle 31 Burnt Leather</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/candle-plate/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Candle-Plate-4-1024x1024.jpg" alt="Another Country Candle Plate by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Another Country Candle Plate</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/ignus-flameless-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/MENU_Ignus_Flamless_Candle_Plinth_Low_Plinth_Bridge.jpg?v=1665063259" alt="Ignus Flameless Candle by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ignus Flameless Candle</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/bellure-scented-candle-silver" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273902_1.png?v=1788770283" alt="Bellure Scented Candle by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bellure Scented Candle</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-painted-desert-60-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/FRAMA-Painted-Desert-Scented-Candle-60g-Packshot-2.webp?v=1757675250" alt="Scented Candle | Painted Desert | 60 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle | Painted Desert | 60 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/soft-serve-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260629034439/img_20260629034439/globalassets/inriver/integration/service/soft-serve-candle_910x1100_brandmodel.jpg" alt="Soft Serve Candle by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Soft Serve Candle</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/outdoor/1-candle-citronella-duftkerze-2501" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/11230186_i_vue_c.jpg" alt="Scented candle 1 candle citronella by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle 1 candle citronella</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/stearin-candle-light-o12-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKSHOTS_1070-kopi4.jpg?v=1783589067" alt="CANDLE LIGHT by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">CANDLE LIGHT</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/melt-d-single-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/11165_MELT-DSINGLE_DIESELLIVINGWITHSELETTI_1.jpg?v=1764664577" alt="Melt-D SINGLE candle by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Melt-D SINGLE candle</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-black-rosamar" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525110-900_120126_01.jpg?v=1768269857" alt="Scented candle black Rosamar by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle black Rosamar</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/candle-63-crushed-herbs" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS387684_1.jpg?v=1768992382" alt="TCS Scented Candle 63 Crushed Herbs by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TCS Scented Candle 63 Crushed Herbs</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/two-beeswax-candles/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Moorland-candles-beeswax-001-1024x1024.jpg" alt="Two Beeswax Candles by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Two Beeswax Candles</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/pure-candles-set-of-4-faded" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104274176_1.png?v=1788768918" alt="Pure Candles by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pure Candles</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/gift-box-scented-candle-snuffer-painted-desert" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/FRAMASt.PaulsApothecaryGiftBoxScentedCandlePaintedDesertandCandleSnufferPackshot2.webp?v=1757675973" alt="Gift Box: Scented Candle + Snuffer | Painted Desert by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gift Box: Scented Candle + Snuffer | Painted Desert</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/silo-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260603042433/img_20260603042433/globalassets/inriver/integration/service/silo-candle_1220x1220_brandmodel.jpg" alt="Silo Candle by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Silo Candle</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/toiletpaper-set-of-2-stem-candles-roses" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14088S_STEM-CANDLE-ROSES_1.jpg?v=1763027537" alt="TOILETPAPER Set of 2 Stem Candles ROSES by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TOILETPAPER Set of 2 Stem Candles ROSES</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-black-orange-candela-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525109-917_01-jpg.jpg?v=1755788402" alt="Scented candle L by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/candle-44-walled-garden" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS387683_1.jpg?v=1768992359" alt="TCS Scented Candle 44 Walled Garden by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TCS Scented Candle 44 Walled Garden</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/mura-advent-candle-orchid" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273937_1.png?v=1788769840" alt="Mura Advent Candle by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mura Advent Candle</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-candle-snuffer-painted-desert-170-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/Frama-Scented-Candle-Painted-Desert-and-Candle-Snuffer-Packshot-1-NEW.webp?v=1760692492" alt="Scented Candle + Candle Snuffer | Painted Desert | 170 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle + Candle Snuffer | Painted Desert | 170 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/square-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250915043907/img_20250915043907/globalassets/inriver/integration/service/square-candle_910x1100_brandmodel.jpg" alt="Square Candle by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Square Candle</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/toiletpaper-set-of-2-stem-candles-revolver" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14098S_STEM-CANDLE-REVOLVER_1.jpg?v=1763027503" alt="TOILETPAPER Set of 2 Stem Candles REVOLVER by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TOILETPAPER Set of 2 Stem Candles REVOLVER</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-silver-josephine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525110-825_120126_01.jpg?v=1768269856" alt="Scented candle silver Josephine by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle silver Josephine</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/candle-07-washed-cotton" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS387682_1.jpg?v=1768992334" alt="TCS Scented Candle 07 Washed Cotton by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TCS Scented Candle 07 Washed Cotton</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rylith-scented-candle-dark-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272904_1.png?v=1772690627" alt="Rylith Scented Candle by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rylith Scented Candle</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/gift-box-scented-candle-snuffer-beratan" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-file_tmp_esan1EtLS4NeBD22.png?v=1726829025" alt="Gift Box: Scented Candle + Snuffer | Beratan by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gift Box: Scented Candle + Snuffer | Beratan</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/hexagon-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260914034344/img_20260914034344/globalassets/inriver/integration/service/hexagon-candle_910x1100_brandmodel.jpg" alt="Hexagon Candle by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hexagon Candle</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/toiletpaper-set-of-2-stem-candles-horse" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14097S_STEM-CANDLE-HORSE_1.jpg?v=1763027329" alt="TOILETPAPER Set of 2 Stem Candles HORSE by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TOILETPAPER Set of 2 Stem Candles HORSE</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-burgundy-yellow-candela-03" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525109-202_01-jpg.jpg?v=1755788397" alt="Scented candle L burgundy by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L burgundy</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/vei-outdoor-candle-20-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272985_1.png?v=1772689537" alt="Vei Outdoor Candle by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vei Outdoor Candle</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/gift-box-scented-candle-set" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-St.-Pauls-Apothecary-Gift-Box-Scented-Candle-Set-of-3-Packshot-2.png?v=1722498502" alt="Gift Box: Scented Candle Set by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gift Box: Scented Candle Set</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/pattern-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260914025214/img_20260914025214/globalassets/inriver/integration/service/pattern-candle_910x1100_brandmodel4.jpg" alt="Pattern Candle by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pattern Candle</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/toiletpaper-set-of-2-stem-candles-snakes-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14089S_STEM-CANDLE-SNAKES-WHITE_1.jpg?v=1763027257" alt="TOILETPAPER Set of 2 Stem Candles SNAKES by Seletti" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TOILETPAPER Set of 2 Stem Candles SNAKES</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-black-orange-candela-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525108-917_01-jpg.jpg?v=1755788396" alt="Scented candle M by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/rylith-scented-candles-set-of-3-multi" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272787_1.png?v=1772688737" alt="Rylith Scented Candles by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rylith Scented Candles</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/gift-box-scented-candle-snuffer-st-pauls" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-St.-Pauls-Apothecary-Gift-Box-Scented-Candle-St.-Pauls-and-Candle-Snuffer-Packshot-2.png?v=1722498169" alt="Gift Box: Scented Candle + Snuffer | St. Pauls by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gift Box: Scented Candle + Snuffer | St. Pauls</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/accessories/indoor-living/candles--candleholders/column-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260914032140/img_20260914032140/globalassets/inriver/integration/service/column-candle_910x1100_brandmodel2.jpg" alt="Column Candle by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Column Candle</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/toiletpaper-set-of-2-stem-candles-shit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14086S_STEM-CANDLE-SHIT_1.jpg?v=1763026943" alt="TOILETPAPER Set of 2 Stem Candles SHIT by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TOILETPAPER Set of 2 Stem Candles SHIT</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-burgundy-yellow-candela-03" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525108-202_01-jpg.jpg?v=1755788384" alt="Scented candle M burgundy by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M burgundy</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/stala-candle-ring-sand" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/238135_1104271839_1.png?v=1762178396" alt="Stala Candle Ring by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stala Candle Ring</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/gift-box-scented-candle-snuffer-komorebi" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-St.-Pauls-Apothecary-Gift-Box-Scented-Candle-Komorebi-and-Candle-Snuffer-Packshot-2.png?v=1722498096" alt="Gift Box: Scented Candle + Snuffer | Komorebi by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gift Box: Scented Candle + Snuffer | Komorebi</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/toiletpaper-large-candle-revolver" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14098_Candle_TP_Revolver_1.jpg?v=1763026563" alt="TOILETPAPER Large Candle REVOLVER by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TOILETPAPER Large Candle REVOLVER</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-black-orange-candela-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525107-917_01-jpg.jpg?v=1755788385" alt="Scented candle S by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/ura-scented-candle-red-sienna" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1130636_1104264790_1.png?v=1762182220" alt="Ura Scented Candle by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ura Scented Candle</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/gift-box-scented-candle-snuffer-deep-forest" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-St.-Pauls-Apothecary-Gift-Box-Scented-Candle-Deep-Forest-and-Candle-Snuffer-Packshot-2.png?v=1722498062" alt="Gift Box: Scented Candle + Snuffer | Deep Forest by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gift Box: Scented Candle + Snuffer | Deep Forest</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/toiletpaper-large-candle-horse" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14097_Candle_TP_Horse_1.png?v=1763026380" alt="TOILETPAPER Large Candle HORSE by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TOILETPAPER Large Candle HORSE</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-burgundy-yellow-candela-03" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525107-202_01-jpg.jpg?v=1755788380" alt="Scented candle S burgundy by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S burgundy</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dryp-pillar-candle-h20-beige" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/122616_1104271897_1.png?v=1762178331" alt="Dryp Pillar Candle by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dryp Pillar Candle</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/gift-box-scented-candle-snuffer-1917" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-St.-Pauls-Apothecary-Gift-Box-Scented-Candle-1917-and-Candle-Snuffer-Packshot-2.png?v=1722497819" alt="Gift Box: Scented Candle + Snuffer | 1917 by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gift Box: Scented Candle + Snuffer | 1917</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/toiletpaper-large-candle-snakes-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14089_Candle_TP_Snakes_White_1.jpg?v=1763026288" alt="TOILETPAPER Large Candle SNAKES by Seletti" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TOILETPAPER Large Candle SNAKES</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-silver-smoked-jasmine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525106-825_01-jpg.jpg?v=1752549577" alt="Scented candle L silver Smoked Jasmine by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L silver Smoked Jasmine</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/ombre-candles-set-of-24-dark-grape" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/284876_1104271954_1.png?v=1762177846" alt="Ombre Candles by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ombre Candles</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-candle-snuffer-deep-forest-170-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2610_21f1984d0c-frama-scented-candle-deep-forest-and-candle-snuffer-packshot-1-original.png?v=1722501655" alt="Scented Candle + Candle Snuffer | Deep Forest | 170 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle + Candle Snuffer | Deep Forest | 170 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/toiletpaper-large-candle-roses" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14088_Candle_TP_Roses_1.jpg?v=1763023813" alt="TOILETPAPER Large Candle ROSES by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TOILETPAPER Large Candle ROSES</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-titanium-burning-wood" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525106-807_01-jpg.jpg?v=1752549577" alt="Scented candle L titanium Burning Wood by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L titanium Burning Wood</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/kurinu-scented-candle-white" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/652221_1104270068_1.png?v=1762179046" alt="Kurinu Scented Candle by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kurinu Scented Candle</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-st-pauls-60-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2681_3fb778be01-frama-scented-candle-60g-st-pauls-packshot-1-original.png?v=1722501948" alt="Scented Candle | St. Pauls | 60 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle | St. Pauls | 60 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/toiletpaper-large-candle-shit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/14086_Candle_TP_Shit_1.jpg?v=1763023318" alt="TOILETPAPER Large Candle SHIT by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TOILETPAPER Large Candle SHIT</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-gold-charred-santal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525106-209_01.jpg?v=1752893508" alt="Scented candle L gold Charred Santal by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L gold Charred Santal</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dryp-candles-set-of-2-olive-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/710633_1104264768_1.png?v=1762182205" alt="Dryp Candles by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dryp Candles</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-st-pauls-170-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2686_bd81d1cec1-frama-scented-candle-st-pauls-packshot-1-original.png?v=1722501913" alt="Scented Candle | St. Pauls | 170 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle | St. Pauls | 170 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/flirty-glow-strawberry-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/11163_STRAWBERRY_FLIRTYGLOW_1-Photoroom.jpg?v=1733840266" alt="Flirty Glow Strawberry candle by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flirty Glow Strawberry candle</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-silver-smoked-jasmine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525105-825_01-jpg.jpg?v=1752549575" alt="Scented candle M silver Smoked Jasmine by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M silver Smoked Jasmine</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/dipped-candles-set-of-8-brown" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/77896_1104264739_1.png?v=1762181663" alt="Dipped Candles by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dipped Candles</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-komorebi-60-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2685_4e20127153-frama-komorebi-scented-candle-60g-packshot-1-original.png?v=1722501992" alt="Scented Candle | Komorebi | 60 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle | Komorebi | 60 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/flirty-glow-lemon-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/11162_LEMON_FLIRTYGLOW_1-Photoroom.jpg?v=1733839888" alt="Flirty Glow Lemon candle by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flirty Glow Lemon candle</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-titanium-burning-wood" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525105-807_01-jpg.jpg?v=1752549569" alt="Scented candle M titanium Burning Wood by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M titanium Burning Wood</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/miniature-candles-set-of-24-whimsical-blend" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/942128_1104266263_1.png?v=1762181730" alt="Miniature Candles by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Miniature Candles</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-komorebi-170-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2690_0583216f6a-frama-komorebi-scented-candle-170g-packshot-1-original.png?v=1722502022" alt="Scented Candle | Komorebi | 170 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle | Komorebi | 170 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/flirty-glow-green-apple-candle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/11164_GREENAPPLE_FLIRTYGLOW_2-Photoroom.jpg?v=1733841049" alt="Flirty Glow Green apple candle by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Flirty Glow Green apple candle</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-gold-charred-santal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525105-209_01-jpg.jpg?v=1752549569" alt="Scented candle M gold Charred Santal by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M gold Charred Santal</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/spike-slim-candles-set-of-8-rust" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/459806_1104266262_1.png?v=1762181314" alt="Spike Slim Candles by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Spike Slim Candles</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-deep-forest-60-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2684_ef0080cae9-frama-scented-candle-60g-deeo-forest-packshot-1-original.png?v=1722502081" alt="Scented Candle | Deep Forest | 60 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle | Deep Forest | 60 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/candle-memories-cigarette-after-sex" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Diesel-Home-Scents-Candle-11173-diesel_scented_candles_memories_2z6a3012.jpg?v=1728428330" alt="Candle Memories Cigarette after sex by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Memories Cigarette after sex</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-silver-smoked-jasmine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525104-825_01-jpg.jpg?v=1752549569" alt="Scented candle S silver Smoked Jasmine by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S silver Smoked Jasmine</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/twist-candle-snuffer-black-brass" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/38442_1104267456_1.png?v=1762181229" alt="Twist Candle Snuffer by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Twist Candle Snuffer</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-deep-forest-170-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2689_89a3643cc8-frama-scented-candle-deep-forest-packshot-1-original.png?v=1722502120" alt="Scented Candle | Deep Forest | 170 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle | Deep Forest | 170 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/candle-green-possessed-tropicalia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/diesel_scented_candles_2z6a2293-2.jpg?v=1728428348" alt="Candle Green Possessed Tropicalia by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Green Possessed Tropicalia</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-titanium-burning-wood" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525104-807_01-jpg.jpg?v=1752549566" alt="Scented candle S titanium Burning Wood by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S titanium Burning Wood</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/vitto-scented-candle-h12-light-celedon" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/192207_1104271917_1.png?v=1762177832" alt="Vitto Scented Candle by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Vitto Scented Candle</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-beratan-60-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2683_15b6cb0f91-frama-scented-candle-60g-beratan-packshot-1-original.png?v=1722502156" alt="Scented Candle | Beratan | 60 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle | Beratan | 60 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/candle-green-possessed-desert" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/diesel_scented_candles_2z6a2309-1.jpg?v=1728428367" alt="Candle Green Possessed Desert by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Green Possessed Desert</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-gold-charred-santal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525104-209_01-jpg.jpg?v=1752549560" alt="Scented candle S gold Charred Santal by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S gold Charred Santal</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/burren-block-candle-small-bronze" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272321_1_db164993-52a5-4481-b6e5-c02f45f72a7b.png?v=1762245634" alt="Burren Block Candle by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Burren Block Candle</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-beratan-170-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2688_5198f1af38-frama-scented-candle-beratan-packshot-1-original.png?v=1722502194" alt="Scented Candle | Beratan | 170 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle | Beratan | 170 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/candle-green-possessed-dark-jungle" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Diesel-Home-Scents-Candle-11150.jpg?v=1728428357" alt="Candle Green Possessed Dark jungle by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Green Possessed Dark jungle</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-dark-blue-biarritz" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525103-600_01-jpg.jpg?v=1752549561" alt="Scented candle L dark blue Biarritz by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L dark blue Biarritz</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/burren-pillar-candles-set-of-2-bronze" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104272315_1.png?v=1762246014" alt="Burren Pillar Candles by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Burren Pillar Candles</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-1917-60-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2682_d32cd535c4-frama-scented-candle-60g-1917-packshot-1-original.png?v=1722502238" alt="Scented Candle | 1917 | 60 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle | 1917 | 60 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/candle-drill" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/3W9A9841-copy.jpg?v=1728427054" alt="Candle Drill by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Drill</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-green-lisbon" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525103-500_01-jpg.jpg?v=1752549559" alt="Scented candle L green Lisbon by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L green Lisbon</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-1917-170-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2687_4036740bd2-frama-scented-candle-1917-packshot-1-original.png?v=1722502288" alt="Scented Candle | 1917 | 170 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle | 1917 | 170 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/candle-spaghetti" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/3W9A9776-copy.jpg?v=1728427045" alt="Candle Spaghetti by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Spaghetti</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-beige-london" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525103-100_01-jpg.jpg?v=1752549557" alt="Scented candle L beige London by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L beige London</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-candle-snuffer-st-pauls-170-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2607_c339572566-frama-scented-candle-st-pauls-and-candle-snuffer-packshot-1-original.png?v=1722501360" alt="Scented Candle + Candle Snuffer | St. Pauls | 170 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle + Candle Snuffer | St. Pauls | 170 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/candle-flower-with-holes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/3W9A9793-copy.jpg?v=1728427036" alt="Candle Flower with holes by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Flower with holes</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-dark-blue-biarritz" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525102-600_01-jpg.jpg?v=1752549552" alt="Scented candle M dark blue Biarritz by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M dark blue Biarritz</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-candle-snuffer-komorebi-170-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2761_705b5efcdb-frama-scented-candle-komorebi-and-candle-snuffer-packshot-1-original.png?v=1722501405" alt="Scented Candle + Candle Snuffer | Komorebi | 170 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle + Candle Snuffer | Komorebi | 170 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/metal-candle-burning-down-the-house" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/diesel_scented_candles_2z6a2333.jpg?v=1728428273" alt="Metal Candle Burning down the house by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Metal Candle Burning down the house</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-green-lisbon" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525102-500_01-jpg.jpg?v=1752549548" alt="Scented candle M green Lisbon by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M green Lisbon</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-candle-snuffer-beratan-170-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2609_6ccadf5f39-frama-scented-candle-beratan-and-candle-snuffer-packshot-1-original.png?v=1722501439" alt="Scented Candle + Candle Snuffer | Beratan | 170 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle + Candle Snuffer | Beratan | 170 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/metal-candle-nightmare" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/diesel_scented_candles_2z6a2326.jpg?v=1728428264" alt="Metal Candle Nightmare by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Metal Candle Nightmare</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-beige-london" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525102-100_01-jpg.jpg?v=1752549547" alt="Scented candle M beige London by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M beige London</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/scented-candle-candle-snuffer-1917-170-g" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2608_4d20a91a29-frama-scented-candle-1917-and-candle-snuffer-packshot-1-original.png?v=1722501564" alt="Scented Candle + Candle Snuffer | 1917 | 170 g by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented Candle + Candle Snuffer | 1917 | 170 g</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/candle-warm-up" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/diesel_scented_candles_2z6a2354.jpg?v=1728428301" alt="Candle Warm Up by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Warm Up</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-dark-blue-biarritz" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525101-600_01-jpg.jpg?v=1752549536" alt="Scented candle S dark blue Biarritz by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S dark blue Biarritz</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/candle-snuffer-brushed-stainless-steel" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2496_71f3dcbd28-snuffer-1-original.png?v=1722504010" alt="Candle Snuffer | Brushed Stainless Steel by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Snuffer | Brushed Stainless Steel</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/candle-acier-fumee" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/diesel_scented_candles_2z6a2387.jpg?v=1728428293" alt="Candle Acier FumÈe by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Acier FumÈe</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-green-lisbon" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525101-500_01-jpg.jpg?v=1752549536" alt="Scented candle S green Lisbon by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S green Lisbon</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/metal-candle-walking-on-fire" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/diesel_scented_candles_2z6a2317.jpg?v=1728428282" alt="Metal Candle Walking on fire by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Metal Candle Walking on fire</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-beige-london" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6525101-100_01-jpg.jpg?v=1752549527" alt="Scented candle S beige London by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S beige London</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/candle-memories-self-service-laundromat" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Diesel-Home-Scents-Candle-1170-diesel_scented_candles_memories_2z6a2333.jpg?v=1728428338" alt="Candle Memories Self Service Laundromat by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Memories Self Service Laundromat</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-smoky-gray-antwerp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524010-808_01-jpg.jpg?v=1752549523" alt="Scented candle L smoky gray Antwerp by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L smoky gray Antwerp</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/candle-memories-motel-room-fan" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Diesel-Home-Scents-Candle-1171-diesel_scented_candles_memories_2z6a3004.jpg?v=1728428321" alt="Candle Memories Motel room fan by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Memories Motel room fan</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-amber-tanger" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524010-705_01-jpg.jpg?v=1752549521" alt="Scented candle L amber Tanger by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L amber Tanger</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/candle-memories-2am-walking-in-a-city" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Diesel-Home-Scents-Candle-11172-diesel_scented_candles_memories_2z6a3020.jpg?v=1728428311" alt="Candle Memories 2AM Walking in a City by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Candle Memories 2AM Walking in a City</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-dark-blue-panarea" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524010-601_01-jpg.jpg?v=1764733878" alt="Scented candle L dark blue Panarea by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L dark blue Panarea</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-smoky-gray-antwerp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524009-808_01-jpg.jpg?v=1764733879" alt="Scented candle M smoky gray Antwerp by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M smoky gray Antwerp</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-amber-tanger" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524009-705_01-jpg.jpg?v=1752549486" alt="Scented candle M amber Tanger by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M amber Tanger</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-dark-blue-panarea" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524009-601_01-jpg.jpg?v=1752549483" alt="Scented candle M dark blue Panarea by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M dark blue Panarea</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-smoky-gray-antwerp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524008-808_01-jpg.jpg?v=1764733874" alt="Scented candle S smoky gray Antwerp by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S smoky gray Antwerp</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-amber-tanger" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524008-705_01-jpg.jpg?v=1752549452" alt="Scented candle S amber Tanger by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S amber Tanger</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-dark-blue-panarea" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524008-601_01-jpg.jpg?v=1752549445" alt="Scented candle S dark blue Panarea by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S dark blue Panarea</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-xs-smoky-gray-antwerp" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524007-808_01-jpg.jpg?v=1752549449" alt="Scented candle XS smoky gray Antwerp by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle XS smoky gray Antwerp</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-xs-amber-tanger" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524007-705_01-jpg.jpg?v=1752549430" alt="Scented candle XS amber Tanger by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle XS amber Tanger</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-xs-dark-blue-panarea" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524007-601_01-jpg.jpg?v=1752549416" alt="Scented candle XS dark blue Panarea by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle XS dark blue Panarea</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-amber-mystique" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524003-705_01-jpg.jpg?v=1752549363" alt="Scented candle L amber Mystique by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L amber Mystique</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-dark-brown-zephyr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524003-704_01-jpg.jpg?v=1764733873" alt="Scented candle L dark brown Zephyr by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L dark brown Zephyr</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-l-green-aurora" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524003-500_01-jpg.jpg?v=1752549333" alt="Scented candle L green Aurora by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle L green Aurora</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-amber-mystique" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524002-705_01-jpg.jpg?v=1752549332" alt="Scented candle M amber Mystique by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M amber Mystique</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-dark-brown-zephyr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524002-704_01-jpg.jpg?v=1752549328" alt="Scented candle M dark brown Zephyr by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M dark brown Zephyr</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-m-green-aurora" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524002-500_01-jpg.jpg?v=1752549301" alt="Scented candle M green Aurora by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle M green Aurora</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-amber-mystique" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524001-705_01-jpg.jpg?v=1764733868" alt="Scented candle S amber Mystique by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S amber Mystique</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-dark-brown-zephyr" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524001-704_01-jpg.jpg?v=1752549298" alt="Scented candle S dark brown Zephyr by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S dark brown Zephyr</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/scented-candle-s-green-aurora" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B6524001-500_01-jpg.jpg?v=1764733865" alt="Scented candle S green Aurora by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Scented candle S green Aurora</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a></div>
+  
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

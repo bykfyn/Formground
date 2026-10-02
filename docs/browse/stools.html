@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stools — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="761 real stools from independent makers, listed in full (page 1 of 3). Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/browse/stools.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Stools — Formground">
+<meta property="og:description" content="761 real stools from independent makers, listed in full (page 1 of 3). Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/browse/stools.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Stools — Formground">
+<meta name="twitter:description" content="761 real stools from independent makers, listed in full (page 1 of 3). Every result links straight to the maker&#x27;s own site.">
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link rel="stylesheet" href="/site.css">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-group { max-width: 520px; margin: 32px auto 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Browse", "item": "https://formground.com/browse/"}, {"@type": "ListItem", "position": 3, "name": "Stools", "item": "https://formground.com/browse/stools.html"}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/marketplace.html">Marketplace</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <h1>Stools</h1>
+  <p class="category-intro">761 stools from independent makers - page 1 of 3. Every result links straight to the maker's own site.</p>
+  <div class="grid">
+      <a class="card" href="https://www.andtradition.com/products/wire-counter-stool-vp15" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2023/08/ATD_Lifestyle-Images_Collection-2026.02_Wire-Counter-Stool-VP15_Wire-Stool-VP11_Wire-Stool-Seat-Pad-VP11-600x800.jpg" alt="Wire Counter Stool VP15 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wire Counter Stool VP15</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/brutus-stool-natural-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/19289886_253075_Brutus_Stool_-_Natural_Oak_1.jpg?v=1783466410" alt="Brutus Stool by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Brutus Stool</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://apetersen.dk/products/metal-stool-anja-camilla-alajdi-editions" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0944/2990/5239/files/A-Petersen-Ole-Schjoll-Metal-Stool_ACA_brown_1.jpg?v=1775741576" alt="Metal Stool &quot;Anja Camilla Alajdi Editions&quot; by A. Petersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Metal Stool &quot;Anja Camilla Alajdi Editions&quot;</p></div>
+          <p class="card-brand">A. Petersen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/stool-five/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/AnotherCountry_StoolFive_1-1.jpg" alt="Stool Five by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool Five</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/artek-hender-scheme-shoes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Hender-Scheme-_-Artek-Stool-60-Shoes-Natural-cut-out.jpg?v=1784017976" alt="Hender Scheme + Artek Stool 60/E60 Shoes by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hender Scheme + Artek Stool 60/E60 Shoes</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/passage-stool-upholstered" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/files/PassageStoolUpholsteryMenuBoucle02_UpholsteryOn_Off2.Withupholstery_WoodFinishNaturalOak.png?v=1755846578" alt="Passage Stool by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Passage Stool</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://baleri-italia.com/en/products/juliette-kitchen-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.baleri-italia.com/uploads/media/1400x/07/1337-Baleri-Italia_Juliette_kitchen-stool_HW608_1987_02d.png?v=1-0" alt="Juliette Kitchen stool by Baleri Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Juliette Kitchen stool</p></div>
+          <p class="card-brand">Baleri Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.bdbarcelona.com/shop/product/gaulino-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0844/7882/0658/files/BD_Gaulino-stool_Oscar-Tusquets5_a18d59de-7674-4a6d-9baa-599059725a30.png?v=1721386067" alt="Gaulino Stool by BD Barcelona" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gaulino Stool</p></div>
+          <p class="card-brand">BD Barcelona</p>
+        </div>
+      </a>
+      <a class="card" href="https://bitossiceramiche.it/products/sgabello-4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/6984/9030/files/Urquiola_URQ_233_03.webp?v=1744723181" alt="Sgabello by Bitossi Ceramiche" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sgabello</p></div>
+          <p class="card-brand">Bitossi Ceramiche</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/product/bimbo" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2025/09/bimbo-stool-header-004.jpg" alt="Bimbo by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bimbo</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.byarumsbruk.se/products/byarum-pall" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/byarumpall.jpg?v=1705327307" alt="Byarum pall by Byarums Bruk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Byarum pall</p></div>
+          <p class="card-brand">Byarums Bruk</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/block-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/CeramicsFurniturePlants_Stool_main.jpg?v=1683142718" alt="Block Stool by Ceramics Furniture Plants" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Block Stool</p></div>
+          <p class="card-brand">Ceramics Furniture Plants</p>
+        </div>
+      </a>
+      <a class="card" href="https://cocoflip.com.au/products/bellini-high-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1737/9815/files/CocoFlip_BelliniHighStool_BK_Oleander_002.png?v=1756864190" alt="Bellini High Stool by Coco Flip" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bellini High Stool</p></div>
+          <p class="card-brand">Coco Flip</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.davsjo.com/product/ds63-bar-stool-63-cm-ash" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.prod.website-files.com/68923634315f62ce4fd9f9e4/68935faba4b31c47a49da226_66b2c251a9c8ac56c6b183c2_Hero-DS63-ash.jpeg" alt="DS63 Bar stool 63 cm by Davsjö" loading="lazy"><span class="variant-badge">5 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DS63 Bar stool 63 cm</p></div>
+          <p class="card-brand">Davsjö</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/798pt-petit-bar-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/798T-PETIT-BAR-STOOL-by-Neri_Hu_10.jpg?v=1656323665" alt="PETIT BAR STOOL by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">PETIT BAR STOOL</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.deceresstudio.com/iuxta-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/60c6c7d303b6bb345051e428/d85c3c23-142a-4204-b1c5-043a7bd04d5c/Deceres_Iuxta+Chair-White+Oak-02+Natural_001.jpg" alt="Iuxta Stool by Deceres Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Iuxta Stool</p></div>
+          <p class="card-brand">Deceres Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/piper-bar-stool-upholstered-archive-store" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/PIP-BAR-BLK-UPH-CAM-LR-DEEPETCH.jpg?v=1786423321" alt="Piper Bar Stool by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Piper Bar Stool</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://editions-midi.com/produit/ramo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://editions-midi.com/wp-content/uploads/2024/09/HDlourmarin085544-00998-OK-V2-540x720.jpg" alt="Ramo by Editions Midi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ramo</p></div>
+          <p class="card-brand">Editions Midi</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_assises_gueridon-out-going-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/363/T_3q1a5579.jpg" alt="Tabouret Out Going by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret Out Going</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.estherknopfler.com/portfolio-collections/untitled-collection/strata-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://static.wixstatic.com/media/6f70b2_dde9bc6c55984df7ad5cf86a2b20655e~mv2.jpg/v1/fill/w_3680,h_4600,al_c/6f70b2_dde9bc6c55984df7ad5cf86a2b20655e~mv2.jpg" alt="Strata stool by Esther Knopfler" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Strata stool</p></div>
+          <p class="card-brand">Esther Knopfler</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fabrikant.se/produkt/barr-sittdyna-pall/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.fabrikant.se/wp-content/uploads/BARRCUSHION1100-01-900x900.jpg" alt="BARR sittdyna pall by Fabrikant" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BARR sittdyna pall</p></div>
+          <p class="card-brand">Fabrikant</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/feve-kids-stool-rose" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1104273040_1.png?v=1788770966" alt="Feve Kids Stool by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Feve Kids Stool</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/chairs-stools/bar-stool/bollo-bar-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/95/dd/70/69/6970dd952052e8b80f717d5c/FogiaBollo Barstool High RAL 1013-Vintage CognacFront.png?auto=format&amp;w=2000&amp;q=90" alt="Bollo Bar Stool by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bollo Bar Stool</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/blueprint-bar-chair-65-oak-hallingdal/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/12/Form-and-Refine_Blueprint_Barchair_65_Oak-Hallingdal_Front-800x800.webp" alt="Blueprint Bar Chair 65 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Blueprint Bar Chair 65</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/union-stool-aluminum-sandstone-linen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/FRAMA-Union-Series-Packshot-0139.webp?v=1780412396" alt="Union Stool | Aluminum by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Union Stool | Aluminum</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://gad.se/endre-pall-hog/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gad.se/wp-content/uploads/2025/05/barstol-svensk-ek-lader-250x250.jpg" alt="Endre Pall by G.A.D" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Endre Pall</p></div>
+          <p class="card-brand">G.A.D</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jasper-morrison/3-legged-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/2A135023DB29484B897215DC7164FD02.jpg.webp" alt="3-legged stool by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">3-legged stool</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://galvinbrothers.co.uk/products/new-spline-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0177/8296/files/GalvinBrothers_July2024_IndiaHobson_LR-113.jpg?v=1727259785" alt="Spline Stool by Galvin Brothers" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Spline Stool</p></div>
+          <p class="card-brand">Galvin Brothers</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/jinen-br-stool-004-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_dff482ef-4edd-4539-915f-93397a43b011.jpg?v=1747186374" alt="JINEN Stool 004 by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">JINEN Stool 004</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/brass-chairs/alfred-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/222/alfred_stool_pb_1100x550.jpg" alt="Alfred Stool by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alfred Stool</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.graindesign.com/shop/p/saddlestool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/62182653e513be3f156ef6f3/1657670005191-OM6HDX3SFXBS0842F0CX/4Q2A9494.jpg" alt="Saddle Stool by Grain" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Saddle Stool</p></div>
+          <p class="card-brand">Grain</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/akustik-barstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARSn_0130-810x1080.jpg" alt="Akustik barstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Akustik barstol</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-stool/balcony-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422063836/img_20250422063836/globalassets/inriver/integration/service/balcony-stool_1220x1220_brandmodel2.jpg" alt="Balcony Stool by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Balcony Stool</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.heilig-objects.com/shop/tables/arc-f4-stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.heilig-objects.com/wp-content/uploads/2023/06/heilig-objects-arc-f4-stool-1578-300x300.jpg" alt="ARC-F4 Stool by Heilig Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARC-F4 Stool</p></div>
+          <p class="card-brand">Heilig Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://ingridsdotter.com/karusell-stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://ingridsdotter.com/wp-content/uploads/brizy/imgs/7fb08f8b12f04ec76b4295eeb5140f5f-425x425x0x29x425x366x1658841947.jpeg" alt="KARUSELL stool by Ingridsdotter" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">KARUSELL stool</p></div>
+          <p class="card-brand">Ingridsdotter</p>
+        </div>
+      </a>
+      <a class="card" href="https://itg.studio/products/kelpie-low-stool-carbon-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0894/4726/8616/files/KELPIE-BLACK-INTERESTINGTIMESGANG-1-BG.png?v=1740648339" alt="Kelpie Low Stool by Interesting Times Gang" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kelpie Low Stool</p></div>
+          <p class="card-brand">Interesting Times Gang</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kinandcompany.com/work/thin-stools" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/17.thin-stools/1.thinstool.jpg" alt="Thin Stool by Kin and Co" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Thin Stool</p></div>
+          <p class="card-brand">Kin and Co</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/400500480" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/400500480.jpg?v=1756995660" alt="Outline Bar Chair by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Outline Bar Chair</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.kallemo.se/en/sida/limiterat/nationalpallen-en" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/62/NP_sommar_hemsida-62afad70.png" alt="NATIONALPALLEN by Källemo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NATIONALPALLEN</p></div>
+          <p class="card-brand">Källemo</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/ribbon-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/Laun_RibbonStool_main.jpg?v=1679443456" alt="Ribbon stool by Laun" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ribbon stool</p></div>
+          <p class="card-brand">Laun</p>
+        </div>
+      </a>
+      <a class="card" href="https://lemonfurniture.co/products/keys-stool-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0679/2622/9278/files/keys-daybed-4_jpg.jpg?v=1745863365" alt="Keys Stool by Lemon Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Keys Stool</p></div>
+          <p class="card-brand">Lemon Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/chairs-carver-chairs-and-stools/stool-cm-202-3701" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/100and_c.jpg" alt="Cm 202 Stool by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cm 202 Stool</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products-materials/tables-chairs-and-stools/graft/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/10107/1200x630/nocrop/noenlarge/align_4/Living-Divani-Graft-1-2025.jpg.aspx" alt="Graft by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Graft</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/masonry-tuffet-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/products/Lland_Tuffet_main.jpg?v=1679380266" alt="Masonry Tuffet stool by Lland" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Masonry Tuffet stool</p></div>
+          <p class="card-brand">Lland</p>
+        </div>
+      </a>
+      <a class="card" href="https://llotllov.com/object/gritt-stool-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://llotllov.com/files/gritblackllot-llovcender-suenni-darkcork-600x281.jpg" alt="Grit Stool by Llot Llov" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Grit Stool</p></div>
+          <p class="card-brand">Llot Llov</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/spina-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/260515_SOPHIAROE_4_0309.jpg?v=1783589891" alt="SPINA STOOL by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SPINA STOOL</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://mabeofurniture.com/product/ipe-bench-and-stool-luca-nichetto-2010/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://mabeofurniture.com/wp-content/uploads/2024/09/Ipe-Bench-And-Stool-Luca-Nichetto-2010_v1-1024x640-1-800x534.png" alt="Ipe Bench And Stool by Mabeo Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ipe Bench And Stool</p></div>
+          <p class="card-brand">Mabeo Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/aka/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2022/09/Magis_aka_icona-1-172x300.png" alt="AKA by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AKA</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/ab_stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/ab_stool/Product/oak_NL0.jpg" alt="STOOL by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">STOOL</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/odette-bar-stool-h700-hdg" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Odette_700_Ecriture_240_Warm_Galvanized_Steel_0001.png?v=1773925892" alt="Odette Bar Stool H700 by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Odette Bar Stool H700</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://materdesign.com/products/low-stool-black-beech-w-kvadrat-clay-0017-47-cm-by-space-copenhagen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0260/0981/files/Mater_01353_LowStool_BlackBeech_KvadratClay_0017_VH01391.jpg?v=1789647296" alt="Low Stool | Beech w. Kvadrat Clay 0017 | 47 cm | by Space Copenhagen by Mater" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Low Stool | Beech w. Kvadrat Clay 0017 | 47 cm | by Space Copenhagen</p></div>
+          <p class="card-brand">Mater</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/3_stools/233_claretta-stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/233.png" alt="Claretta Stool by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Claretta Stool</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.mokkoamsterdam.com/cadence-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5e73916b28f23d676eebaddd/255fea64-64fc-4725-a49d-1e4d956da6e6/Taes+candle+holder+and+cadence+stool.jpg" alt="Cadence Stool by Mokko Amsterdam" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cadence Stool</p></div>
+          <p class="card-brand">Mokko Amsterdam</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.motarasu.com/products/reflex-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0780/0058/7083/files/Reflex-Stool-Product.jpg?v=1780497171" alt="Reflex Stool by Motarasu" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Reflex Stool</p></div>
+          <p class="card-brand">Motarasu</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/stool/1191-3978-tabouret-bold.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/15352-home_default/tabouret-bold.jpg" alt="Bold Stool by Moustache" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Stool</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/dekko-counter-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/1764869086920-ZX3PW3738ACVL4OHXP82/Muhly_256427.jpg" alt="Dekko Counter Stool by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dekko Counter Stool</p></div>
+          <p class="card-brand">Muhly</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/coupe-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1780403395-new-works_website_images_q3_launches-14.png?h=800" alt="Coupe Stool by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Coupe Stool</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-bar-chair-in-walnut-and-tarnsjo-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/files/NEBBarstoolinwalnutandgreenleather.png?v=1786906458" alt="NEB Barstool in Walnut and Tärnsjö leather by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NEB Barstool in Walnut and Tärnsjö leather</p></div>
+          <p class="card-brand">No Early Birds</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/bar-chair-flock-cs1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/0d5dd68d-9c77-47f0-8b40-c38595bac33d/Bar+%26+Counter+Chairs+Flock+by+NOOM+%282%291.jpg" alt="Bar Chair Flock CS1 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bar Chair Flock CS1</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/taburetes/alex-bistro-taburete/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2024/05/Omelette-Editions_Alex-Bistro_Stool_2.jpg" alt="Alex Bistro stool - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Alex Bistro stool - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/nieuwe-crisis-stapelkruk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2024/11/THUMB-4-300x300.jpg" alt="Nieuwe Crisis Stapelkruk by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Nieuwe Crisis Stapelkruk</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/colton-counter-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_ColtonCS_Aug_26_34.jpg?v=1790164001" alt="Colton counter stool by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Colton counter stool</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/stanley_counter_stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/CSB24-BZD-HERO.jpg?v=1785328613" alt="Stanley Counter Stool by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stanley Counter Stool</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://project213a.com/products/foot-bench-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0531/5395/6002/files/Project213A_FootBench_black7.jpg?v=1701271125" alt="Foot Bench by Project 213A" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Foot Bench</p></div>
+          <p class="card-brand">Project 213A</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/bird-bar-stool-upholstered-75-bar-stool-light-grey-yellow-kvadrat-vidar" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Bird_Bar_Stool_Upholstered_75-Bar_Stool-R1106-Light_grey_yellow_Kvadrat_Vidar.jpg?v=1753370296" alt="Bird Bar Stool Upholstered 75 by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bird Bar Stool Upholstered 75</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.resident.co.nz/en/furniture/seating/cadre-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.resident.co.nz/media/uploads/2025_06/C1_1.jpg.450x450_q85_crop-smart_upscale.jpg" alt="Cadre Stool by Resident" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cadre Stool</p></div>
+          <p class="card-brand">Resident</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/taburete-rak-33/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/taburete_rak_sinfondo_1-600x600.jpg" alt="TABURETE RAK 33 by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TABURETE RAK 33</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://sekterism.com/products/arca-high" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/631eeb2fe3c7c323a3e2438e/1738844551852-2U4M2I961UZRALXQQMHB/SEKT+Produkt+17.png" alt="ARCA STOOL HIGH by Sekt" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARCA STOOL HIGH</p></div>
+          <p class="card-brand">Sekt</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/magna-graecia-terracotta-stool-man-pink-bougainvillea-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/11525P_627c424e-6234-4650-ada6-a62a75e04a9c.jpg?v=1787920727" alt="Magna Graecia Terracotta Stool Man by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Magna Graecia Terracotta Stool Man</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/round-concrete-stool-pawn" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B7218531_01-jpg_b9b7094c-43b3-48d3-a1b5-33473b1cd9b6.jpg?v=1764731034" alt="Round concrete stool Pawn by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Round concrete stool Pawn</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/primum-bar-stool-high-polished-alu-base-leather-congac-zenso/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Primum-bar-stool-zenso-2-223-steel-base-fixed-high-400x400.png" alt="Primum Bar Stool High polished alu base by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Primum Bar Stool High polished alu base</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://sizaralexis.se/itooraba/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sizaralexis.se/wp-content/uploads/2023/05/MG_0977-scaled.jpg" alt="ITOORABA Stool by Sizar Alexis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ITOORABA Stool</p></div>
+          <p class="card-brand">Sizar Alexis</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.sightunseen.com/products/stool-01" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0068/2174/0609/files/STOOL3.jpg?v=1775857470" alt="Stool 01 by Studio Vraco" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool 01</p></div>
+          <p class="card-brand">Studio Vraco</p>
+        </div>
+      </a>
+      <a class="card" href="https://tamo.design/products/kopia-arche-black-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0942/6989/9081/files/Arche_Barstool_NaturOak_2000x2800-1.jpg?v=1769684557" alt="ARCHE bar stool by Tamo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARCHE bar stool</p></div>
+          <p class="card-brand">Tamo</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/delta-counter-stool-oak-tan-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS315227_1.jpg?v=1707403926" alt="Delta Counter Stool Oak &amp; Tan Leather by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Delta Counter Stool Oak &amp; Tan Leather</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://thorupcopenhagen.com/products/seat-pad-for-noel-barcounter-stool-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0972/7672/3527/files/ThorupCopenhagen_BC99StoolsSeatPadBlackpackshotwhitebackground.jpg?v=1779108907" alt="Seat Pad for Noel Bar/Counter Stool by Thorup Copenhagen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Seat Pad for Noel Bar/Counter Stool</p></div>
+          <p class="card-brand">Thorup Copenhagen</p>
+        </div>
+      </a>
+      <a class="card" href="https://timtevenstudio.bigcartel.com/product/pressure-stool-silver" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://assets.bigcartel.com/product_images/280901903/190320+-+Tim+Teven+-+pressure+bench+and+stool0393.jpg?auto=format&amp;fit=max&amp;h=1000&amp;w=1000" alt="Pressure Stool by Tim Teven Studio" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pressure Stool</p></div>
+          <p class="card-brand">Tim Teven Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/tabouret-bar-big-lou" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/BIG-LOU-CHENE-MASSIF-GRIS-EUCALYPTUS.jpg?v=1777029873" alt="Tabouret de bar by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret de bar</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://tohstudio.com/products/stool-study-metal-ssang-extended" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0201/5002/6294/products/SSA_SSANGEXT_FRONT.jpg?v=1639859531" alt="Stool Study Aluminum by TOH-STUDIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool Study Aluminum</p></div>
+          <p class="card-brand">TOH-STUDIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tolix.com/products/tabouret-h30-acier-brut-verni" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/TOLIX_TABOURET_MOUETTE_10574-00060_001_1.jpg?v=1772396078" alt="Tabouret H30 by Tolix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret H30</p></div>
+          <p class="card-brand">Tolix</p>
+        </div>
+      </a>
+      <a class="card" href="https://vaarnii.com/products/016-maasto-bar-stool-files-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/Frame_159_2f1ab006-2a69-4c2f-9414-3878b470d49d.png?v=1768916034" alt="016 Maasto Bar Stool Files by Vaarnii" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">016 Maasto Bar Stool Files</p></div>
+          <p class="card-brand">Vaarnii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-l-alu" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025202-800_01.jpg?v=1753787995" alt="bar stool l alu by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">bar stool l alu</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://verk.se/products/seating/stools/stool-v-ss-01/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://verk.se/wp-content/uploads/2024/02/stool-v.ss_.01-birch-product-image-1-860x937.jpg" alt="Stool V.SS.01 by Verk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool V.SS.01</p></div>
+          <p class="card-brand">Verk</p>
+        </div>
+      </a>
+      <a class="card" href="https://verpan.com/products/series-430-bar-stool-sh-75-cm-black-frame" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0513/1829/2651/products/Series430BarstoolSH75cm_Sortstel.jpg?v=1665999015" alt="Series 430 Bar Stool 75 by Verpan" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Series 430 Bar Stool 75</p></div>
+          <p class="card-brand">Verpan</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/folium-bar-stool-bar-stool-grain-col-61249" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Folium_bar_Grain61249_2.jpg?v=1756714198" alt="Folium Bar Stool - Bar stool by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Folium Bar Stool - Bar stool</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://willchoui.com/collections/solimar" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://framerusercontent.com/images/vMu1idc3OWXvNNVgFiGopu2pIEM.jpg?width=2596&amp;height=1765" alt="Solimar by Will Choui" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Solimar</p></div>
+          <p class="card-brand">Will Choui</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/soma-bar-stool-white-pigmented-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Soma_Bar_Oak.png?v=1743412033" alt="Soma bar stool by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Soma bar stool</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/wire-bar-stool-vp16" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/ATD_Packshots_159931_Wire-Bar-Stool-VP16_Front-600x800.jpg" alt="Wire Bar Stool VP16 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wire Bar Stool VP16</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/sculpt-stool-off-white-cph-900" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18350391_243011_Sculpt_Stool_-_Off_White_CPH_900_-_1.jpg?v=1774543101" alt="Sculpt Stool by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sculpt Stool</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://apetersen.dk/products/stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0944/2990/5239/files/A-Petersen-Ole-Schjoell-Stool-01.jpg?v=1761044639" alt="Wicker Stool by A. Petersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wicker Stool</p></div>
+          <p class="card-brand">A. Petersen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/bar-stool-five/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/AnotherCountry_BarstoolFive_740_1-1024x1024.jpg" alt="Bar Stool Five by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bar Stool Five</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/artek-hender-scheme-stool-60" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Artek-_-Hender-Scheme-Stool-60-Natural-cut-out.jpg?v=1789735238" alt="Artek + Hender Scheme Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Artek + Hender Scheme Stool 60</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/ml-42-bar-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/bylassen_ML42_Stool_ML42_Counter_Stool_ML42_Bar_Stool.jpg?v=1676017296" alt="ML 42 Bar Stool by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ML 42 Bar Stool</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://baleri-italia.com/en/products/juliette-bar-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.baleri-italia.com/uploads/media/1400x/06/1336-Baleri-Italia_Juliette_bar-stool_HW609_1987_02d.png?v=1-0" alt="Juliette Bar stool by Baleri Italia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Juliette Bar stool</p></div>
+          <p class="card-brand">Baleri Italia</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/family/dundra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_dundra-s73-65-1.jpg" alt="Dundra Bar Stool S73-65 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dundra Bar Stool S73-65</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://cocoflip.com.au/products/bellini-low-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1737/9815/files/CocoFlip_BelliniStool_PB_Oracle_002.png?v=1756865139" alt="Bellini Low Stool by Coco Flip" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bellini Low Stool</p></div>
+          <p class="card-brand">Coco Flip</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.davsjo.com/product/ds74-bar-stool-74-cm-ash" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.prod.website-files.com/68923634315f62ce4fd9f9e4/6893660c0e7dccb71b163089_66b2c2dcf0f503224b8433ff_Hero-DS74-ash.jpeg" alt="DS74 Bar stool 74 cm by Davsjö" loading="lazy"><span class="variant-badge">5 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">DS74 Bar stool 74 cm</p></div>
+          <p class="card-brand">Davsjö</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/271-throne-bar-stool-upholstered" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/271TThroneBarStoolwithUpholsterybyAutobanforDeLaEspadainwhiteoiledoakandClay010fabric-web.jpg?v=1617810779" alt="THRONE BAR STOOL by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">THRONE BAR STOOL</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/piper-counter-stool-archive-store" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/collection-seating-web-d_PIP-BAR-BLK-BLK-650H.jpg?v=1784082335" alt="Piper Counter Stool by Designbythem" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Piper Counter Stool</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://editions-midi.com/produit/tabouret/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://editions-midi.com/wp-content/uploads/2024/09/HDlourmarin101550-01344-OK-V2-540x720.jpg" alt="Tabouret by Editions Midi" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret</p></div>
+          <p class="card-brand">Editions Midi</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_assises_gueridon-out-situ-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/367/T_3q1a5570.jpg" alt="Tabouret Out Situ by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret Out Situ</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fabrikant.se/produkt/barr-pall/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.fabrikant.se/wp-content/uploads/BARRSTOOLexpo-900x900.jpg" alt="BARR Pall by Fabrikant" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BARR Pall</p></div>
+          <p class="card-brand">Fabrikant</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/up-step-stool-cashmere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/862926_1104264056_1.png?v=1762175013" alt="Up Step Stool by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Up Step Stool</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/chairs-stools/counter-stool/bollo-counter-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/ed/de/70/69/6970deed2052e8b80f717df7/FogiaBollo Barstool Low RAL 1013-Vintage CognacFront.png?auto=format&amp;w=2000&amp;q=90" alt="Bollo Counter Stool by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bollo Counter Stool</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/sonder-bar-chair-75-com-bespoke/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/06/Form-and-Form-and-Refine_Sonder_Barchair_75_Hallingdal_Front-800x800.webp" alt="Sonder Bar Chair 75 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sonder Bar Chair 75</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/petit-rond-stool-stainless-steel-zebra-fabric" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/FRAMA-Petit-Rond-Zebra-Packshot.webp?v=1760600427" alt="Petit Rond Stool | Stainless Steel by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Petit Rond Stool | Stainless Steel</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://gad.se/faro-pall/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://gad.se/wp-content/uploads/2025/05/ek-pall-farull-svensk-design-250x250.jpg" alt="Fårö Pall by G.A.D" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fårö Pall</p></div>
+          <p class="card-brand">G.A.D</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/alessandro-mendini/enigma-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/7DE8E21CDC32B94793191609A33364B6.jpg.webp" alt="Enigma Stool by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Enigma Stool</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://galvinbrothers.co.uk/products/parlour-chair-upholstered" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0177/8296/files/GalvinBrothers_Oct2024_IndiaHobson_LR-10.jpg?v=1733274315" alt="Parlour Chair (Upholstered) by Galvin Brothers" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Parlour Chair (Upholstered)</p></div>
+          <p class="card-brand">Galvin Brothers</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/jinen-br-stool-003-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_63e822d1-bc5f-4ddf-a774-d4e61d0c696e.jpg?v=1747186310" alt="JINEN Stool 003 by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">JINEN Stool 003</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ghidini1961.com/brass-chairs/hillary-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ghidini1961.com/uploads/prodotti/223/hillary_stool_bb_1100x550.jpg" alt="Hillary Stool by Ghidini 1961" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hillary Stool</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/elin-barstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2020/01/GARbb0377-720x1080.jpg" alt="Elin barstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Elin barstol</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-bar-stool/hee-bar-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422043548/img_20250422043548/globalassets/inriver/integration/service/hee-bar-stool_910x1100_brandmodel3.jpg" alt="Hee Bar Stool by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hee Bar Stool</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.heilig-objects.com/shop/seating/happens-stool-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.heilig-objects.com/wp-content/uploads/2023/06/heilig-objects-happens-stool-oak-red-0995-300x300.jpg" alt="HAPPENS Stool by Heilig Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">HAPPENS Stool</p></div>
+          <p class="card-brand">Heilig Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://ingridsdotter.com/o-pall/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://ingridsdotter.com/wp-content/uploads/brizy/imgs/PJ-1646805-425x562x0x182x425x366x1712138175.jpeg" alt="O-pall by Ingridsdotter" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">O-pall</p></div>
+          <p class="card-brand">Ingridsdotter</p>
+        </div>
+      </a>
+      <a class="card" href="https://itg.studio/products/kelp-bar-stool-carbon-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0894/4726/8616/files/KELP_BAR_STOOL-BLACK-INTERESTINGTIMSGANG-1-BG.png?v=1740653747" alt="Kelp Bar Stool by Interesting Times Gang" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kelp Bar Stool</p></div>
+          <p class="card-brand">Interesting Times Gang</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/400400585" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/400400585.jpg?v=1781795486" alt="Split Stool by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Split Stool</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://lemonfurniture.co/products/athens-stool-za" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0679/2622/9278/files/athens-stool-1_jpg.jpg?v=1745860353" alt="Athens Stool by Lemon Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Athens Stool</p></div>
+          <p class="card-brand">Lemon Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/chairs-carver-chairs-and-stools/low-stool-argile-berretto-819" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/1000ut_c.jpg" alt="Berretto Low stool argile by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Berretto Low stool argile</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.livingdivani.it/en/products-materials/tables-chairs-and-stools/ticino/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.livingdivani.it/images/10111/1200x630/nocrop/noenlarge/align_4/Living-Divani-Ticino-1.jpg.aspx" alt="Ticino by Living Divani" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ticino</p></div>
+          <p class="card-brand">Living Divani</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/funki-stool-02" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKS_0325760.jpg?v=1783588872" alt="FUNKI STOOL 02 by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FUNKI STOOL 02</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://mabeofurniture.com/product/dira-stool-series-vincent-van-duysen-2018/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://mabeofurniture.com/wp-content/uploads/2024/09/Dira-Stool-Series-Vincent-Van-Duysen-2018-v1-1024x640-1-800x534.png" alt="Dira Stool Series by Mabeo Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dira Stool Series</p></div>
+          <p class="card-brand">Mabeo Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/al-bombo-swivel-bar-stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2015/01/Magis_Albombo_stool_product_lateral_SD240_01.png" alt="Al Bombo by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Al Bombo</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_stool_high_wooden_seat/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_stool_high_wooden_seat/Product/beech_NL0_br.jpg" alt="STOOL High by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">STOOL High</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/odette-bar-stool-h800" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Odette_700_Ecriture_240_Warm_Galvanized_Steel_0001.png?v=1773925892" alt="Odette Bar Stool H800 by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Odette Bar Stool H800</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://materdesign.com/products/low-stool-black-beech-w-kvadrat-baru-0450-47-cm-by-space-copenhagen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0260/0981/files/Mater_01353_LowStool_BlackBeech_KvadratBaru_0450_VH01383.jpg?v=1789647296" alt="Low Stool | Beech w. Kvadrat Baru 0450 | 47 cm | by Space Copenhagen by Mater" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Low Stool | Beech w. Kvadrat Baru 0450 | 47 cm | by Space Copenhagen</p></div>
+          <p class="card-brand">Mater</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/3_stools/226_diverge-stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/226.png" alt="Diverge Stool by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Diverge Stool</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/stool/872-1051-tabouret-canova.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/5329-home_default/tabouret-canova.jpg" alt="Canova stool by Moustache" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Canova stool</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://muhly.studio/dekko-dining-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/1764884537699-LMQFQNA9CSXKNTLLSOB2/Muhly_256402.jpg" alt="Dekko Dining Stool by Muhly" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dekko Dining Stool</p></div>
+          <p class="card-brand">Muhly</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/coupe-bar-stool-65-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1780303437-new_works_packshot-44820_coupe-65_steel.png?h=800" alt="Coupe Bar Stool 65 cm by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Coupe Bar Stool 65 cm</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-low-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_Low_stool.jpg?v=1611779934" alt="NEB Low Stool by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NEB Low Stool</p></div>
+          <p class="card-brand">No Early Birds</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/bar-chair-flock-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/8342792b-a961-4b7c-ae9a-f05681510a37/Bar+%26+Counter+Chairs+Flock+by+NOOM+%284%291.jpg" alt="Bar Chair Flock CS2 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bar Chair Flock CS2</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/taburetes/domus-s46/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2024/05/Omelette-Editions_Domus-S46_1-1.jpg" alt="Domus S46 - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Domus S46 - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/kruk-in-sloophout-pop-up-collectie-merci-paris" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2022/06/014-300x300.jpg" alt="Kruk in sloophout by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kruk in sloophout</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/avery-paper-cord-counter-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_AveryCS_Paper_Aug_26_234RP_8a313760-77e1-421b-82a1-ba2cded729ea.jpg?v=1790327672" alt="Avery woven counter stool by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Avery woven counter stool</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/stanley_bar_stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/CSB23-BZD-HERO1.jpg?v=1785328614" alt="Stanley Bar Stool by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stanley Bar Stool</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://project213a.com/products/arc-de-stool-52" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0531/5395/6002/files/Project213A_ArcdeStool_52_walnut3.jpg?v=1783943966" alt="Arc de Stool &#x27;52 by Project 213A" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arc de Stool &#x27;52</p></div>
+          <p class="card-brand">Project 213A</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/bird-bar-stool-75-bar-stool-stainless-steel-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Bird_Bar_Stool_75-Bar_Stool-R1107-Stainless_steel_oak.jpg?v=1753370100" alt="Bird Bar Stool 75 by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bird Bar Stool 75</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.resident.co.nz/en/furniture/seating/radio-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.resident.co.nz/media/uploads/2026_06/Resident_5th_June_Radio_1155_SQ-WEB-FLIP.jpg.450x450_q85_crop-smart_upscale.jpg" alt="Radio Stool by Resident" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Radio Stool</p></div>
+          <p class="card-brand">Resident</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/taburete-rak-r33/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/taburete_redondo_rak_sinfondo_1-600x600.jpg" alt="TABURETE RAK R33 by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TABURETE RAK R33</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://sekterism.com/products/arca-low" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/631eeb2fe3c7c323a3e2438e/1738844458861-7HQOEDFL7Q53AO7TVHGC/SEKT+Produkt+14.png" alt="ARCA STOOL LOW by Sekt" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ARCA STOOL LOW</p></div>
+          <p class="card-brand">Sekt</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/magna-graecia-terracotta-stool-woman-pink-bougainvillea" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/11526P.jpg?v=1787920190" alt="Magna Graecia Terracotta Stool Woman by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Magna Graecia Terracotta Stool Woman</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/stool-aluminium-eucalyptus-green-august" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5021019C_01-jpg.jpg?v=1764730372" alt="Stool aluminium eucalyptus green August by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool aluminium eucalyptus green August</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/primum-bar-stool-high-black-base-leather-congac-zenso/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Primum-bar-stool-zenso-2-223-black-base-fixed-high-400x400.png" alt="Primum Bar Stool High black base by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Primum Bar Stool High black base</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://sizaralexis.se/ode/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sizaralexis.se/wp-content/uploads/2023/06/MG_0047-scaled.jpg" alt="Ode Three Legged Stool by Sizar Alexis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ode Three Legged Stool</p></div>
+          <p class="card-brand">Sizar Alexis</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/cross-leg-counter-stool-black-metal-legs-tosca-leather-black-1508" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS324042.jpg?v=1761313784" alt="Cross Leg Counter Stool Tosca Leather Black by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Cross Leg Counter Stool Tosca Leather Black</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://timtevenstudio.bigcartel.com/product/pressure-bench" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://assets.bigcartel.com/product_images/377220322/190320+-+Tim+Teven+-+pressure+bench+and+stool0463.jpg?auto=format&amp;fit=max&amp;h=1000&amp;w=1000" alt="Pressure Bench  by Tim Teven Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pressure Bench </p></div>
+          <p class="card-brand">Tim Teven Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/tabouret-lou-edition-chroma-bois-eco-certifie" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/tabouret-lou-monochrome-bleuazur.jpg?v=1779354221" alt="Tabouret LOU édition CHROMA- bois éco-certifié by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret LOU édition CHROMA- bois éco-certifié</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tolix.com/products/tabouret-h45-interieur-acier-brut-verni" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/TABOURETH45_BRUTVERNI_VUEOBLIQUE_1.jpg?v=1772396169" alt="Tabouret H45 by Tolix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret H45</p></div>
+          <p class="card-brand">Tolix</p>
+        </div>
+      </a>
+      <a class="card" href="https://vaarnii.com/products/001-stool-black-files" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/Frame_529_63a00e02-ed7a-47ac-b519-ca60d180f928.jpg?v=1770107491" alt="001 Stool Files by Vaarnii" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">001 Stool Files</p></div>
+          <p class="card-brand">Vaarnii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-m-alu" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025201-800_01.jpg?v=1753788029" alt="bar stool m alu by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">bar stool m alu</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://verk.se/products/seating/stools/stool-v-js-01/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://verk.se/wp-content/uploads/2023/03/Stool-V.JS.01-1-1680x1831-1-860x937.jpg" alt="Stool V.JS.01 by Verk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool V.JS.01</p></div>
+          <p class="card-brand">Verk</p>
+        </div>
+      </a>
+      <a class="card" href="https://verpan.com/products/series-430-bar-stool-1967-seat-height-65-cm-black-frame-hallingdal" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0513/1829/2651/products/Series430-BarStool-65-BlackFrame-Hallingdal180.jpg?v=1606824778" alt="Series 430 Bar Stool 65 by Verpan" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Series 430 Bar Stool 65</p></div>
+          <p class="card-brand">Verpan</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/ovata-bar-stool-bar-stool-grain-col-66216" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Ovata_Bar_stool_Grain66216_2.jpg?v=1756711402" alt="Ovata Bar Stool - Bar Stool by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ovata Bar Stool - Bar Stool</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/slalom-step-stool-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/files/WOUD_Slalom.png?v=1743412085" alt="Slalom Step Stool by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Slalom Step Stool</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/rely-hw118-hw122" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2025/11/155743A061_Rely-Counter-Stool-HW118-Low-back-Lacquered-oak-base-Plastic-gliders-White-shell-600x800.jpg" alt="Rely HW118-HW122 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rely HW118-HW122</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://101cph.com/products/tribu-stool-coffee" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/231042-Tribu-Stool---Coffee_2_2048x2048_1329683e-9dee-4bdc-a0c1-98fbdc1c54c2.jpg?v=1767790585" alt="Tribu Stool by 101cph" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tribu Stool</p></div>
+          <p class="card-brand">101cph</p>
+        </div>
+      </a>
+      <a class="card" href="https://apetersen.dk/products/metal-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0944/2990/5239/files/APetersen_Metal-Stool_yellow_frit-2048x1393.png?v=1758105019" alt="Metal Stool by A. Petersen" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Metal Stool</p></div>
+          <p class="card-brand">A. Petersen</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/hardy-bar-stool-without-back-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/220411-ANOTHER-COUNTRY28605-1024x1024.jpg" alt="Hardy Bar Stool without Back by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hardy Bar Stool without Back</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/stool-e60-zebra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-stool-e60-honey-stained-zebra-brown.jpg?v=1781179144" alt="Stool E60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool E60</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/ml-42-counter-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/Audo_ML_42_Counter_Stool_Stance_Vase_Strandgade_Drinking_Glass.jpg?v=1676561150" alt="ML 42 Counter Stool by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ML 42 Counter Stool</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.blastation.com/family/dundra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cms.blastation.com/wp-content/uploads/2026/03/studio_dundra-s73-82-4.jpg" alt="Dundra Bar Stool S73-82 by Blå Station" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dundra Bar Stool S73-82</p></div>
+          <p class="card-brand">Blå Station</p>
+        </div>
+      </a>
+      <a class="card" href="https://cocoflip.com.au/products/bellini-outdoor-stool-1" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1737/9815/files/CF_06.jpg?v=1728360608" alt="Bellini Outdoor Stool by Coco Flip" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bellini Outdoor Stool</p></div>
+          <p class="card-brand">Coco Flip</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/249-butterfly-bar-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/249TButterflyBarStoolbyAutobanforDeLaEspadainDanishoiledoakandClay009fabric-web.jpg?v=1617872861" alt="BUTTERFLY BAR STOOL by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BUTTERFLY BAR STOOL</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/piper-stool-archive-store" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/collection-seating-web-d_PIP-STL-BLK-BLK.jpg?v=1784081738" alt="Piper Stool by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Piper Stool</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_assises_table-dappoint-lung" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/023/T_023-1.jpg" alt="Tabouret ou table d’appoint Lung by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret ou table d’appoint Lung</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fabrikant.se/produkt/roots-pall/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.fabrikant.se/wp-content/uploads/21540101-900x900.jpg" alt="ROOTS PALL by Fabrikant" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ROOTS PALL</p></div>
+          <p class="card-brand">Fabrikant</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/oblique-stool-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/437126_100600207_1.png?v=1762183158" alt="Oblique Stool by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oblique Stool</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/chairs-stools/counter-stool/figurine-counter-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/80/3d/c6/69/69c63d80c04b3f1a16f5bb6b/Fogia Figurine counter stool Black stained oak Front.png?auto=format&amp;w=2000&amp;q=90" alt="Figurine Counter Stool by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Figurine Counter Stool</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/angle-stool-45-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/05/Form-and-Refine_Angle-Standard-Stool_Oak_Front-800x800.webp" alt="Angle Stool 45 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Angle Stool 45</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/hender-scheme-x-frama-adam-stool-h50" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-Frama-HenderScheme-Adam-Stool-H50-Basket-Packshot-11.png?v=1722851459" alt="Hender Scheme x FRAMA Adam Stool | H50 by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hender Scheme x FRAMA Adam Stool | H50</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/jean-baptiste-fastrez/gemini-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/B0A5A7D447CE75438D8A226B9FC21FF2.jpg.webp" alt="Gemini stool by Galerie Kreo" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gemini stool</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://galvinbrothers.co.uk/products/bastion-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0177/8296/products/GalvinBrothers-DepartmentTwo-37.jpg?v=1622645777" alt="Bastion Stool by Galvin Brothers" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bastion Stool</p></div>
+          <p class="card-brand">Galvin Brothers</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/jinen-br-stool-002-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_6873af30-35f4-465f-9aa6-8dbf8e53031b.jpg?v=1747186258" alt="JINEN Stool 002 by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">JINEN Stool 002</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/gastis-bar/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARf__0110-810x1080.jpg" alt="Gästis barstol * by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Gästis barstol *</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-stool/palissade-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422062713/img_20250422062713/globalassets/inriver/integration/service/palissade-stool_910x1100_brandmodel2.jpg" alt="Palissade Stool by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palissade Stool</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.heilig-objects.com/shop/seating/pagode-naguri-stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.heilig-objects.com/wp-content/uploads/2023/06/heilig-objects-pagode-naguri-stool-green-1317-300x300.jpg" alt="PAGODE Naguri Stool by Heilig Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">PAGODE Naguri Stool</p></div>
+          <p class="card-brand">Heilig Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://ingridsdotter.com/bar-stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://ingridsdotter.com/wp-content/uploads/2024/05/PJ-1646804-fri_low-1.png" alt="BAR stool by Ingridsdotter" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BAR stool</p></div>
+          <p class="card-brand">Ingridsdotter</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/118200005" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/118200005.jpg?v=1756995594" alt="Artisan Stool by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Artisan Stool</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/chairs-carver-chairs-and-stools/high-stool-ilot-664" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/012vw_c.jpg" alt="Ilot High stool by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ilot High stool</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://louise-roe.com/products/funki-stool-01" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/1365/5757/files/LOUISE_ROE_PACKS_0325789.jpg?v=1783588858" alt="FUNKI STOOL 01 by Louise Roe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FUNKI STOOL 01</p></div>
+          <p class="card-brand">Louise Roe</p>
+        </div>
+      </a>
+      <a class="card" href="https://mabeofurniture.com/product/thuthu-stool-patty-johnson-2006/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://mabeofurniture.com/wp-content/uploads/2024/09/Thuthu-Stool-Patty-Johnson-2006-v1-1024x683-1-800x534.png" alt="Thuthu Stool by Mabeo Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Thuthu Stool</p></div>
+          <p class="card-brand">Mabeo Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/archeo/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2026/04/Magis_archeo_low-table_product_front_group_01_icona-300x300.jpg" alt="Archeonew by Magis" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Archeonew</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/hr_stool_mid_wooden_seat/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_stool_mid_wooden_seat/Product/beech_NL0_cr.jpg" alt="STOOL Mid by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">STOOL Mid</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/icha-bar-stool-h650-custom" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Icha_Bar_Stool_65_BlackStainedOak_01.png?v=1757511145" alt="Icha Bar Stool by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Icha Bar Stool</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://materdesign.com/products/low-stool-black-beech-w-kvadrat-baru-0200-47-cm-by-space-copenhagen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0260/0981/files/Mater_01353_LowStool_BlackBeech_KvadratBaru_0200_VH01382.jpg?v=1789647296" alt="Low Stool | Beech w. Kvadrat Baru 0200 | 47 cm | by Space Copenhagen by Mater" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Low Stool | Beech w. Kvadrat Baru 0200 | 47 cm | by Space Copenhagen</p></div>
+          <p class="card-brand">Mater</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/3_stools/176_ferrovitos/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/176.png" alt="Ferrovitos by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ferrovitos</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/stool/1207-4292-tabouret-bold.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/16380-home_default/tabouret-bold.jpg" alt="Sparkling Bold Stool by Moustache" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sparkling Bold Stool</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/coupe-bar-stool-75-cm" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1780303436-new_works_packshot-44810_coupe-75_steel.png?h=800" alt="Coupe Bar Stool 75 cm by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Coupe Bar Stool 75 cm</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-bar-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/NEB_bar_stool.jpg?v=1611771333" alt="NEB Bar Stool by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">NEB Bar Stool</p></div>
+          <p class="card-brand">No Early Birds</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/counter-chair-gropius-cs1-cdjgs" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1657548665671-TX7ADHFXUV58UKE3FDUB/Bar+Chair+Gropius+CS1+%282%29+1.jpg" alt="Bar Chair Gropius CS1/Seat height 75 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bar Chair Gropius CS1/Seat height 75</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/taburetes/domus-s65/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2023/02/Omelette-Editions_Domus-S65_2.jpg" alt="Domus S65 - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Domus S65 - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/kruk-in-eiken" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2022/06/02_Oak_stool_perspective01_re-edited-300x300.jpg" alt="Kruk in eiken by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kruk in eiken</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/avery-counter-stool-upholstered" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Avery-bar-uph_134_SUMMERLS.jpg?v=1763055379" alt="Avery counter stool upholstered by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Avery counter stool upholstered</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/otto_stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/CSB13-VBR-HERO_69e16e17-1284-4f36-94db-ff0ce1d7bc06.jpg?v=1726152305" alt="Otto Stool by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Otto Stool</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://project213a.com/products/copy-of-arc-de-stool-37" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0531/5395/6002/products/Project213Aarcdestool37black2.jpg?v=1655911306" alt="Arc de Stool &#x27;37 by Project 213A" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Arc de Stool &#x27;37</p></div>
+          <p class="card-brand">Project 213A</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/bird-bar-stool-bar-stool-stainless-steel-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Bird_Bar_Stool-Bar_Stool-R1104-Stainless_steel_oak.jpg?v=1753368204" alt="Bird Bar Stool 65 by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bird Bar Stool 65</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.resident.co.nz/en/furniture/seating/jiro-swivel-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.resident.co.nz/media/uploads/2023_10/Resident_SEP2023_Jiro_Bar_Stool_0037_WEB_SQ.jpg.450x450_q85_crop-smart_upscale.jpg" alt="Jiro Swivel Stool by Resident" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Jiro Swivel Stool</p></div>
+          <p class="card-brand">Resident</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/enfosca-asa-stoolesfosca-asa-taburete/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/stool_fosca_asa_thumbnail-1-1-600x600.jpg" alt="FOSCA ASA TABURETE by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FOSCA ASA TABURETE</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/high-stool-shit" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Toiletpaper-furniture-padded-high-stool-1612Z6A8290.jpg?v=1728429170" alt="High Stool Shit by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">High Stool Shit</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/stool-aluminium-black-august" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5021019B_01-jpg.jpg?v=1764730362" alt="Stool aluminium black August by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool aluminium black August</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/primum-bar-stool-high-black-return-swivel-base-leather-congac-zenso/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Webshop-packshots-vol2-62-400x400.png" alt="Primum Bar Stool High black return swivel base by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Primum Bar Stool High black return swivel base</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://sizaralexis.se/ousia/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sizaralexis.se/wp-content/uploads/2023/06/Ousia-pall3.jpg" alt="Ousia Stool by Sizar Alexis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ousia Stool</p></div>
+          <p class="card-brand">Sizar Alexis</p>
+        </div>
+      </a>
+      <a class="card" href="https://theconranshop.com/products/delta-counter-stool-walnut-black-leather" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/9139/4198/files/TCS315228_1.jpg?v=1707403954" alt="Delta Counter Stool Walnut &amp; Black Leather by The Conran Shop" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Delta Counter Stool Walnut &amp; Black Leather</p></div>
+          <p class="card-brand">The Conran Shop</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/tabouret-de-bar-ssd-bois-eco-certifie" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/tabouret-bar-SSD-66-griseucalytpus.jpg?v=1773825067" alt="Tabouret de bar SSD by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret de bar SSD</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tolix.com/products/tabouret-h65-interieur-acier-brut-verni" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/TABOURETH65_BRUTVERNI_VUEOBLIQUE_1.jpg?v=1772396270" alt="Tabouret H65 by Tolix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret H65</p></div>
+          <p class="card-brand">Tolix</p>
+        </div>
+      </a>
+      <a class="card" href="https://vaarnii.com/products/002-ast-stool-files" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/002Aststool-2-vertical.jpg?v=1724225886" alt="002 Ast Stool Files by Vaarnii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">002 Ast Stool Files</p></div>
+          <p class="card-brand">Vaarnii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-m-green" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025201-500_01.jpg?v=1753788063" alt="bar stool m green by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">bar stool m green</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://verk.se/products/seating/stools/stool-v-de-06/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://verk.se/wp-content/uploads/2023/03/Stool-V.DE_.06-2-1680x1831-1-860x937.jpg" alt="Stool V.DE.06 by Verk" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool V.DE.06</p></div>
+          <p class="card-brand">Verk</p>
+        </div>
+      </a>
+      <a class="card" href="https://verpan.com/products/series-430-stool-black-frame" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0513/1829/2651/products/Series430-Stool_Hallingdal180.jpg?v=1606824734" alt="Series 430 Stool by Verpan" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Series 430 Stool</p></div>
+          <p class="card-brand">Verpan</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/ovate-dining-chair-dining-chair-tempt-col-60147" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Ovata_Counter_stool_Tempt60147_2.jpg?v=1742299599" alt="Ovata Counter Stool - Counter Stool by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ovata Counter Stool - Counter Stool</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://wouddesign.com/products/mono-bar-stool-white-pigmented-lacquered-oak" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0624/7677/9739/products/WOUD_SS22_MONOCOUNTERCHAIR_STEDGE_HIBO_ARKIV.jpg_1.jpg?v=1743412393" alt="Mono bar stool by Woud" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mono bar stool</p></div>
+          <p class="card-brand">Woud</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/rely-hw123-hw127" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2025/11/155763_Rely-Bar-Stool-HW123-Low-back-Lacquered-oak-base-Plastic-gliders-Stone-Grey-shell-600x800.jpg" alt="Rely HW123-HW127 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Rely HW123-HW127</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/stool-one-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/1.-Stool-One-Oak-1024x1024.jpg" alt="Stool One by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool One</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/stool-60-zebra" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-stool-60-clear-lacquered-zebra-brown.jpg?v=1781175052" alt="Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool 60</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://audocph.com/products/ml-42-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0262/3959/8658/products/byLassen_ML42_stool.jpg?v=1676038111" alt="ML 42 Stool by Audo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ML 42 Stool</p></div>
+          <p class="card-brand">Audo</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/440-low-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/LowStoolbyStudioilseinblackpaintedash2web.jpg?v=1600420103" alt="LOW STOOL by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LOW STOOL</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/butter-counter-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/products/collection-seating-web-d_0015_butter-bar-stool-black-d-hr_jpg.jpg?v=1773357200" alt="Butter Counter Stool by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Butter Counter Stool</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ericschmitt.com/produit_assises_tabouret-pion" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ericschmitt.com/upload/024/T_024.jpg" alt="Tabouret Pion by Eric Schmitt Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret Pion</p></div>
+          <p class="card-brand">Eric Schmitt Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/herman-bar-chair-high-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/656697_9421_1.png?v=1762183944" alt="Herman Bar Chair by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Herman Bar Chair</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.fogia.com/chairs-stools/stool/figurine-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.fogia.com/49/3e/c6/69/69c63e497d7742cdf9f3ccb8/Fogia Figurine stool Black stained oak Front.png?auto=format&amp;w=2000&amp;q=90" alt="Figurine Stool by Fogia" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Figurine Stool</p></div>
+          <p class="card-brand">Fogia</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/angle-bar-stool-65-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/05/Form-and-Refine_Angle_Barstool_65_Oak_Front-1-800x800.webp" alt="Angle Bar Stool 65 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Angle Bar Stool 65</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/stool-01-warm-brown-birch-h76" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/Frama-Stool-01-H76-Warm-Brown-Packshot-1_98554134-9961-4d6f-9d45-57a803c27733.webp?v=1758886666" alt="Stool 01 | Warm Brown Birch | H76 by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool 01 | Warm Brown Birch | H76</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/pierre-charpin/occasional-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/72528D21366C0A45BB454E5B560C560F.jpg.webp" alt="Occasional Stool by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Occasional Stool</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://galvinbrothers.co.uk/products/signature-cushion-bar-stool-4" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0177/8296/products/Signature_Cushion_BarStool_4_1.jpg?v=1592843009" alt="Signature (Cushion) Bar Stool (4) by Galvin Brothers" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Signature (Cushion) Bar Stool (4)</p></div>
+          <p class="card-brand">Galvin Brothers</p>
+        </div>
+      </a>
+      <a class="card" href="https://gatomikio-store.com/products/jinen-br-stool-001-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0698/9391/4856/files/1_43f72c7e-a4af-46e9-a87d-a4146a99dd52.jpg?v=1747186164" alt="JINEN Stool 001 by GATOMIKIO" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">JINEN Stool 001</p></div>
+          <p class="card-brand">GATOMIKIO</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/greitz/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2016/01/GARf__0012-810x1080.jpg" alt="Greitz barpall by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Greitz barpall</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-bar-stool/palissade-bar-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422045609/img_20250422045609/globalassets/inriver/integration/service/palissade-bar-stool_910x1100_brandmodel3.jpg" alt="Palissade Bar Stool by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Palissade Bar Stool</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.heilig-objects.com/shop/seating/zehnfinger-stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.heilig-objects.com/wp-content/uploads/2023/02/heilig-objects-zehnfinger-green-1178-1-300x300.jpg" alt="ZEHNFINGER Stool by Heilig Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">ZEHNFINGER Stool</p></div>
+          <p class="card-brand">Heilig Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://kristinadamstudio.com/products/120000001" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/120000001.jpg?v=1756995594" alt="Simple Stool by Kristina Dam Studio" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Simple Stool</p></div>
+          <p class="card-brand">Kristina Dam Studio</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/chairs-carver-chairs-and-stools/stool-black-geometry-497" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/012w0_c.jpg" alt="Geometry Stool black by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Geometry Stool black</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://mabeofurniture.com/product/sefefo-color-series-stool-patricia-urquiola-2015/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://mabeofurniture.com/wp-content/uploads/2024/09/Sefefo-Color-Series-v1-1024x683-1-800x534.png" alt="Sefefo Color Series Stool by Mabeo Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sefefo Color Series Stool</p></div>
+          <p class="card-brand">Mabeo Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/bombo-stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2015/01/Magis_bombo_stool_product_front_SD40_anthracite_01.png" alt="Bombo by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bombo</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/lw_bar_stool_high_cushioned/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_bar_stool_high_cushioned/Product/maple_C0.jpg" alt="BAR STOOL High (cushioned) by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BAR STOOL High (cushioned)</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/albert-stool-h500-custom-copy" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/AL-01-113-00-01_064277eb-e16c-44ba-be68-6c5a5b15640c.jpg?v=1755858550" alt="Albert Stool H500 by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Albert Stool H500</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://materdesign.com/products/low-stool-black-beech-w-kvadrat-baru-0390-47-cm-by-space-copenhagen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0260/0981/files/Mater_01353_LowStool_BlackBeech_KvadratBaru_0390_VH01381.jpg?v=1789647296" alt="Low Stool | Beech w. Kvadrat Baru 0390 | 47 cm | by Space Copenhagen by Mater" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Low Stool | Beech w. Kvadrat Baru 0390 | 47 cm | by Space Copenhagen</p></div>
+          <p class="card-brand">Mater</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/3_stools/234_iola-stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/234.png" alt="Iola Stool by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Iola Stool</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.moustache.fr/en/accueil/1571-ravioli-armchair-and-ottoman.html" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.moustache.fr/43540-home_default/ravioli-armchair-and-ottoman.jpg" alt="Ravioli armchair and ottoman by Moustache" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ravioli armchair and ottoman</p></div>
+          <p class="card-brand">Moustache</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/atlas-stool-2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1779882484-new_works_packshot_42732_atlas_stool_lacquered_espresso_front.png?h=800" alt="Atlas Stool by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Atlas Stool</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://noearlybirds.se/products/neb-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0054/8284/0150/products/12161-0bb48cc3281c45408163b304004ea9a6.jpg?v=1740070115" alt="Neb Stool by No Early Birds" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Neb Stool</p></div>
+          <p class="card-brand">No Early Birds</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.noom-home.com/seating/bar-chair-gropius-cs2" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/5a8ee04a6957da84ae2a70ae/1623609607147-XY7VG7T089KNA7QYHGOZ/Bar+Chair+Gropius+CS2+++%282%29+a.jpg" alt="Bar Chair Gropius CS2/75 by Noom" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bar Chair Gropius CS2/75</p></div>
+          <p class="card-brand">Noom</p>
+        </div>
+      </a>
+      <a class="card" href="https://omeletteeditions.com/en/productos/taburetes/terra-taburete/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://omeletteeditions.com/wp-content/uploads/2025/04/Omelette-Editions_Terra_Stool_5-1.jpg" alt="Terra stool - Omelette by Omelette Editions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Terra stool - Omelette</p></div>
+          <p class="card-brand">Omelette Editions</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/crisis-barkruk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2020/09/01_Crisis_Barkruk_met_Stalen_Ring_front01-thumbnail-300x300.jpg" alt="Crisis barkruk by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Crisis barkruk</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/imo-counter-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Dining_24_4934_7a24cc5d-0b44-45a1-81e4-1430a3aae7e9.jpg?v=1766343597" alt="Imo counter stool by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Imo counter stool</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/stanely_curved_stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/CSB15-ORU-HERO.jpg?v=1726043010" alt="Stanley Curved Stool by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stanley Curved Stool</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://raawii.eu/products/bird-bar-stool-upholstered-bar-stool-light-grey-yellow-kvadrat-vidar" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0013/7894/3025/files/Bird_Bar_Stool_Upholstered-Bar_Stool-R1103-Light_grey_yellow_Kvadrat_Vidar.jpg?v=1753367055" alt="Bird Bar Stool Upholstered 65 by Raawii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bird Bar Stool Upholstered 65</p></div>
+          <p class="card-brand">Raawii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.resident.co.nz/en/furniture/seating/jiro-swivel-stool-upholstered" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.resident.co.nz/media/uploads/2023_10/Resident_19thOct__0508_WEB-SQ.jpg.450x450_q85_crop-smart_upscale.jpg" alt="Jiro Swivel Stool - Upholstered by Resident" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Jiro Swivel Stool - Upholstered</p></div>
+          <p class="card-brand">Resident</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/fosca-asa-taburete-asiento-tapizado/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/stool_fosca_asa_upholstered_thumbnail-2-1-600x600.jpg" alt="FOSCA ASA TABURETE ASIENTO TAPIZADO by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">FOSCA ASA TABURETE ASIENTO TAPIZADO</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/high-stool-pink-lipsticks" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Toiletpaper-furniture-padded-high-stool-1612Z6A8282.jpg?v=1728429160" alt="High Stool Pink Lipsticks by Seletti" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">High Stool Pink Lipsticks</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bar-stool-aluminium-eucalyptus-green-august" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5021018C_01-jpg.jpg?v=1764730358" alt="Bar stool aluminium eucalyptus green August by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bar stool aluminium eucalyptus green August</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/primum-bar-stool-low-polished-alu-base-leather-congac-zenso/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Primum-bar-stool-zenso-2-223-steel-base-fixed-low-400x400.png" alt="Primum Bar Stool Low polished alu base by Sibast" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Primum Bar Stool Low polished alu base</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/tabouret-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/tabouret-panorama-noir-graphite.jpg?v=1777059180" alt="Tabouret de jardin PANORAMA by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret de jardin PANORAMA</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tolix.com/products/tabouret-h75-interieur-acier-brut-verni" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/TABOURETH75_BRUTVERNI_VUEOBLIQUE_1.jpg?v=1772396370" alt="Tabouret H75 by Tolix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret H75</p></div>
+          <p class="card-brand">Tolix</p>
+        </div>
+      </a>
+      <a class="card" href="https://vaarnii.com/products/001-barstool-cad-files" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/001BarStool65-3-Vertical.jpg?v=1749742676" alt="001 Bar Stool Files by Vaarnii" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">001 Bar Stool Files</p></div>
+          <p class="card-brand">Vaarnii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-m-pink" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025201-400_01.jpg?v=1753788084" alt="bar stool m pink by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">bar stool m pink</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/aloe-stool-stool-parma-col-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Aloe_stool_Parma_black_1.jpg?v=1744196311" alt="Aloe Stool - Stool by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Aloe Stool - Stool</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/wire-stool-seat-pad-vp15" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2021/05/Wire-Stool-VP11_Seat-Pad_family-600x800.jpg" alt="Wire Stool Seat Pad VP15-VP16 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wire Stool Seat Pad VP15-VP16</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/bar-stool-one-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/4.-Bar-Stool-One-Oak-1024x1024.jpg" alt="Bar Stool One by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bar Stool One</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/r128-stool-60" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/Aalto-Alvar_Stool-60_stained_nailed_1930.jpg?v=1781162879" alt="#2002 Stool 60 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">#2002 Stool 60</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/440s-low-stool-upholstered" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/440SUpholsteredLowStoolbyStudioilseinDanishoiledoakandbrownnakedleatherweb.jpg?v=1600420103" alt="LOW STOOL UPHOLSTERED by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">LOW STOOL UPHOLSTERED</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/potato-bar-chair-oak-sled-base" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/POT-BAR-OAK-CHAIR-OAKVENEER-T.jpg?v=1763606683" alt="Potato Bar Chair by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Potato Bar Chair</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/herman-stool-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/619620_100073101_1.png?v=1762183058" alt="Herman Stool by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Herman Stool</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/sonder-stool-oak/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/05/Form-and-Refine_Sonder_Stool_Front-3-800x800.webp" alt="Sonder Stool by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sonder Stool</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/aml-stool-green-pine" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-FRAMA-AML-Stool-Pine-Green-Packshot-1-2.png?v=1722850554" alt="AML Stool by Frama" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">AML Stool</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/andrea-branzi/stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/6763AC09FEDB71409F5366B492097EE0.jpg.webp" alt="Stool by Galerie Kreo" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://galvinbrothers.co.uk/products/fluted-stool-320" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0177/8296/products/FlutedStoolOak1.jpg?v=1592759018" alt="Fluted Stool (320) by Galvin Brothers" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Fluted Stool (320)</p></div>
+          <p class="card-brand">Galvin Brothers</p>
+        </div>
+      </a>
+      <a class="card" href="https://garsnas.se/product/hedda-barstol/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://garsnas.se/wp-content/uploads/2023/02/Gärsnäs_-Hedda-barstool_p_01.jpg" alt="Hedda barstol by Gärsnäs" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hedda barstol</p></div>
+          <p class="card-brand">Gärsnäs</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/outdoor-stool/traverse-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20250422070238/img_20250422070238/globalassets/inriver/integration/service/traverse-stool_910x1100_brandmodel2.jpg" alt="Traverse Stool by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Traverse Stool</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.heilig-objects.com/shop/seating/throne-stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.heilig-objects.com/wp-content/uploads/2023/02/heilig-objects-throne-stool-red-1130-300x300.jpg" alt="THRONE Stool by Heilig Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">THRONE Stool</p></div>
+          <p class="card-brand">Heilig Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.ligne-roset.com/en/p/chairs-carver-chairs-and-stools/low-stool-ilot-457" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.ligne-roset.com/media/ligne_roset_ww/010w0_c.jpg" alt="Ilot Low stool by Ligne Roset" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ilot Low stool</p></div>
+          <p class="card-brand">Ligne Roset</p>
+        </div>
+      </a>
+      <a class="card" href="https://mabeofurniture.com/product/kika-stool-patricia-urquiola-2009/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://mabeofurniture.com/wp-content/uploads/2024/09/Kika-Stool-Patricia-Urquiola-2009-1-683x824-1-600x724.png" alt="Kika Stool by Mabeo Furniture" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Kika Stool</p></div>
+          <p class="card-brand">Mabeo Furniture</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.magisdesign.com/product/bureaurama/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.magisdesign.com/wp-content/uploads/2018/04/Magis_bureaurama_stool_product_side_SD2770_black_01.png" alt="Bureaurama by Magis" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bureaurama</p></div>
+          <p class="card-brand">Magis</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.maruni.com/en/product/lw_bar_stool_high_mesh_seat/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_bar_stool_high_mesh_seat/Product/maple_C0.jpg" alt="BAR STOOL High (mesh seat) by Maruni" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">BAR STOOL High (mesh seat)</p></div>
+          <p class="card-brand">Maruni</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.massproductions.se/products/harry" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Harry_Red_Lacquered_Oak_01.png?v=1756719608" alt="Harry by Mass Productions" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Harry</p></div>
+          <p class="card-brand">Mass Productions</p>
+        </div>
+      </a>
+      <a class="card" href="https://materdesign.com/products/low-stool-matt-oak-w-kvadrat-clay-0012-47-cm-by-space-copenhagen" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0260/0981/files/Mater_01333_LowStool_MattOak_KvadratClay_0012_VH01393.jpg?v=1789647296" alt="Low Stool | w. Kvadrat Clay 0012 | 47 cm | by Space Copenhagen by Mater" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Low Stool | w. Kvadrat Clay 0012 | 47 cm | by Space Copenhagen</p></div>
+          <p class="card-brand">Mater</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.miniforms.com/en/products/3_stools/245_mariolina-stool/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.miniforms.com/images/foto/prodotti/copertina/245.png" alt="Mariolina Stool by Miniforms" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Mariolina Stool</p></div>
+          <p class="card-brand">Miniforms</p>
+        </div>
+      </a>
+      <a class="card" href="https://newworks.dk/en/product/atlas-stool-round" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.datocms-assets.com/49896/1779883783-new-works_website_images-atlas4.png?h=800" alt="Atlas Stool Round by New Works DK" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Atlas Stool Round</p></div>
+          <p class="card-brand">New Works DK</p>
+        </div>
+      </a>
+      <a class="card" href="https://pietheineek.nl/product/buizen-kruk" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://pietheineek.nl/wp-content/uploads/2019/09/wit-1-2-300x300.jpg" alt="buizen kruk by Piet Hein Eek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">buizen kruk</p></div>
+          <p class="card-brand">Piet Hein Eek</p>
+        </div>
+      </a>
+      <a class="card" href="https://pinchdesign.com/products/avery-counter-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_Avery_bar_stool_23_3477_LR_4b8bda4b-8fb3-4377-a345-0e88d9458c0e.jpg?v=1763054320" alt="Avery counter stool by Pinch" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Avery counter stool</p></div>
+          <p class="card-brand">Pinch</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.portaromana.com/products/stanley_round_stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/CSB14-ORU-HERO_daf521ec-9510-4057-a735-af6517db7a37.jpg?v=1726160330" alt="Stanley Round Stool by Porta Romana" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stanley Round Stool</p></div>
+          <p class="card-brand">Porta Romana</p>
+        </div>
+      </a>
+      <a class="card" href="https://rihouse.shop/product/taburete-be-wood/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://rihouse.shop/wp-content/uploads/furniture_stools_dynamobel_francesc_rife_be_wood_8-2-600x600.jpg" alt="TABURETE BE WOOD by Rihouse" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">TABURETE BE WOOD</p></div>
+          <p class="card-brand">Rihouse</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.seletti.it/products/high-stool-drill" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0799/5932/7067/files/Seletti-Toiletpaper-furniture-padded-high-stool-1612Z6A8274.jpg?v=1728429189" alt="High Stool Drill by Seletti" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">High Stool Drill</p></div>
+          <p class="card-brand">Seletti</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bar-stool-aluminium-black-august" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5021018B_01-jpg.jpg?v=1764730366" alt="Bar stool aluminium black August by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bar stool aluminium black August</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://sibast-furniture.com/product/primum-bar-stool-low-black-base-leather-congac-zenso/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://sibast-furniture.com/wp-content/uploads/Primum-bar-stool-zenso-2-223-black-base-fixed-low-400x400.png" alt="Primum Bar Stool Low base by Sibast" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Primum Bar Stool Low base</p></div>
+          <p class="card-brand">Sibast</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tiptoe.fr/products/tabouret-lou-edition-core" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/LouStool_small_INOX-WEB.jpg?v=1777058413" alt="Tabouret LOU by Tiptoe" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret LOU</p></div>
+          <p class="card-brand">Tiptoe</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.tolix.com/products/tabouret-hpd65-interieur-noir-fonce" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0820/6680/0956/files/TABOURETHPD65_NOIRFONCE_VUEOBLIQUE_1.jpg?v=1772396464" alt="Tabouret HPD65 by Tolix" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tabouret HPD65</p></div>
+          <p class="card-brand">Tolix</p>
+        </div>
+      </a>
+      <a class="card" href="https://vaarnii.com/products/001-stool-black" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0652/8860/1652/files/Frame_529.jpg?v=1759773918" alt="001 Stool by Vaarnii" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">001 Stool</p></div>
+          <p class="card-brand">Vaarnii</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.valerie-objects.com/products/bar-stool-m-ivory" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0788/1873/8455/files/Ecom_V9025201-004_01.jpg?v=1753788103" alt="bar stool m ivory by Valerie Objects" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">bar stool m ivory</p></div>
+          <p class="card-brand">Valerie Objects</p>
+        </div>
+      </a>
+      <a class="card" href="https://wendelbo.com/products/define-sofa-mod-6-bosa-col-04" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0871/2106/8297/files/Define_sofa_modul6_Bosa04_2.jpg?v=1742551859" alt="Define Sofa - Mod. 6 by Wendelbo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Define Sofa - Mod. 6</p></div>
+          <p class="card-brand">Wendelbo</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.andtradition.com/products/ville-av47" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://wp.andtradition.com/wp-content/uploads/2024/11/ATD_Retail_2025_Ville-AV47_02-600x800.jpg" alt="Ville AV47 by &amp;Tradition" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Ville AV47</p></div>
+          <p class="card-brand">&amp;Tradition</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.anothercountry.com/contemporary-craft-products/hardy-bar-stool-black/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.anothercountry.com/wp-content/uploads/Hardy-Bar-Stool-Black-1024x1024.jpg" alt="Hardy Bar Stool by Another Country" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Hardy Bar Stool</p></div>
+          <p class="card-brand">Another Country</p>
+        </div>
+      </a>
+      <a class="card" href="https://shop.artek.fi/products/2004-stool-y61" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0549/4410/4704/files/artek-stool-y61-artek-2nd-cycle.jpg?v=1781683474" alt="#2004 Stool Y61 by Artek" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">#2004 Stool Y61</p></div>
+          <p class="card-brand">Artek</p>
+        </div>
+      </a>
+      <a class="card" href="https://delaespada.com/products/441-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/StoolbyStudioilseinwhiteoiledoakweb.jpg?v=1600420104" alt="STOOL by De La Espada" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">STOOL</p></div>
+          <p class="card-brand">De La Espada</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.designbythem.com/products/potato-counter-sled-chair-upholstered" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0103/2042/files/POT-COU-BLACK-CHAIR-AUTUMN-GREEN-971--32-T.jpg?v=1765495191" alt="Potato Counter Chair by Designbythem" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Potato Counter Chair</p></div>
+          <p class="card-brand">Designbythem</p>
+        </div>
+      </a>
+      <a class="card" href="https://fermliving.com/products/root-stool-black-stained" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0150/3336/8640/files/1123640_Packshot_10.png?v=1762180471" alt="Root Stool by Ferm Living" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Root Stool</p></div>
+          <p class="card-brand">Ferm Living</p>
+        </div>
+      </a>
+      <a class="card" href="https://formandrefine.com/product/sonder-bar-chair-65-oak-hallingdal/" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://formandrefine.com/wp-content/uploads/2025/05/Form-and-Refine_Sonder_Barchair_65_Hallingdal_Front-1-1-800x800.webp" alt="Sonder Bar Chair 65 by Form &amp; Refine" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sonder Bar Chair 65</p></div>
+          <p class="card-brand">Form &amp; Refine</p>
+        </div>
+      </a>
+      <a class="card" href="https://framacph.com/products/tasca-stool-aluminum" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0593/5126/9564/files/p-2916_30b9d8ed14-frama-tasca-stool-packshot-3-original.png?v=1722848837" alt="Tasca Stool | Aluminum by Frama" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Tasca Stool | Aluminum</p></div>
+          <p class="card-brand">Frama</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.galeriekreo.com/en/piece/guillaume-bardet/stool-01" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.galeriekreo.com/sync4D/images/pieces/19F6A7724C4AFC4D9B583A888A47DF59.jpg.webp" alt="Stool #01 by Galerie Kreo" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Stool #01</p></div>
+          <p class="card-brand">Galerie Kreo</p>
+        </div>
+      </a>
+      <a class="card" href="https://galvinbrothers.co.uk/products/parlour-chair" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0177/8296/products/ParlourChair1a_d1d95b0e-16e8-40cf-b8ff-53909d3b1f1d.jpg?v=1591527060" alt="Parlour Chair by Galvin Brothers" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Parlour Chair</p></div>
+          <p class="card-brand">Galvin Brothers</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.hay.com/hay/furniture/seating/bar-stool/chisel-30-bar-stool" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://www.hay.com/img_20260629024442/img_20260629024442/globalassets/inriver/integration/service/chisel-30-bar-stool_910x1100_brandmodel.jpg" alt="Chisel 30 Bar Stool by HAY" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Chisel 30 Bar Stool</p></div>
+          <p class="card-brand">HAY</p>
+        </div>
+      </a></div>
+  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/browse/stools-2.html">2</a><a href="/browse/stools-3.html">3</a><a href="/browse/stools-2.html" rel="next">Next &rarr;</a></nav>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+    var utmParams = new URLSearchParams(window.location.search);
+    var UTM = {
+      utm_source: utmParams.get("utm_source"),
+      utm_medium: utmParams.get("utm_medium"),
+      utm_campaign: utmParams.get("utm_campaign"),
+    };
+    var pageBrandEl = document.querySelector(".maker-header .maker-name");
+    var pageBrand = pageBrandEl ? pageBrandEl.textContent.trim() : null;
+
+    function textOf(el) {
+      return el ? el.textContent.trim() : null;
+    }
+
+    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
+      el.addEventListener("click", function () {
+        if (!el.hostname || el.hostname === window.location.hostname) return;
+
+        var brand, productName;
+        if (el.classList.contains("card")) {
+          productName = textOf(el.querySelector(".card-title"));
+          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+        } else if (el.classList.contains("brand-site-link")) {
+          brand = pageBrand;
+          productName = null;
+        } else if (pageBrand) {
+          brand = pageBrand;
+          productName = textOf(el.querySelector(".maker-name"));
+        } else {
+          brand = textOf(el.querySelector(".maker-name"));
+          productName = textOf(el.querySelector(".maker-categories"));
+        }
+
+        var payload = JSON.stringify(Object.assign({
+          event_type: "click",
+          brand: brand,
+          product_name: productName,
+        }, UTM));
+        navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+      });
+    });
+  })();
+</script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

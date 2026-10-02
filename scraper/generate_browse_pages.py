@@ -78,15 +78,71 @@ CARDS_PER_PAGE = 300
 # Each entry's `intent` goes straight to query_engine.filter_products().
 # `plural` is the lowercase noun used in the intro/meta sentence.
 BROWSE_CATEGORIES = [
-    {"slug": "table-lamps", "title": "Table Lamps", "intent": {"category": "table lamp"}},
-    {"slug": "pendant-lamps", "title": "Pendant Lamps", "intent": {"category": "pendant"}},
-    {"slug": "wall-lamps", "title": "Wall Lamps", "intent": {"category": "wall lamp"}},
-    {"slug": "ceiling-lamps", "title": "Ceiling Lamps", "intent": {"category": "ceiling lamp"}},
-    {"slug": "chandeliers", "title": "Chandeliers", "intent": {"category": "chandelier"}},
-    {"slug": "dining-tables", "title": "Dining Tables", "intent": {"category": "dining table"}},
-    {"slug": "coffee-tables", "title": "Coffee Tables", "intent": {"category": "coffee table"}},
-    {"slug": "sofas", "title": "Sofas", "intent": {"category": "sofa"}},
+    # Lighting
+    {"slug": "table-lamps", "title": "Table Lamps", "group": "Lighting", "intent": {"category": "table lamp"}},
+    {"slug": "pendant-lamps", "title": "Pendant Lamps", "group": "Lighting", "intent": {"category": "pendant"}},
+    {"slug": "wall-lamps", "title": "Wall Lamps", "group": "Lighting", "intent": {"category": "wall lamp"}},
+    # Flush and surface mounts are ceiling fixtures (In Common With,
+    # Palefire, Danny Kaplan tag them that way instead of "ceiling lamp").
+    {"slug": "ceiling-lamps", "title": "Ceiling Lamps", "group": "Lighting",
+     "intents": [{"category": "ceiling lamp"}, {"category": "flush mount"}, {"category": "surface mount"}]},
+    {"slug": "chandeliers", "title": "Chandeliers", "group": "Lighting", "intent": {"category": "chandelier"}},
+    # Seating. Footstools, ottomans/poufs and stools are three separate
+    # types by the user's ruling (2026-10-02): a footstool is the
+    # armchair/lounge-chair companion for resting feet, a pouf is
+    # something to sit on, and neither is a stool. Bar Stools is a
+    # subset of Stools, Dining Chairs/Armchairs overlap Chairs - the
+    # hierarchy is intentional, each page answers its own search.
+    {"slug": "sofas", "title": "Sofas", "group": "Seating", "intent": {"category": "sofa"}},
+    {"slug": "chairs", "title": "Chairs", "group": "Seating", "intent": {"category": "chair"}},
+    {"slug": "dining-chairs", "title": "Dining Chairs", "group": "Seating", "intent": {"category": "dining chair"}},
+    {"slug": "armchairs", "title": "Armchairs and Lounge Chairs", "group": "Seating",
+     "intents": [{"category": "armchair"}, {"category": "lounge chair"}],
+     "related": ["footstools"]},
+    {"slug": "stools", "title": "Stools", "group": "Seating", "intent": {"category": "stool"}},
+    {"slug": "bar-stools", "title": "Bar Stools", "group": "Seating", "intent": {"category": "bar stool"}},
+    {"slug": "benches", "title": "Benches", "group": "Seating", "intent": {"category": "bench"}},
+    {"slug": "footstools", "title": "Footstools", "group": "Seating", "intent": {"category": "footstool"},
+     "blurb": "Made for resting your feet - the companion to an armchair or lounge chair.",
+     "related": ["armchairs"]},
+    {"slug": "ottomans-and-poufs", "title": "Ottomans and Poufs", "group": "Seating",
+     "intents": [{"category": "ottoman"}, {"category": "pouf"}], "related": ["footstools"]},
+    # Tables and desks
+    {"slug": "dining-tables", "title": "Dining Tables", "group": "Tables and desks", "intent": {"category": "dining table"}},
+    {"slug": "coffee-tables", "title": "Coffee Tables", "group": "Tables and desks", "intent": {"category": "coffee table"}},
+    {"slug": "side-tables", "title": "Side Tables", "group": "Tables and desks", "intent": {"category": "side table"}},
+    {"slug": "console-tables", "title": "Console Tables", "group": "Tables and desks",
+     "intents": [{"category": "console table"}, {"category": "console"}]},
+    {"slug": "desks", "title": "Desks", "group": "Tables and desks", "intent": {"category": "desk"}},
+    # Storage, beds and mirrors
+    {"slug": "sideboards", "title": "Sideboards", "group": "Storage, beds and mirrors", "intent": {"category": "sideboard"}},
+    {"slug": "cabinets", "title": "Cabinets", "group": "Storage, beds and mirrors", "intent": {"category": "cabinet"}},
+    {"slug": "shelving", "title": "Shelving", "group": "Storage, beds and mirrors", "intent": {"category": "shelving"}},
+    {"slug": "beds", "title": "Beds", "group": "Storage, beds and mirrors", "intent": {"category": "bed"}},
+    {"slug": "mirrors", "title": "Mirrors", "group": "Storage, beds and mirrors", "intent": {"category": "mirror"}},
+    # Objects. Candle holders and candles are distinct types (user
+    # ruling 2026-10-02) - see _normalize_candle_holder in scrape.py.
+    {"slug": "candle-holders", "title": "Candle Holders", "group": "Objects",
+     "intent": {"category": "candle holder"}, "related": ["candles"]},
+    {"slug": "candles", "title": "Candles", "group": "Objects",
+     "intents": [{"category": "candle"}], "related": ["candle-holders"]},
+    {"slug": "glass", "title": "Glass", "group": "Objects", "intent": {"category": "glass"}},
 ]
+GROUP_ORDER = ["Lighting", "Seating", "Tables and desks", "Storage, beds and mirrors", "Objects"]
+CATEGORY_BY_SLUG = {c["slug"]: c for c in BROWSE_CATEGORIES}
+
+
+def _category_products(category):
+    """Union of the category's intents, de-duplicated by product id."""
+    intents = category.get("intents") or [category["intent"]]
+    seen, out = set(), []
+    for intent in intents:
+        for p in qe.filter_products(intent):
+            if p["id"] not in seen:
+                seen.add(p["id"])
+                out.append(p)
+    return out
+
 
 PAGER_CSS = """
   .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
@@ -103,6 +159,7 @@ PAGER_CSS = """
     display: flex; justify-content: space-between; padding: 14px 4px;
     text-decoration: none; color: inherit; font-size: 16px;
   }
+  .browse-group { max-width: 520px; margin: 32px auto 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
   .browse-list a:hover .browse-name { text-decoration: underline; }
   .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
 """
@@ -181,6 +238,14 @@ def _breadcrumb_json(crumbs):
     })
 
 
+def _see_also_html(category):
+    links = [CATEGORY_BY_SLUG[r] for r in category.get("related", []) if r in CATEGORY_BY_SLUG]
+    if not links:
+        return ""
+    anchors = ", ".join(f'<a href="/browse/{c["slug"]}.html">{html.escape(c["title"].lower())}</a>' for c in links)
+    return f" See also: {anchors}."
+
+
 def render_browse_page(category, cards, variant_counts, page, pages, total_products):
     slug, title = category["slug"], category["title"]
     page_url = f"{SITE_URL}/browse/{_page_slug(slug, page)}.html"
@@ -215,7 +280,7 @@ def render_browse_page(category, cards, variant_counts, page, pages, total_produ
 <main>
   <p class="page-tagline"><a href="/browse/">Browse</a></p>
   <h1>{html.escape(title)}</h1>
-  <p class="category-intro">{total_products:,} {html.escape(noun)} from independent makers{f" - page {page} of {pages}" if pages > 1 else ""}. Every result links straight to the maker's own site.</p>
+  <p class="category-intro">{html.escape(category.get("blurb", "") + " " if category.get("blurb") else "")}{total_products:,} {html.escape(noun)} from independent makers{f" - page {page} of {pages}" if pages > 1 else ""}. Every result links straight to the maker's own site.{_see_also_html(category)}</p>
   <div class="grid">{grid}</div>
   {_pager_html(slug, page, pages)}
   <p class="foot-note">
@@ -240,10 +305,13 @@ def render_browse_page(category, cards, variant_counts, page, pages, total_produ
 def render_hub(entries):
     page_url = f"{SITE_URL}/browse/"
     description = "Every product type on Formground, listed in full - from independent makers, each linking straight to the maker's own site."
+    def _li(e):
+        return (f'<li><a href="{e["href"]}"><span class="browse-name">{html.escape(e["title"])}</span>'
+                f'<span class="browse-n">{e["n"]:,}</span></a></li>')
     items = "".join(
-        f'<li><a href="{e["href"]}"><span class="browse-name">{html.escape(e["title"])}</span>'
-        f'<span class="browse-n">{e["n"]:,}</span></a></li>'
-        for e in entries
+        f'<h2 class="browse-group">{html.escape(g)}</h2><ul class="browse-list">'
+        + "".join(_li(e) for e in entries if e["group"] == g) + "</ul>"
+        for g in GROUP_ORDER
     )
     breadcrumb = _breadcrumb_json([("Formground", f"{SITE_URL}/"), ("Browse", page_url)])
     return f"""<!DOCTYPE html>
@@ -261,7 +329,7 @@ def render_hub(entries):
   <p class="page-tagline">Discover design from makers.</p>
   <h1>Browse by type</h1>
   <p class="category-intro">Every piece, listed in full. For a curated selection, see <a href="/edits.html">Edits</a>.</p>
-  <ul class="browse-list">{items}</ul>
+  {items}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
@@ -283,7 +351,7 @@ def generate():
     sitemap_slugs = []
     hub_entries = []
     for category in BROWSE_CATEGORIES:
-        products = qe.filter_products(category["intent"])
+        products = _category_products(category)
         cards, variant_counts = _group_color_variants(products)
         cards = _interleave_by_brand(cards)
         pages = max(1, math.ceil(len(cards) / CARDS_PER_PAGE))
@@ -292,7 +360,7 @@ def generate():
             out = BROWSE_DIR / f"{_page_slug(category['slug'], page)}.html"
             out.write_text(render_browse_page(category, chunk, variant_counts, page, pages, len(products)))
             sitemap_slugs.append(f"browse/{_page_slug(category['slug'], page)}")
-        hub_entries.append({"href": f"/browse/{category['slug']}.html", "title": category["title"], "n": len(products)})
+        hub_entries.append({"href": f"/browse/{category['slug']}.html", "title": category["title"], "n": len(products), "group": category["group"]})
         print(f"browse/{category['slug']}: {len(products)} products -> {len(cards)} cards, {pages} page(s)")
 
     # Floor Lamps predates /browse/ and stays at the site root
@@ -300,7 +368,7 @@ def generate():
     # one complete index of types.
     hub_entries.append({
         "href": "/floor-lamps.html", "title": "Floor Lamps",
-        "n": len(qe.filter_products({"category": "floor lamp"})),
+        "n": len(qe.filter_products({"category": "floor lamp"})), "group": "Lighting",
     })
     hub_entries.sort(key=lambda e: e["title"].lower())
     (BROWSE_DIR / "index.html").write_text(render_hub(hub_entries))

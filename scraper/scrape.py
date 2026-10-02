@@ -2092,7 +2092,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
     ("coupe", "Coupe"), ("grinder", "Mill"), ("bottle opener", "Bottle Opener"),
     ("bottle", "Bottle"),
     ("runner", "Rug"), ("mat", "Rug"), ("hook", "Coat Hook"), ("flush mount", "Flush Mount"),
-    ("flush-mount", "Flush Mount"),
+    ("flush-mount", "Flush Mount"), ("surface mount", "Flush Mount"),
     ("cushion", "Cushion"), ("day bed", "Daybed"), ("bergere", "Armchair"),
     ("bookshelves", "Shelving"), ("bookshelf", "Shelving"), ("shelves", "Shelving"),
     ("bookcase", "Shelving"), ("catchall", "Catchall"),
@@ -2659,8 +2659,19 @@ MANUAL_IMAGE_OVERRIDES = {
 }
 
 
+# A drinking glass names itself first ("Glass 20cl transparent Grace"), by
+# kind ("White wine glass 25cl"), by volume ("Universal glass low 25cl"),
+# or as a plural set ("Host Water Glasses").
+def _is_drinking_glass_name(text):
+    return bool(
+        text.startswith("glass") or re.search(r"\d\s?cl\b", text) or "glasses" in text or "coupe" in text
+        or re.search(r"\b(wine|water|champagne|beer|whisky|whiskey|cocktail|shot) glass", text)
+    )
+
+
 def _infer_category_from_english_keywords(product_name):
     text = product_name.lower()
+    glass_fallback = None
     for phrase, category in ENGLISH_OBJECT_TYPE_KEYWORDS:
         if phrase in ("light", "uplight") and (
             "waste light" in text or "kilt light" in text or "light & easy" in text
@@ -2693,8 +2704,15 @@ def _infer_category_from_english_keywords(product_name):
         # "boxs") get their own explicit keyword entry instead of a
         # more complex pluralizer.
         if re.search(rf"\b{re.escape(phrase)}s?\b", text):
+            if phrase == "glass" and not _is_drinking_glass_name(text):
+                # "glass" is a material far more often than a type ("Glass
+                # Puritan Pendant", "Pao Glass Pendant", "Luna Lamp (glass)",
+                # "Glass Candle"): a later type word wins, "Glass" is only
+                # the fallback when nothing else matches.
+                glass_fallback = category
+                continue
             return category
-    return None
+    return glass_fallback
 
 
 # Rubn is a pure lighting brand whose product names encode mount type
@@ -3106,6 +3124,19 @@ def _normalize_footstool(product_name, category):
         return category
     kept = [t for t in tags if t.lower() not in FOOTSTOOL_DROP_TAGS]
     return ", ".join(["Footstool"] + kept)
+
+
+def _fix_glass_material_tag(product_name, category):
+    """A category of exactly "Glass" on a product whose name is not a
+    drinking glass is the material word mis-read as a type (Sekt's and
+    HAY's glass pendants, In Common With's Murano fixtures, Seletti's
+    "Glass Candle"): retype from the name when it says something else."""
+    if (category or "").strip().lower() != "glass":
+        return category
+    lower = product_name.lower()
+    if _is_drinking_glass_name(lower):
+        return category
+    return _infer_category_from_english_keywords(product_name) or category
 
 
 def _backfill_foreign_category(product_name, category):
@@ -8957,6 +8988,7 @@ def run(brand_name=None):
                 if not override:
                     product["category"] = _normalize_candle_holder(product["product_name"], product["category"])
                     product["category"] = _normalize_footstool(product["product_name"], product["category"])
+                    product["category"] = _fix_glass_material_tag(product["product_name"], product["category"])
                     if not (product["category"] or "").strip():
                         product["category"] = _infer_category_for_blank(product["product_name"], brand["name"]) or ""
                     product["category"] = _backfill_foreign_category(product["product_name"], product["category"])
