@@ -38,7 +38,7 @@ from pathlib import Path
 
 import requests
 
-from scrape import BLOCK_STATUS_CODES, HEADERS, setup_database
+from scrape import BLOCK_STATUS_CODES, HEADERS, extract_page_offers, setup_database
 
 OUTPUT_PATH = Path(__file__).parent / "brand_currency.json"
 MAX_SAMPLES_PER_BRAND = 4
@@ -47,73 +47,6 @@ MAX_CONCURRENT_BRANDS = 8
 REQUEST_TIMEOUT = 15
 DELAY_BETWEEN_REQUESTS = 1.0
 PRICE_TOLERANCE = 0.01             # page price within 1% of the stored price
-
-JSON_LD_RE = re.compile(r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', re.S | re.I)
-META_RE = re.compile(r'<meta[^>]+(?:property|name)=["\']([^"\']+)["\'][^>]+content=["\']([^"\']*)["\']', re.I)
-META_RE_REVERSED = re.compile(r'<meta[^>]+content=["\']([^"\']*)["\'][^>]+(?:property|name)=["\']([^"\']+)["\']', re.I)
-CURRENCY_CODE_RE = re.compile(r"^[A-Z]{3}$")
-
-
-def _parse_price(raw):
-    """'1.234,50' / '1,234.50' / '249' / 249 -> float, or None."""
-    if raw is None or isinstance(raw, bool):
-        return None
-    if isinstance(raw, (int, float)):
-        return float(raw)
-    text = re.sub(r"[^\d.,]", "", str(raw))
-    if not text:
-        return None
-    if "," in text and "." in text:
-        decimal = "," if text.rfind(",") > text.rfind(".") else "."
-        text = text.replace("." if decimal == "," else ",", "").replace(decimal, ".")
-    elif "," in text:
-        head, _, tail = text.rpartition(",")
-        text = f"{head}.{tail}" if len(tail) in (1, 2) else text.replace(",", "")
-    try:
-        return float(text)
-    except ValueError:
-        return None
-
-
-def _walk_offers(node, found):
-    """Collect (currency, [prices]) from any dict carrying priceCurrency."""
-    if isinstance(node, list):
-        for item in node:
-            _walk_offers(item, found)
-    elif isinstance(node, dict):
-        currency = node.get("priceCurrency")
-        if isinstance(currency, str) and CURRENCY_CODE_RE.match(currency.strip().upper()):
-            prices = [_parse_price(node.get(k)) for k in ("price", "lowPrice", "highPrice")]
-            prices = [p for p in prices if p is not None]
-            if prices:
-                found.append((currency.strip().upper(), prices))
-        for value in node.values():
-            if isinstance(value, (dict, list)):
-                _walk_offers(value, found)
-
-
-def extract_page_offers(page_html):
-    """-> list of (currency, [prices]) the page itself declares."""
-    found = []
-    for block in JSON_LD_RE.findall(page_html):
-        try:
-            _walk_offers(json.loads(block.strip()), found)
-        except ValueError:
-            continue
-    metas = {}
-    for name, content in META_RE.findall(page_html):
-        metas.setdefault(name.lower(), content)
-    for content, name in META_RE_REVERSED.findall(page_html):
-        metas.setdefault(name.lower(), content)
-    for cur_key, price_key in (
-        ("product:price:currency", "product:price:amount"),
-        ("og:price:currency", "og:price:amount"),
-    ):
-        currency, price = metas.get(cur_key), _parse_price(metas.get(price_key))
-        if currency and CURRENCY_CODE_RE.match(currency.strip().upper()) and price is not None:
-            found.append((currency.strip().upper(), [price]))
-    return found
-
 
 def _matches(stored_price, page_prices):
     return any(abs(p - stored_price) <= max(0.01, PRICE_TOLERANCE * stored_price) for p in page_prices)

@@ -8816,6 +8816,168 @@ EXTRACTORS = {
 }
 
 
+# ---------------------------------------------------------------------------
+# PRICE FROM THE PRODUCT PAGE
+# Some extractors read only listing pages, which carry no price (measured
+# 2026-10-02: ten brands showed a price on every product page that we never
+# stored). One shared step instead of ten bespoke edits: for a flagged brand,
+# fetch each priceless product's own page once and read the price from
+# schema.org Offer data (price AND currency declared together) or, for three
+# sites with no structured data, a price that appears at least twice in the
+# visible text. A failed fetch keeps the previously stored price (see run());
+# a block status ends the step. Honest absence stays absence - nothing is
+# guessed, and a brand not listed here is untouched.
+# ---------------------------------------------------------------------------
+JSON_LD_BLOCK_RE = re.compile(r'<script[^>]+type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', re.S | re.I)
+META_PROP_RE = re.compile(r'<meta[^>]+(?:property|name)=["\']([^"\']+)["\'][^>]+content=["\']([^"\']*)["\']', re.I)
+META_PROP_REVERSED_RE = re.compile(r'<meta[^>]+content=["\']([^"\']*)["\'][^>]+(?:property|name)=["\']([^"\']+)["\']', re.I)
+CURRENCY_CODE_RE = re.compile(r"^[A-Z]{3}$")
+
+
+def _parse_price(raw):
+    """'1.234,50' / '1,234.50' / '249' / 249 -> float, or None."""
+    if raw is None or isinstance(raw, bool):
+        return None
+    if isinstance(raw, (int, float)):
+        return float(raw)
+    text = re.sub(r"[^\d.,]", "", str(raw))
+    if not text:
+        return None
+    if "," in text and "." in text:
+        decimal = "," if text.rfind(",") > text.rfind(".") else "."
+        text = text.replace("." if decimal == "," else ",", "").replace(decimal, ".")
+    elif "," in text:
+        head, _, tail = text.rpartition(",")
+        text = f"{head}.{tail}" if len(tail) in (1, 2) else text.replace(",", "")
+    try:
+        return float(text)
+    except ValueError:
+        return None
+
+
+def _walk_offers(node, found):
+    """Collect (currency, [prices]) from any dict carrying priceCurrency."""
+    if isinstance(node, list):
+        for item in node:
+            _walk_offers(item, found)
+    elif isinstance(node, dict):
+        currency = node.get("priceCurrency")
+        if isinstance(currency, str) and CURRENCY_CODE_RE.match(currency.strip().upper()):
+            prices = [_parse_price(node.get(k)) for k in ("price", "lowPrice", "highPrice")]
+            prices = [p for p in prices if p is not None]
+            if prices:
+                found.append((currency.strip().upper(), prices))
+        for value in node.values():
+            if isinstance(value, (dict, list)):
+                _walk_offers(value, found)
+
+
+def extract_page_offers(page_html):
+    """-> list of (currency, [prices]) the page itself declares, from
+    JSON-LD Offers and the og/product price meta tags."""
+    found = []
+    for block in JSON_LD_BLOCK_RE.findall(page_html):
+        try:
+            _walk_offers(json.loads(block.strip()), found)
+        except ValueError:
+            continue
+    metas = {}
+    for name, content in META_PROP_RE.findall(page_html):
+        metas.setdefault(name.lower(), content)
+    for content, name in META_PROP_REVERSED_RE.findall(page_html):
+        metas.setdefault(name.lower(), content)
+    for cur_key, price_key in (
+        ("product:price:currency", "product:price:amount"),
+        ("og:price:currency", "og:price:amount"),
+    ):
+        currency, price = metas.get(cur_key), _parse_price(metas.get(price_key))
+        if currency and CURRENCY_CODE_RE.match(currency.strip().upper()) and price is not None:
+            found.append((currency.strip().upper(), [price]))
+    return found
+
+
+# Brands whose product pages declare price+currency in structured data.
+PRICE_FROM_PAGE_JSONLD = {
+    "Moustache", "Gubi", "Yird Ceramics", "Joe Armitage", "New Works DK",
+    "H. Bigeleisen", "Tim Teven Studio",
+}
+# Brands with a visible price only: (regex with ONE price group, currency).
+# Accepted only when the same value appears 2+ times on the page (the real
+# price repeats in the buy box and the header/meta; stray accessory prices
+# and "$0.00" placeholders do not).
+PRICE_FROM_PAGE_VISIBLE = {
+    "Workstead": (re.compile(r"\$\s?(\d[\d,]*\.\d{2})"), "USD"),
+    "Wästberg": (re.compile(r"(\d[\d,.]*\d)\s*SEK"), "SEK"),
+    "Muhly": (re.compile(r"\$\s?(\d[\d,]*(?:\.\d{2})?)"), "USD"),
+}
+PRICE_PAGE_DELAY = 0.6
+
+
+def _price_from_page_html(brand_name, page_html):
+    """-> (price, currency) or (None, None)."""
+    if brand_name in PRICE_FROM_PAGE_JSONLD:
+        for currency, prices in extract_page_offers(page_html):
+            if prices and prices[0] > 0:
+                return prices[0], currency
+        return None, None
+    pattern, currency = PRICE_FROM_PAGE_VISIBLE[brand_name]
+    text = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", page_html, flags=re.S | re.I)
+    counts, order = {}, []
+    for raw in pattern.findall(text):
+        value = _parse_price(raw)
+        if value and value > 0:
+            if value not in counts:
+                order.append(value)
+            counts[value] = counts.get(value, 0) + 1
+    for value in order:
+        if counts[value] >= 2:
+            return value, currency
+    return None, None
+
+
+def _enrich_prices_from_pages(brand, products, deadline):
+    """Fill price/currency on a flagged brand's products from their own
+    pages. Runs inside the brand's worker thread; one request in flight at
+    a time, PRICE_PAGE_DELAY apart, stopping at `deadline` (a monotonic
+    time) or on a block status."""
+    name = brand["name"]
+    if name not in PRICE_FROM_PAGE_JSONLD and name not in PRICE_FROM_PAGE_VISIBLE:
+        return
+    todo = [p for p in products if not p.get("price") and p.get("product_url")]
+    # Slow sites (Workstead, Gubi, Moustache) cannot be fully priced inside
+    # one run's time budget. Put products with NO stored price first so
+    # successive runs finish the job, instead of re-fetching the same early
+    # pages every week (run() carries the stored price forward for the rest).
+    try:
+        with sqlite3.connect(f"file:{DB_PATH}?mode=ro", uri=True) as ro:
+            have = {u for (u,) in ro.execute(
+                "SELECT product_url FROM products WHERE brand = ? AND price > 0", (name,))}
+        todo.sort(key=lambda p: p["product_url"] in have)
+    except sqlite3.Error:
+        pass
+    filled = 0
+    for i, product in enumerate(todo):
+        if time.monotonic() > deadline:
+            print(f"  Price step for {name}: hit the time budget after {i} of {len(todo)} pages.")
+            break
+        if i:
+            time.sleep(PRICE_PAGE_DELAY)
+        try:
+            resp = requests.get(product["product_url"], headers=HEADERS, timeout=15)
+        except requests.RequestException:
+            continue
+        if resp.status_code in BLOCK_STATUS_CODES:
+            print(f"  Price step for {name}: blocked ({resp.status_code}) - stopping.")
+            break
+        if resp.status_code != 200:
+            continue
+        price, currency = _price_from_page_html(name, resp.text)
+        if price:
+            product["price"], product["currency"] = price, currency
+            filled += 1
+    print(f"  Price step for {name}: {filled} of {len(todo)} products priced from their pages.")
+
+
 def _scrape_one_brand(brand, extractor):
     """
     Runs in a worker thread (see run()) - touches no shared state, only
@@ -8830,6 +8992,7 @@ def _scrape_one_brand(brand, extractor):
     brand_start = time.monotonic()
     try:
         products = extractor(brand)
+        _enrich_prices_from_pages(brand, products, brand_start + MAX_SECONDS_PER_BRAND - 20)
     except Exception as e:
         return brand, None, round(time.monotonic() - brand_start, 1), str(e)
     return brand, products, round(time.monotonic() - brand_start, 1), None
@@ -8962,6 +9125,12 @@ def run(brand_name=None):
                 "SELECT product_url, first_seen FROM products WHERE brand = ?",
                 (brand["name"],),
             ).fetchall())
+            old_prices = {
+                url: (price, currency) for url, price, currency in conn.execute(
+                    "SELECT product_url, price, currency FROM products WHERE brand = ? AND price > 0",
+                    (brand["name"],),
+                ).fetchall()
+            } if (brand["name"] in PRICE_FROM_PAGE_JSONLD or brand["name"] in PRICE_FROM_PAGE_VISIBLE) else {}
             today = datetime.date.today().isoformat()
 
             # Replace this brand's rows wholesale rather than appending -
@@ -9012,6 +9181,11 @@ def run(brand_name=None):
                     if not (product["category"] or "").strip():
                         product["category"] = _infer_category_for_blank(product["product_name"], brand["name"]) or ""
                     product["category"] = _backfill_foreign_category(product["product_name"], product["category"])
+                if not product.get("price") and url in old_prices:
+                    # The page-price step (a failed fetch, a time budget) did
+                    # not refresh this one: keep what we had rather than
+                    # drop a real price over a transient miss.
+                    product["price"], product["currency"] = old_prices[url]
                 if product.get("price") and not product.get("currency"):
                     product["currency"] = brand_currency.get(brand["name"])
                 if _is_out_of_scope_product(product["product_name"], product["category"], brand["name"], sibling_names_lower):

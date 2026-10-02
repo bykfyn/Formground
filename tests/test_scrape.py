@@ -348,5 +348,30 @@ class FirstSeenCarryForwardTests(ScrapeRunDeleteThenInsertTests):
         self.assertEqual(self._first_seen_for("Alpha", "Bench"), datetime.date.today().isoformat())
 
 
+class PriceFromPageTests(unittest.TestCase):
+    """The shared page-price step (scrape._price_from_page_html)."""
+
+    def test_jsonld_offer_gives_price_and_currency(self):
+        page = '<script type="application/ld+json">{"@type":"Product","offers":{"@type":"Offer","price":"899.00","priceCurrency":"EUR"}}</script>'
+        self.assertEqual(scrape._price_from_page_html("Gubi", page), (899.0, "EUR"))
+
+    def test_jsonld_without_currency_gives_nothing(self):
+        page = '<script type="application/ld+json">{"offers":{"price":"899.00"}}</script>'
+        self.assertEqual(scrape._price_from_page_html("Gubi", page), (None, None))
+
+    def test_visible_price_needs_two_occurrences(self):
+        self.assertEqual(scrape._price_from_page_html("Muhly", "<p>$295</p>"), (None, None))
+        self.assertEqual(scrape._price_from_page_html("Muhly", "<p>$295</p><b>$295.00</b>"), (295.0, "USD"))
+
+    def test_visible_zero_placeholder_ignored(self):
+        page = "<p>$4,925.00</p><p>$4,925.00</p><p>$0.00</p><p>$0.00</p>"
+        self.assertEqual(scrape._price_from_page_html("Workstead", page), (4925.0, "USD"))
+
+    def test_price_formats(self):
+        self.assertEqual(scrape._parse_price("1.234,50"), 1234.5)
+        self.assertEqual(scrape._parse_price("1,234.50"), 1234.5)
+        self.assertEqual(scrape._parse_price("DKK\xa03,995"), 3995.0)
+
+
 if __name__ == "__main__":
     unittest.main()
