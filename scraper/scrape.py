@@ -2994,6 +2994,13 @@ FOREIGN_TYPE_WORDS = (
     ("mesa de centro", "Coffee Table"), ("table basse", "Coffee Table"),
     ("mesa de luz", "Bedside Table"),
     ("applique murale", "Wall Lamp"), ("lampe à poser", "Table Lamp"),
+    # Italian lighting phrases (2026-10-03, Multiforme: "Lampade Da Tavolo" was read as
+    # "Table" via 'tavolo')
+    ("lampada da tavolo", "Table Lamp"), ("lampade da tavolo", "Table Lamp"),
+    ("lampada da terra", "Floor Lamp"), ("lampade da terra", "Floor Lamp"),
+    ("lampada da parete", "Wall Lamp"), ("lampada da soffitto", "Ceiling Lamp"),
+    ("lampada a sospensione", "Pendant"), ("lampade a sospensione", "Pendant"),
+    ("lampada da comodino", "Table Lamp"), ("lampada flambeau", "Table Lamp"),
     # Swedish / Danish / Norwegian
     ("bordslampa", "Table Lamp"), ("bordlampe", "Table Lamp"), ("golvlampa", "Floor Lamp"),
     ("gulvlampe", "Floor Lamp"), ("taklampa", "Ceiling Lamp"), ("loftlampe", "Ceiling Lamp"),
@@ -3020,7 +3027,11 @@ FOREIGN_TYPE_WORDS = (
     ("tavolini", "Side Table"), ("tavolino", "Side Table"), ("tavoli", "Table"), ("tavolo", "Table"),
     ("sedie", "Chair"), ("sedia", "Chair"), ("poltrone", "Armchair"), ("poltrona", "Armchair"),
     ("divani", "Sofa"), ("divano", "Sofa"), ("credenze", "Sideboard"), ("credenza", "Sideboard"),
-    ("sgabello", "Stool"), ("panca", "Bench"), ("lampada", "Lamp"), ("specchio", "Mirror"),
+    ("sgabello", "Stool"), ("panca", "Bench"), ("specchio", "Mirror"),
+    ("lampadario", "Chandelier"), ("lampadari", "Chandelier"), ("plafoniera", "Ceiling Lamp"),
+    ("plafoniere", "Ceiling Lamp"), ("appliques", "Wall Lamp"), ("sospensione", "Pendant"),
+    ("sospensioni", "Pendant"), ("piantana", "Floor Lamp"), ("piantane", "Floor Lamp"),
+    ("lampada", "Lamp"),
     ("tappeto", "Rug"), ("letto", "Bed"), ("libreria", "Shelving"),
     # German
     ("kissen", "Cushion"), ("tisch", "Table"), ("stuhl", "Chair"), ("sessel", "Armchair"),
@@ -4434,6 +4445,10 @@ def extract_woocommerce(brand):
     for base_name, group in grouped.items():
         first = group[0]
         price, compare_at_price, currency = _woocommerce_price_info(group)
+        if brand.get("ignore_api_price"):
+            # the shop software stores a placeholder (Multiforme: one EUR 10,000 lamp on a site
+            # that shows no prices at all) - never publish it
+            price = compare_at_price = currency = None
         # Union of categories across the whole group, not just the first
         # item - covers the same inconsistent-tagging case above. A maker
         # who sells through a shared association shop (see
@@ -9058,6 +9073,11 @@ EXTRACTORS = {
     "Pode": extract_pode,
     "Cozmo": extract_shopify,
     "Woud": extract_shopify,
+    # 2026-10-03: leads from Dusty NYC's maker credits (showroom used as a lead
+    # list only), triaged clean - own Shopify / WooCommerce APIs.
+    "Nick Pourfard": extract_shopify,
+    "Salma": extract_woocommerce,
+    "Multiforme": extract_woocommerce,
     "BD Barcelona": extract_bd_barcelona,
     "B&B Italia": extract_bb_italia,
     "Gervasoni": extract_gervasoni,
