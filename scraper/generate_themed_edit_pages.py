@@ -33,6 +33,7 @@ appends to it):
 """
 
 import html
+import re
 import sqlite3
 import sys
 from pathlib import Path
@@ -44,6 +45,7 @@ BACKEND_DIR = SCRAPER_DIR.parent / "backend"
 
 sys.path.insert(0, str(BACKEND_DIR))
 import query_engine as qe  # noqa: E402
+import image_fit  # noqa: E402
 
 from generate_brand_pages import (  # noqa: E402
     CARD_CLICK_TRACKING_JS,
@@ -385,9 +387,12 @@ def _carousel_frame_html(p, index):
     url = p["brand_url"] if p["link_dead"] else p["product_url"]
     alt_text = html.escape(f'{p["product_name"]} by {p["brand"]}')
     active = " active" if index == 0 else ""
+    fit_class, fit_style = image_fit.fit_for_banner(p["image_url"])
+    style = f' style="{fit_style}"' if fit_style else ""
+    img_class = f' class="{fit_class}"' if fit_class else ""
     return f"""
-        <a class="banner-slide-frame{active}" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
-          <img src="{html.escape(p["image_url"])}" alt="{alt_text}">
+        <a class="banner-slide-frame{active}" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer"{style}>
+          <img{img_class} src="{html.escape(p["image_url"])}" alt="{alt_text}">
         </a>"""
 
 
@@ -573,17 +578,50 @@ def edit_totals(theme, cards_to_render):
 # dropped: "not worth the hassle this is causing").
 
 
-def _feature_card_html(p, variant_count=None):
+# Photos that the square card crop damages (2026-10-03, user: "see if we can
+# get the lamp to fit better in the space"): shown whole instead of cropped.
+# Keyed by product_url. Kantarell Pendant O60 is a 3:2 shot whose disc shade
+# spans 78% of the width, so a centred square crop cut both rims.
+EDIT_IMAGE_FIT_CONTAIN = {"https://newworks.dk/en/product/kantarell-pendant-lamp-o60"}
+
+_TRAILING_SIZE_RE = re.compile(r"\s*[\u00d8\u2300]\s?\d+(?:[.,]\d+)?\s*(?:cm|mm)?\s*$", re.I)
+
+
+def _display_names(cards):
+    """{id(card): name} for an edit grid. A trailing diameter ("Kantarell
+    Pendant Lamp O60") is dropped from the DISPLAYED name - on an editorial
+    card the size is not the identity, the buyer picks it on the maker's own
+    page - but only when no other card in the same grid would then carry the
+    same name (New Works lists Margin O50/O70/O90 as three products; stripping
+    all three would show three identical cards). Search and the database keep
+    the full names."""
+    # spec-style names ("... | H 71.6 cm | O 100 cm") are left whole: dropping only the
+    # diameter would leave a dangling, half-stated spec line
+    stripped = {id(p): p["product_name"] if "|" in p["product_name"]
+                else (_TRAILING_SIZE_RE.sub("", p["product_name"]).strip() or p["product_name"]) for p in cards}
+    counts = {}
+    for p in cards:
+        counts[stripped[id(p)].lower()] = counts.get(stripped[id(p)].lower(), 0) + 1
+    return {id(p): (stripped[id(p)] if counts[stripped[id(p)].lower()] == 1 else p["product_name"]) for p in cards}
+
+
+def _feature_card_html(p, variant_count=None, name=None):
     url = p["brand_url"] if p["link_dead"] else p["product_url"]
-    alt_text = html.escape(f'{p["product_name"]} by {p["brand"]}')
+    name = name or p["product_name"]
+    alt_text = html.escape(f'{name} by {p["brand"]}')
     badge = (
         f'<span class="variant-badge">{variant_count} finishes</span>'
         if variant_count and variant_count > 1 else ""
     )
+    fit, box_style = "", ""
+    if p["product_url"] in EDIT_IMAGE_FIT_CONTAIN:
+        css, box_bg = image_fit.fit_for_banner(p["image_url"], force=True)
+        fit = f' class="{css}"' if css else ""
+        box_style = f' style="{box_bg}"' if box_bg else ""
     return f"""
       <a class="edit-feature-card" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"><img src="{html.escape(p["image_url"])}" alt="{alt_text}" loading="lazy">{badge}</div>
-        <span class="edit-feature-name">{html.escape(p["product_name"])}</span>
+        <div class="edit-feature-image"{box_style}><img{fit} src="{html.escape(p["image_url"])}" alt="{alt_text}" loading="lazy">{badge}</div>
+        <span class="edit-feature-name">{html.escape(name)}</span>
         <span class="edit-feature-brand">{html.escape(p["brand"])}</span>
       </a>"""
 
@@ -592,7 +630,8 @@ def _render_feature_grid(cards, variant_counts=None):
     if not cards:
         return ""
     variant_counts = variant_counts or {}
-    items = "".join(_feature_card_html(p, variant_counts.get(id(p))) for p in cards)
+    names = _display_names(cards)
+    items = "".join(_feature_card_html(p, variant_counts.get(id(p)), names[id(p)]) for p in cards)
     return f'<div class="edit-feature-grid">{items}\n    </div>'
 
 
@@ -651,6 +690,7 @@ EDIT_PAGE_CSS = """
   }
   .edit-feature-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
   .edit-feature-card:hover .edit-feature-image img { transform: scale(1.02); }
+  .edit-feature-image img.fit-contain { object-fit: contain; }
   .edit-feature-name { display: block; font-size: 13px; font-weight: 500; margin-bottom: 2px; }
   .edit-feature-brand { display: block; font-size: 12px; color: var(--text-muted); }
 
@@ -696,6 +736,7 @@ EDIT_PAGE_CSS = """
   .banner-slide-frame.active { display: block; }
   .banner-slide-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
   .banner-slide-frame:hover img { transform: scale(1.02); }
+  .banner-slide-frame img.fit-contain { object-fit: contain; }
   .banner-dots { position: absolute; bottom: 18px; right: 24px; z-index: 2; display: flex; gap: 6px; }
   .banner-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; padding: 0; }
   .banner-dot.active { background: #fff; }
