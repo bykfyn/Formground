@@ -97,6 +97,40 @@ BATCH = [
     {"name": "STRÅ arkitekter", "site": "https://www.straaa.com", "city": "Oslo", "country": "Norway",
      "sitemap_url": "https://www.straaa.com/pages-sitemap.xml", "include": r"^/[^/]+$", "exclude": NAV_SKIP,
      "listing_url": "https://www.straaa.com/work-houses", "link_prefix": None},
+    # --- 2026-10-03 England + France (Manser Medal / RIBA / Archinovo / Divisare signals) ---
+    {"name": "Surman Weston", "site": "https://surmanweston.com", "city": "London", "country": "United Kingdom",
+     "include": r"^/projects/[^/]+", "listing_url": "https://surmanweston.com/projects/", "link_prefix": "/projects/"},
+    {"name": "Sandy Rendel Architects", "site": "https://sandyrendel.com", "city": "London", "country": "United Kingdom",
+     "include": r"^/projects/[^/]+", "listing_url": "https://sandyrendel.com/projects", "link_prefix": "/projects/"},
+    {"name": "Hugh Strange Architects", "excluded": "only 1 qualifying house (Strange House & Studio); below the >=4 bar", "site": "https://www.hughstrange.com", "city": "London", "country": "United Kingdom",
+     "include": r"^/[a-z0-9-]+\.html$", "exclude": r"^/(index|about|contact|news|press|projects|studio|team|practice|publications)\.html$",
+     "listing_url": "https://www.hughstrange.com/", "link_prefix": None},
+    {"name": "Sanei + Hopkins Architects", "site": "https://www.saneihopkins.co.uk", "city": "London", "country": "United Kingdom",
+     "include": r"^/projects/[^/]+", "listing_url": "https://www.saneihopkins.co.uk/projects", "link_prefix": "/projects/"},
+    {"name": "Gianni Botsford Architects", "site": "https://www.giannibotsford.com", "city": "London", "country": "United Kingdom",
+     "include": r"^/projects/[^/]+", "listing_url": "https://www.giannibotsford.com/projects/", "link_prefix": "/projects/"},
+    {"name": "Haysom Ward Miller Architects", "site": "https://www.haysomwardmiller.co.uk", "city": "Cambridge", "country": "United Kingdom",
+     "include": r"^/projects/private-houses/[^/]+", "listing_url": "https://www.haysomwardmiller.co.uk/projects/private-houses", "link_prefix": "/projects/private-houses/"},
+    {"name": "Hudson Architects", "site": "https://hudsonarchitects.co.uk", "city": "Norwich", "country": "United Kingdom",
+     "include": r"^/our-work/homes/new-homes/[^/]+", "listing_url": "https://hudsonarchitects.co.uk/our-work/homes/new-homes/", "link_prefix": "/new-homes/"},
+    {"name": "RX Architects", "site": "https://rxarchitects.com", "city": "Rye", "country": "United Kingdom",
+     "include": r"^/portfolio/[^/]+", "listing_url": "https://rxarchitects.com/portfolio/", "link_prefix": "/portfolio/"},
+    {"name": "MawsonKerr Architects", "excluded": "hotlink-protected: serves a placeholder image when the Referer is formground.com", "site": "https://mawsonkerr.co.uk", "city": "Newcastle upon Tyne", "country": "United Kingdom",
+     "include": r"^/projects/[^/]+", "listing_url": "https://mawsonkerr.co.uk/projects/", "link_prefix": "/projects/"},
+    {"name": "Avignon Architecte", "site": "https://avignon-architecte.com", "city": "Nantes", "country": "France",
+     "include": r"^/habitat-individuel/[^/]+", "listing_url": "https://avignon-architecte.com/habitat-individuel/", "link_prefix": "/habitat-individuel/"},
+    {"name": "FMAU", "site": "https://www.fmau.fr", "city": "La Rochelle", "country": "France",
+     "include": r"^/projet/\d+-", "listing_url": "https://www.fmau.fr/", "link_prefix": "/projet/"},
+    {"name": "Tank Architectes", "site": "https://www.tank.fr", "city": "Lille", "country": "France",
+     "include": r"^/projets/[^/]+", "listing_url": "https://www.tank.fr/projets", "link_prefix": "/projets/"},
+    # NOTE: arba pages only expose the site-wide OG image to the extractor; the real photos were patched
+    # into houses.json by hand from /images/realisations/<slug>/ - a --replace rerun would undo that.
+    {"name": "arba", "site": "https://arba.pro", "city": "Paris", "country": "France",
+     "include": r"^/realisations/[^/]+", "listing_url": "https://arba.pro/realisations/", "link_prefix": "/realisations/"},
+    {"name": "Bodenez + Le Gal La Salle", "site": "https://www.bodenezlegallasalle.com", "city": "Rennes", "country": "France",
+     "include": r"^/projets/[^/]+", "listing_url": "https://www.bodenezlegallasalle.com/projets", "link_prefix": "/projets/"},
+    {"name": "Studio Razavi", "excluded": "project pages gave no locations/descriptions and many are unbuilt or urban interiors; needs a per-slug hand-written entry", "site": "https://studiorazavi.com", "city": "Paris", "country": "France",
+     "include": r"^/work/[^/]+", "listing_url": "https://studiorazavi.com/work", "link_prefix": "/work/"},
 ]
 
 
@@ -147,6 +181,40 @@ def filled(h):
     return sum(1 for k in ("location", "year", "description") if h.get(k))
 
 
+# Hand curation of the 2026-10-03 England/France batch: pages the classifier
+# let through that are conversions, extensions-only, apartments, housing
+# schemes or public buildings, so a --replace rerun does not bring them back.
+CURATED_DROPS = {
+    "Sandy Rendel Architects": {"the old cycle club"},
+    "Sanei + Hopkins Architects": {"secret garden", "extension, north london", "artists studio, london",
+                                   "leamington road villas, london w11", "the extension, london"},
+    "Gianni Botsford Architects": {"the old byre", "sustainable low cost ceb dwellings"},
+    "Haysom Ward Miller Architects": {"cottage extension", "listed barn house"},
+    "MawsonKerr Architects": {"gosforth residential reworking", "rectory road gosforth house extension",
+                              "jesmond house", "luanda house"},
+    "Avignon Architecte": {"penthouse sur loire", "barrettes de chic"},
+    "Bodenez + Le Gal La Salle": {"maison caméléon", "maison gutenberg", "maison surélévation", "maison malouinière"},
+    "Surman Weston": {"lantern studio"},
+}
+# page titles that are not the project's name
+NAME_FIXES = {("arba", "realisations/entre-les-murs"): "Entre les murs",
+              ("FMAU", "projet/136-"): "Maison cardio", ("FMAU", "projet/148-"): "Bella vita"}
+
+
+def _curate(firm_name, house):
+    name = (house["name"] or "").strip().lower()
+    if name in CURATED_DROPS.get(firm_name, ()) or name.startswith("extension and remodel, holland park"):
+        return None
+    if firm_name == "Bodenez + Le Gal La Salle" and any(
+            frag in house["url"] for frag in ("immeuble-collectif", "maison-renovation-rennes", "lancieux-maison-patrimoine",
+                                                           "maison-2-en-1", "maison-sur-la-pente-frehel")):
+        return None  # renovation/apartment/heritage pages that carry another project's title ("Maison sur la pente")
+    for (f, frag), fixed in NAME_FIXES.items():
+        if f == firm_name and frag in house["url"]:
+            house["name"] = fixed
+    return house
+
+
 def houses_from_results(firm_name, results):
     """Pure: houses (with a real photo) from a firm's per-page extraction
     results, minus renovation-only projects, listing pages and same-name
@@ -162,6 +230,9 @@ def houses_from_results(firm_name, results):
             dropped.append((r.get("name"), "renovation only")); continue
         house = {"name": r.get("name"), "location": clean_location(r.get("location")), "region": None, "year": r.get("year"),
                  "description": r.get("description"), "image": r["image"], "url": r["url"], "firm": firm_name}
+        house = _curate(firm_name, house)
+        if house is None:
+            dropped.append((r.get("name"), "curated out")); continue
         key = (r.get("name") or "").strip().lower()
         if key in kept:
             dropped.append((r.get("name"), "duplicate name"))
@@ -300,14 +371,15 @@ def _merge_and_save(firms, report, replace=False):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--firm", default=None, help="run only this firm (exact name)")
+    parser.add_argument("--firm", action="append", default=None, help="run only this firm (exact name); repeat for several")
     parser.add_argument("--dry-run", action="store_true", help="discover pages only; no API calls, no writes")
     parser.add_argument("--replace", action="store_true",
                         help="drop the selected firms' existing houses before merging (use for reruns/rebuilds)")
     parser.add_argument("--from-raw", action="store_true",
                         help="rebuild houses from today's saved raw results (no browsing): re-applies the quality filters")
     args = parser.parse_args()
-    firms = [f for f in BATCH if not args.firm or f["name"].lower() == args.firm.lower()]
+    wanted = {n.lower() for n in args.firm or []}
+    firms = [f for f in BATCH if not wanted or f["name"].lower() in wanted]
     if not firms:
         sys.exit(f"No firm named {args.firm!r} in BATCH.")
     for f in firms:
