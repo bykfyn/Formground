@@ -505,7 +505,7 @@ def render_page():
 <nav class="top-nav">
   <a href="work.html">Work</a>
   <a href="creators.html">Creators</a>
-  <a href="marketplace.html">Marketplace</a>
+  <a href="edits.html">Edits</a>
   <a href="for-creators.html" class="current">For Creators</a>
 </nav>
 </header>

@@ -51,7 +51,7 @@ from generate_brand_pages import (  # noqa: E402
     FAVICON_TAGS,
     PAGE_CSS,
     SITE_FOOTER_HTML,
-    SITE_NAV_HTML,
+    SITE_NAV_HTML_EDITS,
     SITE_URL,
 )
 from generate_theme_landing_pages import (  # noqa: E402
@@ -762,7 +762,7 @@ def render_themed_edit_page(theme, products):
 <body>
 <header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-{SITE_NAV_HTML}
+{SITE_NAV_HTML_EDITS}
 </header>
 <main>
   <p class="page-tagline"><a class="edits-kicker" href="/edits.html">Edits</a></p>

@@ -36,6 +36,7 @@ from urllib.parse import urlparse
 import sqlite3
 
 from generate_brand_pages import (
+    PROMOTIONS_ENABLED,
     BANNER_CAROUSEL_CSS,
     BANNER_CAROUSEL_JS,
     CARD_CLICK_TRACKING_JS,
@@ -703,7 +704,7 @@ def render_stockists_panel(retailers, promotions):
         # landing tab, reinforcing the same cross-linking work already
         # done to drive traffic there (see project memory,
         # promotions_cross_site_linking).
-        f'    <div class="cat-panel" data-cat="stockists" style="display: none;">\n{intro}\n'
+        f'    <div class="cat-panel" data-cat="stockists"{"" if not PROMOTIONS_ENABLED else " style=" + chr(34) + "display: none;" + chr(34)}>\n{intro}\n'
         f'    <div class="sub-chips">\n{subchips_html}\n    </div>\n'
         f'{grid}\n    </div>'
     )
@@ -933,15 +934,31 @@ def render_promotions_panel(promotions):
 
 
 def render_page(retailers, promotions):
-    chips_html = "\n".join(
-        f'    <button class="chip{" active" if cat_id == "promotions" else ""}" data-cat="{cat_id}">{html.escape(label)}</button>'
-        for cat_id, label in CHIPS
-    )
-
-    panels_html = "\n\n".join([
-        render_promotions_panel(promotions),
-        render_stockists_panel(retailers, promotions),
-    ])
+    if PROMOTIONS_ENABLED:
+        chips_html = "\n".join(
+            f'    <button class="chip{" active" if cat_id == "promotions" else ""}" data-cat="{cat_id}">{html.escape(label)}</button>'
+            for cat_id, label in CHIPS
+        )
+        chips_block = f'  <div class="chips">\n{chips_html}\n  </div>\n'
+        panels_html = "\n\n".join([
+            render_promotions_panel(promotions),
+            render_stockists_panel(retailers, promotions),
+        ])
+        search_placeholder = "Search stockists and promotions — a brand, a city, a product…"
+        meta_desc = "Stockists who carry work from Formground's makers, live promotions, and a paid space for architects, designers, and makers to feature something specific."
+        twitter_desc = "Stockists, promotions, and a paid space for architects, designers, and makers."
+        who_for = ("If you would like to feature a product or service in the Promotions section and/or be listed as a Makers' stockist, "
+                   '<a href="contact.html">contact us here</a>.')
+    else:
+        # Promotions off: no tab row (a single tab needs no switcher), the
+        # Stockists panel is simply the page, and nothing mentions promotions.
+        chips_block = ""
+        panels_html = render_stockists_panel(retailers, [])
+        search_placeholder = "Search stockists — a brand, a city…"
+        meta_desc = "Stockists who carry work from Formground's makers, with every stockist linking to its own site."
+        twitter_desc = "Stockists who carry work from Formground's makers."
+        who_for = ("If you would like to be listed as a makers' stockist, "
+                   '<a href="contact.html">contact us here</a>.')
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -950,9 +967,9 @@ def render_page(retailers, promotions):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Marketplace — Formground</title>
 {FAVICON_TAGS}
-<meta name="description" content="Stockists who carry work from Formground's makers, live promotions, and a paid space for architects, designers, and makers to feature something specific.">
+<meta name="description" content="{meta_desc}">
 <meta property="og:title" content="Marketplace — Formground">
-<meta property="og:description" content="Stockists who carry work from Formground's makers, live promotions, and a paid space for architects, designers, and makers to feature something specific.">
+<meta property="og:description" content="{meta_desc}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://formground.com/marketplace.html">
 <meta property="og:site_name" content="Formground">
@@ -961,7 +978,7 @@ def render_page(retailers, promotions):
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://formground.com/favicon-192x192.png">
 <meta name="twitter:title" content="Marketplace — Formground">
-<meta name="twitter:description" content="Stockists, promotions, and a paid space for architects, designers, and makers.">
+<meta name="twitter:description" content="{twitter_desc}">
 <link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
@@ -975,7 +992,7 @@ def render_page(retailers, promotions):
 <nav class="top-nav">
   <a href="work.html">Work</a>
   <a href="creators.html">Creators</a>
-  <a href="marketplace.html" class="current">Marketplace</a>
+  <a href="edits.html">Edits</a>
   <a href="for-creators.html">For Creators</a>
 </nav>
 </header>
@@ -987,18 +1004,15 @@ def render_page(retailers, promotions):
   <div class="search-wide">
     <div class="ask-box">
       <i class="ti ti-search" aria-hidden="true"></i>
-      <input id="directory-filter" type="text" placeholder="Search stockists and promotions — a brand, a city, a product…" autocomplete="off">
+      <input id="directory-filter" type="text" placeholder="{search_placeholder}" autocomplete="off">
     </div>
   </div>
 
-  <div class="chips">
-{chips_html}
-  </div>
-
+{chips_block}
 {panels_html}
 
   <p class="who-for">
-    If you would like to feature a product or service in the Promotions section and/or be listed as a Makers' stockist, <a href="contact.html">contact us here</a>.
+    {who_for}
   </p>
 
   <p class="footer-description">Something outdated or missing? <a href="contact.html">Let us know</a>.</p>
@@ -1021,7 +1035,7 @@ def render_page(retailers, promotions):
 
 def main():
     retailers = json.loads(RETAILERS_PATH.read_text(encoding="utf-8"))
-    promotions = json.loads(PROMOTIONS_PATH.read_text(encoding="utf-8")) if PROMOTIONS_PATH.exists() else []
+    promotions = json.loads(PROMOTIONS_PATH.read_text(encoding="utf-8")) if (PROMOTIONS_ENABLED and PROMOTIONS_PATH.exists()) else []
     page = render_page(retailers, promotions)
     n_cards = len(_group_stockists(retailers))
     summary = f"{n_cards} cards ({len(retailers)} locations), {len(promotions)} promotions"

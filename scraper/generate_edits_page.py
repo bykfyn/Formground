@@ -341,7 +341,7 @@ def render_edits_index(themes_data):
 <body>
 <header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-{site_nav_html()}
+{site_nav_html("edits")}
 </header>
 <main style="max-width:1160px;">
   <div class="edits-hero">

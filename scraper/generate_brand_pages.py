@@ -41,6 +41,15 @@ DATA_DIR = SCRAPER_DIR.parent / "data"
 DB_PATH = DATA_DIR / "formground.db"
 BRANDS_PATH = SCRAPER_DIR / "brands.json"
 PROMOTIONS_PATH = DATA_DIR / "promotions.json"
+
+# Promotions are OFF (2026-10-03, user: too demanding to maintain at this
+# stage; the focus is the makers and a good browsing experience, promoting
+# smaller makers and connecting them with buyers). One switch hides EVERY
+# surface - Marketplace's Promotions tab and banner, the 'live promotion'
+# callout on brand pages, the stockist 'live promotion' badges and the
+# ?tab=promotions deep links - while data/promotions.json and the detector
+# scripts are left untouched, so turning this back on restores everything.
+PROMOTIONS_ENABLED = False
 RETAILERS_PATH = DATA_DIR / "retailers.json"
 DOCS_DIR = SCRAPER_DIR.parent / "docs"
 BRANDS_DIR = DOCS_DIR / "brands"
@@ -90,7 +99,10 @@ def site_nav_html(current=None):
     links = [
         ("work", "/work.html", "Work"),
         ("creators", "/creators.html", "Creators"),
-        ("marketplace", "/marketplace.html", "Marketplace"),
+        # Edits replaced Marketplace here (2026-10-03, user: Edits is more
+        # relevant to keyword search). Marketplace stays one click away in
+        # the footer on every page. Still 4 items - see the wrap note above.
+        ("edits", "/edits.html", "Edits"),
         ("for-creators", "/for-creators.html", "For Creators"),
     ]
     current_attr = ' class="current"'
@@ -105,6 +117,8 @@ def site_nav_html(current=None):
 # top-level section (new.html) - see site_nav_html() for the
 # per-section-highlighted version everything else now uses.
 SITE_NAV_HTML = site_nav_html()
+# Header nav with "Edits" highlighted, for the Edits hub and every themed Edit.
+SITE_NAV_HTML_EDITS = site_nav_html("edits")
 
 # Full site nav in the footer (2026-09-30) - every page's own
 # .foot-note used to carry only Home/Privacy/About (sometimes missing
@@ -190,7 +204,7 @@ def load_promotions_by_brand():
     scraping or authoring here. Brands not currently promoted just get
     an empty list, same as before this existed.
     """
-    if not PROMOTIONS_PATH.exists():
+    if not PROMOTIONS_ENABLED or not PROMOTIONS_PATH.exists():
         return {}
     promotions = json.loads(PROMOTIONS_PATH.read_text(encoding="utf-8"))
     by_brand = {}
