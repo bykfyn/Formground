@@ -545,6 +545,19 @@ def capped_edit_cards(theme, products):
     return _cap_products_fairly(cards_to_render), variant_counts
 
 
+def edit_totals(theme, cards_to_render):
+    """(pieces, makers) an edit really shows: its capped grid PLUS any
+    hand-picked hero/carousel product that the cap left out of the grid
+    (2026-10-03, user: "if the banner has a unique product it maybe should be
+    included in the count" - Pendant Lamps' Apparatus hero is not among its
+    12 grid pieces, so the page showed 13 while the hub said 12). Compared by
+    product_url, since a hero_label copy renames the product."""
+    in_grid = {p["product_url"] for p in cards_to_render}
+    extra = [p for p in _resolve_carousel_picks(theme, cards_to_render) if p["product_url"] not in in_grid]
+    brands = {p["brand"] for p in cards_to_render} | {p["brand"] for p in extra}
+    return len(cards_to_render) + len(extra), len(brands)
+
+
 # Larger-image feature row (2026-09-30, user: "we can also use larger
 # images such as for Chairs on the home page and have the same placing
 # of the product name and brand... with a max of 16 then I think we can
@@ -726,7 +739,7 @@ def render_themed_edit_page(theme, products):
     # what the page actually shows, the same number the Edits hub's own
     # card already advertises for this theme.
     cards_to_render, variant_counts = capped_edit_cards(theme, products)
-    n = len(cards_to_render)
+    n, _makers = edit_totals(theme, cards_to_render)
     description = f"{n} real {title.lower()}{'' if title.lower().endswith('s') else 's'}, from independent makers. {theme['intro']}"
 
     carousel_html = _render_carousel(_resolve_carousel_picks(theme, cards_to_render))

@@ -461,10 +461,10 @@ def generate():
     for theme in gte.THEMES:
         products = theme["fetch"]()
         cards_to_render, _ = gte.capped_edit_cards(theme, products)
-        brand_count = len({p["brand"] for p in cards_to_render})
+        piece_count, brand_count = gte.edit_totals(theme, cards_to_render)
         hero_product = _edit_hero_product(theme, cards_to_render)
         image = hero_product.get("image_url", "") if hero_product else ""
-        themes_data.append((theme, len(cards_to_render), brand_count, image, hero_product))
+        themes_data.append((theme, piece_count, brand_count, image, hero_product))
 
     (DOCS_DIR / "edits.html").write_text(render_edits_index(themes_data))
     append_to_sitemap(["edits"])
