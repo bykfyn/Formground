@@ -244,9 +244,19 @@
   .edit-see-all { text-align: center; margin: -8px 0 40px; font-size: 14px; }
   .edit-see-all a { color: var(--text-accent); text-decoration: none; }
   .edit-see-all a:hover { text-decoration: underline; }
+  /* Fixed 6 / 4 / 2 columns (2026-10-03) - the same steps as the Edits
+     hub, so both pages share one density at every width. The grid is
+     capped at 12 products, which divides evenly into 6, 4 and 2 columns:
+     no orphan row at any tier. */
   .edit-feature-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    display: grid; grid-template-columns: repeat(6, 1fr);
     gap: 20px; margin: 0 0 40px;
+  }
+  @media (max-width: 959px) {
+    .edit-feature-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 639px) {
+    .edit-feature-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   }
   .edit-feature-card { display: block; text-decoration: none; color: inherit; }
   .edit-feature-image {

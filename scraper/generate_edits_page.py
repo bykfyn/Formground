@@ -163,10 +163,19 @@ EDITS_PAGE_CSS = (
      usable minus one 16px gap, halved) - the same reference size
      "552x552px" has meant throughout this page's work, now built into
      the grid itself rather than capped after the fact. */
-  .maker-grid { margin: 0 0 40px; grid-template-columns: 1fr 1fr; }
+  /* SIX fixed columns (2026-10-03, user: "let's go with six so that we have
+     consistency across those pages") - the same density as the individual
+     Edit pages' product grid and the homepage shelves, instead of two
+     ~550px cards. Still a FIXED count per width tier, never auto-fit, so a
+     card's row/column stays deterministic: 6 across, then 4, then 2 on
+     phones. */
+  .maker-grid { margin: 0 0 40px; grid-template-columns: repeat(6, 1fr); gap: 20px; }
   .maker-card-hero { aspect-ratio: 1/1; }
-  @media (max-width: 760px) {
-    .maker-grid { grid-template-columns: 1fr; }
+  @media (max-width: 959px) {
+    .maker-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 639px) {
+    .maker-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
   }
 """
 )
