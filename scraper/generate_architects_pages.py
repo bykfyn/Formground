@@ -44,6 +44,7 @@ from generate_brand_pages import (
     directory_filter_html,
     site_nav_html,
     slugify,
+    unique_slug,
 )
 
 SCRAPER_DIR = Path(__file__).parent
@@ -275,10 +276,8 @@ def generate():
     slugs_seen = {}
     firms_with_slugs = []
     all_known_names = set(meta_by_name) | set(houses_by_firm)
-    for firm_name in all_known_names:
-        slug = slugify(firm_name)
-        if slug in slugs_seen and slugs_seen[slug] != firm_name:
-            slug = f"{slug}-{len(slugs_seen)}"
+    for firm_name in sorted(all_known_names):
+        slug = unique_slug(slugify(firm_name), firm_name, slugs_seen)
         slugs_seen[slug] = firm_name
 
         firm_houses = houses_by_firm.get(firm_name, [])

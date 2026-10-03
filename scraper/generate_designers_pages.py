@@ -48,6 +48,7 @@ from generate_brand_pages import (
     directory_filter_html,
     site_nav_html,
     slugify,
+    unique_slug,
 )
 
 SCRAPER_DIR = Path(__file__).parent
@@ -268,12 +269,10 @@ def generate():
 
     slugs_seen = {}
     designers_with_slugs = []
-    for designer_name, products in products_by_designer.items():
+    for designer_name, products in sorted(products_by_designer.items(), key=lambda kv: kv[0]):
         if len(products) < MIN_PRODUCTS:
             continue
-        slug = slugify(designer_name)
-        if slug in slugs_seen and slugs_seen[slug] != designer_name:
-            slug = f"{slug}-{len(slugs_seen)}"
+        slug = unique_slug(slugify(designer_name), designer_name, slugs_seen)
         slugs_seen[slug] = designer_name
 
         (DESIGNERS_DIR / f"{slug}.html").write_text(render_designer_page(designer_name, slug, products))

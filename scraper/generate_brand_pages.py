@@ -80,6 +80,20 @@ FAVICON_TAGS = (
 # constant-sharing rationale as CLOUDFLARE_ANALYTICS/FAVICON_TAGS above;
 # its `.top-nav` CSS lives in site.css (shared) rather than PAGE_CSS,
 # since the homepage also needs it and doesn't use PAGE_CSS.
+def unique_slug(base, name, slugs_seen):
+    """First free slug for `name`: the base slug, else base-2, base-3 ... A
+    collision used to get `-{len(slugs_seen)}`, a number that depended on how
+    many pages had been processed before it, so a page's address moved
+    whenever unrelated data was added (found 2026-10-03: two designer pages
+    went from -96/-97 to -174/-175). Callers iterate in sorted order, so the
+    assignment is stable run to run."""
+    slug, n = base, 2
+    while slug in slugs_seen and slugs_seen[slug] != name:
+        slug = f"{base}-{n}"
+        n += 1
+    return slug
+
+
 def site_nav_html(current=None):
     """
     `current` marks which top-level section this generated page lives
