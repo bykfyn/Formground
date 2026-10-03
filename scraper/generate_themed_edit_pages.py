@@ -57,6 +57,7 @@ from generate_brand_pages import (  # noqa: E402
     SITE_URL,
 )
 from generate_theme_landing_pages import (  # noqa: E402
+    COLOR_FINISH_WORDS,
     _group_color_variants,
     append_to_sitemap,
 )
@@ -534,6 +535,20 @@ def _cap_products_fairly(cards, max_count=MAX_PRODUCTS_PER_EDIT):
     return capped
 
 
+def _hero_identities(theme):
+    """The (brand, product_name) identities a theme shows in its banner."""
+    hero = theme.get("hero_image")
+    return ([hero] if hero else []) + list(theme.get("carousel_picks") or [])
+
+
+def _variant_key(p):
+    """Same key _group_color_variants collapses finishes by (brand + the name
+    with colour/finish words removed), so a hero's other finishes match it."""
+    words = re.findall(r"[A-Za-z\u00c0-\u00ff]+|[0-9]+|\u00d8|/", p["product_name"])
+    kept = [w for w in words if w.lower() not in COLOR_FINISH_WORDS]
+    return (p["brand"], " ".join(kept).lower())
+
+
 def capped_edit_cards(theme, products):
     """
     The one real product list every surface showing this edit's content
@@ -546,6 +561,14 @@ def capped_edit_cards(theme, products):
     variant_counts) - the same shape _group_color_variants itself
     returns, so callers don't need to know capping happened at all.
     """
+    # The hero/banner product is NOT repeated among the cards (2026-10-03,
+    # user: "remove it from the grid"): its whole colour/finish family is left
+    # out before grouping and capping, so the grid backfills with the next
+    # pieces and stays a full MAX_PRODUCTS_PER_EDIT. The hero is shown (and
+    # counted - see edit_totals) as its own piece above the grid.
+    hero_keys = {_variant_key({"brand": b, "product_name": n}) for b, n in _hero_identities(theme)}
+    if hero_keys:
+        products = [p for p in products if _variant_key(p) not in hero_keys]
     cards_to_render, variant_counts = _group_color_variants(products)
     capped = _cap_products_fairly(cards_to_render)
     # swap in hand-chosen photos; variant_counts is keyed by id(card), so re-key it
