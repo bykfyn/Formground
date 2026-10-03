@@ -399,5 +399,30 @@ class TidyCategoryTests(unittest.TestCase):
         self.assertEqual(scrape._tidy_category(None), "")
 
 
+class StockistLeadsParseTests(unittest.TestCase):
+    """scrape_stockist_leads.parse_magis_stores on a minimal copy of Magis's real markup."""
+
+    HTML = """
+    <div class="marker" data-icon="retailer" data-lat="40.83" data-lng="17.36"><h4 class="title">Baco Arredamenti</h4>
+      <p class="address">Via Santa Margherita, 38<br/>72015 Fasano - Italy<br/>T 080-4426949<br/>
+      <a href="mailto:info@baco.it">Email</a><br/><a href="https://www.google.com/maps/dir/">Directions</a></p></div>
+    <div class="marker" data-icon="headquarter" data-lat="45.70" data-lng="12.69"><h4 class="title">Magis Headquarter</h4>
+      <p class="address">Via Triestina Accesso E - Z.I, Via Tezze, 30020 Torre di Mosto VE, Italy</p></div>
+    <div class="marker" data-icon="retailer" data-lat="39.9" data-lng="32.8"><h4 class="title">Mozaik</h4>
+      <p class="address">Cinnah Cad. 66<br/>Ankara - Turchia</p></div>
+    <div class="marker" data-icon="agente" data-lat="1" data-lng="2"><h4 class="title">Magis France</h4></div>
+    """
+
+    def test_parses_fields_and_countries(self):
+        import scrape_stockist_leads as sl
+        rows = {r["name"]: r for r in sl.parse_magis_stores(self.HTML)}
+        self.assertEqual(rows["Baco Arredamenti"]["country"], "Italy")
+        self.assertEqual(rows["Baco Arredamenti"]["phone"], "080-4426949")
+        self.assertEqual(rows["Baco Arredamenti"]["email"], "info@baco.it")
+        self.assertEqual(rows["Magis Headquarter"]["country"], "Italy")   # dash inside the street must not win
+        self.assertEqual(rows["Mozaik"]["country"], "Turkey")             # "Turchia" normalised
+        self.assertIsNone(rows["Magis France"]["address"])                # sales agents carry no address
+
+
 if __name__ == "__main__":
     unittest.main()
