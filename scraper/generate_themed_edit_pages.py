@@ -616,6 +616,10 @@ EDIT_IMAGE_OVERRIDES = {
     # the scraped photo is a room with a tiny red lamp; this is the lamp itself
     "https://www.incommonwith.com/products/dune-portable-table-lamp":
         "https://www.incommonwith.com/cdn/shop/files/InCommonWith_DuneTableLamp_Pool_VillaCaffetto_17.jpg?v=1787171332&width=1500",
+    # the scraped photo is Mercoeur's grey close-up thumbnail (lamp cut off at the edges); this is the
+    # product's main shot - the whole lamp on white
+    "https://www.mercoeur-edition.com/products/table-lamp":
+        "https://cdn.prod.website-files.com/65f8e4972094d2411f63ed1d/6a4e099512b16700964973bd_ARCY%20LAP%20Light.webp",
     # the scraped photo is a wide room with a tiny lamp; this is a landscape close-up of its brass ball and base
     "https://hbigeleisen.com/in-stock/io-brushed-copper-table-lamp":
         "https://images.squarespace-cdn.com/content/v1/57b3208aff7c50dc3b5aef6a/1701278909340-GBM23PQ69EQS6XQMETU5/HannahBigeleisen_Lamp_1022_LizClayman_09.jpg",

@@ -41,13 +41,20 @@ def _load():
 def _measure(url):
     r = requests.get(url, headers=HEADERS, timeout=30)
     r.raise_for_status()
-    im = Image.open(io.BytesIO(r.content)).convert("RGB")
-    ratio = im.width / im.height
-    small = im.resize((64, max(8, round(64 / ratio))))
+    raw = Image.open(io.BytesIO(r.content))
+    ratio = raw.width / raw.height
+    rgba = raw.convert("RGBA")
+    small = rgba.resize((64, max(8, round(64 / ratio))))
     w, h = small.size
     px = small.load()
-    edge = [px[x, y] for x in range(w) for y in (0, 1, h - 2, h - 1)]
-    edge += [px[x, y] for y in range(h) for x in (0, 1, w - 2, w - 1)]
+    coords = [(x, y) for x in range(w) for y in (0, 1, h - 2, h - 1)] + [(x, y) for y in range(h) for x in (0, 1, w - 2, w - 1)]
+    edge_px = [px[x, y] for x, y in coords]
+    # A cut-out PNG/WebP has transparent edges: flattening that to RGB gives black
+    # (several packshots were wrongly read as black-edged). Report it as
+    # "transparent" so no fill is painted and the card's own surface shows.
+    if sum(1 for p in edge_px if p[3] < 128) / len(edge_px) > 0.5:
+        return {"ratio": round(ratio, 3), "bg": "transparent", "edge_std": 0.0}
+    edge = [p[:3] for p in edge_px]
     n = len(edge)
     mean = [sum(p[c] for p in edge) / n for c in range(3)]
     std = max((sum((p[c] - mean[c]) ** 2 for p in edge) / n) ** 0.5 for c in range(3))
@@ -69,6 +76,10 @@ def analyze(url):
 TILE_SQUARE_RANGE = (0.9, 1.12)
 
 
+def _bg_style(info):
+    return "" if info["bg"] == "transparent" else f"background:{info['bg']}"
+
+
 def fit_for_tile(url, force=False):
     """Same idea for the square edit cards: a photo clearly wider or taller
     than square, on flat edges, is shown whole on its own edge colour instead
@@ -78,7 +89,7 @@ def fit_for_tile(url, force=False):
         return "", ""
     off_square = info["ratio"] < TILE_SQUARE_RANGE[0] or info["ratio"] > TILE_SQUARE_RANGE[1]
     if force or (off_square and info["edge_std"] <= FLAT_EDGE_MAX):
-        return "fit-contain", f"background:{info['bg']}"
+        return "fit-contain", _bg_style(info)
     return "", ""
 
 
@@ -87,7 +98,7 @@ def fit_for_banner(url, force=False):
     if not info:
         return "", ""
     if force or (info["ratio"] < LANDSCAPE_MIN and info["edge_std"] <= FLAT_EDGE_MAX):
-        return "fit-contain", f"background:{info['bg']}"
+        return "fit-contain", _bg_style(info)
     if info["ratio"] < LANDSCAPE_MIN:
         print(f"  image_fit: {url[:70]} is portrait/square (ratio {info['ratio']}) with a busy background - banner will crop it; consider another image")
     return "", ""
