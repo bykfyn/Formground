@@ -66,6 +66,22 @@ def analyze(url):
     return cache[url]
 
 
+TILE_SQUARE_RANGE = (0.9, 1.12)
+
+
+def fit_for_tile(url, force=False):
+    """Same idea for the square edit cards: a photo clearly wider or taller
+    than square, on flat edges, is shown whole on its own edge colour instead
+    of being cropped. Near-square or busy photos keep the normal crop."""
+    info = analyze(url)
+    if not info:
+        return "", ""
+    off_square = info["ratio"] < TILE_SQUARE_RANGE[0] or info["ratio"] > TILE_SQUARE_RANGE[1]
+    if force or (off_square and info["edge_std"] <= FLAT_EDGE_MAX):
+        return "fit-contain", f"background:{info['bg']}"
+    return "", ""
+
+
 def fit_for_banner(url, force=False):
     info = analyze(url)
     if not info:

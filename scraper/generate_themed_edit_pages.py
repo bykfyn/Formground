@@ -322,7 +322,7 @@ def _resolve_carousel_picks(theme, products):
         product = lookup.get(hero) or _lookup_product_by_identity(*hero)
         if product is not None and theme.get("hero_label"):
             product = {**product, "product_name": theme["hero_label"]}
-        return [product] if product is not None else []
+        return [_with_image_override(product)] if product is not None else []
     manual = theme.get("carousel_picks")
     if manual is None:
         return _carousel_picks(products, theme.get("exclude", set()))
@@ -330,11 +330,11 @@ def _resolve_carousel_picks(theme, products):
     resolved = []
     for key in manual:
         if key in lookup:
-            resolved.append(lookup[key])
+            resolved.append(_with_image_override(lookup[key]))
             continue
         product = _lookup_product_by_identity(*key)
         if product is not None:
-            resolved.append(product)
+            resolved.append(_with_image_override(product))
     return resolved
 
 
@@ -547,7 +547,11 @@ def capped_edit_cards(theme, products):
     returns, so callers don't need to know capping happened at all.
     """
     cards_to_render, variant_counts = _group_color_variants(products)
-    return _cap_products_fairly(cards_to_render), variant_counts
+    capped = _cap_products_fairly(cards_to_render)
+    # swap in hand-chosen photos; variant_counts is keyed by id(card), so re-key it
+    swapped = [_with_image_override(p) for p in capped]
+    variant_counts = {id(new): variant_counts[id(old)] for old, new in zip(capped, swapped) if id(old) in variant_counts}
+    return swapped, variant_counts
 
 
 def edit_totals(theme, cards_to_render):
@@ -582,6 +586,24 @@ def edit_totals(theme, cards_to_render):
 # get the lamp to fit better in the space"): shown whole instead of cropped.
 # Keyed by product_url. Kantarell Pendant O60 is a 3:2 shot whose disc shade
 # spans 78% of the width, so a centred square crop cut both rims.
+# A better photo than the one the scrape picked (2026-10-03, user: "is there a
+# close up image of this?"), taken from the product's own page. Display only:
+# the database keeps the scraped image. Keyed by product_url.
+EDIT_IMAGE_OVERRIDES = {
+    # the scraped photo is a room with a tiny red lamp; this is the lamp itself
+    "https://www.incommonwith.com/products/dune-portable-table-lamp":
+        "https://www.incommonwith.com/cdn/shop/files/InCommonWith_DuneTableLamp_Pool_VillaCaffetto_17.jpg?v=1787171332&width=1500",
+    # the scraped photo is a wide room with a tiny lamp; this is a landscape close-up of its brass ball and base
+    "https://hbigeleisen.com/in-stock/io-brushed-copper-table-lamp":
+        "https://images.squarespace-cdn.com/content/v1/57b3208aff7c50dc3b5aef6a/1701278909340-GBM23PQ69EQS6XQMETU5/HannahBigeleisen_Lamp_1022_LizClayman_09.jpg",
+}
+
+
+def _with_image_override(p):
+    alt = EDIT_IMAGE_OVERRIDES.get(p["product_url"])
+    return {**p, "image_url": alt} if alt else p
+
+
 EDIT_IMAGE_FIT_CONTAIN = {"https://newworks.dk/en/product/kantarell-pendant-lamp-o60"}
 
 _TRAILING_SIZE_RE = re.compile(r"\s*[\u00d8\u2300]\s?\d+(?:[.,]\d+)?\s*(?:cm|mm)?\s*$", re.I)
@@ -613,11 +635,9 @@ def _feature_card_html(p, variant_count=None, name=None):
         f'<span class="variant-badge">{variant_count} finishes</span>'
         if variant_count and variant_count > 1 else ""
     )
-    fit, box_style = "", ""
-    if p["product_url"] in EDIT_IMAGE_FIT_CONTAIN:
-        css, box_bg = image_fit.fit_for_banner(p["image_url"], force=True)
-        fit = f' class="{css}"' if css else ""
-        box_style = f' style="{box_bg}"' if box_bg else ""
+    css, box_bg = image_fit.fit_for_tile(p["image_url"], force=p["product_url"] in EDIT_IMAGE_FIT_CONTAIN)
+    fit = f' class="{css}"' if css else ""
+    box_style = f' style="{box_bg}"' if box_bg else ""
     return f"""
       <a class="edit-feature-card" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
         <div class="edit-feature-image"{box_style}><img{fit} src="{html.escape(p["image_url"])}" alt="{alt_text}" loading="lazy">{badge}</div>
