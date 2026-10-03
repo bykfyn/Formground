@@ -350,11 +350,25 @@
      phones. */
   .maker-grid { margin: 0 0 40px; grid-template-columns: repeat(6, 1fr); gap: 20px; }
   .maker-card-hero { aspect-ratio: 1/1; }
+  /* The featured edit: half the grid at every tier (3x2 of 6, 2x2 of 4), the
+     full width on phones. align-self stretch overrides the grid's
+     align-items: start so the card fills both rows; its image takes the
+     height left over after the caption instead of the usual square. */
+  .maker-card-feature { grid-column: span 3; grid-row: span 2; align-self: stretch; display: flex; flex-direction: column; }
+  .maker-card-feature .maker-card-hero { aspect-ratio: auto; flex: 1 1 auto; min-height: 0; margin-bottom: 12px; position: relative; }
+  /* The photo is laid over the box instead of sizing it: its natural
+     height must not stretch the two rows the card spans (it did, at first:
+     550x801 instead of 550x454). */
+  .maker-card-feature .maker-card-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .maker-card-feature .maker-name { font-size: 20px; }
   @media (max-width: 959px) {
     .maker-grid { grid-template-columns: repeat(4, 1fr); }
+    .maker-card-feature { grid-column: span 2; }
   }
   @media (max-width: 639px) {
     .maker-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .maker-card-feature { grid-column: span 2; grid-row: span 1; }
+    .maker-card-feature .maker-card-hero { aspect-ratio: 4/3; flex: none; }
   }
 </style>
 </head>
@@ -385,6 +399,13 @@
     </div>
   </div>
   <div class="maker-grid">
+      <a class="maker-card maker-card-feature" href="/round-dining-tables.html">
+        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0177/8296/products/GALVINBROSWORKSHOP-DepartmentTwo-21.jpg?v=1626789553" alt="Round Dining Tables" loading="lazy"></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Round Dining Tables</span>
+          <span class="maker-country">12 pieces &middot; 12 makers</span>
+        </div>
+      </a>
       <a class="maker-card" href="/ceiling-lamps.html">
         <div class="maker-card-hero"><img src="https://www.marset.com/wp-content/uploads/lamparas/suspension/ringo/marset-lr-ringo-c70-wine-rose-scaled-e1751294655527-1030x1200.jpg" alt="Ceiling Lamps" loading="lazy"></div>
         <div class="maker-card-body">
@@ -411,13 +432,6 @@
         <div class="maker-card-body">
           <span class="maker-name">Round Coffee Tables</span>
           <span class="maker-country">12 pieces &middot; 9 makers</span>
-        </div>
-      </a>
-      <a class="maker-card" href="/round-dining-tables.html">
-        <div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0177/8296/products/GALVINBROSWORKSHOP-DepartmentTwo-21.jpg?v=1626789553" alt="Round Dining Tables" loading="lazy"></div>
-        <div class="maker-card-body">
-          <span class="maker-name">Round Dining Tables</span>
-          <span class="maker-country">12 pieces &middot; 12 makers</span>
         </div>
       </a>
       <a class="maker-card" href="/scandinavian-dining-tables.html">

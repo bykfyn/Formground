@@ -171,11 +171,25 @@ EDITS_PAGE_CSS = (
      phones. */
   .maker-grid { margin: 0 0 40px; grid-template-columns: repeat(6, 1fr); gap: 20px; }
   .maker-card-hero { aspect-ratio: 1/1; }
+  /* The featured edit: half the grid at every tier (3x2 of 6, 2x2 of 4), the
+     full width on phones. align-self stretch overrides the grid's
+     align-items: start so the card fills both rows; its image takes the
+     height left over after the caption instead of the usual square. */
+  .maker-card-feature { grid-column: span 3; grid-row: span 2; align-self: stretch; display: flex; flex-direction: column; }
+  .maker-card-feature .maker-card-hero { aspect-ratio: auto; flex: 1 1 auto; min-height: 0; margin-bottom: 12px; position: relative; }
+  /* The photo is laid over the box instead of sizing it: its natural
+     height must not stretch the two rows the card spans (it did, at first:
+     550x801 instead of 550x454). */
+  .maker-card-feature .maker-card-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .maker-card-feature .maker-name { font-size: 20px; }
   @media (max-width: 959px) {
     .maker-grid { grid-template-columns: repeat(4, 1fr); }
+    .maker-card-feature { grid-column: span 2; }
   }
   @media (max-width: 639px) {
     .maker-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .maker-card-feature { grid-column: span 2; grid-row: span 1; }
+    .maker-card-feature .maker-card-hero { aspect-ratio: 4/3; flex: none; }
   }
 """
 )
@@ -270,6 +284,13 @@ def _edit_meta_text(count, brand_count):
 # list always lands at row ceil(N/2), column (N odd ? 1 : 2), at every
 # viewport - so moving an edit to a specific row/column later is just
 # reordering this list, no cell-math or reflow guessing required.
+# One edit can be FEATURED on the hub (2026-10-03, user's idea): it fills half
+# the grid (3 columns x 2 rows at six across) and always comes first, the other
+# edits follow alphabetically around it. Still a fixed grid with explicit
+# spans, so every position stays deterministic. None = no featured edit.
+FEATURED_EDIT_SLUG = "round-dining-tables"
+
+
 def _edits_sort_key(entry):
     return entry[0]["title"].lower()
 
@@ -293,6 +314,8 @@ def render_edits_index(themes_data):
     actual fix needed, not another round of position tweaks.
     """
     ordered = sorted(themes_data, key=_edits_sort_key)
+    # featured edit first, the rest keep their alphabetical order
+    ordered.sort(key=lambda entry: entry[0]["slug"] != FEATURED_EDIT_SLUG)
 
     tile_items = ""
     for theme, count, brand_count, image, _hero_product in ordered:
@@ -301,7 +324,7 @@ def render_edits_index(themes_data):
             if image else ""
         )
         tile_items += f"""
-      <a class="maker-card" href="/{theme['slug']}.html">
+      <a class="maker-card{' maker-card-feature' if theme['slug'] == FEATURED_EDIT_SLUG else ''}" href="/{theme['slug']}.html">
         <div class="maker-card-hero">{image_tag}</div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(theme['title'])}</span>
