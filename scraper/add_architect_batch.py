@@ -102,7 +102,7 @@ BATCH = [
      "include": r"^/projects/[^/]+", "listing_url": "https://surmanweston.com/projects/", "link_prefix": "/projects/"},
     {"name": "Sandy Rendel Architects", "site": "https://sandyrendel.com", "city": "London", "country": "United Kingdom",
      "include": r"^/projects/[^/]+", "listing_url": "https://sandyrendel.com/projects", "link_prefix": "/projects/"},
-    {"name": "Hugh Strange Architects", "excluded": "only 1 qualifying house (Strange House & Studio); below the >=4 bar", "site": "https://www.hughstrange.com", "city": "London", "country": "United Kingdom",
+    {"name": "Hugh Strange Architects", "site": "https://www.hughstrange.com", "city": "London", "country": "United Kingdom",
      "include": r"^/[a-z0-9-]+\.html$", "exclude": r"^/(index|about|contact|news|press|projects|studio|team|practice|publications)\.html$",
      "listing_url": "https://www.hughstrange.com/", "link_prefix": None},
     {"name": "Sanei + Hopkins Architects", "site": "https://www.saneihopkins.co.uk", "city": "London", "country": "United Kingdom",
