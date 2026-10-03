@@ -297,6 +297,15 @@ def generate():
         (ARCHITECTS_DIR / f"{slug}.html").write_text(render_architect_page(firm_name, slug, meta_by_name.get(firm_name), firm_houses))
         firms_with_slugs.append((firm_name, slug))
 
+    # A firm removed from BOTH data files (not just left without houses) is
+    # no longer in all_known_names, so the loop above never reaches its page
+    # (found 2026-10-03 when Luciano Kruk was excluded for hotlink-blocking
+    # its images): sweep any page that is not in the generated set.
+    keep = {f"{slug}.html" for _, slug in firms_with_slugs}
+    for stale in ARCHITECTS_DIR.glob("*.html"):
+        if stale.name not in keep:
+            stale.unlink()
+
     (DOCS_DIR / "architects.html").write_text(
         render_architects_index(firms_with_slugs, meta_by_name, houses_by_firm)
     )
