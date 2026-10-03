@@ -171,25 +171,63 @@ EDITS_PAGE_CSS = (
      phones. */
   .maker-grid { margin: 0 0 40px; grid-template-columns: repeat(6, 1fr); gap: 20px; }
   .maker-card-hero { aspect-ratio: 1/1; }
-  /* The featured edit: half the grid at every tier (3x2 of 6, 2x2 of 4), the
-     full width on phones. align-self stretch overrides the grid's
-     align-items: start so the card fills both rows; its image takes the
-     height left over after the caption instead of the usual square. */
-  .maker-card-feature { grid-column: span 3; grid-row: span 2; align-self: stretch; display: flex; flex-direction: column; }
-  .maker-card-feature .maker-card-hero { aspect-ratio: auto; flex: 1 1 auto; min-height: 0; margin-bottom: 12px; position: relative; }
-  /* The photo is laid over the box instead of sizing it: its natural
-     height must not stretch the two rows the card spans (it did, at first:
-     550x801 instead of 550x454). */
-  .maker-card-feature .maker-card-hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-  .maker-card-feature .maker-name { font-size: 20px; }
+  /* The featured edit is treated like the homepage's bento tiles (2026-10-03,
+     user: "treat the banner as we do the home page main bento"): the photo
+     fills the tile, the edit's title sits on it as the header, and the real
+     product shown (name, maker, a Visit site link to the maker) appears on
+     hover - or always, on touch screens. Half the grid at every tier (3x2 of
+     6, 2x2 of 4); align-self stretch overrides the grid's align-items: start so
+     the tile fills both rows. A sibling link layer, not a wrapping <a>, so the
+     edit link and the maker link never nest. */
+  .edit-feature {
+    grid-column: span 3; grid-row: span 2; align-self: stretch; min-height: 320px;
+    position: relative; overflow: hidden; margin: 0;
+    border: 0.5px solid var(--border); background: var(--surface-1);
+  }
+  .edit-feature img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .edit-feature:hover img { transform: scale(1.03); }
+  .edit-feature .cat-link { position: absolute; inset: 0; z-index: 1; }
+  /* soft top scrim so the white title reads on light photos too */
+  .edit-feature::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 40%; z-index: 1; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0)); }
+  .edit-feature .cat-label { position: absolute; top: 16px; left: 16px; right: 16px; z-index: 2; margin: 0; pointer-events: none;
+    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.15; color: #fff; letter-spacing: -0.005em; }
+  .edit-feature .cat-label small { display: block; margin-top: 4px; font-family: inherit; font-weight: 600; font-size: 12px; opacity: 0.85; letter-spacing: 0; }
+  .edit-feature .cat-details {
+    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
+    padding: 36px 16px 14px; padding-right: 130px;
+    background: linear-gradient(to top, rgba(0,0,0,0.68), rgba(0,0,0,0));
+    color: #fff; opacity: 0; transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease; pointer-events: none;
+  }
+  .edit-feature:hover .cat-details { opacity: 1; transform: translateY(0); }
+  .edit-feature .product-name { display: block; font-size: 13.5px; font-weight: 600; margin: 0 0 2px; }
+  .edit-feature .product-maker { display: block; font-size: 12px; opacity: 0.85; }
+  .edit-feature .visit-source {
+    position: absolute; bottom: 12px; right: 12px; z-index: 3;
+    display: flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600; color: #fff;
+    background: rgba(255,255,255,0.16); border: 0.5px solid rgba(255,255,255,0.4);
+    backdrop-filter: blur(4px); padding: 6px 10px; border-radius: 999px; text-decoration: none;
+    opacity: 0; transform: translateY(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease, background 0.15s ease;
+  }
+  .edit-feature:hover .visit-source { opacity: 1; transform: translateY(0); }
+  .edit-feature .visit-source:hover { background: rgba(255,255,255,0.3); }
+  .edit-feature .visit-source i { font-size: 13px; }
   @media (max-width: 959px) {
     .maker-grid { grid-template-columns: repeat(4, 1fr); }
-    .maker-card-feature { grid-column: span 2; }
+    .edit-feature { grid-column: span 2; }
   }
   @media (max-width: 639px) {
     .maker-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .maker-card-feature { grid-column: span 2; grid-row: span 1; }
-    .maker-card-feature .maker-card-hero { aspect-ratio: 4/3; flex: none; }
+    .edit-feature { grid-column: span 2; grid-row: span 1; min-height: 0; aspect-ratio: 4 / 3; }
+    .edit-feature .cat-label { font-size: 20px; }
+  }
+  /* Hover never fires on touch: show the product and the maker link always
+     (same breakpoint as the homepage tiles, plus any touch-only device). */
+  @media (max-width: 760px), (hover: none) {
+    .edit-feature .cat-details, .edit-feature .visit-source { opacity: 1; transform: none; pointer-events: auto; }
   }
 """
 )
@@ -318,13 +356,28 @@ def render_edits_index(themes_data):
     ordered.sort(key=lambda entry: entry[0]["slug"] != FEATURED_EDIT_SLUG)
 
     tile_items = ""
-    for theme, count, brand_count, image, _hero_product in ordered:
+    for theme, count, brand_count, image, hero_product in ordered:
         image_tag = (
             f'<img src="{html.escape(image)}" alt="{html.escape(theme["title"])}" loading="lazy">'
             if image else ""
         )
+        if theme["slug"] == FEATURED_EDIT_SLUG and hero_product is not None:
+            # the real product pictured, credited and linked to its maker
+            src = hero_product["brand_url"] if hero_product.get("link_dead") else hero_product["product_url"]
+            tile_items += f"""
+      <figure class="edit-feature">
+        <a class="cat-link" href="/{theme['slug']}.html" aria-label="Browse {html.escape(theme['title'])}"></a>
+        {image_tag.replace(html.escape(theme['title']), html.escape(hero_product['product_name']) + ' by ' + html.escape(hero_product['brand']), 1)}
+        <p class="cat-label">{html.escape(theme['title'])}<small>{_edit_meta_text(count, brand_count)}</small></p>
+        <div class="cat-details">
+          <span class="product-name">{html.escape(hero_product['product_name'])}</span>
+          <span class="product-maker">{html.escape(hero_product['brand'])}</span>
+        </div>
+        <a class="visit-source" href="{html.escape(src)}" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+      </figure>"""
+            continue
         tile_items += f"""
-      <a class="maker-card{' maker-card-feature' if theme['slug'] == FEATURED_EDIT_SLUG else ''}" href="/{theme['slug']}.html">
+      <a class="maker-card" href="/{theme['slug']}.html">
         <div class="maker-card-hero">{image_tag}</div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(theme['title'])}</span>
