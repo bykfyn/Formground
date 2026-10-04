@@ -291,9 +291,11 @@ def generate():
         if existing.stem not in slugs_seen:
             existing.unlink()
 
-    (DOCS_DIR / "designers.html").write_text(
-        render_designers_index(designers_with_slugs, products_by_designer)
-    )
+    index_html = render_designers_index(designers_with_slugs, products_by_designer)
+    # Written to frontend/ as well (like the Marketplace and For Creators pages): frontend/designers.html used to be
+    # the old "coming soon" placeholder, and copying it over docs/ replaced this real index with it (2026-10-04).
+    for folder in (DOCS_DIR, SCRAPER_DIR.parent / "frontend"):
+        (folder / "designers.html").write_text(index_html)
     append_to_sitemap(sorted(s for _, s in designers_with_slugs))
 
     total_products = sum(len(products_by_designer[n]) for n, _ in designers_with_slugs)
