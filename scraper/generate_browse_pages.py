@@ -379,7 +379,9 @@ LISTING_CSS = """
   .listing-more { margin: 44px 0 0; padding-top: 22px; border-top: 0.5px solid var(--border); font-size: 13px; line-height: 1.8; color: var(--text-secondary); }
   .listing-more h2 { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 6px; }
   .listing-more p { margin: 0 0 18px; }
+  .listing-more h2 a { color: var(--text-muted); }
   .listing-more a { color: var(--text-primary); text-decoration: none; }
+  .listing-more h2 a:hover { color: var(--text-primary); }
   .listing-more a:hover { text-decoration: underline; }
   .listing-more .n { color: var(--text-muted); }
   .pager { margin-top: 28px; }
@@ -497,9 +499,9 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
   {see_more}
   {_pager_compact_html(slug, page, pages)}
   <section class="listing-more">
-    <h2>Makers</h2>
+    <h2><a href="/makers.html">Makers &rarr;</a></h2>
     <p>{top_makers}{more_makers}</p>
-    <h2>More in {html.escape(cat_name.lower())}</h2>
+    <h2><a href="/work/{cat_slug}.html">{html.escape(cat_name)} &rarr;</a></h2>
     <p>{siblings}</p>
   </section>
   <p class="foot-note">
