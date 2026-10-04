@@ -238,6 +238,10 @@ def setup_database():
         "ALTER TABLE products ADD COLUMN price REAL",
         "ALTER TABLE products ADD COLUMN compare_at_price REAL",
         "ALTER TABLE products ADD COLUMN currency TEXT",
+        # Added 2026-10-04: the MAKER's own date for the piece (YYYY-MM-DD) - Shopify's created_at/published_at,
+        # WordPress's post date - as opposed to first_seen, which is only when WE first saw it (and for most
+        # pieces is the day we first scanned that maker's whole catalog). NULL where the platform exposes none.
+        "ALTER TABLE products ADD COLUMN released_at TEXT",
     ):
         try:
             conn.execute(statement)
@@ -299,8 +303,8 @@ def save_product(conn, product):
     conn.execute("""
         INSERT INTO products (brand, brand_url, product_name, product_url,
                                category, material_options, dimensions, notes, thin, image_url, designer, last_checked, first_seen,
-                               price, compare_at_price, currency)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?, ?, ?, ?)
+                               price, compare_at_price, currency, released_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), ?, ?, ?, ?, ?)
     """, (
         product["brand"],
         product["brand_url"],
@@ -317,6 +321,7 @@ def save_product(conn, product):
         product.get("price"),
         product.get("compare_at_price"),
         product.get("currency"),
+        product.get("released_at"),
     ))
     conn.commit()
 
@@ -4258,6 +4263,7 @@ def extract_shopify(brand):
     for (product_type, base_name), group in grouped.items():
         first = group[0]
         price, compare_at_price = _shopify_price_info(group)
+        released_at = _earliest_date(d for p in group for d in (p.get("created_at"), p.get("published_at")))
         material_options = set()
         for option in first.get("options", []):
             if option.get("name", "").lower() in ("material", "materials", "finish", "color", "colour"):
@@ -4336,6 +4342,7 @@ def extract_shopify(brand):
             "designer": designer,
             "price": price,
             "compare_at_price": compare_at_price,
+            "released_at": released_at,
         })
 
     # A few brands sell a "build your own" configurator as its own listing
@@ -4409,6 +4416,33 @@ def _woocommerce_price_info(group):
     if plain:
         return plain[0], None, plain[1]
     return None, None, None
+
+
+def _earliest_date(values):
+    """The earliest of some ISO timestamps as YYYY-MM-DD, or None. Shopify exposes created_at and
+    published_at per product; the earlier is the safer reading of "released" (published_at is reset when a
+    product is unpublished and republished)."""
+    days = sorted(v[:10] for v in values if isinstance(v, str) and re.match(r"\d{4}-\d{2}-\d{2}", v))
+    return days[0] if days else None
+
+
+def _wp_post_dates(base):
+    """{permalink: YYYY-MM-DD} from the site's public WordPress REST API (wp/v2/product, post date), or {} when
+    the site does not expose it. The WooCommerce Store API has no dates, so this is the maker's own publish
+    date for a WooCommerce product. Bounded like every other fetch (page and time limits)."""
+    out = {}
+    start = time.monotonic()
+    for page in range(1, MAX_PAGES_PER_BRAND + 1):
+        if time.monotonic() - start > MAX_SECONDS_PER_BRAND:
+            break
+        batch = _fetch_json(f"{base}/wp-json/wp/v2/product?per_page=100&page={page}&_fields=link,date_gmt")
+        if not isinstance(batch, list) or not batch:
+            break
+        for item in batch:
+            if item.get("link") and item.get("date_gmt"):
+                out[item["link"].rstrip("/")] = item["date_gmt"][:10]
+        time.sleep(1)
+    return out
 
 
 def extract_woocommerce(brand):
@@ -4486,10 +4520,14 @@ def extract_woocommerce(brand):
     for p in raw_products:
         grouped.setdefault(_base_name(p["name"]), []).append(p)
 
+    # a brand scoped to one maker inside a shared association shop (woocommerce_category) is left without dates:
+    # the shop-wide post list would not say whose product is whose
+    wp_dates = {} if brand.get("woocommerce_category") else _wp_post_dates(base)
     products = []
     for base_name, group in grouped.items():
         first = group[0]
         price, compare_at_price, currency = _woocommerce_price_info(group)
+        released_at = _earliest_date(wp_dates.get((p.get("permalink") or "").rstrip("/")) for p in group)
         if brand.get("ignore_api_price"):
             # the shop software stores a placeholder (Multiforme: one EUR 10,000 lamp on a site
             # that shows no prices at all) - never publish it
@@ -4555,6 +4593,7 @@ def extract_woocommerce(brand):
             "price": price,
             "compare_at_price": compare_at_price,
             "currency": currency,
+            "released_at": released_at,
         })
 
     return products

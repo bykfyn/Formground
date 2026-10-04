@@ -456,3 +456,30 @@ class ChairSubtypeTests(unittest.TestCase):
     def test_it_is_idempotent(self):
         once = scrape._refine_chair_subtype("ELLIOT DINING CHAIR", "chair")
         self.assertEqual(scrape._refine_chair_subtype("ELLIOT DINING CHAIR", once), once)
+
+
+class ReleasedAtTests(unittest.TestCase):
+    """released_at (2026-10-04): the maker's own date for a piece, as YYYY-MM-DD."""
+
+    def test_earliest_of_created_and_published(self):
+        self.assertEqual(scrape._earliest_date(["2026-09-21T15:34:28+02:00", "2026-06-02T12:16:42+02:00"]), "2026-06-02")
+
+    def test_ignores_missing_and_malformed_values(self):
+        self.assertEqual(scrape._earliest_date([None, "", "yesterday", "2025-01-05"]), "2025-01-05")
+        self.assertIsNone(scrape._earliest_date([None, ""]))
+        self.assertIsNone(scrape._earliest_date([]))
+
+    def test_the_products_table_has_the_column_and_save_product_stores_it(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            old = scrape.DB_PATH
+            scrape.DB_PATH = Path(tmp) / "t.db"
+            try:
+                conn = scrape.setup_database()
+                scrape.save_product(conn, {"brand": "B", "brand_url": "https://b.example", "product_name": "P",
+                                           "product_url": "https://b.example/p", "released_at": "2026-05-01"})
+                self.assertEqual(conn.execute("SELECT released_at FROM products").fetchone()[0], "2026-05-01")
+                scrape.save_product(conn, {"brand": "B", "brand_url": "https://b.example", "product_name": "Q",
+                                           "product_url": "https://b.example/q"})
+                self.assertIsNone(conn.execute("SELECT released_at FROM products WHERE product_name='Q'").fetchone()[0])
+            finally:
+                scrape.DB_PATH = old
