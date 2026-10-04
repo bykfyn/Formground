@@ -31,6 +31,7 @@ HOW TO RUN:
 """
 
 import html
+import site_sections  # noqa: E402
 
 from pathlib import Path
 
@@ -444,6 +445,7 @@ GUIDES_HTML = """    <div class="guides-list cat-panel" data-cat="guides" style=
     </div>"""
 
 PAGE_SCRIPT = """
+  var ALL_SHOWS = '__ALL_SHOWS__';
   // Every category's real content already sits in the page (see the
   // .cat-panel divs above) - this just shows the one matching the
   // clicked chip and hides the rest, no data fetching or templating.
@@ -454,7 +456,7 @@ PAGE_SCRIPT = """
         b.classList.toggle('active', b === btn);
       });
       document.querySelectorAll('.cat-panel').forEach(function (panel) {
-        var show = panel.dataset.cat === cat || (cat === 'all' && panel.dataset.cat === 'craftspeople');
+        var show = panel.dataset.cat === cat || (cat === 'all' && (ALL_SHOWS === '*' || panel.dataset.cat === ALL_SHOWS));
         panel.style.display = show ? '' : 'none';
       });
     });
@@ -463,16 +465,33 @@ PAGE_SCRIPT = """
 
 
 def render_page():
+    show_craftspeople = not site_sections.is_hidden("craftspeople")
+    categories = [(c, l) for c, l in CATEGORIES if show_craftspeople or c != "craftspeople"]
+    # the page opens on its first real category: Craftspeople when shown, otherwise Selling & Distribution
+    default_cat = "craftspeople" if show_craftspeople else "selling"
     chips_html = "\n".join(
-        f'    <button class="chip{" active" if cat_id == "craftspeople" else ""}" data-cat="{cat_id}">{html.escape(label)}</button>'
-        for cat_id, label in CATEGORIES
+        f'    <button class="chip{" active" if cat_id == default_cat else ""}" data-cat="{cat_id}">{html.escape(label)}</button>'
+        for cat_id, label in categories
     )
 
-    panels = [render_craftspeople_panel()]
+    panels = [render_craftspeople_panel()] if show_craftspeople else []
     for cat_id in ("selling", "design", "hosting", "marketing", "fairs", "associations"):
         panels.append(render_tool_panel(cat_id))
     panels.append(GUIDES_HTML)
+    if not show_craftspeople:
+        # the first real panel is the page's opening view
+        panels = [p.replace(' style="display: none;"', "", 1) if f'data-cat="{default_cat}"' in p[:120] else p for p in panels]
     panels_html = "\n\n".join(panels)
+    all_shows = "craftspeople" if show_craftspeople else "*"
+    if show_craftspeople:
+        description = 'Production partners, resources and suppliers for architects, designers, and makers - real craftspeople and companies, plus friendly starting-point guides for makers earlier in their journey.'
+        short_description = "Production partners, resources and suppliers for architects, designers, and makers."
+        placeholder = "Find production partners, resources and suppliers"
+    else:
+        description = ("Resources, tools and suppliers for architects, designers and makers - real companies for selling, "
+                       "prototyping, hosting, marketing, fairs and associations, plus friendly starting-point guides.")
+        short_description = "Resources, tools and suppliers for architects, designers, and makers."
+        placeholder = "Find resources, tools and suppliers"
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -481,9 +500,9 @@ def render_page():
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For Creators — Formground</title>
 {FAVICON_TAGS}
-<meta name="description" content="Production partners, resources and suppliers for architects, designers, and makers - real craftspeople and companies, plus friendly starting-point guides for makers earlier in their journey.">
+<meta name="description" content="{description}">
 <meta property="og:title" content="For Creators — Formground">
-<meta property="og:description" content="Production partners, resources and suppliers for architects, designers, and makers - real craftspeople and companies, plus friendly starting-point guides for makers earlier in their journey.">
+<meta property="og:description" content="{description}">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://formground.com/for-creators.html">
 <meta property="og:site_name" content="Formground">
@@ -492,7 +511,7 @@ def render_page():
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://formground.com/favicon-192x192.png">
 <meta name="twitter:title" content="For Creators — Formground">
-<meta name="twitter:description" content="Production partners, resources and suppliers for architects, designers, and makers.">
+<meta name="twitter:description" content="{short_description}">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
@@ -506,7 +525,6 @@ def render_page():
   <a href="work.html">Work</a>
   <a href="creators.html">Creators</a>
   <a href="edits.html">Edits</a>
-  <a href="for-creators.html" class="current">For Creators</a>
 </nav>
 </header>
 
@@ -517,7 +535,7 @@ def render_page():
   <div class="search-wide">
     <div class="ask-box">
       <i class="ti ti-search" aria-hidden="true"></i>
-      <input type="text" placeholder="Find production partners, resources and suppliers" autocomplete="off">
+      <input type="text" placeholder="{placeholder}" autocomplete="off">
     </div>
   </div>
 
@@ -533,7 +551,7 @@ def render_page():
 
 </main>
 
-<script>{PAGE_SCRIPT}</script>
+<script>{PAGE_SCRIPT.replace("__ALL_SHOWS__", all_shows)}</script>
 <script>{CARD_CLICK_TRACKING_JS}</script>
 
 {CLOUDFLARE_BEACON}

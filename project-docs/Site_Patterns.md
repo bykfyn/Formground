@@ -115,6 +115,17 @@ per-maker ceiling the typed views hold Furniture 107, Lighting 55, Objects 102 (
 name for a few hours on 2026-10-04 and is gone from the site; `first_seen` is still stored.
 The home page's New shelf is hand-picked from pieces this definition counts as new (plus one recent house).
 
+### Hidden sections (2026-10-04)
+
+`scraper/site_sections.py` is the one switch for hiding a section that is thin, narrow or not yet representative while
+the traffic test runs: a hidden section is not generated (an old file is removed), leaves the footers and the
+sitemap, and nothing links to it. Data and generator stay; un-hide by deleting its line and regenerating. Hidden now:
+**craftspeople** (the For Creators chip and panel, 20 firms) and **marketplace** (/marketplace.html and the brand-page
+Promotions callout: 135 retailers, ~90% in five Nordic countries, Orsjo 69 and HAY 63 dominate; Promotions is 10
+entries). Audited and left live: Edits (9), Houses (426, 13 countries), Architects (43 firms), Designers (228, all with
+4+ pieces), the type pages (all 25+ pieces), makers (198). Watch list: three maker pages with 1-2 pieces.
+The Creators page's three counts are rewritten from the real page lists on every build.
+
 ## 1. Banners (the wide photo with one featured product)
 
 Used on: the home page's category sections, the Edits hub (individual Edit pages are simple for now, see below).
@@ -219,7 +230,8 @@ chips, and the "N finishes" badge was shorter than the brand tags.)
 - Card text 12-13px; secondary text uses `--text-secondary` / `--text-muted`.
 - Breakpoints used everywhere: 959px (4-column grids), 760px (tiles show details,
   stacked layouts), 639px (2-column grids).
-- Header nav (every page): Work · Creators · Edits · For Creators.
+- Header nav (every page): Work · Creators · Edits. For Creators lives in the footer only (2026-10-04: it is not for the
+  audience the ads target, and a shorter header is less to parse).
 
 ## 7. Links and tracking
 

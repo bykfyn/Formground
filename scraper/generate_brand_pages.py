@@ -37,6 +37,7 @@ import unicodedata
 from pathlib import Path
 from urllib.parse import urlparse
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
+import site_sections  # noqa: E402
 import query_engine as qe  # noqa: E402  - one definition of "New" (is_new_piece) for pages and search
 from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
 from site_assets import ICONS_CSS  # noqa: E402
@@ -57,6 +58,7 @@ PROMOTIONS_PATH = DATA_DIR / "promotions.json"
 PROMOTIONS_ENABLED = False
 RETAILERS_PATH = DATA_DIR / "retailers.json"
 DOCS_DIR = SCRAPER_DIR.parent / "docs"
+FRONTEND_DIR = SCRAPER_DIR.parent / "frontend"
 BRANDS_DIR = DOCS_DIR / "brands"
 SITE_URL = "https://formground.com"
 
@@ -122,7 +124,8 @@ def site_nav_html(current=None):
         # relevant to keyword search). Marketplace stays one click away in
         # the footer on every page. Still 4 items - see the wrap note above.
         ("edits", "/edits.html", "Edits"),
-        ("for-creators", "/for-creators.html", "For Creators"),
+        # For Creators moved to the footer (2026-10-04): it is not for the audience the ads target, and a
+        # shorter header leaves less to parse. It stays one click away in the footer on every page.
     ]
     current_attr = ' class="current"'
     items = "\n".join(
@@ -154,8 +157,8 @@ SITE_FOOTER_HTML = (
     '<a href="/">&larr; Back to Formground</a> &middot; '
     '<a href="/work.html">Work</a> &middot; '
     '<a href="/creators.html">Creators</a> &middot; '
-    '<a href="/marketplace.html">Marketplace</a> &middot; '
-    '<a href="/for-creators.html">For Creators</a> &middot; '
+    + ('' if site_sections.is_hidden("marketplace") else '<a href="/marketplace.html">Marketplace</a> &middot; ')
+    + '<a href="/for-creators.html">For Creators</a> &middot; '
     '<a href="/edits.html">Edits</a> &middot; '
     '<a href="/privacy.html">Privacy</a> &middot; '
     '<a href="/about.html">About</a> &middot; '
@@ -1113,7 +1116,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     # themselves. ?tab=promotions lands directly on the right tab
     # rather than Marketplace's own default (Stockists).
     promo_callout = ""
-    if promotions:
+    if promotions and not site_sections.is_hidden("marketplace"):   # the callout links into the Marketplace
         best_discount = max(
             (o.get("discount_pct") or 0) for p in promotions for o in p["offers"]
         )
@@ -1482,6 +1485,21 @@ def _designers_sitemap_slugs():
     return sorted(slugs)
 
 
+def update_creators_hub_counts(n_makers, n_designers, n_architects):
+    """The three counts on the Creators page (hand-written, so they went stale: it said 17 firms, 42 designers,
+    179 brands when the site had 43, 228 and 198). Rewritten from the real page lists on every run."""
+    for folder in (FRONTEND_DIR, DOCS_DIR):
+        path = folder / "creators.html"
+        if not path.exists():
+            continue
+        text = path.read_text()
+        new = re.sub(r'(<p class="group-count">)\d[\d,]* firms?(</p>)', rf"\g<1>{n_architects:,} firms\g<2>", text)
+        new = re.sub(r'(<p class="group-count">)\d[\d,]* designers?(</p>)', rf"\g<1>{n_designers:,} designers\g<2>", new)
+        new = re.sub(r'(<p class="group-count">)\d[\d,]* brands?(</p>)', rf"\g<1>{n_makers:,} brands\g<2>", new)
+        if new != text:
+            path.write_text(new)
+
+
 def render_sitemap(brand_slugs):
     # lastmod is only set on the pages this script itself regenerates
     # every run (makers.html, brand pages) - their content can genuinely
@@ -1499,10 +1517,11 @@ def render_sitemap(brand_slugs):
         ("https://formground.com/about.html", "monthly", "0.6", None),
         ("https://formground.com/contact.html", "monthly", "0.5", None),
         ("https://formground.com/for-creators.html", "monthly", "0.4", None),
-        ("https://formground.com/marketplace.html", "weekly", "0.5", None),
         ("https://formground.com/privacy.html", "yearly", "0.2", None),
         ("https://formground.com/makers.html", "weekly", "0.7", today),
     ]
+    if not site_sections.is_hidden("marketplace"):
+        urls.append(("https://formground.com/marketplace.html", "weekly", "0.5", None))
     urls += [(f"https://formground.com/brands/{slug}.html", "weekly", "0.5", today) for slug in brand_slugs]
     designer_slugs = _designers_sitemap_slugs()
     if designer_slugs:
@@ -1608,6 +1627,7 @@ def generate():
     for slug in RETIRED_CATEGORY_SLUGS:
         (DOCS_DIR / f"{slug}.html").write_text(render_category_redirect_stub(slug))
     (DOCS_DIR / "sitemap.xml").write_text(render_sitemap(sorted(m[1] for m in makers_data)))
+    update_creators_hub_counts(len(makers_data), len(_designers_sitemap_slugs()), len(_architects_sitemap_slugs()))
 
     print(f"Generated {len(makers_data)} brand pages, makers.html, "
           f"{len(RETIRED_CATEGORY_SLUGS)} retired-category redirect stubs, "
