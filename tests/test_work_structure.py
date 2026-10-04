@@ -211,7 +211,7 @@ class StructureTests(unittest.TestCase):
         with_new = (DOCS / "brands" / "ferm-living.html").read_text()
         body = with_new[with_new.index('<main data-brand='):]
         self.assertLess(body.index("New from Ferm Living"), body.index("All of Ferm Living"))
-        self.assertLess(body.index("All of Ferm Living"), body.index('<div class="grid">', body.index("All of Ferm Living")))
+        self.assertLess(body.index("All of Ferm Living"), body.index('<div class="grid" data-listing-grid>', body.index("All of Ferm Living")))
         without = (DOCS / "brands" / "gubi.html").read_text()
         body = without[without.index('<main data-brand='):]
         self.assertNotIn("New from Gubi", body)
@@ -228,6 +228,26 @@ class StructureTests(unittest.TestCase):
             page = Path(f).read_text()
             self.assertNotIn('class="stockist-item"', page, f)
             self.assertNotIn('<p class="brand-section-title">Where to buy', page, f)
+
+    def test_maker_pages_are_paged_at_60_cards_with_see_more(self):
+        import glob as _g
+        first = (DOCS / "brands" / "serax.html").read_text()
+        grid = first[first.index('<div class="grid" data-listing-grid>'):]
+        grid = grid[:grid.index('<div class="load-more-row">')]
+        self.assertEqual(len(re.findall(r'<a class="card"', grid)), 60)
+        self.assertIn('id="see-more"', first)
+        self.assertIn('href="/brands/serax-2.html"', first)
+        self.assertIn('<nav class="pager"', first)                      # kept in the HTML for crawlers
+        second = (DOCS / "brands" / "serax-2.html").read_text()
+        self.assertIn('<p class="earlier-results"><a href="/brands/serax.html" rel="prev">', second)
+        self.assertIn('<link rel="canonical" href="https://formground.com/brands/serax-2.html">', second)
+        self.assertNotIn("New from Serax", second)                      # the New strip is page 1 only
+        small = (DOCS / "brands" / "oven-editions.html").read_text()
+        self.assertNotIn('id="see-more"', small)                        # 60 pieces or fewer: one page
+        sm = (DOCS / "sitemap.xml").read_text()
+        self.assertIn("/brands/serax-2.html", sm)
+        for f in _g.glob(str(DOCS / "brands" / "*.html")):
+            self.assertLess(Path(f).stat().st_size, 400_000, f)         # was 1.9 MB for the biggest maker
 
     def test_surprise_me_is_a_chip_not_part_of_the_search_box(self):
         work = (DOCS / "work.html").read_text()

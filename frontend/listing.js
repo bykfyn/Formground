@@ -1,4 +1,4 @@
-// Type pages (the listing template): the "See more" link and image sizing for cards added later.
+// Type pages and maker pages (the listing template): the "See more" link and image sizing for cards added later.
 //
 // The page is complete without any of this: "See more" is a real link to the next numbered page, and the
 // pager lists the pages, so crawlers, sharing and no-JavaScript visitors all work. With JavaScript the
@@ -9,7 +9,7 @@
 // shared link lands where the visitor was.
 (function () {
   var more = document.getElementById("see-more");
-  var grid = document.querySelector(".results-grid");
+  var grid = document.querySelector("[data-listing-grid], .results-grid");   // type pages: .results-grid; maker pages: [data-listing-grid]
 
   // photos that are very narrow or very wide are shown whole, as on the Work page (search.js)
   document.addEventListener("load", function (e) {
@@ -46,7 +46,7 @@
       return r.text();
     }).then(function (html) {
       var doc = new DOMParser().parseFromString(html, "text/html");
-      doc.querySelectorAll(".results-grid .card").forEach(function (c) {
+      doc.querySelectorAll("[data-listing-grid] .card, .results-grid .card").forEach(function (c) {
         grid.appendChild(document.importNode(c, true));
       });
       try { window.history.replaceState(null, "", url); } catch (e) { /* the address just stays put */ }

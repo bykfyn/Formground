@@ -40,7 +40,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
 import site_sections  # noqa: E402
 import query_engine as qe  # noqa: E402  - one definition of "New" (is_new_piece) for pages and search
 from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
-from site_assets import ICONS_CSS, SHARE_JS  # noqa: E402
+from site_assets import ICONS_CSS, LISTING_JS, SHARE_JS  # noqa: E402
 
 SCRAPER_DIR = Path(__file__).parent
 DATA_DIR = SCRAPER_DIR.parent / "data"
@@ -884,12 +884,71 @@ PAGE_CSS = """
 
 # The share button's styles live in frontend/work-results.css (the Work page's own stylesheet) between SHARE-BTN
 # markers; the maker pages embed that same block so the button looks and works identically there (edit it once).
-def _shared_share_btn_css():
+def _shared_css_block(name):
     css = (Path(__file__).resolve().parent.parent / "frontend" / "work-results.css").read_text()
-    return css[css.index("/* SHARE-BTN:START"):css.index("/* SHARE-BTN:END */")]
+    return css[css.index(f"/* {name}:START"):css.index(f"/* {name}:END */")]
 
 
-PAGE_CSS += _shared_share_btn_css()
+PAGE_CSS += _shared_css_block("SHARE-BTN") + _shared_css_block("LOAD-MORE")
+
+# Maker pages hold BRAND_CARDS_PER_PAGE cards a page (the type pages' rule: Lighthouse's ~1,400-element limit;
+# 60 divides every column count). Page 1 is /brands/<slug>.html, then /brands/<slug>-2.html ... A maker with 60 or
+# fewer pieces stays one page. "See more" loads the next batch in place (listing.js); the pager stays in the HTML
+# for crawlers and for visitors without JavaScript.
+BRAND_CARDS_PER_PAGE = 60
+
+LISTING_CONTROLS_CSS = """
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 28px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
+  .has-load-more .pager { display: none; }
+  .earlier-results { display: none; margin: 0 0 14px; font-size: 13px; }
+  .has-load-more .earlier-results { display: block; }
+  .earlier-results a { color: var(--text-muted); text-decoration: none; }
+  .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
+"""
+PAGE_CSS += LISTING_CONTROLS_CSS
+
+
+def brand_page_slug(slug, page):
+    return slug if page == 1 else f"{slug}-{page}"
+
+
+def listing_pager_html(url_for, page, pages):
+    """1 2 3 ... 14 Next: first, last and the pages around the current one. `url_for(n)` is page n's address.
+    Real links, so every page is crawlable (shared by the type pages and the maker pages)."""
+    if pages <= 1:
+        return ""
+    shown = sorted({1, pages} | {n for n in range(page - 1, page + 2) if 1 <= n <= pages})
+    items = []
+    if page > 1:
+        items.append(f'<a href="{url_for(page - 1)}" rel="prev">&larr; Prev</a>')
+    last = 0
+    for n in shown:
+        if n - last > 1:
+            items.append('<span class="gap" aria-hidden="true">&hellip;</span>')
+        items.append(f'<span class="current" aria-current="page">{n}</span>' if n == page else f'<a href="{url_for(n)}">{n}</a>')
+        last = n
+    if page < pages:
+        items.append(f'<a href="{url_for(page + 1)}" rel="next">Next &rarr;</a>')
+    return f'<nav class="pager" aria-label="Pages">{"".join(items)}</nav>'
+
+
+def listing_controls_html(url_for, page, pages, total, noun):
+    """(earlier-results link, See more row, pager) for one page of a paged listing."""
+    earlier = (f'<p class="earlier-results"><a href="{url_for(page - 1)}" rel="prev">&larr; Earlier results</a></p>'
+               if page > 1 else "")
+    see_more = ""
+    if page < pages:
+        see_more = (f'<div class="load-more-row"><a class="load-more-btn" id="see-more" data-total="{total}" '
+                    f'data-start="{(page - 1) * BRAND_CARDS_PER_PAGE}" href="{url_for(page + 1)}">See more {html.escape(noun)}</a>'
+                    f'<span class="load-more-progress" id="see-more-progress"></span></div>')
+    return earlier, see_more, listing_pager_html(url_for, page, pages)
 
 
 def directory_filter_html(placeholder, category_label):
@@ -1120,7 +1179,7 @@ def render_news_section(brand, new_products):
   </section>"""
 
 
-def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None, stockists=None, new_products=None):
+def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None, stockists=None, new_products=None, page=1):
     tag_list = list(umbrellas) + ([country] if country else [])
     tags = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
     # Real, live cross-link to Marketplace's Promotions tab (2026-09-28,
@@ -1142,12 +1201,17 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
             f'<i class="ti ti-tag" aria-hidden="true"></i> {html.escape(brand)} has {label} right now'
             f'{discount_note} &rarr;</a>'
         )
-    cards = "".join(product_card_html(p, share=True) for p in products)
-    news_section = render_news_section(brand, new_products)
+    pages = max(1, -(-len(products) // BRAND_CARDS_PER_PAGE))
+    page_products = products[(page - 1) * BRAND_CARDS_PER_PAGE: page * BRAND_CARDS_PER_PAGE]
+    url_for = lambda n: f"/brands/{brand_page_slug(slug, n)}.html"
+    earlier_html, see_more_html, pager_html = listing_controls_html(url_for, page, pages, len(products), "pieces")
+    cards = "".join(product_card_html(p, share=True) for p in page_products)
+    news_section = render_news_section(brand, new_products) if page == 1 else ""
     all_work_title = f'  <p class="brand-section-title">All of {html.escape(brand)}</p>\n' if news_section else ""
     stockist_section = "" if site_sections.is_hidden("maker_stockists") else render_stockist_section(brand, stockists)
-    page_url = f"{SITE_URL}/brands/{slug}.html"
-    description = f"{html.escape(brand)}'s work on Formground - {len(products)} pieces, linked straight to their own site."
+    page_url = f"{SITE_URL}/brands/{brand_page_slug(slug, page)}.html"
+    page_note = f" (page {page} of {pages})" if pages > 1 else ""
+    description = f"{html.escape(brand)}'s work on Formground - {len(products)} pieces{page_note}, linked straight to their own site."
     # Reusing the same hero image makers.html already picks for this
     # brand (see primary_image_for) as the share-preview image, rather
     # than a generic sitewide fallback - a real photo of what this maker
@@ -1172,7 +1236,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
         "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Formground", "item": f"{SITE_URL}/"},
             {"@type": "ListItem", "position": 2, "name": "Makers", "item": f"{SITE_URL}/makers.html"},
-            {"@type": "ListItem", "position": 3, "name": brand, "item": page_url},
+            {"@type": "ListItem", "position": 3, "name": brand, "item": f"{SITE_URL}/brands/{slug}.html"},
         ],
     })
     return f"""<!DOCTYPE html>
@@ -1180,16 +1244,16 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{html.escape(brand)} on Formground</title>
+<title>{html.escape(brand)} on Formground{html.escape(f" - page {page}" if page > 1 else "")}</title>
 {FAVICON_TAGS}
 <meta name="description" content="{description}">
 <link rel="canonical" href="{page_url}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="{html.escape(brand)} on Formground">
+<meta property="og:title" content="{html.escape(brand)} on Formground{html.escape(f" - page {page}" if page > 1 else "")}">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{page_url}">
 {og_image_tags}<meta name="twitter:card" content="{twitter_card_type}">
-<meta name="twitter:title" content="{html.escape(brand)} on Formground">
+<meta name="twitter:title" content="{html.escape(brand)} on Formground{html.escape(f" - page {page}" if page > 1 else "")}">
 <meta name="twitter:description" content="{description}">
 <script type="application/ld+json">{breadcrumb_json}</script>
 <link rel="stylesheet" href="/site.css">
@@ -1208,7 +1272,10 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     <div class="tags">{tags}</div>
     <a class="brand-site-link" href="{html.escape(brand_url)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>{promo_callout}
   </div>
-{news_section}{all_work_title}  <div class="grid">{cards}</div>
+{news_section}{all_work_title}  {earlier_html}
+  <div class="grid" data-listing-grid>{cards}</div>
+  {see_more_html}
+  {pager_html}
 {stockist_section}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
@@ -1233,6 +1300,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
 </script>
 <script>{CARD_CLICK_TRACKING_JS}</script>
 <script src="{SHARE_JS}" defer></script>
+<script src="{LISTING_JS}" defer></script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -1607,6 +1675,13 @@ def generate():
 
     slugs_seen = {}
     makers_data = []
+    extra_page_slugs = []      # /brands/<slug>-2.html ... for makers with more than one page of pieces
+    # Drop the numbered pages a previous run wrote (a maker that shrank must not leave an orphaned -4 page behind).
+    _brand_slugs_now = {slugify(b) for b in by_brand}
+    for old_page in BRANDS_DIR.glob("*-[0-9]*.html"):
+        base = re.sub(r"-\d+$", "", old_page.stem)
+        if base in _brand_slugs_now and old_page.stem not in _brand_slugs_now:
+            old_page.unlink()
     for brand, products in by_brand.items():
         slug = slugify(brand)
         # Extremely unlikely at current scale, but two brands could
@@ -1634,6 +1709,12 @@ def generate():
             new_arrivals_by_brand.get(brand),
         )
         (BRANDS_DIR / f"{slug}.html").write_text(page)
+        brand_pages = max(1, -(-len(products) // BRAND_CARDS_PER_PAGE))
+        for extra in range(2, brand_pages + 1):
+            (BRANDS_DIR / f"{brand_page_slug(slug, extra)}.html").write_text(render_brand_page(
+                brand, slug, brand_url, products, umbrellas, country, promotions_by_brand.get(brand),
+                stockists_by_brand.get(brand), new_arrivals_by_brand.get(brand), page=extra))
+            extra_page_slugs.append(brand_page_slug(slug, extra))
         image = primary_image_for(products, umbrellas)
         tier = tiers.get(brand, "independent")
         makers_data.append((brand, slug, umbrellas, len(products), country, image, tier))
@@ -1641,7 +1722,7 @@ def generate():
     (DOCS_DIR / "makers.html").write_text(render_makers_index(makers_data))
     for slug in RETIRED_CATEGORY_SLUGS:
         (DOCS_DIR / f"{slug}.html").write_text(render_category_redirect_stub(slug))
-    (DOCS_DIR / "sitemap.xml").write_text(render_sitemap(sorted(m[1] for m in makers_data)))
+    (DOCS_DIR / "sitemap.xml").write_text(render_sitemap(sorted([m[1] for m in makers_data] + extra_page_slugs)))
     update_creators_hub_counts(len(makers_data), len(_designers_sitemap_slugs()), len(_architects_sitemap_slugs()))
 
     print(f"Generated {len(makers_data)} brand pages, makers.html, "

@@ -65,6 +65,14 @@ Each nav item owns a URL namespace; a name never means two different pages.
 - Moved 2026-10-04 from /browse/ and the site root, before ads started, so no paid or
   inbound traffic had to be carried over.
 
+### Maker pages are paged too (2026-10-04)
+
+A maker page holds 60 cards (`BRAND_CARDS_PER_PAGE`), then `/brands/<slug>-2.html`, `-3.html` ... with the same See more
+behaviour as the type pages (shared `listing.js`, `generate_brand_pages.listing_controls_html`): See more is the only
+visible way on with JavaScript, the numbered pager stays in the HTML, page 2+ gets "Earlier results", the address follows
+the batches. "New from X" and its "All of X" heading are page 1 only. A maker with 60 or fewer pieces is one page.
+Before this the biggest maker page was 1.9 MB (Serax, 2,757 cards); now no page is over 100 KB.
+
 ### Category pages (/work/furniture|lighting|objects.html)
 
 Same header block as a type page (nav with Work current, Work-style search box, the four chips with the

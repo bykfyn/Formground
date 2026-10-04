@@ -80,6 +80,7 @@ sys.path.insert(0, str(BACKEND_DIR))
 import query_engine as qe  # noqa: E402
 
 from generate_brand_pages import (  # noqa: E402
+    listing_pager_html,
     site_nav_html,
     slugify,
     CARD_CLICK_TRACKING_JS,
@@ -280,26 +281,8 @@ def _pager_html(slug, page, pages):
 
 
 def _pager_compact_html(slug, page, pages):
-    """1 2 3 ... 14 Next: first, last and the pages around the current one, with gaps elided - the
-    full list of numbers does not scale to 14+ pages. Real links, so every page is crawlable."""
-    if pages <= 1:
-        return ""
-    shown = sorted({1, pages} | {n for n in range(page - 1, page + 2) if 1 <= n <= pages})
-    items = []
-    if page > 1:
-        items.append(f'<a href="/work/{_page_slug(slug, page - 1)}.html" rel="prev">&larr; Prev</a>')
-    last = 0
-    for n in shown:
-        if n - last > 1:
-            items.append('<span class="gap" aria-hidden="true">&hellip;</span>')
-        if n == page:
-            items.append(f'<span class="current" aria-current="page">{n}</span>')
-        else:
-            items.append(f'<a href="/work/{_page_slug(slug, n)}.html">{n}</a>')
-        last = n
-    if page < pages:
-        items.append(f'<a href="/work/{_page_slug(slug, page + 1)}.html" rel="next">Next &rarr;</a>')
-    return f'<nav class="pager" aria-label="Pages">{"".join(items)}</nav>'
+    """The numbered pager for a type/New page (shared implementation: generate_brand_pages.listing_pager_html)."""
+    return listing_pager_html(lambda n: f"/work/{_page_slug(slug, n)}.html", page, pages)
 
 
 def _head(title, description, page_url):
