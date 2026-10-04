@@ -1,4 +1,4 @@
-// Share button on the static cards (type pages, Edits and the maker pages) - the same behaviour as the Work page's own (search.js
+// Share button on the static cards (type pages, Edits, maker pages, house cards) - the same behaviour as the Work page's own (search.js
 // renderCard): native share sheet where there is one, otherwise copy "text + link"; a separate
 // "share" event (never a click-through) goes to the same anonymous tracker.
 document.addEventListener("click", function (e) {
@@ -6,7 +6,7 @@ document.addEventListener("click", function (e) {
   if (!btn) return;
   e.preventDefault();
   e.stopPropagation();
-  var card = btn.closest(".card");
+  var card = btn.closest(".card, .maker-card");   // product cards and the house cards
   var product = card.getAttribute("data-product") || "";
   var brand = card.getAttribute("data-brand") || "";
   var text = product + " by " + brand + ". Discovered at Formground.com";

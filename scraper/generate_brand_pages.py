@@ -444,8 +444,7 @@ def product_card_html(p, show_brand=False, variant_count=None, share=False):
         title_html = f'<div class="card-title-wrap">{title_html}</div>'
     brand_line = f'<p class="card-brand">{html.escape(p["brand"])}</p>' if show_brand else ""
     # the same share button as the Work page's cards (share.js reads data-product / data-brand)
-    share_btn = ('<button class="share-btn" type="button" aria-label="Share this piece">'
-                 '<i class="ti ti-share-2" aria-hidden="true"></i></button>') if share else ""
+    share_btn = SHARE_BTN_HTML if share else ""
     return f"""
       <a class="card" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer" data-product="{html.escape(p["product_name"])}" data-brand="{html.escape(p["brand"])}">
         <div class="card-image">{image}{share_btn}</div>
@@ -913,6 +912,11 @@ LISTING_CONTROLS_CSS = """
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 """
 PAGE_CSS += LISTING_CONTROLS_CSS
+
+
+# The share button markup (one definition; styles: work-results.css SHARE-BTN block, behaviour: share.js).
+SHARE_BTN_HTML = ('<button class="share-btn" type="button" aria-label="Share this piece">'
+                  '<i class="ti ti-share-2" aria-hidden="true"></i></button>')
 
 
 def brand_page_slug(slug, page):

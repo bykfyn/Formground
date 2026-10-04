@@ -249,6 +249,16 @@ class StructureTests(unittest.TestCase):
         for f in _g.glob(str(DOCS / "brands" / "*.html")):
             self.assertLess(Path(f).stat().st_size, 400_000, f)         # was 1.9 MB for the biggest maker
 
+    def test_architect_pages_have_share_buttons_and_no_left_hand_tagline(self):
+        firm = (DOCS / "architects" / "bernardo-bader-architekten.html").read_text()
+        body = firm[firm.index("<main>"):]
+        self.assertNotIn('<p class="page-tagline">Architects.</p>', body)
+        self.assertIn('<button class="share-btn"', body)
+        self.assertIn('data-brand="Bernardo Bader Architekten"', body)
+        self.assertIn("/share.js?v=", firm)
+        houses = (DOCS / "work" / "houses.html").read_text()
+        self.assertIn('<button class="share-btn"', houses)
+
     def test_surprise_me_is_a_chip_not_part_of_the_search_box(self):
         work = (DOCS / "work.html").read_text()
         self.assertEqual(work.count('id="discover-chip"'), 1)          # search.js shuffles via this id

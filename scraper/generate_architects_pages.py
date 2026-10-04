@@ -31,8 +31,10 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
+from site_assets import SHARE_JS  # noqa: E402
 from generate_brand_pages import (
     CARD_CLICK_TRACKING_JS,
+    SHARE_BTN_HTML,
     CLOUDFLARE_ANALYTICS,
     DIRECTORY_FILTER_JS,
     FAVICON_TAGS,
@@ -66,8 +68,8 @@ def house_card_html(house):
     meta = " · ".join(x for x in [house.get("location"), str(house["year"]) if house.get("year") else None] if x)
     link = house.get("url") or "#"
     return f"""
-      <a class="maker-card" href="{html.escape(link)}" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero">{image}</div>
+      <a class="maker-card" href="{html.escape(link)}" target="_blank" rel="noopener noreferrer" data-product="{html.escape(house["name"] or "House")}" data-brand="{html.escape(house.get("firm") or "")}">
+        <div class="maker-card-hero">{image}{SHARE_BTN_HTML}</div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(house["name"] or "Untitled house")}</span>
           <span class="maker-country">{html.escape(meta) if meta else "&nbsp;"}</span>
@@ -154,7 +156,6 @@ def render_architect_page(firm_name, slug, meta, houses):
 {site_nav_html("creators")}
 </header>
 <main>
-  <p class="page-tagline">Architects.</p>
   <div class="maker-header">
     <p class="eyebrow">Architect</p>
     <h1 class="maker-name">{html.escape(firm_name)}</h1>
@@ -178,6 +179,7 @@ def render_architect_page(firm_name, slug, meta, houses):
   }});
 </script>
 <script>{CARD_CLICK_TRACKING_JS}</script>
+<script src="{SHARE_JS}" defer></script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>

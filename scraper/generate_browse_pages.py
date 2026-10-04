@@ -80,6 +80,7 @@ sys.path.insert(0, str(BACKEND_DIR))
 import query_engine as qe  # noqa: E402
 
 from generate_brand_pages import (  # noqa: E402
+    SHARE_BTN_HTML,
     listing_pager_html,
     site_nav_html,
     slugify,
@@ -615,8 +616,9 @@ def _house_work_card_html(h):
     meta = " · ".join(x for x in [h.get("location"), str(h["year"]) if h.get("year") else None] if x)
     # both text lines always exist and stay on one line, so every card in a row is the same height
     return (
-        f'<a class="maker-card" href="{html.escape(h.get("url") or "#")}" target="_blank" rel="noopener noreferrer">'
-        f'<div class="maker-card-hero"><img src="{html.escape(h["image"])}" alt="{html.escape(h["name"] or "House")}" loading="lazy"></div>'
+        f'<a class="maker-card" href="{html.escape(h.get("url") or "#")}" target="_blank" rel="noopener noreferrer" '
+        f'data-product="{html.escape(h["name"] or "House")}" data-brand="{html.escape(h["firm"])}">'
+        f'<div class="maker-card-hero"><img src="{html.escape(h["image"])}" alt="{html.escape(h["name"] or "House")}" loading="lazy">{SHARE_BTN_HTML}</div>'
         f'<div class="maker-card-body"><span class="maker-name">{html.escape(h["name"] or "Untitled house")}</span>'
         f'<span class="maker-country">{html.escape(meta) if meta else "&nbsp;"}</span>'
         f'<span class="maker-country">by {html.escape(h["firm"])}</span></div></a>'
@@ -675,6 +677,7 @@ def render_houses_page(slug, title, lead, houses, page, pages, entries, crumbs, 
   </p>
 </main>
 <script>{CARD_CLICK_TRACKING_JS}</script>
+<script src="{SHARE_JS}" defer></script>
 {MENU_SCRIPT}
 {CLOUDFLARE_ANALYTICS}
 </body>
