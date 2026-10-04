@@ -217,6 +217,18 @@ class StructureTests(unittest.TestCase):
         self.assertNotIn("New from Gubi", body)
         self.assertNotIn("All of Gubi", body)                  # no empty space, no extra heading, just the range
 
+    def test_maker_pages_have_the_share_button_and_no_stockist_section(self):
+        import glob as _g
+        text = (DOCS / "brands" / "gubi.html").read_text()
+        self.assertIn('<button class="share-btn"', text)
+        self.assertIn('data-product="62 Desk" data-brand="Gubi"', text)
+        self.assertIn("/share.js?v=", text)
+        self.assertIn(".share-btn.copied::after", text)                 # the shared button styles are embedded
+        for f in _g.glob(str(DOCS / "brands" / "*.html")):
+            page = Path(f).read_text()
+            self.assertNotIn('class="stockist-item"', page, f)
+            self.assertNotIn('<p class="brand-section-title">Where to buy', page, f)
+
     def test_surprise_me_is_a_chip_not_part_of_the_search_box(self):
         work = (DOCS / "work.html").read_text()
         self.assertEqual(work.count('id="discover-chip"'), 1)          # search.js shuffles via this id

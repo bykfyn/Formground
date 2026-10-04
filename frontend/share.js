@@ -1,8 +1,8 @@
-// Share button on the static listing cards - the same behaviour as the Work page's own (search.js
+// Share button on the static cards (type pages, Edits and the maker pages) - the same behaviour as the Work page's own (search.js
 // renderCard): native share sheet where there is one, otherwise copy "text + link"; a separate
 // "share" event (never a click-through) goes to the same anonymous tracker.
 document.addEventListener("click", function (e) {
-  var btn = e.target.closest && e.target.closest(".results-grid .share-btn");
+  var btn = e.target.closest && e.target.closest(".share-btn");
   if (!btn) return;
   e.preventDefault();
   e.stopPropagation();

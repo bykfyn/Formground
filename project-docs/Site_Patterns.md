@@ -184,6 +184,10 @@ filling it, the title and count on it, the pictured product and a "Visit site" p
 - Grids are a **fixed** column count, never auto-fit: 6 across, 4 under 960px,
   2 under 640px (gaps 20px, 16px on phones).
 - Every card links straight to the maker's own site; nothing is sold or held on Formground.
+- The share button (bottom-right of the photo; native share sheet or copy text + link) is on every card of the Work page, the
+  type pages, the Edit pages and the maker pages. Its styles live once in `work-results.css` (SHARE-BTN markers) and are
+  embedded in PAGE_CSS; behaviour is `share.js`. Maker pages no longer show a "Where to buy" section (switch
+  `maker_stockists` in site_sections.py; the Marketplace page lists stockists in full).
 
 ## 4. Photos
 
