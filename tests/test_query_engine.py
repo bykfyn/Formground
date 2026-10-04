@@ -712,3 +712,28 @@ class SearchSpeedTests(unittest.TestCase):
         qe.filter_by_name("lamp")
         sample = qe._all_product_rows()[0]
         self.assertIsInstance(sample["material_options"], str)
+
+
+class DiscoverHousesTests(unittest.TestCase):
+    """"Surprise me" includes a few houses (2026-10-04): 1 to 3 per browse, different practices, inside the cap."""
+
+    def test_every_browse_has_one_to_three_houses_from_different_practices(self):
+        for _ in range(15):
+            results = qe.discover()
+            houses = [r for r in results if r.get("type") == "house"]
+            self.assertTrue(1 <= len(houses) <= qe.DISCOVER_HOUSES_MAX, len(houses))
+            self.assertEqual(len({h["brand"] for h in houses}), len(houses))      # one house per practice
+            self.assertLessEqual(len(results), qe.DISCOVER_TOTAL_CAP)
+            for h in houses:
+                self.assertTrue(h["image_url"] and h["product_url"] and h["product_name"])
+                self.assertFalse(h["link_dead"])
+
+    def test_houses_are_not_offered_under_a_maker_tier_chip(self):
+        for tier in ("independent", "established"):
+            self.assertFalse([r for r in qe.discover(tier=tier) if r.get("type") == "house"], tier)
+
+    def test_houses_do_not_crowd_out_the_products(self):
+        for _ in range(10):
+            results = qe.discover()
+            products = [r for r in results if r.get("type") != "house"]
+            self.assertGreaterEqual(len(products), qe.DISCOVER_TOTAL_CAP - qe.DISCOVER_HOUSES_MAX)

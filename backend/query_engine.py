@@ -556,6 +556,12 @@ DISCOVER_PER_BRAND = 6
 # just "how big a pool is worth fetching for one browse."
 DISCOVER_TOTAL_CAP = 30
 
+# Houses are part of Work, so "Surprise me" includes them (2026-10-04) - but there are only ~430 against ~28,000
+# products, so they appear sparingly: each browse gets 1 to DISCOVER_HOUSES_MAX houses, every one from a different
+# practice (a practice is the "brand" of a house, same fairness rule as products), inside the same total cap.
+# Not offered under the Independent / Established chips: those filter makers, and a practice has no tier.
+DISCOVER_HOUSES_MAX = 3
+
 
 _TRANSLATE_SYSTEM_PROMPT = (
     "You translate a search query about independent design - furniture/"
@@ -1310,7 +1316,23 @@ def discover(per_brand: int = DISCOVER_PER_BRAND, total_cap: int = DISCOVER_TOTA
         sampled.extend(random.sample(brand_products, min(per_brand, len(brand_products))))
 
     random.shuffle(sampled)
-    return sampled[:total_cap]
+    houses = [] if tier else _discover_houses()
+    results = sampled[:total_cap - len(houses)]
+    for house in houses:                       # scattered at random positions, not bunched at one end
+        results.insert(random.randint(0, len(results)), house)
+    return results
+
+
+def _discover_houses() -> list:
+    """1 to DISCOVER_HOUSES_MAX random houses from different practices, as cards (see _normalize_house)."""
+    by_firm = {}
+    for house in _load_houses():
+        if house.get("image") and house.get("url") and house.get("firm"):
+            by_firm.setdefault(house["firm"], []).append(house)
+    if not by_firm:
+        return []
+    firms = random.sample(sorted(by_firm), min(random.randint(1, DISCOVER_HOUSES_MAX), len(by_firm)))
+    return [_normalize_house(random.choice(by_firm[firm])) for firm in firms]
 
 
 def cap_per_brand(products: list, max_per_brand: int = MAX_RESULTS_PER_BRAND) -> list:
