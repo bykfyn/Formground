@@ -175,7 +175,7 @@ and stylesheet (`work-results.css`), like every type page - one product card des
 
 Edits hub grid (2026-10-04): every Edit is the same tile - 2 columns wide and 2 rows tall of the 6-column grid
 (a square, 360px at full width; 3 across, 2 on the 4-column tier, one full-width 4:3 tile on phones) - photo
-filling it, the title and count on it, the pictured product and a "Visit site" pill on hover. No featured
+filling it, the title on it (no piece/maker count: almost every Edit has 12, so it was noise), the pictured product and a "Visit site" pill on hover. No featured
 (larger) tile any more.
 
 ## 2. Tiles (the home page bento, the Edits hub's featured edit)

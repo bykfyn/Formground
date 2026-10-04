@@ -411,7 +411,7 @@ def render_edits_index(themes_data):
       <figure class="edit-feature">
         <a class="cat-link" href="/edits/{theme['slug']}.html" aria-label="Browse {html.escape(theme['title'])}"></a>
         {image_tag}
-        <p class="cat-label">{html.escape(theme['title'])}<small>{_edit_meta_text(count, brand_count)}</small></p>{details}
+        <p class="cat-label">{html.escape(theme['title'])}</p>{details}
       </figure>"""
     tile_grid_html = f'<div class="maker-grid">{tile_items}\n  </div>' if tile_items else ""
 
