@@ -100,7 +100,8 @@ Not a chip. A **category-level** entry - Furniture / New, Lighting / New, Object
 under Seating): its own row above the groups in the category's dropdown, its own tile above the groups on the
 category page (a photo of its newest piece), first in the "<Category> ->" list at the foot of the type pages. It
 opens `/work/new-<category>.html`: a standard listing page (Work cards, 60 a page, See more, pager), cards spread
-across makers. No per-group version. Houses have no New (a project year, not a release date; revisit). 
+across makers, and **at most 10 pieces per maker** in each view (`NEW_PER_MAKER_CEILING`, newest first) so the
+established makers' big collections cannot fill it (uncapped, Ferm Living + Mater + Serax were 42%). No per-group version. Houses have no New (a project year, not a release date; revisit). 
 `/work/new.html` is a small hub (three tiles) that the home page's "New" heading links to; `/new.html` is a stub.
 
 **What "New" means: new from the maker** (`query_engine.is_new_piece`, used by these pages, the Work search's "new"
@@ -108,8 +109,8 @@ keyword and each brand page's "New from X"): the piece's own date (`products.rel
 created/published, WordPress post date) is within 90 days; or, for a maker whose platform exposes no date, we first
 saw it more than a week after our first scan of that maker. A maker whose earliest date is under a year old is
 treated as undated (a rebuilt store would make its whole catalog look new). Makers with no date are therefore
-under-represented until their pieces start appearing after our first scan. 860 pieces qualify (Furniture 237,
-Lighting 61, Objects 218 are typed; the rest wait for classification).
+under-represented until their pieces start appearing after our first scan. 860 pieces qualify; with the
+per-maker ceiling the typed views hold Furniture 107, Lighting 55, Objects 102 (the rest wait for classification).
 **"Recently added"** (when our scraper first saw a piece - mostly whole catalogs on onboarding day) was a stopgap
 name for a few hours on 2026-10-04 and is gone from the site; `first_seen` is still stored.
 The home page's New shelf is hand-picked from pieces this definition counts as new (plus one recent house).

@@ -767,6 +767,7 @@ def render_category_page(cat_name, entries):
 
 
 NEW_CATEGORIES = ("Furniture", "Lighting", "Objects")   # Houses carry no added-date, so no New view
+NEW_PER_MAKER_CEILING = 10   # at most this many pieces per maker in each New view (2026-10-04, smaller makers)
 
 
 def _new_sets():
@@ -780,8 +781,21 @@ def _new_sets():
         for intent in category.get("intents") or [category["intent"]]:
             for p in qe.filter_products({**intent, "new_only": True}):
                 ids_by_cat.setdefault(cat_name, set()).add(p["id"])
-    newest = sorted(new_all, key=lambda p: p["first_seen"] or "", reverse=True)
-    return {c: [p for p in newest if p["id"] in ids_by_cat.get(c, set())] for c in NEW_CATEGORIES}
+    newest = sorted(new_all, key=lambda p: p.get("released_at") or p["first_seen"] or "", reverse=True)
+    return {c: _cap_per_maker([p for p in newest if p["id"] in ids_by_cat.get(c, set())], NEW_PER_MAKER_CEILING)
+            for c in NEW_CATEGORIES}
+
+
+def _cap_per_maker(products, ceiling):
+    """The `ceiling` newest pieces of each maker (products arrive newest first), in the same order. Established
+    makers release far more, so uncapped they would fill New (Ferm Living, Mater and Serax were 42% of it);
+    capped, New shows breadth across the makers who released something."""
+    seen, out = {}, []
+    for p in products:
+        if seen.get(p["brand"], 0) < ceiling:
+            seen[p["brand"]] = seen.get(p["brand"], 0) + 1
+            out.append(p)
+    return out
 
 
 def _new_entries(sets):

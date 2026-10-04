@@ -175,6 +175,13 @@ class StructureTests(unittest.TestCase):
             self.assertLessEqual(len(re.findall(r'<a class="card"', text)), 60, cat)
             page = (DOCS / "work" / f"{cat}.html").read_text()
             self.assertIn(f'href="/work/new-{cat}.html"', page)            # a tile on the category page
+        # no maker fills a New view: at most 10 pieces per maker in each (smaller makers are not crowded out)
+        for cat in ("furniture", "lighting", "objects"):
+            per_maker = {}
+            for f in glob.glob(str(DOCS / "work" / f"new-{cat}*.html")):
+                for brand in re.findall(r'<a class="card"[^>]*data-brand="([^"]*)"', Path(f).read_text()):
+                    per_maker[brand] = per_maker.get(brand, 0) + 1
+            self.assertTrue(per_maker and max(per_maker.values()) <= 10, (cat, max(per_maker.values())))
         self.assertNotIn("new-houses", menu)                               # houses carry no added-date
         hub = (DOCS / "work" / "new.html").read_text()
         self.assertEqual(hub.count('class="maker-card"'), 3)
