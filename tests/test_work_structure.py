@@ -265,6 +265,10 @@ class StructureTests(unittest.TestCase):
             self.assertGreater(page.count('class="maker-card"'), 100, folder)
             self.assertNotIn("coming soon", page.lower(), folder)
 
+    def test_designer_pages_have_no_left_hand_tagline(self):
+        page = (DOCS / "designers" / "aa-vv.html").read_text()
+        self.assertNotIn("Looking for who made it?", page)
+
     def test_surprise_me_is_a_chip_not_part_of_the_search_box(self):
         work = (DOCS / "work.html").read_text()
         self.assertEqual(work.count('id="discover-chip"'), 1)          # search.js shuffles via this id

@@ -154,7 +154,6 @@ def render_designer_page(designer_name, slug, products):
   <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">{len(products)} real product{'' if len(products) == 1 else 's'} credited to {html.escape(designer_name)}, each linked straight to its maker's own page.</p>
   <div class="maker-grid">{products_html}
   </div>
-  <p class="page-tagline">Looking for who made it? <a href="/makers.html">Browse Makers &rarr;</a></p>
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
