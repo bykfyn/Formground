@@ -440,7 +440,7 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
     edit_line = ""
     if edits:
         links = " &middot; ".join(f'<a href="/edits/{es}.html">{html.escape(et)} &rarr;</a>' for es, et in edits)
-        edit_line = f' &middot; Curated selection: {links}'
+        edit_line = f' &middot; {"Themed Edits" if len(edits) > 1 else "Themed Edit"}: {links}'
     breadcrumb = _breadcrumb_json([
         ("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html"),
         (cat_name, f"{SITE_URL}/work/{cat_slug}.html"), (title, f"{SITE_URL}/work/{slug}.html")])
