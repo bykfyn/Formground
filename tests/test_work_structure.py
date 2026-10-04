@@ -273,6 +273,18 @@ class StructureTests(unittest.TestCase):
         self.assertNotIn('class="maker-card"', page)
         self.assertIn("/share.js?v=", page)
 
+    def test_big_designer_pages_are_paged_at_60(self):
+        first = (DOCS / "designers" / "jaime-hayon.html").read_text()
+        grid = first[first.index('<div class="grid" data-listing-grid>'):]
+        grid = grid[:grid.index('<div class="load-more-row">')]
+        self.assertEqual(len(re.findall(r'<a class="card"', grid)), 60)
+        self.assertIn('href="/designers/jaime-hayon-2.html"', first)
+        third = (DOCS / "designers" / "jaime-hayon-3.html").read_text()
+        self.assertIn('<p class="earlier-results"><a href="/designers/jaime-hayon-2.html" rel="prev">', third)
+        self.assertIn("/designers/jaime-hayon-3.html", (DOCS / "sitemap.xml").read_text())
+        small = (DOCS / "designers" / "aa-vv.html").read_text()
+        self.assertNotIn('id="see-more"', small)
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "aa-vv.html").read_text()
         self.assertNotIn("Looking for who made it?", page)

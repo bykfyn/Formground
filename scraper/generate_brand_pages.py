@@ -1547,14 +1547,11 @@ def _architects_sitemap_slugs():
     return sorted(slugs)
 
 
-def _designers_sitemap_slugs():
-    """Same self-healing rationale as _craftspeople_sitemap_slugs() -
-    reads data/formground.db directly (the real source for
-    generate_designers_pages.py, no separate JSON file) so
-    render_sitemap() stays correct regardless of which generator last
-    ran. A designer gets a page only with 2+ real credited products
-    (see generate_designers_pages.py's MIN_PRODUCTS) - mirrored here so
-    a designer who drops below that bar doesn't stay listed."""
+def _designers_with_counts():
+    """[(slug, product count)] for every designer who gets a page (2+ credited products - see
+    generate_designers_pages.py's MIN_PRODUCTS), in the same sorted order and with the same unique_slug as that
+    generator. Reads data/formground.db directly (the real source, no separate JSON file) so render_sitemap()
+    stays correct regardless of which generator last ran."""
     if not DB_PATH.exists():
         return []
     conn = sqlite3.connect(DB_PATH)
@@ -1565,12 +1562,22 @@ def _designers_sitemap_slugs():
     """).fetchall()
     conn.close()
     slugs_seen = {}
-    slugs = []
-    for name, _ in sorted(rows, key=lambda r: r[0]):  # same sorted order + unique_slug as generate_designers_pages.py
+    out = []
+    for name, n in sorted(rows, key=lambda r: r[0]):
         slug = unique_slug(slugify(name), name, slugs_seen)
         slugs_seen[slug] = name
-        slugs.append(slug)
-    return sorted(slugs)
+        out.append((slug, n))
+    return out
+
+
+def _designers_sitemap_slugs():
+    return sorted(slug for slug, _ in _designers_with_counts())
+
+
+def _designers_extra_page_slugs():
+    """/designers/<slug>-2.html ... for designers with more than one page of products (60 a page)."""
+    return [brand_page_slug(slug, page) for slug, n in _designers_with_counts()
+            for page in range(2, -(-n // BRAND_CARDS_PER_PAGE) + 1)]
 
 
 def update_creators_hub_counts(n_makers, n_designers, n_architects):
@@ -1615,7 +1622,7 @@ def render_sitemap(brand_slugs):
         urls.append(("https://formground.com/designers.html", "weekly", "0.7", today))
         urls += [
             (f"https://formground.com/designers/{slug}.html", "weekly", "0.5", today)
-            for slug in designer_slugs
+            for slug in sorted(designer_slugs + _designers_extra_page_slugs())
         ]
     architect_slugs = _architects_sitemap_slugs()
     if architect_slugs:

@@ -35,8 +35,11 @@ import sqlite3
 from collections import defaultdict
 from pathlib import Path
 
-from site_assets import SHARE_JS  # noqa: E402
+from site_assets import LISTING_JS, SHARE_JS  # noqa: E402
 from generate_brand_pages import (
+    BRAND_CARDS_PER_PAGE,
+    brand_page_slug,
+    listing_controls_html,
     CARD_CLICK_TRACKING_JS,
     product_card_html,
     CLOUDFLARE_ANALYTICS,
@@ -88,15 +91,20 @@ def designer_card_html(designer_name, slug, products):
       </a>"""
 
 
-def render_designer_page(designer_name, slug, products):
-    page_url = f"{SITE_URL}/designers/{slug}.html"
+def render_designer_page(designer_name, slug, products, page=1):
+    page_url = f"{SITE_URL}/designers/{brand_page_slug(slug, page)}.html"
     brands = sorted({p["brand"] for p in products})
     brand_line = brands[0] if len(brands) == 1 else f"{len(brands)} brands: {', '.join(brands)}"
+    pages = max(1, -(-len(products) // BRAND_CARDS_PER_PAGE))
+    page_note = f" (page {page} of {pages})" if pages > 1 else ""
     description = (
-        f"{html.escape(designer_name)} - {len(products)} real product{'' if len(products) == 1 else 's'} "
+        f"{html.escape(designer_name)} - {len(products)} real product{'' if len(products) == 1 else 's'}{page_note} "
         f"credited across {brand_line if len(brands) > 1 else brands[0]}."
     )
     products_sorted = sorted(products, key=lambda p: (p["brand"], p["product_name"]))
+    url_for = lambda n: f"/designers/{brand_page_slug(slug, n)}.html"
+    earlier_html, see_more_html, pager_html = listing_controls_html(url_for, page, pages, len(products), "pieces")
+    products_sorted = products_sorted[(page - 1) * BRAND_CARDS_PER_PAGE: page * BRAND_CARDS_PER_PAGE]
     # the standard product card (square photo, name, maker, share button) - the same as the Work page and every other page
     products_html = "".join(product_card_html(p, show_brand=True, share=True) for p in products_sorted)
 
@@ -106,7 +114,7 @@ def render_designer_page(designer_name, slug, products):
       "itemListElement": [
         {{"@type": "ListItem", "position": 1, "name": "Formground", "item": "{SITE_URL}/"}},
         {{"@type": "ListItem", "position": 2, "name": "Designers", "item": "{SITE_URL}/designers.html"}},
-        {{"@type": "ListItem", "position": 3, "name": "{html.escape(designer_name)}", "item": "{page_url}"}}
+        {{"@type": "ListItem", "position": 3, "name": "{html.escape(designer_name)}", "item": "{SITE_URL}/designers/{slug}.html"}}
       ]
     }}"""
 
@@ -115,7 +123,7 @@ def render_designer_page(designer_name, slug, products):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{html.escape(designer_name)} — Designers — Formground</title>
+<title>{html.escape(designer_name)} — Designers — Formground{html.escape(f" - page {page}" if page > 1 else "")}</title>
 {FAVICON_TAGS}
 <meta name="description" content="{description}">
 <link rel="canonical" href="{page_url}">
@@ -140,8 +148,11 @@ def render_designer_page(designer_name, slug, products):
     <h1 class="maker-name">{html.escape(designer_name)}</h1>
   </div>
   <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">{len(products)} real product{'' if len(products) == 1 else 's'} credited to {html.escape(designer_name)}, each linked straight to its maker's own page.</p>
-  <div class="grid">{products_html}
+  {earlier_html}
+  <div class="grid" data-listing-grid>{products_html}
   </div>
+  {see_more_html}
+  {pager_html}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
@@ -156,6 +167,7 @@ def render_designer_page(designer_name, slug, products):
 </script>
 <script>{CARD_CLICK_TRACKING_JS}</script>
 <script src="{SHARE_JS}" defer></script>
+<script src="{LISTING_JS}" defer></script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -261,6 +273,7 @@ def generate():
 
     slugs_seen = {}
     designers_with_slugs = []
+    extra_page_slugs = []
     for designer_name, products in sorted(products_by_designer.items(), key=lambda kv: kv[0]):
         if len(products) < MIN_PRODUCTS:
             continue
@@ -269,6 +282,11 @@ def generate():
 
         (DESIGNERS_DIR / f"{slug}.html").write_text(render_designer_page(designer_name, slug, products))
         designers_with_slugs.append((designer_name, slug))
+        for extra in range(2, -(-len(products) // BRAND_CARDS_PER_PAGE) + 1):      # numbered pages, 60 products each
+            page_slug = brand_page_slug(slug, extra)
+            assert page_slug not in slugs_seen, f"numbered page {page_slug} collides with a designer's own page"
+            (DESIGNERS_DIR / f"{page_slug}.html").write_text(render_designer_page(designer_name, slug, products, page=extra))
+            extra_page_slugs.append(page_slug)
 
     # A designer who drops below MIN_PRODUCTS since the last run (a
     # brand's catalog shrank, a re-scrape lost a credit) shouldn't leave
@@ -276,7 +294,7 @@ def generate():
     # generate_architects_pages.py uses for firms that lose their last
     # real house.
     for existing in DESIGNERS_DIR.glob("*.html"):
-        if existing.stem not in slugs_seen:
+        if existing.stem not in slugs_seen and existing.stem not in extra_page_slugs:
             existing.unlink()
 
     index_html = render_designers_index(designers_with_slugs, products_by_designer)
