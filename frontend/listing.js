@@ -3,7 +3,10 @@
 // The page is complete without any of this: "See more" is a real link to the next numbered page, and the
 // pager lists the pages, so crawlers, sharing and no-JavaScript visitors all work. With JavaScript the
 // link instead fetches that next page and appends its cards to this grid (the same "see more results"
-// behaviour as the Work page), then points itself at the page after that.
+// behaviour as the Work page), then points itself at the page after that. Page numbers carry no meaning
+// here (results are never ranked), so with JavaScript "See more" is the only visible way on: the numbered
+// pager is hidden (CSS .has-load-more), and the address follows what has been loaded so a reload or a
+// shared link lands where the visitor was.
 (function () {
   var more = document.getElementById("see-more");
   var grid = document.querySelector(".results-grid");
@@ -16,13 +19,19 @@
     if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
   }, true);
 
+  if (grid) document.documentElement.classList.add("has-load-more");
   if (!more || !grid) return;
   var total = parseInt(more.getAttribute("data-total"), 10) || 0;
+  var start = parseInt(more.getAttribute("data-start"), 10) || 0;   // cards before this page (page 3 starts at 120)
   var progress = document.getElementById("see-more-progress");
   var label = more.textContent;
 
-  function showProgress() {
-    if (progress && total) progress.textContent = "Showing " + grid.children.length.toLocaleString() + " of " + total.toLocaleString();
+  function showProgress(done) {
+    if (!progress || !total) return;
+    var shown = grid.children.length;
+    var range = start ? (start + 1).toLocaleString() + "\u2013" + (start + shown).toLocaleString() : shown.toLocaleString();
+    progress.textContent = (done && !start ? "Showing all " + total.toLocaleString()
+                                           : "Showing " + range + " of " + total.toLocaleString());
   }
   showProgress();
 
@@ -40,6 +49,7 @@
       doc.querySelectorAll(".results-grid .card").forEach(function (c) {
         grid.appendChild(document.importNode(c, true));
       });
+      try { window.history.replaceState(null, "", url); } catch (e) { /* the address just stays put */ }
       var next = doc.getElementById("see-more");
       if (next && next.getAttribute("href")) {
         more.setAttribute("href", next.getAttribute("href"));
@@ -47,7 +57,8 @@
         more.removeAttribute("aria-disabled");
         showProgress();
       } else {
-        more.parentElement.remove();   // that was the last page
+        more.remove();                 // that was the last page: leave only the closing count
+        showProgress(true);
       }
     }).catch(function () {
       // leave the link working as a plain link to the next page

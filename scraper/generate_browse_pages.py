@@ -391,6 +391,13 @@ LISTING_CSS = """
   .listing-more .n { color: var(--text-muted); }
   .listing-more .here { color: var(--text-primary); font-weight: 600; }
   .pager { margin-top: 28px; }
+  /* With JavaScript "See more" is the one visible way on (listing.js adds .has-load-more): the numbered pager
+     stays in the HTML for search engines and for visitors without JavaScript, but is not shown. */
+  .has-load-more .pager { display: none; }
+  .earlier-results { display: none; margin: 0 0 14px; font-size: 13px; }
+  .has-load-more .earlier-results { display: block; }
+  .earlier-results a { color: var(--text-muted); text-decoration: none; }
+  .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
   .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
 """
 
@@ -471,9 +478,11 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
              f'<a href="/work/{e["slug"]}.html">{html.escape(e["title"])}</a> <span class="n">{e["n"]:,}</span>')
             for e in sorted(work_menu.category_entries(entries, cat_name), key=work_menu.entry_sort_key))
     menu_html = work_menu.render_menu(entries, current_slug=slug, current_category=cat_name)
+    earlier = (f'<p class="earlier-results"><a href="/work/{_page_slug(slug, page - 1)}.html" rel="prev">'
+               f'&larr; Earlier results</a></p>' if page > 1 else "")
     see_more = ""
     if page < pages:
-        see_more = (f'<div class="load-more-row"><a class="load-more-btn" id="see-more" data-total="{len(cards_all)}" '
+        see_more = (f'<div class="load-more-row"><a class="load-more-btn" id="see-more" data-total="{len(cards_all)}" data-start="{(page - 1) * LISTING_CARDS_PER_PAGE}" '
                     f'href="/work/{_page_slug(slug, page + 1)}.html">See more {html.escape(noun)}</a>'
                     f'<span class="load-more-progress" id="see-more-progress"></span></div>')
     return f"""<!DOCTYPE html>
@@ -518,6 +527,7 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
   {subnav}
   <h1 class="listing-title">{html.escape(title)}</h1>
   <p class="listing-meta">{html.escape(summary)}, listed in full{html.escape(page_note)}, no rankings, not paid for{edit_line}</p>
+  {earlier}
   <div class="results-grid">{grid}</div>
   {see_more}
   {_pager_compact_html(slug, page, pages)}

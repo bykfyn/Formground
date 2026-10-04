@@ -191,6 +191,22 @@ class StructureTests(unittest.TestCase):
         self.assertIn("/work/new-furniture.html", sm)
         self.assertNotIn("formground.com/new.html", sm)
 
+    def test_see_more_is_the_one_visible_way_on_with_javascript(self):
+        """With JavaScript the numbered pager is hidden (it stays in the HTML for crawlers and no-JS visitors),
+        the address follows what was loaded, and a page 2+ visitor gets an 'Earlier results' link."""
+        css_and_js = (ROOT / "frontend" / "listing.js").read_text()
+        self.assertIn("has-load-more", css_and_js)
+        self.assertIn("replaceState", css_and_js)
+        first = (DOCS / "work" / "rugs.html").read_text()
+        third = (DOCS / "work" / "rugs-3.html").read_text()
+        for page in (first, third):
+            self.assertIn(".has-load-more .pager { display: none; }", page)
+            self.assertIn('<nav class="pager"', page)                 # still there for crawlers / no JavaScript
+            self.assertIn('data-start="', page)
+        self.assertNotIn('<p class="earlier-results">', first)
+        self.assertIn('<p class="earlier-results"><a href="/work/rugs-2.html" rel="prev">', third)
+        self.assertIn('data-start="120"', third)
+
     def test_surprise_me_is_a_chip_not_part_of_the_search_box(self):
         work = (DOCS / "work.html").read_text()
         self.assertEqual(work.count('id="discover-chip"'), 1)          # search.js shuffles via this id

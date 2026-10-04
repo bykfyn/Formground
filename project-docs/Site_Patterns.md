@@ -86,6 +86,10 @@ per page (divides every column count 6/4/3/2, so no ragged row; ~1,000 elements 
 ~3,400), a "See more" link that loads the next 60 in place (a real link to the next numbered page
 without JavaScript, `frontend/listing.js`) and a compact pager "1 2 ... 13 Next". Every numbered page
 stays a crawlable URL with its own canonical. Click tracking is delegated, so appended cards count.
+**One visible control (2026-10-04):** with JavaScript, "See more" is the only way on - the numbered pager is hidden
+(page numbers mean nothing here, results are never ranked), the address follows the last batch loaded (reload or a
+shared link lands there), the count reads "Showing 121-180 of 587", and a visitor who lands on page 2+ gets an
+"Earlier results" link. Without JavaScript the pager shows and See more is a plain link.
 
 Styles come from ONE shared file,
 `frontend/work-results.css`, linked by both /work.html and the listing pages - edit it there, never
