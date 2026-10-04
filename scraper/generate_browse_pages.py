@@ -153,6 +153,11 @@ BROWSE_CATEGORIES = [
     {"slug": "side-tables", "title": "Side Tables", "group": "Tables and desks", "intent": {"category": "side table"}},
     {"slug": "console-tables", "title": "Console Tables", "group": "Tables and desks",
      "intents": [{"category": "console table"}, {"category": "console"}]},
+    {"slug": "bedside-tables", "title": "Bedside Tables", "group": "Tables and desks",
+     "intents": [{"category": "bedside table"}, {"category": "nightstand"}]},
+    {"slug": "outdoor-tables", "title": "Outdoor Tables", "group": "Tables and desks",
+     "intents": [{"category": "outdoor table"}, {"category": "garden table"}]},
+    {"slug": "bar-tables", "title": "Bar Tables", "group": "Tables and desks", "intent": {"category": "bar table"}},
     {"slug": "desks", "title": "Desks", "group": "Tables and desks", "intent": {"category": "desk"}},
     # Storage, beds and mirrors
     {"slug": "sideboards", "title": "Sideboards", "group": "Storage, beds and mirrors", "intent": {"category": "sideboard"}},

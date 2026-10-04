@@ -84,7 +84,9 @@ def pool(conn):
     return out
 
 
-def classify(item, key):
+def classify(item, key, prompt=None, label_set=None):
+    prompt = prompt or PROMPT
+    label_set = label_set or LABEL_SET
     try:
         url = image_sizes.sized(item["image_url"], image_sizes.CARD)
         r = requests.get(url, timeout=25, headers={"User-Agent": "Mozilla/5.0 (Formground classifier)"})
@@ -98,7 +100,7 @@ def classify(item, key):
             headers={"x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
             json={"model": MODEL, "max_tokens": 60, "messages": [{"role": "user", "content": [
                 {"type": "image", "source": {"type": "base64", "media_type": media, "data": data}},
-                {"type": "text", "text": PROMPT.format(name=item["name"], labels=", ".join(LABEL_SET))},
+                {"type": "text", "text": prompt.format(name=item["name"], labels=", ".join(label_set))},
             ]}]},
             timeout=60,
         )
@@ -107,7 +109,7 @@ def classify(item, key):
         text = text[text.find("{"): text.rfind("}") + 1]
         parsed = json.loads(text)
         label = str(parsed.get("label", "unsure")).lower()
-        if label not in LABEL_SET:
+        if label not in label_set:
             label = "unsure"
         return {"label": label, "confidence": float(parsed.get("confidence", 0))}
     except Exception as e:  # leave it unlabelled; a re-run retries it
