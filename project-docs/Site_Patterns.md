@@ -77,7 +77,7 @@ stays a crawlable URL with its own canonical. Click tracking is delegated, so ap
 Styles come from ONE shared file,
 `frontend/work-results.css`, linked by both /work.html and the listing pages - edit it there, never
 in either page. Every type page uses this template (rolled out 2026-10-04 after the Table Lamps pilot
-was approved; the old 300-card renderer is deleted, so type page numbers grew: Chairs 6 -> 31 pages
+was approved; the old 300-card renderer is deleted, so type page numbers grew: Chairs 6 -> 28 pages
 of 60). The Houses pages still use their own template (landscape 4:3 cards) and could move onto this
 one later.
 
