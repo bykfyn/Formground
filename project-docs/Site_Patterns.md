@@ -121,7 +121,8 @@ Edit pages (individual): SIMPLE for now (2026-10-04) - the layout of the Ceiling
 kicker, title, intro, then the grid; no banner photo, carousel or masthead. `EDIT_PAGE_BANNER` in
 generate_themed_edit_pages.py brings the banner back (and `MASTHEAD_SLUGS` the title-on-photo masthead tried on
 Two Seater Sofas); the hero picks stay in THEMES. With no banner, no product is held out of the grid. The hub
-page keeps its masthead.
+page keeps its masthead. The grid uses the Work page's own card (photo with share button, name, maker) in its `results-grid`
+and stylesheet (`work-results.css`), like every type page - one product card design site-wide.
 
 Edits hub grid (2026-10-04): every Edit is the same tile - 2 columns wide and 2 rows tall of the 6-column grid
 (a square, 360px at full width; 3 across, 2 on the 4-column tier, one full-width 4:3 tile on phones) - photo

@@ -64,7 +64,7 @@ from generate_theme_landing_pages import (  # noqa: E402
     append_to_sitemap,
 )
 from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
-from site_assets import ICONS_CSS  # noqa: E402
+from site_assets import ICONS_CSS, SHARE_JS, WORK_RESULTS_CSS  # noqa: E402
 
 # "hero_image" fairness policy (2026-09-30) - the first pass at these
 # only checked each theme's own top-3 auto-picked candidates, which
@@ -724,32 +724,21 @@ def _display_names(cards):
     return {id(p): (stripped[id(p)] if counts[stripped[id(p)].lower()] == 1 else p["product_name"]) for p in cards}
 
 
-def _feature_card_html(p, variant_count=None, name=None):
-    url = p["brand_url"] if p["link_dead"] else p["product_url"]
-    name = name or p["product_name"]
-    alt_text = html.escape(f'{name} by {p["brand"]}')
-    badge = (
-        f'<span class="variant-badge">{variant_count} finishes</span>'
-        if variant_count and variant_count > 1 else ""
-    )
-    css, box_bg = image_fit.fit_for_tile(p["image_url"], force=p["product_url"] in EDIT_IMAGE_FIT_CONTAIN)
-    fit = f' class="{css}"' if css else ""
-    box_style = f' style="{box_bg}"' if box_bg else ""
-    return f"""
-      <a class="edit-feature-card" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"{box_style}><img{fit} src="{html.escape(sized(p["image_url"], CARD))}" alt="{alt_text}" loading="lazy">{badge}</div>
-        <span class="edit-feature-name">{html.escape(name)}</span>
-        <span class="edit-feature-brand">{html.escape(p["brand"])}</span>
-      </a>"""
-
-
 def _render_feature_grid(cards, variant_counts=None):
+    """The Edit's grid: the very same card as the Work page and every type page (photo with the share button,
+    name, maker; `_listing_card_html`), in the Work page's own `results-grid` - one card design site-wide."""
     if not cards:
         return ""
+    from generate_browse_pages import _listing_card_html  # lazy: that module imports this one
     variant_counts = variant_counts or {}
     names = _display_names(cards)
-    items = "".join(_feature_card_html(p, variant_counts.get(id(p)), names[id(p)]) for p in cards)
-    return f'<div class="edit-feature-grid">{items}\n    </div>'
+    items = []
+    for p in cards:
+        card = _listing_card_html({**p, "product_name": names[id(p)]}, variant_counts.get(id(p)))
+        if p["product_url"] in EDIT_IMAGE_FIT_CONTAIN:
+            card = card.replace("<img ", '<img class="contain-fit" ', 1)
+        items.append(card)
+    return f'<div class="results-grid">{"".join(items)}</div>'
 
 
 EDIT_PAGE_CSS = """
@@ -786,31 +775,6 @@ EDIT_PAGE_CSS = """
   .edit-see-all { text-align: center; margin: -8px 0 40px; font-size: 14px; }
   .edit-see-all a { color: var(--text-accent); text-decoration: none; }
   .edit-see-all a:hover { text-decoration: underline; }
-  /* Fixed 6 / 4 / 2 columns (2026-10-03) - the same steps as the Edits
-     hub, so both pages share one density at every width. The grid is
-     capped at 12 products, which divides evenly into 6, 4 and 2 columns:
-     no orphan row at any tier. */
-  .edit-feature-grid {
-    display: grid; grid-template-columns: repeat(6, 1fr);
-    gap: 20px; margin: 0 0 40px;
-  }
-  @media (max-width: 959px) {
-    .edit-feature-grid { grid-template-columns: repeat(4, 1fr); }
-  }
-  @media (max-width: 639px) {
-    .edit-feature-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-  }
-  .edit-feature-card { display: block; text-decoration: none; color: inherit; }
-  .edit-feature-image {
-    aspect-ratio: 1/1; background: var(--surface-1); border: 0.5px solid var(--border);
-    overflow: hidden; margin-bottom: 8px; position: relative;
-  }
-  .edit-feature-image img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s ease; }
-  .edit-feature-card:hover .edit-feature-image img { transform: scale(1.02); }
-  .edit-feature-image img.fit-contain { object-fit: contain; }
-  .edit-feature-name { display: block; font-size: 13px; font-weight: 500; margin-bottom: 2px; }
-  .edit-feature-brand { display: block; font-size: 12px; color: var(--text-muted); }
-
   @media (max-width: 760px) {
     .edit-header h1 { font-size: 28px; }
   }
@@ -959,6 +923,7 @@ def render_themed_edit_page(theme, products):
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
+<link rel="stylesheet" href="{WORK_RESULTS_CSS}">
 <style>{PAGE_CSS}{EDIT_PAGE_CSS}{EDIT_MASTHEAD_CSS}</style>
 </head>
 <body>
@@ -985,6 +950,7 @@ def render_themed_edit_page(theme, products):
 </script>
 <script>{CAROUSEL_JS}</script>
 <script>{CARD_CLICK_TRACKING_JS}</script>
+<script src="{SHARE_JS}" defer></script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
