@@ -28,12 +28,15 @@ SWAPPING THE LLM PROVIDER/MODEL (e.g. to cut cost):
     ANTHROPIC_API_KEY / OPENAI_API_KEY   whichever matches LLM_PROVIDER.
 """
 
+import copy
 import datetime
+import hashlib
 import json
 import os
 import random
 import re
 import sqlite3
+import threading
 from pathlib import Path
 
 import requests
@@ -471,8 +474,12 @@ ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY")
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 
+# One keep-alive session for LLM calls: no new TLS handshake per search.
+_HTTP = requests.Session()
+
+
 def _call_anthropic(system_prompt: str, raw_query: str) -> str:
-    response = requests.post(
+    response = _HTTP.post(
         "https://api.anthropic.com/v1/messages",
         headers={
             "x-api-key": ANTHROPIC_API_KEY,
@@ -485,13 +492,14 @@ def _call_anthropic(system_prompt: str, raw_query: str) -> str:
             "system": system_prompt,
             "messages": [{"role": "user", "content": raw_query}],
         },
+        timeout=20,
     )
     response.raise_for_status()
     return response.json()["content"][0]["text"]
 
 
 def _call_openai(system_prompt: str, raw_query: str) -> str:
-    response = requests.post(
+    response = _HTTP.post(
         "https://api.openai.com/v1/chat/completions",
         headers={
             "Authorization": f"Bearer {OPENAI_API_KEY}",
@@ -505,6 +513,7 @@ def _call_openai(system_prompt: str, raw_query: str) -> str:
                 {"role": "user", "content": raw_query},
             ],
         },
+        timeout=20,
     )
     response.raise_for_status()
     return response.json()["choices"][0]["message"]["content"]
@@ -548,39 +557,51 @@ DISCOVER_PER_BRAND = 6
 DISCOVER_TOTAL_CAP = 30
 
 
+_TRANSLATE_SYSTEM_PROMPT = (
+    "You translate a search query about independent design - furniture/"
+    "lighting/ceramics/objects, or an architect-designed house - into "
+    "structured JSON with these fields: "
+    "category (string or null - the object type, e.g. 'chair', 'lamp', "
+    "'house'. If the query names a specific PLACEMENT OR FUNCTION "
+    "subtype, keep the full two-word phrase instead of reducing it to "
+    "the bare noun - e.g. 'table lamp' stays 'table lamp', not 'lamp'; "
+    "'floor lamp' stays 'floor lamp', not 'lamp'; 'dining chair' stays "
+    "'dining chair', not 'chair'; 'coffee table' stays 'coffee table', "
+    "not 'table'. But if the modifier instead describes SHAPE, "
+    "MATERIAL, or another style trait (e.g. 'ball lamp', 'round table', "
+    "'globe lamp', 'oval table'), use only the bare noun for category "
+    "('lamp', 'table') and put the shape/material word in "
+    "style_descriptors instead - do NOT invent a compound category "
+    "that isn't a real placement/function subtype. Only use the bare "
+    "noun with no style_descriptors when the query has no modifier at "
+    "all, e.g. a query that's just 'lamp' or 'chair'), "
+    "material (string or null), "
+    "style_descriptors (list of strings, e.g. ['minimalist', 'linear', "
+    "'ball', 'round', 'globe']), "
+    "color (string or null), "
+    "location (string or null, e.g. 'Sweden', 'Stockholm' - only set this "
+    "when the query names a real place, mainly relevant for house queries). "
+    "Respond ONLY with the JSON object, nothing else."
+)
+
+
 def translate_query(raw_query: str) -> dict:
     """
     Sends the raw query to whichever LLM is configured (see LLM_PROVIDER/
     LLM_MODEL above) and gets back structured intent. Works the same
     whether raw_query came from a human typing in the ask-box or an
     agent's structured request converted to text.
+
+    The reading of a query never changes for a given model and prompt, so it is
+    remembered (2026-10-04): identical queries skip the ~1s LLM call entirely.
+    A prepared set of common queries ships in intent_cache.json (built by
+    build_intent_cache.py) so even a freshly started server answers them
+    instantly; anything new is learned in memory as it is asked.
     """
-    system_prompt = (
-        "You translate a search query about independent design - furniture/"
-        "lighting/ceramics/objects, or an architect-designed house - into "
-        "structured JSON with these fields: "
-        "category (string or null - the object type, e.g. 'chair', 'lamp', "
-        "'house'. If the query names a specific PLACEMENT OR FUNCTION "
-        "subtype, keep the full two-word phrase instead of reducing it to "
-        "the bare noun - e.g. 'table lamp' stays 'table lamp', not 'lamp'; "
-        "'floor lamp' stays 'floor lamp', not 'lamp'; 'dining chair' stays "
-        "'dining chair', not 'chair'; 'coffee table' stays 'coffee table', "
-        "not 'table'. But if the modifier instead describes SHAPE, "
-        "MATERIAL, or another style trait (e.g. 'ball lamp', 'round table', "
-        "'globe lamp', 'oval table'), use only the bare noun for category "
-        "('lamp', 'table') and put the shape/material word in "
-        "style_descriptors instead - do NOT invent a compound category "
-        "that isn't a real placement/function subtype. Only use the bare "
-        "noun with no style_descriptors when the query has no modifier at "
-        "all, e.g. a query that's just 'lamp' or 'chair'), "
-        "material (string or null), "
-        "style_descriptors (list of strings, e.g. ['minimalist', 'linear', "
-        "'ball', 'round', 'globe']), "
-        "color (string or null), "
-        "location (string or null, e.g. 'Sweden', 'Stockholm' - only set this "
-        "when the query names a real place, mainly relevant for house queries). "
-        "Respond ONLY with the JSON object, nothing else."
-    )
+    key = _normalise_query(raw_query)
+    cached = _intent_cache_get(key)
+    if cached is not None:
+        return cached
 
     caller = LLM_CALLERS.get(LLM_PROVIDER)
     if caller is None:
@@ -588,9 +609,61 @@ def translate_query(raw_query: str) -> dict:
             f"Unknown LLM_PROVIDER '{LLM_PROVIDER}' - supported: {list(LLM_CALLERS)}"
         )
 
-    text = caller(system_prompt, raw_query)
+    text = caller(_TRANSLATE_SYSTEM_PROMPT, raw_query)
     text = text.replace("```json", "").replace("```", "").strip()
-    return json.loads(text)
+    intent = json.loads(text)
+    _intent_cache_put(key, intent)
+    return copy.deepcopy(intent)
+
+
+def _normalise_query(raw_query: str) -> str:
+    return " ".join((raw_query or "").lower().split())
+
+
+_PROMPT_HASH = hashlib.sha1(_TRANSLATE_SYSTEM_PROMPT.encode("utf-8")).hexdigest()[:12]
+INTENT_CACHE_PATH = Path(__file__).parent / "intent_cache.json"
+INTENT_CACHE_MAX = 5000
+_INTENT_CACHE = {}
+
+
+def _load_seed_intents():
+    """Prepared readings of common queries. Used only if they were made with
+    this exact prompt AND model - a changed prompt or model silently ignores
+    the file instead of serving stale readings."""
+    try:
+        seed = json.loads(INTENT_CACHE_PATH.read_text())
+    except (OSError, ValueError):
+        return
+    if seed.get("prompt_hash") == _PROMPT_HASH and seed.get("model") == LLM_MODEL:
+        _INTENT_CACHE.update(seed.get("intents", {}))
+
+
+def _intent_cache_get(key):
+    hit = _INTENT_CACHE.get(key)
+    return copy.deepcopy(hit) if hit is not None else None
+
+
+def _intent_cache_put(key, intent):
+    if len(_INTENT_CACHE) >= INTENT_CACHE_MAX:
+        _INTENT_CACHE.pop(next(iter(_INTENT_CACHE)))  # drop the oldest entry
+    _INTENT_CACHE[key] = copy.deepcopy(intent)
+
+
+def _call_with_retry(raw_query: str) -> dict:
+    """One uncached LLM reading (one retry on a transient error) - used by
+    build_intent_cache.py, never by a live search."""
+    last = None
+    for _ in range(2):
+        try:
+            caller = LLM_CALLERS[LLM_PROVIDER]
+            text = caller(_TRANSLATE_SYSTEM_PROMPT, raw_query)
+            return json.loads(text.replace("```json", "").replace("```", "").strip())
+        except Exception as e:  # noqa: BLE001
+            last = e
+    raise last
+
+
+_load_seed_intents()
 
 
 def _category_matches(category_field: str, wanted: str) -> bool:
@@ -833,6 +906,32 @@ def _is_protective_cover(product_name: str) -> bool:
     return bool(PROTECTIVE_COVER_PATTERN.search(product_name))
 
 
+_PRODUCT_ROWS_CACHE = {"key": None, "rows": []}
+_PRODUCT_ROWS_LOCK = threading.Lock()
+
+
+def _all_product_rows() -> list:
+    """Every product row as a plain dict, read from SQLite once and reused
+    (2026-10-04). Each search used to re-read and re-wrap all ~28,000 rows
+    twice (filter_products and filter_by_name), ~0.2s each on a laptop and far
+    more on a throttled Cloud Run CPU. The data only changes when the
+    database file does, so the cache is keyed on its mtime/size and rebuilt
+    when it changes. The dicts are SHARED: callers must treat them as
+    read-only and copy (dict(row)) a row before changing it."""
+    stat = DB_PATH.stat()
+    key = (stat.st_mtime_ns, stat.st_size)
+    cache = _PRODUCT_ROWS_CACHE
+    if cache["key"] != key:
+        with _PRODUCT_ROWS_LOCK:
+            if cache["key"] != key:
+                conn = sqlite3.connect(DB_PATH)
+                conn.row_factory = sqlite3.Row
+                rows = [dict(r) for r in conn.execute("SELECT * FROM products").fetchall()]
+                conn.close()
+                cache["rows"], cache["key"] = rows, key
+    return cache["rows"]
+
+
 def filter_products(intent: dict) -> list:
     """
     Filters stored products on the hard facts: category + material +
@@ -856,10 +955,7 @@ def filter_products(intent: dict) -> list:
     results, and no brand relies on its imageless records to be
     discoverable at all.
     """
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    rows = conn.execute("SELECT * FROM products").fetchall()
-    conn.close()
+    rows = _all_product_rows()
 
     wanted_category = (intent.get("category") or "").strip()
     wanted_material = (intent.get("material") or "").strip().lower()
@@ -895,7 +991,7 @@ def filter_products(intent: dict) -> list:
 
     products = []
     for row in rows:
-        product = dict(row)
+        product = row  # shared, read-only: copied below once the row survives every filter
 
         if not product["image_url"]:
             continue
@@ -921,6 +1017,8 @@ def filter_products(intent: dict) -> list:
             continue
         if wanted_tier and BRAND_TIERS.get(product["brand"], "independent") != wanted_tier:
             continue
+
+        product = dict(row)
 
         # A product with many raw finish/color combos merged into one
         # entry (see extract_shopify's grouping) picks just one for its
@@ -988,28 +1086,41 @@ def filter_by_name(raw_query: str, tier=None) -> list:
     fallback would silently defeat the filter whenever the query itself
     happened to also name the product.
     """
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    rows = conn.execute("SELECT * FROM products WHERE image_url != ''").fetchall()
-    conn.close()
+    rows = _all_product_rows()
 
     stripped_query = raw_query.strip()
+    # Compiled ONCE per search. This loop used to build a fresh regex for
+    # every one of ~28,000 products (Python's own regex cache holds 512), which
+    # was ~1.4s of a 1.8s match step. Same matches, no per-product compile.
+    query_pattern = (
+        re.compile(rf"\b{re.escape(stripped_query)}\b", re.IGNORECASE)
+        if len(stripped_query) >= 3 else None
+    )
+    query_lower = raw_query.lower()
+    query_ascii = raw_query.isascii()
     matches = []
     for row in rows:
-        product = dict(row)
-        if product["brand"] in HIDDEN_BRANDS:
+        if not row["image_url"]:
             continue
-        if tier and BRAND_TIERS.get(product["brand"], "independent") != tier:
+        if row["brand"] in HIDDEN_BRANDS:
             continue
-        name = product["product_name"]
-        name_in_query = (
-            name.strip().lower() not in GENERIC_PRODUCT_NAMES
-            and re.search(rf"\b{re.escape(name)}\b", raw_query, re.IGNORECASE)
-        )
-        query_in_name = len(stripped_query) >= 3 and re.search(
-            rf"\b{re.escape(stripped_query)}\b", name, re.IGNORECASE
-        )
+        if tier and BRAND_TIERS.get(row["brand"], "independent") != tier:
+            continue
+        name = row["product_name"]
+        name_in_query = False
+        if name.strip().lower() not in GENERIC_PRODUCT_NAMES:
+            if query_ascii and name.isascii():
+                # a whole-word, case-insensitive match can only exist if the name
+                # is a plain substring of the query, so skip the regex otherwise
+                # (ASCII only: IGNORECASE folds some non-ASCII characters this
+                # shortcut would not know about)
+                name_in_query = name.lower() in query_lower and bool(
+                    re.search(rf"\b{re.escape(name)}\b", raw_query, re.IGNORECASE))
+            else:
+                name_in_query = bool(re.search(rf"\b{re.escape(name)}\b", raw_query, re.IGNORECASE))
+        query_in_name = bool(query_pattern and query_pattern.search(name))
         if name_in_query or query_in_name:
+            product = dict(row)
             product["material_options"] = json.loads(product["material_options"] or "[]")
             product["thin"] = bool(product["thin"])
             matches.append(product)

@@ -652,3 +652,63 @@ class BrandStatusTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class SearchSpeedTests(unittest.TestCase):
+    """Guards for the 2026-10-04 search-speed work: the optimised paths must
+    return exactly what the original logic did, and a repeated query must not
+    call the LLM again."""
+
+    def test_repeat_query_skips_the_llm_and_ignores_case_and_spacing(self):
+        calls = []
+
+        def fake(system_prompt, raw_query):
+            calls.append(raw_query)
+            return '{"category": "zzz test", "material": null, "style_descriptors": [], "color": null, "location": null}'
+
+        original = qe.LLM_CALLERS[qe.LLM_PROVIDER]
+        qe.LLM_CALLERS[qe.LLM_PROVIDER] = fake
+        try:
+            a = qe.translate_query("Zzz   Test Thing")
+            b = qe.translate_query("zzz test thing")
+        finally:
+            qe.LLM_CALLERS[qe.LLM_PROVIDER] = original
+            qe._INTENT_CACHE.pop(qe._normalise_query("Zzz Test Thing"), None)
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(a, b)
+
+    def test_cached_intent_is_a_copy(self):
+        qe._intent_cache_put("zzz copy check", {"category": "chair", "style_descriptors": ["a"]})
+        got = qe._intent_cache_get("zzz copy check")
+        got["style_descriptors"].append("mutated")
+        self.assertEqual(qe._intent_cache_get("zzz copy check")["style_descriptors"], ["a"])
+        qe._INTENT_CACHE.pop("zzz copy check", None)
+
+    def test_filter_by_name_equals_the_original_per_row_regex_logic(self):
+        import json
+        import re
+
+        def reference(raw_query):
+            stripped = raw_query.strip()
+            out = []
+            for row in qe._all_product_rows():
+                if not row["image_url"] or row["brand"] in qe.HIDDEN_BRANDS:
+                    continue
+                name = row["product_name"]
+                name_in_query = (
+                    name.strip().lower() not in qe.GENERIC_PRODUCT_NAMES
+                    and re.search(rf"\b{re.escape(name)}\b", raw_query, re.IGNORECASE)
+                )
+                query_in_name = len(stripped) >= 3 and re.search(rf"\b{re.escape(stripped)}\b", name, re.IGNORECASE)
+                if name_in_query or query_in_name:
+                    out.append(row["id"])
+            return out
+
+        for q in ("Boyd", "vaso", "table lamp", "pendant lamp Ø60", "über lamp", "Kantarell Pendant Lamp Ø60 black"):
+            self.assertEqual([p["id"] for p in qe.filter_by_name(q)], reference(q), q)
+
+    def test_shared_rows_are_not_mutated_by_a_search(self):
+        qe.filter_products({"category": "table lamp"})
+        qe.filter_by_name("lamp")
+        sample = qe._all_product_rows()[0]
+        self.assertIsInstance(sample["material_options"], str)
