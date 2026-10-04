@@ -12,7 +12,8 @@ Contentful original becomes 5KB at 480px).
     sized(url, width) -> the same image at (at most) `width` px wide, or the
     URL unchanged when the host has no known resize rule. Never invents a size
     for a host it cannot verify (WordPress -WxH variants, Webflow, own-site
-    files are left alone).
+    files are left alone). Every host rule below was checked on real images (status, dimensions, bytes)
+    before it was added; scripts/probes are in the 2026-10-04 audit in project-docs/Site_Patterns.md.
 
 frontend/search.js carries the same rules in JavaScript (sizedImage) for the
 live search results - keep the two in step (tests/test_image_sizes.py pins the
@@ -51,4 +52,18 @@ def sized(url, width):
         return _with_query(url, drop=("h", "w"), w=width, auto="format")
     if host == "images.ctfassets.net":
         return _with_query(url, w=width, fm="webp", q=80)
+    if host in ("www.hay.com", "cdn.thorcommerce.io"):
+        # HAY and Gubi's image server: ?w= returns a resized copy (verified 2026-10-04: a 2.3MB, 3796px Gubi
+        # original becomes 52KB at 500px; HAY 910-1220px -> 500px, 2-4x smaller)
+        return _with_query(url, w=width)
+    if host == "cdn.sanity.io":
+        # Sanity's image pipeline (house photos): 957KB / 3000px -> 28KB at 500px, verified 2026-10-04
+        return _with_query(url, w=width, auto="format")
+    if host == "static.wixstatic.com" and "/media/" in url:
+        # Wix's image engine: .../media/<id>.<ext>/v1/fit/w_W,h_H,q_80/file.<ext> (house photos), verified 2026-10-04
+        p = urlparse(url)
+        base = f"{p.scheme}://{p.netloc}{p.path.split('/v1/')[0]}"
+        ext = base.rsplit(".", 1)[-1].lower()
+        if ext in ("jpg", "jpeg", "png", "webp", "gif"):
+            return f"{base}/v1/fit/w_{width},h_{width},q_80/file.{ext}"
     return url

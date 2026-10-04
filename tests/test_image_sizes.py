@@ -30,8 +30,19 @@ class SizedTests(unittest.TestCase):
         self.assertIn("w=500", sized("https://images.ctfassets.net/a/b/c/x.jpg", 500))
         self.assertIn("w=500", sized("https://images.fogia.com/x/y.png?auto=format&w=2000&q=90", 500))
 
+    def test_hay_gubi_sanity_and_wix_rules(self):
+        self.assertEqual(sized("https://www.hay.com/img/a.jpg", 500), "https://www.hay.com/img/a.jpg?w=500")
+        self.assertEqual(sized("https://cdn.thorcommerce.io/x/a.png?w=2000", 500), "https://cdn.thorcommerce.io/x/a.png?w=500")
+        self.assertEqual(sized("https://cdn.sanity.io/images/p/d/abc-3000x2000.jpg", 500),
+                         "https://cdn.sanity.io/images/p/d/abc-3000x2000.jpg?w=500&auto=format")
+        self.assertEqual(sized("https://static.wixstatic.com/media/a1_b~mv2.jpg/v1/fill/w_1000,h_600/x.jpg", 500),
+                         "https://static.wixstatic.com/media/a1_b~mv2.jpg/v1/fit/w_500,h_500,q_80/file.jpg")
+        self.assertEqual(sized("https://static.wixstatic.com/media/a1.png", 500),
+                         "https://static.wixstatic.com/media/a1.png/v1/fit/w_500,h_500,q_80/file.png")
+        self.assertEqual(sized("https://static.wixstatic.com/media/a1.pdf", 500), "https://static.wixstatic.com/media/a1.pdf")
+
     def test_unknown_hosts_and_non_urls_are_untouched(self):
-        for u in ("https://www.hay.com/img/a.jpg", "/images/architects/x.jpg", "", None):
+        for u in ("https://www.ligne-roset.com/img/a.jpg", "/images/architects/x.jpg", "", None):
             self.assertEqual(sized(u, CARD), u)
 
 

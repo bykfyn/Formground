@@ -242,6 +242,14 @@ chips, and the "N finishes" badge was shorter than the brand tags.)
   `search.js`; CLS 0.124 -> 0).
 - Photos are requested at card size (section 4); a new image host needs a verified rule in
   `scraper/image_sizes.py` and `search.js`.
+- Image host audit (2026-10-04, `scraper/audit_image_hosts.py` re-runs it): 65% of the catalog's photos are on hosts with a
+  verified resize rule (Shopify, Squarespace, Fogia, DatoCMS, Contentful, plus HAY, Gubi's image server, Sanity and Wix, added
+  after real-image checks). The rest are on ~70 makers' own servers; most already serve small files (median 10-160 KB, 300-900px
+  wide) and every card photo loads lazily, so they are left alone. The heavy ones with NO usable resize form: Bla Station
+  (213 photos, ~1.5 MB each), Joris Poggioli (74, ~460 KB), Tecta (62, ~300 KB), Galerie Kreo and Ligne Roset (2,000 px but only
+  ~140-160 KB each) and a few house hosts (herbstarchitects.co.nz, putinja, tat-o, arba, pattersons, Webflow: 400-950 KB).
+  A resizing proxy (e.g. Cloudflare Image Resizing once the domains move to Cloudflare) would fix them, but it fetches and
+  re-serves the maker's photo, which the "always hotlinked, never copied" rule above rules out unless that rule is changed.
 
 ## 6. Type and spacing
 

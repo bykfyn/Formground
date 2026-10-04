@@ -72,6 +72,16 @@ function sizedImage(url, width) {
       u.searchParams.set("w", width);
       u.searchParams.set("fm", "webp");
       u.searchParams.set("q", 80);
+    } else if (h === "www.hay.com" || h === "cdn.thorcommerce.io") {
+      u.searchParams.set("w", width);
+    } else if (h === "cdn.sanity.io") {
+      u.searchParams.set("w", width);
+      u.searchParams.set("auto", "format");
+    } else if (h === "static.wixstatic.com" && u.pathname.indexOf("/media/") === 0) {
+      const base = u.origin + u.pathname.split("/v1/")[0];
+      const ext = base.split(".").pop().toLowerCase();
+      if (["jpg", "jpeg", "png", "webp", "gif"].indexOf(ext) === -1) return url;
+      return base + "/v1/fit/w_" + width + ",h_" + width + ",q_80/file." + ext;
     } else {
       return url;
     }
