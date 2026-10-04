@@ -27,8 +27,10 @@ Each nav item owns a URL namespace; a name never means two different pages.
 - Type URLs stay flat so regrouping never breaks a link.
 - Chairs have sub-type pages (dining, armchairs, side, garden and outdoor, folding and stacking, office and
   desk). A chair whose only tag is generic gets its sub-type from its NAME (`_refine_chair_subtype` in
-  scrape.py; `backfill_chair_subtypes.py` for existing rows). A sub-type needs about 25+ products to get a
-  page; rocking (11) and kids' (12) chairs stay tags only.
+  scrape.py; `backfill_chair_subtypes.py` for existing rows); chairs the name cannot place are labelled
+  from the photo by Haiku (`classify_chairs_vision.py`, confident labels only, results kept in
+  data/chair_vision_labels.json). A sub-type needs about 25+ products to get a page; rocking chairs
+  (14) stay a tag only.
 - Menu: four category chips under the search bar, Houses first to mirror the home page bento
   (Houses left, then Furniture, Lighting, Objects). Each opens a panel of groups and types as
   plain links to the static pages (fast, indexable, shareable): one click to any category, no
