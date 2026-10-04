@@ -117,6 +117,22 @@ class StructureTests(unittest.TestCase):
                 self.assertFalse(_is_stub((DOCS / path.lstrip("/")).read_text()), f"{loc} is a redirect stub")
         self.assertNotIn("/browse/", sm)
 
+    def test_the_listing_template_pilot_looks_like_the_work_page(self):
+        """Table Lamps (the pilot) is built from the Work page's own pieces: nav with Work current, the
+        search form to /work.html, the four chips, the shared stylesheet and Work-style cards."""
+        text = (DOCS / "work" / "table-lamps.html").read_text()
+        self.assertIn('<a href="/work.html" class="current">Work</a>', text)
+        self.assertIn('action="/work.html"', text)
+        self.assertEqual(text.count('<button type="button" class="work-menu-cat'), 4)
+        self.assertIn('class="work-menu-cat is-current"', text)
+        self.assertIn("/work-results.css?v=", text)
+        self.assertIn('class="results-grid"', text)
+        self.assertIn('class="share-btn"', text)
+        self.assertIn("/share.js?v=", text)
+        # the Work page links the same stylesheet, so the two cannot drift apart
+        self.assertIn("/work-results.css?v=", (DOCS / "work.html").read_text())
+        self.assertEqual((ROOT / "frontend" / "work-results.css").read_text(), (DOCS / "work-results.css").read_text())
+
     def test_work_page_has_the_menu_with_four_categories(self):
         text = (DOCS / "work.html").read_text()
         self.assertEqual(text.count('<button type="button" class="work-menu-cat'), 4)

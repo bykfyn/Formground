@@ -28,7 +28,10 @@ def asset_href(name):
 ICONS_CSS = asset_href("icons.css")
 WORK_MENU_CSS = asset_href("work-menu.css")
 WORK_MENU_JS = asset_href("work-menu.js")
+WORK_RESULTS_CSS = asset_href("work-results.css")
+SHARE_JS = asset_href("share.js")
 _LINK_RE = re.compile(r'<link rel="stylesheet" href="/icons\.css(?:\?v=[0-9a-f]+)?">')
+_RESULTS_CSS_RE = re.compile(r'<link rel="stylesheet" href="/work-results\.css(?:\?v=[0-9a-f]+)?">')
 _MENU_CSS_RE = re.compile(r'<link rel="stylesheet" href="/work-menu\.css(?:\?v=[0-9a-f]+)?">')
 _MENU_JS_RE = re.compile(r'<script src="/work-menu\.js(?:\?v=[0-9a-f]+)?" defer></script>')
 MENU_HEAD_LINKS = f'<link rel="stylesheet" href="{WORK_MENU_CSS}">'
@@ -51,6 +54,8 @@ def stamp_html(paths=None):
             new = s.replace("</head>", link + "\n</head>", 1)
         else:
             continue
+        if "work-results.css" in new:
+            new = _RESULTS_CSS_RE.sub(f'<link rel="stylesheet" href="{WORK_RESULTS_CSS}">', new)
         if 'class="work-menu"' in new:
             if "work-menu.css" in new:
                 new = _MENU_CSS_RE.sub(MENU_HEAD_LINKS, new)

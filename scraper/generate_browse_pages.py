@@ -65,6 +65,13 @@ DATA_DIR = SCRAPER_DIR.parent / "data"
 # structured country, so it is read from the location text when that names one ("Aarhus,
 # Denmark" - 12 houses stand outside their architect's home country) and otherwise taken
 # to be the architect's own country (right for almost every house without a country).
+# LISTING TEMPLATE PILOT (2026-10-04). A type page is meant to look like the Work page showing one
+# type: Work's header, search box, chips row, results line and card style (shared stylesheet
+# work-results.css). Only the slugs below use the new template while it is tried out; every other
+# type still renders with render_browse_page(). When the pilot is approved, make this "all types"
+# (LISTING_TEMPLATE_SLUGS = None) and delete render_browse_page().
+LISTING_TEMPLATE_SLUGS = {"table-lamps"}
+
 HOUSES_PER_PAGE = 60
 MIN_HOUSES_FOR_COUNTRY_PAGE = 8
 
@@ -72,6 +79,7 @@ sys.path.insert(0, str(BACKEND_DIR))
 import query_engine as qe  # noqa: E402
 
 from generate_brand_pages import (  # noqa: E402
+    site_nav_html,
     slugify,
     CARD_CLICK_TRACKING_JS,
     CLOUDFLARE_ANALYTICS,
@@ -87,7 +95,7 @@ from generate_theme_landing_pages import (  # noqa: E402
     append_to_sitemap,
 )
 from image_sizes import CARD, sized  # noqa: E402
-from site_assets import ICONS_CSS, MENU_SCRIPT, WORK_MENU_CSS  # noqa: E402
+from site_assets import ICONS_CSS, MENU_SCRIPT, SHARE_JS, WORK_MENU_CSS, WORK_RESULTS_CSS  # noqa: E402
 from redirects import write_redirect  # noqa: E402
 import work_menu  # noqa: E402
 
@@ -325,6 +333,153 @@ def _see_also_html(category):
         return ""
     anchors = ", ".join(f'<a href="/work/{c["slug"]}.html">{html.escape(c["title"].lower())}</a>' for c in links)
     return f" See also: {anchors}."
+
+
+LISTING_CSS = """
+  /* The listing template: everything layout/card/search related comes from work-results.css (the Work
+     page's own stylesheet); these are only the parts a listing adds. */
+  .site-header { margin-bottom: 0; }
+  a.inline-chip { text-decoration: none; }  /* the Work page's Surprise me is a button; here it is a link */
+  .listing-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; text-align: center; margin: 34px 0 6px; }
+  .listing-meta { font-size: 12px; color: var(--text-muted); text-align: center; margin: 0 0 22px; }
+  .listing-meta a { color: var(--text-accent); text-decoration: none; white-space: nowrap; }
+  .listing-meta a:hover { text-decoration: underline; }
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1; background: rgba(250, 249, 247, 0.9);
+    color: var(--text-secondary); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent;
+  }
+  .listing-more { margin: 44px 0 0; padding-top: 22px; border-top: 0.5px solid var(--border); font-size: 13px; line-height: 1.8; color: var(--text-secondary); }
+  .listing-more h2 { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 6px; }
+  .listing-more p { margin: 0 0 18px; }
+  .listing-more a { color: var(--text-primary); text-decoration: none; }
+  .listing-more a:hover { text-decoration: underline; }
+  .listing-more .n { color: var(--text-muted); }
+  .pager { margin-top: 36px; }
+"""
+
+# product slug -> the curated Edits that cover it (for the "curated selection" link)
+def _edits_for_type(slug):
+    import generate_themed_edit_pages as edits
+    titles = {t["slug"]: t["title"] for t in edits.THEMES}
+    return [(es, titles[es]) for es, (browse_slug, _noun) in edits.EDIT_BROWSE_LINKS.items()
+            if browse_slug == slug and es in titles]
+
+
+def _listing_card_html(p, variant_count=None):
+    """A product card identical to the Work page's own (search.js renderCard): photo with the share
+    button over its corner, name (2-line slot), maker, and the empty detail line that keeps rows even."""
+    url = p["brand_url"] if p["link_dead"] else p["product_url"]
+    name, brand = html.escape(p["product_name"]), html.escape(p["brand"])
+    image = (f'<img src="{html.escape(sized(p["image_url"], CARD))}" alt="{html.escape(p["product_name"])} by {brand}" loading="lazy">'
+             if p["image_url"] else "")
+    badge = f'<span class="variant-badge">{variant_count} finishes</span>' if variant_count and variant_count > 1 else ""
+    return (
+        f'<a class="card" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer" '
+        f'data-product="{name}" data-brand="{brand}">'
+        f'<div class="card-image">{image}{badge}'
+        '<button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>'
+        f'<div class="card-body"><div class="card-title-wrap"><p class="card-title">{name}</p></div>'
+        f'<p class="card-brand">{brand}</p><p class="card-detail"></p></div></a>'
+    )
+
+
+def render_listing_page(category, cards, variant_counts, page, pages, products, entries):
+    """The type page as the Work page showing one type (pilot: Table Lamps)."""
+    from collections import Counter
+    slug, title = category["slug"], category["title"]
+    total = len(products)
+    page_url = f"{SITE_URL}/work/{_page_slug(slug, page)}.html"
+    cat_name = work_menu.category_of_group(category["group"])
+    cat_slug = work_menu.CATEGORY_SLUGS[cat_name]
+    noun = title.lower()
+    makers = Counter(p["brand"] for p in products)
+    n_makers = len(makers)
+    summary = f"{total:,} {noun} from {n_makers} makers"
+    page_note = f" - page {page} of {pages}" if pages > 1 else ""
+    description = f"{summary}, listed in full{page_note}. Every result links straight to the maker's own site."
+    edits = _edits_for_type(slug)
+    edit_line = ""
+    if edits:
+        links = " &middot; ".join(f'<a href="/edits/{es}.html">{html.escape(et)} &rarr;</a>' for es, et in edits)
+        edit_line = f' &middot; Curated selection: {links}'
+    breadcrumb = _breadcrumb_json([
+        ("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html"),
+        (cat_name, f"{SITE_URL}/work/{cat_slug}.html"), (title, f"{SITE_URL}/work/{slug}.html")])
+    itemlist = _itemlist_json(cards, (page - 1) * CARDS_PER_PAGE + 1)
+    grid = "".join(_listing_card_html(p, variant_counts.get(id(p))) for p in cards)
+
+    def maker_link(brand):
+        slug_b = slugify(brand)
+        return (f'<a href="/brands/{slug_b}.html">{html.escape(brand)}</a>'
+                if (DOCS_DIR / "brands" / f"{slug_b}.html").exists() else html.escape(brand))
+    top_makers = " &middot; ".join(f'{maker_link(b)} <span class="n">{n}</span>' for b, n in makers.most_common(40))
+    more_makers = f" &middot; and {n_makers - 40} more" if n_makers > 40 else ""
+    siblings = " &middot; ".join(
+        f'<a href="/work/{e["slug"]}.html">{html.escape(e["title"])}</a> <span class="n">{e["n"]:,}</span>'
+        for e in sorted(work_menu.category_entries(entries, cat_name), key=lambda x: x["title"].lower())
+        if e["slug"] != slug)
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{html.escape(title)}{html.escape(f" - page {page}" if page > 1 else "")} — Formground</title>
+{FAVICON_TAGS}
+<meta name="description" content="{html.escape(description)}">
+<link rel="canonical" href="{page_url}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{html.escape(title)} — Formground">
+<meta property="og:description" content="{html.escape(description)}">
+<meta property="og:url" content="{page_url}">
+<meta property="og:image" content="{SITE_URL}/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
+<link rel="stylesheet" href="{WORK_RESULTS_CSS}">
+<link rel="stylesheet" href="{WORK_MENU_CSS}">
+<style>{PAGER_CSS}{LISTING_CSS}</style>
+<script type="application/ld+json">{breadcrumb}</script>
+<script type="application/ld+json">{itemlist}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+{site_nav_html("work")}
+</header>
+<main>
+  <div class="search-wide">
+    <form action="/work.html" method="get">
+      <div class="ask-box">
+        <i class="ti ti-search" aria-hidden="true"></i>
+        <input name="q" type="text" placeholder="Search through a curated collection of work" autocomplete="off" aria-label="Search">
+        <a class="inline-chip" href="/work.html" aria-label="Surprise me"><i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Surprise me</span></a>
+      </div>
+    </form>
+  </div>
+  {work_menu.render_menu(entries, current_slug=slug, current_category=cat_name)}
+  <h1 class="listing-title">{html.escape(title)}</h1>
+  <p class="listing-meta">{html.escape(summary)}, listed in full{html.escape(page_note)}, no rankings, not paid for{edit_line}</p>
+  <div class="results-grid">{grid}</div>
+  {_pager_html(slug, page, pages)}
+  <section class="listing-more">
+    <h2>Makers</h2>
+    <p>{top_makers}{more_makers}</p>
+    <h2>More in {html.escape(cat_name.lower())}</h2>
+    <p>{siblings}</p>
+  </section>
+  <p class="foot-note">
+    {SITE_FOOTER_HTML}
+  </p>
+</main>
+<script>{CARD_CLICK_TRACKING_JS}</script>
+{MENU_SCRIPT}
+<script src="{SHARE_JS}" defer></script>
+{CLOUDFLARE_ANALYTICS}
+</body>
+</html>
+"""
 
 
 def render_browse_page(category, cards, variant_counts, page, pages, total_products, entries):
@@ -633,7 +788,10 @@ def generate():
         for page in range(1, pages + 1):
             chunk = cards[(page - 1) * CARDS_PER_PAGE: page * CARDS_PER_PAGE]
             out = BROWSE_DIR / f"{_page_slug(category['slug'], page)}.html"
-            out.write_text(render_browse_page(category, chunk, variant_counts, page, pages, len(products), entries))
+            if LISTING_TEMPLATE_SLUGS is None or category["slug"] in LISTING_TEMPLATE_SLUGS:
+                out.write_text(render_listing_page(category, chunk, variant_counts, page, pages, products, entries))
+            else:
+                out.write_text(render_browse_page(category, chunk, variant_counts, page, pages, len(products), entries))
             sitemap_slugs.append(f"work/{_page_slug(category['slug'], page)}")
         print(f"work/{category['slug']}: {len(products)} products -> {len(cards)} cards, {pages} page(s)")
 

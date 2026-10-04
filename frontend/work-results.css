@@ -1,0 +1,195 @@
+/* The Work page's own look - layout, search box, chips row, results meta, grid, cards, share button,
+   load-more. Shared by /work.html and the type-page listing template (generate_browse_pages.py) so a
+   type page looks like the Work page showing one type. Edit here, not in either page. */
+  /* Pins the footer to the bottom of the viewport instead of it
+     sitting mid-page before results are in (during the brief gap
+     before the landing auto-discovery populates the grid, or on a
+     genuine zero-result query) - same technique as designers.html
+     (see project memory): body becomes the full-height flex column,
+     main is the one child that grows to fill it, and the footer's
+     margin-top: auto (overriding site.css's fixed 60px, only on this
+     page) pushes itself to the bottom of that remaining space. */
+  body { min-height: 100vh; display: flex; flex-direction: column; }
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 24px 20px 60px;
+    width: 100%;
+  }
+  .foot-note { margin-top: auto; }
+  /* footer stays invisible until the first results are in (see search.js finishLoading) */
+  .results-loading .foot-note { visibility: hidden; }
+
+  /* Page-specific override of site.css's shared 40px - matches the
+     homepage's own ask-box height exactly (2026-09-20, measured live:
+     154px from viewport top on both pages), so the search box sits at
+     the same place whether you land here or on the homepage. */
+  .site-header { margin-bottom: 0; }
+
+  .search-wide {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Sticky on mobile only (2026-09-26, user: keep it off desktop) -
+     originally added 2026-09-25 so the ask-box, with its "Surprise me"
+     shuffle, stays reachable the whole way down a long results grid
+     instead of only at the top of the page. On a tall desktop viewport
+     the grid is wide enough that scrolling back up is a non-issue, so
+     the sticky bar only pays for itself on a narrow mobile screen where
+     each row is short and the scroll is long. Solid background (not
+     transparent) since it now sits over scrolling content, not empty
+     space. */
+  @media (max-width: 480px) {
+    .search-wide {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: var(--bg);
+      padding: 12px 0;
+    }
+  }
+
+  /* --- ask box --- */
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px; margin-top: 0;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  .inline-chip {
+    display: flex; align-items: center; gap: 6px; flex-shrink: 0;
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 12px; margin: 0;
+    cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .inline-chip:hover { border-color: var(--text-muted); }
+  .inline-chip i { font-size: 15px; }
+
+  @media (max-width: 480px) {
+    .inline-chip span { display: none; }
+    .inline-chip { padding: 9px; }
+  }
+
+  /* --- results --- */
+  #results-meta {
+    font-size: 12px; color: var(--text-muted); text-align: center;
+    margin: 32px 0 20px; display: none;
+  }
+
+  /* Independent/Established tier filter - same two toggle chips as
+     makers.html's own (see generate_brand_pages.py's tier_filter_html),
+     but this page's results come from the live backend, so these
+     re-query it (see search.js's applyTierFilter) rather than hiding
+     already-rendered cards. Clicking the active chip again clears it.
+     Sits right above the grid it actually filters (2026-09-30, moved
+     down from beside the ask-box) rather than next to the search input,
+     which filters something else entirely (what the text means, not
+     which maker tier to show). */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 24px; }
+  .filter-chip {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  .results-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+  }
+  /* Matches Creators/the homepage's category tiles (2026-09-20, see
+     project memory): border/background/sharp corners live on the photo
+     alone, not a card box enclosing the photo and text together - text
+     sits as plain content below it. The share button now overlays the
+     photo's own bottom-right corner (position: relative moved from
+     .card to .card-image) rather than the old enclosing card, since
+     there's no card body surface left for it to sit inside. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1 / 1; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; position: relative;
+  }
+  .card.thin .card-image { border-style: dashed; border-color: var(--border-strong); }
+  .card-image i { font-size: 28px; color: var(--text-muted); }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  .card-body { padding: 0; }
+  .share-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 1;
+    width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(250, 249, 247, 0.85); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+  }
+  .share-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+  .share-btn i { font-size: 14px; }
+  .share-btn.copied::after {
+    content: "Copied"; position: absolute; bottom: 32px; right: 0;
+    background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  /* Reserves a full 2 lines' height (matching card-title's own
+     line-clamp: 2 below) so the brand name always starts at the same
+     row across every card, regardless of whether a given product name
+     wraps to 1 or 2 lines - supersedes the 2026-09-20 1-line version,
+     which traded that alignment away for shorter single-line cards. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 6px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-detail {
+    font-size: 11px; color: var(--text-muted); margin: 0; line-height: 1.3; min-height: 1.3em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-note {
+    font-size: 11px; color: var(--text-accent); margin: 0; line-height: 1.3; min-height: 1.3em;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card-note i { font-size: 12px; vertical-align: -1px; margin-right: 3px; }
+
+  /* --- "see more results" (search only) --- */
+  /* Deliberately quiet - a text link, not a solid CTA pill - so it
+     reads as "more is available if you want it" rather than competing
+     with the results themselves for attention. Easy to make bolder
+     later (e.g. the same pill style as designers.html's notify-row
+     button) if this reads as too easy to miss. */
+  .load-more-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 40px 0 8px; text-align: center;
+  }
+  .load-more-btn {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: none; border: none; padding: 6px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .load-more-btn:hover { color: var(--text-primary); }
+  .load-more-btn:disabled { opacity: 0.6; cursor: default; text-decoration: none; }
+  .load-more-progress { font-size: 11.5px; color: var(--text-muted); }
+
+  /* --- empty state / errors --- */
+  #status { font-size: 13px; color: var(--text-muted); text-align: center; margin: 32px 0; display: none; }
+  #status.error { color: #a14b3f; }
+  [hidden] { display: none !important; }

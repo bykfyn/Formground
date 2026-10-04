@@ -48,6 +48,20 @@ Each nav item owns a URL namespace; a name never means two different pages.
 - Moved 2026-10-04 from /browse/ and the site root, before ads started, so no paid or
   inbound traffic had to be carried over.
 
+### Listing template (type pages) - PILOT on Table Lamps, 2026-10-04
+
+A type page must look like the Work page showing one type, not like a different kind of page. It is
+built from the Work page's own pieces: the nav with Work current, the same search box (submitting
+goes to /work.html?q=..., "Surprise me" to /work.html), the four chips (the current category's chip
+selected), a centred title and results line ("816 table lamps from 77 makers, listed in full - page 1
+of 3, no rankings, not paid for", plus "Curated selection: <Edit> ->" when an Edit covers the type),
+the same cards with the share button, a pager, then "Makers" (top 40 with counts, each linking to the
+maker's page) and "More in <category>" siblings. Styles come from ONE shared file,
+`frontend/work-results.css`, linked by both /work.html and the listing pages - edit it there, never
+in either page. Only `LISTING_TEMPLATE_SLUGS` in generate_browse_pages.py use it for now; on approval
+set it to None for all types (and remove render_browse_page). Houses pages still use their own
+template and move onto this one at rollout.
+
 ## 1. Banners (the wide photo with one featured product)
 
 Used on: home (Sofas, Two Seater Sofas), the Edits hub, every Edit page.
