@@ -9120,7 +9120,6 @@ EXTRACTORS = {
     "Woud": extract_shopify,
     # 2026-10-03: leads from Dusty NYC's maker credits (showroom used as a lead
     # list only), triaged clean - own Shopify / WooCommerce APIs.
-    "Nick Pourfard": extract_shopify,
     "Salma": extract_woocommerce,
     "Multiforme": extract_woocommerce,
     "BD Barcelona": extract_bd_barcelona,
