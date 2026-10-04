@@ -84,7 +84,7 @@ def pool(conn):
     return out
 
 
-def classify(item, key, prompt=None, label_set=None):
+def classify(item, key, prompt=None, label_set=None, model=None):
     prompt = prompt or PROMPT
     label_set = label_set or LABEL_SET
     try:
@@ -98,15 +98,16 @@ def classify(item, key, prompt=None, label_set=None):
         resp = requests.post(
             "https://api.anthropic.com/v1/messages",
             headers={"x-api-key": key, "anthropic-version": "2023-06-01", "content-type": "application/json"},
-            json={"model": MODEL, "max_tokens": 60, "messages": [{"role": "user", "content": [
+            json={"model": model or MODEL, "max_tokens": 60 if not model else 500, "messages": [{"role": "user", "content": [
                 {"type": "image", "source": {"type": "base64", "media_type": media, "data": data}},
                 {"type": "text", "text": prompt.format(name=item["name"], labels=", ".join(label_set))},
             ]}]},
             timeout=60,
         )
         resp.raise_for_status()
-        text = resp.json()["content"][0]["text"].strip()
-        text = text[text.find("{"): text.rfind("}") + 1]
+        text = "".join(b.get("text", "") for b in resp.json()["content"]).strip()
+        # a stronger model may think aloud first: the answer is the last JSON object
+        text = text[text.rfind("{"): text.rfind("}") + 1]
         parsed = json.loads(text)
         label = str(parsed.get("label", "unsure")).lower()
         if label not in label_set:

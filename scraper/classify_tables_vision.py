@@ -26,6 +26,7 @@ LABEL_SET = ["dining table", "coffee table", "side table", "console table", "des
              "bar table", "outdoor table", "other table", "not_a_table", "unsure"]
 APPLY_AS = {"dining table", "coffee table", "side table", "console table", "desk", "bedside table",
             "outdoor table"}
+SECOND_MODEL = "claude-sonnet-5-5"
 MIN_CONFIDENCE = 0.9  # tables: the 0.85 bucket was wrong about a quarter of the time in the hand check
 
 GENERIC = {"table", "tables", "tavoli", "small tables", "tables and complements", "low tables",
@@ -57,6 +58,14 @@ PROMPT = (
 )
 
 
+def confident(res):
+    """First pass: 0.9+. Second-pass items (the first pass was unsure): the stronger model at 0.9+, or at
+    0.75+ when it agrees with the first model - hand-checked 2026-10-04, about nine in ten right."""
+    if res["confidence"] >= MIN_CONFIDENCE:
+        return True
+    return "second" in res and res["label"] == (res.get("first") or {}).get("label") and res["confidence"] >= 0.75
+
+
 def pool(conn):
     rows = conn.execute("SELECT id, brand, product_name, category, image_url FROM products "
                         "WHERE link_dead=0 AND image_url IS NOT NULL AND image_url != ''").fetchall()
@@ -76,6 +85,8 @@ def main():
     ap.add_argument("--limit", type=int)
     ap.add_argument("--apply", action="store_true")
     ap.add_argument("--workers", type=int, default=6)
+    ap.add_argument("--second-pass", action="store_true",
+                    help="re-label the items the first pass was not sure about (below 0.9) with a stronger model")
     args = ap.parse_args()
     conn = sqlite3.connect(DB)
     labels = json.loads(LABELS.read_text()) if LABELS.exists() else {}
@@ -83,7 +94,7 @@ def main():
     if args.apply:
         n = 0
         for pid, res in labels.items():
-            if res["label"] in APPLY_AS and res["confidence"] >= MIN_CONFIDENCE:
+            if res["label"] in APPLY_AS and confident(res):
                 cat = conn.execute("SELECT category FROM products WHERE id=?", (int(pid),)).fetchone()[0]
                 if cat and cat.lower().startswith(res["label"]):
                     continue
@@ -93,17 +104,28 @@ def main():
         print(f"applied {n} labels")
         return
 
-    todo = [i for i in pool(conn) if str(i["id"]) not in labels or labels[str(i["id"])]["label"] == "error"]
+    if args.second_pass:
+        # Only items the first (Haiku) pass left unapplied; the answer replaces it, the old one is kept.
+        by_id = {str(i["id"]): i for i in pool(conn)}
+        todo = [by_id[k] for k, v in labels.items()
+                if k in by_id and v["confidence"] < MIN_CONFIDENCE
+                and ("second" not in v or v["label"] == "error")]
+    else:
+        todo = [i for i in pool(conn) if str(i["id"]) not in labels or labels[str(i["id"])]["label"] == "error"]
     if args.limit:
         todo = todo[: args.limit]
     key = base.load_key()
     print(f"{len(todo)} tables to classify")
     t0 = time.time()
     with ThreadPoolExecutor(args.workers) as ex:
+        model = SECOND_MODEL if args.second_pass else None
         for n, (item, res) in enumerate(
-                zip(todo, ex.map(lambda i: base.classify(i, key, PROMPT, LABEL_SET), todo)), 1):
+                zip(todo, ex.map(lambda i: base.classify(i, key, PROMPT, LABEL_SET, model), todo)), 1):
+            old = labels.get(str(item["id"]), {})
+            first = old.get("first") or {"label": old.get("label"), "confidence": old.get("confidence")}
+            extra = {"second": model, "first": first} if args.second_pass else {}
             labels[str(item["id"])] = {**res, "brand": item["brand"], "name": item["name"],
-                                       "image_url": item["image_url"]}
+                                       "image_url": item["image_url"], **extra}
             if n % 50 == 0:
                 LABELS.write_text(json.dumps(labels, indent=1))
                 print(f"  {n}/{len(todo)}  {time.time() - t0:.0f}s")
