@@ -63,8 +63,9 @@ chips, and the "N finishes" badge was shorter than the brand tags.)
 | Photo pill | "Visit site" on tiles, the photo credit on the Edits masthead | 27px | 11px, weight 600 | full pill, glass background (light or dark to suit the photo) |
 | Small label | brand-page tags (Lighting, Objects, country), the "N finishes" badge | 23px | 11px | 10px corners; the tag is outlined, the badge filled (both carry a 0.5px border so the box is identical) |
 
-- Search bars: 60px tall with a chip, 57px on the home page (no chip); 900px wide, centred.
-  Open question: should it match the 1160px banner/grid edges on the Edits page?
+- Search bars: 60px tall with a chip, 57px on the home page (no chip); 900px wide, centred,
+  on every page including Edits (decided 2026-10-04: it stays 900px rather than matching the
+  1160px banner/grid edges, so it is the same everywhere).
 
 ## 6. Type and spacing
 
