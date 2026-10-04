@@ -355,8 +355,8 @@ LISTING_CSS = """
   /* The listing template: everything layout/card/search related comes from work-results.css (the Work
      page's own stylesheet); these are only the parts a listing adds. */
   .site-header { margin-bottom: 0; }
-  .listing-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; text-align: center; margin: 34px 0 6px; }
-  .listing-meta { font-size: 12px; color: var(--text-muted); text-align: center; margin: 0 0 22px; }
+  .listing-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; text-align: center; margin: 34px 0 22px; }
+  .listing-meta { font-size: 12px; color: var(--text-muted); text-align: center; margin: -14px 0 22px; }
   .listing-meta a { color: var(--text-accent); text-decoration: none; white-space: nowrap; }
   .listing-meta a:hover { text-decoration: underline; }
   .variant-badge {
@@ -431,6 +431,10 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
     if edits:
         links = " &middot; ".join(f'<a href="/edits/{es}.html">{html.escape(et)} &rarr;</a>' for es, et in edits)
         edit_line = f' &middot; {"Themed Edits" if len(edits) > 1 else "Themed Edit"}: {links}'
+    # No results line any more (2026-10-04: count, "listed in full", page 1 of N, "no rankings" was page information
+    # nobody needed above the products); only the Themed Edit link survives, when an Edit covers this type.
+    edit_link_html = (f'<p class="listing-meta">{"Themed Edits" if len(edits) > 1 else "Themed Edit"}: {links}</p>'
+                      if edits else "")
     if view:
         breadcrumb = _breadcrumb_json([("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html")]
                                       + [(t, f"{SITE_URL}{u}") for t, u in view["crumbs"]])
@@ -509,7 +513,7 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
   {menu_html}
   {subnav}
   <h1 class="listing-title">{html.escape(title)}</h1>
-  <p class="listing-meta">{html.escape(summary)}, listed in full{html.escape(page_note)}, no rankings, not paid for{edit_line}</p>
+  {edit_link_html}
   {earlier}
   <div class="results-grid">{grid}</div>
   {see_more}
@@ -745,7 +749,7 @@ def render_category_page(cat_name, entries):
   </div>
   {work_menu.render_menu(entries, current_category=cat_name)}
   <h1 class="listing-title">{html.escape(cat_name)}</h1>
-  <p class="listing-meta">{total:,} pieces from {len(types)} types, listed in full, no rankings, not paid for &middot; <a href="/edits.html">Themed Edits &rarr;</a></p>
+  <p class="listing-meta"><a href="/edits.html">Themed Edits &rarr;</a></p>
   {"".join(blocks)}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
@@ -870,7 +874,6 @@ def render_new_hub(entries):
   </div>
   {work_menu.render_menu(entries)}
   <h1 class="listing-title">New</h1>
-  <p class="listing-meta">{total:,} pieces new from their makers in the last 90 days, by category, no rankings, not paid for</p>
   <div class="type-grid">{tiles}</div>
   <p class="foot-note">
     {SITE_FOOTER_HTML}

@@ -84,8 +84,8 @@ as photo tiles grouped by section. Built by `render_category_page`; styles share
 A type page must look like the Work page showing one type, not like a different kind of page. It is
 built from the Work page's own pieces: the nav with Work current, the same search box (submitting
 goes to /work.html?q=..., "Surprise me" to /work.html), the four chips (the current category's chip
-selected), a centred title and results line ("816 table lamps from 77 makers, listed in full - page 1
-of 3, no rankings, not paid for", plus "Themed Edit: <Edit> ->" when an Edit covers the type; always call these Edits / Themed Edits, never "curated selection"),
+selected), a centred title and, only when an Edit covers the type, one small "Themed Edit: <Edit> ->" line (always call these Edits / Themed Edits,
+never "curated selection"; there is no count / "listed in full" / page-of-N results line any more, 2026-10-04),
 the same cards with the share button, a pager, then "Makers" (top 40 with counts, each linking to the
 maker's page) and "More in <category>" siblings.
 
