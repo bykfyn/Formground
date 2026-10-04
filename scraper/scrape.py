@@ -3216,6 +3216,51 @@ def _backfill_foreign_category(product_name, category):
     return f"{found}, {category}" if category.strip() else found
 
 
+# --- Chair sub-types (2026-10-04) -----------------------------------------------------------------
+# 1,196 of the 1,854 chairs carried only the bare tag "chair", so /work/chairs.html was one 31-page
+# list. Many of them say what they are in their NAME ("ELLIOT DINING CHAIR", "Era Armchair", "Swivel
+# office chair") while the brand's tag is generic. When a chair has no sub-type tag, the name decides
+# and the sub-type is PREPENDED ("office chair, Chair") so the brand's own tags stay intact.
+# Coded or abstract names ("Substance", "AAC 155") give nothing to read and are left alone.
+CHAIR_GENERIC_TAGS = {"chair", "chairs"}
+CHAIR_SPECIFIC_RE = re.compile(
+    r"dining|lounge|arm ?chair|armchairs|side chair|garden|outdoor|\bbar\b|counter|easy|office|desk|rocking|"
+    r"club|stool|folding|stacking|kids|child|high ?chair|swivel|task|upholster", re.I)
+# not chairs: parts, covers, hardware (checked first - "wall mount for folding chairs" is a bracket)
+CHAIR_NOT_A_CHAIR_RE = re.compile(
+    r"wall mount|bracket|cushion|seat pad|cover|slipcover|spare|replacement|castor|caster|glides|\blegs?\b|"
+    r"\bhooks?\b|holder|trolley|\bcart\b|rack\b|storage|accessor|\bset of\b.*\bparts\b", re.I)
+CHAIR_NAME_RULES = (
+    ("office chair", re.compile(r"\b(office|desk|task|executive|conference|ergonomic)\b|work ?chair", re.I)),
+    ("dining chair", re.compile(r"\bdining\b", re.I)),
+    ("rocking chair", re.compile(r"\brocking\b|\brocker\b|schaukelstuhl", re.I)),
+    ("folding chair", re.compile(r"\bfolding\b|\bfoldable\b|\bstackable\b|\bstacking\b|\bstack chair\b", re.I)),
+    ("garden chair", re.compile(r"\boutdoor\b|\bgarden\b|\bpatio\b|\bterrace\b|chaise de jardin|\bjardin\b|giardino|trädgård", re.I)),
+    ("side chair", re.compile(r"\bside chair\b|\bvisitor\b|\boccasional chair\b", re.I)),
+    ("lounge chair", re.compile(r"\blounge\b|club chair|easy chair|fireside|wing chair|slipper chair|tub chair|\bbutaca\b|fauteuil", re.I)),
+    ("armchair", re.compile(r"arm ?chair|karmstol|fåtölj|\bsillón\b", re.I)),
+    ("kids chair", re.compile(r"\bkids?\b|\bchild(ren)?'?s?\b|\bjunior\b|\bbaby\b|high ?chair|toddler", re.I)),
+)
+
+
+def _refine_chair_subtype(product_name, category):
+    """Prepend a sub-type tag to a chair whose only chair tag is the generic "chair"/"chairs" and whose
+    NAME names its type. Returns the category unchanged otherwise. Idempotent."""
+    tags = [t.strip() for t in (category or "").split(",") if t.strip()]
+    lowered = [t.lower() for t in tags]
+    if not any(t in CHAIR_GENERIC_TAGS for t in lowered):
+        return category
+    if any(CHAIR_SPECIFIC_RE.search(t) for t in lowered):
+        return category  # already has a specific tag (idempotence: this also catches our own prepend)
+    name = product_name or ""
+    if CHAIR_NOT_A_CHAIR_RE.search(name):
+        return category
+    for subtype, rx in CHAIR_NAME_RULES:
+        if rx.search(name):
+            return f"{subtype}, {category}"
+    return category
+
+
 def _infer_category_from_name(product_name, current_category, brand_name=None):
     # A purely-numeric category is never a real category name for any
     # brand - confirmed live 2026-09-29 on Design House Stockholm, whose
@@ -9505,6 +9550,7 @@ def run(brand_name=None, local_only=False):
                     if not (product["category"] or "").strip():
                         product["category"] = _infer_category_for_blank(product["product_name"], brand["name"]) or ""
                     product["category"] = _backfill_foreign_category(product["product_name"], product["category"])
+                    product["category"] = _refine_chair_subtype(product["product_name"], product["category"])
                 if not product.get("price") and url in old_prices:
                     # The page-price step (a failed fetch, a time budget) did
                     # not refresh this one: keep what we had rather than

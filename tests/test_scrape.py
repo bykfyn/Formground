@@ -426,3 +426,33 @@ class StockistLeadsParseTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ChairSubtypeTests(unittest.TestCase):
+    """_refine_chair_subtype (2026-10-04): a chair whose only tag is generic gets a sub-type from its NAME."""
+
+    def test_the_name_decides_and_the_brand_tags_are_kept(self):
+        f = scrape._refine_chair_subtype
+        self.assertEqual(f("ELLIOT DINING CHAIR", "chair"), "dining chair, chair")
+        self.assertEqual(f("Era Armchair", "Chair"), "armchair, Chair")
+        self.assertEqual(f("Slipper Chair", "chair"), "lounge chair, chair")
+        self.assertEqual(f("Task chair 3", "chair"), "office chair, chair")
+        self.assertEqual(f("Folding Flat Chair | Ash", "chairs"), "folding chair, chairs")
+        self.assertEqual(f("Chaise de jardin PANORAMA", "chair"), "garden chair, chair")
+        self.assertEqual(f("Arno Club Chair", "Chair, sillas"), "lounge chair, Chair, sillas")
+
+    def test_no_change_when_there_is_nothing_to_read_or_a_specific_tag_exists(self):
+        f = scrape._refine_chair_subtype
+        for name, cat in [("Soft Edge 82", "chair"), ("Substance", "chair"), ("Gray", "chair"),
+                          ("Aaron Dining Chair", "Dining Chair"), ("Era Armchair", "Lounge chair, chair"),
+                          ("Floor lamp", "Lamp"), ("Eternity Swivel | Black", "chair")]:
+            self.assertEqual(f(name, cat), cat, name)
+
+    def test_parts_and_hardware_are_not_chairs(self):
+        f = scrape._refine_chair_subtype
+        self.assertEqual(f("DS12 Wall mount for folding chairs", "chair"), "chair")
+        self.assertEqual(f("Seat cushion for dining chair", "chair"), "chair")
+
+    def test_it_is_idempotent(self):
+        once = scrape._refine_chair_subtype("ELLIOT DINING CHAIR", "chair")
+        self.assertEqual(scrape._refine_chair_subtype("ELLIOT DINING CHAIR", once), once)

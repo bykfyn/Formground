@@ -133,7 +133,17 @@ BROWSE_CATEGORIES = [
     # subset of Stools, Dining Chairs/Armchairs overlap Chairs - the
     # hierarchy is intentional, each page answers its own search.
     {"slug": "sofas", "title": "Sofas", "group": "Seating", "intent": {"category": "sofa"}},
-    {"slug": "chairs", "title": "Chairs", "group": "Seating", "intent": {"category": "chair"}},
+    {"slug": "chairs", "title": "Chairs", "group": "Seating", "intent": {"category": "chair"},
+     "related": ["dining-chairs", "armchairs", "side-chairs", "garden-chairs", "office-chairs", "folding-chairs"]},
+    # Sub-types of Chairs worked out from product names (scrape.py _refine_chair_subtype,
+    # 2026-10-04). Rocking (11) and kids' (12) chairs are tagged but too few for a page of their own.
+    {"slug": "garden-chairs", "title": "Garden and Outdoor Chairs", "group": "Seating",
+     "intents": [{"category": "garden chair"}, {"category": "outdoor chair"}]},
+    {"slug": "side-chairs", "title": "Side Chairs", "group": "Seating", "intent": {"category": "side chair"}},
+    {"slug": "folding-chairs", "title": "Folding and Stacking Chairs", "group": "Seating",
+     "intents": [{"category": "folding chair"}, {"category": "stacking chair"}]},
+    {"slug": "office-chairs", "title": "Office and Desk Chairs", "group": "Seating",
+     "intents": [{"category": "office chair"}, {"category": "desk chair"}]},
     {"slug": "dining-chairs", "title": "Dining Chairs", "group": "Seating", "intent": {"category": "dining chair"}},
     {"slug": "armchairs", "title": "Armchairs and Lounge Chairs", "group": "Seating",
      "intents": [{"category": "armchair"}, {"category": "lounge chair"}],
