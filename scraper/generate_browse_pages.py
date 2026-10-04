@@ -65,12 +65,9 @@ DATA_DIR = SCRAPER_DIR.parent / "data"
 # structured country, so it is read from the location text when that names one ("Aarhus,
 # Denmark" - 12 houses stand outside their architect's home country) and otherwise taken
 # to be the architect's own country (right for almost every house without a country).
-# LISTING TEMPLATE PILOT (2026-10-04). A type page is meant to look like the Work page showing one
-# type: Work's header, search box, chips row, results line and card style (shared stylesheet
-# work-results.css). Only the slugs below use the new template while it is tried out; every other
-# type still renders with render_browse_page(). When the pilot is approved, make this "all types"
-# (LISTING_TEMPLATE_SLUGS = None) and delete render_browse_page().
-LISTING_TEMPLATE_SLUGS = {"table-lamps"}
+# LISTING TEMPLATE (piloted on Table Lamps, approved and rolled out to every type 2026-10-04). A type
+# page looks like the Work page showing one type: Work's header, search box, chips row, results line and
+# card style (shared stylesheet work-results.css).
 # Template pages hold 60 cards (not 300): Lighthouse flags a page over ~1,400 DOM elements and 300 cards
 # made ~3,400; 60 is ~1,000. 60 also divides evenly into every column count the grid uses (6, 4, 3, 2) so
 # no page ends in a ragged row, and matches the Houses pages. A "See more" link loads the next 60 in place.
@@ -102,13 +99,6 @@ from image_sizes import CARD, sized  # noqa: E402
 from site_assets import ICONS_CSS, LISTING_JS, MENU_SCRIPT, SHARE_JS, WORK_MENU_CSS, WORK_RESULTS_CSS  # noqa: E402
 from redirects import write_redirect  # noqa: E402
 import work_menu  # noqa: E402
-
-# ~300 cards is ~145 KB of HTML - the same weight as the existing
-# Floor Lamps page, which is the one uncapped category page already
-# live and loading fine. Serax's single brand page is 1.3 MB for
-# comparison, so this is deliberately well under what the site already
-# serves.
-CARDS_PER_PAGE = 300
 
 # Each entry's `intent` goes straight to query_engine.filter_products().
 # `plural` is the lowercase noun used in the intro/meta sentence.
@@ -526,69 +516,6 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
 """
 
 
-def render_browse_page(category, cards, variant_counts, page, pages, total_products, entries):
-    itemlist = _itemlist_json(cards, (page - 1) * CARDS_PER_PAGE + 1)
-    slug, title = category["slug"], category["title"]
-    page_url = f"{SITE_URL}/work/{_page_slug(slug, page)}.html"
-    cat_name = work_menu.category_of_group(category["group"])
-    cat_slug = work_menu.CATEGORY_SLUGS[cat_name]
-    noun = title.lower()
-    page_suffix = f" - page {page}" if page > 1 else ""
-    full_title = f"{title}{page_suffix} — Formground"
-    description = (
-        f"{total_products:,} real {noun} from independent makers, listed in full"
-        f"{f' (page {page} of {pages})' if pages > 1 else ''}. "
-        "Every result links straight to the maker's own site."
-    )
-    breadcrumb = _breadcrumb_json([
-        ("Formground", f"{SITE_URL}/"),
-        ("Work", f"{SITE_URL}/work.html"),
-        (cat_name, f"{SITE_URL}/work/{cat_slug}.html"),
-        (title, f"{SITE_URL}/work/{slug}.html"),
-    ])
-    grid = "".join(
-        product_card_html(p, show_brand=True, variant_count=variant_counts.get(id(p)))
-        for p in cards
-    )
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-{_head(full_title, description, page_url)}
-<script type="application/ld+json">{breadcrumb}</script>
-<script type="application/ld+json">{itemlist}</script>
-</head>
-<body>
-<header class="site-header">
-  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-{SITE_NAV_HTML}
-</header>
-<main>
-  <p class="page-tagline"><a href="/work.html">Work</a> &rsaquo; <a href="/work/{cat_slug}.html">{html.escape(cat_name)}</a></p>
-  <h1>{html.escape(title)}</h1>
-  <p class="category-intro">{html.escape(category.get("blurb", "") + " " if category.get("blurb") else "")}{total_products:,} {html.escape(noun)} from independent makers{f" - page {page} of {pages}" if pages > 1 else ""}. Every result links straight to the maker's own site.{_see_also_html(category)}</p>
-  {work_menu.render_menu(entries, current_slug=slug, align="left", current_category=cat_name)}
-  <div class="grid">{grid}</div>
-  {_pager_html(slug, page, pages)}
-  <p class="foot-note">
-    {SITE_FOOTER_HTML}
-  </p>
-</main>
-<script>
-  document.querySelectorAll(".card-image img").forEach(function (img) {{
-    img.addEventListener("load", function () {{
-      var ratio = img.naturalWidth / img.naturalHeight;
-      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
-    }});
-  }});
-</script>
-<script>{CARD_CLICK_TRACKING_JS}</script>
-{MENU_SCRIPT}
-{CLOUDFLARE_ANALYTICS}
-</body>
-</html>
-"""
-
-
 def _type_tile_html(e):
     """One type's tile on a category page: a photo, the type's name, how many pieces."""
     image = ""
@@ -828,16 +755,12 @@ def generate():
 
     sitemap_slugs = []
     for category, products, cards, variant_counts in computed:
-        use_template = LISTING_TEMPLATE_SLUGS is None or category["slug"] in LISTING_TEMPLATE_SLUGS
-        per_page = LISTING_CARDS_PER_PAGE if use_template else CARDS_PER_PAGE
+        per_page = LISTING_CARDS_PER_PAGE
         pages = max(1, math.ceil(len(cards) / per_page))
         for page in range(1, pages + 1):
             chunk = cards[(page - 1) * per_page: page * per_page]
             out = BROWSE_DIR / f"{_page_slug(category['slug'], page)}.html"
-            if use_template:
-                out.write_text(render_listing_page(category, chunk, variant_counts, page, pages, products, entries, cards))
-            else:
-                out.write_text(render_browse_page(category, chunk, variant_counts, page, pages, len(products), entries))
+            out.write_text(render_listing_page(category, chunk, variant_counts, page, pages, products, entries, cards))
             sitemap_slugs.append(f"work/{_page_slug(category['slug'], page)}")
         print(f"work/{category['slug']}: {len(products)} products -> {len(cards)} cards, {pages} page(s)")
 

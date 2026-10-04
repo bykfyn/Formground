@@ -117,8 +117,8 @@ class StructureTests(unittest.TestCase):
                 self.assertFalse(_is_stub((DOCS / path.lstrip("/")).read_text()), f"{loc} is a redirect stub")
         self.assertNotIn("/browse/", sm)
 
-    def test_the_listing_template_pilot_looks_like_the_work_page(self):
-        """Table Lamps (the pilot) is built from the Work page's own pieces: nav with Work current, the
+    def test_type_pages_look_like_the_work_page(self):
+        """Every type page (Table Lamps shown here; the next test covers all) is built from the Work page's own pieces: nav with Work current, the
         search form to /work.html, the four chips, the shared stylesheet and Work-style cards."""
         text = (DOCS / "work" / "table-lamps.html").read_text()
         self.assertIn('<a href="/work.html" class="current">Work</a>', text)
@@ -133,7 +133,7 @@ class StructureTests(unittest.TestCase):
         self.assertIn("/work-results.css?v=", (DOCS / "work.html").read_text())
         self.assertEqual((ROOT / "frontend" / "work-results.css").read_text(), (DOCS / "work-results.css").read_text())
 
-    def test_pilot_pages_hold_60_cards_with_see_more_and_a_compact_pager(self):
+    def test_type_pages_hold_60_cards_with_see_more_and_a_compact_pager(self):
         pages = sorted(glob.glob(str(DOCS / "work" / "table-lamps*.html")), key=lambda f: (len(f), f))
         counts = [len(re.findall(r'<a class="card"', Path(f).read_text())) for f in pages]
         self.assertTrue(len(pages) >= 10, "table lamps should be many 60-card pages")
@@ -147,8 +147,15 @@ class StructureTests(unittest.TestCase):
         last = Path(pages[-1]).read_text()
         self.assertNotIn('id="see-more"', last)                   # nothing left to load
         self.assertNotIn('rel="next"', last)
-        # types not yet on the template keep their 300-card pages
-        self.assertEqual(len(re.findall(r'<a class="card"', (DOCS / "work" / "sofas.html").read_text())), 300)
+        # rolled out to every type (2026-10-04): no type page holds more than 60 cards, all use the template
+        for f in glob.glob(str(DOCS / "work" / "*.html")):
+            text = Path(f).read_text()
+            if 'class="results-grid"' not in text or "/work/houses" in f or "houses" in Path(f).name:
+                continue
+            self.assertLessEqual(len(re.findall(r'<a class="card"', text)), 60, f)
+            self.assertIn("/work-results.css?v=", text, f)
+        for slug in ("sofas", "chairs", "vases", "rugs"):
+            self.assertEqual(len(re.findall(r'<a class="card"', (DOCS / "work" / f"{slug}.html").read_text())), 60, slug)
 
     def test_surprise_me_is_a_chip_not_part_of_the_search_box(self):
         work = (DOCS / "work.html").read_text()
