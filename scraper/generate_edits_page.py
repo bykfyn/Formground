@@ -73,6 +73,7 @@ from generate_brand_pages import (  # noqa: E402
 )
 from generate_theme_landing_pages import append_to_sitemap  # noqa: E402
 import generate_themed_edit_pages as gte  # noqa: E402
+from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
 
 # How many of the real edits lead as rotating banner slides - all of
 # them today (only 4 exist); capped so a much larger future edit count
@@ -273,7 +274,7 @@ def _edit_banner_slide_html(theme, product):
     url = product["brand_url"] if product.get("link_dead") else product["product_url"]
     return (
         f'<a href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">'
-        f'<img src="{html.escape(product["image_url"])}" alt="{html.escape(product["product_name"])} by {html.escape(product["brand"])}" loading="lazy">'
+        f'<img src="{html.escape(sized(product["image_url"], HERO))}" alt="{html.escape(product["product_name"])} by {html.escape(product["brand"])}" loading="lazy">'
         '<div class="banner-slide-content">'
         f'<span class="edit-banner-eyebrow">{html.escape(theme["title"])}</span>'
         f'<span class="edit-banner-title">{html.escape(product["product_name"])}</span>'
@@ -357,8 +358,10 @@ def render_edits_index(themes_data):
 
     tile_items = ""
     for theme, count, brand_count, image, hero_product in ordered:
+        # the featured tile spans half the grid, so it gets a larger copy than a card
+        image_width = TILE if theme["slug"] == FEATURED_EDIT_SLUG else CARD
         image_tag = (
-            f'<img src="{html.escape(image)}" alt="{html.escape(theme["title"])}" loading="lazy">'
+            f'<img src="{html.escape(sized(image, image_width))}" alt="{html.escape(theme["title"])}" loading="lazy">'
             if image else ""
         )
         if theme["slug"] == FEATURED_EDIT_SLUG and hero_product is not None:

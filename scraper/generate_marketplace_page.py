@@ -48,6 +48,7 @@ from generate_brand_pages import (
     render_sponsored_section,
     umbrella_categories_for,
 )
+from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
 
 SCRAPER_DIR = Path(__file__).parent
 REPO_ROOT = SCRAPER_DIR.parent
@@ -737,7 +738,7 @@ def _richer_promo_card(p, offers, best, badge, subcat, in_sponsored_section):
 
     return f"""      <a class="promo-card promo-card-richer" href="{html.escape(best['product_url'])}" target="_blank" rel="noopener noreferrer" data-subcat="{subcat}">
         <div class="promo-card-hero">
-          <img src="{html.escape(p['image'])}" alt="{html.escape(p['product_name'])}" loading="lazy">
+          <img src="{html.escape(sized(p['image'], CARD))}" alt="{html.escape(p['product_name'])}" loading="lazy">
           {badge}
         </div>
         <div class="rc-content">
@@ -802,7 +803,7 @@ def _promo_card(p, in_sponsored_section=False):
     if len(offers) == 1:
         return f"""      <a class="promo-card" href="{html.escape(best['product_url'])}" target="_blank" rel="noopener noreferrer" data-subcat="{subcat}">
         <div class="promo-card-hero">
-          <img src="{html.escape(p['image'])}" alt="{html.escape(p['product_name'])}" loading="lazy">
+          <img src="{html.escape(sized(p['image'], CARD))}" alt="{html.escape(p['product_name'])}" loading="lazy">
           {badge}
         </div>
         <div class="promo-card-body">
@@ -831,7 +832,7 @@ def _promo_card(p, in_sponsored_section=False):
 
     return f"""      <div class="promo-card promo-card-grouped" data-subcat="{subcat}">
         <div class="promo-card-hero">
-          <img src="{html.escape(p['image'])}" alt="{html.escape(p['product_name'])}" loading="lazy">
+          <img src="{html.escape(sized(p['image'], CARD))}" alt="{html.escape(p['product_name'])}" loading="lazy">
           {badge}
         </div>
         <div class="promo-card-body">
@@ -859,7 +860,7 @@ def _banner_promo_slide(p):
     best_discount = max((o.get("discount_pct") or 0) for o in offers)
     badge = f'<span class="promo-badge">-{best_discount}%</span>' if best_discount else ""
     return f"""<a href="{html.escape(best['product_url'])}" target="_blank" rel="noopener noreferrer">
-        <img src="{html.escape(p['image'])}" alt="{html.escape(p['product_name'])}" loading="lazy">
+        <img src="{html.escape(sized(p['image'], HERO))}" alt="{html.escape(p['product_name'])}" loading="lazy">
         {badge}
         <div class="banner-slide-content">
           <span class="promo-brand">{html.escape(p['brand'])}</span>

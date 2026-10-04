@@ -35,6 +35,7 @@ import sqlite3
 import unicodedata
 from pathlib import Path
 from urllib.parse import urlparse
+from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
 
 SCRAPER_DIR = Path(__file__).parent
 DATA_DIR = SCRAPER_DIR.parent / "data"
@@ -422,7 +423,7 @@ def product_card_html(p, show_brand=False, variant_count=None):
     url = p["brand_url"] if p["link_dead"] else p["product_url"]
     alt_text = html.escape(f'{p["product_name"]} by {p["brand"]}')
     image = (
-        f'<img src="{html.escape(p["image_url"])}" alt="{alt_text}" loading="lazy">'
+        f'<img src="{html.escape(sized(p["image_url"], CARD))}" alt="{alt_text}" loading="lazy">'
         if p["image_url"] else ""
     )
     if image and variant_count and variant_count > 1:
@@ -1235,7 +1236,7 @@ def render_makers_index(brands_data):
     for brand, slug, umbrellas, _count, country, image, tier in sorted(brands_data, key=lambda b: b[0].lower()):
         categories = " · ".join(umbrellas)
         country_html = html.escape(country) if country else "&nbsp;"
-        image_tag = f'<img src="{html.escape(image)}" alt="{html.escape(brand)}" loading="lazy">' if image else ""
+        image_tag = f'<img src="{html.escape(sized(image, CARD))}" alt="{html.escape(brand)}" loading="lazy">' if image else ""
         items += f"""
       <a class="maker-card" href="/brands/{slug}.html" data-tier="{tier}">
         <div class="maker-card-hero">{image_tag}</div>

@@ -50,6 +50,7 @@ from generate_brand_pages import (
     slugify,
     unique_slug,
 )
+from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
 
 SCRAPER_DIR = Path(__file__).parent
 DATA_DIR = SCRAPER_DIR.parent / "data"
@@ -63,7 +64,7 @@ MIN_PRODUCTS = 2  # see module docstring - a one-credit page reads as thin
 
 def product_card_html(product):
     image = (
-        f'<img src="{html.escape(product["image_url"])}" alt="{html.escape(product["product_name"])}" loading="lazy">'
+        f'<img src="{html.escape(sized(product["image_url"], CARD))}" alt="{html.escape(product["product_name"])}" loading="lazy">'
         if product.get("image_url") else ""
     )
     return f"""
@@ -82,7 +83,7 @@ def designer_card_html(designer_name, slug, products):
     # label never point at two different brands.
     hero_product = next((p for p in products if p.get("image_url")), None)
     hero = hero_product["image_url"] if hero_product else ""
-    image = f'<img src="{html.escape(hero)}" alt="{html.escape(designer_name)}" loading="lazy">' if hero else ""
+    image = f'<img src="{html.escape(sized(hero, CARD))}" alt="{html.escape(designer_name)}" loading="lazy">' if hero else ""
     brands = sorted({p["brand"] for p in products})
     primary_brand = hero_product["brand"] if hero_product else brands[0]
     other_count = len(brands) - 1

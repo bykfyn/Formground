@@ -61,6 +61,7 @@ from generate_theme_landing_pages import (  # noqa: E402
     _group_color_variants,
     append_to_sitemap,
 )
+from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
 
 # "hero_image" fairness policy (2026-09-30) - the first pass at these
 # only checked each theme's own top-3 auto-picked candidates, which
@@ -393,7 +394,7 @@ def _carousel_frame_html(p, index):
     img_class = f' class="{fit_class}"' if fit_class else ""
     return f"""
         <a class="banner-slide-frame{active}" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer"{style}>
-          <img{img_class} src="{html.escape(p["image_url"])}" alt="{alt_text}">
+          <img{img_class} src="{html.escape(sized(p["image_url"], HERO))}" alt="{alt_text}">
         </a>"""
 
 
@@ -667,7 +668,7 @@ def _feature_card_html(p, variant_count=None, name=None):
     box_style = f' style="{box_bg}"' if box_bg else ""
     return f"""
       <a class="edit-feature-card" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
-        <div class="edit-feature-image"{box_style}><img{fit} src="{html.escape(p["image_url"])}" alt="{alt_text}" loading="lazy">{badge}</div>
+        <div class="edit-feature-image"{box_style}><img{fit} src="{html.escape(sized(p["image_url"], CARD))}" alt="{alt_text}" loading="lazy">{badge}</div>
         <span class="edit-feature-name">{html.escape(name)}</span>
         <span class="edit-feature-brand">{html.escape(p["brand"])}</span>
       </a>"""

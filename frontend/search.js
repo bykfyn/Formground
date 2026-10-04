@@ -49,6 +49,38 @@ function utmQueryString() {
   return params.toString();
 }
 
+// Card-sized copy of a maker's photo (2026-10-04). Makers' servers mostly send
+// the full-size original - a 1.4MB photo for a ~190px card - so each image
+// asks its host for the width it will actually be shown at. Same rules, and
+// the reasons, as scraper/image_sizes.py (keep the two in step); a host with
+// no verified resize rule is returned untouched.
+function sizedImage(url, width) {
+  try {
+    const u = new URL(url);
+    const h = u.hostname.toLowerCase();
+    if (h === "cdn.shopify.com") {
+      u.searchParams.set("width", width);
+    } else if (h === "images.squarespace-cdn.com" || h === "static1.squarespace.com") {
+      u.searchParams.set("format", width + "w");
+    } else if (h === "images.fogia.com") {
+      u.searchParams.set("w", width);
+    } else if (h === "www.datocms-assets.com") {
+      u.searchParams.delete("h");
+      u.searchParams.set("w", width);
+      u.searchParams.set("auto", "format");
+    } else if (h === "images.ctfassets.net") {
+      u.searchParams.set("w", width);
+      u.searchParams.set("fm", "webp");
+      u.searchParams.set("q", 80);
+    } else {
+      return url;
+    }
+    return u.toString();
+  } catch (e) {
+    return url;
+  }
+}
+
 // Only present on work.html - "independent" or "established" (the
 // Independent/Established Makers chips), read from the URL the same
 // way UTM is, so a shared/bookmarked link reproduces the exact same
@@ -154,7 +186,7 @@ function renderCard(r) {
     // Set via property, not interpolated into an HTML string - this is
     // scraped data from an external site, not something to trust blindly.
     const img = document.createElement("img");
-    img.src = r.image_url;
+    img.src = sizedImage(r.image_url, 500);
     img.alt = `${r.product_name} by ${r.brand}`;
     img.loading = "lazy";
     img.onerror = () => { imageDiv.innerHTML = iconMarkup(r.category); };
