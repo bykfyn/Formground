@@ -100,6 +100,8 @@ BANNER_SLUGS = ["round-coffee-tables"]
 #                have it (title row above the photo, product + maker below).
 # Flip this one value to switch; nothing else changes.
 HUB_LAYOUT = "masthead"
+# Text colour on the masthead photo: "dark" for a light photo, "light" for a dark one.
+HUB_MASTHEAD_TEXT = "dark"
 
 EDITS_PAGE_CSS = (
     """
@@ -110,19 +112,25 @@ EDITS_PAGE_CSS = (
   .edits-masthead { position: relative; aspect-ratio: 2/1; overflow: hidden; margin: 0 0 28px; border: 0.5px solid var(--border); background: var(--surface-1); }
   .edits-masthead img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   .edits-masthead img.fit-contain { object-fit: contain; }
-  .edits-masthead::after { content: ''; position: absolute; inset: 0; pointer-events: none;
-    background: radial-gradient(ellipse at center, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.30) 100%); }
-  .edits-masthead-copy { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 28px; color: #fff; }
-  .edits-masthead-copy h1 { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 60px; line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; margin: 0 0 16px; }
-  .edits-masthead-copy p { font-size: 17px; line-height: 1.55; max-width: 620px; margin: 0; color: rgba(255,255,255,0.94); }
+  /* No overlay on the photo (2026-10-04, user: "keep the banner image natural
+     without the grey shading"): legibility comes from the text colour and from
+     placing it over the plain wall at the top of THIS photo. Dark text suits a
+     light photo; if the banner image changes to a dark one, set
+     HUB_MASTHEAD_TEXT = "light". */
+  .edits-masthead-copy { position: absolute; left: 0; right: 0; top: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 4.5% 28px 0; color: var(--text-primary); }
+  .edits-masthead--light .edits-masthead-copy { color: #fff; }
+  .edits-masthead-copy h1 { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 60px; line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; margin: 0 0 14px; }
+  .edits-masthead-copy p { font-size: 17px; line-height: 1.55; max-width: 620px; margin: 0; color: var(--text-primary); font-weight: 500; }
+  .edits-masthead--light .edits-masthead-copy p { color: rgba(255,255,255,0.94); }
   .edits-masthead-credit { position: absolute; right: 12px; bottom: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 5px;
-    font-size: 11px; font-weight: 600; color: #fff; text-decoration: none; padding: 6px 10px; border-radius: 999px;
-    background: rgba(255,255,255,0.16); border: 0.5px solid rgba(255,255,255,0.4); backdrop-filter: blur(4px); }
-  .edits-masthead-credit:hover { background: rgba(255,255,255,0.3); }
+    font-size: 11px; font-weight: 600; color: var(--text-primary); text-decoration: none; padding: 6px 10px; border-radius: 999px;
+    background: rgba(255,255,255,0.78); border: 0.5px solid rgba(0,0,0,0.12); backdrop-filter: blur(4px); }
+  .edits-masthead-credit:hover { background: rgba(255,255,255,0.95); }
   .edits-masthead-credit i { font-size: 13px; }
   @media (max-width: 640px) {
     .edits-masthead { aspect-ratio: 4/5; }
-    .edits-masthead-copy h1 { font-size: 38px; margin-bottom: 12px; }
+    .edits-masthead-copy { padding-top: 8%; }
+    .edits-masthead-copy h1 { font-size: 38px; margin-bottom: 10px; }
     .edits-masthead-copy p { font-size: 14px; }
     .edits-masthead-copy p br { display: none; }
   }
@@ -330,7 +338,8 @@ def _edits_masthead_html(product):
     style = f' style="{fit_style}"' if fit_style else ""
     img_class = f' class="{fit_class}"' if fit_class else ""
     credit = f'{html.escape(product["product_name"])} &middot; {html.escape(product["brand"])}'
-    return f"""    <section class="edits-masthead"{style}>
+    tone = "" if HUB_MASTHEAD_TEXT == "dark" else " edits-masthead--light"
+    return f"""    <section class="edits-masthead{tone}"{style}>
       <img{img_class} src="{html.escape(sized(product["image_url"], HERO))}" alt="{html.escape(product["product_name"])} by {html.escape(product["brand"])}">
       <div class="edits-masthead-copy">
         <h1>Edits</h1>
