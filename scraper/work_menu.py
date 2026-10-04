@@ -17,13 +17,17 @@ import html
 
 # category -> ordered browse groups (names as used in generate_browse_pages.BROWSE_CATEGORIES)
 TAXONOMY = {
+    # Houses first: the order of the home page bento (Houses on the left, then the others).
+    # Houses are a category of Work like the rest (the project treats a house as a product,
+    # an architect's output); their "types" are countries (the architect's country).
+    "Houses": ["Houses"],
     "Furniture": ["Seating", "Tables and desks", "Storage, beds and mirrors"],
     "Lighting": ["Lighting"],
     "Objects": ["Objects", "Soft furnishings"],
 }
 CATEGORY_SLUGS = {name: name.lower() for name in TAXONOMY}  # furniture | lighting | objects
 # Shown in the menu where a browse group's own name would read oddly under its category.
-GROUP_LABELS = {"Lighting": "By type", "Objects": "Tableware, glass and candles"}
+GROUP_LABELS = {"Lighting": "By type", "Objects": "Tableware, glass and candles", "Houses": "By architects' country"}
 
 
 def category_of_group(group):
@@ -55,15 +59,17 @@ def _group_html(group, entries, current_slug, show_label=True):
     return f'<div class="work-menu-group">{heading}<ul>{items}</ul></div>'
 
 
-def render_menu(entries, open_category=None, current_slug=None, align="center"):
+def render_menu(entries, open_category=None, current_slug=None, align="center", current_category=None):
     """The menu: three category chips, each controlling a panel of groups and types.
-    `open_category` starts that panel open (the category page, or the type's own category)."""
+    `current_category` marks the chip of the category the visitor is already in (type and
+    category pages) - shown as selected, panel closed so the products stay above the fold;
+    `open_category` starts a panel open (unused by the pages today)."""
     chips, panels = [], []
     for cat, groups in TAXONOMY.items():
         cid = f"wm-{CATEGORY_SLUGS[cat]}"
         is_open = cat == open_category
         chips.append(
-            f'<button type="button" class="work-menu-cat" aria-expanded="{"true" if is_open else "false"}" '
+            f'<button type="button" class="work-menu-cat{" is-current" if cat == current_category else ""}" aria-expanded="{"true" if is_open else "false"}" '
             f'aria-controls="{cid}">{html.escape(cat)} <i class="ti ti-chevron-down" aria-hidden="true"></i></button>'
         )
         body = "".join(_group_html(g, entries, current_slug) for g in groups)

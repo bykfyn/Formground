@@ -140,7 +140,7 @@ def _page_type(path):
     # /work/<category>.html (furniture, lighting, objects) are the category pages; every other
     # /work/<x>.html is a type page. /browse/ is the pre-2026-10-04 address (kept so history
     # re-classifies the same way); /edits/<slug>.html are the Edit pages.
-    if path in ("/work/furniture.html", "/work/lighting.html", "/work/objects.html", "/browse/", "/browse/index.html"):
+    if path in ("/work/furniture.html", "/work/lighting.html", "/work/objects.html", "/work/houses.html", "/browse/", "/browse/index.html"):
         return "browse_hub"
     for prefix, kind in (("/brands/", "brand"), ("/work/", "browse"), ("/browse/", "browse"),
                          ("/edits/", "edit"), ("/designers/", "designer"), ("/architects/", "architect")):

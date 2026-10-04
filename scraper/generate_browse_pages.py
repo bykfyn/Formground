@@ -57,11 +57,20 @@ DOCS_DIR = SCRAPER_DIR.parent / "docs"
 BROWSE_DIR = DOCS_DIR / "work"          # type + category pages live under /work/ (moved from /browse/ 2026-10-04)
 OLD_BROWSE_DIR = DOCS_DIR / "browse"    # now only redirect stubs
 BACKEND_DIR = SCRAPER_DIR.parent / "backend"
+DATA_DIR = SCRAPER_DIR.parent / "data"
+
+# Houses (2026-10-04): the fourth category of Work. /work/houses.html lists every house;
+# /work/houses-<country>.html lists those by architects based in that country (a country
+# needs at least MIN_HOUSES_FOR_COUNTRY_PAGE houses for a page of its own). The country is
+# the ARCHITECT's - houses.json has no structured country for the house itself.
+HOUSES_PER_PAGE = 60
+MIN_HOUSES_FOR_COUNTRY_PAGE = 8
 
 sys.path.insert(0, str(BACKEND_DIR))
 import query_engine as qe  # noqa: E402
 
 from generate_brand_pages import (  # noqa: E402
+    slugify,
     CARD_CLICK_TRACKING_JS,
     CLOUDFLARE_ANALYTICS,
     FAVICON_TAGS,
@@ -345,7 +354,7 @@ def render_browse_page(category, cards, variant_counts, page, pages, total_produ
   <p class="page-tagline"><a href="/work.html">Work</a> &rsaquo; <a href="/work/{cat_slug}.html">{html.escape(cat_name)}</a></p>
   <h1>{html.escape(title)}</h1>
   <p class="category-intro">{html.escape(category.get("blurb", "") + " " if category.get("blurb") else "")}{total_products:,} {html.escape(noun)} from independent makers{f" - page {page} of {pages}" if pages > 1 else ""}. Every result links straight to the maker's own site.{_see_also_html(category)}</p>
-  {work_menu.render_menu(entries, current_slug=slug, align="left")}
+  {work_menu.render_menu(entries, current_slug=slug, align="left", current_category=cat_name)}
   <div class="grid">{grid}</div>
   {_pager_html(slug, page, pages)}
   <p class="foot-note">
@@ -381,6 +390,123 @@ def _type_tile_html(e):
     )
 
 
+def _interleave_by_firm(houses):
+    """Round-robin one house per firm per pass (firms alphabetical) so one practice with a
+    deep list does not fill a page; deterministic, like _interleave_by_brand."""
+    by_firm = {}
+    for h in houses:
+        by_firm.setdefault(h["firm"], []).append(h)
+    queues = [by_firm[f] for f in sorted(by_firm)]
+    out = []
+    while any(queues):
+        for q in queues:
+            if q:
+                out.append(q.pop(0))
+    return out
+
+
+def load_houses():
+    import json as _json
+    houses = _json.loads((DATA_DIR / "houses.json").read_text())
+    firms = {a["name"]: a for a in _json.loads((DATA_DIR / "architects.json").read_text())}
+    for h in houses:
+        h["country"] = firms.get(h["firm"], {}).get("country")
+    return [h for h in houses if h.get("image")]
+
+
+def house_groups(houses):
+    """[(country, slug, houses)] for countries with enough houses for a page, biggest first."""
+    by_country = {}
+    for h in houses:
+        if h.get("country"):
+            by_country.setdefault(h["country"], []).append(h)
+    groups = [(c, f"houses-{slugify(c)}", hs) for c, hs in by_country.items() if len(hs) >= MIN_HOUSES_FOR_COUNTRY_PAGE]
+    return sorted(groups, key=lambda g: (-len(g[2]), g[0]))
+
+
+def house_entries(groups):
+    return [{"slug": slug, "title": country, "n": len(hs), "group": "Houses", "image": hs[0]["image"]}
+            for country, slug, hs in groups]
+
+
+def _house_work_card_html(h):
+    meta = " · ".join(x for x in [h.get("location"), str(h["year"]) if h.get("year") else None] if x)
+    return (
+        f'<a class="maker-card" href="{html.escape(h.get("url") or "#")}" target="_blank" rel="noopener noreferrer">'
+        f'<div class="maker-card-hero"><img src="{html.escape(h["image"])}" alt="{html.escape(h["name"] or "House")}" loading="lazy"></div>'
+        f'<div class="maker-card-body"><span class="maker-name">{html.escape(h["name"] or "Untitled house")}</span>'
+        f'<span class="maker-country">{html.escape(meta) if meta else "&nbsp;"}</span>'
+        f'<span class="maker-country">by {html.escape(h["firm"])}</span></div></a>'
+    )
+
+
+def render_houses_page(slug, title, intro, houses, page, pages, entries, crumbs):
+    """/work/houses.html (every house) and /work/houses-<country>.html. Same shell as the type
+    pages; each house links to its architect's own project page."""
+    page_url = f"{SITE_URL}/work/{_page_slug(slug, page)}.html"
+    suffix = f" - page {page}" if page > 1 else ""
+    description = f"{len(houses):,} {intro}. Every house links straight to the architect's own project page."
+    chunk = houses[(page - 1) * HOUSES_PER_PAGE: page * HOUSES_PER_PAGE]
+    cards = "".join(_house_work_card_html(h) for h in chunk)
+    breadcrumb = _breadcrumb_json([("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html")] +
+                                  [(n, f"{SITE_URL}{u}") for n, u in crumbs])
+    itemlist = json.dumps({"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [
+        {"@type": "ListItem", "position": (page - 1) * HOUSES_PER_PAGE + i,
+         "item": {"@type": "CreativeWork", "name": h["name"], "url": h.get("url"), "image": h["image"],
+                  "creator": {"@type": "Organization", "name": h["firm"]}}}
+        for i, h in enumerate(chunk, start=1)]}, ensure_ascii=False, separators=(",", ":"))
+    tagline = " &rsaquo; ".join(f'<a href="{u}">{html.escape(n)}</a>' for n, u in [("Work", "/work.html")] + crumbs[:-1])
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+{_head(f"{title}{suffix} — Formground", description, page_url)}
+<script type="application/ld+json">{breadcrumb}</script>
+<script type="application/ld+json">{itemlist}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+{SITE_NAV_HTML}
+</header>
+<main>
+  <p class="page-tagline">{tagline}</p>
+  <h1>{html.escape(title)}</h1>
+  <p class="category-intro">{len(houses):,} {html.escape(intro)}{f" - page {page} of {pages}" if pages > 1 else ""}. Every house links straight to the architect's own project page. To find the architects themselves, see <a href="/architects.html">Architects</a>.</p>
+  {work_menu.render_menu(entries, align="left", current_category="Houses", current_slug=slug)}
+  <div class="type-grid">{cards}</div>
+  {_pager_html(slug, page, pages)}
+  <p class="foot-note">
+    {SITE_FOOTER_HTML}
+  </p>
+</main>
+<script>{CARD_CLICK_TRACKING_JS}</script>
+{MENU_SCRIPT}
+{CLOUDFLARE_ANALYTICS}
+</body>
+</html>
+"""
+
+
+def _write_house_pages(houses, groups, entries):
+    """Writes houses.html (+ -2 ...) and each country's pages; returns sitemap slugs."""
+    out_slugs = []
+    ordered = _interleave_by_firm(houses)
+    targets = [("houses", "Houses", "houses by architects from independent practices worldwide",
+                ordered, [("Houses", "/work/houses.html")])]
+    for country, slug, hs in groups:
+        targets.append((slug, f"Houses by architects in {country}",
+                        f"houses by architects based in {country}", _interleave_by_firm(hs),
+                        [("Houses", "/work/houses.html"), (country, f"/work/{slug}.html")]))
+    for slug, title, intro, hs, crumbs in targets:
+        pages = max(1, math.ceil(len(hs) / HOUSES_PER_PAGE))
+        for page in range(1, pages + 1):
+            (BROWSE_DIR / f"{_page_slug(slug, page)}.html").write_text(
+                render_houses_page(slug, title, intro, hs, page, pages, entries, crumbs))
+            out_slugs.append(f"work/{_page_slug(slug, page)}")
+        print(f"work/{slug}: {len(hs)} houses, {pages} page(s)")
+    return out_slugs
+
+
 def render_category_page(cat_name, entries):
     """/work/furniture.html | lighting | objects: the category's groups and types, in full."""
     cat_slug = work_menu.CATEGORY_SLUGS[cat_name]
@@ -414,7 +540,7 @@ def render_category_page(cat_name, entries):
   <p class="page-tagline"><a href="/work.html">Work</a></p>
   <h1>{html.escape(cat_name)}</h1>
   <p class="category-intro">{total:,} pieces from independent makers, listed in full. For a curated selection, see <a href="/edits.html">Edits</a>.</p>
-  {work_menu.render_menu(entries, align="left")}
+  {work_menu.render_menu(entries, align="left", current_category=cat_name)}
   {"".join(blocks)}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
@@ -449,6 +575,10 @@ def generate():
         entries.append({"slug": category["slug"], "title": category["title"], "n": len(products), "group": category["group"],
                         "image": cards[0]["image_url"] if cards else ""})
 
+    houses = load_houses()
+    groups = house_groups(houses)
+    entries.extend(house_entries(groups))
+
     sitemap_slugs = []
     for category, products, cards, variant_counts in computed:
         pages = max(1, math.ceil(len(cards) / CARDS_PER_PAGE))
@@ -460,8 +590,11 @@ def generate():
         print(f"work/{category['slug']}: {len(products)} products -> {len(cards)} cards, {pages} page(s)")
 
     for cat_name, cat_slug in work_menu.CATEGORY_SLUGS.items():
+        if cat_name == "Houses":
+            continue  # its category page is the full list of houses, written below
         (BROWSE_DIR / f"{cat_slug}.html").write_text(render_category_page(cat_name, entries))
         sitemap_slugs.append(f"work/{cat_slug}")
+    sitemap_slugs += _write_house_pages(houses, groups, entries)
     # /work/ itself has no page of its own: the Work page is /work.html
     write_redirect(BROWSE_DIR / "index.html", "/work.html")
 

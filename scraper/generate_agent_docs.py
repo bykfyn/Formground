@@ -72,6 +72,9 @@ def build_llms_txt():
     import work_menu
     browse_lines = []
     for cat, slug in work_menu.CATEGORY_SLUGS.items():
+        if cat == "Houses":
+            browse_lines.append(f"- [Houses]({SITE_URL}/work/houses.html): every architect-designed house in the catalog, with country pages (e.g. {SITE_URL}/work/houses-sweden.html), each house linking to the architect's own project page")
+            continue
         groups = work_menu.TAXONOMY[cat]
         types = [c for g in groups for c in BROWSE_CATEGORIES if c["group"] == g]
         links = ", ".join(f"[{c['title']}]({SITE_URL}/work/{c['slug']}.html)" for c in types)

@@ -13,9 +13,10 @@ pattern below is the one chosen; the note says which pages were brought in line.
 Each nav item owns a URL namespace; a name never means two different pages.
 
 ```
-/work.html                 search + the "browse by type" menu (Furniture / Lighting / Objects chips)
+/work.html                 search + the "browse by type" menu (four chips: Houses / Furniture / Lighting / Objects)
 /work/<category>.html      furniture | lighting | objects - the types as photo tiles
 /work/<type>.html          the full catalogue of one type; pages -2, -3 ... (flat: group is a breadcrumb)
+/work/houses.html          every house (60 per page); /work/houses-<country>.html by architect's country (8+ houses)
 /edits.html                hub;  /edits/<slug>.html  the curated Edits
 /brands/ /architects/ /designers/    unchanged
 ```
@@ -24,9 +25,17 @@ Each nav item owns a URL namespace; a name never means two different pages.
   category pages, breadcrumbs and the sitemap. To add a type: add it to `BROWSE_CATEGORIES`
   (generate_browse_pages.py) in a group that `TAXONOMY` lists.
 - Type URLs stay flat so regrouping never breaks a link.
-- Menu: three category chips under the search bar open a panel of groups and types as plain
-  links to the static pages (fast, indexable, shareable). Left-aligned under the intro on
-  type and category pages. Chips follow the form-chip family below.
+- Menu: four category chips under the search bar, Houses first to mirror the home page bento
+  (Houses left, then Furniture, Lighting, Objects). Each opens a panel of groups and types as
+  plain links to the static pages (fast, indexable, shareable): one click to any category, no
+  single "Browse" chip or tabs (decided 2026-10-04: four chips mirror the home page and save a
+  click). Left-aligned under the intro on type and category pages. Chips follow the form-chip
+  family below. The chip of the category you are in is shown selected (darker text and border);
+  its panel stays closed so the products remain above the fold (ad landing pages).
+- Houses are a category of Work like the others (a house is an architect's product): home tile ->
+  /work/houses.html, a Houses column in the menu, country pages, and each house card links to the
+  architect's own project page and names the practice. Country = the ARCHITECT's country (houses
+  have no structured country of their own).
 - Moved pages leave a redirect stub at the old address (`scraper/redirects.py`; GitHub Pages
   cannot send a 301): old /browse/*, /floor-lamps.html, the top-level Edit slugs and the
   retired category pages all redirect. The sitemap lists only real pages, and no live page

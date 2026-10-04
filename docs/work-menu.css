@@ -14,6 +14,8 @@
 .work-menu-cat i { font-size: 14px; transition: transform 0.18s ease; }
 .work-menu-cat[aria-expanded="true"] { background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary); }
 .work-menu-cat[aria-expanded="true"] i { transform: rotate(180deg); }
+/* the category the visitor is already in: darker text and border, panel still closed */
+.work-menu-cat.is-current { color: var(--text-primary); font-weight: 600; border-color: var(--text-primary); }
 .work-menu-cat:focus-visible, .work-menu-panel a:focus-visible { outline: 2px solid var(--text-accent); outline-offset: 2px; }
 .work-menu-panel {
   margin-top: 12px; padding: 18px 22px 20px;
@@ -26,7 +28,9 @@
 .work-menu-head a:hover { text-decoration: underline; }
 .work-menu-groups { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 18px 28px; }
 .work-menu-group h3 { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 0 0 8px; }
-.work-menu-group ul { list-style: none; margin: 0; padding: 0; }
+/* a long list (Houses' 13 countries, Lighting's 7 types) flows into columns when the panel is wide */
+.work-menu-group ul { list-style: none; margin: 0; padding: 0; column-width: 200px; column-gap: 28px; }
+.work-menu-group li { break-inside: avoid; }
 .work-menu-group li a { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; font-size: 14px; color: var(--text-primary); text-decoration: none; }
 .work-menu-group li a:hover .work-menu-name { text-decoration: underline; }
 .work-menu-group li a[aria-current="page"] { font-weight: 600; }

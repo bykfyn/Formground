@@ -69,7 +69,7 @@ class StructureTests(unittest.TestCase):
     def test_edits_live_under_edits_and_types_under_work(self):
         for s in EDIT_SLUGS:
             self.assertFalse(_is_stub((DOCS / "edits" / f"{s}.html").read_text()), s)
-        for s in ("table-lamps", "floor-lamps", "portable-lamps", "sofas", "furniture", "lighting", "objects"):
+        for s in ("table-lamps", "floor-lamps", "portable-lamps", "sofas", "furniture", "lighting", "objects", "houses", "houses-sweden"):
             self.assertFalse(_is_stub((DOCS / "work" / f"{s}.html").read_text()), s)
 
     def test_no_live_page_links_to_an_old_address_and_no_internal_link_is_broken(self):
@@ -98,10 +98,12 @@ class StructureTests(unittest.TestCase):
                 self.assertFalse(_is_stub((DOCS / path.lstrip("/")).read_text()), f"{loc} is a redirect stub")
         self.assertNotIn("/browse/", sm)
 
-    def test_work_page_has_the_menu_with_three_categories(self):
+    def test_work_page_has_the_menu_with_four_categories(self):
         text = (DOCS / "work.html").read_text()
-        self.assertEqual(text.count('class="work-menu-cat"'), 3)
-        for cat in ("furniture", "lighting", "objects"):
+        self.assertEqual(text.count('<button type="button" class="work-menu-cat'), 4)
+        # Houses first, as on the home page bento
+        self.assertTrue(text.index('href="/work/houses.html"') < text.index('href="/work/furniture.html"'))
+        for cat in ("houses", "furniture", "lighting", "objects"):
             self.assertIn(f'href="/work/{cat}.html"', text)
         self.assertIn("/work-menu.css?v=", text)
         self.assertIn("/work-menu.js?v=", text)
