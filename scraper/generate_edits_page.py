@@ -14,12 +14,12 @@ entry there, and it appears here automatically on the next run, with no
 second list to keep in sync.
 
 EDITORIAL REDESIGN (2026-09-30, user's own framing: "should look more
-editorial" - a banner, a strong header, a centered preamble): the
-banner reuses generate_brand_pages.py's BANNER_CAROUSEL_CSS/JS rotation
-mechanics (the same primitive Promotions uses) but with its own slide
-markup/text classes (.edit-banner-*), not the promo-specific
-.promo-name/.promo-cta ones - a Themed Edit isn't a paid placement with
-a price/CTA, just a real photo and a title linking to the edit itself.
+editorial" - a banner, a strong header, a centered preamble). The banner
+was first built on the Promotions carousel (text laid over the photo); on
+2026-10-04 it became the same shape as every other banner on the site -
+title row above, clean photo, product + maker below (.edits-banner-*) -
+so navigating between the homepage, this hub and each Edit page reads as
+one pattern.
 
 Same shared search box as makers.html/architects.html/designers.html
 (directory_filter_html) - "the edits page itself could use the same
@@ -59,8 +59,6 @@ BACKEND_DIR = SCRAPER_DIR.parent / "backend"
 sys.path.insert(0, str(BACKEND_DIR))
 
 from generate_brand_pages import (  # noqa: E402
-    BANNER_CAROUSEL_CSS,
-    BANNER_CAROUSEL_JS,
     CARD_CLICK_TRACKING_JS,
     CLOUDFLARE_ANALYTICS,
     FAVICON_TAGS,
@@ -68,12 +66,12 @@ from generate_brand_pages import (  # noqa: E402
     SITE_FOOTER_HTML,
     SITE_URL,
     directory_filter_html,
-    render_banner_carousel,
     site_nav_html,
 )
 from generate_theme_landing_pages import append_to_sitemap  # noqa: E402
 import generate_themed_edit_pages as gte  # noqa: E402
 from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
+import image_fit  # noqa: E402
 
 # How many of the real edits lead as rotating banner slides - all of
 # them today (only 4 exist); capped so a much larger future edit count
@@ -95,28 +93,28 @@ from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
 BANNER_SLUGS = ["round-coffee-tables"]
 
 EDITS_PAGE_CSS = (
-    BANNER_CAROUSEL_CSS
-    + """
-  /* Edit-specific banner text - the shared BANNER_CAROUSEL_CSS above
-     only defines the slide box/gradient/rotation chrome, not any
-     particular text treatment (Promotions' own .promo-name/.promo-cta
-     are for a priced placement, which a Themed Edit isn't). */
-  /* The EDIT's title is the banner's header (2026-10-04, user: "the main
-     header should be the title of the edit. The product name and brand is
-     secondary"); the pictured product and its maker sit under it, smaller. */
-  .edit-banner-title {
-    display: block; font-family: 'Archivo', sans-serif; font-weight: 700;
-    font-size: 40px; line-height: 1.12; color: #fff; max-width: 80%;
-  }
-  .edit-banner-product {
-    display: block; font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.92); margin: 10px 0 0;
-  }
-  .edit-banner-brand {
-    display: block; font-size: 13px; color: rgba(255,255,255,0.75); margin: 2px 0 0;
-  }
+    """
+  /* The hub banner, in the shape of the homepage groups and each Edit page's
+     banner: title row above, clean 2:1 photo (4:3 on phones), product and
+     maker below. The edit's title is the header; the product is secondary. */
+  .edits-banner { margin: 0 0 28px; }
+  .edits-banner-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 0 0 12px; }
+  .edits-banner-head h2 { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; margin: 0; }
+  .edits-banner-head h2 a { color: inherit; text-decoration: none; }
+  .edits-banner-head h2 a:hover { text-decoration: underline; }
+  .edits-banner-link { font-size: 12px; color: var(--text-accent); text-decoration: none; white-space: nowrap; }
+  .edits-banner-link:hover { text-decoration: underline; }
+  .edits-banner-frame { display: block; position: relative; aspect-ratio: 2/1; overflow: hidden; border: 0.5px solid var(--border); }
+  .edits-banner-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .edits-banner-frame img.fit-contain { object-fit: contain; }
+  .edits-banner-frame:hover img { transform: scale(1.02); }
+  .edits-banner-caption { display: block; margin-top: 12px; text-decoration: none; color: inherit; }
+  .edits-banner-product { display: block; font-size: 15px; font-weight: 600; }
+  .edits-banner-brand { display: block; font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+  .edits-banner-caption:hover .edits-banner-product { text-decoration: underline; }
   @media (max-width: 640px) {
-    .edit-banner-title { font-size: 26px; max-width: 90%; }
-    .edit-banner-product { font-size: 14px; margin-top: 8px; }
+    .edits-banner-head h2 { font-size: 22px; }
+    .edits-banner-frame { aspect-ratio: 4/3; }
   }
 
   /* Strong header + preamble together, above the banner (2026-09-30,
@@ -258,33 +256,39 @@ def _edit_card_image(theme, cards_to_render):
     return product.get("image_url", "") if product else ""
 
 
-def _edit_banner_slide_html(theme, product):
+def _edit_banner_html(theme, product):
     """
-    Links straight to the real product's own source (brand's homepage
-    if check_links.py flagged the product page dead, same fallback
-    every other card on the site already uses) - not to this Edit's own
-    page - and credits the real brand/product by name on the image
-    itself, matching the exact "link back to source" convention every
-    other carousel/card on Formground already follows (see
-    _carousel_slide_html). Displaying a maker's photo without crediting
-    and linking to them is exactly the thing this site's whole "every
-    result links straight to the maker's own site" promise exists to
-    avoid - the hub banner doesn't get an exception just because it's a
-    bigger, more prominent placement. The theme itself (title, slug)
-    stays reachable via this same edit's own tile in the grid below,
-    not lost by pointing the banner elsewhere.
+    The hub's banner in the same shape as every other banner on the site
+    (2026-10-04, user: "want the format to be consistent for the user when
+    navigating"): a header row ABOVE the photo (the edit's title, with "See the
+    edit" on the right - as the homepage's groups do), a clean photo, and the
+    pictured product and its maker BELOW it (as the homepage banners and each
+    Edit page's own banner do). It was the one banner with text laid over the
+    photo, a leftover of the Promotions style.
+
+    The photo and caption link straight to the real product's own source (the
+    brand's homepage if check_links.py flagged the product page dead) - the
+    same "link back to the maker" rule every other card follows - while the
+    title and "See the edit" lead to the edit itself.
     """
     url = product["brand_url"] if product.get("link_dead") else product["product_url"]
-    return (
-        f'<a href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">'
-        f'<img src="{html.escape(sized(product["image_url"], HERO))}" alt="{html.escape(product["product_name"])} by {html.escape(product["brand"])}" loading="lazy">'
-        '<div class="banner-slide-content">'
-        f'<span class="edit-banner-title">{html.escape(theme["title"])}</span>'
-        f'<span class="edit-banner-product">{html.escape(product["product_name"])}</span>'
-        f'<span class="edit-banner-brand">{html.escape(product["brand"])}</span>'
-        "</div>"
-        "</a>"
-    )
+    fit_class, fit_style = image_fit.fit_for_banner(product["image_url"])
+    style = f' style="{fit_style}"' if fit_style else ""
+    img_class = f' class="{fit_class}"' if fit_class else ""
+    edit_url = f"/{theme['slug']}.html"
+    return f"""    <section class="edits-banner">
+      <div class="edits-banner-head">
+        <h2><a href="{edit_url}">{html.escape(theme["title"])}</a></h2>
+        <a class="edits-banner-link" href="{edit_url}">See the edit &rarr;</a>
+      </div>
+      <a class="edits-banner-frame" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer"{style}>
+        <img{img_class} src="{html.escape(sized(product["image_url"], HERO))}" alt="{html.escape(product["product_name"])} by {html.escape(product["brand"])}">
+      </a>
+      <a class="edits-banner-caption" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">
+        <span class="edits-banner-product">{html.escape(product["product_name"])}</span>
+        <span class="edits-banner-brand">{html.escape(product["brand"])}</span>
+      </a>
+    </section>"""
 
 
 EDITS_FILTER_JS = """
@@ -396,12 +400,13 @@ def render_edits_index(themes_data):
         theme["slug"]: (theme, hero_product)
         for theme, _count, _brand_count, _image, hero_product in themes_data
     }
-    banner_slides = [
-        _edit_banner_slide_html(*by_slug[slug])
-        for slug in BANNER_SLUGS
-        if slug in by_slug and by_slug[slug][1] is not None
-    ]
-    banner_html = render_banner_carousel(banner_slides)
+    # one banner (BANNER_SLUGS has a single hand-picked edit today); the first
+    # listed edit that has a real hero product is shown
+    banner_html = next(
+        (_edit_banner_html(*by_slug[slug]) for slug in BANNER_SLUGS
+         if slug in by_slug and by_slug[slug][1] is not None),
+        "",
+    )
 
     description = "Curated, editorial groupings of real work from Formground's makers - browse every Edit, gathered in one place."
 
@@ -453,7 +458,6 @@ def render_edits_index(themes_data):
       if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
     }});
   }});
-{BANNER_CAROUSEL_JS}
 {EDITS_FILTER_JS}</script>
 <script>{CARD_CLICK_TRACKING_JS}</script>
 {CLOUDFLARE_ANALYTICS}

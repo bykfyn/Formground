@@ -212,89 +212,27 @@
   [hidden] { display: none !important; }
 </style>
 <style>
-  .banner-carousel { position: relative; margin-bottom: 32px; border-radius: var(--radius); overflow: hidden; aspect-ratio: 2.4/1; background: var(--surface-1); }
-  .banner-slide { position: absolute; inset: 0; display: none; }
-  .banner-slide.active { display: block; }
-  /* The slide's own content (any shape a caller renders) fills this
-     box - a plain block link is the common case, but this isn't
-     assumed, just given full width/height to work with. */
-  .banner-slide > * { display: block; width: 100%; height: 100%; position: relative; text-decoration: none; color: inherit; }
-  .banner-slide img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  /* Same bottom-gradient-scrim treatment the homepage's own category
-     tiles already use for text over a photo (see frontend/index.html's
-     .cat-details) - proven to hold up across both dark and light real
-     photos, reused rather than inventing a new one. Always visible
-     here (not hover-only) since a banner needs to read at a glance. */
-  .banner-slide-content {
-    position: absolute; left: 0; right: 0; bottom: 0; z-index: 1;
-    padding: 36px 40px; background: linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.05) 60%, rgba(0,0,0,0));
-    color: #fff;
-  }
-  /* The banner is a hero unit, not a grid card - it reuses .promo-badge/
-     .promo-brand/.promo-name/.promo-price/.promo-cta so the same data
-     renders in both places, but every one of them needs to read at
-     hero scale, not card scale (2026-09-28, user: "make everything
-     that is featured on the image bigger"). Scale is sanity-checked
-     against real hero banners (illumsbolighus.dk, mohd's shop, both
-     ~40px headlines at 7-8% of their banner's height, CTA buttons
-     ~44-50px tall) - but the styling itself stays Formground's own:
-     same gradient scrim as the homepage's .cat-details hover reveal,
-     same pill-shaped, normal-case "Visit Shop" CTA every other
-     Promotions card already uses, just sized for a hero instead of a
-     card. Formground's own visual language wins over an external
-     site's button conventions (2026-09-28, user: "we should be
-     consistent across Formground first and foremost"). */
-  .banner-slide .promo-badge { top: 20px; left: 20px; font-size: 13px; padding: 6px 14px; }
-  .banner-slide-content .promo-brand { font-size: 13px; color: rgba(255,255,255,0.75); margin: 0 0 8px; }
-  .banner-slide-content .promo-name {
-    display: block; -webkit-line-clamp: unset; overflow: visible; min-height: 0;
-    font-size: 34px; font-weight: 600; line-height: 1.15; color: #fff;
-    max-width: 65%; margin: 0 0 14px;
-  }
-  .banner-slide-content .promo-price { font-size: 18px; margin: 0 0 22px; }
-  .banner-slide-content .promo-price-was { color: rgba(255,255,255,0.6); }
-  .banner-slide-content .promo-price-now { color: #fff; font-weight: 600; }
-  /* White fill (not the card's dark fill) so the same pill still reads
-     clearly against the photo's dark scrim - the one color change is
-     for contrast, the shape/case/weight match every other "Visit Shop"
-     pill on the site. */
-  .banner-slide-content .promo-cta {
-    display: inline-block; margin: 0; width: auto;
-    font-size: 15px; font-weight: 600;
-    padding: 15px 34px; background: #fff; color: #1a1816;
-  }
-  .banner-slide:hover .promo-cta { background: #f0ede8; }
-  .banner-dots { position: absolute; bottom: 18px; right: 24px; z-index: 2; display: flex; gap: 6px; }
-  .banner-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.5); border: none; cursor: pointer; padding: 0; }
-  .banner-dot.active { background: #fff; }
+  /* The hub banner, in the shape of the homepage groups and each Edit page's
+     banner: title row above, clean 2:1 photo (4:3 on phones), product and
+     maker below. The edit's title is the header; the product is secondary. */
+  .edits-banner { margin: 0 0 28px; }
+  .edits-banner-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 0 0 12px; }
+  .edits-banner-head h2 { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; margin: 0; }
+  .edits-banner-head h2 a { color: inherit; text-decoration: none; }
+  .edits-banner-head h2 a:hover { text-decoration: underline; }
+  .edits-banner-link { font-size: 12px; color: var(--text-accent); text-decoration: none; white-space: nowrap; }
+  .edits-banner-link:hover { text-decoration: underline; }
+  .edits-banner-frame { display: block; position: relative; aspect-ratio: 2/1; overflow: hidden; border: 0.5px solid var(--border); }
+  .edits-banner-frame img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .edits-banner-frame img.fit-contain { object-fit: contain; }
+  .edits-banner-frame:hover img { transform: scale(1.02); }
+  .edits-banner-caption { display: block; margin-top: 12px; text-decoration: none; color: inherit; }
+  .edits-banner-product { display: block; font-size: 15px; font-weight: 600; }
+  .edits-banner-brand { display: block; font-size: 13px; color: var(--text-secondary); margin-top: 2px; }
+  .edits-banner-caption:hover .edits-banner-product { text-decoration: underline; }
   @media (max-width: 640px) {
-    .banner-carousel { aspect-ratio: 4/3; }
-    .banner-slide-content { padding: 22px 20px; }
-    .banner-slide-content .promo-name { font-size: 24px; max-width: 85%; }
-    .banner-slide-content .promo-price { font-size: 15px; margin-bottom: 14px; }
-    .banner-slide-content .promo-cta { font-size: 14px; padding: 11px 24px; }
-  }
-
-  /* Edit-specific banner text - the shared BANNER_CAROUSEL_CSS above
-     only defines the slide box/gradient/rotation chrome, not any
-     particular text treatment (Promotions' own .promo-name/.promo-cta
-     are for a priced placement, which a Themed Edit isn't). */
-  /* The EDIT's title is the banner's header (2026-10-04, user: "the main
-     header should be the title of the edit. The product name and brand is
-     secondary"); the pictured product and its maker sit under it, smaller. */
-  .edit-banner-title {
-    display: block; font-family: 'Archivo', sans-serif; font-weight: 700;
-    font-size: 40px; line-height: 1.12; color: #fff; max-width: 80%;
-  }
-  .edit-banner-product {
-    display: block; font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.92); margin: 10px 0 0;
-  }
-  .edit-banner-brand {
-    display: block; font-size: 13px; color: rgba(255,255,255,0.75); margin: 2px 0 0;
-  }
-  @media (max-width: 640px) {
-    .edit-banner-title { font-size: 26px; max-width: 90%; }
-    .edit-banner-product { font-size: 14px; margin-top: 8px; }
+    .edits-banner-head h2 { font-size: 22px; }
+    .edits-banner-frame { aspect-ratio: 4/3; }
   }
 
   /* Strong header + preamble together, above the banner (2026-09-30,
@@ -428,9 +366,19 @@
     <h1>Edits</h1>
     <p class="edits-preamble">Curated, editorial groupings of real work<br>from Formground&#x27;s makers - browse every Edit, gathered in one place.</p>
   </div>
-    <div class="banner-carousel">
-      <div class="banner-slide active"><a href="https://pinchdesign.com/products/landry-coffee-table-circular-bronze" target="_blank" rel="noopener noreferrer"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375&amp;width=1600" alt="Landry coffee table circular bronze by Pinch" loading="lazy"><div class="banner-slide-content"><span class="edit-banner-title">Round Coffee Tables</span><span class="edit-banner-product">Landry coffee table circular bronze</span><span class="edit-banner-brand">Pinch</span></div></a></div>
-    </div>
+    <section class="edits-banner">
+      <div class="edits-banner-head">
+        <h2><a href="/round-coffee-tables.html">Round Coffee Tables</a></h2>
+        <a class="edits-banner-link" href="/round-coffee-tables.html">See the edit &rarr;</a>
+      </div>
+      <a class="edits-banner-frame" href="https://pinchdesign.com/products/landry-coffee-table-circular-bronze" target="_blank" rel="noopener noreferrer">
+        <img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375&amp;width=1600" alt="Landry coffee table circular bronze by Pinch">
+      </a>
+      <a class="edits-banner-caption" href="https://pinchdesign.com/products/landry-coffee-table-circular-bronze" target="_blank" rel="noopener noreferrer">
+        <span class="edits-banner-product">Landry coffee table circular bronze</span>
+        <span class="edits-banner-brand">Pinch</span>
+      </a>
+    </section>
   
   <div class="search-wide">
     <div class="ask-box">
@@ -518,59 +466,6 @@
       if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
     });
   });
-
-  // Banner/carousel rotation (2026-09-28) - a single slide is static,
-  // no controls; 2+ slides get dot navigation and auto-rotation,
-  // paused on hover so a reader isn't fighting the page to read it.
-  document.querySelectorAll('.banner-carousel').forEach(function (carousel) {
-    var slides = carousel.querySelectorAll('.banner-slide');
-    var dots = carousel.querySelectorAll('.banner-dot');
-    if (slides.length <= 1) return;
-    var current = 0;
-    var timer;
-    function show(i) {
-      current = i;
-      slides.forEach(function (s, idx) { s.classList.toggle('active', idx === i); });
-      dots.forEach(function (d, idx) { d.classList.toggle('active', idx === i); });
-    }
-    function next() { show((current + 1) % slides.length); }
-    function prev() { show((current - 1 + slides.length) % slides.length); }
-    function start() { timer = setInterval(next, 6000); }
-    function stop() { clearInterval(timer); }
-    dots.forEach(function (d, i) {
-      d.addEventListener('click', function () { show(i); stop(); start(); });
-    });
-    carousel.addEventListener('mouseenter', stop);
-    carousel.addEventListener('mouseleave', start);
-    // Touch swipe (2026-09-29) - mouseenter/mouseleave above never fire
-    // on a touch device, so mobile previously only had dot-tapping and
-    // auto-rotation. touchmove decides real swipe intent (horizontal
-    // movement clearly exceeding vertical) before preventDefault, so a
-    // vertical page scroll starting inside the carousel is untouched.
-    var touchStartX = 0, touchStartY = 0, isSwiping = false;
-    carousel.addEventListener('touchstart', function (e) {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-      isSwiping = false;
-      stop();
-    }, { passive: true });
-    carousel.addEventListener('touchmove', function (e) {
-      var dx = e.touches[0].clientX - touchStartX;
-      var dy = e.touches[0].clientY - touchStartY;
-      if (!isSwiping && Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) isSwiping = true;
-      if (isSwiping) e.preventDefault();
-    }, { passive: false });
-    carousel.addEventListener('touchend', function (e) {
-      if (isSwiping) {
-        var dx = e.changedTouches[0].clientX - touchStartX;
-        if (dx > 30) prev();
-        else if (dx < -30) next();
-      }
-      start();
-    });
-    start();
-  });
-
 
   (function () {
     var filterInput = document.getElementById("directory-filter");
