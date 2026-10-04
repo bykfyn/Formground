@@ -207,6 +207,16 @@ class StructureTests(unittest.TestCase):
         self.assertIn('<p class="earlier-results"><a href="/work/rugs-2.html" rel="prev">', third)
         self.assertIn('data-start="120"', third)
 
+    def test_new_from_sits_at_the_top_of_a_maker_page_and_only_when_there_is_something(self):
+        with_new = (DOCS / "brands" / "ferm-living.html").read_text()
+        body = with_new[with_new.index('<main data-brand='):]
+        self.assertLess(body.index("New from Ferm Living"), body.index("All of Ferm Living"))
+        self.assertLess(body.index("All of Ferm Living"), body.index('<div class="grid">', body.index("All of Ferm Living")))
+        without = (DOCS / "brands" / "gubi.html").read_text()
+        body = without[without.index('<main data-brand='):]
+        self.assertNotIn("New from Gubi", body)
+        self.assertNotIn("All of Gubi", body)                  # no empty space, no extra heading, just the range
+
     def test_surprise_me_is_a_chip_not_part_of_the_search_box(self):
         work = (DOCS / "work.html").read_text()
         self.assertEqual(work.count('id="discover-chip"'), 1)          # search.js shuffles via this id

@@ -725,6 +725,8 @@ PAGE_CSS = """
      added), not the paid richness tier - see project memory,
      enhanced_brand_profile_paid_tier_concept's free/paid split. */
   .brand-section { margin-top: 48px; }
+  /* "New from X" sits at the TOP of a maker page, above the full range (and only exists when there is something new) */
+  .brand-section--top { margin: 0 0 44px; }
   .brand-section-title {
     font-size: 11px; font-weight: 600; text-transform: uppercase;
     letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
@@ -1100,7 +1102,7 @@ def render_news_section(brand, new_products):
     # genuinely newest items regardless of how many technically qualify.
     cards = "".join(product_card_html(p) for p in new_products[:NEW_SECTION_CAP])
     return f"""
-  <section class="brand-section">
+  <section class="brand-section brand-section--top">
     <p class="brand-section-title">New from {html.escape(brand)}</p>
     <div class="grid">{cards}</div>
   </section>"""
@@ -1130,6 +1132,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
         )
     cards = "".join(product_card_html(p) for p in products)
     news_section = render_news_section(brand, new_products)
+    all_work_title = f'  <p class="brand-section-title">All of {html.escape(brand)}</p>\n' if news_section else ""
     stockist_section = render_stockist_section(brand, stockists)
     page_url = f"{SITE_URL}/brands/{slug}.html"
     description = f"{html.escape(brand)}'s work on Formground - {len(products)} pieces, linked straight to their own site."
@@ -1193,8 +1196,8 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     <div class="tags">{tags}</div>
     <a class="brand-site-link" href="{html.escape(brand_url)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>{promo_callout}
   </div>
-  <div class="grid">{cards}</div>
-{news_section}{stockist_section}
+{news_section}{all_work_title}  <div class="grid">{cards}</div>
+{stockist_section}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
