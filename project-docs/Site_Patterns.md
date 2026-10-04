@@ -19,7 +19,7 @@ Used on: home (Sofas, Two Seater Sofas), the Edits hub, every Edit page.
   (smaller, secondary colour). Photo and caption both link to the maker's own
   site, new tab.
 - Hierarchy: the edit/section title is primary, the product and maker are secondary.
-- Never overlay text on a banner photo. (The Edits hub did, a leftover from
+- Never overlay text on a featured-product banner photo. (The Edits hub did, a leftover from
   Promotions; changed 2026-10-04. The Promotions overlay style is retired.)
 
 ## 2. Tiles (the home page bento, the Edits hub's featured edit)
@@ -50,22 +50,38 @@ Used on: home (Sofas, Two Seater Sofas), the Edits hub, every Edit page.
 - Images are always hotlinked and credited; a maker whose images cannot be loaded
   from our pages is excluded, never worked around.
 
-## 5. Type and spacing
+## 5. Chips
 
-- Page title: Archivo 700. Edits hub 44px (uppercase), Edit page 36px.
+Three families, each with ONE height, shape and weight. A new chip copies one of
+them; it does not invent a fourth. (Aligned 2026-10-04: "Surprise me" was
+squarer than the other form chips, the search-bar chip was bolder than the filter
+chips, and the "N finishes" badge was shorter than the brand tags.)
+
+| Family | Used for | Height | Text | Shape |
+|---|---|---|---|---|
+| Form chip | the scope chip inside a search bar ("Edits", "Makers"), tier filters, "Surprise me" | 32px | 13px, weight 500 | full pill (999px) |
+| Photo pill | "Visit site" on tiles, the photo credit on the Edits masthead | 27px | 11px, weight 600 | full pill, glass background (light or dark to suit the photo) |
+| Small label | brand-page tags (Lighting, Objects, country), the "N finishes" badge | 23px | 11px | 10px corners; the tag is outlined, the badge filled (both carry a 0.5px border so the box is identical) |
+
+- Search bars: 60px tall with a chip, 57px on the home page (no chip); 900px wide, centred.
+  Open question: should it match the 1160px banner/grid edges on the Edits page?
+
+## 6. Type and spacing
+
+- Page title: Archivo 700. Edits hub 60px uppercase on the masthead photo (44px in the "classic" layout, see HUB_LAYOUT in generate_edits_page.py), Edit page 36px.
 - Banner/section title: Archivo 700 (hub 26px, home group rows are the smaller 14px label style).
 - Card text 12-13px; secondary text uses `--text-secondary` / `--text-muted`.
 - Breakpoints used everywhere: 959px (4-column grids), 760px (tiles show details,
   stacked layouts), 639px (2-column grids).
 - Header nav (every page): Work · Creators · Edits · For Creators.
 
-## 6. Links and tracking
+## 7. Links and tracking
 
 - Product and photo links go to the maker's own site (`target="_blank"`,
   `rel="noopener noreferrer"`). Titles, "See the edit →" and tiles go to our own pages.
 - A new page type gets click tracking by inheriting `fg-track.js`; do not add a separate tracker.
 
-## 7. Before you change a layout
+## 8. Before you change a layout
 
 1. Find the other places that show the same thing (grep the class names across
    `frontend/` and `scraper/generate_*.py`) and change them together.

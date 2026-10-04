@@ -752,7 +752,8 @@ PAGE_CSS = """
   .variant-badge {
     position: absolute; bottom: 6px; left: 6px; z-index: 1;
     background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
-    font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 10px;
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent; /* same box as .tag so the two small labels are one height */
   }
   .card-image img { width: 100%; height: 100%; object-fit: cover; }
   .card-image img.contain-fit { object-fit: contain; }
@@ -841,7 +842,7 @@ PAGE_CSS = """
      ask-box itself comes out the same overall height everywhere
      (measured live 2026-09-20: both 57px - see project memory). */
   .ask-box-context {
-    flex-shrink: 0; font-size: 13px; font-weight: 600; color: var(--text-secondary);
+    flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-secondary);
     background: var(--surface-2); border: 0.5px solid var(--border-strong);
     padding: 7px 10px; border-radius: 999px;
   }
@@ -854,7 +855,7 @@ PAGE_CSS = """
      the rest of this filter row. */
   .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
   .filter-chip {
-    font-size: 13px; color: var(--text-secondary); font-family: inherit;
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
     background: var(--surface-2); border: 0.5px solid var(--border-strong);
     padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
   }
