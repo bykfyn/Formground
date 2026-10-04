@@ -41,6 +41,7 @@ from generate_brand_pages import (
     SPONSORED_SECTION_CSS,
     render_sponsored_section,
 )
+from site_assets import ICONS_CSS  # noqa: E402
 
 SCRAPER_DIR = Path(__file__).parent
 REPO_ROOT = SCRAPER_DIR.parent
@@ -492,10 +493,9 @@ def render_page():
 <meta name="twitter:image" content="https://formground.com/favicon-192x192.png">
 <meta name="twitter:title" content="For Creators — Formground">
 <meta name="twitter:description" content="Production partners, resources and suppliers for architects, designers, and makers.">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
 </head>
 <body>

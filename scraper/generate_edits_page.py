@@ -72,6 +72,7 @@ from generate_theme_landing_pages import append_to_sitemap  # noqa: E402
 import generate_themed_edit_pages as gte  # noqa: E402
 from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
 import image_fit  # noqa: E402
+from site_assets import ICONS_CSS  # noqa: E402
 
 # How many of the real edits lead as rotating banner slides - all of
 # them today (only 4 exist); capped so a much larger future edit count
@@ -495,9 +496,8 @@ def render_edits_index(themes_data):
 <meta name="twitter:title" content="Edits — Formground">
 <meta name="twitter:description" content="{html.escape(description)}">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
 <style>{EDITS_PAGE_CSS}</style>
 </head>

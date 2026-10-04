@@ -79,6 +79,20 @@ chips, and the "N finishes" badge was shorter than the brand tags.)
   on every page including Edits (decided 2026-10-04: it stays 900px rather than matching the
   1160px banner/grid edges, so it is the same everywhere).
 
+## 5b. Icons and performance rules
+
+- Icons are `<i class="ti ti-NAME">` drawn from `frontend/icons.css` (inline SVG masks, no
+  font download; the Tabler icon font was 450KB per page for 13 icons). To add one: add the
+  Tabler name to `ICONS` in `scraper/build_icon_css.py` and run it - never link an icon font.
+  `tests/test_icons.py` fails if an icon class is used but not drawn.
+- Shared assets are linked with a content hash (`/icons.css?v=...`, `scraper/site_assets.py`)
+  so browsers never keep a stale copy next to new pages.
+- No layout shift: a page that fills in after loading must not move what is already visible
+  (the Work page keeps its footer invisible until results arrive - `finishLoading()` in
+  `search.js`; CLS 0.124 -> 0).
+- Photos are requested at card size (section 4); a new image host needs a verified rule in
+  `scraper/image_sizes.py` and `search.js`.
+
 ## 6. Type and spacing
 
 - Page title: Archivo 700. Edits hub 60px uppercase on the masthead photo (44px in the "classic" layout, see HUB_LAYOUT in generate_edits_page.py), Edit page 36px.

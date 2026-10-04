@@ -67,6 +67,7 @@ from generate_brand_pages import (  # noqa: E402
     SITE_URL,
     product_card_html,
 )
+from site_assets import ICONS_CSS  # noqa: E402
 
 # Each theme's `intent` is passed straight to query_engine.filter_products()
 # - the identical function /work.html's own search calls - so these pages
@@ -209,9 +210,8 @@ def render_theme_page(theme, products):
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="{html.escape(title)} — Formground">
 <meta name="twitter:description" content="{html.escape(description)}">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
 </head>
 <body>

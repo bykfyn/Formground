@@ -46,6 +46,7 @@ from generate_brand_pages import (
     slugify,
     unique_slug,
 )
+from site_assets import ICONS_CSS  # noqa: E402
 
 SCRAPER_DIR = Path(__file__).parent
 DATA_DIR = SCRAPER_DIR.parent / "data"
@@ -144,6 +145,7 @@ def render_architect_page(firm_name, slug, meta, houses):
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">{breadcrumb_json}</script>
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
 </head>
 <body>
@@ -208,6 +210,7 @@ def render_architects_index(firms_with_slugs, meta_by_name, houses_by_firm):
 <meta property="og:url" content="{page_url}">
 <meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
 <style>{HERO_SEARCH_POSITION_CSS}</style>
 </head>

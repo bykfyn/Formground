@@ -67,6 +67,7 @@ from generate_theme_landing_pages import (  # noqa: E402
     _group_color_variants,
     append_to_sitemap,
 )
+from site_assets import ICONS_CSS  # noqa: E402
 
 # ~300 cards is ~145 KB of HTML - the same weight as the existing
 # Floor Lamps page, which is the one uncapped category page already
@@ -229,9 +230,8 @@ def _head(title, description, page_url):
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="{html.escape(title)}">
 <meta name="twitter:description" content="{html.escape(description)}">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}{PAGER_CSS}</style>"""
 
 

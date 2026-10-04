@@ -49,6 +49,7 @@ from generate_brand_pages import (
     umbrella_categories_for,
 )
 from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
+from site_assets import ICONS_CSS  # noqa: E402
 
 SCRAPER_DIR = Path(__file__).parent
 REPO_ROOT = SCRAPER_DIR.parent
@@ -980,10 +981,9 @@ def render_page(retailers, promotions):
 <meta name="twitter:image" content="https://formground.com/favicon-192x192.png">
 <meta name="twitter:title" content="Marketplace — Formground">
 <meta name="twitter:description" content="{twitter_desc}">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
 </head>
 <body>

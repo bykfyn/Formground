@@ -51,6 +51,7 @@ from generate_brand_pages import (
     unique_slug,
 )
 from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
+from site_assets import ICONS_CSS  # noqa: E402
 
 SCRAPER_DIR = Path(__file__).parent
 DATA_DIR = SCRAPER_DIR.parent / "data"
@@ -137,6 +138,7 @@ def render_designer_page(designer_name, slug, products):
 <meta name="twitter:card" content="summary">
 <script type="application/ld+json">{breadcrumb_json}</script>
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
 </head>
 <body>
@@ -198,6 +200,7 @@ def render_designers_index(designers_with_slugs, products_by_designer):
 <meta property="og:url" content="{page_url}">
 <meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
 <style>{HERO_SEARCH_POSITION_CSS}</style>
 </head>

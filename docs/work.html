@@ -20,10 +20,9 @@
 <meta name="twitter:image" content="https://formground.com/favicon-192x192.png">
 <meta name="twitter:title" content="Work — Formground">
 <meta name="twitter:description" content="Search or browse everything on Formground by what it is — houses, furniture, lighting, ceramics, and objects.">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="/icons.css?v=96020107">
 <style>
   /* Pins the footer to the bottom of the viewport instead of it
      sitting mid-page before results are in (during the brief gap
@@ -44,6 +43,8 @@
     width: 100%;
   }
   .foot-note { margin-top: auto; }
+  /* footer stays invisible until the first results are in (see search.js finishLoading) */
+  .results-loading .foot-note { visibility: hidden; }
 
   /* Page-specific override of site.css's shared 40px - matches the
      homepage's own ask-box height exactly (2026-09-20, measured live:
@@ -216,6 +217,7 @@
   #status.error { color: #a14b3f; }
   [hidden] { display: none !important; }
 </style>
+<noscript><style>.results-loading .foot-note { visibility: visible; }</style></noscript>
 </head>
 <body>
 
@@ -229,7 +231,7 @@
   </nav>
 </header>
 
-<main>
+<main class="results-loading">
   <div class="search-wide">
     <form id="search-form">
       <div class="ask-box">

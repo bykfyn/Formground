@@ -511,6 +511,17 @@ if (loadMoreBtn) {
   loadMoreBtn.addEventListener("click", handleLoadMoreClick);
 }
 
+// The Work page always loads results (a search, or "Surprise me" with no query).
+// Until they arrive the grid is empty, so the footer sat right under the search
+// box and was then pushed far down - the page's only layout shift (CLS 0.12 on
+// a phone, measured 2026-10-04). work.html starts <main> as .results-loading,
+// which keeps the footer invisible; this reveals it once the results (or an
+// error message) are in place, so nothing visible moves.
+function finishLoading() {
+  const m = document.querySelector("main.results-loading");
+  if (m) m.classList.remove("results-loading");
+}
+
 async function runSearch(query) {
   gridEl.innerHTML = "";
   metaEl.style.display = "none";
@@ -559,6 +570,8 @@ async function runSearch(query) {
     statusEl.style.display = "block";
     statusEl.textContent = "Couldn't reach Formground's search right now - please try again shortly.";
     console.error(err);
+  } finally {
+    finishLoading();
   }
 }
 
@@ -591,6 +604,8 @@ async function runDiscover() {
     statusEl.style.display = "block";
     statusEl.textContent = "Couldn't reach Formground right now - please try again shortly.";
     console.error(err);
+  } finally {
+    finishLoading();
   }
 }
 

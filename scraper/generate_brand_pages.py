@@ -36,6 +36,7 @@ import unicodedata
 from pathlib import Path
 from urllib.parse import urlparse
 from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
+from site_assets import ICONS_CSS  # noqa: E402
 
 SCRAPER_DIR = Path(__file__).parent
 DATA_DIR = SCRAPER_DIR.parent / "data"
@@ -1171,9 +1172,8 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
 <meta name="twitter:title" content="{html.escape(brand)} on Formground">
 <meta name="twitter:description" content="{description}">
 <script type="application/ld+json">{breadcrumb_json}</script>
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
 </head>
 <body>
@@ -1264,9 +1264,8 @@ def render_makers_index(brands_data):
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Makers — Formground">
 <meta name="twitter:description" content="Every maker currently on Formground, browsable by name.">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
 <style>{HERO_SEARCH_POSITION_CSS}</style>
 </head>
@@ -1405,9 +1404,8 @@ def render_new_page(products):
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="New — Formground">
 <meta name="twitter:description" content="{description}">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
 </head>
 <body>

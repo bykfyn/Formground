@@ -62,6 +62,7 @@ from generate_theme_landing_pages import (  # noqa: E402
     append_to_sitemap,
 )
 from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
+from site_assets import ICONS_CSS  # noqa: E402
 
 # "hero_image" fairness policy (2026-09-30) - the first pass at these
 # only checked each theme's own top-3 auto-picked candidates, which
@@ -866,9 +867,8 @@ def render_themed_edit_page(theme, products):
 <meta name="twitter:title" content="{html.escape(title)} — Formground">
 <meta name="twitter:description" content="{html.escape(description)}">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
-<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
 <link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}{EDIT_PAGE_CSS}</style>
 </head>
 <body>
