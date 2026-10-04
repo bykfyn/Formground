@@ -791,22 +791,22 @@ def _new_entries(sets):
     for cat in NEW_CATEGORIES:
         products = sets[cat]
         image = next((p["image_url"] for p in products if p["image_url"]), "")
-        out.append({"slug": f"new-{work_menu.CATEGORY_SLUGS[cat]}", "title": "New", "n": len(products),
+        out.append({"slug": f"recently-added-{work_menu.CATEGORY_SLUGS[cat]}", "title": "Recently added", "n": len(products),
                     "group": None, "category": cat, "image": image, "is_new": True})
     return out
 
 
 def _new_view_pages(entries, sets):
-    """/work/new-furniture|lighting|objects.html: the category's recently added pieces as the same listing
+    """/work/recently-added-furniture|lighting|objects.html: the category's recently added pieces as the same listing
     pages as the types (cards spread across makers so one new brand's batch does not fill the page)."""
     from generate_brand_pages import NEW_ARRIVALS_WINDOW_DAYS
     slugs = []
     for cat in NEW_CATEGORIES:
-        vslug = f"new-{work_menu.CATEGORY_SLUGS[cat]}"
+        vslug = f"recently-added-{work_menu.CATEGORY_SLUGS[cat]}"
         products = sets[cat]
         cards, variant_counts = _group_color_variants(products)
         cards = _interleave_by_brand(cards)
-        title = f"New in {cat}"
+        title = f"Recently added in {cat}"
         crumbs = [(cat, f"/work/{work_menu.CATEGORY_SLUGS[cat]}.html"), (title, f"/work/{vslug}.html")]
         siblings = " &middot; ".join(
             (f'<strong class="here" aria-current="page">{html.escape(e["title"])}</strong> <span class="n">{e["n"]:,}</span>'
@@ -814,7 +814,7 @@ def _new_view_pages(entries, sets):
              f'<a href="/work/{e["slug"]}.html">{html.escape(e["title"])}</a> <span class="n">{e["n"]:,}</span>')
             for e in sorted(work_menu.category_entries(entries, cat), key=work_menu.entry_sort_key))
         view = {
-            "slug": vslug, "title": title, "noun": "new pieces", "cat": cat, "crumbs": crumbs,
+            "slug": vslug, "title": title, "noun": "recently added pieces", "cat": cat, "crumbs": crumbs,
             "summary": lambda total, n, d=NEW_ARRIVALS_WINDOW_DAYS: f"{total:,} pieces added in the last {d} days from {n} makers",
             "siblings_heading": f'<a href="/work/{work_menu.CATEGORY_SLUGS[cat]}.html">{html.escape(cat)} &rarr;</a>',
             "siblings": siblings, "subnav": lambda _slug: "",
@@ -830,19 +830,19 @@ def _new_view_pages(entries, sets):
 
 
 def render_new_hub(entries):
-    """/work/new.html: where the home page's "New" heading lands - the three categories' New views as photo
+    """/work/recently-added.html: where the home page's "Recently added" heading lands - the three categories' views as photo
     tiles. Not in the menu (New lives inside each category); no cards of its own."""
-    page_url = f"{SITE_URL}/work/new.html"
+    page_url = f"{SITE_URL}/work/recently-added.html"
     mine = [e for e in entries if e.get("is_new")]
     total = sum(e["n"] for e in mine)
     description = (f"{total:,} pieces recently added to Formground, by category - each linking straight to the "
                    "maker's own site.")
-    tiles = "".join(_type_tile_html({**e, "title": f"New in {e['category']}"}) for e in mine)
-    breadcrumb = _breadcrumb_json([("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html"), ("New", page_url)])
+    tiles = "".join(_type_tile_html({**e, "title": f"Recently added in {e['category']}"}) for e in mine)
+    breadcrumb = _breadcrumb_json([("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html"), ("Recently added", page_url)])
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-{_head("New — Formground", description, page_url)}
+{_head("Recently added — Formground", description, page_url)}
 <link rel="stylesheet" href="{WORK_RESULTS_CSS}">
 <style>{LISTING_CSS}</style>
 <script type="application/ld+json">{breadcrumb}</script>
@@ -862,8 +862,8 @@ def render_new_hub(entries):
     </form>
   </div>
   {work_menu.render_menu(entries)}
-  <h1 class="listing-title">New</h1>
-  <p class="listing-meta">{total:,} pieces recently added, by category, no rankings, not paid for</p>
+  <h1 class="listing-title">Recently added</h1>
+  <p class="listing-meta">{total:,} pieces recently added to Formground, by category, no rankings, not paid for</p>
   <div class="type-grid">{tiles}</div>
   <p class="foot-note">
     {SITE_FOOTER_HTML}
@@ -902,7 +902,7 @@ def generate():
     groups = house_groups(houses)
     entries.extend(house_entries(groups))
     new_sets = _new_sets()
-    entries.extend(_new_entries(new_sets))   # "New" sits in each category like a type
+    entries.extend(_new_entries(new_sets))   # "Recently added" sits in each category like a type
 
     sitemap_slugs = []
     for category, products, cards, variant_counts in computed:
@@ -922,10 +922,10 @@ def generate():
         sitemap_slugs.append(f"work/{cat_slug}")
     sitemap_slugs += _write_house_pages(houses, groups, entries)
     sitemap_slugs += _new_view_pages(entries, new_sets)
-    (BROWSE_DIR / "new.html").write_text(render_new_hub(entries))
-    sitemap_slugs.append("work/new")
+    (BROWSE_DIR / "recently-added.html").write_text(render_new_hub(entries))
+    sitemap_slugs.append("work/recently-added")
     # /new.html moved here (2026-10-04): the old address stays as a stub
-    write_redirect(DOCS_DIR / "new.html", "/work/new.html")
+    write_redirect(DOCS_DIR / "new.html", "/work/recently-added.html")
     # /work/ itself has no page of its own: the Work page is /work.html
     write_redirect(BROWSE_DIR / "index.html", "/work.html")
 

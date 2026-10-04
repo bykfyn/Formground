@@ -91,17 +91,21 @@ was approved; the old 300-card renderer is deleted, so type page numbers grew: C
 of 60). The Houses pages still use their own template (landscape 4:3 cards) and could move onto this
 one later.
 
-### New (2026-10-04)
+### Recently added (2026-10-04; was "New")
 
-"New" is not a chip. It is a **category-level** entry - Furniture / New, Lighting / New, Objects / New - not
-under any group (not under Seating): its own row above the groups in the category's dropdown, its own tile above
-the groups on the category page (a photo of its newest piece), and first in the "<Category> ->" list at the foot
-of the type pages. No per-group New (Seating / New, Tables / New) for now. It opens `/work/new-<category>.html`: a standard listing page (Work cards, 60 a page, See more,
-pager) of everything added in the last 90 days (the same window and filter the Work search's "new" keyword
-uses), spread across makers so one new brand's batch does not fill the page. Houses carry no added-date, so no
-New. `/work/new.html` is a small hub (three tiles) that only the home page's "New" heading links to; `/new.html`
-is a redirect stub. Pieces whose type is not yet classified are in no New view. It stays a view, not an Edit:
-Edits are editorial selections, New is a recency filter, rebuilt automatically each week.
+Not a chip. A **category-level** entry - Furniture / Recently added, Lighting / Recently added, Objects / Recently
+added - not under any group (not under Seating): its own row above the groups in the category's dropdown, its own
+tile above the groups on the category page (a photo of its newest piece), and first in the "<Category> ->" list
+at the foot of the type pages. It opens `/work/recently-added-<category>.html`: a standard listing page (Work
+cards, 60 a page, See more, pager) of everything first seen by Formground in the last 90 days, spread across
+makers. No per-group version. Houses carry no added-date, so none. `/work/recently-added.html` is a small hub
+(three tiles) that only the home page's heading links to; `/new.html` is a redirect stub.
+
+**Why "Recently added", not "New":** the date is when OUR scraper first saw the piece, and almost all of it is a
+maker's whole catalog scanned for the first time (Woud 201 pieces on one day, Wendelbo 117, Mater 109) - new to
+Formground, not new from the maker. "New" is reserved for pieces new in production: the `released_at` column
+(the maker's own publish date, captured from Shopify's `published_at` and, where exposed, WordPress's `date`)
+is being collected for that. Until it covers enough makers the section stays "Recently added".
 
 ## 1. Banners (the wide photo with one featured product)
 

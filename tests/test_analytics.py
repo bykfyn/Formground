@@ -62,7 +62,7 @@ class PageClassificationTests(unittest.TestCase):
             "/work/sofas.html": "browse", "/work/sofas-2.html": "browse", "/work/lighting.html": "browse_hub",
             "/work/furniture.html": "browse_hub", "/work/houses.html": "browse_hub", "/work/houses-sweden.html": "browse",
             "/edits/pendant-lamps.html": "edit", "/edits.html": "edits_hub",
-            "/work/new.html": "new", "/work/new-furniture.html": "new", "/work/new-2.html": "new",
+            "/work/recently-added.html": "new", "/work/recently-added-furniture.html": "new",
         }
         for path, expected in cases.items():
             self.assertEqual(main._page_type(path), expected, path)
