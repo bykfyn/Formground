@@ -266,6 +266,13 @@ class StructureTests(unittest.TestCase):
             self.assertGreater(page.count('class="maker-card"'), 100, folder)
             self.assertNotIn("coming soon", page.lower(), folder)
 
+    def test_designer_pages_use_the_standard_product_card_with_share(self):
+        page = (DOCS / "designers" / "aa-vv.html").read_text()
+        self.assertGreater(page.count('<a class="card"'), 5)
+        self.assertEqual(page.count('<a class="card"'), page.count('<button class="share-btn"'))
+        self.assertNotIn('class="maker-card"', page)
+        self.assertIn("/share.js?v=", page)
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "aa-vv.html").read_text()
         self.assertNotIn("Looking for who made it?", page)

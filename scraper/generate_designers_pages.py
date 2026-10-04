@@ -35,8 +35,10 @@ import sqlite3
 from collections import defaultdict
 from pathlib import Path
 
+from site_assets import SHARE_JS  # noqa: E402
 from generate_brand_pages import (
     CARD_CLICK_TRACKING_JS,
+    product_card_html,
     CLOUDFLARE_ANALYTICS,
     DIRECTORY_FILTER_JS,
     FAVICON_TAGS,
@@ -61,21 +63,6 @@ DB_PATH = DATA_DIR / "formground.db"
 SITEMAP_PATH = DOCS_DIR / "sitemap.xml"
 
 MIN_PRODUCTS = 2  # see module docstring - a one-credit page reads as thin
-
-
-def product_card_html(product):
-    image = (
-        f'<img src="{html.escape(sized(product["image_url"], CARD))}" alt="{html.escape(product["product_name"])}" loading="lazy">'
-        if product.get("image_url") else ""
-    )
-    return f"""
-      <a class="maker-card" href="{html.escape(product["product_url"])}" target="_blank" rel="noopener noreferrer">
-        <div class="maker-card-hero">{image}</div>
-        <div class="maker-card-body">
-          <span class="maker-name">{html.escape(product["product_name"])}</span>
-          <span class="maker-country">{html.escape(product["brand"])}</span>
-        </div>
-      </a>"""
 
 
 def designer_card_html(designer_name, slug, products):
@@ -110,7 +97,8 @@ def render_designer_page(designer_name, slug, products):
         f"credited across {brand_line if len(brands) > 1 else brands[0]}."
     )
     products_sorted = sorted(products, key=lambda p: (p["brand"], p["product_name"]))
-    products_html = "".join(product_card_html(p) for p in products_sorted)
+    # the standard product card (square photo, name, maker, share button) - the same as the Work page and every other page
+    products_html = "".join(product_card_html(p, show_brand=True, share=True) for p in products_sorted)
 
     breadcrumb_json = f"""{{
       "@context": "https://schema.org",
@@ -152,14 +140,14 @@ def render_designer_page(designer_name, slug, products):
     <h1 class="maker-name">{html.escape(designer_name)}</h1>
   </div>
   <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">{len(products)} real product{'' if len(products) == 1 else 's'} credited to {html.escape(designer_name)}, each linked straight to its maker's own page.</p>
-  <div class="maker-grid">{products_html}
+  <div class="grid">{products_html}
   </div>
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
 </main>
 <script>
-  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {{
+  document.querySelectorAll(".card-image img").forEach(function (img) {{
     img.addEventListener("load", function () {{
       var ratio = img.naturalWidth / img.naturalHeight;
       if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
@@ -167,6 +155,7 @@ def render_designer_page(designer_name, slug, products):
   }});
 </script>
 <script>{CARD_CLICK_TRACKING_JS}</script>
+<script src="{SHARE_JS}" defer></script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -258,7 +247,7 @@ def generate():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     rows = conn.execute("""
-        SELECT designer, brand, product_name, product_url, image_url
+        SELECT designer, brand, brand_url, product_name, product_url, image_url, link_dead
         FROM products
         WHERE designer IS NOT NULL AND TRIM(designer) != '' AND image_url != ''
     """).fetchall()
