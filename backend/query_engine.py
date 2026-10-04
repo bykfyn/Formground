@@ -906,7 +906,7 @@ def _is_protective_cover(product_name: str) -> bool:
     return bool(PROTECTIVE_COVER_PATTERN.search(product_name))
 
 
-_PRODUCT_ROWS_CACHE = {"key": None, "rows": []}
+_PRODUCT_ROWS_CACHE = {"key": None, "rows": [], "first_scan": {}, "undated": set()}
 _PRODUCT_ROWS_LOCK = threading.Lock()
 
 
@@ -928,8 +928,57 @@ def _all_product_rows() -> list:
                 conn.row_factory = sqlite3.Row
                 rows = [dict(r) for r in conn.execute("SELECT * FROM products").fetchall()]
                 conn.close()
+                cache["first_scan"], cache["undated"] = _new_piece_context(rows)
                 cache["rows"], cache["key"] = rows, key
     return cache["rows"]
+
+
+# "New" = new from the maker (2026-10-04), not "first seen by our scraper" (that is "Recently added": mostly whole
+# catalogs scanned for the first time). A piece is New when
+#   - it carries the maker's own date (products.released_at: Shopify created/published, WordPress post date)
+#     within the window; or
+#   - it has no maker date (the platform exposes none) but we first saw it more than a week AFTER our first scan
+#     of that maker - i.e. it appeared in the maker's catalog while we were watching - within the window.
+# A maker whose EARLIEST maker date is under a year old is treated as undated: its store was probably (re)built
+# recently, which would make its whole catalog look new.
+NEW_FIRST_SCAN_GRACE_DAYS = 7
+NEW_YOUNG_STORE_DAYS = 365
+
+
+def _new_piece_context(rows):
+    """({brand: day of our first scan}, {brands treated as undated}) for _is_new_piece."""
+    today = datetime.date.today()
+    young_cutoff = (today - datetime.timedelta(days=NEW_YOUNG_STORE_DAYS)).isoformat()
+    first_scan, epoch = {}, {}
+    for r in rows:
+        b = r["brand"]
+        fs = r.get("first_seen")
+        if fs and (b not in first_scan or fs < first_scan[b]):
+            first_scan[b] = fs
+        ra = r.get("released_at")
+        if ra and (b not in epoch or ra < epoch[b]):
+            epoch[b] = ra
+    undated = {b for b, e in epoch.items() if e > young_cutoff}
+    grace = datetime.timedelta(days=NEW_FIRST_SCAN_GRACE_DAYS)
+    first_scan = {b: (datetime.date.fromisoformat(d) + grace).isoformat() for b, d in first_scan.items()}
+    return first_scan, undated
+
+
+def new_cutoff_day():
+    return (datetime.date.today() - datetime.timedelta(days=NEW_ARRIVALS_WINDOW_DAYS)).isoformat()
+
+
+def is_new_piece(product, cutoff=None):
+    """True when the piece is New from the maker (see the note above). Needs the row cache to be loaded."""
+    cutoff = cutoff or new_cutoff_day()
+    _all_product_rows()
+    ra = product.get("released_at")
+    if ra and product["brand"] not in _PRODUCT_ROWS_CACHE["undated"]:
+        return ra >= cutoff
+    fs = product.get("first_seen")
+    if not fs or fs < cutoff:
+        return False
+    return fs > _PRODUCT_ROWS_CACHE["first_scan"].get(product["brand"], "")
 
 
 def filter_products(intent: dict) -> list:
@@ -961,10 +1010,7 @@ def filter_products(intent: dict) -> list:
     wanted_material = (intent.get("material") or "").strip().lower()
     # Same 90-day window /new.html itself uses (see NEW_ARRIVALS_WINDOW_DAYS
     # above) - computed once per call, not per row.
-    new_cutoff = (
-        (datetime.date.today() - datetime.timedelta(days=NEW_ARRIVALS_WINDOW_DAYS)).isoformat()
-        if intent.get("new_only") else None
-    )
+    new_cutoff = new_cutoff_day() if intent.get("new_only") else None
     # translate_query() extracts color as its own field, separate from
     # material - it was being parsed and then silently thrown away here,
     # so a query like "black chair" filtered on category alone and could
@@ -1007,7 +1053,7 @@ def filter_products(intent: dict) -> list:
             continue
         if wanted_color and wanted_color not in product["material_options"].lower():
             continue
-        if new_cutoff and not (product["first_seen"] and product["first_seen"] >= new_cutoff):
+        if new_cutoff and not is_new_piece(product, new_cutoff):
             continue
         if wanted_countries and BRAND_COUNTRIES.get(product["brand"]) not in wanted_countries:
             continue

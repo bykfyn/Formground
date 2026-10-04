@@ -32,9 +32,12 @@ import html
 import json
 import re
 import sqlite3
+import sys
 import unicodedata
 from pathlib import Path
 from urllib.parse import urlparse
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
+import query_engine as qe  # noqa: E402  - one definition of "New" (is_new_piece) for pages and search
 from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
 from site_assets import ICONS_CSS  # noqa: E402
 
@@ -1549,11 +1552,13 @@ def generate():
     # date was never guessed at, so this naturally excludes everything
     # already in the catalog before the feature existed rather than
     # needing a separate check here.
-    cutoff = (datetime.date.today() - datetime.timedelta(days=NEW_ARRIVALS_WINDOW_DAYS)).isoformat()
+    # "New" (2026-10-04) = new from the maker - released_at within the window, or, for a maker whose platform
+    # exposes no date, first seen well after our first scan of that maker (query_engine.is_new_piece). The brand
+    # page's own "New from X" shows the same pieces the sitewide New pages count.
     new_arrivals = sorted(
         (dict(row) for row in rows
-         if row["first_seen"] and row["first_seen"] >= cutoff and row["brand"] not in hidden_brands),
-        key=lambda p: p["first_seen"],
+         if row["brand"] not in hidden_brands and qe.is_new_piece(dict(row))),
+        key=lambda p: p.get("released_at") or p["first_seen"] or "",
         reverse=True,
     )
     # /new.html is now a redirect to /work/new.html, written by generate_browse_pages.py (2026-10-04)

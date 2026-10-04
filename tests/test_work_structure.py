@@ -77,6 +77,7 @@ class HouseCountryTests(unittest.TestCase):
 class StructureTests(unittest.TestCase):
     def test_every_old_address_is_a_stub_pointing_at_a_real_page(self):
         old = [DOCS / f"{s}.html" for s in EDIT_SLUGS] + [DOCS / "floor-lamps.html", DOCS / "new.html"]
+        old += [Path(p) for p in glob.glob(str(DOCS / "work" / "recently-added*.html"))]   # the short-lived first-seen pages
         old += [Path(p) for p in glob.glob(str(DOCS / "browse" / "*.html"))]
         old += [DOCS / f"{s}.html" for s in ("furniture", "lighting", "objects", "ceramics")]
         self.assertTrue(len(old) > 40)
@@ -157,30 +158,30 @@ class StructureTests(unittest.TestCase):
         for slug in ("sofas", "chairs", "vases", "rugs"):
             self.assertEqual(len(re.findall(r'<a class="card"', (DOCS / "work" / f"{slug}.html").read_text())), 60, slug)
 
-    def test_recently_added_lives_inside_each_category_like_a_type(self):
-        """"Recently added" is not a chip: each category (Furniture, Lighting, Objects) lists "Recently added" first among its types,
-        in the dropdown and on its category page, linking to /work/recently-added-<category>.html - a standard listing page.
-        /work/recently-added.html is a small hub the home page's New heading lands on; /new.html is a stub."""
-        self.assertEqual(_stub_target((DOCS / "new.html").read_text()), "/work/recently-added.html")
+    def test_new_lives_inside_each_category_like_a_type(self):
+        """"New" (new from the maker) is not a chip: each category (Furniture, Lighting, Objects) lists "New" first among its types,
+        in the dropdown and on its category page, linking to /work/new-<category>.html - a standard listing page.
+        /work/new.html is a small hub the home page's New heading lands on; /new.html is a stub."""
+        self.assertEqual(_stub_target((DOCS / "new.html").read_text()), "/work/new.html")
         menu = (DOCS / "work.html").read_text()
         self.assertNotIn("work-menu-act is-current", menu)
-        self.assertEqual(menu.count('href="/work/recently-added.html"'), 0)          # no top-level chip for it
+        self.assertEqual(menu.count('href="/work/new.html"'), 0)          # no top-level chip for it
         for cat in ("furniture", "lighting", "objects"):
-            self.assertIn(f'<li><a href="/work/recently-added-{cat}.html"', menu)
-            text = (DOCS / "work" / f"recently-added-{cat}.html").read_text()
+            self.assertIn(f'<li><a href="/work/new-{cat}.html"', menu)
+            text = (DOCS / "work" / f"new-{cat}.html").read_text()
             self.assertIn('class="results-grid"', text, cat)
             self.assertIn('class="share-btn"', text, cat)
             self.assertIn('aria-current="page"', text, cat)                # New marked in the dropdown/list
             self.assertLessEqual(len(re.findall(r'<a class="card"', text)), 60, cat)
             page = (DOCS / "work" / f"{cat}.html").read_text()
-            self.assertIn(f'href="/work/recently-added-{cat}.html"', page)            # a tile on the category page
-        self.assertNotIn("recently-added-houses", menu)                               # houses carry no added-date
-        hub = (DOCS / "work" / "recently-added.html").read_text()
+            self.assertIn(f'href="/work/new-{cat}.html"', page)            # a tile on the category page
+        self.assertNotIn("new-houses", menu)                               # houses carry no added-date
+        hub = (DOCS / "work" / "new.html").read_text()
         self.assertEqual(hub.count('class="maker-card"'), 3)
         self.assertNotIn('class="results-grid"', hub)
         sm = (DOCS / "sitemap.xml").read_text()
-        self.assertIn("/work/recently-added.html", sm)
-        self.assertIn("/work/recently-added-furniture.html", sm)
+        self.assertIn("/work/new.html", sm)
+        self.assertIn("/work/new-furniture.html", sm)
         self.assertNotIn("formground.com/new.html", sm)
 
     def test_surprise_me_is_a_chip_not_part_of_the_search_box(self):

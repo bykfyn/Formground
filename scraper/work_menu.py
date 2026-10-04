@@ -69,7 +69,7 @@ def _group_html(group, entries, current_slug, show_label=True):
 def _new_row_html(e, current_slug):
     here = ' aria-current="page"' if e["slug"] == current_slug else ""
     return (f'<div class="work-menu-group work-menu-group--new"><ul><li><a href="/work/{e["slug"]}.html"{here}>'
-            f'<span class="work-menu-name">Recently added</span><span class="work-menu-n">{e["n"]:,}</span></a></li></ul></div>')
+            f'<span class="work-menu-name">New</span><span class="work-menu-n">{e["n"]:,}</span></a></li></ul></div>')
 
 
 def render_menu(entries, open_category=None, current_slug=None, align="center", current_category=None, surprise="link"):

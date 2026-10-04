@@ -107,7 +107,7 @@ Generated {today}; the catalog is re-scraped weekly. Prices and availability bel
 - [Edits]({SITE_URL}/edits.html): hand-picked selections by theme.
 - [Makers]({SITE_URL}/makers.html): every maker, one page each at {SITE_URL}/brands/{{maker-slug}}.html listing their full range.
 - [Designers]({SITE_URL}/designers.html): independent product designers and their pieces.
-- [Recently added]({SITE_URL}/work/recently-added.html): pieces added in the last 90 days.
+- [New]({SITE_URL}/work/new.html): pieces new from their makers in the last 90 days, by category.
 - [Sitemap]({SITE_URL}/sitemap.xml)
 
 ## Notes
