@@ -678,6 +678,13 @@ if (gridEl) {
     runSearch(q);
   } else {
     input.value = "";
+    // The page opened on a random selection: mark "Surprise me" as the active view (dark pill) so the visitor
+    // understands what they are looking at and that the same button reshuffles it.
+    if (discoverChip) {
+      discoverChip.classList.add("is-active");
+      discoverChip.setAttribute("aria-pressed", "true");
+      discoverChip.title = "A random selection - click to reshuffle";
+    }
     runDiscover();
   }
 }

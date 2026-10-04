@@ -40,6 +40,9 @@ Each nav item owns a URL namespace; a name never means two different pages.
   plain links to the static pages (fast, indexable, shareable): one click to any category, no
   single "Browse" chip or tabs (decided 2026-10-04: four chips mirror the home page and save a
   click).
+  When the Work page opens on a random selection (no query), "Surprise me" is shown active - a dark filled pill
+  with a "random selection - click to reshuffle" tooltip - so the visitor knows what they are looking at and that
+  the same button reshuffles it; it is plain again on a typed search.
   "Surprise me" is the fifth chip, after Objects (an action, not a category; shuffle icon), so the
   search box only searches. On phones the chip row is a swipeable one-row slider that bleeds to
   the screen edges (the next chip peeks, the right edge fades, the current category's chip is
