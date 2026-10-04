@@ -22,6 +22,18 @@ Used on: home (Sofas, Two Seater Sofas), the Edits hub, every Edit page.
 - Never overlay text on a featured-product banner photo. (The Edits hub did, a leftover from
   Promotions; changed 2026-10-04. The Promotions overlay style is retired.)
 
+### Page masthead (the one exception to "no text on a banner photo")
+
+A masthead is the photo that IS a page's header, not a featured-product banner. Used
+on the Edits hub (chosen 2026-10-04 over the classic title-row layout and over
+white/sentence-case variants): the page title ("EDITS", Archivo 700 uppercase, 60px)
+and the preamble sit on the photo in near-black, over the plain wall at the top; **no
+overlay or shading on the photo**; a small light credit pill (bottom right) names and
+links the pictured product's maker. It only works on a photo with a plain area to
+hold the text - for a dark photo set `HUB_MASTHEAD_TEXT = "light"`, and never add a
+scrim to rescue a busy photo; pick another photo. `HUB_LAYOUT = "classic"` restores
+the title-row-above banner.
+
 ## 2. Tiles (the home page bento, the Edits hub's featured edit)
 
 - The photo fills the tile; the category/edit title sits top-left on it
