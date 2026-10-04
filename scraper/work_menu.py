@@ -81,9 +81,10 @@ def render_menu(entries, open_category=None, current_slug=None, align="center", 
             f'aria-controls="{cid}">{html.escape(cat)} <i class="ti ti-chevron-down" aria-hidden="true"></i></button>'
         )
         body = "".join(_group_html(g, entries, current_slug) for g in groups)
-        # On the category's own page the "All ..." link would loop back to itself: say where you are instead.
+        # On the category's own page the panel lists the same types the page shows: no "All ..." link at all
+        # (it would loop back to itself).
         if cat == current_category and current_slug in (None, CATEGORY_SLUGS[cat]):
-            all_link = f'<span class="work-menu-here" aria-current="page">Viewing all {html.escape(cat.lower())}</span>'
+            all_link = ""
         else:
             all_link = f'<a href="/work/{CATEGORY_SLUGS[cat]}.html">All {html.escape(cat.lower())} &rarr;</a>'
         panels.append(
