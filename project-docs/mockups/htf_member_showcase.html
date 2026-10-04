@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Våra medlemmar — Hållbara Trädgårdsföretag (exempel)</title>
+<link rel="preload" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.46.0/dist/tabler-icons.min.css"></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Color/type tokens pulled from hallbaratradgardsforetag.se's own
+     Squarespace site (beige body bg, Raleway headings) so this reads
+     as "your own site, extended" rather than a generic template. */
+  :root {
+    --bg: #e1dfd9;
+    --surface: #f7f6f3;
+    --surface-2: #ffffff;
+    --text-primary: #171512;
+    --text-secondary: #55524b;
+    --text-muted: #8c887e;
+    --border: #d6d2c8;
+    --accent: #4a5d3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  h1, h2, h3 { font-family: "Raleway", sans-serif; font-weight: 500; }
+  main { max-width: 1080px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  header.top {
+    display: flex; align-items: center; gap: 14px;
+    padding: 20px; margin-bottom: 8px;
+  }
+  header.top img { height: 34px; width: auto; }
+  header.top .label {
+    font-size: 12px; color: var(--text-muted); letter-spacing: 0.03em;
+    border-left: 1px solid var(--border); padding-left: 14px;
+  }
+
+  .pitch-banner {
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 14px 18px; margin: 0 20px 32px;
+    font-size: 12.5px; color: var(--text-secondary); line-height: 1.5;
+  }
+  .pitch-banner strong { color: var(--text-primary); }
+
+  .compare {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px;
+    margin-bottom: 44px;
+  }
+  @media (max-width: 720px) { .compare { grid-template-columns: 1fr; } }
+  .compare-col h2 { font-size: 15px; margin: 0 0 12px; }
+  .compare-col .tag-now { color: var(--text-muted); }
+  .compare-col .tag-after { color: var(--accent); }
+
+  .before-box {
+    background: var(--surface); border: 1px dashed var(--border);
+    border-radius: 10px; padding: 22px; font-size: 13.5px;
+    color: var(--text-secondary); line-height: 1.6; min-height: 140px;
+  }
+  .before-box .h { font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+
+  .after-box {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 10px; padding: 22px; font-size: 13.5px;
+    color: var(--text-secondary); line-height: 1.6;
+  }
+  .after-box .h { font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+  .after-box ul { margin: 8px 0 0; padding-left: 18px; }
+
+  h1.section-title { font-size: 20px; margin: 0 0 4px; }
+  p.section-sub { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; }
+
+  .search-row {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px; margin-bottom: 22px;
+  }
+  .search-row i { color: var(--text-muted); }
+  .search-row input {
+    border: none; outline: none; background: none; flex: 1;
+    font-size: 14px; color: var(--text-primary); font-family: inherit;
+  }
+
+  /* Grid + card dimensions mirror formground.com/makers.html exactly
+     (same minmax(190px,1fr) columns, 16px gap, 4:3 hero, centered
+     3-line body) so the pitch reads as the same real product family,
+     and so more real cards fit on screen without scrolling. */
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start;
+  }
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 4 / 3; background: var(--surface);
+    border: 0.5px solid var(--border);
+    margin: 0 0 10px; display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card-image i { font-size: 24px; color: var(--text-muted); }
+  .card-body { padding: 0; text-align: center; }
+  .card-title {
+    display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px;
+  }
+  .card:hover .card-title { text-decoration: underline; }
+  .card-meta { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .card-category { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+  .card.no-link { cursor: default; }
+  .no-site-note { display: block; font-size: 10.5px; color: var(--text-muted); margin-top: 3px; font-style: italic; }
+
+  .foot-note {
+    margin-top: 56px; font-size: 11.5px; color: var(--text-muted);
+    border-top: 1px solid var(--border); padding-top: 16px; line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <img src="https://images.squarespace-cdn.com/content/v1/622888ba3db38b5be7868d7c/913df461-8b77-4c71-8fb6-3bc08adbf687/Logo_hallbara.png?format=1500w" alt="Hållbara Trädgårdsföretag">
+  <span class="label">Exempel — hur en medlemssida skulle kunna se ut</span>
+</header>
+
+<main>
+  <div class="pitch-banner">
+    Detta är <strong>inte</strong> er nuvarande webbplats — det är ett exempel byggt med
+    riktiga, öppet tillgängliga uppgifter om era egna styrelsemedlemmar och företag
+    som nämnts i föreningens egna aktiviteter, för att visa hur en publik medlemsvisning
+    skulle kunna se ut.
+  </div>
+
+  <section class="compare">
+    <div class="compare-col">
+      <h2 class="tag-now">Idag</h2>
+      <div class="before-box">
+        <div class="h">Ingen publik medlemslista</div>
+        Er webbplats förklarar hur man blir medlem och vad medlemskapet innehåller,
+        men det finns ingen sida där besökare kan se vilka företag som faktiskt är
+        medlemmar. All information om medlemmarna delas i en sluten Facebook-grupp,
+        synlig bara för medlemmar själva.
+      </div>
+    </div>
+    <div class="compare-col">
+      <h2 class="tag-after">Ett alternativ</h2>
+      <div class="after-box">
+        <div class="h">En sökbar medlemsvisning, byggd från medlemmarnas egna sidor</div>
+        <ul>
+          <li>Varje kort byggs från företagets egen webbplats — ett foto, ort och inriktning</li>
+          <li>Medlemmen behöver inte skicka in eller uppdatera något själv</li>
+          <li>Ändras något på medlemmens egen sida kan kortet uppdateras därefter</li>
+          <li>Företag utan egen sajt får ändå ett giltigt kort (namn, ort, inriktning)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <h1 class="section-title">Våra medlemmar</h1>
+  <p class="section-sub">
+    Exempel med 12 riktiga medlemsföretag — hämtade från styrelsens egen
+    kontaktsida samt företag som nämnts i föreningens föreläsningar och
+    studiebesök 2023–2026.
+  </p>
+
+  <div class="search-row">
+    <i class="ti ti-search" aria-hidden="true"></i>
+    <input id="q" type="text" placeholder="Sök på företag, ort eller inriktning">
+  </div>
+
+  <div id="grid" class="grid"></div>
+
+  <p class="foot-note">
+    Exempel byggt av Jonas Ahman, inte publicerat eller kopplat till föreningens
+    egen webbplats. Foton hämtade direkt från respektive medlems egen webbplats
+    och länkar dit — inga foton är laddade upp eller lagrade här. Två medlemmar
+    saknar en egen webbplats och visas därför utan foto, som väntat i denna modell.
+  </p>
+</main>
+
+<script>
+const members = [
+  { company: "Trivselträdgårdar AB", contact: "Joakim Nyberg", city: "Tyresö",
+    category: "Anläggning", url: "https://www.trivseltradgardar.se/",
+    image: "https://cdn.yourvismawebsite.com/img/02/3aae0086-4c81-4b49-a1ef-e7b431f1b683/1920/440" },
+  { company: "JordNära Form", contact: "Sandra Philipsson", city: "Båstad",
+    category: "Design", url: "https://jordnaraform.se/",
+    image: "https://files.builder.misssite.com/fc/81/fc819334-1865-4dc6-9a78-c5810d435dff.PNG" },
+  { company: "Stinas trädgård och design", contact: "Christina Zuhr", city: "Danderyd",
+    category: "Design & anläggning", url: "https://stinastradgard.se/",
+    image: "https://stinastradgard.se/cdn/shop/files/Stinas_Tradgard_Stjarnflocka_LandingPage.jpg?v=1718378956&width=3840" },
+  { company: "Robins Bygg & Trädgård", contact: "Robin Divander", city: "Tyresö",
+    category: "Anläggning & bygg", url: "https://www.robinstradgard.se/",
+    image: "https://usercontent.one/wp/www.robinstradgard.se/wp-content/uploads/2026/02/Screenshot-2026-02-04-at-11.01.31.png" },
+  { company: "Längtan om Grönt", contact: "Jessica Holmström", city: "Lerum",
+    category: "Trädgårdsskötsel", url: null, image: null },
+  { company: "GiersingLindén Trädgårdar AB", contact: "Kisse Lindén", city: "Ljungbyhed",
+    category: "Design", url: "https://www.giersinglinden.se/",
+    image: "https://www.giersinglinden.se/uploads/NUJVXVy5/background1-scaled_331_621.jpg" },
+  { company: "Sveriges Design & Trädgård", contact: "Sofie Salomonsson", city: "Skövde",
+    category: "Design", url: "https://designtradgard.se/",
+    image: "https://designtradgard.se/wp-content/uploads/2023/09/IMG_1100-2-1024x768.jpg" },
+  { company: "Fokus Grönt AB", contact: "Bodil Åsberg", city: "Malmö",
+    category: "Hållbar skötsel & design", url: "https://www.fokusgront.se/",
+    image: "https://images.squarespace-cdn.com/content/v1/5a5f5ac080bd5eb5cce983f0/bb6c11a1-3705-41e9-8411-072a4d2451ab/h%C3%A5llbar_tr%C3%A4dg%C3%A5rd_tr%C3%A4dg%C3%A5rdsm%C3%A4stare.jpg" },
+  { company: "Älska Trädgård", contact: "Nina Thelberg Eklund", city: "Ingarö / Stockholm",
+    category: "Design", url: "https://alskatradgard.se/",
+    image: "https://images.squarespace-cdn.com/content/v1/5c45f86c3c3a53c04e2199d9/a1f624aa-b31d-44bf-9abf-7516ca6ca205/ChatGPT+Image+Dec+29%2C+2025+at+04_31_57+PM.png" },
+  { company: "Eskilsdotter Landskap", contact: "Sofia Eskilsdotter", city: "Knivsta",
+    category: "Landskapsarkitektur", url: "https://www.eskilsdotter.se/",
+    image: "https://lirp.cdn-website.com/f13a3f1f/dms3rep/multi/opt/_ALW6277-1920w.jpg" },
+  { company: "Drakängen", contact: "Martin & Sophia", city: "Degeberga",
+    category: "Plantskola", url: "https://www.drakangen.com/",
+    image: "https://www.drakangen.com/uploads/1/2/4/6/124617308/background-images/923501588.jpg" },
+  { company: "Norrehills Trädgård", contact: null, city: "Löberöd",
+    category: "Plantskola", url: "https://www.norrehill.se/", image: null },
+];
+
+function cardHtml(m) {
+  const img = m.image
+    ? `<img src="${m.image}" alt="${m.company}" loading="lazy" onerror="this.parentElement.innerHTML='<i class=&quot;ti ti-plant-2&quot;></i>'">`
+    : `<i class="ti ti-plant-2" aria-hidden="true"></i>`;
+  const metaLine = m.contact ? `${m.contact} · ${m.city}` : m.city;
+  const siteNote = m.url ? "" : `<span class="no-site-note">Ingen egen webbplats hittad</span>`;
+  const inner = `
+    <div class="card-image">${img}</div>
+    <div class="card-body">
+      <span class="card-title">${m.company}</span>
+      <span class="card-meta">${metaLine}</span>
+      <span class="card-category">${m.category}</span>
+      ${siteNote}
+    </div>
+  `;
+  return m.url
+    ? `<a class="card" href="${m.url}" target="_blank" rel="noopener">${inner}</a>`
+    : `<div class="card no-link">${inner}</div>`;
+}
+
+function render(list) {
+  document.getElementById("grid").innerHTML = list.map(cardHtml).join("");
+}
+
+document.getElementById("q").addEventListener("input", (e) => {
+  const q = e.target.value.trim().toLowerCase();
+  const filtered = members.filter(m =>
+    !q || [m.company, m.contact, m.city, m.category].filter(Boolean).join(" ").toLowerCase().includes(q)
+  );
+  render(filtered);
+});
+
+render(members);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,287 @@
+<title>Sheerd Roadmap</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --surface-1: #f1efec;
+    --surface-2: #ffffff;
+    --text-primary: #1c1b1a;
+    --text-secondary: #57534e;
+    --text-muted: #948d85;
+    --text-accent: #4a6670;
+    --border: #e4e0da;
+    --border-strong: #c9c2b8;
+    --radius: 12px;
+
+    --status-live-bg: #e7efe9; --status-live-fg: #3d6b4f;
+    --status-progress-bg: #eef1e3; --status-progress-fg: #6b7a3f;
+    --status-scoped-bg: #eaf0f3; --status-scoped-fg: #3f6b7a;
+    --status-parked-bg: #f1efec; --status-parked-fg: #948d85;
+    --status-decision-bg: #f6ece3; --status-decision-fg: #a16a3f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #1a1918; --surface-1: #242220; --surface-2: #2c2a27;
+      --text-primary: #f0ede7; --text-secondary: #c4bdb3; --text-muted: #8a8178;
+      --text-accent: #8fb0ba; --border: #3a3733; --border-strong: #4d493f;
+      --status-live-bg: #223228; --status-live-fg: #7fbf98;
+      --status-progress-bg: #2a2e1e; --status-progress-fg: #b6c98a;
+      --status-scoped-bg: #1e2a2e; --status-scoped-fg: #8fc4d6;
+      --status-parked-bg: #2c2a27; --status-parked-fg: #948d85;
+      --status-decision-bg: #332720; --status-decision-fg: #e0a878;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #1a1918; --surface-1: #242220; --surface-2: #2c2a27;
+    --text-primary: #f0ede7; --text-secondary: #c4bdb3; --text-muted: #8a8178;
+    --text-accent: #8fb0ba; --border: #3a3733; --border-strong: #4d493f;
+    --status-live-bg: #223228; --status-live-fg: #7fbf98;
+    --status-progress-bg: #2a2e1e; --status-progress-fg: #b6c98a;
+    --status-scoped-bg: #1e2a2e; --status-scoped-fg: #8fc4d6;
+    --status-parked-bg: #2c2a27; --status-parked-fg: #948d85;
+    --status-decision-bg: #332720; --status-decision-fg: #e0a878;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  main { max-width: 900px; margin: 0 auto; padding: 48px 20px 80px; }
+
+  header { margin-bottom: 36px; }
+  h1 { font-size: 24px; font-weight: 600; margin: 0 0 6px; }
+  .subtitle { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin: 0; max-width: 62ch; }
+  .updated { font-size: 12px; color: var(--text-muted); margin: 10px 0 0; }
+
+  .overview-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 10px; margin-bottom: 44px;
+  }
+  .overview-card {
+    background: var(--surface-2); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 14px 16px;
+  }
+  .overview-card .name { font-size: 14px; font-weight: 600; margin: 0 0 6px; }
+  .status-pill {
+    display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.04em; padding: 3px 9px; border-radius: 999px;
+  }
+  .status-pill.live { background: var(--status-live-bg); color: var(--status-live-fg); }
+  .status-pill.progress { background: var(--status-progress-bg); color: var(--status-progress-fg); }
+  .status-pill.scoped { background: var(--status-scoped-bg); color: var(--status-scoped-fg); }
+  .status-pill.parked { background: var(--status-parked-bg); color: var(--status-parked-fg); }
+  .status-pill.decision { background: var(--status-decision-bg); color: var(--status-decision-fg); }
+
+  section.project { margin-bottom: 40px; }
+  .project-head {
+    display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 16px;
+  }
+  .project-head h2 { font-size: 17px; font-weight: 600; margin: 0; }
+  .project-note { font-size: 13px; color: var(--text-muted); margin: 0 0 16px; line-height: 1.6; }
+
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
+  .col h3 {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--text-accent); margin: 0 0 10px;
+  }
+  .col ul { margin: 0; padding: 0; list-style: none; }
+  .col li {
+    font-size: 13px; color: var(--text-secondary); line-height: 1.5;
+    padding: 0 0 9px 18px; position: relative;
+  }
+  .col li::before {
+    content: ""; position: absolute; left: 0; top: 6px;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--border-strong);
+  }
+  .col.done li::before { background: var(--status-live-fg); }
+  .col.next li::before { background: var(--status-decision-fg); }
+  .col.parked li { color: var(--text-muted); }
+
+  .foot-note {
+    font-size: 12px; color: var(--text-muted); text-align: left;
+    margin-top: 50px; padding-top: 20px; line-height: 1.6;
+    border-top: 0.5px solid var(--border);
+  }
+</style>
+
+<main>
+  <header>
+    <h1>Sheerd Roadmap</h1>
+    <p class="subtitle">
+      A working overview across Formground, Archframe, Brandvue, and Bearings —
+      what's shipped, what's next, and what's deliberately on hold. Updated as
+      work progresses; treat it as a snapshot, not a live feed.
+    </p>
+    <p class="updated">Last updated: 2026-09-15</p>
+  </header>
+
+  <div class="overview-grid">
+    <div class="overview-card">
+      <p class="name">Formground</p>
+      <span class="status-pill live">Live · maintenance</span>
+    </div>
+    <div class="overview-card">
+      <p class="name">Archframe</p>
+      <span class="status-pill progress">Pilot built · not deployed</span>
+    </div>
+    <div class="overview-card">
+      <p class="name">Brandvue</p>
+      <span class="status-pill parked">Research only</span>
+    </div>
+    <div class="overview-card">
+      <p class="name">Sheerd</p>
+      <span class="status-pill scoped">Narrative only</span>
+    </div>
+    <div class="overview-card">
+      <p class="name">Bearings</p>
+      <span class="status-pill live">Core work done</span>
+    </div>
+  </div>
+
+  <section class="project">
+    <div class="project-head">
+      <h2>Formground</h2>
+      <span class="status-pill live">Live · maintenance mode</span>
+    </div>
+    <p class="project-note">Phase 1: prove the concept, drive real traffic to real makers. Only minor tasks remain active — patient SEO + ad-hoc brand growth is the standing strategy, not a push.</p>
+    <div class="cols">
+      <div class="col done">
+        <h3>Shipped</h3>
+        <ul>
+          <li>72 brand pages, 4 category pages, makers index, sitemap</li>
+          <li>/search.html routing split (shareable, noindex)</li>
+          <li>Resources page — 15 sections incl. hosting, SEO basics, product regulation & associations</li>
+          <li>"New" page — real-time-detected new arrivals, footer-linked</li>
+          <li>PageSpeed fixes (render-blocking font, footer contrast) — SEO 100/100</li>
+          <li>100% confirmed country coverage; brand/maker terminology aligned</li>
+          <li>Search Console verified, sitemap submitted, 5 URLs indexing-requested</li>
+        </ul>
+      </div>
+      <div class="col next">
+        <h3>Next up (drafted, not executed)</h3>
+        <ul>
+          <li>Maker outreach email — batch of 5-10, manual to start</li>
+          <li>"Featured on Formground" embed badge — 2 compact variants finalized</li>
+          <li>Show HN post — fully drafted</li>
+          <li>Sitelinks searchbox schema — newly unblocked by /search.html</li>
+        </ul>
+      </div>
+      <div class="col parked">
+        <h3>Parked (later phase)</h3>
+        <ul>
+          <li>Rich multi-section homepage redesign</li>
+          <li>About + Contact page merge</li>
+          <li>Per-brand factual descriptions</li>
+          <li>Sponsored homepage content</li>
+          <li>Dedicated per-service resource pages</li>
+          <li>Drop-ship / Instagram-native makers marketplace</li>
+          <li>Dealer listing + search-interest data product (monetization)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="project">
+    <div class="project-head">
+      <h2>Archframe</h2>
+      <span class="status-pill progress">Pilot built locally · not deployed</span>
+    </div>
+    <p class="project-note">Working name only — "Archframe," "Sourceframe," and "Trestle" all ruled out on real-world collisions. Professional/production-partner discovery, sharing Coreframe's approach (not its codebase) with Formground.</p>
+    <div class="cols">
+      <div class="col done">
+        <h3>Built &amp; tested (staged at ~/code/archframe, no git repo yet)</h3>
+        <ul>
+          <li>Real scraper for Interior Cluster's Underleverantör section — robust `data-medlemstyp` attribute, not name-guessing</li>
+          <li>30 real production partners scraped (29 with a real link, 27 with a real photo)</li>
+          <li>Real multi-area and missing-data edge cases handled correctly (tab-separated areas, shared placeholder image detected and excluded)</li>
+          <li>Static browse-only page generated and verified in-browser — echoes Formground's card format, separate code</li>
+          <li>Buyer-agnostic data model (per the shared production-partner decision) and `noindex` set, same caution as Formground's own /search.html</li>
+        </ul>
+      </div>
+      <div class="col next">
+        <h3>Next up</h3>
+        <ul>
+          <li>Create the real GitHub repo (needs your account)</li>
+          <li>Decide Sheerd.com's hosting approach</li>
+          <li>Move the already-built files in and deploy</li>
+        </ul>
+      </div>
+      <div class="col parked">
+        <h3>Deferred</h3>
+        <ul>
+          <li>Architects / interior / landscape architect category (curation approach already resolved — see project notes)</li>
+          <li>Real natural-language search</li>
+          <li>Monetization</li>
+          <li>Permanent name + domain</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="project">
+    <div class="project-head">
+      <h2>Brandvue</h2>
+      <span class="status-pill parked">Research only · not built</span>
+    </div>
+    <p class="project-note">B2B card/directory service sold to associations. Strategy: build real seed data first, pitch with the working result — not a cold sell.</p>
+    <div class="cols">
+      <div class="col done">
+        <h3>Research done</h3>
+        <ul>
+          <li>Interior Cluster — best data quality found (real images, clean cards)</li>
+          <li>Snickarmästarna — weak data, but real category-fit example</li>
+          <li>TMF — real API, 138+ members, org numbers, zero images</li>
+          <li>Sveriges Arkitekter, Hantverkarna chapters — checked, mostly weak fits</li>
+        </ul>
+      </div>
+      <div class="col next">
+        <h3>Named prospects</h3>
+        <ul>
+          <li>Snickarmästarna</li>
+          <li>Interior Cluster</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="project">
+    <div class="project-head">
+      <h2>Sheerd</h2>
+      <span class="status-pill scoped">Narrative umbrella only</span>
+    </div>
+    <p class="project-note">The shared vision across everything above — not a product itself, and not (for now) a shared technical domain. Sheerd.com is owned and free to use as Archframe's placeholder home, but Formground and Archframe stay on separate domains until one product actually proves itself. Umbrella <em>branding</em> and shared <em>hosting</em> are being treated as two separate decisions on purpose.</p>
+  </section>
+
+  <section class="project">
+    <div class="project-head">
+      <h2>Bearings</h2>
+      <span class="status-pill live">Core work done · not deployed</span>
+    </div>
+    <p class="project-note">Separate, unrelated project — a code-gated AI conversation guide. Not part of the Sheerd ecosystem tradeoffs, tracked here purely for personal overview.</p>
+    <div class="cols">
+      <div class="col done">
+        <h3>Done</h3>
+        <ul>
+          <li>Full scaffold: access codes, session handling, chat proxy</li>
+          <li>Real system prompt written and installed (was a placeholder)</li>
+          <li>Real web search wired up (server-executed tool, no manual loop needed)</li>
+          <li>Found + fixed a real bug: max_tokens=1024 too tight with thinking + search, could return a silently empty reply — raised to 4096, added a defensive fallback error</li>
+          <li>Verified live through the real endpoints: search-grounded question, plain opener, multi-turn follow-up all correct</li>
+          <li>Two earlier bugs found and fixed in prior testing (Python 3.9 compat, code consumed on failed call)</li>
+        </ul>
+      </div>
+      <div class="col next">
+        <h3>Next up</h3>
+        <ul>
+          <li>Not yet deployed to Fly.io</li>
+          <li>No remote git repo configured yet — local commits only</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot-note">
+    This page is a personal reference, not published or linked anywhere public.
+  </p>
+</main>

@@ -32,7 +32,7 @@ Each nav item owns a URL namespace; a name never means two different pages.
   data/chair_vision_labels.json). A sub-type needs about 25+ products to get a page; rocking chairs
   (14) stay a tag only.
 - Menu: four category chips under the search bar, Houses first to mirror the home page bento
-  (Houses left, then Furniture, Lighting, Objects). Each opens a panel of groups and types as
+  (Houses left, then Furniture, Lighting, Objects). The panel's title ("Furniture →") is the link up to the category page, plain text on the category's own page. Each opens a panel of groups and types as
   plain links to the static pages (fast, indexable, shareable): one click to any category, no
   single "Browse" chip or tabs (decided 2026-10-04: four chips mirror the home page and save a
   click).

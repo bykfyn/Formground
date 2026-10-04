@@ -81,16 +81,16 @@ def render_menu(entries, open_category=None, current_slug=None, align="center", 
             f'aria-controls="{cid}">{html.escape(cat)} <i class="ti ti-chevron-down" aria-hidden="true"></i></button>'
         )
         body = "".join(_group_html(g, entries, current_slug) for g in groups)
-        # On the category's own page the panel lists the same types the page shows: no "All ..." link at all
-        # (it would loop back to itself).
+        # The panel's title is the way up to the category page (an arrow marks it as a link). On the category's
+        # own page it is plain text: it would only loop back to itself.
         if cat == current_category and current_slug in (None, CATEGORY_SLUGS[cat]):
-            all_link = ""
+            title = f'<strong>{html.escape(cat)}</strong>'
         else:
-            all_link = f'<a href="/work/{CATEGORY_SLUGS[cat]}.html">All {html.escape(cat.lower())} &rarr;</a>'
+            title = (f'<a class="work-menu-title" href="/work/{CATEGORY_SLUGS[cat]}.html">'
+                     f'<strong>{html.escape(cat)}</strong><span aria-hidden="true"> &rarr;</span></a>')
         panels.append(
             f'<div class="work-menu-panel" id="{cid}"{"" if is_open else " hidden"}>'
-            f'<div class="work-menu-head"><strong>{html.escape(cat)}</strong>'
-            f'{all_link}</div>'
+            f'<div class="work-menu-head">{title}</div>'
             f'<div class="work-menu-groups">{body}</div></div>'
         )
     return (
