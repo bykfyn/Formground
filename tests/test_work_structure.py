@@ -253,6 +253,7 @@ class StructureTests(unittest.TestCase):
         firm = (DOCS / "architects" / "bernardo-bader-architekten.html").read_text()
         body = firm[firm.index("<main>"):]
         self.assertNotIn('<p class="page-tagline">Architects.</p>', body)
+        self.assertNotIn('Browse every house on Work', body)
         self.assertIn('<button class="share-btn"', body)
         self.assertIn('data-brand="Bernardo Bader Architekten"', body)
         self.assertIn("/share.js?v=", firm)
