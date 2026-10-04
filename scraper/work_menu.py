@@ -27,7 +27,7 @@ TAXONOMY = {
 }
 CATEGORY_SLUGS = {name: name.lower() for name in TAXONOMY}  # furniture | lighting | objects
 # Shown in the menu where a browse group's own name would read oddly under its category.
-GROUP_LABELS = {"Lighting": "By type", "Objects": "Tableware, glass and candles", "Houses": "By architects' country"}
+GROUP_LABELS = {"Lighting": "By type", "Objects": "Tableware, glass and candles", "Houses": "By country"}
 
 
 def category_of_group(group):

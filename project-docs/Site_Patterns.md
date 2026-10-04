@@ -16,7 +16,7 @@ Each nav item owns a URL namespace; a name never means two different pages.
 /work.html                 search + the "browse by type" menu (four chips: Houses / Furniture / Lighting / Objects)
 /work/<category>.html      furniture | lighting | objects - the types as photo tiles
 /work/<type>.html          the full catalogue of one type; pages -2, -3 ... (flat: group is a breadcrumb)
-/work/houses.html          every house (60 per page); /work/houses-<country>.html by architect's country (8+ houses)
+/work/houses.html          every house (60 per page); /work/houses-<country>.html houses standing in that country (8+)
 /edits.html                hub;  /edits/<slug>.html  the curated Edits
 /brands/ /architects/ /designers/    unchanged
 ```
@@ -34,8 +34,13 @@ Each nav item owns a URL namespace; a name never means two different pages.
   its panel stays closed so the products remain above the fold (ad landing pages).
 - Houses are a category of Work like the others (a house is an architect's product): home tile ->
   /work/houses.html, a Houses column in the menu, country pages, and each house card links to the
-  architect's own project page and names the practice. Country = the ARCHITECT's country (houses
-  have no structured country of their own).
+  architect's own project page and names the practice. Country = where the house STANDS: the
+  country its location text names ("Aarhus, Denmark" - 12 houses stand outside their architect's
+  home country), else the architect's own country. Country pages say "Houses in Sweden" and list
+  their practices (with house counts) as links to the architect pages.
+- House cards are the exception to square cards: landscape 4:3 photos in 4 columns (3 on tablet,
+  2 on phones), name / location . year / "by practice" each on one line so every row is even.
+  On phones the four category chips drop their chevrons so all four fit one row.
 - Moved pages leave a redirect stub at the old address (`scraper/redirects.py`; GitHub Pages
   cannot send a 301): old /browse/*, /floor-lamps.html, the top-level Edit slugs and the
   retired category pages all redirect. The sitemap lists only real pages, and no live page

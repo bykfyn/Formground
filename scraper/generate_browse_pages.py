@@ -60,9 +60,11 @@ BACKEND_DIR = SCRAPER_DIR.parent / "backend"
 DATA_DIR = SCRAPER_DIR.parent / "data"
 
 # Houses (2026-10-04): the fourth category of Work. /work/houses.html lists every house;
-# /work/houses-<country>.html lists those by architects based in that country (a country
-# needs at least MIN_HOUSES_FOR_COUNTRY_PAGE houses for a page of its own). The country is
-# the ARCHITECT's - houses.json has no structured country for the house itself.
+# /work/houses-<country>.html lists the houses standing in that country (a country needs at
+# least MIN_HOUSES_FOR_COUNTRY_PAGE houses for a page of its own). houses.json has no
+# structured country, so it is read from the location text when that names one ("Aarhus,
+# Denmark" - 12 houses stand outside their architect's home country) and otherwise taken
+# to be the architect's own country (right for almost every house without a country).
 HOUSES_PER_PAGE = 60
 MIN_HOUSES_FOR_COUNTRY_PAGE = 8
 
@@ -179,11 +181,22 @@ def _category_products(category):
 
 TYPE_GRID_CSS = """
   /* the category pages' type tiles: fixed 6 / 4 / 2 columns like every card grid (Site_Patterns.md) */
-  .type-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; margin: 0 0 36px; align-items: start; }
+  .type-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px; margin: 0 0 36px; align-items: start; }
   .type-grid .maker-card-hero { aspect-ratio: 1/1; }
   .type-group-title { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 30px 0 14px; }
-  @media (max-width: 959px) { .type-grid { grid-template-columns: repeat(4, 1fr); } }
-  @media (max-width: 639px) { .type-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+  @media (max-width: 959px) { .type-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (max-width: 639px) { .type-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } }
+  /* Houses: landscape photos at 4:3 in four larger columns (3 on tablet, 2 on phones) - a square
+     crop cut half of every building; both text lines stay on one line so rows are even. */
+  .type-grid--houses { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px 20px; }
+  .type-grid--houses .maker-card-hero { aspect-ratio: 4/3; }
+  .type-grid--houses .maker-name, .type-grid--houses .maker-country { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  @media (max-width: 959px) { .type-grid--houses { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (max-width: 639px) { .type-grid--houses { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } }
+  .house-practices { font-size: 13px; line-height: 1.7; color: var(--text-secondary); margin: 0 0 14px; }
+  .house-practices span { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-right: 6px; }
+  .house-practices a { color: var(--text-primary); text-decoration: none; }
+  .house-practices a:hover { text-decoration: underline; }
 """
 
 PAGER_CSS = """
@@ -405,12 +418,33 @@ def _interleave_by_firm(houses):
     return out
 
 
+# Names that end a location string when it states a country ("Veddinge, Zeeland, Denmark").
+STATED_COUNTRIES = {
+    "sweden": "Sweden", "norway": "Norway", "denmark": "Denmark", "finland": "Finland", "iceland": "Iceland",
+    "austria": "Austria", "österreich": "Austria", "switzerland": "Switzerland", "germany": "Germany",
+    "france": "France", "uk": "United Kingdom", "united kingdom": "United Kingdom", "england": "United Kingdom",
+    "scotland": "United Kingdom", "wales": "United Kingdom", "ireland": "Ireland", "italy": "Italy",
+    "spain": "Spain", "portugal": "Portugal", "croatia": "Croatia", "new zealand": "New Zealand",
+    "australia": "Australia", "japan": "Japan", "chile": "Chile", "argentina": "Argentina", "uruguay": "Uruguay",
+    "mexico": "Mexico", "ecuador": "Ecuador", "costa rica": "Costa Rica", "fiji": "Fiji", "canada": "Canada",
+    "usa": "United States", "united states": "United States",
+}
+
+
+def stated_country(location):
+    """The country a location string names at its end, or None."""
+    if not location:
+        return None
+    tail = location.replace(")", "").split(",")[-1].strip().lower()
+    return STATED_COUNTRIES.get(tail)
+
+
 def load_houses():
     import json as _json
     houses = _json.loads((DATA_DIR / "houses.json").read_text())
     firms = {a["name"]: a for a in _json.loads((DATA_DIR / "architects.json").read_text())}
     for h in houses:
-        h["country"] = firms.get(h["firm"], {}).get("country")
+        h["country"] = stated_country(h.get("location")) or firms.get(h["firm"], {}).get("country")
     return [h for h in houses if h.get("image")]
 
 
@@ -431,6 +465,7 @@ def house_entries(groups):
 
 def _house_work_card_html(h):
     meta = " · ".join(x for x in [h.get("location"), str(h["year"]) if h.get("year") else None] if x)
+    # both text lines always exist and stay on one line, so every card in a row is the same height
     return (
         f'<a class="maker-card" href="{html.escape(h.get("url") or "#")}" target="_blank" rel="noopener noreferrer">'
         f'<div class="maker-card-hero"><img src="{html.escape(h["image"])}" alt="{html.escape(h["name"] or "House")}" loading="lazy"></div>'
@@ -440,12 +475,23 @@ def _house_work_card_html(h):
     )
 
 
-def render_houses_page(slug, title, intro, houses, page, pages, entries, crumbs):
+def render_houses_page(slug, title, lead, houses, page, pages, entries, crumbs, firm_pages):
     """/work/houses.html (every house) and /work/houses-<country>.html. Same shell as the type
     pages; each house links to its architect's own project page."""
     page_url = f"{SITE_URL}/work/{_page_slug(slug, page)}.html"
     suffix = f" - page {page}" if page > 1 else ""
-    description = f"{len(houses):,} {intro}. Every house links straight to the architect's own project page."
+    firms_here = {}
+    for h in houses:
+        firms_here[h["firm"]] = firms_here.get(h["firm"], 0) + 1
+    n_firms = len(firms_here)
+    summary = f"{len(houses):,} houses by {n_firms} practice{'' if n_firms == 1 else 's'}{lead}"
+    description = f"{summary}. Every house links straight to the architect's own project page."
+    practices = ""
+    if slug != "houses":  # the country pages name their practices; the full list is the Architects page
+        links = " &middot; ".join(
+            f'<a href="/architects/{firm_pages[f]}.html">{html.escape(f)}</a> ({n})' if f in firm_pages else html.escape(f)
+            for f, n in sorted(firms_here.items(), key=lambda kv: (-kv[1], kv[0])))
+        practices = f'<p class="house-practices"><span>Practices</span> {links}</p>'
     chunk = houses[(page - 1) * HOUSES_PER_PAGE: page * HOUSES_PER_PAGE]
     cards = "".join(_house_work_card_html(h) for h in chunk)
     breadcrumb = _breadcrumb_json([("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html")] +
@@ -471,9 +517,10 @@ def render_houses_page(slug, title, intro, houses, page, pages, entries, crumbs)
 <main>
   <p class="page-tagline">{tagline}</p>
   <h1>{html.escape(title)}</h1>
-  <p class="category-intro">{len(houses):,} {html.escape(intro)}{f" - page {page} of {pages}" if pages > 1 else ""}. Every house links straight to the architect's own project page. To find the architects themselves, see <a href="/architects.html">Architects</a>.</p>
+  <p class="category-intro">{html.escape(summary)}{f" (page {page} of {pages})" if pages > 1 else ""}. Every house links straight to the architect's own project page.</p>
+  {practices}
   {work_menu.render_menu(entries, align="left", current_category="Houses", current_slug=slug)}
-  <div class="type-grid">{cards}</div>
+  <div class="type-grid type-grid--houses">{cards}</div>
   {_pager_html(slug, page, pages)}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
@@ -489,19 +536,20 @@ def render_houses_page(slug, title, intro, houses, page, pages, entries, crumbs)
 
 def _write_house_pages(houses, groups, entries):
     """Writes houses.html (+ -2 ...) and each country's pages; returns sitemap slugs."""
+    import generate_architects_pages
+    firm_pages = generate_architects_pages.firm_slugs()
     out_slugs = []
     ordered = _interleave_by_firm(houses)
-    targets = [("houses", "Houses", "houses by architects from independent practices worldwide",
-                ordered, [("Houses", "/work/houses.html")])]
+    n_countries = len({h["country"] for h in houses if h.get("country")})
+    targets = [("houses", "Houses", f" in {n_countries} countries", ordered, [("Houses", "/work/houses.html")])]
     for country, slug, hs in groups:
-        targets.append((slug, f"Houses by architects in {country}",
-                        f"houses by architects based in {country}", _interleave_by_firm(hs),
+        targets.append((slug, f"Houses in {country}", f" in {country}", _interleave_by_firm(hs),
                         [("Houses", "/work/houses.html"), (country, f"/work/{slug}.html")]))
-    for slug, title, intro, hs, crumbs in targets:
+    for slug, title, lead, hs, crumbs in targets:
         pages = max(1, math.ceil(len(hs) / HOUSES_PER_PAGE))
         for page in range(1, pages + 1):
             (BROWSE_DIR / f"{_page_slug(slug, page)}.html").write_text(
-                render_houses_page(slug, title, intro, hs, page, pages, entries, crumbs))
+                render_houses_page(slug, title, lead, hs, page, pages, entries, crumbs, firm_pages))
             out_slugs.append(f"work/{_page_slug(slug, page)}")
         print(f"work/{slug}: {len(hs)} houses, {pages} page(s)")
     return out_slugs

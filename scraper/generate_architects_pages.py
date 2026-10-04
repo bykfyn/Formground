@@ -265,6 +265,21 @@ def append_to_sitemap(slugs):
     print(f"Appended {len(new_entries)} URLs to {SITEMAP_PATH}.")
 
 
+def firm_slugs():
+    """{firm name: page slug} for every firm that has an architect page - the same slug
+    assignment generate() uses, so other pages (the Houses pages in /work/) can link to them."""
+    houses = json.loads(HOUSES_PATH.read_text())
+    meta = {f["name"] for f in json.loads(ARCHITECTS_PATH.read_text())}
+    with_houses = {h["firm"] for h in houses}
+    slugs_seen, out = {}, {}
+    for firm_name in sorted(meta | with_houses):
+        slug = unique_slug(slugify(firm_name), firm_name, slugs_seen)
+        slugs_seen[slug] = firm_name
+        if firm_name in with_houses:
+            out[firm_name] = slug
+    return out
+
+
 def generate():
     firms = json.loads(ARCHITECTS_PATH.read_text())
     meta_by_name = {f["name"]: f for f in firms}

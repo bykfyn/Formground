@@ -55,6 +55,25 @@ class TaxonomyTests(unittest.TestCase):
         self.assertFalse(set(slugs) & set(work_menu.CATEGORY_SLUGS.values()))
 
 
+class HouseCountryTests(unittest.TestCase):
+    def test_stated_country_is_read_from_the_end_of_a_location(self):
+        import generate_browse_pages as g
+        self.assertEqual(g.stated_country("Aarhus, Denmark"), "Denmark")
+        self.assertEqual(g.stated_country("Veddinge, Zeeland, Denmark"), "Denmark")
+        self.assertEqual(g.stated_country("Cambridge (Cambridgeshire)"), None)
+        self.assertEqual(g.stated_country("Devon"), None)
+        self.assertEqual(g.stated_country(None), None)
+
+    def test_a_house_is_filed_where_it_stands_not_where_its_architect_is_based(self):
+        import generate_browse_pages as g
+        by_name = {h["name"]: h for h in g.load_houses()}
+        self.assertEqual(by_name["Casa Kiké"]["country"], "Costa Rica")       # UK practice
+        self.assertEqual(by_name["House with a hidden atrium"]["country"], "Denmark")  # Swedish practice
+        self.assertEqual(by_name["Velamsund"]["country"], "Sweden")           # no change
+        for h in g.load_houses():
+            self.assertTrue(h["country"], f"{h['name']} has no country at all")
+
+
 class StructureTests(unittest.TestCase):
     def test_every_old_address_is_a_stub_pointing_at_a_real_page(self):
         old = [DOCS / f"{s}.html" for s in EDIT_SLUGS] + [DOCS / "floor-lamps.html"]
