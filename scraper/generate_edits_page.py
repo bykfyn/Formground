@@ -197,7 +197,7 @@ EDITS_PAGE_CSS = (
      the tile fills both rows. A sibling link layer, not a wrapping <a>, so the
      edit link and the maker link never nest. */
   .edit-feature {
-    grid-column: span 3; grid-row: span 2; align-self: stretch; min-height: 320px;
+    grid-column: span 2; aspect-ratio: 1 / 1;
     position: relative; overflow: hidden; margin: 0;
     border: 0.5px solid var(--border); background: var(--surface-1);
   }
@@ -234,11 +234,11 @@ EDITS_PAGE_CSS = (
   .edit-feature .visit-source i { font-size: 13px; }
   @media (max-width: 959px) {
     .maker-grid { grid-template-columns: repeat(4, 1fr); }
-    .edit-feature { grid-column: span 2; }
+    .edit-feature { grid-column: span 2; }  /* 2 across on the 4-column tier */
   }
   @media (max-width: 639px) {
     .maker-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .edit-feature { grid-column: span 2; grid-row: span 1; min-height: 0; aspect-ratio: 4 / 3; }
+    .edit-feature { grid-column: span 2; aspect-ratio: 4 / 3; }
     .edit-feature .cat-label { font-size: 20px; }
   }
   /* Hover never fires on touch: show the product and the maker link always
@@ -389,35 +389,30 @@ def render_edits_index(themes_data):
 
     tile_items = ""
     for theme, count, brand_count, image, hero_product in ordered:
-        # the featured tile spans half the grid, so it gets a larger copy than a card
-        image_width = TILE if theme["slug"] == FEATURED_EDIT_SLUG else CARD
+        # every edit is the same tile: 2 columns wide, 2 rows tall of the 6-column grid (a 373px square at
+        # full width), photo filling it, the Edit's title on it, the pictured product on hover
+        image_alt = (f"{hero_product['product_name']} by {hero_product['brand']}" if hero_product is not None
+                     else theme["title"])
         image_tag = (
-            f'<img src="{html.escape(sized(image, image_width))}" alt="{html.escape(theme["title"])}" loading="lazy">'
+            f'<img src="{html.escape(sized(image, TILE))}" alt="{html.escape(image_alt)}" loading="lazy">'
             if image else ""
         )
-        if theme["slug"] == FEATURED_EDIT_SLUG and hero_product is not None:
+        details = ""
+        if hero_product is not None:
             # the real product pictured, credited and linked to its maker
             src = hero_product["brand_url"] if hero_product.get("link_dead") else hero_product["product_url"]
-            tile_items += f"""
-      <figure class="edit-feature">
-        <a class="cat-link" href="/edits/{theme['slug']}.html" aria-label="Browse {html.escape(theme['title'])}"></a>
-        {image_tag.replace(html.escape(theme['title']), html.escape(hero_product['product_name']) + ' by ' + html.escape(hero_product['brand']), 1)}
-        <p class="cat-label">{html.escape(theme['title'])}<small>{_edit_meta_text(count, brand_count)}</small></p>
+            details = f"""
         <div class="cat-details">
           <span class="product-name">{html.escape(hero_product['product_name'])}</span>
           <span class="product-maker">{html.escape(hero_product['brand'])}</span>
         </div>
-        <a class="visit-source" href="{html.escape(src)}" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
-      </figure>"""
-            continue
+        <a class="visit-source" href="{html.escape(src)}" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>"""
         tile_items += f"""
-      <a class="maker-card" href="/edits/{theme['slug']}.html">
-        <div class="maker-card-hero">{image_tag}</div>
-        <div class="maker-card-body">
-          <span class="maker-name">{html.escape(theme['title'])}</span>
-          <span class="maker-country">{_edit_meta_text(count, brand_count)}</span>
-        </div>
-      </a>"""
+      <figure class="edit-feature">
+        <a class="cat-link" href="/edits/{theme['slug']}.html" aria-label="Browse {html.escape(theme['title'])}"></a>
+        {image_tag}
+        <p class="cat-label">{html.escape(theme['title'])}<small>{_edit_meta_text(count, brand_count)}</small></p>{details}
+      </figure>"""
     tile_grid_html = f'<div class="maker-grid">{tile_items}\n  </div>' if tile_items else ""
 
     by_slug = {

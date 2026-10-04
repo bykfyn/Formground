@@ -123,6 +123,11 @@ generate_themed_edit_pages.py brings the banner back (and `MASTHEAD_SLUGS` the t
 Two Seater Sofas); the hero picks stay in THEMES. With no banner, no product is held out of the grid. The hub
 page keeps its masthead.
 
+Edits hub grid (2026-10-04): every Edit is the same tile - 2 columns wide and 2 rows tall of the 6-column grid
+(a square, 360px at full width; 3 across, 2 on the 4-column tier, one full-width 4:3 tile on phones) - photo
+filling it, the title and count on it, the pictured product and a "Visit site" pill on hover. No featured
+(larger) tile any more.
+
 ## 2. Tiles (the home page bento, the Edits hub's featured edit)
 
 - The photo fills the tile; the category/edit title sits top-left on it
