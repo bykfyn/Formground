@@ -32,7 +32,8 @@ Each nav item owns a URL namespace; a name never means two different pages.
   data/chair_vision_labels.json). A sub-type needs about 25+ products to get a page; rocking chairs
   (14) stay a tag only.
 - Tables work the same way (`classify_tables_vision.py`, labels in data/table_vision_labels.json): only labels
-  at 0.9+ are applied (the 0.85 bucket was wrong about a quarter of the time); the rest stay in the generic
+  at 0.9+ from Haiku are applied, then a second pass (Sonnet) re-labels the unsure ones and applies those at 0.9+
+  or at 0.75+ when it agrees with Haiku (hand-checked, about nine in ten right); the rest stay in the generic
   Tables bucket. Bedside, Outdoor and Bar Tables got pages.
 - Menu: four category chips under the search bar, Houses first to mirror the home page bento
   (Houses left, then Furniture, Lighting, Objects). The panel's title ("Furniture →") is the link up to the category page, plain text on the category's own page. Each opens a panel of groups and types as
