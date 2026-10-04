@@ -1,7 +1,7 @@
 """
 Formground Themed Edit page generator.
 
-WHAT THIS DOES: generates richer, editorial static pages (docs/{slug}.html)
+WHAT THIS DOES: generates richer, editorial static pages (docs/edits/{slug}.html)
 for "Themed Edits" - the curated, compound long-tail groupings shown
 under the homepage's "Themed Edits" header (Wood Sofas, Round Dining
 Tables, Round Coffee Tables, Scandinavian Dining Tables) - as distinct
@@ -40,12 +40,14 @@ from pathlib import Path
 
 SCRAPER_DIR = Path(__file__).parent
 DOCS_DIR = SCRAPER_DIR.parent / "docs"
+EDITS_DIR = DOCS_DIR / "edits"     # Edit pages live under /edits/ (moved from the site root 2026-10-04)
 SITEMAP_PATH = DOCS_DIR / "sitemap.xml"
 BACKEND_DIR = SCRAPER_DIR.parent / "backend"
 
 sys.path.insert(0, str(BACKEND_DIR))
 import query_engine as qe  # noqa: E402
 import image_fit  # noqa: E402
+from redirects import write_redirect  # noqa: E402
 
 from generate_brand_pages import (  # noqa: E402
     CARD_CLICK_TRACKING_JS,
@@ -801,13 +803,13 @@ EDIT_PAGE_CSS = """
 
 
 # Each Edit shows a curated MAX_PRODUCTS_PER_EDIT; the uncapped category
-# it was picked from lives under /browse/ (generate_browse_pages.py,
+# it was picked from lives under /work/ (generate_browse_pages.py,
 # 2026-10-02) - linked from here so a visitor or crawler can get from
 # the pick to the full set. Portable Lamps is a filtered subset of
 # table lamps with no category page of its own, so it points there too.
 EDIT_BROWSE_LINKS = {
     "table-lamps": ("table-lamps", "table lamps"),
-    "portable-lamps": ("table-lamps", "table lamps"),
+    "portable-lamps": ("portable-lamps", "portable lamps"),
     "pendant-lamps": ("pendant-lamps", "pendant lamps"),
     "wall-lamps": ("wall-lamps", "wall lamps"),
     "ceiling-lamps": ("ceiling-lamps", "ceiling lamps"),
@@ -821,7 +823,7 @@ EDIT_BROWSE_LINKS = {
 def render_themed_edit_page(theme, products):
     slug = theme["slug"]
     title = theme["title"]
-    page_url = f"{SITE_URL}/{slug}.html"
+    page_url = f"{SITE_URL}/edits/{slug}.html"
 
     # The real, capped count (see capped_edit_cards/MAX_PRODUCTS_PER_EDIT) -
     # not the raw pre-cap match count. "It is not a filter, it is an
@@ -845,7 +847,7 @@ def render_themed_edit_page(theme, products):
         body = _render_feature_grid(cards_to_render, variant_counts)
         if slug in EDIT_BROWSE_LINKS:
             browse_slug, noun = EDIT_BROWSE_LINKS[slug]
-            body += f'\n  <p class="edit-see-all"><a href="/browse/{browse_slug}.html">See all {noun} &rarr;</a></p>'
+            body += f'\n  <p class="edit-see-all"><a href="/work/{browse_slug}.html">See all {noun} &rarr;</a></p>'
     else:
         body = '<p class="empty-state">Check back soon - new pieces are added here as they are found.</p>'
 
@@ -905,13 +907,16 @@ def render_themed_edit_page(theme, products):
 
 
 def generate():
+    EDITS_DIR.mkdir(exist_ok=True)
     slugs = []
     for theme in THEMES:
         products = theme["fetch"]()
-        (DOCS_DIR / f"{theme['slug']}.html").write_text(render_themed_edit_page(theme, products))
-        slugs.append(theme["slug"])
+        (EDITS_DIR / f"{theme['slug']}.html").write_text(render_themed_edit_page(theme, products))
+        slugs.append(f"edits/{theme['slug']}")
+        # the page used to live at the site root: leave a redirect stub there
+        write_redirect(DOCS_DIR / f"{theme['slug']}.html", f"/edits/{theme['slug']}.html")
         shown, _ = capped_edit_cards(theme, products)
-        print(f"{theme['slug']}.html: {len(shown)} shown (of {len(products)} real matches)")
+        print(f"edits/{theme['slug']}.html: {len(shown)} shown (of {len(products)} real matches)")
     append_to_sitemap(slugs)
 
 

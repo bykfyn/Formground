@@ -1,10 +1,18 @@
 """
-Formground Browse (full category) page generator.
+Formground "Work by type" page generator (was "Browse", /browse/).
 
-WHAT THIS DOES: generates uncapped, paginated, static category pages
-(docs/browse/{slug}.html, {slug}-2.html, ...) plus a hub
-(docs/browse/index.html) - one page per product TYPE ("Table Lamps",
-"Sofas"), listing every real match, not a curated 12.
+WHAT THIS DOES: generates uncapped, paginated, static type pages
+(docs/work/{slug}.html, {slug}-2.html, ...) - one page per product TYPE
+("Table Lamps", "Sofas"), listing every real match, not a curated 12 - plus
+the three category pages (docs/work/furniture.html, lighting.html,
+objects.html) and the "browse by type" menu (work_menu.py) that it writes
+into the Work page itself.
+
+MOVED 2026-10-04: these pages used to live at /browse/ (and Floor Lamps at
+/floor-lamps.html). They are now /work/<type>.html under the Work nav item,
+Edits moved to /edits/, and every old address is a redirect stub (redirects.py)
+written by this script and generate_themed_edit_pages.py. Structure and reasons:
+project-docs/Site_Patterns.md.
 
 WHY THIS EXISTS (2026-10-02, agentic/organic findability review): the
 catalog was reachable by crawlers only through brand pages. Work is a
@@ -22,10 +30,9 @@ sofas, wall lamps, ceiling lamps, chandeliers. The remaining tiers
 (other furniture, soft furnishings, ceramics/objects) reuse this same
 list - add an entry to BROWSE_CATEGORIES and re-run.
 
-Lives under /browse/ because pendant-lamps, table-lamps, wall-lamps and
-ceiling-lamps are already taken at the site root by the capped Edit
-pages (each Edit links here for the full set). Floor Lamps stays at
-/floor-lamps.html (generate_theme_landing_pages.py) - it predates this.
+Under /work/ (not the site root) because pendant-lamps, table-lamps,
+wall-lamps and ceiling-lamps were also the names of the capped Edit pages;
+Edits now live under /edits/, so the same name never means two things.
 
 ORDERING: deterministic brand round-robin (one product per brand per
 pass, brands alphabetical), NOT query_engine.round_robin_order(), which
@@ -47,7 +54,8 @@ from pathlib import Path
 
 SCRAPER_DIR = Path(__file__).parent
 DOCS_DIR = SCRAPER_DIR.parent / "docs"
-BROWSE_DIR = DOCS_DIR / "browse"
+BROWSE_DIR = DOCS_DIR / "work"          # type + category pages live under /work/ (moved from /browse/ 2026-10-04)
+OLD_BROWSE_DIR = DOCS_DIR / "browse"    # now only redirect stubs
 BACKEND_DIR = SCRAPER_DIR.parent / "backend"
 
 sys.path.insert(0, str(BACKEND_DIR))
@@ -67,7 +75,10 @@ from generate_theme_landing_pages import (  # noqa: E402
     _group_color_variants,
     append_to_sitemap,
 )
-from site_assets import ICONS_CSS  # noqa: E402
+from image_sizes import CARD, sized  # noqa: E402
+from site_assets import ICONS_CSS, MENU_SCRIPT, WORK_MENU_CSS  # noqa: E402
+from redirects import write_redirect  # noqa: E402
+import work_menu  # noqa: E402
 
 # ~300 cards is ~145 KB of HTML - the same weight as the existing
 # Floor Lamps page, which is the one uncapped category page already
@@ -88,6 +99,10 @@ BROWSE_CATEGORIES = [
     {"slug": "ceiling-lamps", "title": "Ceiling Lamps", "group": "Lighting",
      "intents": [{"category": "ceiling lamp"}, {"category": "flush mount"}, {"category": "surface mount"}]},
     {"slug": "chandeliers", "title": "Chandeliers", "group": "Lighting", "intent": {"category": "chandelier"}},
+    # Floor Lamps lived at the site root (generate_theme_landing_pages.py) and Portable Lamps
+    # only as an Edit; both are ordinary types now (2026-10-04).
+    {"slug": "floor-lamps", "title": "Floor Lamps", "group": "Lighting", "intent": {"category": "floor lamp"}},
+    {"slug": "portable-lamps", "title": "Portable Lamps", "group": "Lighting", "intent": {"portable_only": True}},
     # Seating. Footstools, ottomans/poufs and stools are three separate
     # types by the user's ruling (2026-10-02): a footstool is the
     # armchair/lounge-chair companion for resting feet, a pouf is
@@ -153,6 +168,15 @@ def _category_products(category):
     return out
 
 
+TYPE_GRID_CSS = """
+  /* the category pages' type tiles: fixed 6 / 4 / 2 columns like every card grid (Site_Patterns.md) */
+  .type-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; margin: 0 0 36px; align-items: start; }
+  .type-grid .maker-card-hero { aspect-ratio: 1/1; }
+  .type-group-title { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 30px 0 14px; }
+  @media (max-width: 959px) { .type-grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 639px) { .type-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+"""
+
 PAGER_CSS = """
   .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
   .pager a, .pager span {
@@ -204,14 +228,14 @@ def _pager_html(slug, page, pages):
         return ""
     items = []
     if page > 1:
-        items.append(f'<a href="/browse/{_page_slug(slug, page - 1)}.html" rel="prev">&larr; Prev</a>')
+        items.append(f'<a href="/work/{_page_slug(slug, page - 1)}.html" rel="prev">&larr; Prev</a>')
     for n in range(1, pages + 1):
         if n == page:
             items.append(f'<span class="current" aria-current="page">{n}</span>')
         else:
-            items.append(f'<a href="/browse/{_page_slug(slug, n)}.html">{n}</a>')
+            items.append(f'<a href="/work/{_page_slug(slug, n)}.html">{n}</a>')
     if page < pages:
-        items.append(f'<a href="/browse/{_page_slug(slug, page + 1)}.html" rel="next">Next &rarr;</a>')
+        items.append(f'<a href="/work/{_page_slug(slug, page + 1)}.html" rel="next">Next &rarr;</a>')
     return f'<nav class="pager" aria-label="Pages">{"".join(items)}</nav>'
 
 
@@ -232,7 +256,8 @@ def _head(title, description, page_url):
 <meta name="twitter:description" content="{html.escape(description)}">
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
-<style>{PAGE_CSS}{PAGER_CSS}</style>"""
+<link rel="stylesheet" href="{WORK_MENU_CSS}">
+<style>{PAGE_CSS}{PAGER_CSS}{TYPE_GRID_CSS}</style>"""
 
 
 def _breadcrumb_json(crumbs):
@@ -276,14 +301,16 @@ def _see_also_html(category):
     links = [CATEGORY_BY_SLUG[r] for r in category.get("related", []) if r in CATEGORY_BY_SLUG]
     if not links:
         return ""
-    anchors = ", ".join(f'<a href="/browse/{c["slug"]}.html">{html.escape(c["title"].lower())}</a>' for c in links)
+    anchors = ", ".join(f'<a href="/work/{c["slug"]}.html">{html.escape(c["title"].lower())}</a>' for c in links)
     return f" See also: {anchors}."
 
 
-def render_browse_page(category, cards, variant_counts, page, pages, total_products):
+def render_browse_page(category, cards, variant_counts, page, pages, total_products, entries):
     itemlist = _itemlist_json(cards, (page - 1) * CARDS_PER_PAGE + 1)
     slug, title = category["slug"], category["title"]
-    page_url = f"{SITE_URL}/browse/{_page_slug(slug, page)}.html"
+    page_url = f"{SITE_URL}/work/{_page_slug(slug, page)}.html"
+    cat_name = work_menu.category_of_group(category["group"])
+    cat_slug = work_menu.CATEGORY_SLUGS[cat_name]
     noun = title.lower()
     page_suffix = f" - page {page}" if page > 1 else ""
     full_title = f"{title}{page_suffix} — Formground"
@@ -294,8 +321,9 @@ def render_browse_page(category, cards, variant_counts, page, pages, total_produ
     )
     breadcrumb = _breadcrumb_json([
         ("Formground", f"{SITE_URL}/"),
-        ("Browse", f"{SITE_URL}/browse/"),
-        (title, f"{SITE_URL}/browse/{slug}.html"),
+        ("Work", f"{SITE_URL}/work.html"),
+        (cat_name, f"{SITE_URL}/work/{cat_slug}.html"),
+        (title, f"{SITE_URL}/work/{slug}.html"),
     ])
     grid = "".join(
         product_card_html(p, show_brand=True, variant_count=variant_counts.get(id(p)))
@@ -314,9 +342,10 @@ def render_browse_page(category, cards, variant_counts, page, pages, total_produ
 {SITE_NAV_HTML}
 </header>
 <main>
-  <p class="page-tagline"><a href="/browse/">Browse</a></p>
+  <p class="page-tagline"><a href="/work.html">Work</a> &rsaquo; <a href="/work/{cat_slug}.html">{html.escape(cat_name)}</a></p>
   <h1>{html.escape(title)}</h1>
   <p class="category-intro">{html.escape(category.get("blurb", "") + " " if category.get("blurb") else "")}{total_products:,} {html.escape(noun)} from independent makers{f" - page {page} of {pages}" if pages > 1 else ""}. Every result links straight to the maker's own site.{_see_also_html(category)}</p>
+  {work_menu.render_menu(entries, current_slug=slug, align="left")}
   <div class="grid">{grid}</div>
   {_pager_html(slug, page, pages)}
   <p class="foot-note">
@@ -332,28 +361,48 @@ def render_browse_page(category, cards, variant_counts, page, pages, total_produ
   }});
 </script>
 <script>{CARD_CLICK_TRACKING_JS}</script>
+{MENU_SCRIPT}
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
 """
 
 
-def render_hub(entries):
-    page_url = f"{SITE_URL}/browse/"
-    description = "Every product type on Formground, listed in full - from independent makers, each linking straight to the maker's own site."
-    def _li(e):
-        return (f'<li><a href="{e["href"]}"><span class="browse-name">{html.escape(e["title"])}</span>'
-                f'<span class="browse-n">{e["n"]:,}</span></a></li>')
-    items = "".join(
-        f'<h2 class="browse-group">{html.escape(g)}</h2><ul class="browse-list">'
-        + "".join(_li(e) for e in entries if e["group"] == g) + "</ul>"
-        for g in GROUP_ORDER
+def _type_tile_html(e):
+    """One type's tile on a category page: a photo, the type's name, how many pieces."""
+    image = ""
+    if e.get("image"):
+        image = f'<img src="{html.escape(sized(e["image"], CARD))}" alt="{html.escape(e["title"])}" loading="lazy">'
+    return (
+        f'<a class="maker-card" href="/work/{e["slug"]}.html">'
+        f'<div class="maker-card-hero">{image}</div>'
+        f'<div class="maker-card-body"><span class="maker-name">{html.escape(e["title"])}</span>'
+        f'<span class="maker-country">{e["n"]:,} pieces</span></div></a>'
     )
-    breadcrumb = _breadcrumb_json([("Formground", f"{SITE_URL}/"), ("Browse", page_url)])
+
+
+def render_category_page(cat_name, entries):
+    """/work/furniture.html | lighting | objects: the category's groups and types, in full."""
+    cat_slug = work_menu.CATEGORY_SLUGS[cat_name]
+    page_url = f"{SITE_URL}/work/{cat_slug}.html"
+    mine = work_menu.category_entries(entries, cat_name)
+    total = sum(e["n"] for e in mine)
+    description = (f"{total:,} pieces of {cat_name.lower()} from independent makers across {len(mine)} types, listed in full - "
+                   "each linking straight to the maker's own site.")
+    blocks = []
+    for group in work_menu.TAXONOMY[cat_name]:
+        tiles = "".join(
+            _type_tile_html(e)
+            for e in sorted((x for x in mine if x["group"] == group), key=lambda x: x["title"].lower())
+        )
+        label = work_menu.GROUP_LABELS.get(group, group)
+        heading = f'<h2 class="type-group-title">{html.escape(label)}</h2>' if len(work_menu.TAXONOMY[cat_name]) > 1 else ""
+        blocks.append(f'{heading}<div class="type-grid">{tiles}</div>')
+    breadcrumb = _breadcrumb_json([("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html"), (cat_name, page_url)])
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-{_head("Browse by type — Formground", description, page_url)}
+{_head(f"{cat_name} — Formground", description, page_url)}
 <script type="application/ld+json">{breadcrumb}</script>
 </head>
 <body>
@@ -362,15 +411,17 @@ def render_hub(entries):
 {SITE_NAV_HTML}
 </header>
 <main>
-  <p class="page-tagline">Discover design from makers.</p>
-  <h1>Browse by type</h1>
-  <p class="category-intro">Every piece, listed in full. For a curated selection, see <a href="/edits.html">Edits</a>.</p>
-  {items}
+  <p class="page-tagline"><a href="/work.html">Work</a></p>
+  <h1>{html.escape(cat_name)}</h1>
+  <p class="category-intro">{total:,} pieces from independent makers, listed in full. For a curated selection, see <a href="/edits.html">Edits</a>.</p>
+  {work_menu.render_menu(entries, align="left")}
+  {"".join(blocks)}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
 </main>
 <script>{CARD_CLICK_TRACKING_JS}</script>
+{MENU_SCRIPT}
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -379,53 +430,63 @@ def render_hub(entries):
 
 def generate():
     BROWSE_DIR.mkdir(exist_ok=True)
+    # Old /browse/ page names, read BEFORE anything is rewritten: each becomes a redirect stub
+    # to its new /work/ address (so old links and bookmarks still land on the right page).
+    OLD_BROWSE_DIR.mkdir(exist_ok=True)
+    old_names = {f.stem for f in OLD_BROWSE_DIR.glob("*.html")}
     # Drop stale pages first: a category that shrinks to fewer pages
     # must not leave an orphaned {slug}-4.html behind.
     for old in BROWSE_DIR.glob("*.html"):
         old.unlink()
 
-    sitemap_slugs = []
-    hub_entries = []
+    computed = []
+    entries = []
     for category in BROWSE_CATEGORIES:
         products = _category_products(category)
         cards, variant_counts = _group_color_variants(products)
         cards = _interleave_by_brand(cards)
+        computed.append((category, products, cards, variant_counts))
+        entries.append({"slug": category["slug"], "title": category["title"], "n": len(products), "group": category["group"],
+                        "image": cards[0]["image_url"] if cards else ""})
+
+    sitemap_slugs = []
+    for category, products, cards, variant_counts in computed:
         pages = max(1, math.ceil(len(cards) / CARDS_PER_PAGE))
         for page in range(1, pages + 1):
             chunk = cards[(page - 1) * CARDS_PER_PAGE: page * CARDS_PER_PAGE]
             out = BROWSE_DIR / f"{_page_slug(category['slug'], page)}.html"
-            out.write_text(render_browse_page(category, chunk, variant_counts, page, pages, len(products)))
-            sitemap_slugs.append(f"browse/{_page_slug(category['slug'], page)}")
-        hub_entries.append({"href": f"/browse/{category['slug']}.html", "title": category["title"], "n": len(products), "group": category["group"]})
-        print(f"browse/{category['slug']}: {len(products)} products -> {len(cards)} cards, {pages} page(s)")
+            out.write_text(render_browse_page(category, chunk, variant_counts, page, pages, len(products), entries))
+            sitemap_slugs.append(f"work/{_page_slug(category['slug'], page)}")
+        print(f"work/{category['slug']}: {len(products)} products -> {len(cards)} cards, {pages} page(s)")
 
-    # Floor Lamps predates /browse/ and stays at the site root
-    # (generate_theme_landing_pages.py) - listed here so the hub is the
-    # one complete index of types.
-    hub_entries.append({
-        "href": "/floor-lamps.html", "title": "Floor Lamps",
-        "n": len(qe.filter_products({"category": "floor lamp"})), "group": "Lighting",
-    })
-    hub_entries.sort(key=lambda e: e["title"].lower())
-    (BROWSE_DIR / "index.html").write_text(render_hub(hub_entries))
-    append_to_sitemap([s for s in sitemap_slugs if s != "browse/index"])
-    _append_hub_to_sitemap()
+    for cat_name, cat_slug in work_menu.CATEGORY_SLUGS.items():
+        (BROWSE_DIR / f"{cat_slug}.html").write_text(render_category_page(cat_name, entries))
+        sitemap_slugs.append(f"work/{cat_slug}")
+    # /work/ itself has no page of its own: the Work page is /work.html
+    write_redirect(BROWSE_DIR / "index.html", "/work.html")
 
+    # The menu on the Work page itself (frontend/work.html is hand-written, mirrored to docs/)
+    frontend_work = SCRAPER_DIR.parent / "frontend" / "work.html"
+    if work_menu.inject_into_page(frontend_work, work_menu.render_menu(entries)):
+        print("updated the browse menu in frontend/work.html")
+    import shutil
+    import site_assets
+    site_assets.stamp_html([frontend_work])  # menu stylesheet + script links (versioned)
+    shutil.copy(frontend_work, DOCS_DIR / "work.html")
 
-def _append_hub_to_sitemap():
-    """The hub's canonical is /browse/ (not /browse/index.html), which
-    append_to_sitemap()'s {slug}.html formatting can't express."""
-    import datetime
-    from generate_theme_landing_pages import SITEMAP_PATH
-    if not SITEMAP_PATH.exists():
-        return
-    loc = f"{SITE_URL}/browse/"
-    text = SITEMAP_PATH.read_text()
-    if f"<loc>{loc}</loc>" in text:
-        return
-    entry = (f"  <url>\n    <loc>{loc}</loc>\n    <lastmod>{datetime.date.today().isoformat()}</lastmod>\n"
-             "    <changefreq>weekly</changefreq>\n    <priority>0.7</priority>\n  </url>")
-    SITEMAP_PATH.write_text(text.replace("</urlset>", entry + "\n</urlset>"))
+    # Old /browse/ addresses -> stubs
+    existing_new = {f.stem for f in BROWSE_DIR.glob("*.html")}
+    for stem in sorted(old_names | {"index"}):
+        if stem == "index":
+            target = "/work.html"
+        elif stem in existing_new:
+            target = f"/work/{stem}.html"
+        else:
+            base = stem.rsplit("-", 1)[0] if stem.rsplit("-", 1)[-1].isdigit() else stem
+            target = f"/work/{base}.html"
+        write_redirect(OLD_BROWSE_DIR / f"{stem}.html", target)
+
+    append_to_sitemap([s for s in sitemap_slugs if s != "work/index"])
 
 
 if __name__ == "__main__":

@@ -154,7 +154,6 @@ SITE_FOOTER_HTML = (
     '<a href="/marketplace.html">Marketplace</a> &middot; '
     '<a href="/for-creators.html">For Creators</a> &middot; '
     '<a href="/edits.html">Edits</a> &middot; '
-    '<a href="/browse/">Browse</a> &middot; '
     '<a href="/privacy.html">Privacy</a> &middot; '
     '<a href="/about.html">About</a> &middot; '
     '<a href="/contact.html">Contact</a>'
@@ -1314,31 +1313,20 @@ def render_makers_index(brands_data):
 RETIRED_CATEGORY_SLUGS = ["furniture", "lighting", "ceramics", "objects"]
 
 
+# Where each retired category address goes now (2026-10-04: the three category pages under /work/).
+RETIRED_CATEGORY_TARGETS = {
+    "furniture": "/work/furniture.html",
+    "lighting": "/work/lighting.html",
+    "objects": "/work/objects.html",
+    "ceramics": "/work/objects.html",
+}
+
+
 def render_category_redirect_stub(slug):
-    """
-    A lightweight redirect stub at the old docs/{slug}.html URL, same
-    pattern as frontend/search.html's own retirement - noindex, JS
-    redirect, real canonical - so an old bookmark or inbound link still
-    lands somewhere useful instead of 404ing.
-    """
-    target = f"/work.html?q={slug}"
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Formground</title>
-<meta name="robots" content="noindex">
-<script>
-  window.location.replace('{target}');
-</script>
-<link rel="canonical" href="{SITE_URL}/work.html">
-</head>
-<body>
-<p>Formground has moved this page to <a href="{target}">{target}</a>.</p>
-</body>
-</html>
-"""
+    """A redirect stub at the old docs/{slug}.html URL (see redirects.py), so an old
+    bookmark or inbound link still lands on the matching /work/ category page."""
+    from redirects import render_redirect
+    return render_redirect(RETIRED_CATEGORY_TARGETS[slug])
 
 
 # How far back "recently added" reaches before a piece rolls off the
@@ -1458,10 +1446,8 @@ def _architects_sitemap_slugs():
     firm_names = {h["firm"] for h in houses}
     slugs_seen = {}
     slugs = []
-    for name in firm_names:
-        slug = slugify(name)
-        if slug in slugs_seen and slugs_seen[slug] != name:
-            slug = f"{slug}-{len(slugs_seen)}"
+    for name in sorted(firm_names):  # same sorted order + unique_slug as generate_architects_pages.py
+        slug = unique_slug(slugify(name), name, slugs_seen)
         slugs_seen[slug] = name
         slugs.append(slug)
     return sorted(slugs)
@@ -1486,10 +1472,8 @@ def _designers_sitemap_slugs():
     conn.close()
     slugs_seen = {}
     slugs = []
-    for name, _ in rows:
-        slug = slugify(name)
-        if slug in slugs_seen and slugs_seen[slug] != name:
-            slug = f"{slug}-{len(slugs_seen)}"
+    for name, _ in sorted(rows, key=lambda r: r[0]):  # same sorted order + unique_slug as generate_designers_pages.py
+        slug = unique_slug(slugify(name), name, slugs_seen)
         slugs_seen[slug] = name
         slugs.append(slug)
     return sorted(slugs)

@@ -137,10 +137,15 @@ def _page_type(path):
     path = (path or "").split("?")[0]
     if path in ("", "/", "/index.html"):
         return "home"
-    for prefix, kind in (("/brands/", "brand"), ("/browse/", "browse"),
-                         ("/designers/", "designer"), ("/architects/", "architect")):
+    # /work/<category>.html (furniture, lighting, objects) are the category pages; every other
+    # /work/<x>.html is a type page. /browse/ is the pre-2026-10-04 address (kept so history
+    # re-classifies the same way); /edits/<slug>.html are the Edit pages.
+    if path in ("/work/furniture.html", "/work/lighting.html", "/work/objects.html", "/browse/", "/browse/index.html"):
+        return "browse_hub"
+    for prefix, kind in (("/brands/", "brand"), ("/work/", "browse"), ("/browse/", "browse"),
+                         ("/edits/", "edit"), ("/designers/", "designer"), ("/architects/", "architect")):
         if path.startswith(prefix):
-            return "browse_hub" if (kind == "browse" and path in ("/browse/", "/browse/index.html")) else kind
+            return kind
     fixed = {
         "/work.html": "work", "/search.html": "work", "/marketplace.html": "marketplace",
         "/for-creators.html": "for_creators", "/edits.html": "edits_hub", "/new.html": "new",

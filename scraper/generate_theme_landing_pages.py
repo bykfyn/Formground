@@ -272,13 +272,14 @@ def append_to_sitemap(slugs):
 
 
 def generate():
-    slugs = []
+    """Floor Lamps (the only theme landing page left) became an ordinary type page,
+    /work/floor-lamps.html (2026-10-04, see generate_browse_pages.py). The page that
+    used to live here is now a redirect stub, so old links still land correctly; the
+    sitemap lists the new address (added by generate_browse_pages.py), not this one."""
+    from redirects import write_redirect
     for theme in THEMES:
-        products = qe.filter_products(theme["intent"])
-        (DOCS_DIR / f"{theme['slug']}.html").write_text(render_theme_page(theme, products))
-        slugs.append(theme["slug"])
-        print(f"{theme['slug']}.html: {len(products)} products")
-    append_to_sitemap(slugs)
+        write_redirect(DOCS_DIR / f"{theme['slug']}.html", f"/work/{theme['slug']}.html")
+        print(f"{theme['slug']}.html -> redirect stub to /work/{theme['slug']}.html")
 
 
 if __name__ == "__main__":

@@ -27,7 +27,7 @@ import requests
 
 TABLER_VERSION = "3.46.0"
 ICONS = ["armchair", "arrow-right", "arrow-up-right", "arrows-shuffle", "bulb", "external-link",
-         "info-circle", "photo", "search", "share-2", "table", "tag", "bottle"]
+         "info-circle", "photo", "search", "share-2", "table", "tag", "bottle", "chevron-down"]
 ALIASES = {"vase": "bottle"}
 
 ROOT = Path(__file__).parent.parent

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plates - page 3 — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="773 real plates from independent makers, listed in full (page 3 of 3). Every result links straight to the maker&#x27;s own site.">
+<link rel="canonical" href="https://formground.com/work/plates-3.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Plates - page 3 — Formground">
+<meta property="og:description" content="773 real plates from independent makers, listed in full (page 3 of 3). Every result links straight to the maker&#x27;s own site.">
+<meta property="og:url" content="https://formground.com/work/plates-3.html">
+<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Plates - page 3 — Formground">
+<meta name="twitter:description" content="773 real plates from independent makers, listed in full (page 3 of 3). Every result links straight to the maker&#x27;s own site.">
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/icons.css?v=86479f05">
+<link rel="stylesheet" href="/work-menu.css?v=0c5462c7">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent; /* same box as .tag so the two small labels are one height */
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 13px 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 40px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none;
+    color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .browse-list { list-style: none; padding: 0; margin: 0 auto; max-width: 520px; }
+  .browse-list li { border-bottom: 0.5px solid var(--border); }
+  .browse-list a {
+    display: flex; justify-content: space-between; padding: 14px 4px;
+    text-decoration: none; color: inherit; font-size: 16px;
+  }
+  .browse-group { max-width: 520px; margin: 32px auto 4px; font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); }
+  .browse-list a:hover .browse-name { text-decoration: underline; }
+  .browse-list .browse-n { color: var(--text-muted); font-size: 14px; }
+
+  /* the category pages' type tiles: fixed 6 / 4 / 2 columns like every card grid (Site_Patterns.md) */
+  .type-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 20px; margin: 0 0 36px; align-items: start; }
+  .type-grid .maker-card-hero { aspect-ratio: 1/1; }
+  .type-group-title { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 30px 0 14px; }
+  @media (max-width: 959px) { .type-grid { grid-template-columns: repeat(4, 1fr); } }
+  @media (max-width: 639px) { .type-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; } }
+</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Work", "item": "https://formground.com/work.html"}, {"@type": "ListItem", "position": 3, "name": "Objects", "item": "https://formground.com/work/objects.html"}, {"@type": "ListItem", "position": 4, "name": "Plates", "item": "https://formground.com/work/plates.html"}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"ItemList","itemListElement":[{"@type":"ListItem","position":601,"item":{"@type":"Product","name":"Dinner plate white/black variation 4 Dé","url":"https://www.serax.com/products/plate-l-white-black-variation-4-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019326_01-jpg.jpg?v=1764729968","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"75.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":602,"item":{"@type":"Product","name":"Dinner plate white/black variation 3 Dé","url":"https://www.serax.com/products/plate-l-white-black-variation-3-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019325_01-jpg.jpg?v=1764729963","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"65.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":603,"item":{"@type":"Product","name":"Dinner plate white/black variation 1 Dé","url":"https://www.serax.com/products/plate-l-white-black-variation-1-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019324_01-jpg.jpg?v=1764729960","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"55.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":604,"item":{"@type":"Product","name":"Starter plate / variation 5 Dé","url":"https://www.serax.com/products/plate-m-white-red-variation-5-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019323_01-jpg.jpg?v=1752547076","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"64.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":605,"item":{"@type":"Product","name":"Starter plate white/red variation 2 Dé","url":"https://www.serax.com/products/plate-m-white-red-variation-2-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019322_01-jpg.jpg?v=1764729959","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"49.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":606,"item":{"@type":"Product","name":"Starter plate black Dé","url":"https://www.serax.com/products/plate-m-black-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019321_01-jpg.jpg?v=1764729954","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"44.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":607,"item":{"@type":"Product","name":"Starter plate white/black variation 6 Dé","url":"https://www.serax.com/products/plate-m-white-black-variation-6-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019320_01-jpg.jpg?v=1764729951","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"64.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":608,"item":{"@type":"Product","name":"Starter plate white/black variation 4 Dé","url":"https://www.serax.com/products/plate-m-white-black-variation-4-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019318_01-jpg.jpg?v=1764729957","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"56.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":609,"item":{"@type":"Product","name":"Starter plate white/black variation 3 Dé","url":"https://www.serax.com/products/plate-m-white-black-variation-3-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019317_01-jpg.jpg?v=1752547062","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"49.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":610,"item":{"@type":"Product","name":"Starter plate white/black variation 1 Dé","url":"https://www.serax.com/products/plate-m-white-black-variation-1-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019316_01-jpg.jpg?v=1764729949","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"41.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":611,"item":{"@type":"Product","name":"Breakfast plate / variation 5 Dé","url":"https://www.serax.com/products/plate-s-white-red-variation-5-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019315_01-jpg.jpg?v=1764729946","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"48.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":612,"item":{"@type":"Product","name":"Breakfast plate white/red variation 2 Dé","url":"https://www.serax.com/products/plate-s-white-red-variation-2-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019314_01-jpg.jpg?v=1764729941","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"32.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":613,"item":{"@type":"Product","name":"Breakfast plate black Dé","url":"https://www.serax.com/products/plate-s-black-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019313_01-jpg.jpg?v=1752547054","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"27.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":614,"item":{"@type":"Product","name":"Breakfast plate white/black variation 6 Dé","url":"https://www.serax.com/products/plate-q-white-black-variation-6-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019312_01-jpg.jpg?v=1752547053","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"48.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":615,"item":{"@type":"Product","name":"Breakfast plate white/black variation 4 Dé","url":"https://www.serax.com/products/plate-s-white-black-variation-4-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019310_01-jpg.jpg?v=1764729937","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"37.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":616,"item":{"@type":"Product","name":"Breakfast plate white/black variation 3 Dé","url":"https://www.serax.com/products/plate-s-white-black-variation-3-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019309_01-jpg.jpg?v=1752547046","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"32.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":617,"item":{"@type":"Product","name":"Breakfast plate white/black variation 1 Dé","url":"https://www.serax.com/products/plate-s-white-black-variation-1-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019308_01-jpg.jpg?v=1752547044","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"27.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":618,"item":{"@type":"Product","name":"Dessert plate / variation 5 Dé","url":"https://www.serax.com/products/plate-xs-white-red-variation-5-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019307_01-jpg.jpg?v=1764729930","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"32.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":619,"item":{"@type":"Product","name":"Dessert plate white/red variation 2 Dé","url":"https://www.serax.com/products/plate-xs-white-red-variation-2-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019306_01-jpg.jpg?v=1752547038","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"23.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":620,"item":{"@type":"Product","name":"Dessert plate black Dé","url":"https://www.serax.com/products/plate-xs-black-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019305_01-jpg.jpg?v=1752547037","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"16.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":621,"item":{"@type":"Product","name":"Dessert plate white/black variation 6 Dé","url":"https://www.serax.com/products/plate-xs-white-black-variation-6-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019304_01-jpg.jpg?v=1764729926","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"32.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":622,"item":{"@type":"Product","name":"Dessert plate white/black variation 4 Dé","url":"https://www.serax.com/products/plate-xs-white-black-variation-4-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019302_01-jpg.jpg?v=1752547031","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"26.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":623,"item":{"@type":"Product","name":"Dessert plate white/black variation 3 Dé","url":"https://www.serax.com/products/plate-xs-white-black-variation-3-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019301_01-jpg.jpg?v=1752547029","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"23.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":624,"item":{"@type":"Product","name":"Dessert plate white/black variation 1 Dé","url":"https://www.serax.com/products/plate-xs-white-black-variation-1-de","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019300_01-jpg.jpg?v=1764729921","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"16.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":625,"item":{"@type":"Product","name":"Deep plate M dark brown Out of lines","url":"https://www.serax.com/products/deep-plate-m-dark-brown-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624006-919_01-jpg.jpg?v=1764734051","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"41.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":626,"item":{"@type":"Product","name":"Deep plate M ocher Out of lines","url":"https://www.serax.com/products/deep-plate-m-ocher-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624006-201_01-jpg.jpg?v=1764734048","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"41.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":627,"item":{"@type":"Product","name":"Deep plate M off-white Out of lines","url":"https://www.serax.com/products/deep-plate-m-off-white-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624006-005_01-jpg.jpg?v=1764734038","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"41.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":628,"item":{"@type":"Product","name":"Deep plate S dark brown Out of lines","url":"https://www.serax.com/products/deep-plate-s-dark-brown-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624005-919_01-jpg.jpg?v=1764734038","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"28.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":629,"item":{"@type":"Product","name":"Deep plate S ocher Out of lines","url":"https://www.serax.com/products/deep-plate-s-ocher-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624005-201_01-jpg.jpg?v=1764734037","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"28.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":630,"item":{"@type":"Product","name":"Deep plate S off-white Out of lines","url":"https://www.serax.com/products/deep-plate-s-off-white-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624005-005_01-jpg.jpg?v=1764734033","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"28.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":631,"item":{"@type":"Product","name":"Dinner plate dark brown Out of lines","url":"https://www.serax.com/products/dinner-plate-dark-brown-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624004-919_01-jpg.jpg?v=1764734029","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"34.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":632,"item":{"@type":"Product","name":"Dinner plate ocher Out of lines","url":"https://www.serax.com/products/dinner-plate-ocher-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624004-201_01-jpg.jpg?v=1752546817","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"34.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":633,"item":{"@type":"Product","name":"Starter plate dark brown Out of lines","url":"https://www.serax.com/products/starter-plate-dark-brown-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624003-919_01-jpg.jpg?v=1764734021","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"26.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":634,"item":{"@type":"Product","name":"Starter plate ocher Out of lines","url":"https://www.serax.com/products/starter-plate-ocher-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624003-201_01-jpg.jpg?v=1764734014","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"26.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":635,"item":{"@type":"Product","name":"Breakfast plate dark brown Out of lines","url":"https://www.serax.com/products/breakfast-plate-dark-brown-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624002-919_01-jpg.jpg?v=1764734008","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"21.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":636,"item":{"@type":"Product","name":"Breakfast plate ocher Out of lines","url":"https://www.serax.com/products/breakfast-plate-ocher-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624002-201_01-jpg.jpg?v=1752546800","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"21.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":637,"item":{"@type":"Product","name":"Breakfast plate off-white Out of lines","url":"https://www.serax.com/products/breakfast-plate-off-white-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624002-005_01-jpg.jpg?v=1764734002","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"21.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":638,"item":{"@type":"Product","name":"Bread plate ocher Out of lines","url":"https://www.serax.com/products/bread-plate-ocher-out-of-lines","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624001-201_01-jpg.jpg?v=1764733996","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"14.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":639,"item":{"@type":"Product","name":"Deep oval serving plate beige","url":"https://www.serax.com/products/deep-oval-serving-plate-beige-blue-sophia","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026106-617_01-jpg.jpg?v=1770948504","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"34.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":640,"item":{"@type":"Product","name":"Deep round serving plate beige","url":"https://www.serax.com/products/deep-round-serving-plate-beige-blue-sophia","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026105-617_01-jpg.jpg?v=1770948501","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"36.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":641,"item":{"@type":"Product","name":"Pasta plate set of 2 varied designs beige","url":"https://www.serax.com/products/pasta-plate-ass-2-beige-blue-sophia","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026102-617_01-jpg.jpg?v=1770948493","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"32.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":642,"item":{"@type":"Product","name":"Dinner plate set of 2 varied designs beige","url":"https://www.serax.com/products/dinner-plate-ass-2-beige-blue-sophia","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026101-617_01-jpg.jpg?v=1770948489","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"36.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":643,"item":{"@type":"Product","name":"Breakfast plate set of 4 varied designs beige","url":"https://www.serax.com/products/breakfast-plate-ass-4-beige-blue-sophia","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026100-617_01-jpg.jpg?v=1770948487","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"29.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":644,"item":{"@type":"Product","name":"Dinner plate seagreen Pure","url":"https://www.serax.com/products/plate-l-seagreen-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1015228_01-jpeg.jpg?v=1764729836","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"39.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":645,"item":{"@type":"Product","name":"Breakfast plate seagreen Pure","url":"https://www.serax.com/products/plate-m-seagreen-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1015227_01-jpeg.jpg?v=1764729834","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"29.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":646,"item":{"@type":"Product","name":"Serving plate L seagreen Pure","url":"https://www.serax.com/products/serving-plate-l-seagreen-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1014218_01-jpg.jpg?v=1752546313","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"120.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":647,"item":{"@type":"Product","name":"Dinner plate Pure","url":"https://www.serax.com/products/plate-m-black-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1013059_01-jpeg.jpg?v=1764729797","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"24.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":648,"item":{"@type":"Product","name":"Dessert plate Pure","url":"https://www.serax.com/products/plate-xs-green-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1013058ZG_01-jpeg.jpg?v=1764729787","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"16.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":649,"item":{"@type":"Product","name":"Starter plate black Pure","url":"https://www.serax.com/products/plate-s-black-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1013058_01-jpeg.jpg?v=1764729784","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"19.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":650,"item":{"@type":"Product","name":"Dinner plate aquagreen Pure","url":"https://www.serax.com/products/plate-m-aquagreen-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1013057_01-jpeg.jpg?v=1764729776","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"25.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":651,"item":{"@type":"Product","name":"Starter plate aquagreen Pure","url":"https://www.serax.com/products/plate-s-aquagreen-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1013056_01-jpeg.jpg?v=1764729774","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"19.50","priceCurrency":"EUR"}}},{"@type":"ListItem","position":652,"item":{"@type":"Product","name":"Serving plate Pure","url":"https://www.serax.com/products/plate-l-green-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1012028_01-jpeg.jpg?v=1764729737","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"75.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":653,"item":{"@type":"Product","name":"Breakfast plate Pure","url":"https://www.serax.com/products/plate-s-green-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1012026_01-jpeg_d6ea690e-08f8-4526-bc62-2c41cda29063.jpg?v=1764729733","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"26.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":654,"item":{"@type":"Product","name":"Oval plate L Pure","url":"https://www.serax.com/products/oval-plate-l-green-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1012025_01-jpeg.jpg?v=1752546200","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"33.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":655,"item":{"@type":"Product","name":"Oval plate M Pure","url":"https://www.serax.com/products/oval-plate-m-green-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1012024_01-jpeg.jpg?v=1764729722","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"24.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":656,"item":{"@type":"Product","name":"Oval plate S green Pure","url":"https://www.serax.com/products/oval-plate-s-green-pure","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1012023_01-jpeg.jpg?v=1764729722","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"14.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":657,"item":{"@type":"Product","name":"Wooden plate XL Dunes","url":"https://www.serax.com/products/wooden-plate-xl-dunes","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B0219225_01-jpg.jpg?v=1764729396","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"59.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":658,"item":{"@type":"Product","name":"Wooden plate L Dunes","url":"https://www.serax.com/products/wooden-plate-l-dunes","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B0219224_01-jpg.jpg?v=1764729393","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"45.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":659,"item":{"@type":"Product","name":"Wooden plate M Dunes","url":"https://www.serax.com/products/wooden-plate-m-dunes","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B0219223_01-jpg.jpg?v=1764729387","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"35.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":660,"item":{"@type":"Product","name":"Wooden plate S Dunes","url":"https://www.serax.com/products/wooden-plate-s-dunes","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B0219222_01-jpg.jpg?v=1752545364","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"30.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":661,"item":{"@type":"Product","name":"Oval serving plate blue","url":"https://www.serax.com/products/oval-serving-plate-blue-white-les-objets-mouleversants","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B0126104-615_01-jpg.jpg?v=1771034847","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"95.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":662,"item":{"@type":"Product","name":"Oval serving plate light blue Rêves de Rêves Les Objets Mouleversants","url":"https://www.serax.com/products/oval-serving-plate-light-blue-les-objets-mouleversants","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B0126104-602_01-jpg.jpg?v=1771034845","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"95.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":663,"item":{"@type":"Product","name":"Oval serving plate white Perle Fine Les Objets Mouleversants","url":"https://www.serax.com/products/oval-serving-plate-white-perle-fine-les-objets-mouleversants","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B0126104-001_01-jpg.jpg?v=1771034842","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"70.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":664,"item":{"@type":"Product","name":"Breakfast plate L venetian red La Mère","url":"https://www.serax.com/products/plate-m-venetian-red-la-mere","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5123004-317_01-jpg.jpg?v=1752548726","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"22.00","priceCurrency":"EUR"}}},{"@type":"ListItem","position":665,"item":{"@type":"Product","name":"Breakfast plate L off-white","url":"https://www.serax.com/products/plate-m-off-white-black-la-mere","image":"https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5123004-006_01-jpg.jpg?v=1752548724","brand":{"@type":"Brand","name":"Serax"},"category":"Plate","offers":{"@type":"Offer","price":"21.50","priceCurrency":"EUR"}}}]}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html">Creators</a>
+  <a href="/edits.html">Edits</a>
+  <a href="/for-creators.html">For Creators</a>
+</nav>
+</header>
+<main>
+  <p class="page-tagline"><a href="/work.html">Work</a> &rsaquo; <a href="/work/objects.html">Objects</a></p>
+  <h1>Plates</h1>
+  <p class="category-intro">773 plates from independent makers - page 3 of 3. Every result links straight to the maker's own site.</p>
+  <nav class="work-menu work-menu--left" aria-label="Browse by type"><div class="work-menu-cats"><button type="button" class="work-menu-cat" aria-expanded="false" aria-controls="wm-furniture">Furniture <i class="ti ti-chevron-down" aria-hidden="true"></i></button><button type="button" class="work-menu-cat" aria-expanded="false" aria-controls="wm-lighting">Lighting <i class="ti ti-chevron-down" aria-hidden="true"></i></button><button type="button" class="work-menu-cat" aria-expanded="false" aria-controls="wm-objects">Objects <i class="ti ti-chevron-down" aria-hidden="true"></i></button></div><div class="work-menu-panel" id="wm-furniture" hidden><div class="work-menu-head"><strong>Furniture</strong><a href="/work/furniture.html">All furniture &rarr;</a></div><div class="work-menu-groups"><div class="work-menu-group"><h3>Seating</h3><ul><li><a href="/work/armchairs.html"><span class="work-menu-name">Armchairs and Lounge Chairs</span><span class="work-menu-n">754</span></a></li><li><a href="/work/bar-stools.html"><span class="work-menu-name">Bar Stools</span><span class="work-menu-n">309</span></a></li><li><a href="/work/benches.html"><span class="work-menu-name">Benches</span><span class="work-menu-n">333</span></a></li><li><a href="/work/chairs.html"><span class="work-menu-name">Chairs</span><span class="work-menu-n">1,854</span></a></li><li><a href="/work/dining-chairs.html"><span class="work-menu-name">Dining Chairs</span><span class="work-menu-n">277</span></a></li><li><a href="/work/footstools.html"><span class="work-menu-name">Footstools</span><span class="work-menu-n">67</span></a></li><li><a href="/work/ottomans-and-poufs.html"><span class="work-menu-name">Ottomans and Poufs</span><span class="work-menu-n">191</span></a></li><li><a href="/work/sofas.html"><span class="work-menu-name">Sofas</span><span class="work-menu-n">855</span></a></li><li><a href="/work/stools.html"><span class="work-menu-name">Stools</span><span class="work-menu-n">771</span></a></li></ul></div><div class="work-menu-group"><h3>Tables and desks</h3><ul><li><a href="/work/coffee-tables.html"><span class="work-menu-name">Coffee Tables</span><span class="work-menu-n">560</span></a></li><li><a href="/work/console-tables.html"><span class="work-menu-name">Console Tables</span><span class="work-menu-n">212</span></a></li><li><a href="/work/desks.html"><span class="work-menu-name">Desks</span><span class="work-menu-n">164</span></a></li><li><a href="/work/dining-tables.html"><span class="work-menu-name">Dining Tables</span><span class="work-menu-n">418</span></a></li><li><a href="/work/side-tables.html"><span class="work-menu-name">Side Tables</span><span class="work-menu-n">629</span></a></li></ul></div><div class="work-menu-group"><h3>Storage, beds and mirrors</h3><ul><li><a href="/work/beds.html"><span class="work-menu-name">Beds</span><span class="work-menu-n">146</span></a></li><li><a href="/work/cabinets.html"><span class="work-menu-name">Cabinets</span><span class="work-menu-n">316</span></a></li><li><a href="/work/mirrors.html"><span class="work-menu-name">Mirrors</span><span class="work-menu-n">449</span></a></li><li><a href="/work/shelving.html"><span class="work-menu-name">Shelving</span><span class="work-menu-n">226</span></a></li><li><a href="/work/sideboards.html"><span class="work-menu-name">Sideboards</span><span class="work-menu-n">168</span></a></li></ul></div></div></div><div class="work-menu-panel" id="wm-lighting" hidden><div class="work-menu-head"><strong>Lighting</strong><a href="/work/lighting.html">All lighting &rarr;</a></div><div class="work-menu-groups"><div class="work-menu-group"><h3>By type</h3><ul><li><a href="/work/ceiling-lamps.html"><span class="work-menu-name">Ceiling Lamps</span><span class="work-menu-n">241</span></a></li><li><a href="/work/chandeliers.html"><span class="work-menu-name">Chandeliers</span><span class="work-menu-n">307</span></a></li><li><a href="/work/floor-lamps.html"><span class="work-menu-name">Floor Lamps</span><span class="work-menu-n">345</span></a></li><li><a href="/work/pendant-lamps.html"><span class="work-menu-name">Pendant Lamps</span><span class="work-menu-n">1,078</span></a></li><li><a href="/work/portable-lamps.html"><span class="work-menu-name">Portable Lamps</span><span class="work-menu-n">82</span></a></li><li><a href="/work/table-lamps.html"><span class="work-menu-name">Table Lamps</span><span class="work-menu-n">816</span></a></li><li><a href="/work/wall-lamps.html"><span class="work-menu-name">Wall Lamps</span><span class="work-menu-n">385</span></a></li></ul></div></div></div><div class="work-menu-panel" id="wm-objects" hidden><div class="work-menu-head"><strong>Objects</strong><a href="/work/objects.html">All objects &rarr;</a></div><div class="work-menu-groups"><div class="work-menu-group"><h3>Tableware, glass and candles</h3><ul><li><a href="/work/bowls.html"><span class="work-menu-name">Bowls</span><span class="work-menu-n">674</span></a></li><li><a href="/work/candle-holders.html"><span class="work-menu-name">Candle Holders</span><span class="work-menu-n">265</span></a></li><li><a href="/work/candles.html"><span class="work-menu-name">Candles</span><span class="work-menu-n">153</span></a></li><li><a href="/work/glass.html"><span class="work-menu-name">Glass</span><span class="work-menu-n">274</span></a></li><li><a href="/work/plates.html" aria-current="page"><span class="work-menu-name">Plates</span><span class="work-menu-n">773</span></a></li><li><a href="/work/trays.html"><span class="work-menu-name">Trays</span><span class="work-menu-n">300</span></a></li><li><a href="/work/vases.html"><span class="work-menu-name">Vases</span><span class="work-menu-n">907</span></a></li></ul></div><div class="work-menu-group"><h3>Soft furnishings</h3><ul><li><a href="/work/blankets.html"><span class="work-menu-name">Blankets and Throws</span><span class="work-menu-n">112</span></a></li><li><a href="/work/cushions.html"><span class="work-menu-name">Cushions</span><span class="work-menu-n">515</span></a></li><li><a href="/work/rugs.html"><span class="work-menu-name">Rugs</span><span class="work-menu-n">631</span></a></li></ul></div></div></div></nav><noscript><style>.work-menu-panel[hidden]{display:block}</style></noscript>
+  <div class="grid">
+      <a class="card" href="https://www.serax.com/products/plate-l-white-black-variation-4-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019326_01-jpg.jpg?v=1764729968&amp;width=500" alt="Dinner plate white/black variation 4 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dinner plate white/black variation 4 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-l-white-black-variation-3-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019325_01-jpg.jpg?v=1764729963&amp;width=500" alt="Dinner plate white/black variation 3 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dinner plate white/black variation 3 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-l-white-black-variation-1-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019324_01-jpg.jpg?v=1764729960&amp;width=500" alt="Dinner plate white/black variation 1 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dinner plate white/black variation 1 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-m-white-red-variation-5-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019323_01-jpg.jpg?v=1752547076&amp;width=500" alt="Starter plate / variation 5 Dé by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Starter plate / variation 5 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-m-white-red-variation-2-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019322_01-jpg.jpg?v=1764729959&amp;width=500" alt="Starter plate white/red variation 2 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Starter plate white/red variation 2 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-m-black-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019321_01-jpg.jpg?v=1764729954&amp;width=500" alt="Starter plate black Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Starter plate black Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-m-white-black-variation-6-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019320_01-jpg.jpg?v=1764729951&amp;width=500" alt="Starter plate white/black variation 6 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Starter plate white/black variation 6 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-m-white-black-variation-4-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019318_01-jpg.jpg?v=1764729957&amp;width=500" alt="Starter plate white/black variation 4 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Starter plate white/black variation 4 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-m-white-black-variation-3-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019317_01-jpg.jpg?v=1752547062&amp;width=500" alt="Starter plate white/black variation 3 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Starter plate white/black variation 3 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-m-white-black-variation-1-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019316_01-jpg.jpg?v=1764729949&amp;width=500" alt="Starter plate white/black variation 1 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Starter plate white/black variation 1 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-s-white-red-variation-5-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019315_01-jpg.jpg?v=1764729946&amp;width=500" alt="Breakfast plate / variation 5 Dé by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate / variation 5 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-s-white-red-variation-2-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019314_01-jpg.jpg?v=1764729941&amp;width=500" alt="Breakfast plate white/red variation 2 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate white/red variation 2 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-s-black-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019313_01-jpg.jpg?v=1752547054&amp;width=500" alt="Breakfast plate black Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate black Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-q-white-black-variation-6-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019312_01-jpg.jpg?v=1752547053&amp;width=500" alt="Breakfast plate white/black variation 6 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate white/black variation 6 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-s-white-black-variation-4-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019310_01-jpg.jpg?v=1764729937&amp;width=500" alt="Breakfast plate white/black variation 4 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate white/black variation 4 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-s-white-black-variation-3-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019309_01-jpg.jpg?v=1752547046&amp;width=500" alt="Breakfast plate white/black variation 3 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate white/black variation 3 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-s-white-black-variation-1-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019308_01-jpg.jpg?v=1752547044&amp;width=500" alt="Breakfast plate white/black variation 1 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate white/black variation 1 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-xs-white-red-variation-5-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019307_01-jpg.jpg?v=1764729930&amp;width=500" alt="Dessert plate / variation 5 Dé by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dessert plate / variation 5 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-xs-white-red-variation-2-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019306_01-jpg.jpg?v=1752547038&amp;width=500" alt="Dessert plate white/red variation 2 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dessert plate white/red variation 2 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-xs-black-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019305_01-jpg.jpg?v=1752547037&amp;width=500" alt="Dessert plate black Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dessert plate black Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-xs-white-black-variation-6-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019304_01-jpg.jpg?v=1764729926&amp;width=500" alt="Dessert plate white/black variation 6 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dessert plate white/black variation 6 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-xs-white-black-variation-4-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019302_01-jpg.jpg?v=1752547031&amp;width=500" alt="Dessert plate white/black variation 4 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dessert plate white/black variation 4 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-xs-white-black-variation-3-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019301_01-jpg.jpg?v=1752547029&amp;width=500" alt="Dessert plate white/black variation 3 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dessert plate white/black variation 3 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-xs-white-black-variation-1-de" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B4019300_01-jpg.jpg?v=1764729921&amp;width=500" alt="Dessert plate white/black variation 1 Dé by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dessert plate white/black variation 1 Dé</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/deep-plate-m-dark-brown-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624006-919_01-jpg.jpg?v=1764734051&amp;width=500" alt="Deep plate M dark brown Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Deep plate M dark brown Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/deep-plate-m-ocher-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624006-201_01-jpg.jpg?v=1764734048&amp;width=500" alt="Deep plate M ocher Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Deep plate M ocher Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/deep-plate-m-off-white-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624006-005_01-jpg.jpg?v=1764734038&amp;width=500" alt="Deep plate M off-white Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Deep plate M off-white Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/deep-plate-s-dark-brown-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624005-919_01-jpg.jpg?v=1764734038&amp;width=500" alt="Deep plate S dark brown Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Deep plate S dark brown Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/deep-plate-s-ocher-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624005-201_01-jpg.jpg?v=1764734037&amp;width=500" alt="Deep plate S ocher Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Deep plate S ocher Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/deep-plate-s-off-white-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624005-005_01-jpg.jpg?v=1764734033&amp;width=500" alt="Deep plate S off-white Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Deep plate S off-white Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/dinner-plate-dark-brown-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624004-919_01-jpg.jpg?v=1764734029&amp;width=500" alt="Dinner plate dark brown Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dinner plate dark brown Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/dinner-plate-ocher-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624004-201_01-jpg.jpg?v=1752546817&amp;width=500" alt="Dinner plate ocher Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dinner plate ocher Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/starter-plate-dark-brown-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624003-919_01-jpg.jpg?v=1764734021&amp;width=500" alt="Starter plate dark brown Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Starter plate dark brown Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/starter-plate-ocher-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624003-201_01-jpg.jpg?v=1764734014&amp;width=500" alt="Starter plate ocher Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Starter plate ocher Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/breakfast-plate-dark-brown-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624002-919_01-jpg.jpg?v=1764734008&amp;width=500" alt="Breakfast plate dark brown Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate dark brown Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/breakfast-plate-ocher-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624002-201_01-jpg.jpg?v=1752546800&amp;width=500" alt="Breakfast plate ocher Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate ocher Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/breakfast-plate-off-white-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624002-005_01-jpg.jpg?v=1764734002&amp;width=500" alt="Breakfast plate off-white Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate off-white Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/bread-plate-ocher-out-of-lines" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B3624001-201_01-jpg.jpg?v=1764733996&amp;width=500" alt="Bread plate ocher Out of lines by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bread plate ocher Out of lines</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/deep-oval-serving-plate-beige-blue-sophia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026106-617_01-jpg.jpg?v=1770948504&amp;width=500" alt="Deep oval serving plate beige by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Deep oval serving plate beige</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/deep-round-serving-plate-beige-blue-sophia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026105-617_01-jpg.jpg?v=1770948501&amp;width=500" alt="Deep round serving plate beige by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Deep round serving plate beige</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/pasta-plate-ass-2-beige-blue-sophia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026102-617_01-jpg.jpg?v=1770948493&amp;width=500" alt="Pasta plate set of 2 varied designs beige by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Pasta plate set of 2 varied designs beige</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/dinner-plate-ass-2-beige-blue-sophia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026101-617_01-jpg.jpg?v=1770948489&amp;width=500" alt="Dinner plate set of 2 varied designs beige by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dinner plate set of 2 varied designs beige</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/breakfast-plate-ass-4-beige-blue-sophia" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B2026100-617_01-jpg.jpg?v=1770948487&amp;width=500" alt="Breakfast plate set of 4 varied designs beige by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate set of 4 varied designs beige</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-l-seagreen-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1015228_01-jpeg.jpg?v=1764729836&amp;width=500" alt="Dinner plate seagreen Pure by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dinner plate seagreen Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-m-seagreen-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1015227_01-jpeg.jpg?v=1764729834&amp;width=500" alt="Breakfast plate seagreen Pure by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate seagreen Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/serving-plate-l-seagreen-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1014218_01-jpg.jpg?v=1752546313&amp;width=500" alt="Serving plate L seagreen Pure by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serving plate L seagreen Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-m-black-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1013059_01-jpeg.jpg?v=1764729797&amp;width=500" alt="Dinner plate Pure by Serax" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dinner plate Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-xs-green-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1013058ZG_01-jpeg.jpg?v=1764729787&amp;width=500" alt="Dessert plate Pure by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dessert plate Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-s-black-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1013058_01-jpeg.jpg?v=1764729784&amp;width=500" alt="Starter plate black Pure by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Starter plate black Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-m-aquagreen-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1013057_01-jpeg.jpg?v=1764729776&amp;width=500" alt="Dinner plate aquagreen Pure by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Dinner plate aquagreen Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-s-aquagreen-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1013056_01-jpeg.jpg?v=1764729774&amp;width=500" alt="Starter plate aquagreen Pure by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Starter plate aquagreen Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-l-green-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1012028_01-jpeg.jpg?v=1764729737&amp;width=500" alt="Serving plate Pure by Serax" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Serving plate Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-s-green-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1012026_01-jpeg_d6ea690e-08f8-4526-bc62-2c41cda29063.jpg?v=1764729733&amp;width=500" alt="Breakfast plate Pure by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/oval-plate-l-green-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1012025_01-jpeg.jpg?v=1752546200&amp;width=500" alt="Oval plate L Pure by Serax" loading="lazy"><span class="variant-badge">2 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oval plate L Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/oval-plate-m-green-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1012024_01-jpeg.jpg?v=1764729722&amp;width=500" alt="Oval plate M Pure by Serax" loading="lazy"><span class="variant-badge">3 finishes</span></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oval plate M Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/oval-plate-s-green-pure" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B1012023_01-jpeg.jpg?v=1764729722&amp;width=500" alt="Oval plate S green Pure by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oval plate S green Pure</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/wooden-plate-xl-dunes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B0219225_01-jpg.jpg?v=1764729396&amp;width=500" alt="Wooden plate XL Dunes by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wooden plate XL Dunes</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/wooden-plate-l-dunes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B0219224_01-jpg.jpg?v=1764729393&amp;width=500" alt="Wooden plate L Dunes by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wooden plate L Dunes</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/wooden-plate-m-dunes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B0219223_01-jpg.jpg?v=1764729387&amp;width=500" alt="Wooden plate M Dunes by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wooden plate M Dunes</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/wooden-plate-s-dunes" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_-B0219222_01-jpg.jpg?v=1752545364&amp;width=500" alt="Wooden plate S Dunes by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Wooden plate S Dunes</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/oval-serving-plate-blue-white-les-objets-mouleversants" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B0126104-615_01-jpg.jpg?v=1771034847&amp;width=500" alt="Oval serving plate blue by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oval serving plate blue</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/oval-serving-plate-light-blue-les-objets-mouleversants" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B0126104-602_01-jpg.jpg?v=1771034845&amp;width=500" alt="Oval serving plate light blue Rêves de Rêves Les Objets Mouleversants by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oval serving plate light blue Rêves de Rêves Les Objets Mouleversants</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/oval-serving-plate-white-perle-fine-les-objets-mouleversants" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B0126104-001_01-jpg.jpg?v=1771034842&amp;width=500" alt="Oval serving plate white Perle Fine Les Objets Mouleversants by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Oval serving plate white Perle Fine Les Objets Mouleversants</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-m-venetian-red-la-mere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5123004-317_01-jpg.jpg?v=1752548726&amp;width=500" alt="Breakfast plate L venetian red La Mère by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate L venetian red La Mère</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a>
+      <a class="card" href="https://www.serax.com/products/plate-m-off-white-black-la-mere" target="_blank" rel="noopener noreferrer">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0681/5816/1172/files/Ecom_B5123004-006_01-jpg.jpg?v=1752548724&amp;width=500" alt="Breakfast plate L off-white by Serax" loading="lazy"></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Breakfast plate L off-white</p></div>
+          <p class="card-brand">Serax</p>
+        </div>
+      </a></div>
+  <nav class="pager" aria-label="Pages"><a href="/work/plates-2.html" rel="prev">&larr; Prev</a><a href="/work/plates.html">1</a><a href="/work/plates-2.html">2</a><span class="current" aria-current="page">3</span></nav>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    // The tracking itself (page views, click-throughs, landing-page and
+    // campaign carry-over) lives in ONE shared file, /fg-track.js, instead
+    // of being pasted into hundreds of generated pages - see that file and
+    // backend/analytics.py for what is logged.
+    var s = document.createElement("script");
+    s.src = "/fg-track.js";
+    s.async = true;
+    document.head.appendChild(s);
+  })();
+</script>
+<script src="/work-menu.js?v=01f65f72" defer></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

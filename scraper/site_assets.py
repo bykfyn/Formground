@@ -26,7 +26,13 @@ def asset_href(name):
 
 
 ICONS_CSS = asset_href("icons.css")
+WORK_MENU_CSS = asset_href("work-menu.css")
+WORK_MENU_JS = asset_href("work-menu.js")
 _LINK_RE = re.compile(r'<link rel="stylesheet" href="/icons\.css(?:\?v=[0-9a-f]+)?">')
+_MENU_CSS_RE = re.compile(r'<link rel="stylesheet" href="/work-menu\.css(?:\?v=[0-9a-f]+)?">')
+_MENU_JS_RE = re.compile(r'<script src="/work-menu\.js(?:\?v=[0-9a-f]+)?" defer></script>')
+MENU_HEAD_LINKS = f'<link rel="stylesheet" href="{WORK_MENU_CSS}">'
+MENU_SCRIPT = f'<script src="{WORK_MENU_JS}" defer></script>'
 
 
 def stamp_html(paths=None):
@@ -45,6 +51,15 @@ def stamp_html(paths=None):
             new = s.replace("</head>", link + "\n</head>", 1)
         else:
             continue
+        if 'class="work-menu"' in new:
+            if "work-menu.css" in new:
+                new = _MENU_CSS_RE.sub(MENU_HEAD_LINKS, new)
+            else:
+                new = new.replace("</head>", MENU_HEAD_LINKS + "\n</head>", 1)
+            if "work-menu.js" in new:
+                new = _MENU_JS_RE.sub(MENU_SCRIPT, new)
+            else:
+                new = new.replace("</body>", MENU_SCRIPT + "\n</body>", 1)
         if new != s:
             p.write_text(new)
             changed += 1

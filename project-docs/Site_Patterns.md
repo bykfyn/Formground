@@ -8,6 +8,32 @@ Drafted 2026-10-04 from what the code already does (home `frontend/index.html`,
 the generators in `scraper/generate_*.py`). Where the pages disagreed, the
 pattern below is the one chosen; the note says which pages were brought in line.
 
+## 0. URL structure and navigation
+
+Each nav item owns a URL namespace; a name never means two different pages.
+
+```
+/work.html                 search + the "browse by type" menu (Furniture / Lighting / Objects chips)
+/work/<category>.html      furniture | lighting | objects - the types as photo tiles
+/work/<type>.html          the full catalogue of one type; pages -2, -3 ... (flat: group is a breadcrumb)
+/edits.html                hub;  /edits/<slug>.html  the curated Edits
+/brands/ /architects/ /designers/    unchanged
+```
+
+- One taxonomy (`scraper/work_menu.py`: categories -> groups -> types) feeds the menu, the
+  category pages, breadcrumbs and the sitemap. To add a type: add it to `BROWSE_CATEGORIES`
+  (generate_browse_pages.py) in a group that `TAXONOMY` lists.
+- Type URLs stay flat so regrouping never breaks a link.
+- Menu: three category chips under the search bar open a panel of groups and types as plain
+  links to the static pages (fast, indexable, shareable). Left-aligned under the intro on
+  type and category pages. Chips follow the form-chip family below.
+- Moved pages leave a redirect stub at the old address (`scraper/redirects.py`; GitHub Pages
+  cannot send a 301): old /browse/*, /floor-lamps.html, the top-level Edit slugs and the
+  retired category pages all redirect. The sitemap lists only real pages, and no live page
+  links to an old address (`tests/test_work_structure.py` enforces all three).
+- Moved 2026-10-04 from /browse/ and the site root, before ads started, so no paid or
+  inbound traffic had to be carried over.
+
 ## 1. Banners (the wide photo with one featured product)
 
 Used on: home (Sofas, Two Seater Sofas), the Edits hub, every Edit page.

@@ -313,7 +313,7 @@ def _edit_banner_html(theme, product):
     fit_class, fit_style = image_fit.fit_for_banner(product["image_url"])
     style = f' style="{fit_style}"' if fit_style else ""
     img_class = f' class="{fit_class}"' if fit_class else ""
-    edit_url = f"/{theme['slug']}.html"
+    edit_url = f"/edits/{theme['slug']}.html"
     return f"""    <section class="edits-banner">
       <div class="edits-banner-head">
         <h2><a href="{edit_url}">{html.escape(theme["title"])}</a></h2>
@@ -435,7 +435,7 @@ def render_edits_index(themes_data):
             src = hero_product["brand_url"] if hero_product.get("link_dead") else hero_product["product_url"]
             tile_items += f"""
       <figure class="edit-feature">
-        <a class="cat-link" href="/{theme['slug']}.html" aria-label="Browse {html.escape(theme['title'])}"></a>
+        <a class="cat-link" href="/edits/{theme['slug']}.html" aria-label="Browse {html.escape(theme['title'])}"></a>
         {image_tag.replace(html.escape(theme['title']), html.escape(hero_product['product_name']) + ' by ' + html.escape(hero_product['brand']), 1)}
         <p class="cat-label">{html.escape(theme['title'])}<small>{_edit_meta_text(count, brand_count)}</small></p>
         <div class="cat-details">
@@ -446,7 +446,7 @@ def render_edits_index(themes_data):
       </figure>"""
             continue
         tile_items += f"""
-      <a class="maker-card" href="/{theme['slug']}.html">
+      <a class="maker-card" href="/edits/{theme['slug']}.html">
         <div class="maker-card-hero">{image_tag}</div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(theme['title'])}</span>

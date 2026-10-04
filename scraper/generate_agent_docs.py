@@ -69,13 +69,13 @@ def build_openapi():
 
 def build_llms_txt():
     products, brands = _catalog_counts()
-    by_group = {g: [c for c in BROWSE_CATEGORIES if c["group"] == g] for g in GROUP_ORDER}
+    import work_menu
     browse_lines = []
-    for group in GROUP_ORDER:
-        links = ", ".join(f"[{c['title']}]({SITE_URL}/browse/{c['slug']}.html)" for c in by_group[group])
-        if group == "Lighting":
-            links = f"[Floor Lamps]({SITE_URL}/floor-lamps.html), " + links
-        browse_lines.append(f"- {group}: {links}")
+    for cat, slug in work_menu.CATEGORY_SLUGS.items():
+        groups = work_menu.TAXONOMY[cat]
+        types = [c for g in groups for c in BROWSE_CATEGORIES if c["group"] == g]
+        links = ", ".join(f"[{c['title']}]({SITE_URL}/work/{c['slug']}.html)" for c in types)
+        browse_lines.append(f"- [{cat}]({SITE_URL}/work/{slug}.html): {links}")
     today = datetime.date.today().isoformat()
     return f"""# Formground
 
@@ -94,9 +94,9 @@ Generated {today}; the catalog is re-scraped weekly. Prices and availability bel
 - A missing price is often correct, not an error: many makers do not publish prices. Do not estimate one.
 - `offers.price` is exactly what the maker lists, in the maker's own currency (`offers.priceCurrency`, ISO 4217). Nothing is converted. Compare across currencies yourself if you need to.
 
-## Browse the full catalog by type (static pages, every match listed)
+## Browse the full catalog by type (static pages under /work/, every match listed)
 
-- [All types]({SITE_URL}/browse/): {len(BROWSE_CATEGORIES) + 1} product types, each paginated, with schema.org Product data on every page.
+- [Work]({SITE_URL}/work.html): search and the browse menu. {len(BROWSE_CATEGORIES)} product types in three categories, each type listed in full and paginated, with schema.org Product data on every page.
 {chr(10).join(browse_lines)}
 
 ## Curated and reference pages
