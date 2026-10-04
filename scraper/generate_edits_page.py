@@ -92,11 +92,40 @@ import image_fit  # noqa: E402
 # are found (user's own note: more still need sourcing).
 BANNER_SLUGS = ["round-coffee-tables"]
 
+# Layout of the hub's top block (2026-10-04, a trial the user asked for):
+#   "masthead" - the banner photo IS the page header: "EDITS" and the preamble
+#                sit on the photo, no title row above and no caption below; the
+#                pictured product is credited by a small link on the photo.
+#   "classic"  - "EDITS" + preamble above, then the banner as the other pages
+#                have it (title row above the photo, product + maker below).
+# Flip this one value to switch; nothing else changes.
+HUB_LAYOUT = "masthead"
+
 EDITS_PAGE_CSS = (
     """
   /* The hub banner, in the shape of the homepage groups and each Edit page's
      banner: title row above, clean 2:1 photo (4:3 on phones), product and
      maker below. The edit's title is the header; the product is secondary. */
+  /* Trial layout "masthead": the banner photo is the page header. */
+  .edits-masthead { position: relative; aspect-ratio: 2/1; overflow: hidden; margin: 0 0 28px; border: 0.5px solid var(--border); background: var(--surface-1); }
+  .edits-masthead img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .edits-masthead img.fit-contain { object-fit: contain; }
+  .edits-masthead::after { content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.52) 0%, rgba(0,0,0,0.30) 100%); }
+  .edits-masthead-copy { position: absolute; inset: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 28px; color: #fff; }
+  .edits-masthead-copy h1 { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 60px; line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; margin: 0 0 16px; }
+  .edits-masthead-copy p { font-size: 17px; line-height: 1.55; max-width: 620px; margin: 0; color: rgba(255,255,255,0.94); }
+  .edits-masthead-credit { position: absolute; right: 12px; bottom: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600; color: #fff; text-decoration: none; padding: 6px 10px; border-radius: 999px;
+    background: rgba(255,255,255,0.16); border: 0.5px solid rgba(255,255,255,0.4); backdrop-filter: blur(4px); }
+  .edits-masthead-credit:hover { background: rgba(255,255,255,0.3); }
+  .edits-masthead-credit i { font-size: 13px; }
+  @media (max-width: 640px) {
+    .edits-masthead { aspect-ratio: 4/5; }
+    .edits-masthead-copy h1 { font-size: 38px; margin-bottom: 12px; }
+    .edits-masthead-copy p { font-size: 14px; }
+    .edits-masthead-copy p br { display: none; }
+  }
   .edits-banner { margin: 0 0 28px; }
   .edits-banner-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 0 0 12px; }
   .edits-banner-head h2 { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; margin: 0; }
@@ -291,6 +320,26 @@ def _edit_banner_html(theme, product):
     </section>"""
 
 
+def _edits_masthead_html(product):
+    """The trial hub header: the banner photo carries the page title ("Edits",
+    the page's h1) and the preamble. The photo is not a link (text sits on it);
+    the maker is credited and linked by a small pill, the same "link back to the
+    maker" rule every other photo follows."""
+    url = product["brand_url"] if product.get("link_dead") else product["product_url"]
+    fit_class, fit_style = image_fit.fit_for_banner(product["image_url"])
+    style = f' style="{fit_style}"' if fit_style else ""
+    img_class = f' class="{fit_class}"' if fit_class else ""
+    credit = f'{html.escape(product["product_name"])} &middot; {html.escape(product["brand"])}'
+    return f"""    <section class="edits-masthead"{style}>
+      <img{img_class} src="{html.escape(sized(product["image_url"], HERO))}" alt="{html.escape(product["product_name"])} by {html.escape(product["brand"])}">
+      <div class="edits-masthead-copy">
+        <h1>Edits</h1>
+        <p>Curated, editorial groupings of real work <br>from Formground's makers - browse every Edit, gathered in one place.</p>
+      </div>
+      <a class="edits-masthead-credit" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">{credit} <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+    </section>"""
+
+
 EDITS_FILTER_JS = """
   (function () {
     var filterInput = document.getElementById("directory-filter");
@@ -402,11 +451,20 @@ def render_edits_index(themes_data):
     }
     # one banner (BANNER_SLUGS has a single hand-picked edit today); the first
     # listed edit that has a real hero product is shown
-    banner_html = next(
-        (_edit_banner_html(*by_slug[slug]) for slug in BANNER_SLUGS
-         if slug in by_slug and by_slug[slug][1] is not None),
-        "",
+    banner_pick = next(
+        (by_slug[slug] for slug in BANNER_SLUGS if slug in by_slug and by_slug[slug][1] is not None),
+        None,
     )
+    masthead = HUB_LAYOUT == "masthead" and banner_pick is not None
+    banner_html = (
+        _edits_masthead_html(banner_pick[1]) if masthead
+        else (_edit_banner_html(*banner_pick) if banner_pick else "")
+    )
+    classic_header = "" if masthead else f"""  <div class="edits-hero">
+    <h1>Edits</h1>
+    <p class="edits-preamble">{html.escape("Curated, editorial groupings of real work")}<br>{html.escape("from Formground's makers - browse every Edit, gathered in one place.")}</p>
+  </div>
+"""
 
     description = "Curated, editorial groupings of real work from Formground's makers - browse every Edit, gathered in one place."
 
@@ -440,11 +498,7 @@ def render_edits_index(themes_data):
 {site_nav_html("edits")}
 </header>
 <main style="max-width:1160px;">
-  <div class="edits-hero">
-    <h1>Edits</h1>
-    <p class="edits-preamble">{html.escape("Curated, editorial groupings of real work")}<br>{html.escape("from Formground's makers - browse every Edit, gathered in one place.")}</p>
-  </div>
-{banner_html}
+{classic_header}{banner_html}
   {directory_filter_html("Filter edits by name…", "Edits")}
   {tile_grid_html}
   <p class="foot-note">
