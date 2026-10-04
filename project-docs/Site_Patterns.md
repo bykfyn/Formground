@@ -122,13 +122,15 @@ The home page's New shelf is hand-picked from pieces this definition counts as n
 ### Hidden sections (2026-10-04)
 
 `scraper/site_sections.py` is the one switch for hiding a section that is thin, narrow or not yet representative while
-the traffic test runs: a hidden section is not generated (an old file is removed), leaves the footers and the
-sitemap, and nothing links to it. Data and generator stay; un-hide by deleting its line and regenerating. Hidden now:
-**craftspeople** (the For Creators chip and panel, 20 firms) and **marketplace** (/marketplace.html and the brand-page
-Promotions callout: 135 retailers, ~90% in five Nordic countries, Orsjo 69 and HAY 63 dominate; Promotions is 10
-entries). Audited and left live: Edits (9), Houses (426, 13 countries), Architects (43 firms), Designers (228, all with
-4+ pieces), the type pages (all 25+ pieces), makers (198). Watch list: three maker pages with 1-2 pieces.
-The Creators page's three counts are rewritten from the real page lists on every build.
+the traffic test runs: a hidden section is not shown, nothing links to it, and the data and generator stay (un-hide by
+deleting its line and regenerating). Hidden now: **craftspeople** (the For Creators chip and panel, 20 firms) and
+**promotions** (the Marketplace's Promotions tab and banner, the brand-page "live promotion" callouts and the stockist
+badges - 10 entries; the same switch as `PROMOTIONS_ENABLED`). The **Marketplace page itself (stockists) stays live**,
+linked from the footer only; the header is Work, Creators, Edits. (The whole Marketplace page was hidden for a few hours
+on 2026-10-04 as an audit call, then restored: the ask was Promotions only.)
+Audited and left live: Edits (9), Houses (426, 13 countries), Architects (43 firms), Designers (228, all with 4+ pieces),
+the type pages (all 25+ pieces), makers (198), Marketplace stockists (117 cards). Watch list: three maker pages with 1-2
+pieces. The Creators page's three counts are rewritten from the real page lists on every build.
 
 ## 1. Banners (the wide photo with one featured product)
 

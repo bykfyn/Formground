@@ -995,7 +995,6 @@ def render_page(retailers, promotions):
   <a href="work.html">Work</a>
   <a href="creators.html">Creators</a>
   <a href="edits.html">Edits</a>
-  <a href="for-creators.html">For Creators</a>
 </nav>
 </header>
 
@@ -1036,12 +1035,6 @@ def render_page(retailers, promotions):
 
 
 def main():
-    if site_sections.is_hidden("marketplace") and "--mockup" not in sys.argv:
-        # Hidden for now (see site_sections.py): no page, no stale file; the data and this generator stay.
-        for target_dir in ("docs", "frontend"):
-            (REPO_ROOT / target_dir / "marketplace.html").unlink(missing_ok=True)
-        print("Marketplace is hidden (site_sections.py) - marketplace.html not written, any old copy removed.")
-        return
     retailers = json.loads(RETAILERS_PATH.read_text(encoding="utf-8"))
     promotions = json.loads(PROMOTIONS_PATH.read_text(encoding="utf-8")) if (PROMOTIONS_ENABLED and PROMOTIONS_PATH.exists()) else []
     page = render_page(retailers, promotions)

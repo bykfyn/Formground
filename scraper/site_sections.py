@@ -11,9 +11,9 @@ help (and can undercut trust). Add a name, with the reason, to hide another.
 HIDDEN_SECTIONS = {
     # The Craftspeople chip and panel on For Creators: 20 firms, thin, and not needed for the test.
     "craftspeople": "thin (20 firms); not needed for the traffic test",
-    # /marketplace.html (retailers and Promotions): 135 retailers, ~90% in five Nordic countries and
-    # dominated by two brands (Orsjo 69, HAY 63); Promotions is 10 entries. Not yet representative.
-    "marketplace": "narrow (Nordic, two brands dominate) and not yet representative; Promotions is 10 entries",
+    # Promotions on the Marketplace (and the brand-page "has a live promotion" callouts that link to it): 10 entries,
+    # not yet representative. The Marketplace page itself (the stockists) stays live, linked from the footer.
+    "promotions": "10 entries; not yet representative",
 }
 
 

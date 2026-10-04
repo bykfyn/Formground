@@ -55,7 +55,7 @@ PROMOTIONS_PATH = DATA_DIR / "promotions.json"
 # callout on brand pages, the stockist 'live promotion' badges and the
 # ?tab=promotions deep links - while data/promotions.json and the detector
 # scripts are left untouched, so turning this back on restores everything.
-PROMOTIONS_ENABLED = False
+PROMOTIONS_ENABLED = not site_sections.is_hidden("promotions")   # the switch is scraper/site_sections.py
 RETAILERS_PATH = DATA_DIR / "retailers.json"
 DOCS_DIR = SCRAPER_DIR.parent / "docs"
 FRONTEND_DIR = SCRAPER_DIR.parent / "frontend"
@@ -157,8 +157,8 @@ SITE_FOOTER_HTML = (
     '<a href="/">&larr; Back to Formground</a> &middot; '
     '<a href="/work.html">Work</a> &middot; '
     '<a href="/creators.html">Creators</a> &middot; '
-    + ('' if site_sections.is_hidden("marketplace") else '<a href="/marketplace.html">Marketplace</a> &middot; ')
-    + '<a href="/for-creators.html">For Creators</a> &middot; '
+    '<a href="/marketplace.html">Marketplace</a> &middot; '
+    '<a href="/for-creators.html">For Creators</a> &middot; '
     '<a href="/edits.html">Edits</a> &middot; '
     '<a href="/privacy.html">Privacy</a> &middot; '
     '<a href="/about.html">About</a> &middot; '
@@ -1116,7 +1116,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     # themselves. ?tab=promotions lands directly on the right tab
     # rather than Marketplace's own default (Stockists).
     promo_callout = ""
-    if promotions and not site_sections.is_hidden("marketplace"):   # the callout links into the Marketplace
+    if promotions and not site_sections.is_hidden("promotions"):   # the callout links to Marketplace Promotions
         best_discount = max(
             (o.get("discount_pct") or 0) for p in promotions for o in p["offers"]
         )
@@ -1520,8 +1520,7 @@ def render_sitemap(brand_slugs):
         ("https://formground.com/privacy.html", "yearly", "0.2", None),
         ("https://formground.com/makers.html", "weekly", "0.7", today),
     ]
-    if not site_sections.is_hidden("marketplace"):
-        urls.append(("https://formground.com/marketplace.html", "weekly", "0.5", None))
+    urls.append(("https://formground.com/marketplace.html", "weekly", "0.5", None))
     urls += [(f"https://formground.com/brands/{slug}.html", "weekly", "0.5", today) for slug in brand_slugs]
     designer_slugs = _designers_sitemap_slugs()
     if designer_slugs:
