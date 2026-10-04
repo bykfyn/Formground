@@ -301,13 +301,6 @@ EDIT_MASTHEAD_CSS = """
   .edits-masthead-copy h1 { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 60px; line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; margin: 0 0 14px; }
   .edits-masthead-copy p { font-size: 17px; line-height: 1.55; max-width: 620px; margin: 0; color: var(--text-primary); font-weight: 500; }
   .edits-masthead--light .edits-masthead-copy p { color: rgba(255,255,255,0.94); }
-  /* an Edit's intro is longer than the hub's two lines: a wider measure keeps it to three */
-  .edits-masthead--wide .edits-masthead-copy p { max-width: 780px; font-size: 16px; }
-  .edits-masthead--wide .edits-masthead-copy h1 { font-size: 52px; margin-bottom: 12px; }
-  /* "Edits" sits inside the photo as a small label above the title, linking back to the hub */
-  .edits-masthead-kicker { font-size: 12px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: inherit; text-decoration: none; margin: 0 0 10px; opacity: 0.8; }
-  .edits-masthead-kicker:hover { opacity: 1; text-decoration: underline; }
-  @media (max-width: 640px) { .edits-masthead--wide .edits-masthead-copy h1 { font-size: 32px; } .edits-masthead--wide .edits-masthead-copy p { font-size: 14px; } }
   .edits-masthead-credit { position: absolute; right: 12px; bottom: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 5px;
     font-size: 11px; font-weight: 600; color: var(--text-primary); text-decoration: none; padding: 6px 10px; border-radius: 999px;
     background: rgba(255,255,255,0.78); border: 0.5px solid rgba(0,0,0,0.12); backdrop-filter: blur(4px); }
@@ -323,7 +316,7 @@ EDIT_MASTHEAD_CSS = """
 """
 
 
-def masthead_html(title, intro_html, product, text="dark", wide=False, kicker=None):
+def masthead_html(title, intro_html, product, text="dark"):
     """`text` is "dark" for a light photo, "light" for a dark one. `intro_html` is trusted HTML."""
     import image_fit
     url = product["brand_url"] if product.get("link_dead") else product["product_url"]
@@ -331,12 +324,11 @@ def masthead_html(title, intro_html, product, text="dark", wide=False, kicker=No
     style = f' style="{fit_style}"' if fit_style else ""
     img_class = f' class="{fit_class}"' if fit_class else ""
     credit = f'{html.escape(product["product_name"])} &middot; {html.escape(product["brand"])}'
-    kicker_html = (f'<a class="edits-masthead-kicker" href="/edits.html">{html.escape(kicker)}</a>' if kicker else "")
-    tone = ("" if text == "dark" else " edits-masthead--light") + (" edits-masthead--wide" if wide else "")
+    tone = "" if text == "dark" else " edits-masthead--light"
     return f"""    <section class="edits-masthead{tone}"{style}>
       <img{img_class} src="{html.escape(sized(product["image_url"], HERO))}" alt="{html.escape(product["product_name"])} by {html.escape(product["brand"])}">
       <div class="edits-masthead-copy">
-        {kicker_html}<h1>{html.escape(title)}</h1>
+        <h1>{html.escape(title)}</h1>
         <p>{intro_html}</p>
       </div>
       <a class="edits-masthead-credit" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">{credit} <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
@@ -851,13 +843,10 @@ EDIT_BROWSE_LINKS = {
 
 
 # Edit pages are kept simple for now (2026-10-04, user: "simplify it and use this layout" = the Ceiling Lamps
-# page): the Edit's kicker, title and intro, then the grid - no banner photo, carousel or masthead. Set True
-# to bring the banner (or, via MASTHEAD_SLUGS, the masthead) back; the hero picks in THEMES are kept.
+# page): the Edit's kicker, title and intro, then the grid - no banner photo, carousel or masthead (the masthead
+# stays on the Edits hub only; trying it on Edit pages was decided against). Set True to bring the banner back;
+# the hero picks in THEMES are kept.
 EDIT_PAGE_BANNER = False
-
-# Edit pages that use the masthead header (title + intro on the hero photo). TRIAL: one page first
-# (2026-10-04), the rest follow once approved - then this becomes "every Edit with a hero photo".
-MASTHEAD_SLUGS = {"two-seater-sofas"}
 
 
 def render_themed_edit_page(theme, products):
@@ -875,15 +864,9 @@ def render_themed_edit_page(theme, products):
     description = f"{n} real {title.lower()}{'' if title.lower().endswith('s') else 's'}, from independent makers. {theme['intro']}"
 
     picks = _resolve_carousel_picks(theme, cards_to_render) if EDIT_PAGE_BANNER else []
-    use_masthead = EDIT_PAGE_BANNER and slug in MASTHEAD_SLUGS and len(picks) == 1
     carousel_html = _render_carousel(picks)
-    tagline_html = "" if use_masthead else '<p class="page-tagline"><a class="edits-kicker" href="/edits.html">Edits</a></p>'
-    if use_masthead:
-        # the photo is the header: title + intro sit on it, so no separate header or banner below
-        header_html = masthead_html(title, html.escape(theme["intro"]), picks[0], theme.get("masthead_text", "dark"), wide=True, kicker="Edits")
-        carousel_html = ""
-    else:
-        header_html = f'''<div class="edit-header">
+    tagline_html = '<p class="page-tagline"><a class="edits-kicker" href="/edits.html">Edits</a></p>'
+    header_html = f'''<div class="edit-header">
     <h1>{html.escape(title)}</h1>
     <p class="edit-intro">{html.escape(theme["intro"])}</p>
   </div>'''
