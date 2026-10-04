@@ -392,7 +392,7 @@ def _edit_meta_text(count, brand_count):
 # the grid (3 columns x 2 rows at six across) and always comes first, the other
 # edits follow alphabetically around it. Still a fixed grid with explicit
 # spans, so every position stays deterministic. None = no featured edit.
-FEATURED_EDIT_SLUG = "round-coffee-tables"
+FEATURED_EDIT_SLUG = "portable-lamps"
 
 
 def _edits_sort_key(entry):
