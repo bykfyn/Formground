@@ -109,32 +109,9 @@ EDITS_PAGE_CSS = (
   /* The hub banner, in the shape of the homepage groups and each Edit page's
      banner: title row above, clean 2:1 photo (4:3 on phones), product and
      maker below. The edit's title is the header; the product is secondary. */
-  /* Trial layout "masthead": the banner photo is the page header. */
-  .edits-masthead { position: relative; aspect-ratio: 2/1; overflow: hidden; margin: 0 0 28px; border: 0.5px solid var(--border); background: var(--surface-1); }
-  .edits-masthead img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
-  .edits-masthead img.fit-contain { object-fit: contain; }
-  /* No overlay on the photo (2026-10-04, user: "keep the banner image natural
-     without the grey shading"): legibility comes from the text colour and from
-     placing it over the plain wall at the top of THIS photo. Dark text suits a
-     light photo; if the banner image changes to a dark one, set
-     HUB_MASTHEAD_TEXT = "light". */
-  .edits-masthead-copy { position: absolute; left: 0; right: 0; top: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 4.5% 28px 0; color: var(--text-primary); }
-  .edits-masthead--light .edits-masthead-copy { color: #fff; }
-  .edits-masthead-copy h1 { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 60px; line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; margin: 0 0 14px; }
-  .edits-masthead-copy p { font-size: 17px; line-height: 1.55; max-width: 620px; margin: 0; color: var(--text-primary); font-weight: 500; }
-  .edits-masthead--light .edits-masthead-copy p { color: rgba(255,255,255,0.94); }
-  .edits-masthead-credit { position: absolute; right: 12px; bottom: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 5px;
-    font-size: 11px; font-weight: 600; color: var(--text-primary); text-decoration: none; padding: 6px 10px; border-radius: 999px;
-    background: rgba(255,255,255,0.78); border: 0.5px solid rgba(0,0,0,0.12); backdrop-filter: blur(4px); }
-  .edits-masthead-credit:hover { background: rgba(255,255,255,0.95); }
-  .edits-masthead-credit i { font-size: 13px; }
-  @media (max-width: 640px) {
-    .edits-masthead { aspect-ratio: 4/5; }
-    .edits-masthead-copy { padding-top: 8%; }
-    .edits-masthead-copy h1 { font-size: 38px; margin-bottom: 10px; }
-    .edits-masthead-copy p { font-size: 14px; }
-    .edits-masthead-copy p br { display: none; }
-  }
+"""
+    + gte.EDIT_MASTHEAD_CSS
+    + """
   .edits-banner { margin: 0 0 28px; }
   .edits-banner-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 0 0 12px; }
   .edits-banner-head h2 { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; margin: 0; }
@@ -330,24 +307,12 @@ def _edit_banner_html(theme, product):
 
 
 def _edits_masthead_html(product):
-    """The trial hub header: the banner photo carries the page title ("Edits",
-    the page's h1) and the preamble. The photo is not a link (text sits on it);
-    the maker is credited and linked by a small pill, the same "link back to the
-    maker" rule every other photo follows."""
-    url = product["brand_url"] if product.get("link_dead") else product["product_url"]
-    fit_class, fit_style = image_fit.fit_for_banner(product["image_url"])
-    style = f' style="{fit_style}"' if fit_style else ""
-    img_class = f' class="{fit_class}"' if fit_class else ""
-    credit = f'{html.escape(product["product_name"])} &middot; {html.escape(product["brand"])}'
-    tone = "" if HUB_MASTHEAD_TEXT == "dark" else " edits-masthead--light"
-    return f"""    <section class="edits-masthead{tone}"{style}>
-      <img{img_class} src="{html.escape(sized(product["image_url"], HERO))}" alt="{html.escape(product["product_name"])} by {html.escape(product["brand"])}">
-      <div class="edits-masthead-copy">
-        <h1>Edits</h1>
-        <p>Curated, editorial groupings of real work <br>from Formground's makers - browse every Edit, gathered in one place.</p>
-      </div>
-      <a class="edits-masthead-credit" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">{credit} <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
-    </section>"""
+    """The hub header: the banner photo carries the page title ("Edits", the page's h1) and the preamble
+    (shared with every Edit page: gte.masthead_html)."""
+    return gte.masthead_html(
+        "Edits",
+        "Curated, editorial groupings of real work <br>from Formground's makers - browse every Edit, gathered in one place.",
+        product, HUB_MASTHEAD_TEXT)
 
 
 EDITS_FILTER_JS = """

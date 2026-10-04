@@ -281,6 +281,63 @@ THEMES = [
 CAROUSEL_SIZE = 3
 
 
+# ---------------------------------------------------------------------------
+# Masthead header (2026-10-04): the banner photo IS the page header - the Edit's title and intro sit on
+# the photo, over the plain area at its top, with no overlay; a small pill credits and links the maker.
+# Shared by the Edits hub (generate_edits_page.py) and every Edit page. See Site_Patterns.md "Page masthead".
+# ---------------------------------------------------------------------------
+EDIT_MASTHEAD_CSS = """
+  /* Trial layout "masthead": the banner photo is the page header. */
+  .edits-masthead { position: relative; aspect-ratio: 2/1; overflow: hidden; margin: 0 0 28px; border: 0.5px solid var(--border); background: var(--surface-1); }
+  .edits-masthead img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .edits-masthead img.fit-contain { object-fit: contain; }
+  /* No overlay on the photo (2026-10-04, user: "keep the banner image natural
+     without the grey shading"): legibility comes from the text colour and from
+     placing it over the plain wall at the top of THIS photo. Dark text suits a
+     light photo; if the banner image changes to a dark one, set
+     HUB_MASTHEAD_TEXT = "light". */
+  .edits-masthead-copy { position: absolute; left: 0; right: 0; top: 0; z-index: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start; text-align: center; padding: 4.5% 28px 0; color: var(--text-primary); }
+  .edits-masthead--light .edits-masthead-copy { color: #fff; }
+  .edits-masthead-copy h1 { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 60px; line-height: 1.05; letter-spacing: 0.01em; text-transform: uppercase; margin: 0 0 14px; }
+  .edits-masthead-copy p { font-size: 17px; line-height: 1.55; max-width: 620px; margin: 0; color: var(--text-primary); font-weight: 500; }
+  .edits-masthead--light .edits-masthead-copy p { color: rgba(255,255,255,0.94); }
+  /* an Edit's intro is longer than the hub's two lines: a wider measure keeps it to three */
+  .edits-masthead--wide .edits-masthead-copy p { max-width: 780px; }
+  .edits-masthead-credit { position: absolute; right: 12px; bottom: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600; color: var(--text-primary); text-decoration: none; padding: 6px 10px; border-radius: 999px;
+    background: rgba(255,255,255,0.78); border: 0.5px solid rgba(0,0,0,0.12); backdrop-filter: blur(4px); }
+  .edits-masthead-credit:hover { background: rgba(255,255,255,0.95); }
+  .edits-masthead-credit i { font-size: 13px; }
+  @media (max-width: 640px) {
+    .edits-masthead { aspect-ratio: 4/5; }
+    .edits-masthead-copy { padding-top: 8%; }
+    .edits-masthead-copy h1 { font-size: 38px; margin-bottom: 10px; }
+    .edits-masthead-copy p { font-size: 14px; }
+    .edits-masthead-copy p br { display: none; }
+  }
+"""
+
+
+def masthead_html(title, intro_html, product, text="dark", wide=False):
+    """`text` is "dark" for a light photo, "light" for a dark one. `intro_html` is trusted HTML."""
+    import image_fit
+    url = product["brand_url"] if product.get("link_dead") else product["product_url"]
+    fit_class, fit_style = image_fit.fit_for_banner(product["image_url"])
+    style = f' style="{fit_style}"' if fit_style else ""
+    img_class = f' class="{fit_class}"' if fit_class else ""
+    credit = f'{html.escape(product["product_name"])} &middot; {html.escape(product["brand"])}'
+    tone = ("" if text == "dark" else " edits-masthead--light") + (" edits-masthead--wide" if wide else "")
+    return f"""    <section class="edits-masthead{tone}"{style}>
+      <img{img_class} src="{html.escape(sized(product["image_url"], HERO))}" alt="{html.escape(product["product_name"])} by {html.escape(product["brand"])}">
+      <div class="edits-masthead-copy">
+        <h1>{html.escape(title)}</h1>
+        <p>{intro_html}</p>
+      </div>
+      <a class="edits-masthead-credit" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">{credit} <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+    </section>"""
+
+
+
 def _resolve_carousel_picks(theme, products):
     """
     A theme with a "carousel_picks" key (a list of (brand, product_name)
@@ -820,6 +877,11 @@ EDIT_BROWSE_LINKS = {
 }
 
 
+# Edit pages that use the masthead header (title + intro on the hero photo). TRIAL: one page first
+# (2026-10-04), the rest follow once approved - then this becomes "every Edit with a hero photo".
+MASTHEAD_SLUGS = {"two-seater-sofas"}
+
+
 def render_themed_edit_page(theme, products):
     slug = theme["slug"]
     title = theme["title"]
@@ -834,7 +896,18 @@ def render_themed_edit_page(theme, products):
     n, _makers = edit_totals(theme, cards_to_render)
     description = f"{n} real {title.lower()}{'' if title.lower().endswith('s') else 's'}, from independent makers. {theme['intro']}"
 
-    carousel_html = _render_carousel(_resolve_carousel_picks(theme, cards_to_render))
+    picks = _resolve_carousel_picks(theme, cards_to_render)
+    use_masthead = slug in MASTHEAD_SLUGS and len(picks) == 1
+    carousel_html = _render_carousel(picks)
+    if use_masthead:
+        # the photo is the header: title + intro sit on it, so no separate header or banner below
+        header_html = masthead_html(title, html.escape(theme["intro"]), picks[0], theme.get("masthead_text", "dark"), wide=True)
+        carousel_html = ""
+    else:
+        header_html = f'''<div class="edit-header">
+    <h1>{html.escape(title)}</h1>
+    <p class="edit-intro">{html.escape(theme["intro"])}</p>
+  </div>'''
 
     if cards_to_render:
         # One layout treatment for the whole capped set (2026-09-30,
@@ -871,7 +944,7 @@ def render_themed_edit_page(theme, products):
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
-<style>{PAGE_CSS}{EDIT_PAGE_CSS}</style>
+<style>{PAGE_CSS}{EDIT_PAGE_CSS}{EDIT_MASTHEAD_CSS}</style>
 </head>
 <body>
 <header class="site-header">
@@ -880,10 +953,7 @@ def render_themed_edit_page(theme, products):
 </header>
 <main>
   <p class="page-tagline"><a class="edits-kicker" href="/edits.html">Edits</a></p>
-  <div class="edit-header">
-    <h1>{html.escape(title)}</h1>
-    <p class="edit-intro">{html.escape(theme["intro"])}</p>
-  </div>
+  {header_html}
   {carousel_html}
   {body}
   <p class="foot-note">

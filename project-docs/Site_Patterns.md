@@ -117,6 +117,11 @@ hold the text - for a dark photo set `HUB_MASTHEAD_TEXT = "light"`, and never ad
 scrim to rescue a busy photo; pick another photo. `HUB_LAYOUT = "classic"` restores
 the title-row-above banner.
 
+Edit pages: TRIAL (2026-10-04) on Two Seater Sofas only - the Edit's title (h1) and intro sit on its hero
+photo exactly like the hub (`masthead_html` in generate_themed_edit_pages.py, shared CSS), the maker credited
+by the pill, no separate header or banner below. `MASTHEAD_SLUGS` lists the Edits using it; the rest follow on
+approval (each needs a hero photo with a plain area at the top; set `masthead_text` to "light" for a dark one).
+
 ## 2. Tiles (the home page bento, the Edits hub's featured edit)
 
 - The photo fills the tile; the category/edit title sits top-left on it
