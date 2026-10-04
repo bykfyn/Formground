@@ -595,7 +595,7 @@ async function runDiscover() {
     currentSearchId = data.search_id || null;
     renderResults(
       data.results || [],
-      (n) => `${n} random products, no rankings, no paid results`,
+      (n) => `${n} random pieces, no rankings, no paid results`,
       "Nothing to discover yet.",
       true
     );
