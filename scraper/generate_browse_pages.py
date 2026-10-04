@@ -384,6 +384,7 @@ LISTING_CSS = """
   .listing-more h2 a:hover { color: var(--text-primary); }
   .listing-more a:hover { text-decoration: underline; }
   .listing-more .n { color: var(--text-muted); }
+  .listing-more .here { color: var(--text-primary); font-weight: 600; }
   .pager { margin-top: 28px; }
   .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
 """
@@ -445,10 +446,12 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
                 if (DOCS_DIR / "brands" / f"{slug_b}.html").exists() else html.escape(brand))
     top_makers = " &middot; ".join(f'{maker_link(b)} <span class="n">{n}</span>' for b, n in makers.most_common(40))
     more_makers = f" &middot; and {n_makers - 40} more" if n_makers > 40 else ""
+    # The whole category's types, the current one marked (bold, not a link) like the dropdown does.
     siblings = " &middot; ".join(
-        f'<a href="/work/{e["slug"]}.html">{html.escape(e["title"])}</a> <span class="n">{e["n"]:,}</span>'
-        for e in sorted(work_menu.category_entries(entries, cat_name), key=lambda x: x["title"].lower())
-        if e["slug"] != slug)
+        (f'<strong class="here" aria-current="page">{html.escape(e["title"])}</strong> <span class="n">{e["n"]:,}</span>'
+         if e["slug"] == slug else
+         f'<a href="/work/{e["slug"]}.html">{html.escape(e["title"])}</a> <span class="n">{e["n"]:,}</span>')
+        for e in sorted(work_menu.category_entries(entries, cat_name), key=lambda x: x["title"].lower()))
     see_more = ""
     if page < pages:
         see_more = (f'<div class="load-more-row"><a class="load-more-btn" id="see-more" data-total="{len(cards_all)}" '
