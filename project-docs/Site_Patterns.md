@@ -55,9 +55,11 @@ Each nav item owns a URL namespace; a name never means two different pages.
   country its location text names ("Aarhus, Denmark" - 12 houses stand outside their architect's
   home country), else the architect's own country. Country pages say "Houses in Sweden" and list
   their practices (with house counts) as links to the architect pages.
-- House cards are the exception to square cards: landscape 4:3 photos in 4 columns (3 on tablet,
-  2 on phones), name / location . year / "by practice" each on one line so every row is even.
-  On phones the four category chips drop their chevrons so all four fit one row.
+- Houses pages are type pages like any other (2026-10-04): the listing template, the standard product card (square photo, house
+  name, the practice as the "maker", "location · year" on the detail line, the share button - exactly what a Work search for
+  "house" returns), 60 a page with See more, the chips with Houses selected, then "Architects ->" (the practices on the page,
+  each linking to its architect page) and "Houses ->" (every country, the current one marked). Each house links to the
+  architect's own project page. The landscape 4:3 card and the left-hand breadcrumb were retired.
 - Moved pages leave a redirect stub at the old address (`scraper/redirects.py`; GitHub Pages
   cannot send a 301): old /browse/*, /floor-lamps.html, the top-level Edit slugs and the
   retired category pages all redirect. The sitemap lists only real pages, and no live page

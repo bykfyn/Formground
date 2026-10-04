@@ -73,7 +73,6 @@ DATA_DIR = SCRAPER_DIR.parent / "data"
 # no page ends in a ragged row, and matches the Houses pages. A "See more" link loads the next 60 in place.
 LISTING_CARDS_PER_PAGE = 60
 
-HOUSES_PER_PAGE = 60
 MIN_HOUSES_FOR_COUNTRY_PAGE = 8
 
 sys.path.insert(0, str(BACKEND_DIR))
@@ -206,17 +205,6 @@ TYPE_GRID_CSS = """
   .type-group-title { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 30px 0 14px; }
   @media (max-width: 959px) { .type-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   @media (max-width: 639px) { .type-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } }
-  /* Houses: landscape photos at 4:3 in four larger columns (3 on tablet, 2 on phones) - a square
-     crop cut half of every building; both text lines stay on one line so rows are even. */
-  .type-grid--houses { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px 20px; }
-  .type-grid--houses .maker-card-hero { aspect-ratio: 4/3; }
-  .type-grid--houses .maker-name, .type-grid--houses .maker-country { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  @media (max-width: 959px) { .type-grid--houses { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-  @media (max-width: 639px) { .type-grid--houses { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } }
-  .house-practices { font-size: 13px; line-height: 1.7; color: var(--text-secondary); margin: 0 0 14px; }
-  .house-practices span { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin-right: 6px; }
-  .house-practices a { color: var(--text-primary); text-decoration: none; }
-  .house-practices a:hover { text-decoration: underline; }
 """
 
 PAGER_CSS = """
@@ -393,7 +381,7 @@ def _edits_for_type(slug):
             if browse_slug == slug and es in titles]
 
 
-def _listing_card_html(p, variant_count=None):
+def _listing_card_html(p, variant_count=None):  # p may carry "detail": a houses card shows "location · year"
     """A product card identical to the Work page's own (search.js renderCard): photo with the share
     button over its corner, name (2-line slot), maker, and the empty detail line that keeps rows even."""
     url = p["brand_url"] if p["link_dead"] else p["product_url"]
@@ -407,7 +395,7 @@ def _listing_card_html(p, variant_count=None):
         f'<div class="card-image">{image}{badge}'
         '<button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>'
         f'<div class="card-body"><div class="card-title-wrap"><p class="card-title">{name}</p></div>'
-        f'<p class="card-brand">{brand}</p><p class="card-detail"></p></div></a>'
+        f'<p class="card-brand">{brand}</p><p class="card-detail">{html.escape(p.get("detail") or "")}</p></div></a>'
     )
 
 
@@ -450,6 +438,8 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
         slug_b = slugify(brand)
         return (f'<a href="/brands/{slug_b}.html">{html.escape(brand)}</a>'
                 if (DOCS_DIR / "brands" / f"{slug_b}.html").exists() else html.escape(brand))
+    if view and view.get("maker_link"):
+        maker_link = view["maker_link"]            # Houses: the practices link to their architect pages
     top_makers = " &middot; ".join(f'{maker_link(b)} <span class="n">{n}</span>' for b, n in makers.most_common(40))
     more_makers = f" &middot; and {n_makers - 40} more" if n_makers > 40 else ""
     if view:
@@ -465,6 +455,7 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
              if e["slug"] == slug else
              f'<a href="/work/{e["slug"]}.html">{html.escape(e["title"])}</a> <span class="n">{e["n"]:,}</span>')
             for e in sorted(work_menu.category_entries(entries, cat_name), key=work_menu.entry_sort_key))
+    makers_heading = view.get("makers_heading") if view and view.get("makers_heading") else '<a href="/makers.html">Makers &rarr;</a>'
     menu_html = work_menu.render_menu(entries, current_slug=slug, current_category=cat_name)
     earlier = (f'<p class="earlier-results"><a href="/work/{_page_slug(slug, page - 1)}.html" rel="prev">'
                f'&larr; Earlier results</a></p>' if page > 1 else "")
@@ -520,7 +511,7 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
   {see_more}
   {_pager_compact_html(slug, page, pages)}
   <section class="listing-more">
-    <h2><a href="/makers.html">Makers &rarr;</a></h2>
+    <h2>{makers_heading}</h2>
     <p>{top_makers}{more_makers}</p>
     <h2>{siblings_heading}</h2>
     <p>{siblings}</p>
@@ -612,95 +603,57 @@ def house_entries(groups):
             for country, slug, hs in groups]
 
 
-def _house_work_card_html(h):
-    meta = " · ".join(x for x in [h.get("location"), str(h["year"]) if h.get("year") else None] if x)
-    # both text lines always exist and stay on one line, so every card in a row is the same height
-    return (
-        f'<a class="maker-card" href="{html.escape(h.get("url") or "#")}" target="_blank" rel="noopener noreferrer" '
-        f'data-product="{html.escape(h["name"] or "House")}" data-brand="{html.escape(h["firm"])}">'
-        f'<div class="maker-card-hero"><img src="{html.escape(h["image"])}" alt="{html.escape(h["name"] or "House")}" loading="lazy">{SHARE_BTN_HTML}</div>'
-        f'<div class="maker-card-body"><span class="maker-name">{html.escape(h["name"] or "Untitled house")}</span>'
-        f'<span class="maker-country">{html.escape(meta) if meta else "&nbsp;"}</span>'
-        f'<span class="maker-country">by {html.escape(h["firm"])}</span></div></a>'
-    )
-
-
-def render_houses_page(slug, title, lead, houses, page, pages, entries, crumbs, firm_pages):
-    """/work/houses.html (every house) and /work/houses-<country>.html. Same shell as the type
-    pages; each house links to its architect's own project page."""
-    page_url = f"{SITE_URL}/work/{_page_slug(slug, page)}.html"
-    suffix = f" - page {page}" if page > 1 else ""
-    firms_here = {}
-    for h in houses:
-        firms_here[h["firm"]] = firms_here.get(h["firm"], 0) + 1
-    n_firms = len(firms_here)
-    summary = f"{len(houses):,} houses by {n_firms} practice{'' if n_firms == 1 else 's'}{lead}"
-    description = f"{summary}. Every house links straight to the architect's own project page."
-    practices = ""
-    if slug != "houses":  # the country pages name their practices; the full list is the Architects page
-        links = " &middot; ".join(
-            f'<a href="/architects/{firm_pages[f]}.html">{html.escape(f)}</a> ({n})' if f in firm_pages else html.escape(f)
-            for f, n in sorted(firms_here.items(), key=lambda kv: (-kv[1], kv[0])))
-        practices = f'<p class="house-practices"><span>Practices</span> {links}</p>'
-    chunk = houses[(page - 1) * HOUSES_PER_PAGE: page * HOUSES_PER_PAGE]
-    cards = "".join(_house_work_card_html(h) for h in chunk)
-    breadcrumb = _breadcrumb_json([("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html")] +
-                                  [(n, f"{SITE_URL}{u}") for n, u in crumbs])
-    itemlist = json.dumps({"@context": "https://schema.org", "@type": "ItemList", "itemListElement": [
-        {"@type": "ListItem", "position": (page - 1) * HOUSES_PER_PAGE + i,
-         "item": {"@type": "CreativeWork", "name": h["name"], "url": h.get("url"), "image": h["image"],
-                  "creator": {"@type": "Organization", "name": h["firm"]}}}
-        for i, h in enumerate(chunk, start=1)]}, ensure_ascii=False, separators=(",", ":"))
-    tagline = " &rsaquo; ".join(f'<a href="{u}">{html.escape(n)}</a>' for n, u in [("Work", "/work.html")] + crumbs[:-1])
-    return f"""<!DOCTYPE html>
-<html lang="en">
-<head>
-{_head(f"{title}{suffix} — Formground", description, page_url)}
-<script type="application/ld+json">{breadcrumb}</script>
-<script type="application/ld+json">{itemlist}</script>
-</head>
-<body>
-<header class="site-header">
-  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-{SITE_NAV_HTML}
-</header>
-<main>
-  <p class="page-tagline">{tagline}</p>
-  <h1>{html.escape(title)}</h1>
-  <p class="category-intro">{html.escape(summary)}{f" (page {page} of {pages})" if pages > 1 else ""}. Every house links straight to the architect's own project page.</p>
-  {practices}
-  {work_menu.render_menu(entries, align="left", current_category="Houses", current_slug=slug)}
-  <div class="type-grid type-grid--houses">{cards}</div>
-  {_pager_html(slug, page, pages)}
-  <p class="foot-note">
-    {SITE_FOOTER_HTML}
-  </p>
-</main>
-<script>{CARD_CLICK_TRACKING_JS}</script>
-<script src="{SHARE_JS}" defer></script>
-{MENU_SCRIPT}
-{CLOUDFLARE_ANALYTICS}
-</body>
-</html>
-"""
+def _house_as_card(h):
+    """A house in the shape of a product card (what the Work search returns for a house): the firm is the
+    'brand', the house links to its architect's own project page, and the detail line is location + year."""
+    detail = " · ".join(x for x in [h.get("location"), str(h["year"]) if h.get("year") else None] if x)
+    return {"brand": h["firm"], "brand_url": h.get("url") or "#", "product_name": h["name"] or "Untitled house",
+            "product_url": h.get("url") or "#", "image_url": h["image"], "link_dead": False, "detail": detail,
+            "category": "house"}
 
 
 def _write_house_pages(houses, groups, entries):
-    """Writes houses.html (+ -2 ...) and each country's pages; returns sitemap slugs."""
+    """Houses pages = the listing template (same as every type page) with the standard product card; returns sitemap
+    slugs. /work/houses.html lists every house; /work/houses-<country>.html the houses standing in that country."""
     import generate_architects_pages
     firm_pages = generate_architects_pages.firm_slugs()
     out_slugs = []
-    ordered = _interleave_by_firm(houses)
     n_countries = len({h["country"] for h in houses if h.get("country")})
-    targets = [("houses", "Houses", f" in {n_countries} countries", ordered, [("Houses", "/work/houses.html")])]
+    targets = [("houses", "Houses", f" in {n_countries} countries", _interleave_by_firm(houses),
+                [("Houses", "/work/houses.html")])]
     for country, slug, hs in groups:
         targets.append((slug, f"Houses in {country}", f" in {country}", _interleave_by_firm(hs),
                         [("Houses", "/work/houses.html"), (country, f"/work/{slug}.html")]))
+
+    def firm_link(name):
+        return (f'<a href="/architects/{firm_pages[name]}.html">{html.escape(name)}</a>'
+                if name in firm_pages else html.escape(name))
+
+    country_entries = sorted((e for e in entries if e["group"] == "Houses"), key=lambda e: (-e["n"], e["title"]))
     for slug, title, lead, hs, crumbs in targets:
-        pages = max(1, math.ceil(len(hs) / HOUSES_PER_PAGE))
+        products = [_house_as_card(h) for h in hs]
+        siblings = " &middot; ".join(
+            (f'<strong class="here" aria-current="page">{html.escape(e["title"])}</strong> <span class="n">{e["n"]:,}</span>'
+             if e["slug"] == slug else
+             f'<a href="/work/{e["slug"]}.html">{html.escape(e["title"])}</a> <span class="n">{e["n"]:,}</span>')
+            for e in country_entries)
+        if slug == "houses":
+            siblings = f'<strong class="here" aria-current="page">All houses</strong> <span class="n">{len(hs):,}</span> &middot; ' + siblings
+        else:
+            siblings = f'<a href="/work/houses.html">All houses</a> <span class="n">{len(houses):,}</span> &middot; ' + siblings
+        view = {
+            "slug": slug, "title": title, "noun": "houses", "cat": "Houses", "crumbs": crumbs,
+            "summary": lambda total, n, lead=lead: f"{total:,} houses by {n} practice{'' if n == 1 else 's'}{lead}",
+            "siblings_heading": '<a href="/work/houses.html">Houses &rarr;</a>', "siblings": siblings,
+            "subnav": lambda _slug: "", "maker_link": firm_link,
+            "makers_heading": '<a href="/architects.html">Architects &rarr;</a>',
+        }
+        cards_all = products
+        pages = max(1, math.ceil(len(products) / LISTING_CARDS_PER_PAGE))
         for page in range(1, pages + 1):
+            chunk = products[(page - 1) * LISTING_CARDS_PER_PAGE: page * LISTING_CARDS_PER_PAGE]
             (BROWSE_DIR / f"{_page_slug(slug, page)}.html").write_text(
-                render_houses_page(slug, title, lead, hs, page, pages, entries, crumbs, firm_pages))
+                render_listing_page(None, chunk, {}, page, pages, products, entries, cards_all, view=view))
             out_slugs.append(f"work/{_page_slug(slug, page)}")
         print(f"work/{slug}: {len(hs)} houses, {pages} page(s)")
     return out_slugs

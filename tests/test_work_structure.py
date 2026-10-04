@@ -285,6 +285,23 @@ class StructureTests(unittest.TestCase):
         small = (DOCS / "designers" / "aa-vv.html").read_text()
         self.assertNotIn('id="see-more"', small)
 
+    def test_houses_pages_are_listing_pages_with_the_standard_card(self):
+        for name in ("houses-austria", "houses", "houses-sweden"):
+            page = (DOCS / "work" / f"{name}.html").read_text()
+            self.assertIn('class="results-grid"', page, name)
+            self.assertIn('<h1 class="listing-title">', page, name)
+            self.assertIn('class="work-menu-cat is-current"', page, name)         # the Houses chip is selected
+            self.assertNotIn('type-grid--houses', page, name)
+            self.assertLessEqual(len(re.findall(r'<a class="card"', page)), 60, name)
+            self.assertEqual(len(re.findall(r'<a class="card"', page)), page.count('<button class="share-btn"'), name)
+        austria = (DOCS / "work" / "houses-austria.html").read_text()
+        self.assertRegex(austria, r'<p class="card-detail">[^<]*Austria[^<]*20\d\d</p>')   # location . year, as in search
+        self.assertIn('<h2><a href="/architects.html">Architects &rarr;</a></h2>', austria)
+        self.assertIn('/architects/bernardo-bader-architekten.html', austria)
+        houses = (DOCS / "work" / "houses.html").read_text()
+        self.assertIn('id="see-more"', houses)
+        self.assertIn('href="/work/houses-2.html"', houses)
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "aa-vv.html").read_text()
         self.assertNotIn("Looking for who made it?", page)
