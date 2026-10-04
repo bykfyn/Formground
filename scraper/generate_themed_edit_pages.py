@@ -604,6 +604,8 @@ def _cap_products_fairly(cards, max_count=MAX_PRODUCTS_PER_EDIT):
 
 def _hero_identities(theme):
     """The (brand, product_name) identities a theme shows in its banner."""
+    if not EDIT_PAGE_BANNER:
+        return []  # no banner, so nothing is held out of the grid
     hero = theme.get("hero_image")
     return ([hero] if hero else []) + list(theme.get("carousel_picks") or [])
 
@@ -652,7 +654,8 @@ def edit_totals(theme, cards_to_render):
     12 grid pieces, so the page showed 13 while the hub said 12). Compared by
     product_url, since a hero_label copy renames the product."""
     in_grid = {p["product_url"] for p in cards_to_render}
-    extra = [p for p in _resolve_carousel_picks(theme, cards_to_render) if p["product_url"] not in in_grid]
+    extra = ([p for p in _resolve_carousel_picks(theme, cards_to_render) if p["product_url"] not in in_grid]
+             if EDIT_PAGE_BANNER else [])
     brands = {p["brand"] for p in cards_to_render} | {p["brand"] for p in extra}
     return len(cards_to_render) + len(extra), len(brands)
 
@@ -883,6 +886,11 @@ EDIT_BROWSE_LINKS = {
 }
 
 
+# Edit pages are kept simple for now (2026-10-04, user: "simplify it and use this layout" = the Ceiling Lamps
+# page): the Edit's kicker, title and intro, then the grid - no banner photo, carousel or masthead. Set True
+# to bring the banner (or, via MASTHEAD_SLUGS, the masthead) back; the hero picks in THEMES are kept.
+EDIT_PAGE_BANNER = False
+
 # Edit pages that use the masthead header (title + intro on the hero photo). TRIAL: one page first
 # (2026-10-04), the rest follow once approved - then this becomes "every Edit with a hero photo".
 MASTHEAD_SLUGS = {"two-seater-sofas"}
@@ -902,8 +910,8 @@ def render_themed_edit_page(theme, products):
     n, _makers = edit_totals(theme, cards_to_render)
     description = f"{n} real {title.lower()}{'' if title.lower().endswith('s') else 's'}, from independent makers. {theme['intro']}"
 
-    picks = _resolve_carousel_picks(theme, cards_to_render)
-    use_masthead = slug in MASTHEAD_SLUGS and len(picks) == 1
+    picks = _resolve_carousel_picks(theme, cards_to_render) if EDIT_PAGE_BANNER else []
+    use_masthead = EDIT_PAGE_BANNER and slug in MASTHEAD_SLUGS and len(picks) == 1
     carousel_html = _render_carousel(picks)
     tagline_html = "" if use_masthead else '<p class="page-tagline"><a class="edits-kicker" href="/edits.html">Edits</a></p>'
     if use_masthead:

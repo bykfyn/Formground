@@ -93,7 +93,7 @@ one later.
 
 ## 1. Banners (the wide photo with one featured product)
 
-Used on: home (Sofas, Two Seater Sofas), the Edits hub, every Edit page.
+Used on: the home page's category sections, the Edits hub (individual Edit pages are simple for now, see below).
 
 - **Title row ABOVE the photo.** The edit/section name on the left, a "See the
   edit →" / "See all →" link on the right (internal link).
@@ -117,21 +117,11 @@ hold the text - for a dark photo set `HUB_MASTHEAD_TEXT = "light"`, and never ad
 scrim to rescue a busy photo; pick another photo. `HUB_LAYOUT = "classic"` restores
 the title-row-above banner.
 
-Edit pages: TRIAL (2026-10-04) on Two Seater Sofas only - the Edit's title (h1) and intro sit on its hero
-photo exactly like the hub (`masthead_html` in generate_themed_edit_pages.py, shared CSS), the maker credited
-by the pill, no separate header or banner below. `MASTHEAD_SLUGS` lists the Edits using it; the rest follow on
-approval (each needs a hero photo with a plain area at the top; set `masthead_text` to "light" for a dark one).
-
-### Home page category sections - rhythm (2026-10-04)
-
-Every category section on the home page (Houses, Furniture, Lighting, Objects) runs the same three beats:
-**one wide banner** (a single type, up to 3 rotating slides, caption below), **a pair** (two types, 2-3 slides
-each) and **a quiet shelf** of 7-8 square cards. Section order follows the bento and chips: New, Houses,
-Furniture, Lighting, Objects, Themed Edits. Houses are filed by where the house stands, so their "types"
-are countries (Sweden banner, France | Norway pair, United Kingdom shelf; each "See all" goes to that country
-page). Banner photos must be landscape (about 1.4+ ratio) - square pack shots crop badly at 2:1.
-Current picks: Furniture = Sofas / Chairs | Side Tables / Coffee Tables; Lighting = Table Lamps / Floor Lamps |
-Pendant Lamps / Wall Lamps; Objects = Rugs / Bowls | Candleholders / Vases.
+Edit pages (individual): SIMPLE for now (2026-10-04) - the layout of the Ceiling Lamps Edit on all nine: "Edits"
+kicker, title, intro, then the grid; no banner photo, carousel or masthead. `EDIT_PAGE_BANNER` in
+generate_themed_edit_pages.py brings the banner back (and `MASTHEAD_SLUGS` the title-on-photo masthead tried on
+Two Seater Sofas); the hero picks stay in THEMES. With no banner, no product is held out of the grid. The hub
+page keeps its masthead.
 
 ## 2. Tiles (the home page bento, the Edits hub's featured edit)
 
