@@ -133,6 +133,23 @@ class StructureTests(unittest.TestCase):
         self.assertIn("/work-results.css?v=", (DOCS / "work.html").read_text())
         self.assertEqual((ROOT / "frontend" / "work-results.css").read_text(), (DOCS / "work-results.css").read_text())
 
+    def test_pilot_pages_hold_60_cards_with_see_more_and_a_compact_pager(self):
+        pages = sorted(glob.glob(str(DOCS / "work" / "table-lamps*.html")), key=lambda f: (len(f), f))
+        counts = [len(re.findall(r'<a class="card"', Path(f).read_text())) for f in pages]
+        self.assertTrue(len(pages) >= 10, "table lamps should be many 60-card pages")
+        self.assertTrue(all(c == 60 for c in counts[:-1]), counts)
+        self.assertTrue(1 <= counts[-1] <= 60)
+        first = (DOCS / "work" / "table-lamps.html").read_text()
+        self.assertIn('id="see-more"', first)
+        self.assertIn('href="/work/table-lamps-2.html"', first)
+        self.assertIn('class="gap"', first)                       # the pager elides the middle pages
+        self.assertIn('rel="next"', first)
+        last = Path(pages[-1]).read_text()
+        self.assertNotIn('id="see-more"', last)                   # nothing left to load
+        self.assertNotIn('rel="next"', last)
+        # types not yet on the template keep their 300-card pages
+        self.assertEqual(len(re.findall(r'<a class="card"', (DOCS / "work" / "sofas.html").read_text())), 300)
+
     def test_surprise_me_is_a_chip_not_part_of_the_search_box(self):
         work = (DOCS / "work.html").read_text()
         self.assertEqual(work.count('id="discover-chip"'), 1)          # search.js shuffles via this id

@@ -60,7 +60,15 @@ goes to /work.html?q=..., "Surprise me" to /work.html), the four chips (the curr
 selected), a centred title and results line ("816 table lamps from 77 makers, listed in full - page 1
 of 3, no rankings, not paid for", plus "Curated selection: <Edit> ->" when an Edit covers the type),
 the same cards with the share button, a pager, then "Makers" (top 40 with counts, each linking to the
-maker's page) and "More in <category>" siblings. Styles come from ONE shared file,
+maker's page) and "More in <category>" siblings.
+
+Page size follows Lighthouse's ~1,400-DOM-element limit and Baymard's 24-72 items per page: 60 cards
+per page (divides every column count 6/4/3/2, so no ragged row; ~1,000 elements where 300 made
+~3,400), a "See more" link that loads the next 60 in place (a real link to the next numbered page
+without JavaScript, `frontend/listing.js`) and a compact pager "1 2 ... 13 Next". Every numbered page
+stays a crawlable URL with its own canonical. Click tracking is delegated, so appended cards count.
+
+Styles come from ONE shared file,
 `frontend/work-results.css`, linked by both /work.html and the listing pages - edit it there, never
 in either page. Only `LISTING_TEMPLATE_SLUGS` in generate_browse_pages.py use it for now; on approval
 set it to None for all types (and remove render_browse_page). Houses pages still use their own

@@ -71,6 +71,10 @@ DATA_DIR = SCRAPER_DIR.parent / "data"
 # type still renders with render_browse_page(). When the pilot is approved, make this "all types"
 # (LISTING_TEMPLATE_SLUGS = None) and delete render_browse_page().
 LISTING_TEMPLATE_SLUGS = {"table-lamps"}
+# Template pages hold 60 cards (not 300): Lighthouse flags a page over ~1,400 DOM elements and 300 cards
+# made ~3,400; 60 is ~1,000. 60 also divides evenly into every column count the grid uses (6, 4, 3, 2) so
+# no page ends in a ragged row, and matches the Houses pages. A "See more" link loads the next 60 in place.
+LISTING_CARDS_PER_PAGE = 60
 
 HOUSES_PER_PAGE = 60
 MIN_HOUSES_FOR_COUNTRY_PAGE = 8
@@ -95,7 +99,7 @@ from generate_theme_landing_pages import (  # noqa: E402
     append_to_sitemap,
 )
 from image_sizes import CARD, sized  # noqa: E402
-from site_assets import ICONS_CSS, MENU_SCRIPT, SHARE_JS, WORK_MENU_CSS, WORK_RESULTS_CSS  # noqa: E402
+from site_assets import ICONS_CSS, LISTING_JS, MENU_SCRIPT, SHARE_JS, WORK_MENU_CSS, WORK_RESULTS_CSS  # noqa: E402
 from redirects import write_redirect  # noqa: E402
 import work_menu  # noqa: E402
 
@@ -269,6 +273,29 @@ def _pager_html(slug, page, pages):
     return f'<nav class="pager" aria-label="Pages">{"".join(items)}</nav>'
 
 
+def _pager_compact_html(slug, page, pages):
+    """1 2 3 ... 14 Next: first, last and the pages around the current one, with gaps elided - the
+    full list of numbers does not scale to 14+ pages. Real links, so every page is crawlable."""
+    if pages <= 1:
+        return ""
+    shown = sorted({1, pages} | {n for n in range(page - 1, page + 2) if 1 <= n <= pages})
+    items = []
+    if page > 1:
+        items.append(f'<a href="/work/{_page_slug(slug, page - 1)}.html" rel="prev">&larr; Prev</a>')
+    last = 0
+    for n in shown:
+        if n - last > 1:
+            items.append('<span class="gap" aria-hidden="true">&hellip;</span>')
+        if n == page:
+            items.append(f'<span class="current" aria-current="page">{n}</span>')
+        else:
+            items.append(f'<a href="/work/{_page_slug(slug, n)}.html">{n}</a>')
+        last = n
+    if page < pages:
+        items.append(f'<a href="/work/{_page_slug(slug, page + 1)}.html" rel="next">Next &rarr;</a>')
+    return f'<nav class="pager" aria-label="Pages">{"".join(items)}</nav>'
+
+
 def _head(title, description, page_url):
     return f"""<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -354,7 +381,8 @@ LISTING_CSS = """
   .listing-more a { color: var(--text-primary); text-decoration: none; }
   .listing-more a:hover { text-decoration: underline; }
   .listing-more .n { color: var(--text-muted); }
-  .pager { margin-top: 36px; }
+  .pager { margin-top: 28px; }
+  .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
 """
 
 # product slug -> the curated Edits that cover it (for the "curated selection" link)
@@ -383,7 +411,7 @@ def _listing_card_html(p, variant_count=None):
     )
 
 
-def render_listing_page(category, cards, variant_counts, page, pages, products, entries):
+def render_listing_page(category, cards, variant_counts, page, pages, products, entries, cards_all):
     """The type page as the Work page showing one type (pilot: Table Lamps)."""
     from collections import Counter
     slug, title = category["slug"], category["title"]
@@ -405,7 +433,7 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
     breadcrumb = _breadcrumb_json([
         ("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html"),
         (cat_name, f"{SITE_URL}/work/{cat_slug}.html"), (title, f"{SITE_URL}/work/{slug}.html")])
-    itemlist = _itemlist_json(cards, (page - 1) * CARDS_PER_PAGE + 1)
+    itemlist = _itemlist_json(cards, (page - 1) * LISTING_CARDS_PER_PAGE + 1)
     grid = "".join(_listing_card_html(p, variant_counts.get(id(p))) for p in cards)
 
     def maker_link(brand):
@@ -418,6 +446,11 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
         f'<a href="/work/{e["slug"]}.html">{html.escape(e["title"])}</a> <span class="n">{e["n"]:,}</span>'
         for e in sorted(work_menu.category_entries(entries, cat_name), key=lambda x: x["title"].lower())
         if e["slug"] != slug)
+    see_more = ""
+    if page < pages:
+        see_more = (f'<div class="load-more-row"><a class="load-more-btn" id="see-more" data-total="{len(cards_all)}" '
+                    f'href="/work/{_page_slug(slug, page + 1)}.html">See more {html.escape(noun)}</a>'
+                    f'<span class="load-more-progress" id="see-more-progress"></span></div>')
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -460,7 +493,8 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
   <h1 class="listing-title">{html.escape(title)}</h1>
   <p class="listing-meta">{html.escape(summary)}, listed in full{html.escape(page_note)}, no rankings, not paid for{edit_line}</p>
   <div class="results-grid">{grid}</div>
-  {_pager_html(slug, page, pages)}
+  {see_more}
+  {_pager_compact_html(slug, page, pages)}
   <section class="listing-more">
     <h2>Makers</h2>
     <p>{top_makers}{more_makers}</p>
@@ -474,6 +508,7 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
 <script>{CARD_CLICK_TRACKING_JS}</script>
 {MENU_SCRIPT}
 <script src="{SHARE_JS}" defer></script>
+<script src="{LISTING_JS}" defer></script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -782,12 +817,14 @@ def generate():
 
     sitemap_slugs = []
     for category, products, cards, variant_counts in computed:
-        pages = max(1, math.ceil(len(cards) / CARDS_PER_PAGE))
+        use_template = LISTING_TEMPLATE_SLUGS is None or category["slug"] in LISTING_TEMPLATE_SLUGS
+        per_page = LISTING_CARDS_PER_PAGE if use_template else CARDS_PER_PAGE
+        pages = max(1, math.ceil(len(cards) / per_page))
         for page in range(1, pages + 1):
-            chunk = cards[(page - 1) * CARDS_PER_PAGE: page * CARDS_PER_PAGE]
+            chunk = cards[(page - 1) * per_page: page * per_page]
             out = BROWSE_DIR / f"{_page_slug(category['slug'], page)}.html"
-            if LISTING_TEMPLATE_SLUGS is None or category["slug"] in LISTING_TEMPLATE_SLUGS:
-                out.write_text(render_listing_page(category, chunk, variant_counts, page, pages, products, entries))
+            if use_template:
+                out.write_text(render_listing_page(category, chunk, variant_counts, page, pages, products, entries, cards))
             else:
                 out.write_text(render_browse_page(category, chunk, variant_counts, page, pages, len(products), entries))
             sitemap_slugs.append(f"work/{_page_slug(category['slug'], page)}")

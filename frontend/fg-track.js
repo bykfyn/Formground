@@ -95,33 +95,35 @@
 
   // Click-throughs on server-rendered cards. Pages that load search.js
   // (home, work) build their cards dynamically and report their own clicks.
+  // One delegated listener (not one per card) so cards added later - the type
+  // pages' "See more" appends the next batch - are tracked exactly like the first.
   function bindClicks() {
-    if (document.querySelector('script[src$="search.js"]')) return;
-    var cards = Array.prototype.slice.call(document.querySelectorAll(".card"));
-    document.querySelectorAll(".maker-card, .card, .brand-site-link").forEach(function (el) {
-      el.addEventListener("click", function () {
-        if (!el.hostname || el.hostname === window.location.hostname) return;
+    if (document.querySelector('script[src*="search.js"]')) return;
+    document.addEventListener("click", function (ev) {
+      var el = ev.target.closest && ev.target.closest(".maker-card, .card, .brand-site-link");
+      if (!el) return;
+      if (!el.hostname || el.hostname === window.location.hostname) return;
+      if (ev.target.closest(".share-btn")) return;  // sharing is its own event (share.js)
 
-        var brand, productName;
-        if (el.classList.contains("card")) {
-          productName = textOf(el.querySelector(".card-title"));
-          brand = textOf(el.querySelector(".card-brand")) || pageBrand;
-        } else if (el.classList.contains("brand-site-link")) {
-          brand = pageBrand;
-          productName = null;
-        } else if (pageBrand) {
-          brand = pageBrand;
-          productName = textOf(el.querySelector(".maker-name"));
-        } else {
-          brand = textOf(el.querySelector(".maker-name"));
-          productName = textOf(el.querySelector(".maker-categories"));
-        }
+      var brand, productName;
+      if (el.classList.contains("card")) {
+        productName = textOf(el.querySelector(".card-title"));
+        brand = textOf(el.querySelector(".card-brand")) || pageBrand;
+      } else if (el.classList.contains("brand-site-link")) {
+        brand = pageBrand;
+        productName = null;
+      } else if (pageBrand) {
+        brand = pageBrand;
+        productName = textOf(el.querySelector(".maker-name"));
+      } else {
+        brand = textOf(el.querySelector(".maker-name"));
+        productName = textOf(el.querySelector(".maker-categories"));
+      }
 
-        var fields = { brand: brand, product_name: productName, target_url: el.href };
-        var index = cards.indexOf(el);
-        if (index !== -1) fields.position = index + 1;   // rank within this page's grid
-        send("click", fields);
-      });
+      var fields = { brand: brand, product_name: productName, target_url: el.href };
+      var index = Array.prototype.indexOf.call(document.querySelectorAll(".card"), el);
+      if (index !== -1) fields.position = index + 1;   // rank within this page's grid
+      send("click", fields);
     });
   }
 
