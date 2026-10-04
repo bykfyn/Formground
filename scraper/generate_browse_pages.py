@@ -420,28 +420,34 @@ def _listing_card_html(p, variant_count=None):
     )
 
 
-def render_listing_page(category, cards, variant_counts, page, pages, products, entries, cards_all):
-    """The type page as the Work page showing one type (pilot: Table Lamps)."""
+def render_listing_page(category, cards, variant_counts, page, pages, products, entries, cards_all, view=None):
+    """The type page as the Work page showing one type. `view` (the New pages) overrides what differs for a
+    page that is not one type: its slug/title/wording, breadcrumb, menu state, a sub-navigation row and the
+    list at the bottom."""
     from collections import Counter
-    slug, title = category["slug"], category["title"]
+    slug, title = (view["slug"], view["title"]) if view else (category["slug"], category["title"])
     total = len(products)
     page_url = f"{SITE_URL}/work/{_page_slug(slug, page)}.html"
-    cat_name = work_menu.category_of_group(category["group"])
-    cat_slug = work_menu.CATEGORY_SLUGS[cat_name]
-    noun = title.lower()
+    cat_name = (view.get("cat") if view else work_menu.category_of_group(category["group"]))
+    cat_slug = work_menu.CATEGORY_SLUGS[cat_name] if cat_name else None
+    noun = view["noun"] if view else title.lower()
     makers = Counter(p["brand"] for p in products)
     n_makers = len(makers)
-    summary = f"{total:,} {noun} from {n_makers} makers"
+    summary = view["summary"](total, n_makers) if view else f"{total:,} {noun} from {n_makers} makers"
     page_note = f" - page {page} of {pages}" if pages > 1 else ""
     description = f"{summary}, listed in full{page_note}. Every result links straight to the maker's own site."
-    edits = _edits_for_type(slug)
+    edits = [] if view else _edits_for_type(slug)
     edit_line = ""
     if edits:
         links = " &middot; ".join(f'<a href="/edits/{es}.html">{html.escape(et)} &rarr;</a>' for es, et in edits)
         edit_line = f' &middot; {"Themed Edits" if len(edits) > 1 else "Themed Edit"}: {links}'
-    breadcrumb = _breadcrumb_json([
-        ("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html"),
-        (cat_name, f"{SITE_URL}/work/{cat_slug}.html"), (title, f"{SITE_URL}/work/{slug}.html")])
+    if view:
+        breadcrumb = _breadcrumb_json([("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html")]
+                                      + [(t, f"{SITE_URL}{u}") for t, u in view["crumbs"]])
+    else:
+        breadcrumb = _breadcrumb_json([
+            ("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html"),
+            (cat_name, f"{SITE_URL}/work/{cat_slug}.html"), (title, f"{SITE_URL}/work/{slug}.html")])
     itemlist = _itemlist_json(cards, (page - 1) * LISTING_CARDS_PER_PAGE + 1)
     grid = "".join(_listing_card_html(p, variant_counts.get(id(p))) for p in cards)
 
@@ -451,12 +457,20 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
                 if (DOCS_DIR / "brands" / f"{slug_b}.html").exists() else html.escape(brand))
     top_makers = " &middot; ".join(f'{maker_link(b)} <span class="n">{n}</span>' for b, n in makers.most_common(40))
     more_makers = f" &middot; and {n_makers - 40} more" if n_makers > 40 else ""
-    # The whole category's types, the current one marked (bold, not a link) like the dropdown does.
-    siblings = " &middot; ".join(
-        (f'<strong class="here" aria-current="page">{html.escape(e["title"])}</strong> <span class="n">{e["n"]:,}</span>'
-         if e["slug"] == slug else
-         f'<a href="/work/{e["slug"]}.html">{html.escape(e["title"])}</a> <span class="n">{e["n"]:,}</span>')
-        for e in sorted(work_menu.category_entries(entries, cat_name), key=lambda x: x["title"].lower()))
+    if view:
+        siblings_heading = view["siblings_heading"]
+        siblings = view["siblings"]
+        subnav = view["subnav"](slug)
+    else:
+        # The whole category's types, the current one marked (bold, not a link) like the dropdown does.
+        siblings_heading = f'<a href="/work/{cat_slug}.html">{html.escape(cat_name)} &rarr;</a>'
+        subnav = ""
+        siblings = " &middot; ".join(
+            (f'<strong class="here" aria-current="page">{html.escape(e["title"])}</strong> <span class="n">{e["n"]:,}</span>'
+             if e["slug"] == slug else
+             f'<a href="/work/{e["slug"]}.html">{html.escape(e["title"])}</a> <span class="n">{e["n"]:,}</span>')
+            for e in sorted(work_menu.category_entries(entries, cat_name), key=work_menu.entry_sort_key))
+    menu_html = work_menu.render_menu(entries, current_slug=slug, current_category=cat_name)
     see_more = ""
     if page < pages:
         see_more = (f'<div class="load-more-row"><a class="load-more-btn" id="see-more" data-total="{len(cards_all)}" '
@@ -500,7 +514,8 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
       </div>
     </form>
   </div>
-  {work_menu.render_menu(entries, current_slug=slug, current_category=cat_name)}
+  {menu_html}
+  {subnav}
   <h1 class="listing-title">{html.escape(title)}</h1>
   <p class="listing-meta">{html.escape(summary)}, listed in full{html.escape(page_note)}, no rankings, not paid for{edit_line}</p>
   <div class="results-grid">{grid}</div>
@@ -509,7 +524,7 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
   <section class="listing-more">
     <h2><a href="/makers.html">Makers &rarr;</a></h2>
     <p>{top_makers}{more_makers}</p>
-    <h2><a href="/work/{cat_slug}.html">{html.escape(cat_name)} &rarr;</a></h2>
+    <h2>{siblings_heading}</h2>
     <p>{siblings}</p>
   </section>
   <p class="foot-note">
@@ -696,14 +711,18 @@ def render_category_page(cat_name, entries):
     cat_slug = work_menu.CATEGORY_SLUGS[cat_name]
     page_url = f"{SITE_URL}/work/{cat_slug}.html"
     mine = work_menu.category_entries(entries, cat_name)
-    total = sum(e["n"] for e in mine)
-    description = (f"{total:,} pieces of {cat_name.lower()} from independent makers across {len(mine)} types, listed in full - "
+    types = [e for e in mine if not e.get("is_new")]       # the "New" entry is a view, not a type
+    total = sum(e["n"] for e in types)
+    description = (f"{total:,} pieces of {cat_name.lower()} from independent makers across {len(types)} types, listed in full - "
                    "each linking straight to the maker's own site.")
     blocks = []
+    new_tiles = "".join(_type_tile_html(e) for e in mine if e.get("is_new"))
+    if new_tiles:
+        blocks.append(f'<div class="type-grid">{new_tiles}</div>')    # Furniture / New, above the groups
     for group in work_menu.TAXONOMY[cat_name]:
         tiles = "".join(
             _type_tile_html(e)
-            for e in sorted((x for x in mine if x["group"] == group), key=lambda x: x["title"].lower())
+            for e in sorted((x for x in mine if x["group"] == group), key=work_menu.entry_sort_key)
         )
         label = work_menu.GROUP_LABELS.get(group, group)
         heading = f'<h2 class="type-group-title">{html.escape(label)}</h2>' if len(work_menu.TAXONOMY[cat_name]) > 1 else ""
@@ -733,8 +752,119 @@ def render_category_page(cat_name, entries):
   </div>
   {work_menu.render_menu(entries, current_category=cat_name)}
   <h1 class="listing-title">{html.escape(cat_name)}</h1>
-  <p class="listing-meta">{total:,} pieces from {len(mine)} types, listed in full, no rankings, not paid for &middot; <a href="/edits.html">Themed Edits &rarr;</a></p>
+  <p class="listing-meta">{total:,} pieces from {len(types)} types, listed in full, no rankings, not paid for &middot; <a href="/edits.html">Themed Edits &rarr;</a></p>
   {"".join(blocks)}
+  <p class="foot-note">
+    {SITE_FOOTER_HTML}
+  </p>
+</main>
+<script>{CARD_CLICK_TRACKING_JS}</script>
+{MENU_SCRIPT}
+{CLOUDFLARE_ANALYTICS}
+</body>
+</html>
+"""
+
+
+NEW_CATEGORIES = ("Furniture", "Lighting", "Objects")   # Houses carry no added-date, so no New view
+
+
+def _new_sets():
+    """{category: products added in the last NEW_ARRIVALS_WINDOW_DAYS days (the same window and filter the Work
+    search's "new" keyword uses)}, newest first. A piece counts under a category when it belongs to one of
+    that category's types, so not-yet-classified pieces are in none of them."""
+    new_all = qe.filter_products({"new_only": True})
+    ids_by_cat = {}
+    for category in BROWSE_CATEGORIES:
+        cat_name = work_menu.category_of_group(category["group"])
+        for intent in category.get("intents") or [category["intent"]]:
+            for p in qe.filter_products({**intent, "new_only": True}):
+                ids_by_cat.setdefault(cat_name, set()).add(p["id"])
+    newest = sorted(new_all, key=lambda p: p["first_seen"] or "", reverse=True)
+    return {c: [p for p in newest if p["id"] in ids_by_cat.get(c, set())] for c in NEW_CATEGORIES}
+
+
+def _new_entries(sets):
+    """One "New" entry per category, shaped like a type's (so the menu, category page and lists treat it as
+    one; work_menu.entry_sort_key puts it first). Its photo is the category's newest piece with an image."""
+    out = []
+    for cat in NEW_CATEGORIES:
+        products = sets[cat]
+        image = next((p["image_url"] for p in products if p["image_url"]), "")
+        out.append({"slug": f"new-{work_menu.CATEGORY_SLUGS[cat]}", "title": "New", "n": len(products),
+                    "group": None, "category": cat, "image": image, "is_new": True})
+    return out
+
+
+def _new_view_pages(entries, sets):
+    """/work/new-furniture|lighting|objects.html: the category's recently added pieces as the same listing
+    pages as the types (cards spread across makers so one new brand's batch does not fill the page)."""
+    from generate_brand_pages import NEW_ARRIVALS_WINDOW_DAYS
+    slugs = []
+    for cat in NEW_CATEGORIES:
+        vslug = f"new-{work_menu.CATEGORY_SLUGS[cat]}"
+        products = sets[cat]
+        cards, variant_counts = _group_color_variants(products)
+        cards = _interleave_by_brand(cards)
+        title = f"New in {cat}"
+        crumbs = [(cat, f"/work/{work_menu.CATEGORY_SLUGS[cat]}.html"), (title, f"/work/{vslug}.html")]
+        siblings = " &middot; ".join(
+            (f'<strong class="here" aria-current="page">{html.escape(e["title"])}</strong> <span class="n">{e["n"]:,}</span>'
+             if e["slug"] == vslug else
+             f'<a href="/work/{e["slug"]}.html">{html.escape(e["title"])}</a> <span class="n">{e["n"]:,}</span>')
+            for e in sorted(work_menu.category_entries(entries, cat), key=work_menu.entry_sort_key))
+        view = {
+            "slug": vslug, "title": title, "noun": "new pieces", "cat": cat, "crumbs": crumbs,
+            "summary": lambda total, n, d=NEW_ARRIVALS_WINDOW_DAYS: f"{total:,} pieces added in the last {d} days from {n} makers",
+            "siblings_heading": f'<a href="/work/{work_menu.CATEGORY_SLUGS[cat]}.html">{html.escape(cat)} &rarr;</a>',
+            "siblings": siblings, "subnav": lambda _slug: "",
+        }
+        pages = max(1, math.ceil(len(cards) / LISTING_CARDS_PER_PAGE))
+        for page in range(1, pages + 1):
+            chunk = cards[(page - 1) * LISTING_CARDS_PER_PAGE: page * LISTING_CARDS_PER_PAGE]
+            out = BROWSE_DIR / f"{_page_slug(vslug, page)}.html"
+            out.write_text(render_listing_page(None, chunk, variant_counts, page, pages, products, entries, cards, view=view))
+            slugs.append(f"work/{_page_slug(vslug, page)}")
+        print(f"work/{vslug}: {len(products)} products -> {len(cards)} cards, {pages} page(s)")
+    return slugs
+
+
+def render_new_hub(entries):
+    """/work/new.html: where the home page's "New" heading lands - the three categories' New views as photo
+    tiles. Not in the menu (New lives inside each category); no cards of its own."""
+    page_url = f"{SITE_URL}/work/new.html"
+    mine = [e for e in entries if e.get("is_new")]
+    total = sum(e["n"] for e in mine)
+    description = (f"{total:,} pieces recently added to Formground, by category - each linking straight to the "
+                   "maker's own site.")
+    tiles = "".join(_type_tile_html({**e, "title": f"New in {e['category']}"}) for e in mine)
+    breadcrumb = _breadcrumb_json([("Formground", f"{SITE_URL}/"), ("Work", f"{SITE_URL}/work.html"), ("New", page_url)])
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+{_head("New — Formground", description, page_url)}
+<link rel="stylesheet" href="{WORK_RESULTS_CSS}">
+<style>{LISTING_CSS}</style>
+<script type="application/ld+json">{breadcrumb}</script>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+{site_nav_html("work")}
+</header>
+<main>
+  <div class="search-wide">
+    <form action="/work.html" method="get">
+      <div class="ask-box">
+        <i class="ti ti-search" aria-hidden="true"></i>
+        <input name="q" type="text" placeholder="Search through a curated collection of work" autocomplete="off" aria-label="Search">
+      </div>
+    </form>
+  </div>
+  {work_menu.render_menu(entries)}
+  <h1 class="listing-title">New</h1>
+  <p class="listing-meta">{total:,} pieces recently added, by category, no rankings, not paid for</p>
+  <div class="type-grid">{tiles}</div>
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
@@ -771,6 +901,8 @@ def generate():
     houses = load_houses()
     groups = house_groups(houses)
     entries.extend(house_entries(groups))
+    new_sets = _new_sets()
+    entries.extend(_new_entries(new_sets))   # "New" sits in each category like a type
 
     sitemap_slugs = []
     for category, products, cards, variant_counts in computed:
@@ -789,6 +921,11 @@ def generate():
         (BROWSE_DIR / f"{cat_slug}.html").write_text(render_category_page(cat_name, entries))
         sitemap_slugs.append(f"work/{cat_slug}")
     sitemap_slugs += _write_house_pages(houses, groups, entries)
+    sitemap_slugs += _new_view_pages(entries, new_sets)
+    (BROWSE_DIR / "new.html").write_text(render_new_hub(entries))
+    sitemap_slugs.append("work/new")
+    # /new.html moved here (2026-10-04): the old address stays as a stub
+    write_redirect(DOCS_DIR / "new.html", "/work/new.html")
     # /work/ itself has no page of its own: the Work page is /work.html
     write_redirect(BROWSE_DIR / "index.html", "/work.html")
 

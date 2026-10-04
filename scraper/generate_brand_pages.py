@@ -1499,7 +1499,6 @@ def render_sitemap(brand_slugs):
         ("https://formground.com/marketplace.html", "weekly", "0.5", None),
         ("https://formground.com/privacy.html", "yearly", "0.2", None),
         ("https://formground.com/makers.html", "weekly", "0.7", today),
-        ("https://formground.com/new.html", "weekly", "0.6", today),
     ]
     urls += [(f"https://formground.com/brands/{slug}.html", "weekly", "0.5", today) for slug in brand_slugs]
     designer_slugs = _designers_sitemap_slugs()
@@ -1557,7 +1556,7 @@ def generate():
         key=lambda p: p["first_seen"],
         reverse=True,
     )
-    (DOCS_DIR / "new.html").write_text(render_new_page(new_arrivals))
+    # /new.html is now a redirect to /work/new.html, written by generate_browse_pages.py (2026-10-04)
 
     # Reuses the exact same filtered/sorted new_arrivals list the
     # sitewide New page just wrote, sliced per brand for each brand

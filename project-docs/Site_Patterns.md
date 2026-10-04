@@ -91,6 +91,18 @@ was approved; the old 300-card renderer is deleted, so type page numbers grew: C
 of 60). The Houses pages still use their own template (landscape 4:3 cards) and could move onto this
 one later.
 
+### New (2026-10-04)
+
+"New" is not a chip. It is a **category-level** entry - Furniture / New, Lighting / New, Objects / New - not
+under any group (not under Seating): its own row above the groups in the category's dropdown, its own tile above
+the groups on the category page (a photo of its newest piece), and first in the "<Category> ->" list at the foot
+of the type pages. No per-group New (Seating / New, Tables / New) for now. It opens `/work/new-<category>.html`: a standard listing page (Work cards, 60 a page, See more,
+pager) of everything added in the last 90 days (the same window and filter the Work search's "new" keyword
+uses), spread across makers so one new brand's batch does not fill the page. Houses carry no added-date, so no
+New. `/work/new.html` is a small hub (three tiles) that only the home page's "New" heading links to; `/new.html`
+is a redirect stub. Pieces whose type is not yet classified are in no New view. It stays a view, not an Edit:
+Edits are editorial selections, New is a recency filter, rebuilt automatically each week.
+
 ## 1. Banners (the wide photo with one featured product)
 
 Used on: the home page's category sections, the Edits hub (individual Edit pages are simple for now, see below).

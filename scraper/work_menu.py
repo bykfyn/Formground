@@ -37,17 +37,24 @@ def category_of_group(group):
     raise KeyError(group)
 
 
+def entry_sort_key(e):
+    """Types alphabetical, except a category's "New" entry (is_new) which always comes first."""
+    return (not e.get("is_new"), e["title"].lower())
+
+
 def category_entries(entries, category):
-    return [e for e in entries if category_of_group(e["group"]) == category]
+    """A category's types, plus its category-level "New" entry (is_new, which has no group of its own)."""
+    return [e for e in entries
+            if (e.get("category") == category if e.get("is_new") else category_of_group(e["group"]) == category)]
 
 
 def category_total(entries, category):
-    return sum(e["n"] for e in category_entries(entries, category))
+    return sum(e["n"] for e in category_entries(entries, category) if not e.get("is_new"))
 
 
 def _group_html(group, entries, current_slug, show_label=True):
     rows = []
-    for e in sorted((x for x in entries if x["group"] == group), key=lambda x: x["title"].lower()):
+    for e in sorted((x for x in entries if x["group"] == group), key=entry_sort_key):
         current = ' aria-current="page"' if e["slug"] == current_slug else ""
         rows.append(
             f'<li><a href="/work/{e["slug"]}.html"{current}>'
@@ -57,6 +64,12 @@ def _group_html(group, entries, current_slug, show_label=True):
     label = GROUP_LABELS.get(group, group)
     heading = f"<h3>{html.escape(label)}</h3>" if show_label else ""
     return f'<div class="work-menu-group">{heading}<ul>{items}</ul></div>'
+
+
+def _new_row_html(e, current_slug):
+    here = ' aria-current="page"' if e["slug"] == current_slug else ""
+    return (f'<div class="work-menu-group work-menu-group--new"><ul><li><a href="/work/{e["slug"]}.html"{here}>'
+            f'<span class="work-menu-name">New</span><span class="work-menu-n">{e["n"]:,}</span></a></li></ul></div>')
 
 
 def render_menu(entries, open_category=None, current_slug=None, align="center", current_category=None, surprise="link"):
@@ -81,6 +94,9 @@ def render_menu(entries, open_category=None, current_slug=None, align="center", 
             f'aria-controls="{cid}">{html.escape(cat)} <i class="ti ti-chevron-down" aria-hidden="true"></i></button>'
         )
         body = "".join(_group_html(g, entries, current_slug) for g in groups)
+        # "New" belongs to the category as a whole (Furniture / New), not to its first group (Seating): its own
+        # row above the groups, styled like a type.
+        new_row = "".join(_new_row_html(e, current_slug) for e in entries if e.get("is_new") and e.get("category") == cat)
         # The panel's title is the way up to the category page (an arrow marks it as a link). On the category's
         # own page it is plain text: it would only loop back to itself.
         if cat == current_category and current_slug in (None, CATEGORY_SLUGS[cat]):
@@ -91,7 +107,7 @@ def render_menu(entries, open_category=None, current_slug=None, align="center", 
         panels.append(
             f'<div class="work-menu-panel" id="{cid}"{"" if is_open else " hidden"}>'
             f'<div class="work-menu-head">{title}</div>'
-            f'<div class="work-menu-groups">{body}</div></div>'
+            f'{new_row}<div class="work-menu-groups">{body}</div></div>'
         )
     return (
         f'<nav class="work-menu{" work-menu--left" if align == "left" else ""}" aria-label="Browse by type">'
