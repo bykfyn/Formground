@@ -703,18 +703,27 @@ def render_category_page(cat_name, entries):
 <html lang="en">
 <head>
 {_head(f"{cat_name} — Formground", description, page_url)}
+<link rel="stylesheet" href="{WORK_RESULTS_CSS}">
+<style>{LISTING_CSS}</style>
 <script type="application/ld+json">{breadcrumb}</script>
 </head>
 <body>
 <header class="site-header">
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
-{SITE_NAV_HTML}
+{site_nav_html("work")}
 </header>
 <main>
-  <p class="page-tagline"><a href="/work.html">Work</a></p>
-  <h1>{html.escape(cat_name)}</h1>
-  <p class="category-intro">{total:,} pieces from independent makers, listed in full. For a curated selection, see <a href="/edits.html">Edits</a>.</p>
-  {work_menu.render_menu(entries, align="left", current_category=cat_name)}
+  <div class="search-wide">
+    <form action="/work.html" method="get">
+      <div class="ask-box">
+        <i class="ti ti-search" aria-hidden="true"></i>
+        <input name="q" type="text" placeholder="Search through a curated collection of work" autocomplete="off" aria-label="Search">
+      </div>
+    </form>
+  </div>
+  {work_menu.render_menu(entries, current_category=cat_name)}
+  <h1 class="listing-title">{html.escape(cat_name)}</h1>
+  <p class="listing-meta">{total:,} pieces from {len(mine)} types, listed in full, no rankings, not paid for &middot; <a href="/edits.html">Themed Edits &rarr;</a></p>
   {"".join(blocks)}
   <p class="foot-note">
     {SITE_FOOTER_HTML}

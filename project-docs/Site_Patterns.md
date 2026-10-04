@@ -58,6 +58,12 @@ Each nav item owns a URL namespace; a name never means two different pages.
 - Moved 2026-10-04 from /browse/ and the site root, before ads started, so no paid or
   inbound traffic had to be carried over.
 
+### Category pages (/work/furniture|lighting|objects.html)
+
+Same header block as a type page (nav with Work current, Work-style search box, the four chips with the
+current category selected, centred title, one results line ending in "Themed Edits ->"), then the types
+as photo tiles grouped by section. Built by `render_category_page`; styles shared with the type pages.
+
 ### Listing template (type pages) - ALL types, 2026-10-04 (piloted on Table Lamps)
 
 A type page must look like the Work page showing one type, not like a different kind of page. It is
