@@ -122,6 +122,17 @@ photo exactly like the hub (`masthead_html` in generate_themed_edit_pages.py, sh
 by the pill, no separate header or banner below. `MASTHEAD_SLUGS` lists the Edits using it; the rest follow on
 approval (each needs a hero photo with a plain area at the top; set `masthead_text` to "light" for a dark one).
 
+### Home page category sections - rhythm (2026-10-04)
+
+Every category section on the home page (Houses, Furniture, Lighting, Objects) runs the same three beats:
+**one wide banner** (a single type, up to 3 rotating slides, caption below), **a pair** (two types, 2-3 slides
+each) and **a quiet shelf** of 7-8 square cards. Section order follows the bento and chips: New, Houses,
+Furniture, Lighting, Objects, Themed Edits. Houses are filed by where the house stands, so their "types"
+are countries (Sweden banner, France | Norway pair, United Kingdom shelf; each "See all" goes to that country
+page). Banner photos must be landscape (about 1.4+ ratio) - square pack shots crop badly at 2:1.
+Current picks: Furniture = Sofas / Chairs | Side Tables / Coffee Tables; Lighting = Table Lamps / Floor Lamps |
+Pendant Lamps / Wall Lamps; Objects = Rugs / Bowls | Candleholders / Vases.
+
 ## 2. Tiles (the home page bento, the Edits hub's featured edit)
 
 - The photo fills the tile; the category/edit title sits top-left on it
