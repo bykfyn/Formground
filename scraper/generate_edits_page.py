@@ -101,19 +101,22 @@ EDITS_PAGE_CSS = (
      only defines the slide box/gradient/rotation chrome, not any
      particular text treatment (Promotions' own .promo-name/.promo-cta
      are for a priced placement, which a Themed Edit isn't). */
-  .edit-banner-eyebrow {
-    display: block; font-size: 13px; color: rgba(255,255,255,0.75);
-    text-transform: uppercase; letter-spacing: 0.06em; margin: 0 0 8px;
-  }
+  /* The EDIT's title is the banner's header (2026-10-04, user: "the main
+     header should be the title of the edit. The product name and brand is
+     secondary"); the pictured product and its maker sit under it, smaller. */
   .edit-banner-title {
     display: block; font-family: 'Archivo', sans-serif; font-weight: 700;
-    font-size: 34px; line-height: 1.15; color: #fff; max-width: 70%;
+    font-size: 40px; line-height: 1.12; color: #fff; max-width: 80%;
+  }
+  .edit-banner-product {
+    display: block; font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.92); margin: 10px 0 0;
   }
   .edit-banner-brand {
-    display: block; font-size: 14px; color: rgba(255,255,255,0.85); margin: 8px 0 0;
+    display: block; font-size: 13px; color: rgba(255,255,255,0.75); margin: 2px 0 0;
   }
   @media (max-width: 640px) {
-    .edit-banner-title { font-size: 22px; max-width: 85%; }
+    .edit-banner-title { font-size: 26px; max-width: 90%; }
+    .edit-banner-product { font-size: 14px; margin-top: 8px; }
   }
 
   /* Strong header + preamble together, above the banner (2026-09-30,
@@ -276,8 +279,8 @@ def _edit_banner_slide_html(theme, product):
         f'<a href="{html.escape(url)}" target="_blank" rel="noopener noreferrer">'
         f'<img src="{html.escape(sized(product["image_url"], HERO))}" alt="{html.escape(product["product_name"])} by {html.escape(product["brand"])}" loading="lazy">'
         '<div class="banner-slide-content">'
-        f'<span class="edit-banner-eyebrow">{html.escape(theme["title"])}</span>'
-        f'<span class="edit-banner-title">{html.escape(product["product_name"])}</span>'
+        f'<span class="edit-banner-title">{html.escape(theme["title"])}</span>'
+        f'<span class="edit-banner-product">{html.escape(product["product_name"])}</span>'
         f'<span class="edit-banner-brand">{html.escape(product["brand"])}</span>'
         "</div>"
         "</a>"
