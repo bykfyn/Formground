@@ -4,13 +4,15 @@
    "form chip" family (32px, 13px/500, full pill) - see project-docs/Site_Patterns.md. */
 .work-menu { width: 100%; max-width: 900px; margin: 14px auto 0; }
 .work-menu-cats { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-.work-menu-cat {
+.work-menu-cat, .work-menu-act {
   display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 14px;
   font: inherit; font-size: 13px; font-weight: 500; color: var(--text-secondary);
   background: var(--surface-2); border: 0.5px solid var(--border-strong); border-radius: 999px;
   cursor: pointer; white-space: nowrap;
 }
-.work-menu-cat:hover { border-color: var(--text-muted); }
+.work-menu-act { text-decoration: none; }
+.work-menu-act i { font-size: 15px; }
+.work-menu-cat:hover, .work-menu-act:hover { border-color: var(--text-muted); }
 .work-menu-cat i { font-size: 14px; transition: transform 0.18s ease; }
 .work-menu-cat[aria-expanded="true"] { background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary); }
 .work-menu-cat[aria-expanded="true"] i { transform: rotate(180deg); }
@@ -38,11 +40,21 @@
 /* on the left-aligned type and category pages */
 .work-menu--left { margin-left: 0; margin-bottom: 22px; }
 .work-menu--left .work-menu-cats { justify-content: flex-start; }
-/* four chips must fit one row on a 375px phone: tighter padding, no chevron (the open chip still fills dark) */
-@media (max-width: 480px) {
-  .work-menu-cats { gap: 6px; }
-  .work-menu-cat { padding: 0 12px; }
-  .work-menu-cat i { display: none; }
+/* Phones: the five chips become a one-row slider (swipe sideways) that bleeds to the screen edges, so the
+   next chip peeks out and signals there is more; the right edge fades. The current category's chip is
+   scrolled into view by work-menu.js. */
+@media (max-width: 640px) {
+  .work-menu-cats {
+    flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; gap: 8px;
+    margin: 0 -20px; padding: 2px 20px 4px;
+    scroll-snap-type: x proximity; scroll-padding: 0 20px;
+    -webkit-overflow-scrolling: touch; scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+    mask-image: linear-gradient(to right, #000 calc(100% - 28px), transparent);
+  }
+  .work-menu-cats::-webkit-scrollbar { display: none; }
+  .work-menu-cat, .work-menu-act { flex: 0 0 auto; scroll-snap-align: start; }
+  .work-menu--left .work-menu-cats { margin-left: -20px; }
 }
 @media (max-width: 640px) {
   .work-menu-panel { padding: 16px 16px 18px; }

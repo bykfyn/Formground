@@ -16,6 +16,12 @@
       setOpen(b, willOpen);
     });
   });
+  // phones: the chip row is a slider - make sure the category you are in is visible
+  var current = menu.querySelector(".work-menu-cat.is-current");
+  var row = menu.querySelector(".work-menu-cats");
+  if (current && row && row.scrollWidth > row.clientWidth) {
+    row.scrollLeft = Math.max(0, current.offsetLeft - 20);
+  }
   document.addEventListener("keydown", function (e) {
     if (e.key === "Escape") buttons.forEach(function (o) { setOpen(o, false); });
   });

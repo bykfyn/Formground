@@ -133,6 +133,18 @@ class StructureTests(unittest.TestCase):
         self.assertIn("/work-results.css?v=", (DOCS / "work.html").read_text())
         self.assertEqual((ROOT / "frontend" / "work-results.css").read_text(), (DOCS / "work-results.css").read_text())
 
+    def test_surprise_me_is_a_chip_not_part_of_the_search_box(self):
+        work = (DOCS / "work.html").read_text()
+        self.assertEqual(work.count('id="discover-chip"'), 1)          # search.js shuffles via this id
+        self.assertEqual(work.count("Surprise me</span>"), 1)
+        box = work[work.index('class="ask-box"'):work.index("</form>")]
+        self.assertNotIn("Surprise me", box)                              # the search box only searches
+        self.assertNotIn("inline-chip", work)
+        for page in ("work/table-lamps.html", "work/furniture.html", "work/houses.html"):
+            text = (DOCS / page).read_text()
+            self.assertIn('class="work-menu-act" href="/work.html"', text, page)
+            self.assertNotIn("Surprise me", text[text.index('class="ask-box"'):text.index("</form>")] if 'class="ask-box"' in text else "", page)
+
     def test_work_page_has_the_menu_with_four_categories(self):
         text = (DOCS / "work.html").read_text()
         self.assertEqual(text.count('<button type="button" class="work-menu-cat'), 4)

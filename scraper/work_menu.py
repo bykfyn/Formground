@@ -59,12 +59,20 @@ def _group_html(group, entries, current_slug, show_label=True):
     return f'<div class="work-menu-group">{heading}<ul>{items}</ul></div>'
 
 
-def render_menu(entries, open_category=None, current_slug=None, align="center", current_category=None):
+def render_menu(entries, open_category=None, current_slug=None, align="center", current_category=None, surprise="link"):
     """The menu: three category chips, each controlling a panel of groups and types.
     `current_category` marks the chip of the category the visitor is already in (type and
     category pages) - shown as selected, panel closed so the products stay above the fold;
     `open_category` starts a panel open (unused by the pages today)."""
     chips, panels = [], []
+    # "Surprise me" is the last chip: an action, not a category. On the Work page it is a button
+    # (search.js shuffles in place via its id); everywhere else a link to the Work page's shuffle.
+    if surprise == "button":
+        surprise_chip = ('<button type="button" class="work-menu-act" id="discover-chip" aria-label="Surprise me">'
+                         '<i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Surprise me</span></button>')
+    else:
+        surprise_chip = ('<a class="work-menu-act" href="/work.html" aria-label="Surprise me">'
+                         '<i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Surprise me</span></a>')
     for cat, groups in TAXONOMY.items():
         cid = f"wm-{CATEGORY_SLUGS[cat]}"
         is_open = cat == open_category
@@ -81,7 +89,7 @@ def render_menu(entries, open_category=None, current_slug=None, align="center", 
         )
     return (
         f'<nav class="work-menu{" work-menu--left" if align == "left" else ""}" aria-label="Browse by type">'
-        f'<div class="work-menu-cats">{"".join(chips)}</div>{"".join(panels)}</nav>'
+        f'<div class="work-menu-cats">{"".join(chips)}{surprise_chip}</div>{"".join(panels)}</nav>'
         '<noscript><style>.work-menu-panel[hidden]{display:block}</style></noscript>'
     )
 

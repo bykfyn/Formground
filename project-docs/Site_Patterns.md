@@ -29,7 +29,11 @@ Each nav item owns a URL namespace; a name never means two different pages.
   (Houses left, then Furniture, Lighting, Objects). Each opens a panel of groups and types as
   plain links to the static pages (fast, indexable, shareable): one click to any category, no
   single "Browse" chip or tabs (decided 2026-10-04: four chips mirror the home page and save a
-  click). Left-aligned under the intro on type and category pages. Chips follow the form-chip
+  click).
+  "Surprise me" is the fifth chip, after Objects (an action, not a category; shuffle icon), so the
+  search box only searches. On phones the chip row is a swipeable one-row slider that bleeds to
+  the screen edges (the next chip peeks, the right edge fades, the current category's chip is
+  scrolled into view). Left-aligned under the intro on type and category pages. Chips follow the form-chip
   family below. The chip of the category you are in is shown selected (darker text and border);
   its panel stays closed so the products remain above the fold (ad landing pages).
 - Houses are a category of Work like the others (a house is an architect's product): home tile ->

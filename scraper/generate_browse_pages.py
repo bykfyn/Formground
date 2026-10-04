@@ -339,7 +339,6 @@ LISTING_CSS = """
   /* The listing template: everything layout/card/search related comes from work-results.css (the Work
      page's own stylesheet); these are only the parts a listing adds. */
   .site-header { margin-bottom: 0; }
-  a.inline-chip { text-decoration: none; }  /* the Work page's Surprise me is a button; here it is a link */
   .listing-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; text-align: center; margin: 34px 0 6px; }
   .listing-meta { font-size: 12px; color: var(--text-muted); text-align: center; margin: 0 0 22px; }
   .listing-meta a { color: var(--text-accent); text-decoration: none; white-space: nowrap; }
@@ -454,7 +453,6 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
       <div class="ask-box">
         <i class="ti ti-search" aria-hidden="true"></i>
         <input name="q" type="text" placeholder="Search through a curated collection of work" autocomplete="off" aria-label="Search">
-        <a class="inline-chip" href="/work.html" aria-label="Surprise me"><i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Surprise me</span></a>
       </div>
     </form>
   </div>
@@ -806,7 +804,7 @@ def generate():
 
     # The menu on the Work page itself (frontend/work.html is hand-written, mirrored to docs/)
     frontend_work = SCRAPER_DIR.parent / "frontend" / "work.html"
-    if work_menu.inject_into_page(frontend_work, work_menu.render_menu(entries)):
+    if work_menu.inject_into_page(frontend_work, work_menu.render_menu(entries, surprise="button")):
         print("updated the browse menu in frontend/work.html")
     import shutil
     import site_assets
