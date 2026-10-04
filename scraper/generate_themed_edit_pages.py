@@ -849,6 +849,14 @@ EDIT_BROWSE_LINKS = {
 EDIT_PAGE_BANNER = False
 
 
+def _meta_description(text, limit=158):
+    """Search results cut a description at about 160 characters: end it on a whole word with an ellipsis instead."""
+    text = " ".join(text.split())
+    if len(text) <= limit:
+        return text
+    return text[: limit - 1].rsplit(" ", 1)[0].rstrip(" ,.;:-") + "\u2026"
+
+
 def render_themed_edit_page(theme, products):
     slug = theme["slug"]
     title = theme["title"]
@@ -861,7 +869,7 @@ def render_themed_edit_page(theme, products):
     # card already advertises for this theme.
     cards_to_render, variant_counts = capped_edit_cards(theme, products)
     n, _makers = edit_totals(theme, cards_to_render)
-    description = f"{n} real {title.lower()}{'' if title.lower().endswith('s') else 's'}, from independent makers. {theme['intro']}"
+    description = _meta_description(f"A curated Edit of {n} real {title.lower()}{'' if title.lower().endswith('s') else 's'} from independent makers. {theme['intro']}")
 
     picks = _resolve_carousel_picks(theme, cards_to_render) if EDIT_PAGE_BANNER else []
     carousel_html = _render_carousel(picks)
@@ -891,17 +899,17 @@ def render_themed_edit_page(theme, products):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{html.escape(title)} — Formground</title>
+<title>{html.escape(title)} Edit — Formground</title>
 {FAVICON_TAGS}
 <meta name="description" content="{html.escape(description)}">
 <link rel="canonical" href="{page_url}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="{html.escape(title)} — Formground">
+<meta property="og:title" content="{html.escape(title)} Edit — Formground">
 <meta property="og:description" content="{html.escape(description)}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:image" content="{SITE_URL}/favicon-192x192.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="{html.escape(title)} — Formground">
+<meta name="twitter:title" content="{html.escape(title)} Edit — Formground">
 <meta name="twitter:description" content="{html.escape(description)}">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/site.css">

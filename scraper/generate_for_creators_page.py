@@ -484,12 +484,12 @@ def render_page():
     panels_html = "\n\n".join(panels)
     all_shows = "craftspeople" if show_craftspeople else "*"
     if show_craftspeople:
-        description = 'Production partners, resources and suppliers for architects, designers, and makers - real craftspeople and companies, plus friendly starting-point guides for makers earlier in their journey.'
+        description = 'Production partners, resources and suppliers for architects, designers and makers, plus friendly starting-point guides for makers earlier in their journey.'
         short_description = "Production partners, resources and suppliers for architects, designers, and makers."
         placeholder = "Find production partners, resources and suppliers"
     else:
-        description = ("Resources, tools and suppliers for architects, designers and makers - real companies for selling, "
-                       "prototyping, hosting, marketing, fairs and associations, plus friendly starting-point guides.")
+        description = ("Resources, tools and suppliers for architects, designers and makers: selling, prototyping, hosting, "
+                       "marketing, fairs and associations, plus starter guides.")
         short_description = "Resources, tools and suppliers for architects, designers, and makers."
         placeholder = "Find resources, tools and suppliers"
 

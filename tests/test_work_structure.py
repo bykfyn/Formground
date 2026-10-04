@@ -302,6 +302,30 @@ class StructureTests(unittest.TestCase):
         self.assertIn('id="see-more"', houses)
         self.assertIn('href="/work/houses-2.html"', houses)
 
+    def test_seo_hygiene_of_every_real_page(self):
+        """Unique titles, one H1, a description short enough to show whole in search results (2026-10-04 audit)."""
+        import glob as _g
+        import html as _h
+        titles, problems = {}, []
+        for f in _g.glob(str(DOCS / "**" / "*.html"), recursive=True):
+            text = Path(f).read_text()
+            name = os.path.relpath(f, DOCS)
+            if _is_stub(text) or name == "search.html":
+                continue
+            title = re.search(r"<title>(.*?)</title>", text, re.S).group(1).strip()
+            if title in titles:
+                problems.append(f"duplicate title {title!r}: {name} and {titles[title]}")
+            titles[title] = name
+            body = re.sub(r"<style.*?</style>|<script.*?</script>|<!--.*?-->", "", text, flags=re.S)
+            if len(re.findall(r"<h1[\s>]", body)) != 1:
+                problems.append(f"{name}: not exactly one h1")
+            desc = re.search(r'<meta name="description" content="([^"]*)"', text)
+            if not desc:
+                problems.append(f"{name}: no description")
+            elif len(_h.unescape(desc.group(1))) > 160:
+                problems.append(f"{name}: description over 160 characters")
+        self.assertEqual(problems[:8], [])
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "aa-vv.html").read_text()
         self.assertNotIn("Looking for who made it?", page)
