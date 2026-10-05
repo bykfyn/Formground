@@ -1541,7 +1541,7 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
 # query ("serax vase", "piet hein eek chair").
 AMBIGUOUS_BRAND_WORDS = {
     "grain", "noah", "zero", "blond", "northern", "resident", "pulpo", "sekt",
-    "laun", "verk", "pode",
+    "laun", "verk", "pode", "pinch",
 }
 
 

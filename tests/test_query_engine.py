@@ -771,6 +771,10 @@ class UnrecognisedQueryTests(unittest.TestCase):
         self.assertEqual(qe.detect_brands("oak grain table"), [])
         self.assertEqual(qe.detect_brands("grain"), ["Grain"])
 
+    def test_pinch_pot_is_not_the_pinch_brand(self):
+        # "Another Country Pottery Series Pinch Pot" must stay findable
+        self.assertEqual(qe.detect_brands("pinch pot"), [])
+
     def test_brand_inside_longer_query_is_found(self):
         self.assertEqual(qe.detect_brands("serax vase"), ["Serax"])
 
