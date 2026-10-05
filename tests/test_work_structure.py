@@ -418,6 +418,13 @@ class StructureTests(unittest.TestCase):
         chairs = (DOCS / "work" / "chairs.html").read_text()
         self.assertIn('"@type":"ItemList"', chairs.replace(" ", ""))
 
+    def test_team_browsers_can_opt_out_of_tracking(self):
+        track = (DOCS / "fg-track.js").read_text()
+        self.assertIn("fg_internal", track)
+        search = (DOCS / "search.js").read_text()
+        self.assertIn("internal=1", search)
+        self.assertIn("INTERNAL", search)
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn("Looking for who made it?", page)

@@ -19,8 +19,19 @@
   "use strict";
   var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
   var host = window.location.hostname;
+  // Our own visits: open any page once with ?fg_internal=1 and this browser stops
+  // reporting (?fg_internal=0 turns it back on). The marker lives only in that browser
+  // (localStorage) and is never sent anywhere except as "internal=1", which tells the
+  // server to drop the event, so test traffic doesn't pollute the baseline.
+  var internal = false;
+  try {
+    var flag = new URLSearchParams(window.location.search).get("fg_internal");
+    if (flag === "1") window.localStorage.setItem("fg_internal", "1");
+    else if (flag === "0") window.localStorage.removeItem("fg_internal");
+    internal = window.localStorage.getItem("fg_internal") === "1";
+  } catch (e) { internal = false; }
   // window.FG_TRACK_FORCE exists only so the wiring can be verified from a local preview.
-  var enabled = window.FG_TRACK_FORCE || !(host === "" || host === "localhost" || host === "127.0.0.1" || host === "[::1]" || /\.localhost$/.test(host));
+  var enabled = !internal && (window.FG_TRACK_FORCE || !(host === "" || host === "localhost" || host === "127.0.0.1" || host === "[::1]" || /\.localhost$/.test(host)));
 
   function load(key) {
     try { return window.sessionStorage.getItem(key); } catch (e) { return null; }
@@ -77,7 +88,7 @@
     navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
   }
 
-  window.FGTrack = { ctx: ctx, extra: extra, send: send };
+  window.FGTrack = { ctx: ctx, extra: extra, send: send, internal: internal };
 
   function textOf(el) {
     return el ? el.textContent.trim() : null;

@@ -32,7 +32,10 @@ function trackExtra() {
 }
 
 // Never report from a local preview.
-const TRACKING_ON = window.FG_TRACK_FORCE || !/^(localhost|127\.0\.0\.1|\[::1\]|)$/.test(window.location.hostname);
+// A team member's own browser (see fg-track.js, ?fg_internal=1) reports nothing, and tells the
+// server to drop the search/discover/load-more logging that happens server-side.
+const INTERNAL = !!(TRACK && TRACK.internal);
+const TRACKING_ON = !INTERNAL && (window.FG_TRACK_FORCE || !/^(localhost|127\.0\.0\.1|\[::1\]|)$/.test(window.location.hostname));
 function beacon(payload) {
   if (!TRACKING_ON) return;
   navigator.sendBeacon(`${API_BASE}/event`, new Blob([JSON.stringify(payload)], { type: "application/json" }));
@@ -496,6 +499,7 @@ async function handleLoadMoreClick() {
       });
       if (currentSearchId) params.set("search_id", currentSearchId);
       if (TRACK && TRACK.ctx.visit_id) params.set("visit_id", TRACK.ctx.visit_id);
+      if (INTERNAL) params.set("internal", "1");
       const resp = await fetch(`${API_BASE}/search/more?${params.toString()}`);
       if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
       const data = await resp.json();
@@ -536,7 +540,7 @@ function finishLoading() {
 // Random per-tab visit id (see fg-track.js) as a query-string piece.
 function visitParam(sep) {
   const id = TRACK && TRACK.ctx.visit_id;
-  return id ? `${sep}visit_id=${encodeURIComponent(id)}` : "";
+  return (id ? `${sep}visit_id=${encodeURIComponent(id)}` : "") + (INTERNAL ? `${sep}internal=1` : "");
 }
 
 // "How were these results?" - three answers, tied to this search's id. Anonymous;

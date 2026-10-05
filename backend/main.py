@@ -184,6 +184,11 @@ _VISIT_ID = re.compile(r"^[0-9a-f]{8,32}$")
 _RATINGS = {"not_wanted", "close", "spot_on"}
 
 
+def _is_internal(value):
+    """True when the request says it comes from our own team's browser (?internal=1)."""
+    return str(value or "").lower() in ("1", "true")
+
+
 def _clean_visit(value):
     """The random per-tab visit id the browser sends, or None if it isn't one."""
     value = str(value or "").lower()
@@ -210,6 +215,7 @@ def human_search(
     landing_page: Optional[str] = None,
     page_path: Optional[str] = None,
     visit_id: Optional[str] = None,
+    internal: Optional[str] = None,
     request: Request = None,
 ):
     """Human-facing search. Returns the fair, per-brand-capped list of
@@ -224,7 +230,7 @@ def human_search(
     # A random id for THIS search only (not a person or a session): echoed
     # back on the click so a click-through joins to the exact search.
     search_id = secrets.token_hex(6)
-    if not _is_bot(request):
+    if not _is_bot(request) and not _is_internal(internal):
         log_event(
             "search", query=q, utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign,
             surface="work", search_id=search_id, landing_page=_clean_path(landing_page),
@@ -250,6 +256,7 @@ def human_search_more(
     exclude: str = Query("", description="Comma-separated ids of results already shown"),
     search_id: Optional[str] = None,
     visit_id: Optional[str] = None,
+    internal: Optional[str] = None,
     request: Request = None,
 ):
     """Continuation of an existing /search call for the "load more"
@@ -262,7 +269,7 @@ def human_search_more(
     parsed_intent = json.loads(intent)
     exclude_ids = [x for x in exclude.split(",") if x]
     results = search_more(q, parsed_intent, exclude_ids)
-    if not _is_bot(request):
+    if not _is_bot(request) and not _is_internal(internal):
         log_event("load_more", query=q, search_id=search_id, visit_id=_clean_visit(visit_id), surface="work",
                   result_count=len(results), **_intent_fields(parsed_intent))
     return {"results": results}
@@ -311,6 +318,7 @@ def discover_random(
     landing_page: Optional[str] = None,
     page_path: Optional[str] = None,
     visit_id: Optional[str] = None,
+    internal: Optional[str] = None,
     request: Request = None,
 ):
     """Random browse across the whole catalog - no LLM call, no query,
@@ -318,7 +326,7 @@ def discover_random(
     so it's also free to call as often as someone hits "surprise me"."""
     results = discover(tier=tier)
     search_id = secrets.token_hex(6)
-    if not _is_bot(request):
+    if not _is_bot(request) and not _is_internal(internal):
         log_event(
             "discover", utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign,
             surface="discover", search_id=search_id, landing_page=_clean_path(landing_page),
@@ -341,7 +349,7 @@ def track_event(request: Request, payload: dict = Body(...)):
     brand/product and what query led there, the same anonymous-
     aggregate shape as the search-event logging in /search.
     """
-    if _is_bot(request):
+    if _is_bot(request) or _is_internal(payload.get("internal")):
         return {"status": "ok"}
     event_type = payload.get("event_type") or "click"
     page_path = _clean_path(payload.get("page_path"))

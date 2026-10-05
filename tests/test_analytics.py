@@ -183,6 +183,24 @@ class EventEndpointTests(unittest.TestCase):
             main.search_full = orig
         self.assertEqual(self.logged[-1][1]["visit_id"], "0123456789abcdef")
 
+    def test_internal_traffic_is_not_logged(self):
+        n = len(self.logged)
+        self.post({"event_type": "pageview", "page_path": "/work", "internal": "1"})
+        orig = main.search_full
+        main.search_full = lambda q, tier=None: {
+            "results": [], "total_matches": 0, "total_brands": 0, "intent": {}, "brand_links": [],
+        }
+        try:
+            self.client.get("/search", params={"q": "vase", "internal": "1"}, headers=BROWSER)
+            self.client.get("/search/more", params={"q": "vase", "intent": "{}", "internal": "1"}, headers=BROWSER)
+            self.client.get("/discover", params={"internal": "1"}, headers=BROWSER)
+        finally:
+            main.search_full = orig
+        self.assertEqual(len(self.logged), n)
+        # and a normal visit still is
+        self.post({"event_type": "pageview", "page_path": "/work"})
+        self.assertEqual(len(self.logged), n + 1)
+
     def test_agent_search_is_logged_and_not_bot_filtered(self):
         orig = main.search_full
         main.search_full = lambda q, tier=None: {
