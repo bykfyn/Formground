@@ -338,6 +338,14 @@ class StructureTests(unittest.TestCase):
         index = (DOCS / "designers.html").read_text()
         self.assertNotIn("Aa.Vv.", index)
 
+    def test_a_lone_search_result_is_a_normal_sized_card(self):
+        css = (ROOT / "frontend" / "work-results.css").read_text()
+        rule = css[css.index("  .results-grid {"):]
+        rule = rule[:rule.index("}")]
+        self.assertIn("auto-fill", rule)          # auto-fit stretched one result ("pawson") across the whole row
+        self.assertNotIn("auto-fit", rule)
+        self.assertEqual(css, (DOCS / "work-results.css").read_text())
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn("Looking for who made it?", page)
