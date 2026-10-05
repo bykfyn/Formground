@@ -180,6 +180,16 @@ def _clean_path(value):
     return urlsplit(str(value)).path[:300] or None
 
 
+_VISIT_ID = re.compile(r"^[0-9a-f]{8,32}$")
+_RATINGS = {"not_wanted", "close", "spot_on"}
+
+
+def _clean_visit(value):
+    """The random per-tab visit id the browser sends, or None if it isn't one."""
+    value = str(value or "").lower()
+    return value if _VISIT_ID.match(value) else None
+
+
 def _intent_fields(intent):
     countries = intent.get("countries") or []
     return {
@@ -199,6 +209,7 @@ def human_search(
     utm_campaign: Optional[str] = None,
     landing_page: Optional[str] = None,
     page_path: Optional[str] = None,
+    visit_id: Optional[str] = None,
     request: Request = None,
 ):
     """Human-facing search. Returns the fair, per-brand-capped list of
@@ -217,7 +228,7 @@ def human_search(
         log_event(
             "search", query=q, utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign,
             surface="work", search_id=search_id, landing_page=_clean_path(landing_page),
-            page_path=_clean_path(page_path), total_matches=data["total_matches"],
+            page_path=_clean_path(page_path), visit_id=_clean_visit(visit_id), total_matches=data["total_matches"],
             total_brands=data["total_brands"], result_count=len(data["results"]),
             result_brands=_result_brands_json(data["results"]), **_intent_fields(data["intent"]),
         )
@@ -238,6 +249,7 @@ def human_search_more(
     intent: str = Query(..., description="The intent object /search returned, JSON-encoded"),
     exclude: str = Query("", description="Comma-separated ids of results already shown"),
     search_id: Optional[str] = None,
+    visit_id: Optional[str] = None,
     request: Request = None,
 ):
     """Continuation of an existing /search call for the "load more"
@@ -251,7 +263,7 @@ def human_search_more(
     exclude_ids = [x for x in exclude.split(",") if x]
     results = search_more(q, parsed_intent, exclude_ids)
     if not _is_bot(request):
-        log_event("load_more", query=q, search_id=search_id, surface="work",
+        log_event("load_more", query=q, search_id=search_id, visit_id=_clean_visit(visit_id), surface="work",
                   result_count=len(results), **_intent_fields(parsed_intent))
     return {"results": results}
 
@@ -298,6 +310,7 @@ def discover_random(
     utm_campaign: Optional[str] = None,
     landing_page: Optional[str] = None,
     page_path: Optional[str] = None,
+    visit_id: Optional[str] = None,
     request: Request = None,
 ):
     """Random browse across the whole catalog - no LLM call, no query,
@@ -309,7 +322,7 @@ def discover_random(
         log_event(
             "discover", utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign,
             surface="discover", search_id=search_id, landing_page=_clean_path(landing_page),
-            page_path=_clean_path(page_path), tier_filter=tier, result_count=len(results),
+            page_path=_clean_path(page_path), visit_id=_clean_visit(visit_id), tier_filter=tier, result_count=len(results),
             result_brands=_result_brands_json(results),
         )
     return {"search_id": search_id, "results": results}
@@ -359,6 +372,8 @@ def track_event(request: Request, payload: dict = Body(...)):
         landing_page=_clean_path(payload.get("landing_page")),
         referrer_host=(payload.get("referrer_host") or None),
         search_id=payload.get("search_id"),
+        visit_id=_clean_visit(payload.get("visit_id")),
+        rating=(payload.get("rating") if event_type == "feedback" and payload.get("rating") in _RATINGS else None),
         surface=payload.get("surface"),
         position=payload.get("position"),
         result_brands=result_brands,

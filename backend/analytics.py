@@ -94,6 +94,9 @@ SCHEMA = [
     bigquery.SchemaField("brand_tier", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("brand_country", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("brand_status", "STRING", mode="NULLABLE"),  # scraped / approved, added 2026-10-02
+    # --- added 2026-10-05 ---
+    bigquery.SchemaField("visit_id", "STRING", mode="NULLABLE"),   # random per-tab-visit id (groups one visit's events)
+    bigquery.SchemaField("rating", "STRING", mode="NULLABLE"),     # "feedback" events: not_wanted / close / spot_on
 ]
 
 _SCHEMA_TYPES = {f.name: f.field_type for f in SCHEMA}

@@ -156,6 +156,33 @@ class EventEndpointTests(unittest.TestCase):
         self.assertEqual(kw["landing_page"], "/browse/vases.html")
         self.assertEqual(kw["surface"], "work")
 
+    def test_feedback_rating_is_kept_only_when_valid_and_joins_to_the_search(self):
+        self.post({"event_type": "feedback", "rating": "close", "search_id": "abc123",
+                   "visit_id": "0123456789abcdef", "page_path": "/work"})
+        event_type, kw = self.logged[-1]
+        self.assertEqual((event_type, kw["rating"], kw["search_id"], kw["visit_id"]),
+                         ("feedback", "close", "abc123", "0123456789abcdef"))
+        self.post({"event_type": "feedback", "rating": "five stars"})
+        self.assertIsNone(self.logged[-1][1]["rating"])
+        self.post({"event_type": "click", "rating": "spot_on"})   # a rating only means something on feedback
+        self.assertIsNone(self.logged[-1][1]["rating"])
+
+    def test_visit_id_must_look_like_the_random_token(self):
+        self.post({"event_type": "pageview", "visit_id": "alice@example.com"})
+        self.assertIsNone(self.logged[-1][1]["visit_id"])
+        self.assertEqual(main._clean_visit("0123ABCD4567ef89"), "0123abcd4567ef89")
+
+    def test_search_carries_the_visit_id(self):
+        orig = main.search_full
+        main.search_full = lambda q, tier=None: {
+            "results": [], "total_matches": 0, "total_brands": 0, "intent": {}, "brand_links": [],
+        }
+        try:
+            self.client.get("/search", params={"q": "vase", "visit_id": "0123456789abcdef"}, headers=BROWSER)
+        finally:
+            main.search_full = orig
+        self.assertEqual(self.logged[-1][1]["visit_id"], "0123456789abcdef")
+
     def test_agent_search_is_logged_and_not_bot_filtered(self):
         orig = main.search_full
         main.search_full = lambda q, tier=None: {

@@ -372,6 +372,18 @@ class StructureTests(unittest.TestCase):
             self.assertIn('property="og:image" content="https://formground.com/og-default.png"', page, name)
             self.assertIn('name="twitter:image" content="https://formground.com/og-default.png"', page, name)
 
+    def test_results_feedback_and_visit_id_are_wired_and_disclosed(self):
+        work = (DOCS / "work.html").read_text()
+        self.assertEqual(work.count('id="results-feedback"'), 1)
+        js = (DOCS / "search.js").read_text()
+        for value in ("not_wanted", "close", "spot_on"):
+            self.assertIn(value, js)
+        self.assertEqual(js, (ROOT / "frontend" / "search.js").read_text())
+        self.assertIn("visit_id", (DOCS / "fg-track.js").read_text())
+        privacy = (DOCS / "privacy.html").read_text()
+        self.assertIn("random visit number", privacy)
+        self.assertIn("How were these results?", privacy)
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn("Looking for who made it?", page)

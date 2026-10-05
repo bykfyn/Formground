@@ -495,6 +495,7 @@ async function handleLoadMoreClick() {
         exclude: moreState.shownIds.join(","),
       });
       if (currentSearchId) params.set("search_id", currentSearchId);
+      if (TRACK && TRACK.ctx.visit_id) params.set("visit_id", TRACK.ctx.visit_id);
       const resp = await fetch(`${API_BASE}/search/more?${params.toString()}`);
       if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
       const data = await resp.json();
@@ -532,6 +533,46 @@ function finishLoading() {
   if (m) m.classList.remove("results-loading");
 }
 
+// Random per-tab visit id (see fg-track.js) as a query-string piece.
+function visitParam(sep) {
+  const id = TRACK && TRACK.ctx.visit_id;
+  return id ? `${sep}visit_id=${encodeURIComponent(id)}` : "";
+}
+
+// "How were these results?" - three answers, tied to this search's id. Anonymous;
+// shown under a real search's results (not Surprise me, not an empty result).
+const feedbackEl = document.getElementById("results-feedback");
+const FEEDBACK_CHOICES = [
+  ["not_wanted", "Not what I wanted"],
+  ["close", "Close"],
+  ["spot_on", "Spot on"],
+];
+function hideFeedback() {
+  if (!feedbackEl) return;
+  feedbackEl.hidden = true;
+  feedbackEl.textContent = "";
+}
+function showFeedback() {
+  if (!feedbackEl || !currentSearchId) return;
+  feedbackEl.textContent = "";
+  const label = document.createElement("span");
+  label.className = "feedback-label";
+  label.textContent = "How were these results?";
+  feedbackEl.appendChild(label);
+  FEEDBACK_CHOICES.forEach(([value, text]) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "feedback-btn";
+    b.textContent = text;
+    b.addEventListener("click", () => {
+      beacon({ event_type: "feedback", rating: value, surface: "work", ...trackExtra() });
+      feedbackEl.textContent = "Thanks, that helps.";
+    });
+    feedbackEl.appendChild(b);
+  });
+  feedbackEl.hidden = false;
+}
+
 // "HAY" -> a link to the maker's own page under the result count. Only for a
 // query that named a maker (the API sends brand_links then).
 function showBrandLinks(links) {
@@ -549,6 +590,7 @@ function showBrandLinks(links) {
 
 async function runSearch(query) {
   showBrandLinks([]);
+  hideFeedback();
   gridEl.innerHTML = "";
   metaEl.style.display = "none";
   hideLoadMore();
@@ -560,7 +602,7 @@ async function runSearch(query) {
     const utmSuffix = utmQueryString();
     const tierSuffix = TIER ? `&tier=${encodeURIComponent(TIER)}` : "";
     const where = `&page_path=${encodeURIComponent(window.location.pathname)}` +
-      (TRACK ? `&landing_page=${encodeURIComponent(TRACK.ctx.landing_page)}` : "");
+      (TRACK ? `&landing_page=${encodeURIComponent(TRACK.ctx.landing_page)}` : "") + visitParam("&");
     const resp = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}${utmSuffix ? `&${utmSuffix}` : ""}${tierSuffix}${where}`);
     if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
     const data = await resp.json();
@@ -582,7 +624,7 @@ async function runSearch(query) {
       false,
       data.total_matches
     );
-    if (results.length > 0) showBrandLinks(data.brand_links);
+    if (results.length > 0) { showBrandLinks(data.brand_links); showFeedback(); }
     if (results.length > 0) {
       // Only worth trimming the initial batch's own trailing row when
       // there's real hidden content to carry it into - a fully-shown
@@ -603,6 +645,7 @@ async function runSearch(query) {
 }
 
 async function runDiscover() {
+  hideFeedback();
   gridEl.innerHTML = "";
   metaEl.style.display = "none";
   hideLoadMore();
@@ -614,7 +657,7 @@ async function runDiscover() {
     const utmSuffix = utmQueryString();
     const tierSuffix = TIER ? `tier=${encodeURIComponent(TIER)}` : "";
     const where = `page_path=${encodeURIComponent(window.location.pathname)}` +
-      (TRACK ? `&landing_page=${encodeURIComponent(TRACK.ctx.landing_page)}` : "");
+      (TRACK ? `&landing_page=${encodeURIComponent(TRACK.ctx.landing_page)}` : "") + visitParam("&");
     const discoverQuery = [utmSuffix, tierSuffix, where].filter(Boolean).join("&");
     const resp = await fetch(`${API_BASE}/discover${discoverQuery ? `?${discoverQuery}` : ""}`);
     if (!resp.ok) throw new Error(`Server returned ${resp.status}`);

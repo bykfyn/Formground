@@ -4,11 +4,13 @@
  * via CARD_CLICK_TRACKING_JS; index/work/marketplace/for-creators load it
  * directly). What is logged and why: backend/analytics.py.
  *
- * Privacy: no cookie, no user id, no session id. The only thing kept in
- * sessionStorage (per browser TAB, cleared when it closes) is the campaign
- * UTM values and the path of the first page of the visit - both identical
- * for everyone who arrives the same way, so they describe a campaign and a
- * landing page, never a person. Nothing is sent from localhost.
+ * Privacy: no cookie, no user id. What is kept in sessionStorage (per browser
+ * TAB, cleared when it closes) is the campaign UTM values, the path of the
+ * first page of the visit (both identical for everyone who arrives the same
+ * way) and a random visit id that only groups the pages of this one tab visit
+ * (to see whether a search was reworded and which pages follow which). It is
+ * never stored beyond the tab, never combined with anything else, and cannot
+ * be linked across visits. Nothing is sent from localhost.
  *
  * Exposes window.FGTrack = { ctx, extra(), send(type, fields) } so
  * search.js attaches the same landing page / campaign to its own events.
@@ -48,14 +50,25 @@
     landing = window.location.pathname;
     store("fg_landing", landing);
   }
+  // Random id for THIS tab visit only (see the privacy note above).
+  var visit = load("fg_visit");
+  if (!visit) {
+    try {
+      var bytes = new Uint8Array(8);
+      window.crypto.getRandomValues(bytes);
+      visit = Array.prototype.map.call(bytes, function (b) { return ("0" + b.toString(16)).slice(-2); }).join("");
+    } catch (e) { visit = null; }
+    if (visit) store("fg_visit", visit);
+  }
   var ctx = {
     utm: utm || { utm_source: null, utm_medium: null, utm_campaign: null },
     landing_page: landing,
     page_path: window.location.pathname,
+    visit_id: visit,
   };
 
   function extra() {
-    return { page_path: ctx.page_path, landing_page: ctx.landing_page };
+    return { page_path: ctx.page_path, landing_page: ctx.landing_page, visit_id: ctx.visit_id };
   }
 
   function send(type, fields) {
