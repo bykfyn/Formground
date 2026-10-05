@@ -38,6 +38,7 @@ from pathlib import Path
 from designer_credits import split_credit  # noqa: E402
 from site_assets import LISTING_JS, SHARE_JS  # noqa: E402
 from generate_brand_pages import (
+    fit_title, list_phrase,
     BRAND_CARDS_PER_PAGE,
     brand_page_slug,
     listing_controls_html,
@@ -98,10 +99,20 @@ def render_designer_page(designer_name, slug, products, page=1):
     brand_line = brands[0] if len(brands) == 1 else f"{len(brands)} brands: {', '.join(brands)}"
     pages = max(1, -(-len(products) // BRAND_CARDS_PER_PAGE))
     page_note = f" (page {page} of {pages})" if pages > 1 else ""
+    pg = f", page {page}" if page > 1 else ""
+    seo_title = fit_title(f"{designer_name}: designs and products{pg}", f"{designer_name}{pg}")
+    if len(brands) == 1:
+        across = brands[0]
+    elif len(brands) == 2:
+        across = f"{brands[0]} and {brands[1]}"
+    else:
+        across = f"{len(brands)} makers, including {brands[0]} and {brands[1]}"
     description = (
-        f"{html.escape(designer_name)} - {len(products)} real product{'' if len(products) == 1 else 's'}{page_note} "
-        f"credited across {brand_line if len(brands) > 1 else brands[0]}."
+        f"{html.escape(designer_name)}'s work on Formground: {len(products)} product{'' if len(products) == 1 else 's'}"
+        f"{page_note}, credited across {across}."
     )
+    if len(description) + 45 <= 160:
+        description += " Each links straight to the maker's own site."
     products_sorted = sorted(products, key=lambda p: (p["brand"], p["product_name"]))
     url_for = lambda n: f"/designers/{brand_page_slug(slug, n)}.html"
     earlier_html, see_more_html, pager_html = listing_controls_html(url_for, page, pages, len(products), "pieces")
@@ -124,12 +135,12 @@ def render_designer_page(designer_name, slug, products, page=1):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{html.escape(designer_name)} — Designers — Formground{html.escape(f" - page {page}" if page > 1 else "")}</title>
+<title>{html.escape(seo_title)}</title>
 {FAVICON_TAGS}
 <meta name="description" content="{description}">
 <link rel="canonical" href="{page_url}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="{html.escape(designer_name)} — Formground">
+<meta property="og:title" content="{html.escape(seo_title)}">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:image" content="{SITE_URL}/og-default.png">
@@ -195,12 +206,12 @@ def render_designers_index(designers_with_slugs, products_by_designer):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Designers — Formground</title>
+<title>Designers and their products — Formground</title>
 {FAVICON_TAGS}
 <meta name="description" content="{description}">
 <link rel="canonical" href="{page_url}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Designers — Formground">
+<meta property="og:title" content="Designers and their products — Formground">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:image" content="{SITE_URL}/og-default.png">

@@ -314,6 +314,24 @@ DEFAULT_UMBRELLA = "Objects"
 SLUG_CHAR_OVERRIDES = {"Ł": "L", "ł": "l"}
 
 
+TITLE_BRAND = " — Formground"
+
+
+def fit_title(*candidates, limit=70):
+    """First candidate whose full <title> (with the brand suffix) fits `limit`
+    characters - search engines cut longer ones - else the last, shortest one."""
+    for c in candidates:
+        if len(c + TITLE_BRAND) <= limit:
+            return c + TITLE_BRAND
+    return candidates[-1] + TITLE_BRAND
+
+
+def list_phrase(items):
+    """['furniture', 'lighting', 'objects'] -> 'furniture, lighting and objects'."""
+    items = list(items)
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+
 def slugify(name):
     """
     A URL slug needs to be stable once a brand page is indexed -
@@ -1218,6 +1236,9 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     stockist_section = "" if site_sections.is_hidden("maker_stockists") else render_stockist_section(brand, stockists)
     page_url = f"{SITE_URL}/brands/{brand_page_slug(slug, page)}.html"
     page_note = f" (page {page} of {pages})" if pages > 1 else ""
+    pg = f", page {page}" if page > 1 else ""
+    kinds = list_phrase([u.lower() for u in umbrellas]) if umbrellas else ""
+    seo_title = fit_title(*([f"{brand}: {kinds}{pg}"] if kinds else []), f"{brand} products{pg}", f"{brand}{pg}")
     description = f"{html.escape(brand)}'s work on Formground - {len(products)} pieces{page_note}, linked straight to their own site."
     # Social preview: the one default Formground image, not the maker's own
     # photo - we don't have the maker's permission to use their images as
@@ -1249,16 +1270,16 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{html.escape(brand)} on Formground{html.escape(f" - page {page}" if page > 1 else "")}</title>
+<title>{html.escape(seo_title)}</title>
 {FAVICON_TAGS}
 <meta name="description" content="{description}">
 <link rel="canonical" href="{page_url}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="{html.escape(brand)} on Formground{html.escape(f" - page {page}" if page > 1 else "")}">
+<meta property="og:title" content="{html.escape(seo_title)}">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{page_url}">
 {og_image_tags}<meta name="twitter:card" content="{twitter_card_type}">
-<meta name="twitter:title" content="{html.escape(brand)} on Formground{html.escape(f" - page {page}" if page > 1 else "")}">
+<meta name="twitter:title" content="{html.escape(seo_title)}">
 <meta name="twitter:description" content="{description}">
 <script type="application/ld+json">{breadcrumb_json}</script>
 <link rel="stylesheet" href="/site.css">
@@ -1346,13 +1367,13 @@ def render_makers_index(brands_data):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Makers — Formground</title>
+<title>Makers of furniture, lighting and objects — Formground</title>
 {FAVICON_TAGS}
-<meta name="description" content="Every maker currently on Formground, browsable by name.">
+<meta name="description" content="Every maker on Formground, browsable by name: independent and established makers of furniture, lighting and objects, each linked to their own site.">
 <link rel="canonical" href="https://formground.com/makers.html">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Makers — Formground">
-<meta property="og:description" content="Every maker currently on Formground, browsable by name.">
+<meta property="og:title" content="Makers of furniture, lighting and objects — Formground">
+<meta property="og:description" content="Every maker on Formground, browsable by name: independent and established makers of furniture, lighting and objects, each linked to their own site.">
 <meta property="og:url" content="https://formground.com/makers.html">
 <meta property="og:image" content="{SITE_URL}/og-default.png">
 <meta property="og:image:width" content="1200">
@@ -1478,12 +1499,12 @@ def render_new_page(products):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>New — Formground</title>
+<title>New work from makers — Formground</title>
 {FAVICON_TAGS}
 <meta name="description" content="{description}">
 <link rel="canonical" href="{page_url}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="New — Formground">
+<meta property="og:title" content="New work from makers — Formground">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:image" content="{SITE_URL}/og-default.png">

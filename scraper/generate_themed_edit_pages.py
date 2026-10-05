@@ -49,7 +49,8 @@ import query_engine as qe  # noqa: E402
 import image_fit  # noqa: E402
 from redirects import write_redirect  # noqa: E402
 
-from generate_brand_pages import (  # noqa: E402
+from generate_brand_pages import (
+    fit_title, list_phrase,  # noqa: E402
     CARD_CLICK_TRACKING_JS,
     CLOUDFLARE_ANALYTICS,
     FAVICON_TAGS,
@@ -860,6 +861,7 @@ def _meta_description(text, limit=158):
 def render_themed_edit_page(theme, products):
     slug = theme["slug"]
     title = theme["title"]
+    seo_title = fit_title(f"{title} Edit: curated picks", f"{title} Edit")
     page_url = f"{SITE_URL}/edits/{slug}.html"
 
     # The real, capped count (see capped_edit_cards/MAX_PRODUCTS_PER_EDIT) -
@@ -899,12 +901,12 @@ def render_themed_edit_page(theme, products):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{html.escape(title)} Edit — Formground</title>
+<title>{html.escape(seo_title)}</title>
 {FAVICON_TAGS}
 <meta name="description" content="{html.escape(description)}">
 <link rel="canonical" href="{page_url}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="{html.escape(title)} Edit — Formground">
+<meta property="og:title" content="{html.escape(seo_title)}">
 <meta property="og:description" content="{html.escape(description)}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:image" content="{SITE_URL}/og-default.png">
@@ -912,7 +914,7 @@ def render_themed_edit_page(theme, products):
 <meta property="og:image:height" content="630">
 <meta name="twitter:image" content="{SITE_URL}/og-default.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="{html.escape(title)} Edit — Formground">
+<meta name="twitter:title" content="{html.escape(seo_title)}">
 <meta name="twitter:description" content="{html.escape(description)}">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/site.css">

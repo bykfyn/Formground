@@ -78,7 +78,8 @@ MIN_HOUSES_FOR_COUNTRY_PAGE = 8
 sys.path.insert(0, str(BACKEND_DIR))
 import query_engine as qe  # noqa: E402
 
-from generate_brand_pages import (  # noqa: E402
+from generate_brand_pages import (
+    fit_title, list_phrase,  # noqa: E402
     SHARE_BTN_HTML,
     listing_pager_html,
     site_nav_html,
@@ -417,6 +418,13 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
     n_makers = len(makers)
     summary = view["summary"](total, n_makers) if view else f"{total:,} {noun} from {n_makers} makers"
     page_note = f" - page {page} of {pages}" if pages > 1 else ""
+    pg = f", page {page}" if page > 1 else ""
+    if title == "Houses" or title.startswith("Houses in "):
+        seo_title = fit_title(f"{title} designed by architects{pg}", f"{title}{pg}")
+    elif title.startswith("New in "):
+        seo_title = fit_title(f"{title}: latest pieces from makers{pg}", f"{title}{pg}")
+    else:
+        seo_title = fit_title(f"{title} from independent and established makers{pg}", f"{title} from makers{pg}", f"{title}{pg}")
     description = f"{summary}, listed in full{page_note}. Every result links straight to the maker's own site."
     edits = [] if view else _edits_for_type(slug)
     edit_line = ""
@@ -472,12 +480,12 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{html.escape(title)}{html.escape(f" - page {page}" if page > 1 else "")} — Formground</title>
+<title>{html.escape(seo_title)}</title>
 {FAVICON_TAGS}
 <meta name="description" content="{html.escape(description)}">
 <link rel="canonical" href="{page_url}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="{html.escape(title)} — Formground">
+<meta property="og:title" content="{html.escape(seo_title)}">
 <meta property="og:description" content="{html.escape(description)}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:image" content="{SITE_URL}/og-default.png">
@@ -690,7 +698,7 @@ def render_category_page(cat_name, entries):
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-{_head(f"{cat_name} — Formground", description, page_url)}
+{_head(fit_title(f"{cat_name} from independent and established makers", f"{cat_name} from makers"), description, page_url)}
 <link rel="stylesheet" href="{WORK_RESULTS_CSS}">
 <style>{LISTING_CSS}</style>
 <script type="application/ld+json">{breadcrumb}</script>
@@ -815,7 +823,7 @@ def render_new_hub(entries):
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
-{_head("New — Formground", description, page_url)}
+{_head("New work from makers — Formground", description, page_url)}
 <link rel="stylesheet" href="{WORK_RESULTS_CSS}">
 <style>{LISTING_CSS}</style>
 <script type="application/ld+json">{breadcrumb}</script>

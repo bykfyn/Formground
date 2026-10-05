@@ -384,6 +384,29 @@ class StructureTests(unittest.TestCase):
         self.assertIn("random visit number", privacy)
         self.assertIn("How were these results?", privacy)
 
+    def test_page_titles_are_unique_descriptive_and_not_too_long(self):
+        import glob as _g, html as _h
+        seen, problems = {}, []
+        for f in _g.glob(str(DOCS / "**" / "*.html"), recursive=True):
+            text = Path(f).read_text()
+            if _is_stub(text):
+                continue
+            name = os.path.relpath(f, DOCS)
+            title = _h.unescape(re.search(r"<title>(.*?)</title>", text, re.S).group(1).strip())
+            if len(title) > 70:
+                problems.append(f"{name}: title is {len(title)} characters")
+            if title in seen:
+                problems.append(f"{name}: same title as {seen[title]}")
+            seen[title] = name
+            if re.match(r"(work|brands|designers|architects)/[^/]+\.html$", name) and name.count("-") >= 0:
+                if title.split(" — ")[0].strip().lower() in ("work", "makers", "designers", "architects"):
+                    problems.append(f"{name}: title is only a section name")
+        self.assertEqual(problems[:6], [])
+        chairs = (DOCS / "work" / "chairs.html").read_text()
+        self.assertIn("<title>Chairs from independent and established makers — Formground</title>", chairs)
+        hay = (DOCS / "brands" / "hay.html").read_text()
+        self.assertRegex(hay, r"<title>HAY: [a-z, ]+ — Formground</title>")
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn("Looking for who made it?", page)

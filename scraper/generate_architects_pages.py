@@ -33,6 +33,7 @@ from pathlib import Path
 
 from site_assets import SHARE_JS  # noqa: E402
 from generate_brand_pages import (
+    fit_title, list_phrase,
     CARD_CLICK_TRACKING_JS,
     SHARE_BTN_HTML,
     CLOUDFLARE_ANALYTICS,
@@ -108,6 +109,7 @@ def render_architect_page(firm_name, slug, meta, houses):
         f"{html.escape(firm_name)} - {len(houses)} real house{'' if len(houses) == 1 else 's'}"
         f"{f', {html.escape(location)}' if location else ''}. Each linked to its own real project page."
     )
+    seo_title = fit_title(f"{firm_name}: houses and projects", firm_name)
     houses_sorted = sorted(houses, key=lambda h: h["name"] or "")
     houses_html = "".join(house_card_html(h) for h in houses_sorted)
     site_link = (
@@ -136,12 +138,12 @@ def render_architect_page(firm_name, slug, meta, houses):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>{html.escape(firm_name)} — Architects — Formground</title>
+<title>{html.escape(seo_title)}</title>
 {FAVICON_TAGS}
 <meta name="description" content="{description}">
 <link rel="canonical" href="{page_url}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="{html.escape(firm_name)} — Formground">
+<meta property="og:title" content="{html.escape(seo_title)}">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:image" content="{SITE_URL}/og-default.png">
@@ -204,12 +206,12 @@ def render_architects_index(firms_with_slugs, meta_by_name, houses_by_firm):
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Architects — Formground</title>
+<title>Architects and their houses — Formground</title>
 {FAVICON_TAGS}
 <meta name="description" content="{description}">
 <link rel="canonical" href="{page_url}">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Architects — Formground">
+<meta property="og:title" content="Architects and their houses — Formground">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{page_url}">
 <meta property="og:image" content="{SITE_URL}/og-default.png">
