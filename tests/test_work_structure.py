@@ -366,6 +366,12 @@ class StructureTests(unittest.TestCase):
                 problems.append(f"{name}: no twitter:image")
         self.assertEqual(problems[:6], [])
 
+    def test_maker_pages_use_the_default_preview_not_the_makers_photo(self):
+        for name in ("hay.html", "serax.html", "graypants.html"):
+            page = (DOCS / "brands" / name).read_text()
+            self.assertIn('property="og:image" content="https://formground.com/og-default.png"', page, name)
+            self.assertIn('name="twitter:image" content="https://formground.com/og-default.png"', page, name)
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn("Looking for who made it?", page)

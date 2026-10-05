@@ -275,6 +275,12 @@ def _normalize_designer_name(name):
     return name
 
 
+def clean_product_name(name):
+    """Maruni writes the registered mark as a circled letter ("corianⓇ top"),
+    which many fonts draw as a stray glyph; it is the plain (R) mark."""
+    return name.replace("\u24c7", "\u00ae")
+
+
 def save_product(conn, product):
     """
     Inserts or updates a single product record. "thin" marks an entry that
@@ -308,7 +314,7 @@ def save_product(conn, product):
     """, (
         product["brand"],
         product["brand_url"],
-        product["product_name"],
+        clean_product_name(product["product_name"]),
         product["product_url"],
         product.get("category", ""),
         json.dumps(product.get("material_options", [])),
@@ -4559,7 +4565,12 @@ def extract_woocommerce(brand):
         # Prefer the pre-sized "thumbnail" WooCommerce already generates
         # over the full-size "src" - a smaller image is all a search
         # result card needs.
-        image_url = (images[0].get("thumbnail") or images[0].get("src")) if images else ""
+        # brand["woocommerce_full_size_images"]: Graypants' thumbnail URLs redirect to a
+        # second domain (graypants.eu) where they 404; the full-size src works.
+        if images and brand.get("woocommerce_full_size_images"):
+            image_url = images[0].get("src") or images[0].get("thumbnail")
+        else:
+            image_url = (images[0].get("thumbnail") or images[0].get("src")) if images else ""
 
         joined_category = ", ".join(categories)
         if brand["name"] == "Heilig Objects":

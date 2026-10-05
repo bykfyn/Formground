@@ -519,3 +519,9 @@ class DesignerCreditTests(unittest.TestCase):
         c = self.counts([("LPWK, Marcello Jori", 8), ("LPWK , Marcello Jori", 2), ("Marcello Jori, Massimo Giacon", 32)])
         self.assertEqual(c["Marcello Jori"], 42)
         self.assertEqual(c["LPWK"], 10)
+
+
+class CleanProductNameTests(unittest.TestCase):
+    def test_circled_r_becomes_the_registered_mark(self):
+        self.assertEqual(scrape.clean_product_name("TABLE 130 (rectangular, corian\u24c7 top)"),
+                         "TABLE 130 (rectangular, corian\u00ae top)")

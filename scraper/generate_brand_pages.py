@@ -802,6 +802,8 @@ PAGE_CSS = """
   }
   .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 16px; align-items: start; }
+  /* two to a row on a phone (a single 190px-minimum column left the directories one long list) */
+  @media (max-width: 640px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
 """ + MAKER_CARD_CSS + """
   /* font-weight explicit since this class is also used on an <h1> in
      render_makers_index (the homepage's own header carries the same
@@ -1217,18 +1219,16 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     page_url = f"{SITE_URL}/brands/{brand_page_slug(slug, page)}.html"
     page_note = f" (page {page} of {pages})" if pages > 1 else ""
     description = f"{html.escape(brand)}'s work on Formground - {len(products)} pieces{page_note}, linked straight to their own site."
-    # Reusing the same hero image makers.html already picks for this
-    # brand (see primary_image_for) as the share-preview image, rather
-    # than a generic sitewide fallback - a real photo of what this maker
-    # actually makes is a stronger, more specific preview than the
-    # Formground logo would be, and it's already computed for free.
-    hero_image = primary_image_for(products, umbrellas)
+    # Social preview: the one default Formground image, not the maker's own
+    # photo - we don't have the maker's permission to use their images as
+    # our preview card (decision 2026-10-05).
     og_image_tags = (
-        f'<meta property="og:image" content="{html.escape(hero_image)}">\n'
-        f'<meta name="twitter:image" content="{html.escape(hero_image)}">\n'
-        if hero_image else ""
+        f'<meta property="og:image" content="{SITE_URL}/og-default.png">\n'
+        '<meta property="og:image:width" content="1200">\n'
+        '<meta property="og:image:height" content="630">\n'
+        f'<meta name="twitter:image" content="{SITE_URL}/og-default.png">\n'
     )
-    twitter_card_type = "summary_large_image" if hero_image else "summary"
+    twitter_card_type = "summary_large_image"
     # BreadcrumbList (Home -> Makers -> this brand) - cheap, accurate
     # structured data with a real shot at a rich-result breadcrumb in
     # search results. Deliberately no Product/price schema here: we
