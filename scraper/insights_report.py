@@ -21,6 +21,11 @@ What it reports (definitions are the thresholds to agree BEFORE the ads start):
                         (utm_source), else the referring website, else direct. Referrer comes from
                         the visit's page views via the visit id, so it only covers visits after
                         the visit id went live (2026-10-05).
+  7. Clicks by maker  - per maker: clicks sent to their own site, week by week (this week and the
+                        seven before; use --days 56 or more to see them all). The advertiser pitch.
+  8. Maker reach      - per maker: how often they appeared in results/on pages, how many clicks that
+                        produced and the click rate. "Appearances" counts a maker once per search or
+                        page view in which they were shown.
 
 Visits are grouped by the random per-tab visit id (see frontend/fg-track.js): it describes
 one visit in one tab, never a person, and cannot be linked across visits.
@@ -138,6 +143,43 @@ WHERE c.event_type = 'click'
 GROUP BY 1, 2
 ORDER BY outbound_clicks DESC
 LIMIT 40
+""", []),
+    ("7. Clicks sent to each maker, by week (0 = this week)", """
+SELECT
+  brand,
+  ANY_VALUE(brand_tier) AS tier,
+  COUNT(*) AS clicks,
+  COUNTIF(wk = 0) AS wk0, COUNTIF(wk = 1) AS wk1, COUNTIF(wk = 2) AS wk2, COUNTIF(wk = 3) AS wk3,
+  COUNTIF(wk = 4) AS wk4, COUNTIF(wk = 5) AS wk5, COUNTIF(wk = 6) AS wk6, COUNTIF(wk = 7) AS wk7
+FROM (
+  SELECT brand, brand_tier,
+         DATE_DIFF(CURRENT_DATE(), DATE(timestamp), WEEK(MONDAY)) AS wk
+  FROM ev WHERE event_type = 'click' AND brand IS NOT NULL
+)
+GROUP BY brand
+ORDER BY clicks DESC
+LIMIT 50
+""", []),
+
+    ("8. Maker reach: appearances, clicks and click rate", """
+, shown AS (
+  SELECT JSON_VALUE(pair, '$[0]') AS brand, COUNT(*) AS appearances
+  FROM ev, UNNEST(JSON_QUERY_ARRAY(result_brands)) AS pair
+  WHERE event_type IN ('search', 'discover', 'pageview') AND result_brands IS NOT NULL
+  GROUP BY 1
+),
+sent AS (
+  SELECT brand, COUNT(*) AS clicks FROM ev
+  WHERE event_type = 'click' AND brand IS NOT NULL GROUP BY brand
+)
+SELECT
+  COALESCE(shown.brand, sent.brand) AS brand,
+  COALESCE(shown.appearances, 0) AS appearances,
+  COALESCE(sent.clicks, 0) AS clicks,
+  ROUND(100 * SAFE_DIVIDE(COALESCE(sent.clicks, 0), shown.appearances), 2) AS click_pct
+FROM shown FULL OUTER JOIN sent ON shown.brand = sent.brand
+ORDER BY clicks DESC, appearances DESC
+LIMIT 50
 """, []),
 ]
 
