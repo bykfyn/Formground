@@ -311,27 +311,16 @@ def _breadcrumb_json(crumbs):
 
 
 def _itemlist_json(cards, start_index):
-    """schema.org ItemList of Product for the page's cards - typed data for
-    crawlers and agents that the visual cards alone don't carry. An Offer is
-    included ONLY when both price and currency are stored (currency is
-    known for few products; it is never guessed)."""
-    items = []
-    for i, p in enumerate(cards, start=start_index):
-        product = {
-            "@type": "Product",
-            "name": p["product_name"],
-            "url": p["product_url"],
-            "image": p["image_url"],
-            "brand": {"@type": "Brand", "name": p["brand"]},
-        }
-        if p.get("category"):
-            product["category"] = p["category"].split(",")[0].strip()
-        if p.get("price") and p.get("currency"):
-            product["offers"] = {
-                "@type": "Offer", "price": f'{p["price"]:.2f}',
-                "priceCurrency": p["currency"],
-            }
-        items.append({"@type": "ListItem", "position": i, "item": product})
+    """schema.org ItemList of the page's cards (name, link, image) - typed data for crawlers and agents
+    that the visual cards alone don't carry. Deliberately NOT Product/Offer markup (changed 2026-10-05):
+    Google reserves product and price markup for the page where the item can be bought, and these
+    pages only link out to the maker's own site, so marking each card up as a priced Product risks
+    the markup being ignored or treated as misleading. Prices stay available through /agent/search."""
+    items = [
+        {"@type": "ListItem", "position": i, "name": p["product_name"], "url": p["product_url"],
+         "image": p["image_url"]}
+        for i, p in enumerate(cards, start=start_index)
+    ]
     return json.dumps({"@context": "https://schema.org", "@type": "ItemList", "itemListElement": items},
                       ensure_ascii=False, separators=(",", ":"))
 

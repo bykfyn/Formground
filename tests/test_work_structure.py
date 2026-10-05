@@ -407,6 +407,17 @@ class StructureTests(unittest.TestCase):
         hay = (DOCS / "brands" / "hay.html").read_text()
         self.assertRegex(hay, r"<title>HAY: [a-z, ]+ — Formground</title>")
 
+    def test_listing_pages_do_not_mark_up_linked_out_items_as_priced_products(self):
+        import glob as _g
+        bad = []
+        for f in _g.glob(str(DOCS / "**" / "*.html"), recursive=True):
+            text = Path(f).read_text()
+            if '"@type":"Product"' in text.replace(" ", "") or '"@type":"Offer"' in text.replace(" ", ""):
+                bad.append(os.path.relpath(f, DOCS))
+        self.assertEqual(bad[:5], [])
+        chairs = (DOCS / "work" / "chairs.html").read_text()
+        self.assertIn('"@type":"ItemList"', chairs.replace(" ", ""))
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn("Looking for who made it?", page)
