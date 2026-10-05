@@ -1357,6 +1357,7 @@ def render_makers_index(brands_data):
 <meta property="og:image" content="{SITE_URL}/og-default.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta name="twitter:image" content="{SITE_URL}/og-default.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Makers — Formground">
 <meta name="twitter:description" content="Every maker currently on Formground, browsable by name.">
@@ -1488,6 +1489,7 @@ def render_new_page(products):
 <meta property="og:image" content="{SITE_URL}/og-default.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
+<meta name="twitter:image" content="{SITE_URL}/og-default.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="New — Formground">
 <meta name="twitter:description" content="{description}">
