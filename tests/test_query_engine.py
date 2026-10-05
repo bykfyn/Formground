@@ -737,3 +737,51 @@ class DiscoverHousesTests(unittest.TestCase):
             results = qe.discover()
             products = [r for r in results if r.get("type") != "house"]
             self.assertGreaterEqual(len(products), qe.DISCOVER_TOTAL_CAP - qe.DISCOVER_HOUSES_MAX)
+
+
+class UnrecognisedQueryTests(unittest.TestCase):
+    """2026-10-05: a query that set no filter returned the WHOLE catalog
+    ("28,026 results for 'HAY'"). Brand names are now recognised, a query
+    nothing recognises returns nothing, and a failed invented category falls
+    back to its head noun. translate_query (the LLM) is stubbed."""
+
+    def setUp(self):
+        self._orig = qe.translate_query
+        qe.translate_query = lambda q: {}
+
+    def tearDown(self):
+        qe.translate_query = self._orig
+
+    def test_brand_name_returns_that_makers_work(self):
+        for q in ("HAY", "hay", "Ligne Roset", "kallemo", "b&b italia", "Piet Hein Eek"):
+            r = qe.search_full(q)
+            self.assertGreater(r["total_matches"], 0, q)
+            self.assertEqual(r["total_brands"], 1, q)
+            self.assertTrue(r["brand_links"], q)
+
+    def test_gibberish_matches_nothing(self):
+        r = qe.search_full("xyzzyqwerty")
+        self.assertEqual((r["total_matches"], r["results"]), (0, []))
+
+    def test_blank_query_is_empty_not_an_error(self):
+        for q in ("", "   "):
+            self.assertEqual(qe.search_full(q)["total_matches"], 0)
+
+    def test_ambiguous_brand_word_inside_a_description_is_not_a_brand(self):
+        self.assertEqual(qe.detect_brands("oak grain table"), [])
+        self.assertEqual(qe.detect_brands("grain"), ["Grain"])
+
+    def test_brand_inside_longer_query_is_found(self):
+        self.assertEqual(qe.detect_brands("serax vase"), ["Serax"])
+
+    def test_invented_compound_category_falls_back_to_head_noun(self):
+        qe.translate_query = lambda q: {"category": "bedroom lamp"}
+        r = qe.search_full("lamp for bedroom")
+        self.assertGreater(r["total_matches"], 0)
+        self.assertEqual(r["intent"]["category"], "lamp")
+
+    def test_brand_link_slugs_match_the_scraper_slugify(self):
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scraper"))
+        from generate_brand_pages import slugify
+        for brand in qe._brand_folds().values():
+            self.assertEqual(qe.brand_links({"brands": [brand]})[0]["slug"], slugify(brand), brand)

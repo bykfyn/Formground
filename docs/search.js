@@ -532,7 +532,23 @@ function finishLoading() {
   if (m) m.classList.remove("results-loading");
 }
 
+// "HAY" -> a link to the maker's own page under the result count. Only for a
+// query that named a maker (the API sends brand_links then).
+function showBrandLinks(links) {
+  document.querySelectorAll(".brand-link").forEach(el => el.remove());
+  (links || []).forEach(b => {
+    const p = document.createElement("p");
+    p.className = "brand-link";
+    const a = document.createElement("a");
+    a.href = `/brands/${encodeURIComponent(b.slug)}.html`;
+    a.textContent = `See ${b.name}'s own page \u2192`;
+    p.appendChild(a);
+    metaEl.insertAdjacentElement("afterend", p);
+  });
+}
+
 async function runSearch(query) {
+  showBrandLinks([]);
   gridEl.innerHTML = "";
   metaEl.style.display = "none";
   hideLoadMore();
@@ -566,6 +582,7 @@ async function runSearch(query) {
       false,
       data.total_matches
     );
+    if (results.length > 0) showBrandLinks(data.brand_links);
     if (results.length > 0) {
       // Only worth trimming the initial batch's own trailing row when
       // there's real hidden content to carry it into - a fully-shown

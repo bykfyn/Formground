@@ -228,6 +228,7 @@ def human_search(
         "total_matches": data["total_matches"],
         "total_brands": data["total_brands"],
         "intent": data["intent"],
+        "brand_links": data.get("brand_links", []),
     }
 
 

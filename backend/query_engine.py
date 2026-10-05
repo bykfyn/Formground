@@ -37,6 +37,7 @@ import random
 import re
 import sqlite3
 import threading
+import unicodedata
 from pathlib import Path
 
 import requests
@@ -1035,6 +1036,7 @@ def filter_products(intent: dict) -> list:
     # not inferred from what someone typed. "independent" or
     # "established"; anything else (including absent) means no filter.
     wanted_tier = intent.get("tier")
+    wanted_brands = set(intent.get("brands") or [])
     raw_style_descriptors = intent.get("style_descriptors") or []
     wanted_style_descriptors = [
         d.strip().lower() for d in raw_style_descriptors
@@ -1048,6 +1050,8 @@ def filter_products(intent: dict) -> list:
         if not product["image_url"]:
             continue
         if product["brand"] in HIDDEN_BRANDS:
+            continue
+        if wanted_brands and product["brand"] not in wanted_brands:
             continue
         if wanted_category and not _category_matches(product["category"], wanted_category):
             continue
@@ -1530,6 +1534,91 @@ def _resolve_intent(raw_query: str, llm_intent: dict) -> dict:
     return intent
 
 
+# Single-word brand names that are also ordinary words people put in a
+# description ("oak grain table", "northern light"). Such a brand is only
+# recognised when the WHOLE query is its name, never as one word inside a
+# longer query. Every other brand name is also recognised inside a longer
+# query ("serax vase", "piet hein eek chair").
+AMBIGUOUS_BRAND_WORDS = {
+    "grain", "noah", "zero", "blond", "northern", "resident", "pulpo", "sekt",
+    "laun", "verk", "pode",
+}
+
+
+def _fold(text: str) -> str:
+    """Lower-case, accent-free, punctuation-free form of a name or query:
+    "Källemo" -> "kallemo", "B&B Italia" -> "b b italia"."""
+    ascii_only = unicodedata.normalize("NFKD", text).encode("ascii", "ignore").decode("ascii")
+    return " ".join(re.sub(r"[^a-z0-9]+", " ", ascii_only.lower()).split())
+
+
+_BRAND_FOLDS_CACHE = {"key": None, "folds": {}}
+
+
+def _brand_folds() -> dict:
+    """{folded name: real brand name} for every visible brand in the DB.
+    Rebuilt when the DB file changes (same key as _all_product_rows)."""
+    rows = _all_product_rows()
+    cache = _BRAND_FOLDS_CACHE
+    if cache["key"] is not rows:
+        folds = {}
+        for brand in {r["brand"] for r in rows}:
+            if brand in HIDDEN_BRANDS:
+                continue
+            f = _fold(brand)
+            if f:
+                folds[f] = brand
+        cache["folds"], cache["key"] = folds, rows
+    return cache["folds"]
+
+
+def detect_brands(raw_query: str) -> list:
+    """Real brand names the query is about: the whole query is a brand's
+    name ("HAY", "ligne roset", "kallemo"), or a longer query contains an
+    unambiguous brand name as whole words ("serax vase"). Before this a
+    brand-name search matched no filter at all and fell through to the
+    entire catalog (confirmed 2026-10-05: 'HAY' -> 28,026 results)."""
+    query = _fold(raw_query)
+    if not query:
+        return []
+    folds = _brand_folds()
+    if query in folds:
+        return [folds[query]]
+    found = []
+    padded = f" {query} "
+    # longest name first, and a name inside an already-found longer one is skipped
+    for f in sorted(folds, key=len, reverse=True):
+        if f in AMBIGUOUS_BRAND_WORDS:
+            continue
+        if f" {f} " in padded and not any(f in other for other in (_fold(b) for b in found)):
+            found.append(folds[f])
+    return found
+
+
+_HARD_FILTER_KEYS = ("category", "material", "color", "new_only", "countries",
+                     "seat_count", "portable_only", "brands")
+
+
+def _has_hard_filter(intent: dict) -> bool:
+    """True when the intent narrows the catalog at all. filter_products()
+    with none of these returns EVERY product, which is right only for an
+    explicit browse, never for a query nothing recognised ("xyzzyqwerty")."""
+    return any(intent.get(k) not in (None, "", [], False) for k in _HARD_FILTER_KEYS)
+
+
+def brand_links(intent: dict) -> list:
+    """[{name, slug}] for the brands in an intent, so the results page can
+    link to each maker's own page. The slug rule is a copy of
+    scraper/generate_brand_pages.slugify (the scraper package isn't in the
+    Cloud Run image); a test keeps the two identical."""
+    out = []
+    for name in intent.get("brands") or []:
+        ascii_only = unicodedata.normalize("NFKD", name.replace("Ł", "L").replace("ł", "l")).encode("ascii", "ignore").decode("ascii")
+        slug = re.sub(r"[^a-zA-Z0-9]+", "-", ascii_only).strip("-").lower() or "brand"
+        out.append({"name": name, "slug": slug})
+    return out
+
+
 def _match_all(raw_query: str, intent: dict) -> list:
     """The shared matching pipeline - filter (category/material hard
     facts, a style-descriptor narrow-if-possible pass, plus a direct
@@ -1545,7 +1634,7 @@ def _match_all(raw_query: str, intent: dict) -> list:
     "one result list," so a house and a product compete for the same
     per-firm/per-brand fairness cap via the same cap_per_brand() call,
     unmodified (see _normalize_house's "brand" alias)."""
-    matches = filter_products(intent)
+    matches = filter_products(intent) if _has_hard_filter(intent) else []
 
     # Skipped for a house-intent query (e.g. "house", "villa in Sweden") -
     # a house search should only ever surface real architect-designed
@@ -1556,7 +1645,10 @@ def _match_all(raw_query: str, intent: dict) -> list:
     is_house_intent = (intent.get("category") or "").lower() in HOUSE_CATEGORY_WORDS
     seen_ids = {m["id"] for m in matches}
     if not is_house_intent:
+        wanted_brands = set(intent.get("brands") or [])
         for m in filter_by_name(raw_query, tier=intent.get("tier")):
+            if wanted_brands and m["brand"] not in wanted_brands:
+                continue
             if m["id"] not in seen_ids:
                 matches.append(m)
                 seen_ids.add(m["id"])
@@ -1640,15 +1732,31 @@ def search_full(raw_query: str, tier=None) -> dict:
     filter_by_name() already know how to honor, and so it round-trips
     into search_more() for free (the frontend already sends this same
     intent object back unchanged on every "load more" click)."""
+    if not (raw_query or "").strip():
+        return {"results": [], "total_matches": 0, "total_brands": 0,
+                "intent": {}, "brand_links": []}
     intent = _resolve_intent(raw_query, translate_query(raw_query))
     if tier:
         intent["tier"] = tier
+    brands = detect_brands(raw_query)
+    if brands:
+        intent["brands"] = brands
     matches = _match_all(raw_query, intent)
+    if not matches:
+        # The model sometimes invents a compound category that is no real
+        # tag ("lamp for bedroom" -> "bedroom lamp"): retry with the head noun.
+        words = (intent.get("category") or "").split()
+        if len(words) > 1:
+            fallback = dict(intent, category=words[-1])
+            retried = _match_all(raw_query, fallback)
+            if retried:
+                intent, matches = fallback, retried
     return {
         "results": cap_per_brand(matches),
         "total_matches": len(matches),
         "total_brands": len({m["brand"] for m in matches}),
         "intent": intent,
+        "brand_links": brand_links(intent),
     }
 
 
