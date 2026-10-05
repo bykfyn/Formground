@@ -162,7 +162,6 @@ def render_architect_page(firm_name, slug, meta, houses):
     {site_link}
   </div>
   {contact_html}
-  <p class="category-intro">{len(houses)} real house{'' if len(houses) == 1 else 's'} designed by {html.escape(firm_name)}, each pulled from their own project page.</p>
   <div class="maker-grid">{houses_html}
   </div>
   <p class="foot-note">
