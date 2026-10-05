@@ -36,6 +36,7 @@ import sys
 import unicodedata
 from pathlib import Path
 from urllib.parse import urlparse
+from designer_credits import credited_counts  # noqa: E402
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
 import site_sections  # noqa: E402
 import query_engine as qe  # noqa: E402  - one definition of "New" (is_new_piece) for pages and search
@@ -1558,9 +1559,11 @@ def _designers_with_counts():
     rows = conn.execute("""
         SELECT designer, COUNT(*) as n FROM products
         WHERE designer IS NOT NULL AND TRIM(designer) != '' AND image_url != ''
-        GROUP BY designer HAVING n >= 2
+        GROUP BY designer
     """).fetchall()
     conn.close()
+    # credits are split into the individual designers they name (designer_credits.py), then the 2+ bar applies
+    rows = [(name, n) for name, n in credited_counts(rows).items() if n >= 2]
     slugs_seen = {}
     out = []
     for name, n in sorted(rows, key=lambda r: r[0]):

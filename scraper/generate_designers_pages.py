@@ -35,6 +35,7 @@ import sqlite3
 from collections import defaultdict
 from pathlib import Path
 
+from designer_credits import split_credit  # noqa: E402
 from site_assets import LISTING_JS, SHARE_JS  # noqa: E402
 from generate_brand_pages import (
     BRAND_CARDS_PER_PAGE,
@@ -267,7 +268,9 @@ def generate():
 
     products_by_designer = defaultdict(list)
     for row in rows:
-        products_by_designer[row["designer"]].append(dict(row))
+        # a credit can name several designers (or none: "Aa.Vv."): the piece shows on each named designer's page
+        for name in split_credit(row["designer"]):
+            products_by_designer[name].append(dict(row))
 
     DESIGNERS_DIR.mkdir(parents=True, exist_ok=True)
 

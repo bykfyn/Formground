@@ -483,3 +483,39 @@ class ReleasedAtTests(unittest.TestCase):
                 self.assertIsNone(conn.execute("SELECT released_at FROM products WHERE product_name='Q'").fetchone()[0])
             finally:
                 scrape.DB_PATH = old
+
+
+class DesignerCreditTests(unittest.TestCase):
+    """designer_credits.split_credit (2026-10-04): one credit string -> the designers it names."""
+
+    def setUp(self):
+        sys.path.insert(0, str(Path(__file__).parent.parent / "scraper"))
+        import designer_credits
+        self.split = designer_credits.split_credit
+        self.counts = designer_credits.credited_counts
+
+    def test_joined_credits_name_each_designer(self):
+        self.assertEqual(self.split("Marcello Jori, Massimo Giacon"), ["Marcello Jori", "Massimo Giacon"])
+        self.assertEqual(self.split("Ben van Berkel / UNStudio"), ["Ben van Berkel", "UNStudio"])
+
+    def test_stray_spaces_do_not_make_a_second_designer(self):
+        self.assertEqual(self.split("LPWK , Marcello Jori"), self.split("LPWK, Marcello Jori"))
+        self.assertEqual(self.split("Marta Sansoni,  LPWK"), ["Marta Sansoni", "LPWK"])
+
+    def test_catch_all_and_empty_credits_name_nobody(self):
+        for raw in ("Aa.Vv.", " ", "", None):
+            self.assertEqual(self.split(raw), [])
+
+    def test_studio_duos_and_single_names_stay_whole(self):
+        self.assertEqual(self.split("Tham & Videg\u00e5rd"), ["Tham & Videg\u00e5rd"])
+        self.assertEqual(self.split("Pierre Sindre"), ["Pierre Sindre"])
+
+    def test_hand_checked_overrides(self):
+        self.assertEqual(self.split("French designer brothers Ronan and Erwan Bouroullec"), ["Ronan Bouroullec", "Erwan Bouroullec"])
+        self.assertEqual(self.split("Franco and Franca Albini and Helg"), ["Franco Albini", "Franca Helg"])
+        self.assertEqual(self.split("Stockholm-based TAF Studio"), ["TAF Studio"])
+
+    def test_counts_aggregate_across_spellings(self):
+        c = self.counts([("LPWK, Marcello Jori", 8), ("LPWK , Marcello Jori", 2), ("Marcello Jori, Massimo Giacon", 32)])
+        self.assertEqual(c["Marcello Jori"], 42)
+        self.assertEqual(c["LPWK"], 10)

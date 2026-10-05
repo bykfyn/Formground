@@ -267,8 +267,8 @@ class StructureTests(unittest.TestCase):
             self.assertNotIn("coming soon", page.lower(), folder)
 
     def test_designer_pages_use_the_standard_product_card_with_share(self):
-        page = (DOCS / "designers" / "aa-vv.html").read_text()
-        self.assertGreater(page.count('<a class="card"'), 5)
+        page = (DOCS / "designers" / "claire-vos.html").read_text()
+        self.assertGreaterEqual(page.count('<a class="card"'), 2)
         self.assertEqual(page.count('<a class="card"'), page.count('<button class="share-btn"'))
         self.assertNotIn('class="maker-card"', page)
         self.assertIn("/share.js?v=", page)
@@ -282,7 +282,7 @@ class StructureTests(unittest.TestCase):
         third = (DOCS / "designers" / "jaime-hayon-3.html").read_text()
         self.assertIn('<p class="earlier-results"><a href="/designers/jaime-hayon-2.html" rel="prev">', third)
         self.assertIn("/designers/jaime-hayon-3.html", (DOCS / "sitemap.xml").read_text())
-        small = (DOCS / "designers" / "aa-vv.html").read_text()
+        small = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn('id="see-more"', small)
 
     def test_houses_pages_are_listing_pages_with_the_standard_card(self):
@@ -326,8 +326,19 @@ class StructureTests(unittest.TestCase):
                 problems.append(f"{name}: description over 160 characters")
         self.assertEqual(problems[:8], [])
 
+    def test_no_joined_or_catch_all_designer_pages(self):
+        import glob as _g
+        names = []
+        for f in _g.glob(str(DOCS / "designers" / "*.html")):
+            names.append(re.search(r'<h1 class="maker-name">(.*?)</h1>', Path(f).read_text()).group(1))
+        self.assertFalse([n for n in names if re.search(r"aa\.?vv|,| / ", n, re.I)])
+        self.assertFalse((DOCS / "designers" / "aa-vv.html").exists())
+        self.assertTrue((DOCS / "designers" / "erwan-bouroullec.html").exists())     # the Bouroullec credits were split
+        index = (DOCS / "designers.html").read_text()
+        self.assertNotIn("Aa.Vv.", index)
+
     def test_designer_pages_have_no_left_hand_tagline(self):
-        page = (DOCS / "designers" / "aa-vv.html").read_text()
+        page = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn("Looking for who made it?", page)
 
     def test_surprise_me_is_a_chip_not_part_of_the_search_box(self):
