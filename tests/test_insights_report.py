@@ -66,10 +66,11 @@ class PaidTestTests(unittest.TestCase):
 
     def test_engaged_rate_and_capture_ratio(self):
         rows = [{"utm_source": "google", "utm_campaign": "c1", "visits": 80, "visits_with_click": 20,
-                 "outbound_clicks": 24, "engaged_visits": 60}]
+                 "outbound_clicks": 24, "engaged_visits": 60, "quiet_deep_visits": 8}]
         out = self.run_paid(rows, "campaign,spend_kr,platform_clicks\nc1,400,100\n")
         self.assertIn("75.0", out)    # engaged: 60 / 80
         self.assertIn("80.0", out)    # captured: 80 visits / 100 platform clicks
+        self.assertIn("10.0", out)    # quiet deep: 8 / 80
 
     def test_campaign_without_a_spend_row_is_flagged(self):
         rows = [{"utm_source": "google", "utm_campaign": "mystery", "visits": 3, "visits_with_click": 1, "outbound_clicks": 1}]

@@ -35,6 +35,10 @@ Paid test (--spend spend.csv, columns: campaign,spend_kr[,week_start]; rows per 
   cutoff that leaves out earlier test traffic (it overrides --days). Campaigns whose utm_campaign
   starts with "test" are always left out, so end-to-end test links never count.
 
+"Quiet deep" visits (sections 9 and P): visits that never clicked out but read 3+ pages, shared, or
+answered "Spot on". A proxy for people who find the site useful as a reference (design-literate
+visitors, potential recommenders) and would otherwise look like failures.
+
 Visits are grouped by the random per-tab visit id (see frontend/fg-track.js): it describes
 one visit in one tab, never a person, and cannot be linked across visits.
 """
@@ -202,7 +206,10 @@ LIMIT 50
          MIN(timestamp) AS first_ts,
          MAX(utm_medium) AS utm_medium, MAX(utm_source) AS utm_source,
          MAX(referrer_host) AS referrer_host,
-         LOGICAL_OR(event_type = 'click') AS clicked
+         LOGICAL_OR(event_type = 'click') AS clicked,
+         COUNTIF(event_type = 'pageview') AS pageviews,
+         COUNTIF(event_type = 'share') AS shares,
+         COUNTIF(event_type = 'feedback' AND rating = 'spot_on') AS spot_on
   FROM ev WHERE visit_id IS NOT NULL GROUP BY visit_id
 )
 SELECT
@@ -215,7 +222,8 @@ SELECT
   END AS source,
   COUNT(*) AS visits,
   COUNTIF(clicked) AS visits_with_click,
-  ROUND(100 * SAFE_DIVIDE(COUNTIF(clicked), COUNT(*)), 1) AS outbound_pct
+  ROUND(100 * SAFE_DIVIDE(COUNTIF(clicked), COUNT(*)), 1) AS outbound_pct,
+  COUNTIF(NOT clicked AND (pageviews >= 3 OR shares > 0 OR spot_on > 0)) AS quiet_deep_visits
 FROM v
 GROUP BY 1, 2
 ORDER BY week DESC, visits DESC
@@ -257,7 +265,9 @@ PAID_SQL = """
   SELECT visit_id, MAX(utm_source) AS utm_source, MAX(utm_campaign) AS utm_campaign,
          COUNTIF(event_type = 'click') AS clicks,
          COUNTIF(event_type = 'pageview') AS pageviews,
-         COUNTIF(event_type IN ('search', 'discover', 'feedback')) AS actions
+         COUNTIF(event_type IN ('search', 'discover', 'feedback')) AS actions,
+         COUNTIF(event_type = 'share') AS shares,
+         COUNTIF(event_type = 'feedback' AND rating = 'spot_on') AS spot_on
   FROM ev
   WHERE utm_medium = 'cpc' AND utm_campaign IS NOT NULL AND visit_id IS NOT NULL
   GROUP BY visit_id
@@ -267,7 +277,9 @@ SELECT utm_source, utm_campaign,
        COUNTIF(clicks > 0) AS visits_with_click,
        SUM(clicks) AS outbound_clicks,
        -- an "engaged" visit: an outbound click, or a search/shuffle/feedback, or 2+ page views
-       COUNTIF(clicks > 0 OR actions > 0 OR pageviews >= 2) AS engaged_visits
+       COUNTIF(clicks > 0 OR actions > 0 OR pageviews >= 2) AS engaged_visits,
+       -- a "quiet" visit: never clicked out, but read (3+ pages), shared, or said "Spot on"
+       COUNTIF(clicks = 0 AND (pageviews >= 3 OR shares > 0 OR spot_on > 0)) AS quiet_deep_visits
 FROM pv
 GROUP BY 1, 2
 """
@@ -299,7 +311,7 @@ def paid_test(client, table, config, spend_csv):
     rows, read_cells = [], []
     for name in sorted(set(spend) | set(seen)):
         d = seen.get(name, {"utm_source": "?", "visits": 0, "visits_with_click": 0, "outbound_clicks": 0,
-                            "engaged_visits": 0})
+                            "engaged_visits": 0, "quiet_deep_visits": 0})
         kr = spend.get(name)
         clicks = d["outbound_clicks"]
         per_click = round(kr / clicks, 1) if kr is not None and clicks else None
@@ -313,6 +325,7 @@ def paid_test(client, table, config, spend_csv):
             "visits": d["visits"], "outbound_clicks": clicks, "kr_per_click": "" if per_click is None else per_click,
             "outbound_pct": round(100 * d["visits_with_click"] / d["visits"], 1) if d["visits"] else "",
             "engaged_pct": round(100 * d.get("engaged_visits", 0) / d["visits"], 1) if d["visits"] else "",
+            "quiet_deep_pct": round(100 * d.get("quiet_deep_visits", 0) / d["visits"], 1) if d["visits"] else "",
             # our recorded visits as a share of the ad platform's own click count: low = slow pages or blocked tracking
             "captured_pct": (round(100 * d["visits"] / platform_clicks[name], 1) if platform_clicks.get(name) else ""),
             "verdict": v,
