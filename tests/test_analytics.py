@@ -183,6 +183,11 @@ class EventEndpointTests(unittest.TestCase):
             main.search_full = orig
         self.assertEqual(self.logged[-1][1]["visit_id"], "0123456789abcdef")
 
+    def test_ad_creative_tag_is_kept(self):
+        self.post({"event_type": "pageview", "page_path": "/work", "utm_source": "google", "utm_medium": "cpc",
+                   "utm_campaign": "chairs_work_202610", "utm_content": "photo_a"})
+        self.assertEqual(self.logged[-1][1]["utm_content"], "photo_a")
+
     def test_internal_traffic_is_not_logged(self):
         n = len(self.logged)
         self.post({"event_type": "pageview", "page_path": "/work", "internal": "1"})

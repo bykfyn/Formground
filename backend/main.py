@@ -212,6 +212,7 @@ def human_search(
     utm_source: Optional[str] = None,
     utm_medium: Optional[str] = None,
     utm_campaign: Optional[str] = None,
+    utm_content: Optional[str] = None,
     landing_page: Optional[str] = None,
     page_path: Optional[str] = None,
     visit_id: Optional[str] = None,
@@ -232,7 +233,7 @@ def human_search(
     search_id = secrets.token_hex(6)
     if not _is_bot(request) and not _is_internal(internal):
         log_event(
-            "search", query=q, utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign,
+            "search", query=q, utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign, utm_content=utm_content,
             surface="work", search_id=search_id, landing_page=_clean_path(landing_page),
             page_path=_clean_path(page_path), visit_id=_clean_visit(visit_id), total_matches=data["total_matches"],
             total_brands=data["total_brands"], result_count=len(data["results"]),
@@ -315,6 +316,7 @@ def discover_random(
     utm_source: Optional[str] = None,
     utm_medium: Optional[str] = None,
     utm_campaign: Optional[str] = None,
+    utm_content: Optional[str] = None,
     landing_page: Optional[str] = None,
     page_path: Optional[str] = None,
     visit_id: Optional[str] = None,
@@ -328,7 +330,7 @@ def discover_random(
     search_id = secrets.token_hex(6)
     if not _is_bot(request) and not _is_internal(internal):
         log_event(
-            "discover", utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign,
+            "discover", utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign, utm_content=utm_content,
             surface="discover", search_id=search_id, landing_page=_clean_path(landing_page),
             page_path=_clean_path(page_path), visit_id=_clean_visit(visit_id), tier_filter=tier, result_count=len(results),
             result_brands=_result_brands_json(results),
@@ -375,6 +377,7 @@ def track_event(request: Request, payload: dict = Body(...)):
         utm_source=payload.get("utm_source"),
         utm_medium=payload.get("utm_medium"),
         utm_campaign=payload.get("utm_campaign"),
+        utm_content=payload.get("utm_content"),
         page_path=page_path,
         page_type=page_type,
         landing_page=_clean_path(payload.get("landing_page")),

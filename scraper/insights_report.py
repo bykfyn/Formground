@@ -3,6 +3,7 @@ Is Formground doing its job? One command answers it from the anonymous event log
 
     python3 scraper/insights_report.py                 # last 14 days, everything
     python3 scraper/insights_report.py --days 7 --campaign spring_chairs
+    python3 scraper/insights_report.py --since 2026-10-12 --spend spend.csv   # the paid test
 
 Needs Google Cloud credentials for the project that holds the BigQuery table
 formground_analytics.events (`gcloud auth application-default login`). Read-only.
@@ -27,22 +28,35 @@ What it reports (definitions are the thresholds to agree BEFORE the ads start):
                         produced and the click rate. "Appearances" counts a maker once per search or
                         page view in which they were shown.
 
+Paid test (--spend spend.csv, columns: campaign,spend_kr[,week_start]; rows per campaign are summed):
+  adds section P, cost per outbound click and outbound rate per campaign, read against the locked
+  thresholds below. A campaign is only read at 30+ outbound clicks. --since DATE is the launch-date
+  cutoff that leaves out earlier test traffic (it overrides --days). Campaigns whose utm_campaign
+  starts with "test" are always left out, so end-to-end test links never count.
+
 Visits are grouped by the random per-tab visit id (see frontend/fg-track.js): it describes
 one visit in one tab, never a person, and cannot be linked across visits.
 """
 
 import argparse
+import csv
 
 from google.cloud import bigquery
 
 DATASET, TABLE = "formground_analytics", "events"
 
+# Paid-test thresholds (kr per outbound click), locked in writing before spend starts.
+CONTINUE_KR = 17
+CHANGE_KR = 31
+MIN_CLICKS = 30
+
 # Every query starts from the same window; {t} is the fully qualified table.
 WINDOW = """
 WITH ev AS (
   SELECT * FROM `{t}`
-  WHERE timestamp >= TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL @days DAY)
+  WHERE timestamp >= COALESCE(TIMESTAMP(@since), TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL @days DAY))
     AND (@campaign IS NULL OR utm_campaign = @campaign)
+    AND NOT STARTS_WITH(COALESCE(utm_campaign, ''), 'test')   -- end-to-end test links: name the campaign test_...
 ),
 searches AS (
   SELECT * FROM ev WHERE event_type = 'search' AND surface = 'work'
@@ -181,6 +195,43 @@ FROM shown FULL OUTER JOIN sent ON shown.brand = sent.brand
 ORDER BY clicks DESC, appearances DESC
 LIMIT 50
 """, []),
+    ("9. Visits by source, by week (paid, organic search, referral, direct)", """
+, v AS (
+  SELECT visit_id,
+         MIN(timestamp) AS first_ts,
+         MAX(utm_medium) AS utm_medium, MAX(utm_source) AS utm_source,
+         MAX(referrer_host) AS referrer_host,
+         LOGICAL_OR(event_type = 'click') AS clicked
+  FROM ev WHERE visit_id IS NOT NULL GROUP BY visit_id
+)
+SELECT
+  DATE_TRUNC(DATE(first_ts), WEEK(MONDAY)) AS week,
+  CASE
+    WHEN utm_medium = 'cpc' THEN CONCAT('paid: ', COALESCE(utm_source, '?'))
+    WHEN REGEXP_CONTAINS(COALESCE(referrer_host, ''), r'(^|\\.)(google|bing|duckduckgo|ecosia|yahoo|brave|qwant|startpage)\\.') THEN 'organic search'
+    WHEN referrer_host IS NOT NULL THEN 'referral'
+    ELSE 'direct / unknown'
+  END AS source,
+  COUNT(*) AS visits,
+  COUNTIF(clicked) AS visits_with_click,
+  ROUND(100 * SAFE_DIVIDE(COUNTIF(clicked), COUNT(*)), 1) AS outbound_pct
+FROM v
+GROUP BY 1, 2
+ORDER BY week DESC, visits DESC
+""", []),
+
+    ("10. Ad creatives: visits and outbound rate (utm_content)", """
+SELECT
+  utm_campaign, utm_content,
+  COUNT(DISTINCT visit_id) AS visits,
+  COUNT(DISTINCT IF(event_type = 'click', visit_id, NULL)) AS visits_with_click,
+  COUNTIF(event_type = 'click') AS outbound_clicks
+FROM ev
+WHERE utm_medium = 'cpc' AND visit_id IS NOT NULL
+GROUP BY 1, 2
+ORDER BY outbound_clicks DESC
+LIMIT 40
+""", []),
 ]
 
 
@@ -200,9 +251,73 @@ def print_table(rows, ratios):
                 print(f"  {num} / {den}: {100 * r[num] / r[den]:.1f}%")
 
 
+PAID_SQL = """
+SELECT utm_source, utm_campaign,
+       COUNT(DISTINCT visit_id) AS visits,
+       COUNT(DISTINCT IF(event_type = 'click', visit_id, NULL)) AS visits_with_click,
+       COUNTIF(event_type = 'click') AS outbound_clicks
+FROM ev
+WHERE utm_medium = 'cpc' AND utm_campaign IS NOT NULL
+GROUP BY 1, 2
+"""
+
+
+def verdict(clicks, kr_per_click):
+    if clicks < MIN_CLICKS:
+        return f"too few clicks to read (need {MIN_CLICKS})"
+    if kr_per_click <= CONTINUE_KR:
+        return "CONTINUE"
+    if kr_per_click <= CHANGE_KR:
+        return "ITERATE"
+    return "CHANGE APPROACH"
+
+
+def paid_test(client, table, config, spend_csv):
+    """Cost per outbound click and outbound rate per campaign, against the locked thresholds."""
+    spend = {}
+    with open(spend_csv, newline="") as fh:
+        for row in csv.DictReader(fh):
+            name = (row.get("campaign") or "").strip()
+            if name:
+                spend[name] = spend.get(name, 0.0) + float(row["spend_kr"])
+    seen = {}
+    for r in client.query(WINDOW.format(t=table) + PAID_SQL, job_config=config).result():
+        seen[r["utm_campaign"]] = dict(r)
+    rows, read_cells = [], []
+    for name in sorted(set(spend) | set(seen)):
+        d = seen.get(name, {"utm_source": "?", "visits": 0, "visits_with_click": 0, "outbound_clicks": 0})
+        kr = spend.get(name)
+        clicks = d["outbound_clicks"]
+        per_click = round(kr / clicks, 1) if kr is not None and clicks else None
+        v = ("no spend row in the CSV" if kr is None
+             else "no outbound clicks yet" if not clicks
+             else verdict(clicks, per_click))
+        if per_click is not None and clicks >= MIN_CLICKS:
+            read_cells.append(per_click)
+        rows.append({
+            "campaign": name, "source": d["utm_source"], "spend_kr": "" if kr is None else round(kr),
+            "visits": d["visits"], "outbound_clicks": clicks, "kr_per_click": "" if per_click is None else per_click,
+            "outbound_pct": round(100 * d["visits_with_click"] / d["visits"], 1) if d["visits"] else "",
+            "verdict": v,
+        })
+    print("\nP. Paid test: cost per outbound click "
+          f"(continue <= {CONTINUE_KR} kr, change approach > {CHANGE_KR} kr, read at {MIN_CLICKS}+ clicks)")
+    print_table(rows, [])
+    if not read_cells:
+        print("  Overall: no campaign has enough outbound clicks to read yet.")
+    elif min(read_cells) <= CONTINUE_KR:
+        print("  Overall: CONTINUE (at least one cell at or under the threshold).")
+    elif min(read_cells) > CHANGE_KR:
+        print("  Overall: CHANGE APPROACH (every readable cell is above the threshold).")
+    else:
+        print("  Overall: ITERATE.")
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--days", type=int, default=14)
+    ap.add_argument("--since", default=None, help="launch-date cutoff YYYY-MM-DD; leaves out earlier test traffic (overrides --days)")
+    ap.add_argument("--spend", default=None, help="CSV with columns campaign,spend_kr[,week_start]: adds the paid-test section")
     ap.add_argument("--campaign", default=None, help="only events carrying this utm_campaign")
     args = ap.parse_args()
 
@@ -210,14 +325,17 @@ def main():
     table = f"{client.project}.{DATASET}.{TABLE}"
     config = bigquery.QueryJobConfig(query_parameters=[
         bigquery.ScalarQueryParameter("days", "INT64", args.days),
+        bigquery.ScalarQueryParameter("since", "STRING", args.since),
         bigquery.ScalarQueryParameter("campaign", "STRING", args.campaign),
     ])
-    print(f"Formground insights, last {args.days} days" + (f", campaign {args.campaign}" if args.campaign else ""))
+    print(f"Formground insights, " + (f"since {args.since}" if args.since else f"last {args.days} days") + (f", campaign {args.campaign}" if args.campaign else ""))
     for title, sql, ratios in REPORTS:
         # the window CTE ends before the first SELECT; report 3 adds its own CTEs with a leading comma
         body = WINDOW.format(t=table) + sql
         print(f"\n{title}")
         print_table([dict(r) for r in client.query(body, job_config=config).result()], ratios)
+    if args.spend:
+        paid_test(client, table, config, args.spend)
 
 
 if __name__ == "__main__":

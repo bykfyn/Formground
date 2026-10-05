@@ -46,8 +46,9 @@
     utm_source: params.get("utm_source"),
     utm_medium: params.get("utm_medium"),
     utm_campaign: params.get("utm_campaign"),
+    utm_content: params.get("utm_content"),
   };
-  var hasUtm = !!(urlUtm.utm_source || urlUtm.utm_medium || urlUtm.utm_campaign);
+  var hasUtm = !!(urlUtm.utm_source || urlUtm.utm_medium || urlUtm.utm_campaign || urlUtm.utm_content);
   var landing = load("fg_landing");
   var utm = null;
   try { utm = JSON.parse(load("fg_utm") || "null"); } catch (e) { utm = null; }
@@ -72,7 +73,7 @@
     if (visit) store("fg_visit", visit);
   }
   var ctx = {
-    utm: utm || { utm_source: null, utm_medium: null, utm_campaign: null },
+    utm: utm || { utm_source: null, utm_medium: null, utm_campaign: null, utm_content: null },
     landing_page: landing,
     page_path: window.location.pathname,
     visit_id: visit,
