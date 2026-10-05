@@ -64,6 +64,13 @@ class PaidTestTests(unittest.TestCase):
         self.assertIn("too few clicks to read", out)
         self.assertIn("no campaign has enough outbound clicks", out)
 
+    def test_engaged_rate_and_capture_ratio(self):
+        rows = [{"utm_source": "google", "utm_campaign": "c1", "visits": 80, "visits_with_click": 20,
+                 "outbound_clicks": 24, "engaged_visits": 60}]
+        out = self.run_paid(rows, "campaign,spend_kr,platform_clicks\nc1,400,100\n")
+        self.assertIn("75.0", out)    # engaged: 60 / 80
+        self.assertIn("80.0", out)    # captured: 80 visits / 100 platform clicks
+
     def test_campaign_without_a_spend_row_is_flagged(self):
         rows = [{"utm_source": "google", "utm_campaign": "mystery", "visits": 3, "visits_with_click": 1, "outbound_clicks": 1}]
         out = self.run_paid(rows, "campaign,spend_kr\nother,100\n")

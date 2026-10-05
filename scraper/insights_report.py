@@ -29,8 +29,9 @@ What it reports (definitions are the thresholds to agree BEFORE the ads start):
                         page view in which they were shown.
 
 Paid test (--spend spend.csv, columns: campaign,spend_kr[,week_start]; rows per campaign are summed):
-  adds section P, cost per outbound click and outbound rate per campaign, read against the locked
-  thresholds below. A campaign is only read at 30+ outbound clicks. --since DATE is the launch-date
+  adds section P, cost per outbound click, outbound rate, engaged-visit rate and (with an optional
+  platform_clicks column) the share of the ad platform's clicks we actually recorded, per campaign,
+  read against the locked thresholds below. A campaign is only read at 30+ outbound clicks. --since DATE is the launch-date
   cutoff that leaves out earlier test traffic (it overrides --days). Campaigns whose utm_campaign
   starts with "test" are always left out, so end-to-end test links never count.
 
@@ -252,12 +253,22 @@ def print_table(rows, ratios):
 
 
 PAID_SQL = """
+, pv AS (
+  SELECT visit_id, MAX(utm_source) AS utm_source, MAX(utm_campaign) AS utm_campaign,
+         COUNTIF(event_type = 'click') AS clicks,
+         COUNTIF(event_type = 'pageview') AS pageviews,
+         COUNTIF(event_type IN ('search', 'discover', 'feedback')) AS actions
+  FROM ev
+  WHERE utm_medium = 'cpc' AND utm_campaign IS NOT NULL AND visit_id IS NOT NULL
+  GROUP BY visit_id
+)
 SELECT utm_source, utm_campaign,
-       COUNT(DISTINCT visit_id) AS visits,
-       COUNT(DISTINCT IF(event_type = 'click', visit_id, NULL)) AS visits_with_click,
-       COUNTIF(event_type = 'click') AS outbound_clicks
-FROM ev
-WHERE utm_medium = 'cpc' AND utm_campaign IS NOT NULL
+       COUNT(*) AS visits,
+       COUNTIF(clicks > 0) AS visits_with_click,
+       SUM(clicks) AS outbound_clicks,
+       -- an "engaged" visit: an outbound click, or a search/shuffle/feedback, or 2+ page views
+       COUNTIF(clicks > 0 OR actions > 0 OR pageviews >= 2) AS engaged_visits
+FROM pv
 GROUP BY 1, 2
 """
 
@@ -274,18 +285,21 @@ def verdict(clicks, kr_per_click):
 
 def paid_test(client, table, config, spend_csv):
     """Cost per outbound click and outbound rate per campaign, against the locked thresholds."""
-    spend = {}
+    spend, platform_clicks = {}, {}
     with open(spend_csv, newline="") as fh:
         for row in csv.DictReader(fh):
             name = (row.get("campaign") or "").strip()
             if name:
                 spend[name] = spend.get(name, 0.0) + float(row["spend_kr"])
+                if (row.get("platform_clicks") or "").strip():
+                    platform_clicks[name] = platform_clicks.get(name, 0) + int(row["platform_clicks"])
     seen = {}
     for r in client.query(WINDOW.format(t=table) + PAID_SQL, job_config=config).result():
         seen[r["utm_campaign"]] = dict(r)
     rows, read_cells = [], []
     for name in sorted(set(spend) | set(seen)):
-        d = seen.get(name, {"utm_source": "?", "visits": 0, "visits_with_click": 0, "outbound_clicks": 0})
+        d = seen.get(name, {"utm_source": "?", "visits": 0, "visits_with_click": 0, "outbound_clicks": 0,
+                            "engaged_visits": 0})
         kr = spend.get(name)
         clicks = d["outbound_clicks"]
         per_click = round(kr / clicks, 1) if kr is not None and clicks else None
@@ -298,6 +312,9 @@ def paid_test(client, table, config, spend_csv):
             "campaign": name, "source": d["utm_source"], "spend_kr": "" if kr is None else round(kr),
             "visits": d["visits"], "outbound_clicks": clicks, "kr_per_click": "" if per_click is None else per_click,
             "outbound_pct": round(100 * d["visits_with_click"] / d["visits"], 1) if d["visits"] else "",
+            "engaged_pct": round(100 * d.get("engaged_visits", 0) / d["visits"], 1) if d["visits"] else "",
+            # our recorded visits as a share of the ad platform's own click count: low = slow pages or blocked tracking
+            "captured_pct": (round(100 * d["visits"] / platform_clicks[name], 1) if platform_clicks.get(name) else ""),
             "verdict": v,
         })
     print("\nP. Paid test: cost per outbound click "
