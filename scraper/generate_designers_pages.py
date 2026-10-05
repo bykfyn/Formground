@@ -132,7 +132,11 @@ def render_designer_page(designer_name, slug, products, page=1):
 <meta property="og:title" content="{html.escape(designer_name)} — Formground">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{page_url}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="{SITE_URL}/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="{SITE_URL}/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
 <script type="application/ld+json">{breadcrumb_json}</script>
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
@@ -199,7 +203,11 @@ def render_designers_index(designers_with_slugs, products_by_designer):
 <meta property="og:title" content="Designers — Formground">
 <meta property="og:description" content="{description}">
 <meta property="og:url" content="{page_url}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="{SITE_URL}/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="{SITE_URL}/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>

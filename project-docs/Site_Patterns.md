@@ -142,6 +142,14 @@ Audited and left live: Edits (9), Houses (426, 13 countries), Architects (43 fir
 the type pages (all 25+ pieces), makers (198), Marketplace stockists (117 cards). Watch list: three maker pages with 1-2
 pieces. The Creators page's three counts are rewritten from the real page lists on every build.
 
+### Social previews (2026-10-04)
+
+Every page that is not a maker page announces one default preview picture, `/og-default.png` (1200x630: the wordmark on the
+site's off-white), with `twitter:card` = summary_large_image - replacing the small favicon the pages used before and filling the
+~280 pages that had none. Deliberately NOT a maker's or designer's photo (a preview makes the social platform fetch and show the
+image under our link, which the "photos stay on the maker's server" rule is meant to avoid). Open question: maker pages still use
+the maker's hero photo as their preview (579 pages incl. numbered ones) - see the notes from 2026-10-04.
+
 ## 1. Banners (the wide photo with one featured product)
 
 Used on: the home page's category sections, the Edits hub (individual Edit pages are simple for now, see below).

@@ -346,6 +346,26 @@ class StructureTests(unittest.TestCase):
         self.assertNotIn("auto-fit", rule)
         self.assertEqual(css, (DOCS / "work-results.css").read_text())
 
+    def test_every_page_has_a_social_preview_image(self):
+        import glob as _g
+        from PIL import Image
+        self.assertEqual(Image.open(DOCS / "og-default.png").size, (1200, 630))
+        self.assertEqual((ROOT / "frontend" / "og-default.png").read_bytes(), (DOCS / "og-default.png").read_bytes())
+        problems = []
+        for f in _g.glob(str(DOCS / "**" / "*.html"), recursive=True):
+            text = Path(f).read_text()
+            name = os.path.relpath(f, DOCS)
+            if _is_stub(text) or name == "search.html":
+                continue
+            m = re.search(r'property="og:image" content="([^"]*)"', text)
+            if not m:
+                problems.append(f"{name}: no og:image")
+            elif "favicon" in m.group(1):
+                problems.append(f"{name}: favicon as preview")
+            if 'name="twitter:image"' not in text and not name.startswith("brands/"):
+                problems.append(f"{name}: no twitter:image")
+        self.assertEqual(problems[:6], [])
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn("Looking for who made it?", page)

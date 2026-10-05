@@ -285,8 +285,10 @@ def _head(title, description, page_url):
 <meta property="og:title" content="{html.escape(title)}">
 <meta property="og:description" content="{html.escape(description)}">
 <meta property="og:url" content="{page_url}">
-<meta property="og:image" content="{SITE_URL}/favicon-192x192.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="{SITE_URL}/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{html.escape(title)}">
 <meta name="twitter:description" content="{html.escape(description)}">
 <link rel="stylesheet" href="/site.css">
@@ -477,8 +479,10 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
 <meta property="og:title" content="{html.escape(title)} — Formground">
 <meta property="og:description" content="{html.escape(description)}">
 <meta property="og:url" content="{page_url}">
-<meta property="og:image" content="{SITE_URL}/favicon-192x192.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="{SITE_URL}/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">

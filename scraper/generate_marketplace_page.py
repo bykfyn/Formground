@@ -976,10 +976,12 @@ def render_page(retailers, promotions):
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://formground.com/marketplace.html">
 <meta property="og:site_name" content="Formground">
-<meta property="og:image" content="https://formground.com/favicon-192x192.png">
+<meta property="og:image" content="https://formground.com/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <link rel="canonical" href="https://formground.com/marketplace.html">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://formground.com/favicon-192x192.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://formground.com/og-default.png">
 <meta name="twitter:title" content="Marketplace — Formground">
 <meta name="twitter:description" content="{twitter_desc}">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">

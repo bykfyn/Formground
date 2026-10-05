@@ -451,8 +451,10 @@ def render_edits_index(themes_data):
 <meta property="og:title" content="Edits — Formground">
 <meta property="og:description" content="{html.escape(description)}">
 <meta property="og:url" content="{SITE_URL}/edits.html">
-<meta property="og:image" content="{SITE_URL}/favicon-192x192.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="{SITE_URL}/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Edits — Formground">
 <meta name="twitter:description" content="{html.escape(description)}">
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
