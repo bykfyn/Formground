@@ -17,6 +17,10 @@ What it reports (definitions are the thresholds to agree BEFORE the ads start):
   4. By campaign/page - per landing page: visits, visits that searched, visits that clicked
                         through to a maker.
   5. By category      - which kinds of search succeed and which don't.
+  6. Clicks by source - outbound clicks per page, split by where the visit came from: the ad
+                        (utm_source), else the referring website, else direct. Referrer comes from
+                        the visit's page views via the visit id, so it only covers visits after
+                        the visit id went live (2026-10-05).
 
 Visits are grouped by the random per-tab visit id (see frontend/fg-track.js): it describes
 one visit in one tab, never a person, and cannot be linked across visits.
@@ -118,6 +122,22 @@ GROUP BY 1
 HAVING searches >= 3
 ORDER BY searches DESC
 LIMIT 25
+""", []),
+    ("6. Outbound clicks per page by source", """
+SELECT
+  c.page_path,
+  COALESCE(c.utm_source, v.referrer_host, '(direct)') AS source,
+  COUNT(*) AS outbound_clicks
+FROM ev c
+LEFT JOIN (
+  SELECT visit_id, ANY_VALUE(referrer_host) AS referrer_host
+  FROM ev WHERE event_type = 'pageview' AND referrer_host IS NOT NULL AND visit_id IS NOT NULL
+  GROUP BY visit_id
+) v ON v.visit_id = c.visit_id
+WHERE c.event_type = 'click'
+GROUP BY 1, 2
+ORDER BY outbound_clicks DESC
+LIMIT 40
 """, []),
 ]
 
