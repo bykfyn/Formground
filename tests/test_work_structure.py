@@ -419,6 +419,18 @@ class StructureTests(unittest.TestCase):
         chairs = (DOCS / "work" / "chairs.html").read_text()
         self.assertIn('"@type":"ItemList"', chairs.replace(" ", ""))
 
+    def test_every_generated_page_loads_the_tracker(self):
+        import glob as _g
+        missing = []
+        for f in _g.glob(str(DOCS / "**" / "*.html"), recursive=True):
+            text = Path(f).read_text()
+            name = os.path.relpath(f, DOCS)
+            if _is_stub(text) or name in ("search.html", "404.html"):
+                continue
+            if "fg-track.js" not in text:
+                missing.append(name)
+        self.assertEqual(missing[:6], [])
+
     def test_events_are_posted_with_fetch_not_sendbeacon(self):
         # sendBeacon is always credentialed; the server's wildcard CORS answer makes browsers refuse it
         for name in ("fg-track.js", "search.js"):

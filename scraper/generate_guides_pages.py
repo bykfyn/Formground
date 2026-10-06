@@ -18,6 +18,7 @@ sys.path.insert(0, str(SCRAPER_DIR))
 sys.path.insert(0, str(SCRAPER_DIR.parent / "backend"))
 
 from generate_brand_pages import (  # noqa: E402
+    CARD_CLICK_TRACKING_JS,
     CLOUDFLARE_ANALYTICS,
     FAVICON_TAGS,
     PAGE_CSS,
@@ -108,6 +109,7 @@ def _tail():
     {SITE_FOOTER_HTML}
   </p>
 </main>
+<script>{CARD_CLICK_TRACKING_JS}</script>
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
