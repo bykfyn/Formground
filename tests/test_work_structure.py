@@ -425,6 +425,35 @@ class StructureTests(unittest.TestCase):
         self.assertIn("internal=1", search)
         self.assertIn("INTERNAL", search)
 
+    def test_buying_guides_hub_pages_and_type_page_text(self):
+        hub = (DOCS / "guides.html").read_text()
+        sitemap = (DOCS / "sitemap.xml").read_text()
+        self.assertIn("https://formground.com/guides.html", sitemap)
+        for slug in ("pendant-lamps", "dining-tables", "sofas"):
+            self.assertIn(f"/guides/{slug}.html", hub)
+            self.assertIn(f"https://formground.com/guides/{slug}.html", sitemap)
+            guide = (DOCS / "guides" / f"{slug}.html").read_text()
+            self.assertIn("Sources and further reading", guide)
+            self.assertIn(f'href="/work/{slug}.html"', guide)              # back to the type page
+            visible = re.sub(r"<style.*?</style>|<script.*?</script>", "", guide, flags=re.S)
+            self.assertNotRegex(re.sub(r"<[^>]+>", " ", visible), r"(?i)\breal\b")
+            type_page = (DOCS / "work" / f"{slug}.html").read_text()
+            self.assertEqual(type_page.count('<section class="listing-about">'), 1)
+            self.assertIn(f'href="/guides/{slug}.html"', type_page)
+            self.assertIn('<p class="listing-intro">', type_page)
+        # page 2+ and other types stay as they were
+        self.assertEqual((DOCS / "work" / "pendant-lamps-2.html").read_text().count('<section class="listing-about">'), 0)
+        self.assertEqual((DOCS / "work" / "chairs.html").read_text().count('<section class="listing-about">'), 0)
+
+    def test_guide_source_links_are_https_and_labelled_as_not_endorsements(self):
+        import guides_content
+        for g in guides_content.GUIDES:
+            self.assertTrue(g["sources"], g["slug"])
+            for label, href in g["sources"]:
+                self.assertTrue(href.startswith("https://"), href)
+                self.assertTrue(label.strip())
+        self.assertIn("not endorsements", guides_content.LABEL_NOTE)
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn("Looking for who made it?", page)

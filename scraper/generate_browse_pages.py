@@ -101,6 +101,7 @@ from image_sizes import CARD, sized  # noqa: E402
 from site_assets import ICONS_CSS, LISTING_JS, MENU_SCRIPT, SHARE_JS, WORK_MENU_CSS, WORK_RESULTS_CSS  # noqa: E402
 from redirects import write_redirect  # noqa: E402
 import work_menu  # noqa: E402
+import guides_content  # noqa: E402
 
 # Each entry's `intent` goes straight to query_engine.filter_products().
 # `plural` is the lowercase noun used in the intro/meta sentence.
@@ -338,6 +339,16 @@ LISTING_CSS = """
      page's own stylesheet); these are only the parts a listing adds. */
   .site-header { margin-bottom: 0; }
   .listing-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 26px; line-height: 1.15; text-align: center; margin: 34px 0 22px; }
+  .listing-intro { font-size: 14px; line-height: 1.55; color: var(--text-secondary); text-align: center; max-width: 560px; margin: -10px auto 14px; }
+  .listing-intro + .listing-meta { margin-top: 0; }
+  .listing-about { max-width: 720px; margin: 38px auto 0; padding-top: 24px; border-top: 0.5px solid var(--border); }
+  .listing-about h2 { font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 18px; margin: 0 0 10px; }
+  .listing-about p { font-size: 14px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 10px; }
+  .listing-about h3 { font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 15px; margin: 22px 0 8px; }
+  .listing-about ul { margin: 0 0 10px; padding-left: 20px; }
+  .listing-about li { font-size: 14px; line-height: 1.55; color: var(--text-secondary); margin: 0 0 6px; }
+  .listing-about a { color: var(--text-accent); text-decoration: none; }
+  .listing-about a:hover { text-decoration: underline; }
   .listing-meta { font-size: 12px; color: var(--text-muted); text-align: center; margin: -14px 0 22px; }
   .listing-meta a { color: var(--text-accent); text-decoration: none; white-space: nowrap; }
   .listing-meta a:hover { text-decoration: underline; }
@@ -455,6 +466,21 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
              if e["slug"] == slug else
              f'<a href="/work/{e["slug"]}.html">{html.escape(e["title"])}</a> <span class="n">{e["n"]:,}</span>')
             for e in sorted(work_menu.category_entries(entries, cat_name), key=work_menu.entry_sort_key))
+    guide = guides_content.GUIDES_BY_SLUG.get(slug) if (not view and page == 1) else None
+    preamble_html = about_html = ""
+    if guide:
+        facts = guides_content.type_facts(products)
+        preamble_html = f'<p class="listing-intro">{html.escape(guides_content.preamble_text(guide, facts))}</p>'
+        teasers = "".join(f"<li>{html.escape(t)}</li>" for t in guide["teasers"])
+        about_html = f"""<section class="listing-about">
+    <h2>About {html.escape(guide['noun'])}</h2>
+    <p>{html.escape(guide['about'])}</p>
+    <p>{html.escape(guides_content.facts_sentences(facts))}</p>
+    <h3>Buying guide: what to consider</h3>
+    <ul>{teasers}</ul>
+    <p><a href="/guides/{guide['slug']}.html">Read the full buying guide &rarr;</a></p>
+  </section>
+  """
     makers_heading = view.get("makers_heading") if view and view.get("makers_heading") else '<a href="/makers.html">Makers &rarr;</a>'
     menu_html = work_menu.render_menu(entries, current_slug=slug, current_category=cat_name)
     earlier = (f'<p class="earlier-results"><a href="/work/{_page_slug(slug, page - 1)}.html" rel="prev">'
@@ -508,12 +534,12 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
   {menu_html}
   {subnav}
   <h1 class="listing-title">{html.escape(title)}</h1>
-  {edit_link_html}
+  {preamble_html}{edit_link_html}
   {earlier}
   <div class="results-grid">{grid}</div>
   {see_more}
   {_pager_compact_html(slug, page, pages)}
-  <section class="listing-more">
+  {about_html}<section class="listing-more">
     <h2>{makers_heading}</h2>
     <p>{top_makers}{more_makers}</p>
     <h2>{siblings_heading}</h2>

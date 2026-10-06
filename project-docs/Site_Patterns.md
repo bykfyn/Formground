@@ -281,3 +281,10 @@ chips, and the "N finishes" badge was shorter than the brand tags.)
    `frontend/` and `scraper/generate_*.py`) and change them together.
 2. Mock it up and check desktop and phone width before pushing a visual change.
 3. Update this page.
+
+
+## Buying guides (mockup 2026-10-06, not live until approved)
+- Hub `/guides.html` ("Buying guides", grouped Furniture / Lighting / Objects, plain list like the Edits hub but without photos) and one page per guide `/guides/<type-slug>.html`. Content lives in `scraper/guides_content.py`; rendered by `scraper/generate_guides_pages.py`, which runs after `generate_edits_page.py` in the chain (it appends to the sitemap).
+- Type pages for types that have a guide (page 1 only) get a short preamble under the title (counts from the catalog) and an "About <type>" block below the grid with three teaser bullets and a link to the full guide. Pages 2+ and other types are unchanged.
+- Guides are general guidance only: no maker claims, no sustainability labels or ratings. Figures are marked as rules of thumb. Sources are explainers (not endorsements); only links that loaded when checked. Re-check them on a schedule.
+- Footer/header links to Guides are NOT added yet (footer is repeated in about ten hand-written pages plus SITE_FOOTER_HTML); header stays Work / Creators / Edits until there are at least six guides.
