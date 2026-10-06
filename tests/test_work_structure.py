@@ -473,6 +473,26 @@ class StructureTests(unittest.TestCase):
                if "&amp;amp;" in Path(f).read_text()]
         self.assertEqual(bad[:5], [])
 
+    def test_edit_pages_have_original_notes_and_guide_links(self):
+        pend = (DOCS / "edits" / "pendant-lamps.html").read_text()
+        self.assertEqual(pend.count('<section class="edit-notes">'), 1)
+        self.assertIn("How this Edit is chosen", pend)
+        self.assertIn('href="/guides/pendant-lamps.html">Read the full buying guide', pend)
+        self.assertIn("from 1,078 pendant lamps", pend)
+        rd = (DOCS / "edits" / "round-dining-tables.html").read_text()
+        self.assertRegex(rd, r"pieces from \d+ round dining tables")           # the Edit's own set, not the whole type
+        self.assertIn('href="/guides/dining-tables.html"', rd)
+        vases = (DOCS / "edits" / "vases.html").read_text()                      # no guide for vases yet
+        self.assertIn("How this Edit is chosen", vases)
+        self.assertNotIn("Read the full buying guide", vases)
+
+    def test_operator_identity_is_on_about_contact_and_privacy(self):
+        for page in ("about", "contact", "privacy"):
+            text = (DOCS / f"{page}.html").read_text()
+            self.assertIn("Formground AB, Sweden", text, page)
+            self.assertIn("info@formground.com", text, page)
+        self.assertIn("Swedish Authority for", (DOCS / "privacy.html").read_text())
+
     def test_home_page_explains_the_site_above_the_footer(self):
         home = (DOCS / "index.html").read_text()
         self.assertEqual(home.count('<p class="foot-about">'), 1)

@@ -65,6 +65,7 @@ from generate_theme_landing_pages import (  # noqa: E402
     append_to_sitemap,
 )
 from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
+import guides_content  # noqa: E402
 from site_assets import ICONS_CSS, SHARE_JS, WORK_RESULTS_CSS  # noqa: E402
 
 # "hero_image" fairness policy (2026-09-30) - the first pass at these
@@ -855,6 +856,16 @@ EDIT_PAGE_CSS = """
      causing"). */
   .edit-see-all { text-align: center; margin: 12px 0 40px; font-size: 14px; }
   .edit-see-all a { color: var(--text-accent); text-decoration: none; }
+  /* Original text under the grid (2026-10-06): how the Edit is chosen, and what to look for with a link to the buying
+     guide. Written for people first; it also gives the page substance of its own, which the ad platforms look for. */
+  .edit-notes { max-width: 640px; margin: 8px auto 48px; padding-top: 24px; border-top: 0.5px solid var(--border); }
+  .edit-notes h2 { font-family: 'Archivo', sans-serif; font-weight: 600; font-size: 16px; margin: 0 0 8px; }
+  .edit-notes h2 + p, .edit-notes ul { margin-bottom: 18px; }
+  .edit-notes p { font-size: 14px; line-height: 1.65; color: var(--text-secondary); margin: 0; }
+  .edit-notes ul { margin-top: 0; padding-left: 20px; }
+  .edit-notes li { font-size: 14px; line-height: 1.55; color: var(--text-secondary); margin: 0 0 6px; }
+  .edit-notes a { color: var(--text-accent); text-decoration: none; }
+  .edit-notes a:hover { text-decoration: underline; }
   .edit-see-all a:hover { text-decoration: underline; }
   @media (max-width: 760px) {
     .edit-header h1 { font-size: 28px; }
@@ -953,6 +964,30 @@ def _meta_description(text, limit=158):
     return text[: limit - 1].rsplit(" ", 1)[0].rstrip(" ,.;:-") + "\u2026"
 
 
+def _edit_notes_html(products, browse_slug, noun, shown, title):
+    """How this Edit is chosen (generated from the real counts) plus, when a buying guide exists for the type,
+    "what to look for" and a link to it. Unique, factual text under every Edit grid."""
+    makers = len({p["brand"] for p in products})
+    set_name = html.escape(title.lower().replace("scandinavian", "Scandinavian"))
+    parts = [
+        '<section class="edit-notes">',
+        "<h2>How this Edit is chosen</h2>",
+        f"<p>{shown} pieces from {len(products):,} {set_name} by {makers} makers, taken one per maker where "
+        f"possible so no single maker fills the page. They are not ranked. The full range is on the "
+        f'<a href="/work/{browse_slug}.html">{html.escape(noun)} page</a>.</p>',
+    ]
+    guide = guides_content.GUIDES_BY_SLUG.get(browse_slug)
+    if guide:
+        items = "".join(f"<li>{html.escape(t)}</li>" for t in guide["teasers"])
+        parts += [
+            "<h2>What to look for</h2>",
+            f"<ul>{items}</ul>",
+            f'<p><a href="/guides/{guide["slug"]}.html">Read the full buying guide &rarr;</a></p>',
+        ]
+    parts.append("</section>")
+    return "\n  " + "\n  ".join(parts)
+
+
 def render_themed_edit_page(theme, products):
     slug = theme["slug"]
     title = theme["title"]
@@ -988,6 +1023,7 @@ def render_themed_edit_page(theme, products):
         if slug in EDIT_BROWSE_LINKS:
             browse_slug, noun = EDIT_BROWSE_LINKS[slug]
             body += f'\n  <p class="edit-see-all"><a href="/work/{browse_slug}.html">See all {noun} &rarr;</a></p>'
+            body += _edit_notes_html(products, browse_slug, noun, len(cards_to_render), title)
     else:
         body = '<p class="empty-state">Check back soon - new pieces are added here as they are found.</p>'
 
