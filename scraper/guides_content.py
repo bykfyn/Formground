@@ -279,7 +279,7 @@ GUIDES += [
             ("EU rules on batteries", "https://environment.ec.europa.eu/topics/waste-and-recycling/batteries_en"),
             ("EU rules on recycling electrical and electronic equipment", "https://environment.ec.europa.eu/topics/waste-and-recycling/waste-electrical-and-electronic-equipment-weee_en"),
             EL_KRETSEN,
-            ("Battery and fire safety at home, from the Swedish Civil Contingencies Agency (in Swedish)", "https://www.dinsakerhet.se/"),
+            ("Advice to households, including fire and battery safety, from the Swedish Civil Defence Agency (in Swedish)", "https://www.mcf.se/sv/rad-till-privatpersoner/"),
             GREEN_CLAIMS,
         ],
     },

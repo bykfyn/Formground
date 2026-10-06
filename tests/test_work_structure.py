@@ -24,7 +24,8 @@ OLD_HREF = re.compile(r"^/(browse/|floor-lamps\.html|new\.html|(%s)\.html)" % "|
 
 
 def _is_stub(text):
-    return 'http-equiv="refresh"' in text and "Formground has moved this page" in text
+    # also skips private review sheets (docs/_*.html, gitignored, never published)
+    return ('http-equiv="refresh"' in text and "Formground has moved this page" in text) or "Edit review (not published)" in text
 
 
 def _resolves(href):
