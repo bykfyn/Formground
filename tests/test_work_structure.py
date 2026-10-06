@@ -466,6 +466,13 @@ class StructureTests(unittest.TestCase):
                 missing.append(os.path.relpath(f, DOCS))
         self.assertEqual(missing[:5], [])
 
+    def test_no_page_has_double_escaped_ampersands_in_urls(self):
+        # "&amp;amp;width=800" reads as a query parameter called "amp;width", so the image resize silently stops working
+        import glob as _g
+        bad = [os.path.relpath(f, DOCS) for f in _g.glob(str(DOCS / "**" / "*.html"), recursive=True)
+               if "&amp;amp;" in Path(f).read_text()]
+        self.assertEqual(bad[:5], [])
+
     def test_home_page_explains_the_site_above_the_footer(self):
         home = (DOCS / "index.html").read_text()
         self.assertEqual(home.count('<p class="foot-about">'), 1)
