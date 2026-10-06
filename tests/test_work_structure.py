@@ -431,6 +431,11 @@ class StructureTests(unittest.TestCase):
                 missing.append(name)
         self.assertEqual(missing[:6], [])
 
+    def test_feedback_event_carries_the_campaign_tags(self):
+        js = (DOCS / "search.js").read_text()
+        line = [l for l in js.splitlines() if 'event_type: "feedback"' in l][0]
+        self.assertIn("...UTM", line)
+
     def test_events_are_posted_with_fetch_not_sendbeacon(self):
         # sendBeacon is always credentialed; the server's wildcard CORS answer makes browsers refuse it
         for name in ("fg-track.js", "search.js"):

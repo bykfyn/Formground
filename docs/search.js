@@ -582,7 +582,7 @@ function showFeedback() {
     b.className = "feedback-btn";
     b.textContent = text;
     b.addEventListener("click", () => {
-      beacon({ event_type: "feedback", rating: value, surface: "work", ...trackExtra() });
+      beacon({ event_type: "feedback", rating: value, surface: "work", ...trackExtra(), ...UTM });
       feedbackEl.textContent = "Thanks, that helps.";
     });
     feedbackEl.appendChild(b);
