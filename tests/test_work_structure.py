@@ -466,6 +466,14 @@ class StructureTests(unittest.TestCase):
                 missing.append(os.path.relpath(f, DOCS))
         self.assertEqual(missing[:5], [])
 
+    def test_home_page_explains_the_site_above_the_footer(self):
+        home = (DOCS / "index.html").read_text()
+        self.assertEqual(home.count('<p class="foot-about">'), 1)
+        self.assertIn("Every piece links straight to the maker's own site.", home)
+        self.assertIn('href="/about.html">Read more about Formground', home)
+        self.assertEqual(home, (ROOT / "frontend" / "index.html").read_text())
+        self.assertNotRegex(re.sub(r"<[^>]+>", " ", home.split('<p class="foot-about">')[1].split("</p>")[0]), r"(?i)\breal\b")
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn("Looking for who made it?", page)
