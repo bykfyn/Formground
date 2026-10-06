@@ -319,7 +319,7 @@ def _itemlist_json(cards, start_index):
     the markup being ignored or treated as misleading. Prices stay available through /agent/search."""
     items = [
         {"@type": "ListItem", "position": i, "name": p["product_name"], "url": p["product_url"],
-         "image": p["image_url"]}
+         "image": (p["image_url"] or "").replace("http://", "https://", 1)}
         for i, p in enumerate(cards, start=start_index)
     ]
     return json.dumps({"@context": "https://schema.org", "@type": "ItemList", "itemListElement": items},
