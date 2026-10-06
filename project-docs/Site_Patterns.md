@@ -288,3 +288,7 @@ chips, and the "N finishes" badge was shorter than the brand tags.)
 - Type pages for types that have a guide (page 1 only) get a short preamble under the title (counts from the catalog) and an "About <type>" block below the grid with three teaser bullets and a link to the full guide. Pages 2+ and other types are unchanged.
 - Guides are general guidance only: no maker claims, no sustainability labels or ratings. Figures are marked as rules of thumb. Sources are explainers (not endorsements); only links that loaded when checked. Re-check them on a schedule.
 - Footer: "Guides" sits between Edits and Privacy on every page (SITE_FOOTER_HTML plus the hand-written pages; a test checks all pages). Header stays Work / Creators / Edits until there are at least ten guides.
+
+## Building the site (2026-10-06)
+- `python3 scraper/build_site.py` runs every generator in the right order, then stamps the asset versions and writes honest sitemap `lastmod` dates (`scraper/sitemap_lastmod.py`, record in `data/sitemap_lastmod.json`). The scrape and check-links workflows call it; do not list generators by hand elsewhere. After editing a hand-written page in `frontend/`, copy it to `docs/` yourself (the build does not).
+- `lastmod` = the date a page's content really changed (versioned asset links ignored). The first build after this change dated every URL that day; from then on only changed pages move.

@@ -30,18 +30,20 @@ jobs:
           python-version: "3.12"
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4
+        run: pip install requests beautifulsoup4 pillow -r backend/requirements.txt
 
       - name: Check product links
         run: python scraper/check_links.py
 
-      - name: Regenerate brand pages, makers index, and sitemap
-        run: python scraper/generate_brand_pages.py
+      # The whole build, not generate_brand_pages alone: that rebuilds the sitemap from scratch and, run
+      # alone, dropped every work/edit/guide URL from it.
+      - name: Regenerate the whole site
+        run: python scraper/build_site.py
 
       - name: Save updated data back to the repo
         run: |
           git config user.name "formground-bot"
           git config user.email "bot@formground.local"
-          git add data/formground.db docs/brands docs/makers.html docs/sitemap.xml
+          git add data/formground.db data/sitemap_lastmod.json docs
           git diff --quiet --cached || git commit -m "Update link-check flags and regenerate brand pages"
           git push
