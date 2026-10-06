@@ -338,7 +338,7 @@ GUIDES += [
         "group": "Lighting",
         "noun": "floor lamps",
         "title": "Floor lamps",
-        "edit_slug": None,
+        "edit_slug": "floor-lamps",
         "summary": "Height and reach, stability, light direction and cables for lamps that stand on the floor.",
         "about": (
             "A floor lamp is the lamp that does not need a table. It can stand beside a sofa for reading, behind a "
@@ -389,7 +389,7 @@ GUIDES += [
         "group": "Furniture",
         "noun": "chairs",
         "title": "Chairs",
-        "edit_slug": None,
+        "edit_slug": "chairs",
         "summary": "Use, size and fit, comfort, frame and materials for chairs of every kind.",
         "about": (
             "A chair is judged by sitting in it, which is the one thing a listing cannot offer. Some are made for a "
@@ -441,6 +441,72 @@ GUIDES += [
             ("OEKO-TEX Standard 100 (textiles tested for harmful substances)", "https://www.oeko-tex.com/en/our-standards/oeko-tex-standard-100"),
             ("Global Organic Textile Standard (organic fibres)", "https://global-standards.org/"),
             SWAN,
+            GREEN_CLAIMS,
+        ],
+    },
+]
+
+
+# --- seasonal (approved 2026-10-06) ---
+GUIDES += [
+    {
+        "slug": "candle-holders",
+        "group": "Objects",
+        "noun": "candle holders",
+        "title": "Candle holders",
+        "edit_slug": "candle-holders",
+        "summary": "Fit, stability, heat and safe use for the holders that give a flame somewhere to stand.",
+        "about": (
+            "A candle holder gives a flame somewhere safe and steady to stand, and it is often the part of the "
+            "arrangement that stays on the table long after the candle has gone. They range from single tapers and "
+            "pillar holders to tealight cups, candelabras and wall-mounted sconces, in glass, ceramic, metal, wood "
+            "and stone."
+        ),
+        "teasers": [
+            "Check the holder suits the candle: taper, pillar and tealight holders are different things, and taper sizes vary.",
+            "Check the base is wide or weighted enough to stay upright; taller holders tip more easily.",
+            "Use on a level, heat-resistant surface, away from anything that burns, and never leave a candle burning unattended.",
+        ],
+        "intro": (
+            "A candle holder keeps a flame upright and steady, and then stays on the table when the candle is gone. "
+            "These are the things worth settling before you choose one. The numbers are common rules of thumb, not "
+            "fixed rules."
+        ),
+        "sections": [
+            ("Fit to the candle", [
+                "Taper, pillar, tealight and votive candles need different holders. Decide which you will burn before you choose.",
+                "Taper candles vary in thickness between makers and countries, commonly around 2.0-2.4 cm. A candle that is too thin wobbles and one that is too thick will not fit, so check the socket's diameter against your candles.",
+                "A holder designed for several candles (a candelabra, a row or a set) changes the whole table, so check the total height and spread.",
+            ]),
+            ("Stability", [
+                "A wide or weighted base keeps a holder upright; tall, slim holders tip more easily. Take extra care around children, pets and busy tables.",
+                "A holder for a hanging or wall position needs fixings suited to the wall and the weight.",
+            ]),
+            ("Heat and surfaces", [
+                "Use a candle on a level, heat-resistant surface. Wood, fabric, paper and plastic nearby can catch fire.",
+                "Thin glass can crack when heated unevenly; use glass that is made to hold a candle.",
+                "Wooden holders should have a metal, glass or ceramic cup or insert where the flame sits.",
+            ]),
+            ("Safe use", [
+                "Never leave a burning candle unattended, and put it out before you leave the room or go to sleep.",
+                "Keep candles well clear of curtains, decorations and anything that can burn, and out of draughts.",
+                "Trim the wick short before lighting.",
+            ]),
+            ("Materials and care", [
+                "Metals such as brass and iron can darken or tarnish; coated metals can chip.",
+                "Glass and ceramic wipe clean. To remove wax, let it harden (for example in a cool place) and lift it off rather than scraping hard; avoid pouring boiling water into glass.",
+                "Wood and untreated stone can stain from wax.",
+            ]),
+            ("Outdoors and wind", [
+                "For outdoors or a windy porch, look for a lantern or a holder with a windshield, and one made for weather.",
+            ]),
+            ("Questions worth asking the maker", [
+                "Which candles does it take, and what is the socket's diameter? What is the base size and weight? Is the cup or insert replaceable? How should it be cleaned?",
+            ]),
+        ],
+        "sources": [
+            ("Safety with candles (NFPA)", "https://www.nfpa.org/education-and-research/home-fire-safety/candles"),
+            ("Advice to households, including fire safety, from the Swedish Civil Defence Agency (in Swedish)", "https://www.mcf.se/sv/rad-till-privatpersoner/"),
             GREEN_CLAIMS,
         ],
     },

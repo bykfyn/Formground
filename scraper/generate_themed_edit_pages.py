@@ -277,6 +277,94 @@ THEMES = [
         # France - In Common With is independent.
         "hero_image": ("In Common With", "Dune Portable Table Lamp"),
     },
+    # --- added 2026-10-06 (user: floor lamps, chairs, "some others", and candle holders for winter) ---
+    # Heroes: independent makers whose brand is not used as a hero by any other Edit (fairness policy
+    # above), checked for resolution (900px+) and a tile-friendly shape. Pieces are the same fair
+    # one-per-maker cap as every other Edit.
+    {
+        "slug": "floor-lamps",
+        "title": "Floor Lamps",
+        "fetch": lambda: qe.filter_products({"category": "floor lamp"}),
+        "intro": (
+            "No table needed - a floor lamp stands on its own and brings the "
+            "light to where you sit: a reading chair, a sofa corner, the dark "
+            "end of a room. Every result links straight to the maker's own site."
+        ),
+        "hero_image": ("Minimalux", "Rota: Floor Lamp"),
+    },
+    {
+        "slug": "chairs",
+        "title": "Chairs",
+        "fetch": lambda: qe.filter_products({"category": "chair"}),
+        "intro": (
+            "A chair is chosen by looking and judged by sitting: the line of a "
+            "back, the stance of four legs, a seat you can already picture in "
+            "the room. Every result links straight to the maker's own site."
+        ),
+        # accessories listed under the chair category, not chairs
+        "exclude": {
+            ("Another Country", "Hardy Seat Pad"),
+            ("Audo", "Loose Cover for Tearoom Lounge Chair w. Swivel"),
+            ("Audo", "Loose Cover for Tearoom Lounge Chair"),
+        },
+        "hero_image": ("101cph", "Nama Lounge Chair"),
+    },
+    {
+        "slug": "vases",
+        "title": "Vases",
+        "fetch": lambda: qe.filter_products({"category": "vase"}),
+        "intro": (
+            "A vase works with or without flowers: a form for the shelf, the "
+            "sill or the table, and somewhere for a single stem to stand. "
+            "Every result links straight to the maker's own site."
+        ),
+        "hero_image": ("Sizar Alexis", "Lahmu Vase"),
+    },
+    {
+        "slug": "side-tables",
+        "title": "Side Tables",
+        "fetch": lambda: qe.filter_products({"category": "side table"}),
+        "intro": (
+            "The smallest table in the room does the most work: a place for "
+            "the lamp, the cup and the book, within reach of the sofa or the "
+            "bed. Every result links straight to the maker's own site."
+        ),
+        "hero_image": ("Bitossi Ceramiche", "Tavolino"),
+    },
+    {
+        "slug": "rugs",
+        "title": "Rugs",
+        "fetch": lambda: qe.filter_products({"category": "rug"}),
+        "intro": (
+            "A rug sets the floor plan: it grounds the seating, softens the "
+            "room and gives the whole arrangement a centre. Every result "
+            "links straight to the maker's own site."
+        ),
+        "hero_image": ("Another Country", "Mojave Rug by Armadillo"),
+    },
+    {
+        "slug": "mirrors",
+        "title": "Mirrors",
+        "fetch": lambda: qe.filter_products({"category": "mirror"}),
+        "intro": (
+            "A mirror does two jobs: it gives the room more light and depth, "
+            "and it hangs on the wall as an object in its own right. Every "
+            "result links straight to the maker's own site."
+        ),
+        "hero_image": ("Joris Poggioli", "KIKA"),
+    },
+    {
+        "slug": "candle-holders",
+        "title": "Candle Holders",
+        "fetch": lambda: qe.filter_products({"category": "candle holder"}),
+        "intro": (
+            "Winter asks for light: a candle holder gives the flame somewhere "
+            "to stand, from a single taper on the windowsill to a row down the "
+            "table for the long dark evenings. Every result links straight to "
+            "the maker's own site."
+        ),
+        "hero_image": ("Anna L\u00f6wenhielm Ceramics", "Ljusstake"),
+    },
 ]
 
 CAROUSEL_SIZE = 3
@@ -840,6 +928,13 @@ EDIT_BROWSE_LINKS = {
     "scandinavian-dining-tables": ("dining-tables", "dining tables"),
     "round-coffee-tables": ("coffee-tables", "coffee tables"),
     "two-seater-sofas": ("sofas", "sofas"),
+    "floor-lamps": ("floor-lamps", "floor lamps"),
+    "chairs": ("chairs", "chairs"),
+    "vases": ("vases", "vases"),
+    "side-tables": ("side-tables", "side tables"),
+    "rugs": ("rugs", "rugs"),
+    "mirrors": ("mirrors", "mirrors"),
+    "candle-holders": ("candle-holders", "candle holders"),
 }
 
 
