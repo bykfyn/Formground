@@ -78,6 +78,10 @@ function sizedImage(url, width) {
       u.searchParams.set("q", 80);
     } else if (h === "www.hay.com" || h === "cdn.thorcommerce.io") {
       u.searchParams.set("w", width);
+    } else if (h === "framerusercontent.com") {
+      u.searchParams.delete("width");
+      u.searchParams.delete("height");
+      u.searchParams.set("scale-down-to", width);
     } else if (h === "cdn.sanity.io") {
       u.searchParams.set("w", width);
       u.searchParams.set("auto", "format");

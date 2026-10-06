@@ -56,6 +56,10 @@ def sized(url, width):
         # HAY and Gubi's image server: ?w= returns a resized copy (verified 2026-10-04: a 2.3MB, 3796px Gubi
         # original becomes 52KB at 500px; HAY 910-1220px -> 500px, 2-4x smaller)
         return _with_query(url, w=width)
+    if host == "framerusercontent.com":
+        # Framer's image CDN: ?scale-down-to=W returns a resized copy (verified 2026-10-06: Will Choui, a 1.18MB
+        # 2200px original becomes 37KB at 512px). The stored ?width=&height= pair does NOT resize, so it is dropped.
+        return _with_query(url, drop=("width", "height"), **{"scale-down-to": width})
     if host == "cdn.sanity.io":
         # Sanity's image pipeline (house photos): 957KB / 3000px -> 28KB at 500px, verified 2026-10-04
         return _with_query(url, w=width, auto="format")

@@ -30,6 +30,11 @@ class SizedTests(unittest.TestCase):
         self.assertIn("w=500", sized("https://images.ctfassets.net/a/b/c/x.jpg", 500))
         self.assertIn("w=500", sized("https://images.fogia.com/x/y.png?auto=format&w=2000&q=90", 500))
 
+    def test_framer_rule_drops_the_non_resizing_width_height_and_asks_for_scale_down_to(self):
+        self.assertEqual(
+            sized("https://framerusercontent.com/images/AA7i.jpg?width=2200&height=3000", 500),
+            "https://framerusercontent.com/images/AA7i.jpg?scale-down-to=500")
+
     def test_hay_gubi_sanity_and_wix_rules(self):
         self.assertEqual(sized("https://www.hay.com/img/a.jpg", 500), "https://www.hay.com/img/a.jpg?w=500")
         self.assertEqual(sized("https://cdn.thorcommerce.io/x/a.png?w=2000", 500), "https://cdn.thorcommerce.io/x/a.png?w=500")
