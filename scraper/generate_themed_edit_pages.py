@@ -765,7 +765,7 @@ EDIT_PAGE_CSS = """
      more. Carries the whole capped edit alone (a Mini Bento interlude
      was tried and dropped, 2026-09-30 - "not worth the hassle this is
      causing"). */
-  .edit-see-all { text-align: center; margin: -8px 0 40px; font-size: 14px; }
+  .edit-see-all { text-align: center; margin: 12px 0 40px; font-size: 14px; }
   .edit-see-all a { color: var(--text-accent); text-decoration: none; }
   .edit-see-all a:hover { text-decoration: underline; }
   @media (max-width: 760px) {
