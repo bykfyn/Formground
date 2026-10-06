@@ -93,6 +93,12 @@ from site_assets import ICONS_CSS  # noqa: E402
 # are found (user's own note: more still need sourcing).
 BANNER_SLUGS = ["round-coffee-tables"]
 
+# Hub-tile crop override per hero photo (object-position). The default is a centred crop; Sizar Alexis' Lahmu
+# vase stands in the lower half of a portrait photo, so a centred square cut off its base (2026-10-06).
+TILE_OBJECT_POSITION = {
+    "https://sizaralexis.se/wp-content/uploads/2023/06/G6A2148-scaled.jpg": "50% 100%",
+}
+
 # Layout of the hub's top block (2026-10-04, a trial the user asked for):
 #   "masthead" - the banner photo IS the page header: "EDITS" and the preamble
 #                sit on the photo, no title row above and no caption below; the
@@ -393,8 +399,11 @@ def render_edits_index(themes_data):
         # full width), photo filling it, the Edit's title on it, the pictured product on hover
         image_alt = (f"{hero_product['product_name']} by {hero_product['brand']}" if hero_product is not None
                      else theme["title"])
+        # a hero whose subject sits low in a portrait photo is cropped from the bottom, not the middle
+        pos = TILE_OBJECT_POSITION.get(image)
+        pos_attr = f' style="object-position:{pos}"' if pos else ""
         image_tag = (
-            f'<img src="{html.escape(sized(image, TILE))}" alt="{html.escape(image_alt)}" loading="lazy">'
+            f'<img src="{html.escape(sized(image, TILE))}" alt="{html.escape(image_alt)}"{pos_attr} loading="lazy">'
             if image else ""
         )
         details = ""
