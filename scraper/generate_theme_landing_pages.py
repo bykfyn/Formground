@@ -180,7 +180,7 @@ def render_theme_page(theme, products):
     # same-size color variants below is a display choice, not a content
     # reduction, so the honest "how much is here" number stays ungrouped.
     n = len(products)
-    description = f"{n} real {title.lower()}{'' if title.lower().endswith('s') else 's'}, from independent makers. {theme['intro']}"
+    description = f"{n} {title.lower()}{'' if title.lower().endswith('s') else 's'}, from independent makers. {theme['intro']}"
 
     cards_to_render, variant_counts = _group_color_variants(products)
 

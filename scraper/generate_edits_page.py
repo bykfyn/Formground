@@ -311,7 +311,7 @@ def _edits_masthead_html(product):
     (shared with every Edit page: gte.masthead_html)."""
     return gte.masthead_html(
         "Edits",
-        "Curated, editorial groupings of real work <br>from Formground's makers - browse every Edit, gathered in one place.",
+        "Curated, editorial groupings of work <br>from Formground's makers - browse every Edit, gathered in one place.",
         product, HUB_MASTHEAD_TEXT)
 
 
@@ -432,11 +432,11 @@ def render_edits_index(themes_data):
     )
     classic_header = "" if masthead else f"""  <div class="edits-hero">
     <h1>Edits</h1>
-    <p class="edits-preamble">{html.escape("Curated, editorial groupings of real work")}<br>{html.escape("from Formground's makers - browse every Edit, gathered in one place.")}</p>
+    <p class="edits-preamble">{html.escape("Curated, editorial groupings of work")}<br>{html.escape("from Formground's makers - browse every Edit, gathered in one place.")}</p>
   </div>
 """
 
-    description = "Curated, editorial groupings of real work from Formground's makers - browse every Edit, gathered in one place."
+    description = "Curated, editorial groupings of work from Formground's makers - browse every Edit, gathered in one place."
 
     return f"""<!DOCTYPE html>
 <html lang="en">

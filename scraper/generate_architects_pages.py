@@ -106,8 +106,8 @@ def render_architect_page(firm_name, slug, meta, houses):
     page_url = f"{SITE_URL}/architects/{slug}.html"
     location = (meta.get("city") or meta.get("country")) if meta else None
     description = (
-        f"{html.escape(firm_name)} - {len(houses)} real house{'' if len(houses) == 1 else 's'}"
-        f"{f', {html.escape(location)}' if location else ''}. Each linked to its own real project page."
+        f"{html.escape(firm_name)} - {len(houses)} house{'' if len(houses) == 1 else 's'}"
+        f"{f', {html.escape(location)}' if location else ''}. Each linked to its own project page."
     )
     seo_title = fit_title(f"{firm_name}: houses and projects", firm_name)
     houses_sorted = sorted(houses, key=lambda h: h["name"] or "")
@@ -198,7 +198,7 @@ def render_architects_index(firms_with_slugs, meta_by_name, houses_by_firm):
     total_houses = sum(len(hs) for hs in houses_by_firm.values())
     page_url = f"{SITE_URL}/architects.html"
     description = (
-        f"{len(firms_with_slugs)} architecture firms on Formground, {total_houses} real houses total - "
+        f"{len(firms_with_slugs)} architecture firms on Formground, {total_houses} houses total - "
         "each linked straight to its own project page."
     )
     return f"""<!DOCTYPE html>
@@ -339,7 +339,7 @@ def generate():
     append_to_sitemap(sorted(s for _, s in firms_with_slugs))
 
     total_houses = sum(len(houses_by_firm[n]) for n, _ in firms_with_slugs)
-    print(f"Generated {len(firms_with_slugs)} architect firm pages ({total_houses} real houses total) + architects.html.")
+    print(f"Generated {len(firms_with_slugs)} architect firm pages ({total_houses} houses total) + architects.html.")
 
 
 if __name__ == "__main__":

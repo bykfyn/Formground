@@ -163,7 +163,7 @@ def render_designer_page(designer_name, slug, products, page=1):
     <p class="eyebrow">Designer</p>
     <h1 class="maker-name">{html.escape(designer_name)}</h1>
   </div>
-  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">{len(products)} real product{'' if len(products) == 1 else 's'} credited to {html.escape(designer_name)}, each linked straight to its maker's own page.</p>
+  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">{len(products)} product{'' if len(products) == 1 else 's'} credited to {html.escape(designer_name)}, each linked straight to its maker's own page.</p>
   {earlier_html}
   <div class="grid" data-listing-grid>{products_html}
   </div>
@@ -198,7 +198,7 @@ def render_designers_index(designers_with_slugs, products_by_designer):
     total_products = sum(len(v) for v in products_by_designer.values())
     page_url = f"{SITE_URL}/designers.html"
     description = (
-        f"{len(designers_with_slugs)} independent product designers on Formground, {total_products} real credited "
+        f"{len(designers_with_slugs)} independent product designers on Formground, {total_products} credited "
         "products total - browse the work, credited to the person who designed it."
     )
     return f"""<!DOCTYPE html>
@@ -327,7 +327,7 @@ def generate():
     append_to_sitemap(sorted(s for _, s in designers_with_slugs))
 
     total_products = sum(len(products_by_designer[n]) for n, _ in designers_with_slugs)
-    print(f"Generated {len(designers_with_slugs)} designer pages ({total_products} real credited products) + designers.html.")
+    print(f"Generated {len(designers_with_slugs)} designer pages ({total_products} credited products) + designers.html.")
 
 
 if __name__ == "__main__":

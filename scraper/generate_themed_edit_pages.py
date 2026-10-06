@@ -118,7 +118,7 @@ THEMES = [
         "intro": (
             "A round table has no head - everyone sits equally close to "
             "everyone else. What varies is the base: a single pedestal, a "
-            "tripod, a cross-frame, each one a real structural answer to "
+            "tripod, a cross-frame, each one a structural answer to "
             "holding up a circular top. Every result links straight to the "
             "maker's own site."
         ),
@@ -203,7 +203,7 @@ THEMES = [
         "fetch": lambda: qe.filter_products({"category": "table lamp"}),
         "intro": (
             "No wiring, no ceiling box, no commitment - a table lamp asks "
-            "only for a surface and a socket, then does the rest: real "
+            "only for a surface and a socket, then does the rest: "
             "presence on a nightstand, a console, or a desk. Every result "
             "links straight to the maker's own site."
         ),
@@ -244,7 +244,7 @@ THEMES = [
         "intro": (
             "Not a pendant on a long drop, not a chandelier - a ceiling "
             "lamp sits close and flush, built for a room where headroom "
-            "is real and every inch of it counts. Every result links "
+            "is scarce and every inch of it counts. Every result links "
             "straight to the maker's own site."
         ),
         # New Works DK's "Kantarell Wall & Ceiling Lamp" (595x800,
@@ -871,7 +871,7 @@ def render_themed_edit_page(theme, products):
     # card already advertises for this theme.
     cards_to_render, variant_counts = capped_edit_cards(theme, products)
     n, _makers = edit_totals(theme, cards_to_render)
-    description = _meta_description(f"A curated Edit of {n} real {title.lower()}{'' if title.lower().endswith('s') else 's'} from independent makers. {theme['intro']}")
+    description = _meta_description(f"A curated Edit of {n} {title.lower()}{'' if title.lower().endswith('s') else 's'} from independent makers. {theme['intro']}")
 
     picks = _resolve_carousel_picks(theme, cards_to_render) if EDIT_PAGE_BANNER else []
     carousel_html = _render_carousel(picks)
