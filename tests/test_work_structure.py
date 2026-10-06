@@ -499,6 +499,12 @@ class StructureTests(unittest.TestCase):
                if "&amp;amp;" in Path(f).read_text()]
         self.assertEqual(bad[:5], [])
 
+    def test_pendant_lamps_edit_shows_twelve_pieces(self):
+        # the paid-test pins say "Twelve pendant lamps": keep the page honest if the cap ever changes
+        page = (DOCS / "edits" / "pendant-lamps.html").read_text()
+        grid = page.split('<section class="edit-notes">')[0]
+        self.assertEqual(len(re.findall(r'class="edit-feature"', grid)) or len(re.findall(r'<figure class="edit-card', grid)) or grid.count('data-product='), 12)
+
     def test_edit_pages_have_original_notes_and_guide_links(self):
         pend = (DOCS / "edits" / "pendant-lamps.html").read_text()
         self.assertEqual(pend.count('<section class="edit-notes">'), 1)
