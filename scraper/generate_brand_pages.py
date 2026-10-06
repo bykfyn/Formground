@@ -161,6 +161,7 @@ SITE_FOOTER_HTML = (
     '<a href="/marketplace.html">Marketplace</a> &middot; '
     '<a href="/for-creators.html">For Creators</a> &middot; '
     '<a href="/edits.html">Edits</a> &middot; '
+    '<a href="/guides.html">Guides</a> &middot; '
     '<a href="/privacy.html">Privacy</a> &middot; '
     '<a href="/about.html">About</a> &middot; '
     '<a href="/contact.html">Contact</a>'

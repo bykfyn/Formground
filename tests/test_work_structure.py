@@ -455,6 +455,17 @@ class StructureTests(unittest.TestCase):
                 self.assertTrue(label.strip())
         self.assertIn("not endorsements", guides_content.LABEL_NOTE)
 
+    def test_every_footer_links_to_the_guides(self):
+        import glob as _g
+        missing = []
+        for f in _g.glob(str(DOCS / "**" / "*.html"), recursive=True):
+            text = Path(f).read_text()
+            if _is_stub(text):
+                continue
+            if "privacy.html\">Privacy" in text and 'href="/guides.html">Guides' not in text:
+                missing.append(os.path.relpath(f, DOCS))
+        self.assertEqual(missing[:5], [])
+
     def test_designer_pages_have_no_left_hand_tagline(self):
         page = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn("Looking for who made it?", page)
