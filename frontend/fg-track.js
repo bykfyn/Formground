@@ -83,13 +83,26 @@
     return { page_path: ctx.page_path, landing_page: ctx.landing_page, visit_id: ctx.visit_id };
   }
 
-  function send(type, fields) {
-    if (!enabled || !navigator.sendBeacon) return;
-    var payload = JSON.stringify(Object.assign({ event_type: type }, extra(), ctx.utm, fields || {}));
-    navigator.sendBeacon(API_BASE + "/event", new Blob([payload], { type: "application/json" }));
+  // POST one event. NOT navigator.sendBeacon (fixed 2026-10-06): sendBeacon always sends with credentials, and a
+  // credentialed cross-site request is refused by the browser when the server answers with the wildcard
+  // "Access-Control-Allow-Origin: *" - so every beacon (page views, clicks, ratings) was silently dropped while
+  // plain GET requests (search, discover) got through. fetch with keepalive and no credentials survives a page
+  // unload the same way and works with the wildcard.
+  function post(payload) {
+    if (!enabled || !window.fetch) return;
+    try {
+      window.fetch(API_BASE + "/event", {
+        method: "POST", mode: "cors", credentials: "omit", keepalive: true,
+        headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
+      }).catch(function () { /* tracking must never break the page */ });
+    } catch (e) { /* ignore */ }
   }
 
-  window.FGTrack = { ctx: ctx, extra: extra, send: send, internal: internal };
+  function send(type, fields) {
+    post(Object.assign({ event_type: type }, extra(), ctx.utm, fields || {}));
+  }
+
+  window.FGTrack = { ctx: ctx, extra: extra, send: send, post: post, internal: internal };
 
   function textOf(el) {
     return el ? el.textContent.trim() : null;

@@ -419,6 +419,15 @@ class StructureTests(unittest.TestCase):
         chairs = (DOCS / "work" / "chairs.html").read_text()
         self.assertIn('"@type":"ItemList"', chairs.replace(" ", ""))
 
+    def test_events_are_posted_with_fetch_not_sendbeacon(self):
+        # sendBeacon is always credentialed; the server's wildcard CORS answer makes browsers refuse it
+        for name in ("fg-track.js", "search.js"):
+            text = (DOCS / name).read_text()
+            code = "\n".join(l for l in text.splitlines() if not l.strip().startswith(("//", "*", "/*")))
+            self.assertNotIn("navigator.sendBeacon(", code, name)
+            self.assertIn('credentials: "omit"', code, name)
+            self.assertIn("keepalive: true", code, name)
+
     def test_team_browsers_can_opt_out_of_tracking(self):
         track = (DOCS / "fg-track.js").read_text()
         self.assertIn("fg_internal", track)

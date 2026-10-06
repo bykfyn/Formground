@@ -39,7 +39,14 @@ const INTERNAL = !!(TRACK && TRACK.internal);
 const TRACKING_ON = !INTERNAL && (window.FG_TRACK_FORCE || !/^(localhost|127\.0\.0\.1|\[::1\]|)$/.test(window.location.hostname));
 function beacon(payload) {
   if (!TRACKING_ON) return;
-  navigator.sendBeacon(`${API_BASE}/event`, new Blob([JSON.stringify(payload)], { type: "application/json" }));
+  // fetch with keepalive and no credentials, not navigator.sendBeacon (see fg-track.js: a credentialed
+  // cross-site request is refused when the server's CORS answer is the wildcard)
+  try {
+    fetch(`${API_BASE}/event`, {
+      method: "POST", mode: "cors", credentials: "omit", keepalive: true,
+      headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
+    }).catch(() => {});
+  } catch (e) { /* tracking must never break the page */ }
 }
 
 // Bare "utm_source=x&utm_medium=y" with no leading separator - callers
