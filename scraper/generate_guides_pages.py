@@ -172,7 +172,7 @@ def render_hub(groups, edit_slugs):
             links = [f'<a href="/guides/{g["slug"]}.html">Read the guide &rarr;</a>',
                      f'<a href="/work/{g["slug"]}.html">Browse {html.escape(g["noun"])}</a>']
             if g["edit_slug"] in edit_slugs:
-                links.append(f'<a href="/edits/{g["edit_slug"]}.html">An Edit</a>')
+                links.append(f'<a href="/edits/{g["edit_slug"]}.html">See an Edit</a>')
             body += f"""
     <div class="guide-entry">
       <h3><a href="/guides/{g['slug']}.html">{html.escape(g['title'])}</a></h3>
