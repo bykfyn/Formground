@@ -30,6 +30,11 @@ class SizedTests(unittest.TestCase):
         self.assertIn("w=500", sized("https://images.ctfassets.net/a/b/c/x.jpg", 500))
         self.assertIn("w=500", sized("https://images.fogia.com/x/y.png?auto=format&w=2000&q=90", 500))
 
+    def test_http_image_urls_are_upgraded_to_https(self):
+        self.assertEqual(sized("http://static1.squarespace.com/static/a/b/c.jpg?format=1000w", 500),
+                         "https://static1.squarespace.com/static/a/b/c.jpg?format=500w")
+        self.assertEqual(sized("http://example.com/x.jpg", 500), "https://example.com/x.jpg")
+
     def test_framer_rule_drops_the_non_resizing_width_height_and_asks_for_scale_down_to(self):
         self.assertEqual(
             sized("https://framerusercontent.com/images/AA7i.jpg?width=2200&height=3000", 500),

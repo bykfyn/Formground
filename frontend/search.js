@@ -61,6 +61,7 @@ function utmQueryString() {
 function sizedImage(url, width) {
   try {
     const u = new URL(url);
+    if (u.protocol === "http:") u.protocol = "https:";
     const h = u.hostname.toLowerCase();
     if (h === "cdn.shopify.com") {
       u.searchParams.set("width", width);

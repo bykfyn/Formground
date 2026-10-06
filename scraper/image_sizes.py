@@ -40,6 +40,10 @@ def _with_query(url, drop=(), **params):
 def sized(url, width):
     if not url or not url.startswith("http"):
         return url
+    if url.startswith("http://"):
+        # a few stored image URLs are http:// (found 2026-10-06 on a Squarespace pendant lamp): the browser upgrades
+        # them but logs a mixed-content warning, which costs the page a Best Practices point
+        url = "https://" + url[len("http://"):]
     host = urlparse(url).netloc.lower()
     if host == "cdn.shopify.com":
         return _with_query(url, width=width)
