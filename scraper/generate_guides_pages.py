@@ -168,7 +168,7 @@ def render_hub(groups, edit_slugs):
         if not entries:
             continue
         body += f'\n  <section class="guides-group">\n    <h2>{html.escape(group)}</h2>'
-        for g in entries:
+        for g in sorted(entries, key=lambda e: e['title']):
             links = [f'<a href="/guides/{g["slug"]}.html">Read the guide &rarr;</a>',
                      f'<a href="/work/{g["slug"]}.html">Browse {html.escape(g["noun"])}</a>']
             if g["edit_slug"] in edit_slugs:

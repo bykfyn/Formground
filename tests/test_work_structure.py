@@ -429,7 +429,7 @@ class StructureTests(unittest.TestCase):
         hub = (DOCS / "guides.html").read_text()
         sitemap = (DOCS / "sitemap.xml").read_text()
         self.assertIn("https://formground.com/guides.html", sitemap)
-        for slug in ("pendant-lamps", "dining-tables", "sofas"):
+        for slug in ("pendant-lamps", "dining-tables", "sofas", "portable-lamps", "table-lamps", "floor-lamps", "chairs"):
             self.assertIn(f"/guides/{slug}.html", hub)
             self.assertIn(f"https://formground.com/guides/{slug}.html", sitemap)
             guide = (DOCS / "guides" / f"{slug}.html").read_text()
@@ -443,7 +443,7 @@ class StructureTests(unittest.TestCase):
             self.assertIn('<p class="listing-intro">', type_page)
         # page 2+ and other types stay as they were
         self.assertEqual((DOCS / "work" / "pendant-lamps-2.html").read_text().count('<section class="listing-about">'), 0)
-        self.assertEqual((DOCS / "work" / "chairs.html").read_text().count('<section class="listing-about">'), 0)
+        self.assertEqual((DOCS / "work" / "vases.html").read_text().count('<section class="listing-about">'), 0)
 
     def test_guide_source_links_are_https_and_labelled_as_not_endorsements(self):
         import guides_content

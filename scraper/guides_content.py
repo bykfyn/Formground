@@ -209,6 +209,243 @@ GUIDES = [
     },
 ]
 
+
+# --- wave 1 (approved 2026-10-06) ---
+EL_KRETSEN = ("Recycling electronics and light sources in Sweden", "https://www.el-kretsen.se/")
+COLOR_TEMP = ("How light colour temperature is measured", "https://en.wikipedia.org/wiki/Color_temperature")
+LUMEN = ("How lumens measure brightness", "https://en.wikipedia.org/wiki/Lumen_(unit)")
+EPREL = ("EU energy label database for light sources and lamps", "https://eprel.ec.europa.eu/screen/home")
+
+GUIDES += [
+    {
+        "slug": "portable-lamps",
+        "group": "Lighting",
+        "noun": "portable lamps",
+        "title": "Portable lamps",
+        "edit_slug": "portable-lamps",
+        "summary": "Battery and run time, charging, safe use, light and weather for lamps you can move around.",
+        "about": (
+            "A portable lamp runs on a rechargeable battery, so it can sit on a dinner table one evening and out on "
+            "the terrace the next. Without a cable it is freer to place, but it brings questions a plugged-in lamp does "
+            "not: how long it runs, how it charges, how long the battery lasts and what happens to it afterwards."
+        ),
+        "teasers": [
+            "Run time depends on brightness: ask for the hours at the level you will actually use.",
+            "Check how it charges (cable, dock or mat) and whether the battery can be replaced.",
+            "If it goes outdoors, look for an IP rating, which describes protection against dust and water.",
+        ],
+        "intro": (
+            "A portable lamp trades the cable for a battery, and that changes what is worth checking. The numbers "
+            "are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Battery and run time", [
+                "Run time depends on brightness: a lamp that lasts many hours on its lowest setting may last far fewer at full brightness. Ask for the run time at the level you would really use.",
+                "Battery size is given in mAh or Wh. Compare like with like, and treat the maker's run time as the better guide.",
+            ]),
+            ("Charging", [
+                "Check how it charges: a cable (often USB-C), a dock or a mat, and how long a full charge takes.",
+                "Some lamps can be used while charging and some cannot. If you want to leave it on a table all evening, this matters.",
+                "A standard USB-C connection means you may be able to use a charger you already own; check the power it needs.",
+            ]),
+            ("Battery life and replacement", [
+                "Rechargeable batteries lose capacity over the years, so a lamp that lasts all evening when new may not in a few years. Check whether the battery can be replaced, by you or by the maker, and whether replacements are sold.",
+            ]),
+            ("Safe use", [
+                "Use the charger and cable the maker specifies, keep the lamp away from heat, and follow the charging instructions on leaving it unattended.",
+                "A battery that is damaged, swollen or very hot should be taken out of use.",
+            ]),
+            ("Light", [
+                "Brightness is given in lumens. Warm white (around 2700 K) is the usual choice at a table; cooler light suits work.",
+                "Check how it dims: set steps, a dial or a touch dimmer.",
+            ]),
+            ("Outdoors and water", [
+                "Look for an IP rating. A lamp that is splash-resistant is not necessarily meant to be left out in the rain or put in water.",
+            ]),
+            ("Weight and stability", [
+                "A handle helps if you will carry it. A light, narrow lamp can tip in a breeze or on an uneven surface.",
+            ]),
+            ("When it is time to dispose of it", [
+                "Batteries and electronic products should not go in household waste. Take them to a recycling point.",
+            ]),
+            ("Questions worth asking the maker", [
+                "How many hours at the brightness I will use? How long to charge? Can I use it while it charges? Is the battery replaceable, and is a replacement sold? What is the IP rating? What is the warranty on the battery?",
+            ]),
+        ],
+        "sources": [
+            ("How IP ratings work (protection against dust and water)", "https://en.wikipedia.org/wiki/IP_Code"),
+            ("Lithium-ion batteries explained", "https://en.wikipedia.org/wiki/Lithium-ion_battery"),
+            ("USB-C, the common charging connector", "https://en.wikipedia.org/wiki/USB-C"),
+            ("EU rules on batteries", "https://environment.ec.europa.eu/topics/waste-and-recycling/batteries_en"),
+            ("EU rules on recycling electrical and electronic equipment", "https://environment.ec.europa.eu/topics/waste-and-recycling/waste-electrical-and-electronic-equipment-weee_en"),
+            EL_KRETSEN,
+            ("Battery and fire safety at home, from the Swedish Civil Contingencies Agency (in Swedish)", "https://www.dinsakerhet.se/"),
+            GREEN_CLAIMS,
+        ],
+    },
+    {
+        "slug": "table-lamps",
+        "group": "Lighting",
+        "noun": "table lamps",
+        "title": "Table lamps",
+        "edit_slug": "table-lamps",
+        "summary": "Scale and height, light and shade, switch and cable, materials and care for lamps that stand on a surface.",
+        "about": (
+            "A table lamp lights a corner, a bedside or a desk, and it also furnishes the surface it sits on. The "
+            "base, the shade and the height decide where the light falls and how the lamp looks in the room. Some "
+            "give a soft glow across a room; others throw a tight beam for reading."
+        ),
+        "teasers": [
+            "Check where the shade's lower edge falls against your eyes when you are seated or in bed, to avoid glare.",
+            "Check the bulb fitting, the maximum wattage and whether it can be dimmed.",
+            "Look at where the switch is and how long the cable is before you buy.",
+        ],
+        "intro": (
+            "A table lamp lights a place and furnishes the surface it stands on. These are the things worth settling "
+            "before you choose one. The numbers are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Scale and height", [
+                "For reading, the light should fall on the page without shining in your eyes. A common rule of thumb is that the lower edge of the shade sits around eye level when you are seated.",
+                "Beside a bed or sofa, check the lamp's height against the surface it stands on. A lamp that looks right on a tall console can loom over a low table.",
+                "Leave room on the surface for the things that live there: a book, a glass, a phone.",
+            ]),
+            ("Light and shade", [
+                "An opaque shade sends light up and down; a translucent one glows and spreads light more widely. A narrow shade gives a tighter pool for reading.",
+                "Check the fitting (for example E27, E14 or a built-in LED), the maximum wattage, whether it can be dimmed, and whether a bulb is included.",
+                "Warm white light (around 2700 K) is the usual choice for living rooms and bedrooms.",
+            ]),
+            ("Switch and cable", [
+                "Check where the switch is (on the cable, at the base or on the shade) and whether you can reach it from where you sit.",
+                "Check the cable length and the position of the nearest socket. A long cable can be a nuisance, a short one limits where the lamp can go.",
+            ]),
+            ("Materials and care", [
+                "Fabric and paper shades collect dust and can fade in strong sun. Glass and metal wipe clean. Ceramic and stone bases are heavy, which helps stability but makes them harder to move.",
+                "A lamp should be stable: check the base against the height, especially around children and pets.",
+            ]),
+            ("Safety and longevity", [
+                "Check that the lamp carries the safety marking required where you live (such as CE in the EU).",
+                "A lamp lasts longer if its parts can be replaced: the bulb or LED module, the switch, the cable.",
+            ]),
+            ("Questions worth asking the maker", [
+                "Exact height and shade size? Which bulb fits, and is one included? Where is the switch and how long is the cable? Which plug does it come with? Can the shade and cable be replaced? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [COLOR_TEMP, LUMEN, EPREL, GREEN_CLAIMS],
+    },
+    {
+        "slug": "floor-lamps",
+        "group": "Lighting",
+        "noun": "floor lamps",
+        "title": "Floor lamps",
+        "edit_slug": None,
+        "summary": "Height and reach, stability, light direction and cables for lamps that stand on the floor.",
+        "about": (
+            "A floor lamp is the lamp that does not need a table. It can stand beside a sofa for reading, behind a "
+            "chair for ambient light, or in a corner to lift a dark room. Heights run from low sculptural pieces to "
+            "tall arcs that reach across a seating area."
+        ),
+        "teasers": [
+            "Check where the light falls from where you will sit, not just how the lamp looks.",
+            "A tall, slim lamp needs a stable base: check the footprint and weight.",
+            "Check the cable length and where the nearest socket is, so the cable does not cross the floor.",
+        ],
+        "intro": (
+            "A floor lamp lights a place without taking a table. These are the things worth settling before you "
+            "choose one. The numbers are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Height and reach", [
+                "For reading in a chair, the light should fall over your shoulder onto the page, with the shade or head near eye level when you are seated.",
+                "Arc lamps reach out over a seat. Check the reach and the weight of the base so it can carry the arm without tipping.",
+                "Floor lamps are commonly about 140-180 cm tall. A taller lamp suits a high-ceilinged room or a corner.",
+            ]),
+            ("Stability", [
+                "A tall, slim lamp needs a wide or weighted base. Check the footprint, particularly around children, pets and busy walkways.",
+            ]),
+            ("Light", [
+                "Uplight spreads light on the ceiling for a soft general glow; a downlight or adjustable head gives a focused beam for reading.",
+                "Check the fitting, the maximum wattage, whether it can be dimmed, and whether a bulb is included. Warm white light (around 2700 K) is the usual choice for living rooms.",
+            ]),
+            ("Switch and cable", [
+                "Check where the switch or dimmer is: on the stem, on the cable or at the foot.",
+                "Plan where the cable will run. A cable across the floor is a trip hazard; the socket's position often decides where the lamp can go.",
+            ]),
+            ("Materials and care", [
+                "Fabric and paper shades collect dust and can fade in sun. Metal finishes can chip; raw metals change with age.",
+                "Check the weight if you will move it, and whether it comes apart for transport.",
+            ]),
+            ("Longevity and repair", [
+                "A lamp lasts longer if its parts can be replaced: the bulb or LED module, the switch, the cable. Slim, tall lamps are easier to ship when they come apart.",
+            ]),
+            ("Questions worth asking the maker", [
+                "Exact height, reach and base size? Where is the switch and how long is the cable? Which bulb fits, and is one included? Can it be dimmed? Are spare parts available? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [COLOR_TEMP, LUMEN, EPREL, GREEN_CLAIMS],
+    },
+    {
+        "slug": "chairs",
+        "group": "Furniture",
+        "noun": "chairs",
+        "title": "Chairs",
+        "edit_slug": None,
+        "summary": "Use, size and fit, comfort, frame and materials for chairs of every kind.",
+        "about": (
+            "A chair is judged by sitting in it, which is the one thing a listing cannot offer. Some are made for a "
+            "dining table and an hour at a time; others for a corner and a whole afternoon. What a chair is for, how "
+            "long you will sit and what it sits at decide most of what matters."
+        ),
+        "teasers": [
+            "Decide what it is for and how long you will sit: a dining chair and a lounge chair are different things.",
+            "Check the seat height against your table or desk; a common gap is about 25-30 cm to the underside.",
+            "Look at the frame and the joints, and whether covers and seat pads can be replaced.",
+        ],
+        "intro": (
+            "A chair is judged by sitting in it, which a listing cannot offer. These are the things worth settling "
+            "before you choose one. The numbers are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("What it is for", [
+                "A dining chair is for upright sitting at a table; a lounge chair or armchair is for relaxing; a desk chair needs to adjust. Decide the use and how long you will sit before you look at style.",
+            ]),
+            ("Size and fit", [
+                "Seat height is commonly about 43-47 cm. Check it against the table or desk: you want roughly 25-30 cm between the seat and the underside of the top.",
+                "Allow about 50-60 cm of table edge for each chair. Chairs with arms need more room and may not slide under the table.",
+                "Check the seat depth and width, and whether chairs stack, fold or fit the space when not in use.",
+            ]),
+            ("Comfort", [
+                "Seat depth, back angle and the firmness of any padding matter more than looks. If you can, sit in one before buying, and check the return terms.",
+                "Removable cushions and covers make a chair easier to keep fresh.",
+            ]),
+            ("Frame and materials", [
+                "Solid wood frames can usually be repaired and refinished; check how the joints are made. Plywood and bent wood are light and strong in the right shapes. Metal is durable and usually coated: powder-coated metal can chip, raw metal changes with age.",
+                "Plastic and moulded chairs are easy to clean and often suit outdoor use if made for it.",
+                "For upholstered chairs, a fabric's abrasion rating (often given as a Martindale number) shows its resistance to wear: higher is more resistant. Leather patinates with use.",
+                "A chair for outdoors must be made for weather. An indoor chair left outside usually is not suitable.",
+            ]),
+            ("Floors and use", [
+                "Check the feet. Hard glides can scratch floors; felt or rubber glides help, and are often replaceable.",
+                "Check the weight if you will move it often, and whether it wobbles on an uneven floor.",
+            ]),
+            ("Longevity and repair", [
+                "Parts that can be replaced or tightened keep a chair going: glides, seat pads, covers and fixings. Woven or upholstered seats can often be redone.",
+            ]),
+            ("Questions worth asking the maker", [
+                "Exact seat height, width and depth? What are the frame and the seat made of? Are covers, pads and glides replaceable? Is it stackable? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [
+            FSC,
+            ("PEFC, another forest certification scheme", "https://pefc.org/"),
+            ("OEKO-TEX Standard 100 (textiles tested for harmful substances)", "https://www.oeko-tex.com/en/our-standards/oeko-tex-standard-100"),
+            ("Global Organic Textile Standard (organic fibres)", "https://global-standards.org/"),
+            SWAN,
+            GREEN_CLAIMS,
+        ],
+    },
+]
+
 GUIDES_BY_SLUG = {g["slug"]: g for g in GUIDES}
 GROUP_ORDER = ["Furniture", "Lighting", "Objects"]
 
