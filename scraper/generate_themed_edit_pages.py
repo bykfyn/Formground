@@ -101,7 +101,7 @@ THEMES = [
             "corner, a hallway, a space a three-seater never would. The "
             "smaller scale doesn't mean smaller craft: the same joinery, "
             "the same attention to an arm or a leg, just sized for more "
-            "homes. Every result links straight to the maker's own site."
+            "homes. Every product links straight to the maker's own site."
         ),
         # Superseded the old hand-picked 3-product carousel (2026-09-29:
         # Boxlike/Rydal/Fly SC2) once every edit banner went static
@@ -120,7 +120,7 @@ THEMES = [
             "A round table has no head - everyone sits equally close to "
             "everyone else. What varies is the base: a single pedestal, a "
             "tripod, a cross-frame, each one a structural answer to "
-            "holding up a circular top. Every result links straight to the "
+            "holding up a circular top. Every product links straight to the "
             "maker's own site."
         ),
         "exclude": {("Vaarnii", "001 Dining Table Round Files"), ("Fogia", "Supper Round Table")},
@@ -138,7 +138,7 @@ THEMES = [
         "intro": (
             "No corners to work around - a round coffee table sits equally "
             "well against a sofa, an armchair, or a walking path through the "
-            "room. Every result links straight to the maker's own site."
+            "room. Every product links straight to the maker's own site."
         ),
         "exclude": {("Pinch", "Landry coffee table circular bronze")},
         # Testing a new standard layout (2026-09-30, user: "a strong
@@ -158,7 +158,7 @@ THEMES = [
         "intro": (
             "Dining tables from Swedish, Danish, and Norwegian makers - new "
             "work by independent, living designers, not a vintage or "
-            "antiques listing. Every result links straight to the maker's "
+            "antiques listing. Every product links straight to the maker's "
             "own site."
         ),
         "exclude": {("Audo", "Puffin Dining Table")},
@@ -183,7 +183,7 @@ THEMES = [
             "A pendant hangs low enough to matter - over a dining table, "
             "an island, a reading chair - doing the one thing a light "
             "recessed flush into the ceiling never can: becoming part of "
-            "the room's own composition. Every result links straight to "
+            "the room's own composition. Every product links straight to "
             "the maker's own site."
         ),
         "exclude": {
@@ -205,7 +205,7 @@ THEMES = [
         "intro": (
             "No wiring, no ceiling box, no commitment - a table lamp asks "
             "only for a surface and a socket, then does the rest: "
-            "presence on a nightstand, a console, or a desk. Every result "
+            "presence on a nightstand, a console, or a desk. Every product "
             "links straight to the maker's own site."
         ),
         "exclude": {
@@ -225,7 +225,7 @@ THEMES = [
             "Fixed to the wall, a wall lamp gives up nothing in design for "
             "the surface it frees underneath - a nightstand with no lamp "
             "base to work around, a hallway with no room for anything "
-            "else. Every result links straight to the maker's own site."
+            "else. Every product links straight to the maker's own site."
         ),
         # Louise Roe's real "Moon Lantern" (1667x2500, portrait) was tried
         # here first, but a portrait source is the wrong shape for a wide
@@ -245,7 +245,7 @@ THEMES = [
         "intro": (
             "Not a pendant on a long drop, not a chandelier - a ceiling "
             "lamp sits close and flush, built for a room where headroom "
-            "is scarce and every inch of it counts. Every result links "
+            "is scarce and every inch of it counts. Every product links "
             "straight to the maker's own site."
         ),
         # New Works DK's "Kantarell Wall & Ceiling Lamp" (595x800,
@@ -271,7 +271,7 @@ THEMES = [
         "intro": (
             "No outlet to plan around, no cord to route - a portable lamp "
             "goes wherever the evening does: a dinner table, a bath, a "
-            "porch step. Every result links straight to the maker's own "
+            "porch step. Every product links straight to the maker's own "
             "site."
         ),
         # Shot inside Maison Louis Carré, Alvar Aalto's real house in
@@ -289,7 +289,7 @@ THEMES = [
         "intro": (
             "No table needed - a floor lamp stands on its own and brings the "
             "light to where you sit: a reading chair, a sofa corner, the dark "
-            "end of a room. Every result links straight to the maker's own site."
+            "end of a room. Every product links straight to the maker's own site."
         ),
         "hero_image": ("Minimalux", "Rota: Floor Lamp"),
     },
@@ -300,7 +300,7 @@ THEMES = [
         "intro": (
             "A chair is chosen by looking and judged by sitting: the line of a "
             "back, the stance of four legs, a seat you can already picture in "
-            "the room. Every result links straight to the maker's own site."
+            "the room. Every product links straight to the maker's own site."
         ),
         # accessories listed under the chair category, not chairs
         "exclude": {
@@ -317,7 +317,7 @@ THEMES = [
         "intro": (
             "A vase works with or without flowers: a form for the shelf, the "
             "sill or the table, and somewhere for a single stem to stand. "
-            "Every result links straight to the maker's own site."
+            "Every product links straight to the maker's own site."
         ),
         "hero_image": ("Sizar Alexis", "Lahmu Vase"),
     },
@@ -328,7 +328,7 @@ THEMES = [
         "intro": (
             "The smallest table in the room does the most work: a place for "
             "the lamp, the cup and the book, within reach of the sofa or the "
-            "bed. Every result links straight to the maker's own site."
+            "bed. Every product links straight to the maker's own site."
         ),
         "hero_image": ("Bitossi Ceramiche", "Tavolino"),
     },
@@ -338,7 +338,7 @@ THEMES = [
         "fetch": lambda: qe.filter_products({"category": "rug"}),
         "intro": (
             "A rug sets the floor plan: it grounds the seating, softens the "
-            "room and gives the whole arrangement a centre. Every result "
+            "room and gives the whole arrangement a centre. Every product "
             "links straight to the maker's own site."
         ),
         "hero_image": ("Another Country", "Mojave Rug by Armadillo"),
@@ -350,7 +350,7 @@ THEMES = [
         "intro": (
             "A mirror does two jobs: it gives the room more light and depth, "
             "and it hangs on the wall as an object in its own right. Every "
-            "result links straight to the maker's own site."
+            "product links straight to the maker's own site."
         ),
         "hero_image": ("Joris Poggioli", "KIKA"),
     },
@@ -361,7 +361,7 @@ THEMES = [
         "intro": (
             "Winter asks for light: a candle holder gives the flame somewhere "
             "to stand, from a single taper on the windowsill to a row down the "
-            "table for the long dark evenings. Every result links straight to "
+            "table for the long dark evenings. Every product links straight to "
             "the maker's own site."
         ),
         "hero_image": ("Anna L\u00f6wenhielm Ceramics", "Ljusstake"),

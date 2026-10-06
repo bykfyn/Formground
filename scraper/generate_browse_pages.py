@@ -425,7 +425,9 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
         seo_title = fit_title(f"{title}: latest pieces from makers{pg}", f"{title}{pg}")
     else:
         seo_title = fit_title(f"{title} from independent and established makers{pg}", f"{title} from makers{pg}", f"{title}{pg}")
-    description = f"{summary}, listed in full{page_note}. Every result links straight to the maker's own site."
+    is_houses = title == "Houses" or title.startswith("Houses in ")
+    each, owner = ("house", "architect") if is_houses else ("product", "maker")
+    description = f"{summary}, listed in full{page_note}. Every {each} links straight to the {owner}'s own site."
     edits = [] if view else _edits_for_type(slug)
     edit_line = ""
     if edits:

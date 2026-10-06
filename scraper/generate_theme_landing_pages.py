@@ -78,7 +78,7 @@ THEMES = [
         "slug": "floor-lamps",
         "title": "Floor Lamps",
         "intent": {"category": "floor lamp"},
-        "intro": "Floor lamps from independent makers - every result links straight to the maker's own site.",
+        "intro": "Floor lamps from independent makers - every product links straight to the maker's own site.",
     },
 ]
 
