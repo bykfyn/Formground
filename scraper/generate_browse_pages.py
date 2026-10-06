@@ -697,7 +697,7 @@ def render_category_page(cat_name, entries):
     mine = work_menu.category_entries(entries, cat_name)
     types = [e for e in mine if not e.get("is_new")]       # the "New" entry is a view, not a type
     total = sum(e["n"] for e in types)
-    description = (f"{total:,} pieces of {cat_name.lower()} from independent makers across {len(types)} types, listed in full - "
+    description = (f"{total:,} pieces of {cat_name.lower()} from makers across {len(types)} types, listed in full - "
                    "each linking straight to the maker's own site.")
     blocks = []
     new_tiles = "".join(_type_tile_html(e) for e in mine if e.get("is_new"))

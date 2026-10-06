@@ -86,7 +86,7 @@ app = FastAPI(
     title="Formground",
     version="0.2.0",
     description=(
-        "Formground indexes furniture, lighting and objects from independent makers and links every "
+        "Formground indexes furniture, lighting and objects from makers and links every "
         "result straight to the maker's own site. /agent/search is the public, machine-readable search; "
         "the other routes serve the formground.com interface. No authentication; please keep request "
         "volume modest."
@@ -278,7 +278,7 @@ def human_search_more(
 
 @app.get(
     "/agent/search",
-    summary="Search products from independent makers",
+    summary="Search products from makers",
     tags=["agents"],
     responses={200: {
         "description": "Matching products, brand-balanced so no single maker dominates.",

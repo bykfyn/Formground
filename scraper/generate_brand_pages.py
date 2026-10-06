@@ -1393,7 +1393,7 @@ def render_makers_index(brands_data):
   <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
 {site_nav_html("creators")}
 </header>
-<main style="max-width:1160px;">{directory_filter_html("Filter by name, city, or category…", "Makers")}{tier_filter_html()}
+<main style="max-width:1160px;">{directory_filter_html("Filter by name, city, or category…", "Makers")}
   <h1 class="sr-only">Makers</h1>
   <div class="maker-grid">{items}
   </div>

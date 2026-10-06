@@ -525,6 +525,23 @@ class StructureTests(unittest.TestCase):
             self.assertIn("info@formground.com", text, page)
         self.assertIn("Swedish Authority for", (DOCS / "privacy.html").read_text())
 
+    def test_no_independent_claim_in_page_descriptions_and_no_tier_chips_on_makers(self):
+        # "independent" is a rough internal flag (default for every brand not hand-marked established), so it is
+        # not claimed in descriptions, and the Independent/Established chips are off the Makers directory
+        import glob as _g
+        bad = []
+        for f in _g.glob(str(DOCS / "**" / "*.html"), recursive=True):
+            text = Path(f).read_text()
+            if _is_stub(text):
+                continue
+            for m in re.finditer(r'<meta [^>]*(?:description)[^>]*content="([^"]*)"', text):
+                if re.search(r"(?i)\bindependent makers\b", m.group(1)):
+                    bad.append(os.path.relpath(f, DOCS))
+        self.assertEqual(bad[:5], [])
+        makers = (DOCS / "makers.html").read_text()
+        self.assertNotIn('data-tier="independent">Independent Makers', makers)
+        self.assertNotIn('data-tier="established">Established Makers', makers)
+
     def test_home_page_explains_the_site_above_the_footer(self):
         home = (DOCS / "index.html").read_text()
         self.assertEqual(home.count('<p class="foot-about">'), 1)

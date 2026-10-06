@@ -1001,7 +1001,7 @@ def render_themed_edit_page(theme, products):
     # card already advertises for this theme.
     cards_to_render, variant_counts = capped_edit_cards(theme, products)
     n, _makers = edit_totals(theme, cards_to_render)
-    description = _meta_description(f"A curated Edit of {n} {title.lower()}{'' if title.lower().endswith('s') else 's'} from independent makers. {theme['intro']}")
+    description = _meta_description(f"A curated Edit of {n} {title.lower()}{'' if title.lower().endswith('s') else 's'} from makers. {theme['intro']}")
 
     picks = _resolve_carousel_picks(theme, cards_to_render) if EDIT_PAGE_BANNER else []
     carousel_html = _render_carousel(picks)

@@ -82,7 +82,7 @@ def build_llms_txt():
     today = datetime.date.today().isoformat()
     return f"""# Formground
 
-> Formground helps people discover furniture, lighting and objects from independent makers. It indexes {products:,} products from {brands} makers and links every result straight to the maker's own site. It sells nothing and shows no paid results in search.
+> Formground helps people discover furniture, lighting and objects from makers. It indexes {products:,} products from {brands} makers and links every result straight to the maker's own site. It sells nothing and shows no paid results in search.
 
 Generated {today}; the catalog is re-scraped weekly. Prices and availability belong to the makers - always send people to the maker's own page (the `url` field), not to Formground.
 
