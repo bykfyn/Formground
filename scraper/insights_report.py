@@ -18,6 +18,10 @@ What it reports (definitions are the thresholds to agree BEFORE the ads start):
   4. By campaign/page - per landing page: visits, visits that searched, visits that clicked
                         through to a maker.
   5. By category      - which kinds of search succeed and which don't.
+  11-13. AI and agents - weekly visits referred by AI assistants (ChatGPT, Perplexity, Claude, Gemini,
+                        Copilot ...), searches made through the agent interface (/agent/search) and the most
+                        common agent queries. Only visits arriving from another site have a referrer, and
+                        AI apps that open links internally may show none.
   6. Clicks by source - outbound clicks per page, split by where the visit came from: the ad
                         (utm_source), else the referring website, else direct. Referrer comes from
                         the visit's page views via the visit id, so it only covers visits after
@@ -240,6 +244,41 @@ WHERE utm_medium = 'cpc' AND visit_id IS NOT NULL
 GROUP BY 1, 2
 ORDER BY outbound_clicks DESC
 LIMIT 40
+""", []),
+
+    ("11. Visits referred by AI assistants, by week", """
+SELECT
+  DATE_TRUNC(DATE(timestamp), WEEK(MONDAY)) AS week,
+  referrer_host,
+  COUNT(DISTINCT visit_id) AS visits,
+  COUNT(*) AS pageviews
+FROM ev
+WHERE event_type = 'pageview'
+  AND REGEXP_CONTAINS(COALESCE(referrer_host, ''), r'(^|\\.)(chatgpt\\.com|openai\\.com|perplexity\\.ai|claude\\.ai|gemini\\.google\\.com|copilot\\.microsoft\\.com|you\\.com|phind\\.com|kagi\\.com)$')
+GROUP BY 1, 2
+ORDER BY week DESC, visits DESC
+LIMIT 40
+""", []),
+
+    ("12. Agent searches (/agent/search), by week", """
+SELECT
+  DATE_TRUNC(DATE(timestamp), WEEK(MONDAY)) AS week,
+  COUNT(*) AS searches,
+  COUNT(DISTINCT LOWER(query)) AS distinct_queries,
+  COUNTIF(total_matches = 0) AS no_results
+FROM ev
+WHERE event_type = 'search' AND surface = 'agent'
+GROUP BY 1
+ORDER BY week DESC
+""", []),
+
+    ("13. Most common agent queries", """
+SELECT LOWER(TRIM(query)) AS query, COUNT(*) AS times, MAX(total_matches) AS matches
+FROM ev
+WHERE event_type = 'search' AND surface = 'agent' AND query IS NOT NULL
+GROUP BY 1
+ORDER BY times DESC
+LIMIT 25
 """, []),
 ]
 
