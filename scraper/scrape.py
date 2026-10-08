@@ -8952,6 +8952,83 @@ def extract_site_pages(brand):
     return products
 
 
+# vikenshantverkeri.se's own /landsbutiken shop page (Squarespace Commerce,
+# confirmed live 2026-10-08). robots.txt disallows the ?format=json shortcut,
+# so this reads only the server-rendered HTML grid: each `a.product` carries
+# its title, "from SEK" price, image and a `category-*` class. The made-to-
+# order range is tables (dining/coffee/side/bar/console/desk) plus a shelf and
+# a wine rack. Out of scope and skipped: wash basins and vanities (bathroom),
+# marble flooring and the stone-impregnation product (maintenance supply).
+VIKENS_SKIP_WORDS = ("handfat", "marmorgolv", "impregnering")
+VIKENS_TYPE_WORDS = (
+    ("barbord", "Bar Table"), ("avlastningsbord", "Console Table"),
+    ("skrivbord", "Desk"), ("vinställ", "Wine Rack"), ("hylla", "Shelf"),
+    ("soffbord", "Coffee Table"), ("sidobord", "Side Table"), ("matbord", "Dining Table"),
+)
+VIKENS_MATERIAL_WORDS = (
+    ("marmor", "Marble"), ("trä", "Wood"), ("ek", "Oak"), ("ask", "Ash"),
+    ("glas", "Glass"), ("stål", "Steel"), ("rostfri", "Stainless steel"),
+    ("björk", "Birch"), ("poppel", "Poplar"),
+)
+
+
+def extract_vikens_hantverkeri(brand):
+    base = brand["url"].rstrip("/")
+    url = f"{base}/landsbutiken"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products = []
+    for a in soup.select("a.product"):
+        href = a.get("href", "")
+        title_el = a.select_one(".product-title")
+        if not href.startswith("/landsbutiken/") or not title_el:
+            continue
+        name = title_el.get_text(strip=True)
+        haystack = f"{href} {name}".lower()
+        if not name or any(w in haystack for w in VIKENS_SKIP_WORDS):
+            continue
+        category = next((label for word, label in VIKENS_TYPE_WORDS if word in haystack), "")
+        if not category:
+            continue
+
+        words = re.findall(r"[a-zåäö]+", f"{name} {' '.join(c for c in a.get('class', []) if c.startswith('tag-'))}".lower())
+        materials = []
+        for word, label in VIKENS_MATERIAL_WORDS:
+            if (word in words or any(w.startswith(word) and word not in ("ek", "ask") for w in words)) and label not in materials:
+                materials.append(label)
+
+        price_el = a.select_one(".product-price")
+        price = None
+        if price_el:
+            # "from SEK 15,500.00" is the lowest configuration; a sale shows
+            # "Sale Price: SEK x Original Price: SEK y" - take the first figure.
+            match = re.search(r"SEK\s*([\d,.]+)", price_el.get_text(" ", strip=True))
+            price = _parse_price(match.group(1)) if match else None
+
+        img = a.select_one("img")
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": base + href,
+            "category": category,
+            "material_options": materials,
+            "dimensions": "",
+            "notes": "",
+            "image_url": _squarespace_image_url(img),
+            "designer": "",
+            "price": price if price and price > 0 else None,
+            "currency": "SEK" if price and price > 0 else None,
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -9018,6 +9095,7 @@ EXTRACTORS = {
     "Grain": extract_grain,
     "Will Choui": extract_will_choui,
     "Sizar Alexis": extract_sizar_alexis,
+    "Vikens Hantverkeri": extract_vikens_hantverkeri,
     "Monsieur Cailloux": extract_monsieur_cailloux,
     "Jonas Lindholm": extract_woocommerce,
     "Northern": extract_shopify,
