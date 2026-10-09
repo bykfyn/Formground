@@ -786,6 +786,16 @@ class UnrecognisedQueryTests(unittest.TestCase):
         self.assertIsNone(r["intent"].get("material"))
         self.assertEqual(r["intent"]["brands"], ["HAY"])
 
+    def test_a_brand_name_word_is_not_also_used_as_a_category_filter(self):
+        # a scan of every brand name (2026-10-09): "editions", "art", "galerie" are category-like words in brand names
+        for query, word, brand in (("DCW éditions", "editions", "DCW éditions"), ("Galerie Kreo", "galerie", "Galerie Kreo")):
+            qe.translate_query = lambda q, w=word: {"category": w}
+            r = qe.search_full(query)
+            self.assertGreater(r["total_matches"], 0, query)
+            self.assertIsNone(r["intent"].get("category"), query)
+        qe.translate_query = lambda q: {"category": "chair"}
+        self.assertEqual(qe.search_full("hay chair")["intent"].get("category"), "chair")
+
     def test_a_real_material_beside_a_brand_name_is_kept(self):
         qe.translate_query = lambda q: {"category": "chair", "material": "oak"}
         r = qe.search_full("hay oak chair")
