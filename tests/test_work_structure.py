@@ -276,14 +276,17 @@ class StructureTests(unittest.TestCase):
         self.assertIn("/share.js?v=", page)
 
     def test_big_designer_pages_are_paged_at_60(self):
-        first = (DOCS / "designers" / "jaime-hayon.html").read_text()
+        # a big designer credited at ONE maker is paged at 60 (a designer across several makers has one page with
+        # brand chips instead: see DesignerBrandFilterTests)
+        first = (DOCS / "designers" / "hella-jongerius.html").read_text()
+        self.assertNotIn('id="brand-filters"', first)
         grid = first[first.index('<div class="grid" data-listing-grid>'):]
         grid = grid[:grid.index('<div class="load-more-row">')]
         self.assertEqual(len(re.findall(r'<a class="card"', grid)), 60)
-        self.assertIn('href="/designers/jaime-hayon-2.html"', first)
-        third = (DOCS / "designers" / "jaime-hayon-3.html").read_text()
-        self.assertIn('<p class="earlier-results"><a href="/designers/jaime-hayon-2.html" rel="prev">', third)
-        self.assertIn("/designers/jaime-hayon-3.html", (DOCS / "sitemap.xml").read_text())
+        self.assertIn('href="/designers/hella-jongerius-2.html"', first)
+        second = (DOCS / "designers" / "hella-jongerius-2.html").read_text()
+        self.assertIn('<p class="earlier-results"><a href="/designers/hella-jongerius.html" rel="prev">', second)
+        self.assertIn("/designers/hella-jongerius-2.html", (DOCS / "sitemap.xml").read_text())
         small = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn('id="see-more"', small)
 
@@ -593,7 +596,7 @@ class BrandDesignerLinkTests(unittest.TestCase):
         broken = []
         for path in self._brand_pages():
             for href in self.CHIP.findall(Path(path).read_text()):
-                if not (DOCS / href.lstrip("/")).exists():
+                if not (DOCS / href.split("?")[0].lstrip("/")).exists():
                     broken.append((os.path.basename(path), href))
         self.assertEqual(broken, [])
 
@@ -615,3 +618,41 @@ class BrandDesignerLinkTests(unittest.TestCase):
         for path in self._brand_pages():
             links = self.CHIP.findall(Path(path).read_text())
             self.assertEqual(len(links), len(set(links)), os.path.basename(path))
+
+
+class DesignerBrandFilterTests(unittest.TestCase):
+    """A designer credited across 2+ makers has one page with brand chips; a maker's link opens it filtered."""
+
+    def _multi_brand_pages(self):
+        return [p for p in sorted(glob.glob(str(DOCS / "designers" / "*.html"))) if 'id="brand-filters"' in Path(p).read_text()]
+
+    def test_there_are_multi_brand_pages_with_chips_and_script(self):
+        pages = self._multi_brand_pages()
+        self.assertGreaterEqual(len(pages), 20)
+        for p in pages:
+            text = Path(p).read_text()
+            self.assertIn('data-slug=""', text, os.path.basename(p))        # the "All" chip
+            self.assertIn("brand-filters", text.split("<script>")[-1] if "<script>" in text else "", os.path.basename(p))
+
+    def test_every_chip_matches_cards_and_every_card_has_a_slug(self):
+        for p in self._multi_brand_pages():
+            text = Path(p).read_text()
+            chip_slugs = set(re.findall(r'class="filter-chip[^"]*" data-slug="([^"]+)"', text))
+            card_slugs = re.findall(r'<a class="card"[^>]*data-slug="([^"]*)"', text)
+            self.assertGreaterEqual(len(chip_slugs), 2, os.path.basename(p))
+            self.assertEqual(set(card_slugs), chip_slugs, os.path.basename(p))
+
+    def test_multi_brand_designers_have_no_numbered_pages(self):
+        for p in self._multi_brand_pages():
+            base = os.path.basename(p)[:-5]
+            self.assertEqual(glob.glob(str(DOCS / "designers" / f"{base}-[0-9]*.html")), [], base)
+
+    def test_maker_links_carry_the_brand_only_for_multi_brand_designers(self):
+        multi = {os.path.basename(p) for p in self._multi_brand_pages()}
+        for path in glob.glob(str(DOCS / "brands" / "*.html")):
+            for href in re.findall(r'class="designer-chip" href="(/designers/[^"]+)"', Path(path).read_text()):
+                page = os.path.basename(href.split("?")[0])
+                self.assertEqual("?brand=" in href, page in multi, f"{os.path.basename(path)}: {href}")
+                if "?brand=" in href:
+                    brand_slug = href.split("?brand=")[1]
+                    self.assertIn(f'data-slug="{brand_slug}"', (DOCS / "designers" / page).read_text(), href)

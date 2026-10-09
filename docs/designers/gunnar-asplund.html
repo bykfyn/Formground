@@ -266,6 +266,11 @@
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 </style>
+<style>
+  .tier-filters { margin-top: 4px; }
+  .filter-chip .chip-count { color: var(--text-muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
+  .filter-chip.active .chip-count { color: inherit; opacity: 0.7; }
+</style>
 </head>
 <body>
 <header class="site-header">
@@ -281,24 +286,25 @@
     <p class="eyebrow">Designer</p>
     <h1 class="maker-name">Gunnar Asplund</h1>
   </div>
-  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">3 products credited to Gunnar Asplund, each linked straight to its maker's own page.</p>
+  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;"><span id="shown-count">3</span> <span id="shown-noun">products</span> credited to Gunnar Asplund, each linked straight to its maker's own page.</p>
+  <div class="tier-filters" id="brand-filters"><button type="button" class="filter-chip active" data-slug="">All <span class="chip-count">3</span></button><button type="button" class="filter-chip" data-slug="kallemo">Källemo <span class="chip-count">2</span></button><button type="button" class="filter-chip" data-slug="blond">Blond <span class="chip-count">1</span></button></div>
   
   <div class="grid" data-listing-grid>
-      <a class="card" href="https://www.blond.se/home-2-2-1-2-1" target="_blank" rel="noopener noreferrer" data-product="Gunnar Asplund" data-brand="Blond">
+      <a class="card" href="https://www.blond.se/home-2-2-1-2-1" target="_blank" rel="noopener noreferrer" data-product="Gunnar Asplund" data-slug="blond" data-brand="Blond">
         <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/67e4eb04c0944e34afb2b1e9/2c15f63c-a196-47ab-be86-ebd360d7d624/D_B_apt_18.jpg?format=500w" alt="Gunnar Asplund by Blond" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <div class="card-title-wrap"><p class="card-title">Gunnar Asplund</p></div>
           <p class="card-brand">Blond</p>
         </div>
       </a>
-      <a class="card" href="https://www.kallemo.se/en/sida/stolar/ga-1-english" target="_blank" rel="noopener noreferrer" data-product="GA-1" data-brand="Källemo">
+      <a class="card" href="https://www.kallemo.se/en/sida/stolar/ga-1-english" target="_blank" rel="noopener noreferrer" data-product="GA-1" data-slug="kallemo" data-brand="Källemo">
         <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/8a/ga1-1-stol-intro24-2-8a692af1.png" alt="GA-1 by Källemo" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <div class="card-title-wrap"><p class="card-title">GA-1</p></div>
           <p class="card-brand">Källemo</p>
         </div>
       </a>
-      <a class="card" href="https://www.kallemo.se/en/sida/fatoeljer-soffor/ga-2-english" target="_blank" rel="noopener noreferrer" data-product="GA-2" data-brand="Källemo">
+      <a class="card" href="https://www.kallemo.se/en/sida/fatoeljer-soffor/ga-2-english" target="_blank" rel="noopener noreferrer" data-product="GA-2" data-slug="kallemo" data-brand="Källemo">
         <div class="card-image"><img src="https://www.kallemo.se/templates/yootheme/cache/16/ga2-o%CC%88versikt-16389943.png" alt="GA-2 by Källemo" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <div class="card-title-wrap"><p class="card-title">GA-2</p></div>
@@ -334,6 +340,37 @@
 </script>
 <script src="/share.js?v=3dc65514" defer></script>
 <script src="/listing.js?v=b09d5657" defer></script>
+<script>
+(function () {
+  var bar = document.getElementById("brand-filters");
+  if (!bar) return;
+  var chips = bar.querySelectorAll(".filter-chip");
+  var cards = document.querySelectorAll("[data-listing-grid] .card");
+  var count = document.getElementById("shown-count"), noun = document.getElementById("shown-noun");
+  var known = {};
+  chips.forEach(function (c) { known[c.getAttribute("data-slug")] = true; });
+  function apply(slug) {
+    var shown = 0;
+    chips.forEach(function (c) { c.classList.toggle("active", c.getAttribute("data-slug") === slug); });
+    cards.forEach(function (card) {
+      var hide = slug !== "" && card.getAttribute("data-slug") !== slug;
+      card.hidden = hide;
+      if (!hide) shown++;
+    });
+    if (count) count.textContent = shown;
+    if (noun) noun.textContent = shown === 1 ? "product" : "products";
+    try {
+      var u = new URL(location.href);
+      if (slug) u.searchParams.set("brand", slug); else u.searchParams.delete("brand");
+      history.replaceState(null, "", u);
+    } catch (e) {}
+  }
+  chips.forEach(function (c) { c.addEventListener("click", function () { apply(c.getAttribute("data-slug")); }); });
+  var wanted = "";
+  try { wanted = new URLSearchParams(location.search).get("brand") || ""; } catch (e) {}
+  apply(known[wanted] ? wanted : "");
+})();
+</script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

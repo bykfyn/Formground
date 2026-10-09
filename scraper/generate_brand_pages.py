@@ -1193,20 +1193,27 @@ BRAND_DESIGNERS_CSS = """
 DESIGNERS_SHOWN = 12   # the rest sit behind "and N more" (Alessi has 77, Galerie Kreo 68)
 
 
-def designers_for_brand(products, slug_by_name):
-    """[(name, slug, pieces)] for the designers credited on this brand's pieces who have a page on Formground, most
-    pieces first. A designer without a page (fewer than two credited pieces anywhere) is not listed: no dead links."""
+def designers_for_brand(brand, products, designer_info):
+    """[(name, href, pieces)] for the designers credited on this brand's pieces who have a page on Formground, most
+    pieces first. A designer without a page (fewer than two credited pieces anywhere) is not listed: no dead links.
+    designer_info = {name: (slug, brand count)}. A designer who works with several brands links with ?brand=<this
+    brand>, so their page opens already filtered to this brand's pieces."""
     counts = {}
     for p in products:
         for name in split_credit(p.get("designer")):
-            if name in slug_by_name:
+            if name in designer_info:
                 counts[name] = counts.get(name, 0) + 1
-    return sorted(((n, slug_by_name[n], c) for n, c in counts.items()), key=lambda t: (-t[2], t[0].lower()))
+    out = []
+    for name, c in counts.items():
+        slug, n_brands = designer_info[name]
+        href = f"/designers/{slug}.html" + (f"?brand={slugify(brand)}" if n_brands >= 2 else "")
+        out.append((name, href, c))
+    return sorted(out, key=lambda t: (-t[2], t[0].lower()))
 
 
-def _designer_chip(name, slug, pieces):
+def _designer_chip(name, href, pieces):
     label = f"{pieces} piece" + ("" if pieces == 1 else "s")
-    return (f'<a class="designer-chip" href="/designers/{slug}.html" title="{label} on Formground">'
+    return (f'<a class="designer-chip" href="{html.escape(href)}" title="{label} on Formground">'
             f'<span class="designer-chip-name">{html.escape(name)}</span>'
             f'<span class="designer-chip-count">{pieces}</span></a>')
 
@@ -1634,33 +1641,38 @@ def _architects_sitemap_slugs():
 
 
 def _designer_pages():
-    """[(name, slug, product count)] for every designer who gets a page (2+ credited products - see
+    """[(name, slug, product count, brand count)] for every designer who gets a page (2+ credited products - see
     generate_designers_pages.py's MIN_PRODUCTS), in the same sorted order and with the same unique_slug as that
     generator. Reads data/formground.db directly (the real source, no separate JSON file) so render_sitemap()
-    stays correct regardless of which generator last ran."""
+    stays correct regardless of which generator last ran. A designer credited across 2+ brands (brand count) gets
+    all their products on ONE page with brand filter chips, not numbered pages."""
     if not DB_PATH.exists():
         return []
     conn = sqlite3.connect(DB_PATH)
     rows = conn.execute("""
-        SELECT designer, COUNT(*) as n FROM products
+        SELECT designer, brand, COUNT(*) as n FROM products
         WHERE designer IS NOT NULL AND TRIM(designer) != '' AND image_url != ''
-        GROUP BY designer
+        GROUP BY designer, brand
     """).fetchall()
     conn.close()
     # credits are split into the individual designers they name (designer_credits.py), then the 2+ bar applies
-    rows = [(name, n) for name, n in credited_counts(rows).items() if n >= 2]
+    counts, brands = {}, {}
+    for raw, brand, n in rows:
+        for name in split_credit(raw):
+            counts[name] = counts.get(name, 0) + n
+            brands.setdefault(name, set()).add(brand)
     slugs_seen = {}
     out = []
-    for name, n in sorted(rows, key=lambda r: r[0]):
+    for name in sorted(n for n, c in counts.items() if c >= 2):
         slug = unique_slug(slugify(name), name, slugs_seen)
         slugs_seen[slug] = name
-        out.append((name, slug, n))
+        out.append((name, slug, counts[name], len(brands[name])))
     return out
 
 
 def _designers_with_counts():
     """[(slug, product count)] - see _designer_pages."""
-    return [(slug, n) for _, slug, n in _designer_pages()]
+    return [(slug, n) for _, slug, n, _ in _designer_pages()]
 
 
 def _designers_sitemap_slugs():
@@ -1669,7 +1681,7 @@ def _designers_sitemap_slugs():
 
 def _designers_extra_page_slugs():
     """/designers/<slug>-2.html ... for designers with more than one page of products (60 a page)."""
-    return [brand_page_slug(slug, page) for slug, n in _designers_with_counts()
+    return [brand_page_slug(slug, page) for _, slug, n, n_brands in _designer_pages() if n_brands < 2
             for page in range(2, -(-n // BRAND_CARDS_PER_PAGE) + 1)]
 
 
@@ -1750,7 +1762,7 @@ def generate():
     tiers = load_brand_tiers()
     promotions_by_brand = load_promotions_by_brand()
     stockists_by_brand = load_stockists_by_brand()
-    slug_by_designer = {name: slug for name, slug, _ in _designer_pages()}
+    designer_info = {name: (slug, n_brands) for name, slug, _, n_brands in _designer_pages()}
     BRANDS_DIR.mkdir(parents=True, exist_ok=True)
 
     # New-arrivals page: first_seen is only ever real (not NULL) for a
@@ -1812,7 +1824,7 @@ def generate():
             promotions_by_brand.get(brand),
             stockists_by_brand.get(brand),
             new_arrivals_by_brand.get(brand),
-            designers=designers_for_brand(products, slug_by_designer),
+            designers=designers_for_brand(brand, products, designer_info),
         )
         (BRANDS_DIR / f"{slug}.html").write_text(page)
         brand_pages = max(1, -(-len(products) // BRAND_CARDS_PER_PAGE))

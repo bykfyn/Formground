@@ -93,11 +93,66 @@ def designer_card_html(designer_name, slug, products):
       </a>"""
 
 
+BRAND_FILTER_JS = """
+(function () {
+  var bar = document.getElementById("brand-filters");
+  if (!bar) return;
+  var chips = bar.querySelectorAll(".filter-chip");
+  var cards = document.querySelectorAll("[data-listing-grid] .card");
+  var count = document.getElementById("shown-count"), noun = document.getElementById("shown-noun");
+  var known = {};
+  chips.forEach(function (c) { known[c.getAttribute("data-slug")] = true; });
+  function apply(slug) {
+    var shown = 0;
+    chips.forEach(function (c) { c.classList.toggle("active", c.getAttribute("data-slug") === slug); });
+    cards.forEach(function (card) {
+      var hide = slug !== "" && card.getAttribute("data-slug") !== slug;
+      card.hidden = hide;
+      if (!hide) shown++;
+    });
+    if (count) count.textContent = shown;
+    if (noun) noun.textContent = shown === 1 ? "product" : "products";
+    try {
+      var u = new URL(location.href);
+      if (slug) u.searchParams.set("brand", slug); else u.searchParams.delete("brand");
+      history.replaceState(null, "", u);
+    } catch (e) {}
+  }
+  chips.forEach(function (c) { c.addEventListener("click", function () { apply(c.getAttribute("data-slug")); }); });
+  var wanted = "";
+  try { wanted = new URLSearchParams(location.search).get("brand") || ""; } catch (e) {}
+  apply(known[wanted] ? wanted : "");
+})();
+"""
+
+
+BRAND_CHIP_CSS = """
+  .tier-filters { margin-top: 4px; }
+  .filter-chip .chip-count { color: var(--text-muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
+  .filter-chip.active .chip-count { color: inherit; opacity: 0.7; }
+"""
+
+
+def brand_filter_html(products):
+    """Brand chips for a designer credited across 2+ makers: All, then each brand with its piece count (most first).
+    The ?brand=<slug> in a link from a maker's page selects that chip on load (BRAND_FILTER_JS)."""
+    counts = {}
+    for p in products:
+        counts.setdefault(p["brand"], 0)
+        counts[p["brand"]] += 1
+    chips = [f'<button type="button" class="filter-chip active" data-slug="">All <span class="chip-count">{len(products)}</span></button>']
+    for brand, n in sorted(counts.items(), key=lambda kv: (-kv[1], kv[0].lower())):
+        chips.append(f'<button type="button" class="filter-chip" data-slug="{slugify(brand)}">{html.escape(brand)} '
+                     f'<span class="chip-count">{n}</span></button>')
+    return '\n  <div class="tier-filters" id="brand-filters">' + "".join(chips) + "</div>"
+
+
 def render_designer_page(designer_name, slug, products, page=1):
     page_url = f"{SITE_URL}/designers/{brand_page_slug(slug, page)}.html"
     brands = sorted({p["brand"] for p in products})
     brand_line = brands[0] if len(brands) == 1 else f"{len(brands)} brands: {', '.join(brands)}"
-    pages = max(1, -(-len(products) // BRAND_CARDS_PER_PAGE))
+    multi = len(brands) >= 2          # credited across 2+ makers: one page with brand chips, not numbered pages
+    pages = 1 if multi else max(1, -(-len(products) // BRAND_CARDS_PER_PAGE))
     page_note = f" (page {page} of {pages})" if pages > 1 else ""
     pg = f", page {page}" if page > 1 else ""
     seo_title = fit_title(f"{designer_name}: designs and products{pg}", f"{designer_name}{pg}")
@@ -116,9 +171,14 @@ def render_designer_page(designer_name, slug, products, page=1):
     products_sorted = sorted(products, key=lambda p: (p["brand"], p["product_name"]))
     url_for = lambda n: f"/designers/{brand_page_slug(slug, n)}.html"
     earlier_html, see_more_html, pager_html = listing_controls_html(url_for, page, pages, len(products), "pieces")
-    products_sorted = products_sorted[(page - 1) * BRAND_CARDS_PER_PAGE: page * BRAND_CARDS_PER_PAGE]
+    if not multi:
+        products_sorted = products_sorted[(page - 1) * BRAND_CARDS_PER_PAGE: page * BRAND_CARDS_PER_PAGE]
     # the standard product card (square photo, name, maker, share button) - the same as the Work page and every other page
-    products_html = "".join(product_card_html(p, show_brand=True, share=True) for p in products_sorted)
+    products_html = "".join(
+        product_card_html(p, show_brand=True, share=True).replace(
+            'data-brand="', f'data-slug="{slugify(p["brand"])}" data-brand="', 1)
+        for p in products_sorted)
+    brand_chips = brand_filter_html(products) if multi else ""
 
     breadcrumb_json = f"""{{
       "@context": "https://schema.org",
@@ -152,6 +212,7 @@ def render_designer_page(designer_name, slug, products, page=1):
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
+{('<style>' + BRAND_CHIP_CSS + '</style>') if brand_chips else ''}
 </head>
 <body>
 <header class="site-header">
@@ -163,7 +224,7 @@ def render_designer_page(designer_name, slug, products, page=1):
     <p class="eyebrow">Designer</p>
     <h1 class="maker-name">{html.escape(designer_name)}</h1>
   </div>
-  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">{len(products)} product{'' if len(products) == 1 else 's'} credited to {html.escape(designer_name)}, each linked straight to its maker's own page.</p>
+  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;"><span id="shown-count">{len(products)}</span> <span id="shown-noun">product{'' if len(products) == 1 else 's'}</span> credited to {html.escape(designer_name)}, each linked straight to its maker's own page.</p>{brand_chips}
   {earlier_html}
   <div class="grid" data-listing-grid>{products_html}
   </div>
@@ -184,6 +245,7 @@ def render_designer_page(designer_name, slug, products, page=1):
 <script>{CARD_CLICK_TRACKING_JS}</script>
 <script src="{SHARE_JS}" defer></script>
 <script src="{LISTING_JS}" defer></script>
+{('<script>' + BRAND_FILTER_JS + '</script>') if brand_chips else ''}
 {CLOUDFLARE_ANALYTICS}
 </body>
 </html>
@@ -304,7 +366,8 @@ def generate():
 
         (DESIGNERS_DIR / f"{slug}.html").write_text(render_designer_page(designer_name, slug, products))
         designers_with_slugs.append((designer_name, slug))
-        for extra in range(2, -(-len(products) // BRAND_CARDS_PER_PAGE) + 1):      # numbered pages, 60 products each
+        multi_brand = len({p["brand"] for p in products}) >= 2
+        for extra in range(2, 1 if multi_brand else -(-len(products) // BRAND_CARDS_PER_PAGE) + 1):      # numbered pages, 60 products each (a multi-brand designer has one page)
             page_slug = brand_page_slug(slug, extra)
             assert page_slug not in slugs_seen, f"numbered page {page_slug} collides with a designer's own page"
             (DESIGNERS_DIR / f"{page_slug}.html").write_text(render_designer_page(designer_name, slug, products, page=extra))
