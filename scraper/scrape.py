@@ -3942,6 +3942,22 @@ def extract_shopify(brand):
 
     raw_products = [p for p in raw_products if not _looks_like_a_class_listing(p["title"])]
     raw_products = [p for p in raw_products if not _looks_like_a_maintenance_item(p["title"])]
+    if brand["name"] == "Master & Master":
+        # confirmed live 2026-10-09: "M&M Signature Socks" is branded merchandise, not a design object
+        raw_products = [p for p in raw_products if "socks" not in p["title"].lower()]
+    # These two brands' product_type values are Czech / Chinese words: translated to the site's English category (or blank,
+    # so the name-based inference takes over) instead of storing the foreign word as the category
+    translations = {
+        "Master & Master": {"stoly & stolové nohy": "Table", "židle": "Chair", "úložné prostory": "Storage"},
+        "HOKII": {"充電台燈": "Table Lamp"},
+    }.get(brand["name"])
+    if translations is not None:
+        for p in raw_products:
+            p["product_type"] = translations.get((p.get("product_type") or "").strip().lower(), "")
+    if brand["name"] == "HOKII":
+        # confirmed live 2026-10-09: the glass shade titled "(僅適用於MOGU檯燈)" = "only fits the MOGU lamp" is a
+        # replacement part (the shop also has a spare-parts collection), not a standalone piece
+        raw_products = [p for p in raw_products if "僅適用" not in p["title"]]
     if brand["name"] == "Woud":
         # Confirmed live 2026-09-29: "Arc leg (Coffee table)"/"Arc leg
         # (Side table)" are single replacement legs sold on their own
@@ -9092,6 +9108,86 @@ def extract_twentybyeight(brand):
     return products
 
 
+# Squarespace Commerce stores whose server-rendered product page embeds each product's real title, price, photo and
+# link in a ProductList block (the ?format=json shortcut is disallowed by robots.txt, so this reads only the HTML).
+# Confirmed live 2026-10-09 on hostandtoast.net (/shop) and ed-heritage.com (/products).
+SQUARESPACE_MATERIALS = (("oak", "Oak"), ("ash", "Ash"), ("maple", "Maple"), ("walnut", "Walnut"), ("steel", "Steel"),
+                         ("brass", "Brass"), ("leather", "Leather"), ("glass", "Glass"), ("marble", "Marble"))
+
+
+def _extract_squarespace_store(brand, path, skip_words=()):
+    base = brand["url"].rstrip("/")
+    products = []
+    for item in _extract_squarespace_commerce_page(f"{base}{path}"):
+        name = html.unescape(item.get("title", "")).strip()
+        full_url = item.get("fullUrl", "")
+        if not name or not full_url or any(w in name.lower() for w in skip_words):
+            continue
+        price = item.get("price") or {}
+        try:
+            value = float(price.get("value"))
+        except (TypeError, ValueError):
+            value = None
+        description = re.sub(r"<[^>]+>", " ", html.unescape(item.get("description") or "")).lower()
+        words = re.findall(r"[a-z]+", f"{name.lower()} {description}")
+        materials = [label for word, label in SQUARESPACE_MATERIALS if word in words]
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+            "product_url": base + full_url if full_url.startswith("/") else full_url,
+            "category": _infer_category_from_name(name, "", brand["name"]),
+            "material_options": materials, "dimensions": "", "notes": "",
+            "image_url": (item.get("mainImage") or {}).get("assetUrl", ""),
+            "designer": "", "price": value if value and value > 0 else None,
+            "currency": price.get("currency") if value and value > 0 else None,
+        })
+    return products
+
+
+def extract_host_and_toast(brand):
+    # its shop also sells wall art and an illuminated neon-style sign: art, not furniture or lighting objects
+    return _extract_squarespace_store(brand, "/shop", skip_words=("wall art", "illuminated sign"))
+
+
+def extract_ed_heritage(brand):
+    return _extract_squarespace_store(brand, "/products")
+
+
+# rieullighting.com (Rieul Lighting, Korea; confirmed live 2026-10-09) is a Cafe24 shop: the "All" category page
+# server-renders every product tile (name, won price, photo) and robots.txt is open.
+def extract_rieul_lighting(brand):
+    base = brand["url"].rstrip("/")
+    url = f"{base}/category/all/43/"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=25)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products, seen = [], set()
+    for li in soup.select("li[id^=anchorBoxId_]"):
+        link = li.select_one("strong.name a")
+        if not link or not link.get("href"):
+            continue
+        name = link.get_text(strip=True)
+        href = link["href"].split("/category/")[0]
+        if not name or href in seen:
+            continue
+        seen.add(href)
+        price_el = li.select_one('li[alt="판매가"]')
+        price = _parse_price(re.sub(r"[^\d,.]", "", price_el.get_text())) if price_el else None
+        img = li.select_one(".prdImg img")
+        src = (img.get("src") or "") if img else ""
+        image = "https:" + src if src.startswith("//") else src      # the /medium/ file: a /big/ path with the same name does not exist
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": base + href,
+            "category": _infer_category_from_name(name, "", brand["name"]), "material_options": [], "dimensions": "",
+            "notes": "", "image_url": image, "designer": "",
+            "price": price if price and price > 0 else None, "currency": "KRW" if price and price > 0 else None,
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -9160,6 +9256,12 @@ EXTRACTORS = {
     "Sizar Alexis": extract_sizar_alexis,
     "Vikens Hantverkeri": extract_vikens_hantverkeri,
     "20by8": extract_twentybyeight,
+    "Master & Master": extract_shopify,
+    "Tlachï Design": extract_shopify,
+    "HOKII": extract_shopify,
+    "Host & Toast": extract_host_and_toast,
+    "Ed Heritage": extract_ed_heritage,
+    "Rieul Lighting": extract_rieul_lighting,
     "Monsieur Cailloux": extract_monsieur_cailloux,
     "Jonas Lindholm": extract_woocommerce,
     "Northern": extract_shopify,
