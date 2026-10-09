@@ -778,6 +778,30 @@ class UnrecognisedQueryTests(unittest.TestCase):
     def test_brand_inside_longer_query_is_found(self):
         self.assertEqual(qe.detect_brands("serax vase"), ["Serax"])
 
+    def test_a_brand_is_found_by_its_name_without_a_trailing_generic_word(self):
+        # "Rieul Lighting" / "Tlachï Design" were found only by the full name (2026-10-09)
+        self.assertEqual(qe.detect_brands("rieul"), ["Rieul Lighting"])
+        self.assertEqual(qe.detect_brands("Tlachi"), ["Tlachï Design"])
+        self.assertEqual(qe.detect_brands("tlachi chair"), ["Tlachï Design"])
+        self.assertEqual(qe.detect_brands("rieul lighting"), ["Rieul Lighting"])
+
+    def test_short_names_that_are_ordinary_words_only_match_on_their_own(self):
+        self.assertEqual(qe.detect_brands("lemon"), ["Lemon Furniture"])
+        self.assertEqual(qe.detect_brands("lemon squeezer"), [])
+        self.assertEqual(qe.detect_brands("oven glove"), [])
+        self.assertEqual(qe.detect_brands("kann"), ["Kann Design"])
+
+    def test_a_brand_that_starts_with_a_generic_word_gets_no_short_name(self):
+        self.assertEqual(qe.detect_brands("objects for"), [])
+        self.assertNotIn("studio gameiro", [b.lower() for b in qe.detect_brands("studio")])
+
+    def test_short_names_never_collide_with_a_real_brand_name(self):
+        folds = qe._brand_folds()
+        full = {qe._fold(b) for b in {r["brand"] for r in qe._all_product_rows()} if b not in qe.HIDDEN_BRANDS}
+        for fold, brand in folds.items():
+            if fold not in full:                          # it is a short name
+                self.assertTrue(qe._fold(brand).startswith(fold + " "), (fold, brand))
+
     def test_invented_compound_category_falls_back_to_head_noun(self):
         qe.translate_query = lambda q: {"category": "bedroom lamp"}
         r = qe.search_full("lamp for bedroom")

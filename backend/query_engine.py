@@ -1545,6 +1545,19 @@ AMBIGUOUS_BRAND_WORDS = {
 }
 
 
+# A brand known by a shorter name than its full one: "Rieul Lighting" is "Rieul", "Tlachï Design" is "tlachi". The
+# trailing generic word is dropped to make a second name for it (found 2026-10-09: "rieul" and "tlachi chair" matched
+# nothing and fell through to the whole catalogue). Only when that leaves 4+ letters, the brand doesn't START with a
+# generic word ("Objects for Objects"), and no other brand has the same short name or full name.
+GENERIC_BRAND_SUFFIXES = {
+    "design", "designs", "lighting", "studio", "studios", "furniture", "ceramics", "objects", "editions", "edition",
+    "collection", "workshop", "atelier",
+}
+# Short names that are also ordinary words ("lemon", "oven", "kann" = jug): recognised only when the WHOLE query is
+# the name, like AMBIGUOUS_BRAND_WORDS, never inside a longer query ("lemon squeezer", "oven glove").
+AMBIGUOUS_BRAND_ALIASES = {"lemon", "oven", "omelette", "seer", "fleur", "kann", "cultivation", "valerie"}
+
+
 def _fold(text: str) -> str:
     """Lower-case, accent-free, punctuation-free form of a name or query:
     "Källemo" -> "kallemo", "B&B Italia" -> "b b italia"."""
@@ -1568,6 +1581,19 @@ def _brand_folds() -> dict:
             f = _fold(brand)
             if f:
                 folds[f] = brand
+        aliases = {}
+        for f, brand in folds.items():
+            words = f.split()
+            if words[0] in GENERIC_BRAND_SUFFIXES:
+                continue
+            while len(words) > 1 and words[-1] in GENERIC_BRAND_SUFFIXES:
+                words = words[:-1]
+            alias = " ".join(words)
+            if alias != f and len(alias) >= 4 and alias not in folds:
+                aliases.setdefault(alias, set()).add(brand)
+        for alias, owners in aliases.items():
+            if len(owners) == 1:                       # two brands sharing a short name: neither gets it
+                folds[alias] = next(iter(owners))
         cache["folds"], cache["key"] = folds, rows
     return cache["folds"]
 
@@ -1588,7 +1614,7 @@ def detect_brands(raw_query: str) -> list:
     padded = f" {query} "
     # longest name first, and a name inside an already-found longer one is skipped
     for f in sorted(folds, key=len, reverse=True):
-        if f in AMBIGUOUS_BRAND_WORDS:
+        if f in AMBIGUOUS_BRAND_WORDS or f in AMBIGUOUS_BRAND_ALIASES:
             continue
         if f" {f} " in padded and not any(f in other for other in (_fold(b) for b in found)):
             found.append(folds[f])
