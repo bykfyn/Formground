@@ -778,6 +778,22 @@ class UnrecognisedQueryTests(unittest.TestCase):
     def test_brand_inside_longer_query_is_found(self):
         self.assertEqual(qe.detect_brands("serax vase"), ["Serax"])
 
+    def test_a_brand_name_word_is_not_also_used_as_a_material_filter(self):
+        # live 2026-10-09: "hay chair" -> brand HAY + material "hay" -> 0 results
+        qe.translate_query = lambda q: {"category": "chair", "material": "hay"}
+        r = qe.search_full("hay chair")
+        self.assertGreater(r["total_matches"], 0)
+        self.assertIsNone(r["intent"].get("material"))
+        self.assertEqual(r["intent"]["brands"], ["HAY"])
+
+    def test_a_real_material_beside_a_brand_name_is_kept(self):
+        qe.translate_query = lambda q: {"category": "chair", "material": "oak"}
+        r = qe.search_full("hay oak chair")
+        self.assertEqual(r["intent"].get("material"), "oak")
+        # and a material the query really names as hay stays too: "hay" is spelled out a second time
+        qe.translate_query = lambda q: {"category": "basket", "material": "hay"}
+        self.assertEqual(qe.search_full("hay hay basket")["intent"].get("material"), "hay")
+
     def test_a_brand_is_found_by_its_name_without_a_trailing_generic_word(self):
         # "Rieul Lighting" / "Tlachï Design" were found only by the full name (2026-10-09)
         self.assertEqual(qe.detect_brands("rieul"), ["Rieul Lighting"])

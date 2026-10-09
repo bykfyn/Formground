@@ -1743,6 +1743,29 @@ def search(raw_query: str) -> list:
     return search_full(raw_query)["results"]
 
 
+def _drop_brand_name_filters(raw_query: str, brands: list, intent: dict) -> None:
+    """The model reads a brand's own name as a filter too: "hay chair" came back with material "hay" next to the brand
+    HAY and matched nothing (found live 2026-10-09). A material/colour/location/style value that is only a word of the
+    brand's name, and does not appear anywhere else in the query, is dropped. A real filter the query states in other
+    words ("wooden chair" -> wood) is never touched: only values that are part of the brand name qualify."""
+    folds = _brand_folds()
+    rest = f" {_fold(raw_query)} "
+    name_words = set()
+    for fold, brand in folds.items():
+        if brand in brands and f" {fold} " in rest:
+            rest = rest.replace(f" {fold} ", " ")
+            name_words.update(fold.split())
+    def only_the_brand_name(value):
+        v = _fold(str(value))
+        return bool(v) and v in name_words and f" {v} " not in rest
+    for key in ("material", "color", "location"):
+        if only_the_brand_name(intent.get(key)):
+            intent[key] = None
+    styles = intent.get("style_descriptors")
+    if styles:
+        intent["style_descriptors"] = [d for d in styles if not only_the_brand_name(d)]
+
+
 def search_full(raw_query: str, tier=None) -> dict:
     """Like search(), but also returns what the "load more" UI needs:
     the resolved intent (so a later search_more() call can skip the
@@ -1767,6 +1790,7 @@ def search_full(raw_query: str, tier=None) -> dict:
     brands = detect_brands(raw_query)
     if brands:
         intent["brands"] = brands
+        _drop_brand_name_filters(raw_query, brands, intent)
     matches = _match_all(raw_query, intent)
     if not matches:
         # The model sometimes invents a compound category that is no real
