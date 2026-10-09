@@ -579,3 +579,39 @@ class StructureTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class BrandDesignerLinkTests(unittest.TestCase):
+    """The "Designers who work with X" section on maker pages links only to designer pages that exist."""
+
+    CHIP = re.compile(r'class="designer-chip" href="(/designers/[^"]+)"')
+
+    def _brand_pages(self):
+        return sorted(glob.glob(str(DOCS / "brands" / "*.html")))
+
+    def test_every_designer_link_points_at_a_real_page(self):
+        broken = []
+        for path in self._brand_pages():
+            for href in self.CHIP.findall(Path(path).read_text()):
+                if not (DOCS / href.lstrip("/")).exists():
+                    broken.append((os.path.basename(path), href))
+        self.assertEqual(broken, [])
+
+    def test_section_exists_on_makers_that_credit_designers(self):
+        with_section = [p for p in self._brand_pages() if "Designers who work with" in Path(p).read_text()]
+        self.assertGreaterEqual(len(with_section), 10)
+
+    def test_section_only_on_a_makers_first_page_and_never_empty(self):
+        for path in self._brand_pages():
+            text = Path(path).read_text()
+            name = os.path.basename(path)
+            numbered = re.match(r"^(.*)-\d{1,2}\.html$", name)    # "x-2.html" (but not "ghidini-1961.html")
+            if numbered and (DOCS / "brands" / f"{numbered.group(1)}.html").exists() and "Designers who work with" in text:
+                self.fail(f"{name}: designers section repeated on a numbered page")
+            if "Designers who work with" in text:
+                self.assertTrue(self.CHIP.search(text), f"{name}: heading with no designers")
+
+    def test_no_designer_listed_twice_on_one_page(self):
+        for path in self._brand_pages():
+            links = self.CHIP.findall(Path(path).read_text())
+            self.assertEqual(len(links), len(set(links)), os.path.basename(path))

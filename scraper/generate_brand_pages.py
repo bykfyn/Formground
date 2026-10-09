@@ -36,7 +36,7 @@ import sys
 import unicodedata
 from pathlib import Path
 from urllib.parse import urlparse
-from designer_credits import credited_counts  # noqa: E402
+from designer_credits import credited_counts, split_credit  # noqa: E402
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
 import site_sections  # noqa: E402
 import query_engine as qe  # noqa: E402  - one definition of "New" (is_new_piece) for pages and search
@@ -1174,6 +1174,62 @@ def render_stockist_section(brand, stockist_groups):
   </section>"""
 
 
+BRAND_DESIGNERS_CSS = """
+  .designer-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .designer-chip {
+    display: inline-flex; align-items: baseline; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .designer-chip:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .designer-chip-name { font-weight: 500; }
+  .designer-chip-count { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .designer-more { margin-top: 12px; }
+  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; margin-bottom: 12px; }
+  .designer-more[open] summary { margin-bottom: 12px; }
+"""
+
+DESIGNERS_SHOWN = 12   # the rest sit behind "and N more" (Alessi has 77, Galerie Kreo 68)
+
+
+def designers_for_brand(products, slug_by_name):
+    """[(name, slug, pieces)] for the designers credited on this brand's pieces who have a page on Formground, most
+    pieces first. A designer without a page (fewer than two credited pieces anywhere) is not listed: no dead links."""
+    counts = {}
+    for p in products:
+        for name in split_credit(p.get("designer")):
+            if name in slug_by_name:
+                counts[name] = counts.get(name, 0) + 1
+    return sorted(((n, slug_by_name[n], c) for n, c in counts.items()), key=lambda t: (-t[2], t[0].lower()))
+
+
+def _designer_chip(name, slug, pieces):
+    label = f"{pieces} piece" + ("" if pieces == 1 else "s")
+    return (f'<a class="designer-chip" href="/designers/{slug}.html" title="{label} on Formground">'
+            f'<span class="designer-chip-name">{html.escape(name)}</span>'
+            f'<span class="designer-chip-count">{pieces}</span></a>')
+
+
+def render_designers_section(brand, designers):
+    """"Designers who work with X": links to their pages on Formground (the Designers section). Returns "" when the
+    brand credits no designer who has a page. A long list shows the first DESIGNERS_SHOWN and folds the rest into a
+    plain <details> (no JS, and the links stay in the page for crawlers)."""
+    if not designers:
+        return ""
+    shown, rest = designers[:DESIGNERS_SHOWN], designers[DESIGNERS_SHOWN:]
+    chips = "".join(_designer_chip(*d) for d in shown)
+    more = ""
+    if rest:
+        more = (f'\n    <details class="designer-more"><summary>and {len(rest)} more</summary>'
+                f'<div class="designer-row">{"".join(_designer_chip(*d) for d in rest)}</div></details>')
+    return f"""
+  <section class="brand-section">
+    <p class="brand-section-title">Designers who work with {html.escape(brand)}</p>
+    <div class="designer-row">{chips}</div>{more}
+  </section>"""
+
+
 def render_news_section(brand, new_products):
     """
     "News" - an auto-generated activity feed built from real data
@@ -1205,7 +1261,7 @@ def render_news_section(brand, new_products):
   </section>"""
 
 
-def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None, stockists=None, new_products=None, page=1):
+def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None, stockists=None, new_products=None, page=1, designers=None):
     tag_list = list(umbrellas) + ([country] if country else [])
     tags = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
     # Real, live cross-link to Marketplace's Promotions tab (2026-09-28,
@@ -1234,6 +1290,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     cards = "".join(product_card_html(p, share=True) for p in page_products)
     news_section = render_news_section(brand, new_products) if page == 1 else ""
     all_work_title = f'  <p class="brand-section-title">All of {html.escape(brand)}</p>\n' if news_section else ""
+    designers_section = render_designers_section(brand, designers) if page == 1 else ""
     stockist_section = "" if site_sections.is_hidden("maker_stockists") else render_stockist_section(brand, stockists)
     page_url = f"{SITE_URL}/brands/{brand_page_slug(slug, page)}.html"
     page_note = f" (page {page} of {pages})" if pages > 1 else ""
@@ -1285,7 +1342,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
 <script type="application/ld+json">{breadcrumb_json}</script>
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
-<style>{PAGE_CSS}</style>
+<style>{PAGE_CSS}{BRAND_DESIGNERS_CSS if designers_section else ''}</style>
 </head>
 <body>
 <header class="site-header">
@@ -1303,7 +1360,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
   <div class="grid" data-listing-grid>{cards}</div>
   {see_more_html}
   {pager_html}
-{stockist_section}
+{designers_section}{stockist_section}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
@@ -1576,8 +1633,8 @@ def _architects_sitemap_slugs():
     return sorted(slugs)
 
 
-def _designers_with_counts():
-    """[(slug, product count)] for every designer who gets a page (2+ credited products - see
+def _designer_pages():
+    """[(name, slug, product count)] for every designer who gets a page (2+ credited products - see
     generate_designers_pages.py's MIN_PRODUCTS), in the same sorted order and with the same unique_slug as that
     generator. Reads data/formground.db directly (the real source, no separate JSON file) so render_sitemap()
     stays correct regardless of which generator last ran."""
@@ -1597,8 +1654,13 @@ def _designers_with_counts():
     for name, n in sorted(rows, key=lambda r: r[0]):
         slug = unique_slug(slugify(name), name, slugs_seen)
         slugs_seen[slug] = name
-        out.append((slug, n))
+        out.append((name, slug, n))
     return out
+
+
+def _designers_with_counts():
+    """[(slug, product count)] - see _designer_pages."""
+    return [(slug, n) for _, slug, n in _designer_pages()]
 
 
 def _designers_sitemap_slugs():
@@ -1688,6 +1750,7 @@ def generate():
     tiers = load_brand_tiers()
     promotions_by_brand = load_promotions_by_brand()
     stockists_by_brand = load_stockists_by_brand()
+    slug_by_designer = {name: slug for name, slug, _ in _designer_pages()}
     BRANDS_DIR.mkdir(parents=True, exist_ok=True)
 
     # New-arrivals page: first_seen is only ever real (not NULL) for a
@@ -1749,6 +1812,7 @@ def generate():
             promotions_by_brand.get(brand),
             stockists_by_brand.get(brand),
             new_arrivals_by_brand.get(brand),
+            designers=designers_for_brand(products, slug_by_designer),
         )
         (BRANDS_DIR / f"{slug}.html").write_text(page)
         brand_pages = max(1, -(-len(products) // BRAND_CARDS_PER_PAGE))
