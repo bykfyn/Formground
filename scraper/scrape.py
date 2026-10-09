@@ -9029,6 +9029,69 @@ def extract_vikens_hantverkeri(brand):
     return products
 
 
+# 20by8.com (Twentybyeight, Sergei Grigorev, Cyprus) - confirmed live 2026-10-09. A Framer site whose pages are server-
+# rendered; robots.txt is fully open and the scraper's own User-Agent gets normal 200s. Five pieces, listed in the
+# sitemap as /products-list/<slug>; the /finish-variants/ pages are the same pieces in other woods and are not separate
+# products. No prices or cart anywhere (every page ends in an "Inquire" form) = price on request. The photos on a piece's
+# page are its own, except a few images repeated on every page (footer/site art): those are skipped by counting how many of
+# the five pages carry them.
+TWENTYBYEIGHT_PIECES = [
+    ("fourth", "Fourth chair", "Chair"), ("eero", "Eero chair", "Chair"), ("fourth-stool", "Fourth stool", "Bar Stool"),
+    ("stauros", "Stauros armchair", "Armchair"), ("bun", "Bun chair", "Chair"),
+]
+
+
+def extract_twentybyeight(brand):
+    base = brand["url"].rstrip("/")
+    pages = {}
+    for slug, _, _ in TWENTYBYEIGHT_PIECES:
+        url = f"{base}/products-list/{slug}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        pages[slug] = resp.text
+    image_re = re.compile(r"https://framerusercontent\.com/images/([A-Za-z0-9]+)\.(?:webp|jpg|jpeg|png)\?width=\d+&(?:amp;)?height=\d+")
+    ids_per_page = {slug: [m.group(1) for m in image_re.finditer(text)] for slug, text in pages.items()}
+    shared = {i for ids in ids_per_page.values() for i in set(ids)
+              if sum(i in other for other in ids_per_page.values()) > 1}
+    # The Works page (/product-menu) shows one clean cover shot per piece, in the same order as the five pieces
+    # (confirmed 2026-10-09); the pieces' own pages lead with detail/lifestyle crops for two of them. Use the covers
+    # when exactly five are found, else fall back to each page's first non-shared photo.
+    covers = []
+    try:
+        menu = requests.get(f"{base}/product-menu", headers=HEADERS, timeout=20).text
+        seen = {}
+        for m in image_re.finditer(menu):
+            if m.group(1) not in seen and m.group(1) not in shared and "scale-down-to" not in m.group(0):
+                seen[m.group(1)] = html.unescape(m.group(0))
+        covers = list(seen.values())
+    except requests.RequestException as e:
+        print(f"  Could not fetch the Works page: {e}")
+    if len(covers) != len(TWENTYBYEIGHT_PIECES):
+        covers = []
+    products = []
+    for index, (slug, name, category) in enumerate(TWENTYBYEIGHT_PIECES):
+        text = pages.get(slug)
+        if not text:
+            continue
+        image = covers[index] if covers else ""
+        for m in ([] if image else image_re.finditer(text)):
+            if m.group(1) not in shared:
+                image = html.unescape(m.group(0))
+                break
+        visible = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[^>]*>.*?</\1>", "", text, flags=re.S))))
+        materials = [label for word, label in (("oak", "Oak"), ("walnut", "Walnut"), ("leather", "Leather")) if word in visible.lower()]
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+            "product_url": f"{base}/products-list/{slug}", "category": category, "material_options": materials,
+            "dimensions": "", "notes": "", "image_url": image, "designer": "Sergei Grigorev",
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -9096,6 +9159,7 @@ EXTRACTORS = {
     "Will Choui": extract_will_choui,
     "Sizar Alexis": extract_sizar_alexis,
     "Vikens Hantverkeri": extract_vikens_hantverkeri,
+    "20by8": extract_twentybyeight,
     "Monsieur Cailloux": extract_monsieur_cailloux,
     "Jonas Lindholm": extract_woocommerce,
     "Northern": extract_shopify,
