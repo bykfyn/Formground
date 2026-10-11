@@ -3954,6 +3954,10 @@ def extract_shopify(brand):
     if translations is not None:
         for p in raw_products:
             p["product_type"] = translations.get((p.get("product_type") or "").strip().lower(), "")
+    if brand["name"] == "Formarkivet":
+        # confirmed live 2026-10-11: the four "Marmacén" items (room spray, scented candle, hand wash, reed diffuser) are
+        # a home-scent line, not furniture, lighting, ceramics or objects
+        raw_products = [p for p in raw_products if "marmacén" not in p["title"].lower()]
     if brand["name"] == "HOKII":
         # confirmed live 2026-10-09: the glass shade titled "(僅適用於MOGU檯燈)" = "only fits the MOGU lamp" is a
         # replacement part (the shop also has a spare-parts collection), not a standalone piece
@@ -9188,6 +9192,50 @@ def extract_rieul_lighting(brand):
     return products
 
 
+# sabustudio.com (Sabu Studio, Melbourne; confirmed live 2026-10-11): a Squarespace site without a shop. The header menu lists
+# every piece under FURNITURE / LIGHTING / OBJECT, each piece has its own page with photos, and no prices are published
+# (custom and bespoke work), so the pieces are stored without a price. robots.txt is the Squarespace default.
+def extract_sabu_studio(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(base + "/", headers=HEADERS, timeout=25)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}: {e}")
+        return []
+    nav = BeautifulSoup(resp.text, "html.parser")
+    pieces, seen = [], set()
+    for folder in nav.select(".header-nav-folder-content"):
+        if folder.get("id") not in ("furniture", "lighting", "object"):
+            continue
+        for a in folder.select("a[href]"):
+            name, href = a.get_text(strip=True), a["href"]
+            if name and href.startswith("/") and href not in seen:
+                seen.add(href)
+                pieces.append((name, href))
+    products = []
+    for name, href in pieces:
+        time.sleep(1)
+        try:
+            page = requests.get(base + href, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {base}{href}: {e}")
+            continue
+        soup = BeautifulSoup(page.text, "html.parser")
+        main = soup.select_one("main") or soup
+        images = [(i.get("data-src") or i.get("src") or "") for i in main.select("img")]
+        images = [u for u in images if "squarespace-cdn" in u]
+        if not images:
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": base + href,
+            "category": _infer_category_from_name(name, "", brand["name"]), "material_options": [], "dimensions": "",
+            "notes": "", "image_url": images[0], "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -9257,6 +9305,10 @@ EXTRACTORS = {
     "Vikens Hantverkeri": extract_vikens_hantverkeri,
     "20by8": extract_twentybyeight,
     "Master & Master": extract_shopify,
+    "Sabu Studio": extract_sabu_studio,
+    "NORR11": extract_shopify,
+    "Formarkivet": extract_shopify,
+    "Chatterton Studio": extract_shopify,
     "Tlachï Design": extract_shopify,
     "HOKII": extract_shopify,
     "Host & Toast": extract_host_and_toast,

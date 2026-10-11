@@ -514,7 +514,7 @@ class StructureTests(unittest.TestCase):
         self.assertEqual(pend.count('<section class="edit-notes">'), 1)
         self.assertIn("How this Edit is chosen", pend)
         self.assertIn('href="/guides/pendant-lamps.html">Read the full buying guide', pend)
-        self.assertIn("from 1,078 pendant lamps", pend)
+        self.assertRegex(pend, r"from [\d,]+ pendant lamps")                  # the count grows as makers are added
         rd = (DOCS / "edits" / "round-dining-tables.html").read_text()
         self.assertRegex(rd, r"pieces from \d+ round dining tables")           # the Edit's own set, not the whole type
         self.assertIn('href="/guides/dining-tables.html"', rd)
