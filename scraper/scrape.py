@@ -9753,14 +9753,25 @@ _URL_FIXES_PATH = Path(__file__).parent.parent / "data" / "dcw_url_fixes.json"
 
 
 def _apply_url_fixes(brand, products):
-    """DCW éditions' feed lists some pieces under US-market handles that 404 on the main storefront; fix_dcw_links.py
-    verifies the working address of each and records it in data/dcw_url_fixes.json, applied here after every scrape."""
+    """DCW éditions' feed lists some pieces under US-market handles ("-etl", "-us", "-us-adapt") that 404 on the main
+    storefront. fix_dcw_links.py verifies the working address of each and records it in data/dcw_url_fixes.json; it is
+    applied here after every scrape. A piece with a US handle and no working plain page is US-only and is dropped, and a
+    piece that then shares an address with another listing is kept once (2026-10-11, user: likely duplicates)."""
     if brand["name"] != "DCW éditions" or not _URL_FIXES_PATH.exists():
         return
     fixes = json.loads(_URL_FIXES_PATH.read_text())
+    kept, seen = [], set()
     for p in products:
-        if p.get("product_url") in fixes:
-            p["product_url"] = fixes[p["product_url"]]
+        url = p.get("product_url", "")
+        if url in fixes:
+            p["product_url"] = url = fixes[url]
+        elif re.search(r"-(?:etl|us-adapt|us)$", url.rsplit("/", 1)[-1]):
+            continue
+        if url in seen:
+            continue
+        seen.add(url)
+        kept.append(p)
+    products[:] = kept
 
 
 def _scrape_one_brand(brand, extractor):
