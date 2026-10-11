@@ -854,3 +854,16 @@ class PortfolioDesignerTests(unittest.TestCase):
     def test_creators_page_counts_them(self):
         n = len(re.findall(r'<a class="maker-card" href="/designers/', (DOCS / "designers.html").read_text()))
         self.assertIn(f'group-count">{n:,} designers', (DOCS / "creators.html").read_text())
+
+
+class SheerdFooterLinkTests(unittest.TestCase):
+    def test_every_footer_links_to_sheerd(self):
+        import glob as _g
+        missing = []
+        for f in _g.glob(str(DOCS / "**" / "*.html"), recursive=True):
+            text = Path(f).read_text()
+            if "&copy; 2026 Formground" not in text:
+                continue                                   # redirect stubs have no footer
+            if 'href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>' not in text:
+                missing.append(os.path.relpath(f, DOCS))
+        self.assertEqual(missing[:5], [])

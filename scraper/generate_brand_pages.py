@@ -165,7 +165,8 @@ SITE_FOOTER_HTML = (
     '<a href="/guides.html">Guides</a> &middot; '
     '<a href="/privacy.html">Privacy</a> &middot; '
     '<a href="/about.html">About</a> &middot; '
-    '<a href="/contact.html">Contact</a>'
+    '<a href="/contact.html">Contact</a> &middot; '
+    '<a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>'
 )
 
 
