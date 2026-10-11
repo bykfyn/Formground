@@ -203,6 +203,7 @@ EDITS_PAGE_CSS = (
      6, 2x2 of 4); align-self stretch overrides the grid's align-items: start so
      the tile fills both rows. A sibling link layer, not a wrapping <a>, so the
      edit link and the maker link never nest. */
+  .edits-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin: 34px 0 14px; }
   .edit-feature {
     grid-column: span 2; aspect-ratio: 1 / 1;
     position: relative; overflow: hidden; margin: 0;
@@ -372,7 +373,31 @@ def _edits_sort_key(entry):
     return entry[0]["title"].lower()
 
 
-def render_edits_index(themes_data):
+HUB_ORDER = "chronological"    # "chronological" = one stream, newest first | "sections" = Products, then In profile
+EDIT_DATES_PATH = Path(__file__).parent.parent / "data" / "edit_dates.json"
+
+
+def edit_date(slug):
+    """The date an Edit was first published (data/edit_dates.json). An Edit not in the file yet is dated today and
+    the file is updated, so the date is fixed from the first build that shows it."""
+    import datetime
+    import json
+    dates = json.loads(EDIT_DATES_PATH.read_text()) if EDIT_DATES_PATH.exists() else {}
+    if slug not in dates:
+        dates[slug] = datetime.date.today().isoformat()
+        EDIT_DATES_PATH.write_text(json.dumps(dates, indent=1, sort_keys=True) + "\n")
+    return dates[slug]
+
+
+def theme_category(theme):
+    """The site's own umbrella category for a themed Edit's product type (Furniture, Lighting, Ceramics or Objects),
+    from the same keyword rules that sort makers' pieces on the Makers page."""
+    from generate_brand_pages import _umbrellas_for_product
+    umbrellas = _umbrellas_for_product({"category": theme["title"], "product_name": theme["title"]})
+    return sorted(umbrellas, key=lambda u: (u != "Furniture", u != "Lighting", u))[0]
+
+
+def render_edits_index(themes_data, order=None):
     """
     themes_data is a list of (theme, product_count, brand_count, image,
     hero_product) tuples, one per THEMES entry, already computed by
@@ -390,11 +415,12 @@ def render_edits_index(themes_data):
     .maker-grid's own CSS comment for why a fixed column count was the
     actual fix needed, not another round of position tweaks.
     """
+    order = order or HUB_ORDER
     ordered = sorted(themes_data, key=_edits_sort_key)
     # featured edit first, the rest keep their alphabetical order
     ordered.sort(key=lambda entry: entry[0]["slug"] != FEATURED_EDIT_SLUG)
 
-    tile_items = ""
+    themed_tiles = []     # (date, sort title, html) - one tile per themed (product) Edit
     for theme, count, brand_count, image, hero_product in ordered:
         # every edit is the same tile: 2 columns wide, 2 rows tall of the 6-column grid (a 373px square at
         # full width), photo filling it, the Edit's title on it, the pictured product on hover
@@ -417,23 +443,24 @@ def render_edits_index(themes_data):
           <span class="product-maker">{html.escape(hero_product['brand'])}</span>
         </div>
         <a class="visit-source" href="{html.escape(src)}" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>"""
-        tile_items += f"""
+        themed_tiles.append((edit_date(theme["slug"]), theme["title"], f"""
       <figure class="edit-feature">
         <a class="cat-link" href="/edits/{theme['slug']}.html" aria-label="Browse {html.escape(theme['title'])}"></a>
         {image_tag}
-        <p class="cat-label">{html.escape(theme['title'])}<small>Products</small></p>{details}
-      </figure>"""
-    # profile Edits ("In profile: <name>", see generate_profile_edits.py) follow the themed ones in the same grid.
-    # Every tile has the same two lines: the title (what the Edit is about) and a small type label under it - "Products"
-    # for a themed Edit, "Maker" / "Designer" / "Architect" for a profile - and the same hover caption: the pictured
-    # item, credited and linked to its maker.
+        <p class="cat-label">{html.escape(theme['title'])}<small>{theme_category(theme)}</small></p>{details}
+      </figure>"""))
+    # Profile Edits ("In profile: <name>", see generate_profile_edits.py). Every tile in the hub has the same two lines:
+    # the title (what the Edit is about) and a small label under it - the site's own category for a themed Edit
+    # (Furniture / Lighting / Ceramics / Objects), "Maker" / "Designer" / "Architect" for a profile - and the same hover
+    # caption: the pictured item, credited and linked to its maker.
     import json as _json
     import sqlite3 as _sqlite3
     import generate_profile_edits as gpe
-    houses = _json.loads((gte.ROOT / "data" / "houses.json").read_text()) if hasattr(gte, "ROOT") else _json.loads((Path(__file__).parent.parent / "data" / "houses.json").read_text())
+    houses = _json.loads((Path(__file__).parent.parent / "data" / "houses.json").read_text())
     houses_by_image = {h["image"]: h for h in houses if h.get("image")}
     conn = _sqlite3.connect(gpe.DB_PATH)
     conn.row_factory = _sqlite3.Row
+    profile_tiles = []
     for entry in creator_texts.load().values():
         edit = entry["edit"]
         item = gpe.hero_item(entry, houses_by_image, conn)
@@ -446,14 +473,28 @@ def render_edits_index(themes_data):
           <span class="product-maker">{html.escape(credit)}</span>
         </div>
         <a class="visit-source" href="{html.escape(link)}" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>"""
-        tile_items += f"""
+        profile_tiles.append((edit_date(edit["slug"]), entry["name"], f"""
       <figure class="edit-feature">
         <a class="cat-link" href="/edits/{edit['slug']}.html" aria-label="In profile: {html.escape(entry['name'])}"></a>
         <img src="{html.escape(sized(edit['hero'], TILE))}" alt="{html.escape(entry['name'])}" loading="lazy">
         <p class="cat-label">{html.escape(entry['name'])}<small>{creator_texts.KIND[entry['group']]}</small></p>{details}
-      </figure>"""
+      </figure>"""))
     conn.close()
-    tile_grid_html = f'<div class="maker-grid">{tile_items}\n  </div>' if tile_items else ""
+
+    def grid(tiles):
+        return f'<div class="maker-grid">{"".join(t[2] for t in tiles)}\n  </div>' if tiles else ""
+
+    if order == "sections":
+        # two headed sections: the themed Edits (featured first, then alphabetical) and the profiles, newest first
+        profile_tiles.sort(key=lambda t: (t[0], t[1].lower()), reverse=False)
+        profile_tiles.sort(key=lambda t: t[0], reverse=True)
+        tile_grid_html = (f'<h2 class="edits-section-title">Products</h2>\n  {grid(themed_tiles)}\n'
+                          f'  <h2 class="edits-section-title">In profile</h2>\n  {grid(profile_tiles)}')
+    else:
+        # one stream, newest first (ties alphabetical by title)
+        every = sorted(themed_tiles + profile_tiles, key=lambda t: t[1].lower())
+        every.sort(key=lambda t: t[0], reverse=True)
+        tile_grid_html = grid(every)
 
     by_slug = {
         theme["slug"]: (theme, hero_product)
@@ -543,6 +584,11 @@ def generate():
         themes_data.append((theme, piece_count, brand_count, image, hero_product))
 
     (DOCS_DIR / "edits.html").write_text(render_edits_index(themes_data))
+    # a local-only comparison page (gitignored, never published): the same hub in two headed sections
+    import re as _re
+    sections = render_edits_index(themes_data, order="sections")
+    sections = _re.sub(r"<title>[^<]*</title>", "<title>Edit review (not published) — Edits in sections</title>", sections, count=1)
+    (DOCS_DIR / "_mock_edits_sections.html").write_text(sections)
     append_to_sitemap(["edits"])
     print(f"Generated edits.html ({len(themes_data)} edits).")
 

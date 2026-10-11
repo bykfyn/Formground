@@ -759,3 +759,34 @@ class CreatorTextTests(unittest.TestCase):
             self.assertGreaterEqual(len(re.findall(r'class="(?:card|maker-card)"', edit)), 6, e["name"])
             self.assertIn(f'/edits/{e["edit"]["slug"]}.html', (DOCS / "edits.html").read_text())
             self.assertIn(f"/edits/{e['edit']['slug']}.html", (DOCS / "sitemap.xml").read_text())
+
+
+class EditsHubTests(unittest.TestCase):
+    """The Edits hub: a type label under every title, newest first."""
+
+    def setUp(self):
+        self.hub = (DOCS / "edits.html").read_text()
+
+    def test_every_tile_has_a_label_from_the_allowed_set(self):
+        labels = re.findall(r'<p class="cat-label">[^<]*<small>([^<]*)</small></p>', self.hub)
+        self.assertGreaterEqual(len(labels), 26)
+        self.assertEqual(len(labels), self.hub.count('<figure class="edit-feature">'))
+        allowed = {"Furniture", "Lighting", "Ceramics", "Objects", "Maker", "Designer", "Architect"}
+        self.assertTrue(set(labels) <= allowed, set(labels) - allowed)
+        self.assertNotIn("Products", labels)          # the real category, not the word "Products"
+
+    def test_tiles_are_newest_first(self):
+        import json
+        dates = json.loads((ROOT / "data" / "edit_dates.json").read_text())
+        slugs = re.findall(r'<a class="cat-link" href="/edits/([a-z0-9-]+)\\.html"', self.hub)
+        seen = [dates.get(s) for s in slugs if dates.get(s)]
+        self.assertGreater(len(seen), 10)
+        self.assertEqual(seen, sorted(seen, reverse=True))
+
+    def test_every_tile_links_to_an_edit_page_that_exists(self):
+        for slug in re.findall(r'<a class="cat-link" href="/edits/([a-z0-9-]+)\\.html"', self.hub):
+            self.assertTrue((DOCS / "edits" / f"{slug}.html").exists(), slug)
+
+    def test_the_sections_comparison_page_is_never_published(self):
+        gitignore = (ROOT / ".gitignore").read_text()
+        self.assertIn("docs/_mock_*.html", gitignore)
