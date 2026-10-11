@@ -7,6 +7,7 @@ Guards for the 2026-10-04 URL restructure: type pages under /work/, Edits under
 
 import glob
 import os
+import json
 import re
 import sys
 import unittest
@@ -824,3 +825,32 @@ class CreatorTextTests(unittest.TestCase):
         self.assertIn("python scraper/build_site.py", wf)
         self.assertIn("unittest discover tests", wf)
         self.assertLess(wf.index("unittest discover tests"), wf.index("git push"))       # tests run before anything is pushed
+
+
+class PortfolioDesignerTests(unittest.TestCase):
+    """Designers shown by their own work (data/portfolio_designers.json), like architects' houses."""
+
+    def setUp(self):
+        self.designers = json.loads((ROOT / "data" / "portfolio_designers.json").read_text())
+
+    def test_each_has_a_page_a_card_on_the_index_and_a_sitemap_entry(self):
+        index = (DOCS / "designers.html").read_text()
+        sitemap = (DOCS / "sitemap.xml").read_text()
+        for d in self.designers:
+            slug = re.sub(r"[^a-z0-9]+", "-", d["name"].lower().replace("é", "e")).strip("-")
+            self.assertTrue((DOCS / "designers" / f"{slug}.html").exists(), d["name"])
+            self.assertIn(f'href="/designers/{slug}.html"', index, d["name"])
+            self.assertIn(f"/designers/{slug}.html", sitemap, d["name"])
+
+    def test_every_work_has_a_name_an_image_and_a_link_to_the_designers_own_site(self):
+        for d in self.designers:
+            self.assertGreaterEqual(len(d["works"]), 2, d["name"])
+            host = re.sub(r"^https?://(www\.)?", "", d["url"]).split("/")[0]
+            for w in d["works"]:
+                self.assertTrue(w["name"].strip(), d["name"])
+                self.assertTrue(w["image"].startswith("https://"), (d["name"], w["name"]))
+                self.assertIn(host, w["url"], (d["name"], w["name"]))
+
+    def test_creators_page_counts_them(self):
+        n = len(re.findall(r'<a class="maker-card" href="/designers/', (DOCS / "designers.html").read_text()))
+        self.assertIn(f'group-count">{n:,} designers', (DOCS / "creators.html").read_text())

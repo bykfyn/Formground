@@ -1677,8 +1677,26 @@ def _designers_with_counts():
     return [(slug, n) for _, slug, n, _ in _designer_pages()]
 
 
+def _portfolio_designer_slugs():
+    """Slugs of designers shown by their own work (data/portfolio_designers.json, see generate_designers_pages.py),
+    assigned after the product-credited designers with the same unique_slug logic as that generator."""
+    path = DATA_DIR / "portfolio_designers.json"
+    if not path.exists():
+        return []
+    taken = {slug: name for name, slug, _, _ in _designer_pages()}
+    credited = set(taken.values())
+    slugs = []
+    for d in sorted(json.loads(path.read_text()), key=lambda d: d["name"].lower()):
+        if not d.get("works") or d["name"] in credited:
+            continue
+        slug = unique_slug(slugify(d["name"]), d["name"], taken)
+        taken[slug] = d["name"]
+        slugs.append(slug)
+    return slugs
+
+
 def _designers_sitemap_slugs():
-    return sorted(slug for slug, _ in _designers_with_counts())
+    return sorted([slug for slug, _ in _designers_with_counts()] + _portfolio_designer_slugs())
 
 
 def _designers_extra_page_slugs():
