@@ -723,8 +723,9 @@ class CreatorTextTests(unittest.TestCase):
     def setUp(self):
         import creator_texts
         self.ct = creator_texts
-        self.all = creator_texts.load_all()          # published and scheduled
-        self.live = creator_texts.load()             # live on the build date
+        self.all = creator_texts.load_all()          # every creator text (all live on their pages at once)
+        self.live = creator_texts.load()             # entries whose profile Edit is live on the build date
+        self.edits = {k: v for k, v in self.all.items() if v.get("edit")}
 
     def test_there_are_texts_and_each_is_60_to_120_words_in_2_or_3_paragraphs(self):
         self.assertGreaterEqual(len(self.all), 10)
@@ -750,43 +751,48 @@ class CreatorTextTests(unittest.TestCase):
             self.assertTrue({"Country", "Type", "Website"} <= set(labels), key)
             self.assertTrue(e["sources"] and all(u.startswith("https://") for _, u in e["sources"]), key)
 
-    def test_a_fact_we_do_not_know_is_left_out_not_shown_as_unknown(self):
-        for e in self.live.values():
-            folder = {"architects": "architects", "makers": "brands", "designers": "designers"}[e["group"]]
-            page = (DOCS / folder / f"{e['page_slug']}.html").read_text()
-            self.assertNotIn(">Unknown<", page, e["name"])
+    def _page(self, e):
+        folder = {"architects": "architects", "makers": "brands", "designers": "designers"}[e["group"]]
+        return (DOCS / folder / f"{e['page_slug']}.html").read_text()
 
-    def test_the_text_is_on_the_creators_own_page_and_its_edit_exists(self):
-        self.assertGreaterEqual(len(self.live), 10)
-        for e in self.live.values():
-            folder = {"architects": "architects", "makers": "brands", "designers": "designers"}[e["group"]]
-            page = (DOCS / folder / f"{e['page_slug']}.html").read_text()
+    def test_every_text_is_on_its_creators_page_at_once_and_unknown_facts_are_left_out(self):
+        for e in self.all.values():
+            page = self._page(e)
             self.assertIn('class="creator-text"', page, e["name"])
             self.assertIn("To correct or remove this text", page, e["name"])
             self.assertNotIn("{count}", page)
+            self.assertNotIn(">Unknown<", page, e["name"])
+
+    def test_a_creators_page_links_to_its_profile_edit_only_once_it_is_live(self):
+        for key, e in self.edits.items():
+            has_link = f'href="/edits/{e["edit"]["slug"]}.html">Read the profile Edit' in self._page(e)
+            self.assertEqual(has_link, key in self.live, key)
+
+    def test_a_live_profile_edit_has_its_page_picks_hub_tile_and_sitemap_entry(self):
+        self.assertGreaterEqual(len(self.live), 10)
+        for e in self.live.values():
             edit = (DOCS / "edits" / f"{e['edit']['slug']}.html").read_text()
             self.assertIn("In profile", edit)
             self.assertGreaterEqual(len(re.findall(r'class="(?:card|maker-card)"', edit)), 6, e["name"])
             self.assertIn(f'/edits/{e["edit"]["slug"]}.html', (DOCS / "edits.html").read_text())
             self.assertIn(f"/edits/{e['edit']['slug']}.html", (DOCS / "sitemap.xml").read_text())
 
-    def test_a_scheduled_profile_is_not_on_the_site_before_its_day(self):
-        for key, e in self.all.items():
+    def test_a_scheduled_edit_is_not_on_the_site_before_its_day_but_its_text_is(self):
+        for key, e in self.edits.items():
             if key in self.live:
                 continue
             slug = e["edit"]["slug"]
             self.assertFalse((DOCS / "edits" / f"{slug}.html").exists(), slug)
             self.assertNotIn(f"/edits/{slug}.html", (DOCS / "edits.html").read_text(), slug)
             self.assertNotIn(f"/edits/{slug}.html", (DOCS / "sitemap.xml").read_text(), slug)
-            folder = {"architects": "architects", "makers": "brands", "designers": "designers"}[e["group"]]
-            self.assertNotIn('class="creator-text"', (DOCS / folder / f"{e['page_slug']}.html").read_text(), slug)
+            self.assertIn('class="creator-text"', self._page(e), slug)              # the creator's page text is live
 
     def test_the_publish_date_decides_what_is_live(self):
         import datetime
         import os
-        key = next((k for k, e in self.all.items() if e.get("publish") and datetime.date.fromisoformat(e["publish"]) > datetime.date(2026, 10, 12)), None)
+        key = next((k for k, e in self.edits.items() if e.get("publish") and datetime.date.fromisoformat(e["publish"]) > datetime.date(2026, 10, 12)), None)
         self.assertIsNotNone(key)
-        e = self.all[key]
+        e = self.edits[key]
         before = datetime.date.fromisoformat(e["publish"]) - datetime.timedelta(days=1)
         try:
             os.environ["FG_TODAY"] = before.isoformat()
@@ -797,7 +803,7 @@ class CreatorTextTests(unittest.TestCase):
             os.environ.pop("FG_TODAY", None)
 
     def test_scheduled_dates_are_unique_per_day_and_the_daily_workflow_exists(self):
-        dates = [e["publish"] for e in self.all.values() if e.get("publish") and e["publish"] > "2026-10-11"]
+        dates = [e["publish"] for e in self.edits.values() if e.get("publish") and e["publish"] > "2026-10-11"]
         self.assertEqual(len(dates), len(set(dates)))
         wf = (ROOT / ".github" / "workflows" / "publish_scheduled.yml").read_text()
         self.assertIn('cron: "0 7 * * *"', wf)

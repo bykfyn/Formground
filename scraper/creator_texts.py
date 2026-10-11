@@ -6,7 +6,9 @@ Data: data/creator_texts.json, following docs/formground-creator-text-template.m
   - the sources, and a line saying the text changes or goes on request
 Keys are "<group>:<page slug>" (group = architects | makers | designers). A paragraph may contain {count}, filled with
 the live number of houses / pieces so it cannot go stale. Fields per entry: group, name, page_slug, website, paragraphs,
-facts [[label, value]], sources [[label, url]], edit {slug, standfirst, hero, picks [image URLs]}.
+facts [[label, value]], sources [[label, url]], and optionally edit {slug, standfirst, hero, picks [image URLs]} plus
+publish (YYYY-MM-DD). The text appears on the creator's page at once. An entry with an "edit" block also gets a profile
+Edit, shown from its publish date; an entry without one is a text-only creator page (no images or picks needed).
 """
 
 import datetime
@@ -27,6 +29,9 @@ CREATOR_TEXT_CSS = """
     padding: 14px 0; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); font-size: 13px; }
   .creator-facts dt { color: var(--text-muted); }
   .creator-facts dd { margin: 0; color: var(--text-primary); }
+  .creator-more { font-size: 13px; margin: 0 0 4px; }
+  .creator-more a { color: var(--text-accent); text-decoration: none; }
+  .creator-more a:hover { text-decoration: underline; }
   .creator-sources { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin: 0; }
   .creator-sources a { color: var(--text-accent); }
 """
@@ -45,18 +50,21 @@ def load_all():
 
 
 def is_live(entry):
-    """An entry with a "publish" date (YYYY-MM-DD) goes live on that day's build; with none it is live already."""
+    """An entry's profile Edit goes live on its "publish" date (YYYY-MM-DD) build; with no date it is live already."""
     return not entry.get("publish") or datetime.date.fromisoformat(entry["publish"]) <= today()
 
 
 def load():
-    """The entries that are live today. Everything the site builds (creator texts, profile Edits, hub tiles, the
-    Creators page cards, the sitemap) reads this, so a scheduled profile appears on its publish day and not before."""
-    return {k: v for k, v in load_all().items() if is_live(v)}
+    """The entries whose profile EDIT is live today (entries with an "edit" block whose publish date has come).
+    The profile Edits, the Edits hub tiles, the Creators page cards and the sitemap read this, so an Edit appears on
+    its publish day and not before. The text on a creator's own page does not wait: see get()."""
+    return {k: v for k, v in load_all().items() if v.get("edit") and is_live(v)}
 
 
 def get(group, page_slug):
-    return load().get(f"{group}:{page_slug}")
+    """The creator-page text for one creator. It is live as soon as it is in the data file: only the profile Edit
+    (an entry's optional "edit" block) follows a publish date."""
+    return load_all().get(f"{group}:{page_slug}")
 
 
 def paragraphs(entry, count):
@@ -74,9 +82,13 @@ def text_block_html(group, page_slug, count):
                     if v and v.strip().lower() != "unknown")
     sources = "; ".join(f'<a href="{html.escape(u)}" target="_blank" rel="noopener noreferrer">{html.escape(label)}</a>'
                         for label, u in entry["sources"])
+    # once the profile Edit is live, the creator's page points to it
+    edit_link = ""
+    if f"{group}:{page_slug}" in load():
+        edit_link = f'\n    <p class="creator-more"><a href="/edits/{html.escape(entry["edit"]["slug"])}.html">Read the profile Edit &rarr;</a></p>'
     return f"""
   <section class="creator-text">
-    {paras}
+    {paras}{edit_link}
     <dl class="creator-facts">{facts}</dl>
     <p class="creator-sources">Written by Formground from the creator's own site and named sources: {sources}. To correct or remove this text, write to <a href="mailto:{CONTACT}">{CONTACT}</a>.</p>
   </section>"""
