@@ -99,6 +99,35 @@
   @media (max-width: 760px) {
     .group-grid { grid-template-columns: 1fr; }
   }
+
+  /* One column per category: the tile, then (when a profile Edit exists) "In profile", then "A few to start with".
+     Filled in by scraper/generate_creators_page.py between the PROFILES markers. */
+  .cr-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; align-items: start; margin-bottom: 12px; }
+  .cr-col { display: flex; flex-direction: column; min-width: 0; }
+  .cr-label { display: flex; justify-content: space-between; align-items: baseline; margin: 30px 0 12px;
+    font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); }
+  .cr-label a { text-transform: none; letter-spacing: 0; font-weight: 500; font-size: 12px; color: var(--text-accent); text-decoration: none; }
+  .cr-label a:hover { text-decoration: underline; }
+  .ed-card { display: flex; flex-direction: column; gap: 6px; text-decoration: none; color: inherit; }
+  .ed-photo { aspect-ratio: 4/3; background: var(--surface-1); border: 0.5px solid var(--border); overflow: hidden; display: block; }
+  .ed-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ed-title { font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 18px; line-height: 1.2; margin-top: 4px; }
+  .ed-line { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .pf-list { border-top: 0.5px solid var(--border); }
+  .pf-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 0.5px solid var(--border); text-decoration: none; color: inherit; }
+  .pf-row:hover .pf-name { text-decoration: underline; }
+  .pf-thumb { width: 52px; height: 52px; flex: none; background: var(--surface-1); border: 0.5px solid var(--border); overflow: hidden; display: block; }
+  .pf-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .pf-text { display: flex; flex-direction: column; min-width: 0; }
+  .pf-name { font-weight: 500; font-size: 14px; }
+  .pf-sub { font-size: 12px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .pf-all { font-size: 13px; color: var(--text-accent); text-decoration: none; margin-top: 12px; }
+  .pf-all:hover { text-decoration: underline; }
+  @media (min-width: 761px) { .cr-col .group-body { min-height: 112px; } }
+  @media (max-width: 760px) {
+    .cr-grid { grid-template-columns: 1fr; gap: 40px; }
+    .pf-list .pf-row:nth-child(n+4) { display: none; }   /* three entries on a phone, five on desktop */
+  }
 </style>
 </head>
 <body>
@@ -124,7 +153,8 @@
     </form>
   </div>
 
-  <div class="group-grid">
+  <div class="cr-grid">
+    <div class="cr-col" data-group="architects">
     <a class="group-card" href="architects.html">
       <div class="group-photo">
         <img src="http://static1.squarespace.com/static/68e7d1ef65f5323eae3c3b6c/68fa320b5b04cb318608db95/6981a89900e843417f888e2e/1772734362523/JSA_pinehouse_FINAL_WEB-37.jpg?format=1500w" alt="Pine House by Johan Sundberg Arkitektur">
@@ -135,7 +165,14 @@
         <p class="group-count">43 firms</p>
       </div>
     </a>
+<!--PROFILES:architects-->
+    <p class="cr-label"><span>A few to start with</span></p>
+    <div class="pf-list"><a class="pf-row" href="/architects/felipe-assadi.html"><span class="pf-thumb"><img src="https://static.wixstatic.com/media/66d23e_92f9e8c9f1174178881e0d79554f5ebb.jpg/v1/fill/w_845,h_634,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/66d23e_92f9e8c9f1174178881e0d79554f5ebb.jpg" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Felipe Assadi</span><span class="pf-sub">Santiago, Chile &middot; 20 houses</span></span></a><a class="pf-row" href="/architects/bodenez-le-gal-la-salle.html"><span class="pf-thumb"><img src="https://www.bodenezlegallasalle.com/wp-content/uploads/2025/06/4-projet-maison-bleue-rennes-ille-et-vilaine-35-bodenezlegallasalle-architectes-rennes-bretagne-2560x1700-1.webp" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Bodenez + Le Gal La Salle</span><span class="pf-sub">Rennes, France &middot; 7 houses</span></span></a><a class="pf-row" href="/architects/campus.html"><span class="pf-thumb"><img src="https://static1.squarespace.com/static/662559f65ce9a66632736a5f/66255bdac497ce6c08c337ce/679fcb6c20dd7d7074737788/1738525863300/08_varmdo_campus_%C2%A9johandehlin_241211.jpg?format=1500w" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">CAMPUS</span><span class="pf-sub">Stockholm, Sweden &middot; 2 houses</span></span></a><a class="pf-row" href="/architects/avignon-architecte.html"><span class="pf-thumb"><img src="https://avignon-architecte.com/wp-content/uploads/2016/12/avignonclouetfacadenuit-1000x1493.jpg" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Avignon Architecte</span><span class="pf-sub">Nantes, France &middot; 11 houses</span></span></a><a class="pf-row" href="/architects/tato-architects.html"><span class="pf-thumb"><img src="https://tat-o.com/cms/wp-content/uploads/02homb_018-1.webp" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Tato Architects</span><span class="pf-sub">Kobe, Japan &middot; 24 houses</span></span></a></div>
+    <a class="pf-all" href="architects.html">See all 43 firms &rarr;</a>
+    <!--/PROFILES:architects-->
+    </div>
 
+    <div class="cr-col" data-group="designers">
     <a class="group-card" href="designers.html">
       <div class="group-photo">
         <img src="https://images.fogia.com/82/d8/70/69/6970d8827991180a249ecae1/FogiaBarba Club Chair Beech lacquered-Vidar 0693Front.png?auto=format&amp;w=800&amp;q=80" alt="Barba Club Chair by Andreas Engesvik for Fogia">
@@ -146,7 +183,14 @@
         <p class="group-count">234 designers</p>
       </div>
     </a>
+<!--PROFILES:designers-->
+    <p class="cr-label"><span>A few to start with</span></p>
+    <div class="pf-list"><a class="pf-row" href="/designers/ake-axelsson.html"><span class="pf-thumb"><img src="https://garsnas.se/wp-content/uploads/2016/02/Combi-II-170630-1618x1080.jpg" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Åke Axelsson</span><span class="pf-sub">Gärsnäs &middot; 29 products</span></span></a><a class="pf-row" href="/designers/nina-jobs.html"><span class="pf-thumb"><img src="https://garsnas.se/wp-content/uploads/2016/02/4690_a_natur_GARB_0144-810x1080.jpg" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Nina Jobs</span><span class="pf-sub">Gärsnäs +1 &middot; 7 products</span></span></a><a class="pf-row" href="/designers/elisabeth-garouste-mattia-bonetti.html"><span class="pf-thumb"><img src="https://www.galeriekreo.com/sync4D/images/pieces/7F1415BBCF107D408E0077671DF0C79B.jpg.webp" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Elisabeth Garouste &amp; Mattia Bonetti</span><span class="pf-sub">Galerie Kreo &middot; 3 products</span></span></a><a class="pf-row" href="/designers/enzo-mari.html"><span class="pf-thumb"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/90068_01.jpg?v=1741335990&amp;width=500" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Enzo Mari</span><span class="pf-sub">Alessi &middot; 2 products</span></span></a><a class="pf-row" href="/designers/ben-van-berkel.html"><span class="pf-thumb"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/products/1_UNS03-6.jpg?v=1605771283&amp;width=500" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Ben van Berkel</span><span class="pf-sub">Alessi &middot; 4 products</span></span></a></div>
+    <a class="pf-all" href="designers.html">See all 234 designers &rarr;</a>
+    <!--/PROFILES:designers-->
+    </div>
 
+    <div class="cr-col" data-group="makers">
     <a class="group-card" href="makers.html">
       <div class="group-photo">
         <img src="https://cdn.shopify.com/s/files/1/1885/3155/files/18346850_223091_-_Arc_Bench_-_Coffee_-_1.jpg?v=1774544320" alt="Makers">
@@ -157,6 +201,12 @@
         <p class="group-count">205 brands</p>
       </div>
     </a>
+<!--PROFILES:makers-->
+    <p class="cr-label"><span>A few to start with</span></p>
+    <div class="pf-list"><a class="pf-row" href="/brands/workstead.html"><span class="pf-thumb"><img src="https://m-workstead.imgix.net/assets/galleries/550/1356_Bole_P_II_Gallery_Situ_04.jpg?fit=crop&amp;w=640&amp;h=640&amp;q=60&amp;auto=format,compress" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Workstead</span><span class="pf-sub">United States &middot; Lighting</span></span></a><a class="pf-row" href="/brands/lukasz-korol.html"><span class="pf-thumb"><img src="https://cdn.shopify.com/s/files/1/1049/3060/7436/files/DSC_9517-Edit.jpg?v=1786051538&amp;width=500" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Łukasz Korol</span><span class="pf-sub">Poland &middot; Furniture · Objects</span></span></a><a class="pf-row" href="/brands/mater.html"><span class="pf-thumb"><img src="https://cdn.shopify.com/s/files/1/0260/0981/files/Accent_Glider.jpg?v=1788340752&amp;width=500" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Mater</span><span class="pf-sub">Denmark &middot; Furniture · Lighting · Ceramics · Objects</span></span></a><a class="pf-row" href="/brands/utilitario-mexicano.html"><span class="pf-thumb"><img src="https://cdn.shopify.com/s/files/1/1216/6402/products/candelabro-2.jpg?v=1571458202&amp;width=500" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Utilitario Mexicano</span><span class="pf-sub">Mexico &middot; Ceramics</span></span></a><a class="pf-row" href="/brands/piet-hein-eek.html"><span class="pf-thumb"><img src="https://pietheineek.nl/wp-content/uploads/2018/10/Klassieke-kast-in-sloophout_edited_THUMBNAIL-300x300.jpg" alt="" loading="lazy"></span><span class="pf-text"><span class="pf-name">Piet Hein Eek</span><span class="pf-sub">Netherlands &middot; Furniture · Lighting · Objects</span></span></a></div>
+    <a class="pf-all" href="makers.html">See all 205 brands &rarr;</a>
+    <!--/PROFILES:makers-->
+    </div>
   </div>
 
   <p class="foot-note">

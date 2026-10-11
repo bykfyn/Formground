@@ -656,3 +656,52 @@ class DesignerBrandFilterTests(unittest.TestCase):
                 if "?brand=" in href:
                     brand_slug = href.split("?brand=")[1]
                     self.assertIn(f'data-slug="{brand_slug}"', (DOCS / "designers" / page).read_text(), href)
+
+
+class CreatorsPageTests(unittest.TestCase):
+    """The Creators page: one column per category with a weekly-rotating sample of real profiles."""
+
+    def _page(self):
+        return (DOCS / "creators.html").read_text()
+
+    def test_each_category_has_five_profile_links_that_exist(self):
+        page = self._page()
+        for group in ("architects", "designers", "makers"):
+            block = page[page.index(f"<!--PROFILES:{group}-->"):page.index(f"<!--/PROFILES:{group}-->")]
+            hrefs = re.findall(r'<a class="pf-row" href="([^"]+)"', block)
+            self.assertEqual(len(hrefs), 5, group)
+            self.assertEqual(len(set(hrefs)), 5, group)
+            for href in hrefs:
+                self.assertTrue((DOCS / href.lstrip("/")).exists(), href)
+            self.assertIn(f'href="{group}.html">See all', block)
+
+    def test_no_placeholder_text_and_no_empty_profile_slot(self):
+        page = self._page()
+        self.assertNotIn("Placeholder", page)
+        import generate_creators_page as gc
+        if not gc.PROFILE_EDITS:
+            self.assertNotIn(">In profile<", page)
+
+    def test_the_sample_is_stable_within_a_week_and_changes_between_weeks(self):
+        import datetime
+        import generate_creators_page as gc
+        cards = gc.read_cards("makers")
+        a = gc.sample(cards, "makers", datetime.date(2026, 10, 12))
+        self.assertEqual(a, gc.sample(cards, "makers", datetime.date(2026, 10, 15)))     # same ISO week
+        self.assertNotEqual(a, gc.sample(cards, "makers", datetime.date(2026, 10, 19)))  # next week
+
+    def test_a_profile_edit_shows_with_links_to_its_page_and_to_all_edits(self):
+        import datetime
+        import generate_creators_page as gc
+        saved = dict(gc.PROFILE_EDITS)
+        gc.PROFILE_EDITS["makers"] = {"slug": "kallemo", "name": "Källemo", "line": "A line.", "image": "https://x/y.jpg"}
+        try:
+            out = gc.render("<!--PROFILES:makers--><!--/PROFILES:makers-->", datetime.date(2026, 10, 12))
+        finally:
+            gc.PROFILE_EDITS.clear(); gc.PROFILE_EDITS.update(saved)
+        self.assertIn('href="/edits/kallemo.html"', out)
+        self.assertIn('href="/edits.html">All Edits', out)
+        self.assertIn("In profile", out)
+
+    def test_phone_shows_three_entries(self):
+        self.assertIn(".pf-list .pf-row:nth-child(n+4) { display: none; }", self._page())

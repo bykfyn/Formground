@@ -26,6 +26,7 @@ GENERATORS = [
     "generate_guides_pages",
     "generate_designers_pages",
     "generate_architects_pages",
+    "generate_creators_page",
     "generate_marketplace_page",
     "generate_for_creators_page",
     "generate_agent_docs",
