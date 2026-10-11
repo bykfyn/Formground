@@ -4,7 +4,7 @@ Purpose: short, accurate, consistent text on each Creator page (Maker, Designer,
 
 ## Length and shape
 - 60-120 words in 2-3 short paragraphs, plus a facts block.
-- Plain, factual, impartial tone. Same voice across all pages.
+- Plain, factual, impartial tone. Same voice across all pages, in Formground's own voice: describe the creator directly, based on what their site and named sources say, as a fair reflection of their profile. Do not write "its own site says" or "it describes itself".
 
 ## What to include
 1. **Who they are:** name, type (maker, designer, architect), base country and city.
@@ -14,9 +14,11 @@ Purpose: short, accurate, consistent text on each Creator page (Maker, Designer,
 5. **Where to find more:** link to their own site. Never Instagram as the main destination.
 
 ## Facts block (structured, consistent order)
-Country | City | Type | Products | Materials | Founded (if stated) | Independent or established | Made to order (yes/no/unknown) | Website
+Country | City | Type | Products | Work (architects) | Founded (if stated) | Made to order (only if stated) | Website
 
-Use "unknown" instead of guessing.
+Leave a row out when it is unknown. No Materials row and no "independent or established" row.
+
+Leave out what we do not know instead of guessing.
 
 ## What to leave out
 - Superlatives and unsupported claims ("the best", "world-famous", "award-winning" unless the award is named and checkable).

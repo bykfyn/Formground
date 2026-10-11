@@ -31,6 +31,7 @@ append to):
 """
 
 import html
+import json
 import sqlite3
 from collections import defaultdict
 from pathlib import Path
@@ -66,6 +67,7 @@ DATA_DIR = SCRAPER_DIR.parent / "data"
 DOCS_DIR = SCRAPER_DIR.parent / "docs"
 DESIGNERS_DIR = DOCS_DIR / "designers"
 DB_PATH = DATA_DIR / "formground.db"
+PORTFOLIO_PATH = DATA_DIR / "portfolio_designers.json"   # designers shown by their own work (no maker's products), like architects' houses
 SITEMAP_PATH = DOCS_DIR / "sitemap.xml"
 
 MIN_PRODUCTS = 2  # see module docstring - a one-credit page reads as thin
@@ -255,15 +257,116 @@ def render_designer_page(designer_name, slug, products, page=1):
 """
 
 
-def render_designers_index(designers_with_slugs, products_by_designer):
+def portfolio_designers():
+    """[{name, url, city, country, works: [{name, image, url, year?}]}] from data/portfolio_designers.json (may be missing)."""
+    if not PORTFOLIO_PATH.exists():
+        return []
+    return [d for d in json.loads(PORTFOLIO_PATH.read_text()) if d.get("works")]
+
+
+def portfolio_card_html(d, slug):
+    hero = next((w["image"] for w in d["works"] if w.get("image")), "")
+    image = f'<img src="{html.escape(hero)}" alt="{html.escape(d["name"])}" loading="lazy">' if hero else ""
+    place = ", ".join(b for b in (d.get("city"), d.get("country")) if b)
+    count = f"{len(d['works'])} work{'' if len(d['works']) == 1 else 's'}"
+    return f"""
+      <a class="maker-card" href="/designers/{slug}.html">
+        <div class="maker-card-hero">{image}</div>
+        <div class="maker-card-body">
+          <span class="maker-name">{html.escape(d["name"])}</span>
+          <span class="maker-country">{html.escape(place) if place else "&nbsp;"}</span>
+          <span class="maker-categories">{count}</span>
+        </div>
+      </a>"""
+
+
+def render_portfolio_designer_page(d, slug):
+    """A designer shown by their own work: each work links to its page on the designer's own site (as an architect's houses do)."""
+    from generate_architects_pages import house_card_html
+    name, works = d["name"], d["works"]
+    page_url = f"{SITE_URL}/designers/{slug}.html"
+    place = d.get("city") or d.get("country")
+    description = (f"{html.escape(name)} - {len(works)} work{'' if len(works) == 1 else 's'}"
+                   f"{f', {html.escape(place)}' if place else ''}. Each linked to its own page.")
+    seo_title = fit_title(f"{name}: designs and projects", name)
+    cards = "".join(house_card_html({**w, "firm": name}) for w in works)
+    site_link = (f'<a class="brand-site-link" href="{html.escape(d["url"])}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>'
+                 if d.get("url") else "")
+    breadcrumb_json = json.dumps({
+        "@context": "https://schema.org", "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "Formground", "item": f"{SITE_URL}/"},
+            {"@type": "ListItem", "position": 2, "name": "Designers", "item": f"{SITE_URL}/designers.html"},
+            {"@type": "ListItem", "position": 3, "name": name, "item": page_url},
+        ]})
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{html.escape(seo_title)}</title>
+{FAVICON_TAGS}
+<meta name="description" content="{description}">
+<link rel="canonical" href="{page_url}">
+<meta property="og:type" content="website">
+<meta property="og:title" content="{html.escape(seo_title)}">
+<meta property="og:description" content="{description}">
+<meta property="og:url" content="{page_url}">
+<meta property="og:image" content="{SITE_URL}/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="{SITE_URL}/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{breadcrumb_json}</script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="{ICONS_CSS}">
+<style>{PAGE_CSS}</style>
+{creator_texts.style_tag("designers", slug)}
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+{site_nav_html("creators")}
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Designer</p>
+    <h1 class="maker-name">{html.escape(name)}</h1>
+    {site_link}
+  </div>
+  {creator_texts.text_block_html("designers", slug, len(works))}
+  <div class="maker-grid">{cards}
+  </div>
+  <p class="foot-note">
+    {SITE_FOOTER_HTML}
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {{
+    img.addEventListener("load", function () {{
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    }});
+  }});
+</script>
+<script>{CARD_CLICK_TRACKING_JS}</script>
+<script src="{SHARE_JS}" defer></script>
+{CLOUDFLARE_ANALYTICS}
+</body>
+</html>
+"""
+
+
+def render_designers_index(designers_with_slugs, products_by_designer, portfolio_cards=()):
     items = "".join(
         designer_card_html(name, slug, products_by_designer[name])
         for name, slug in sorted(designers_with_slugs, key=lambda p: p[0].lower())
     )
+    items += "".join(portfolio_cards)
     total_products = sum(len(v) for v in products_by_designer.values())
     page_url = f"{SITE_URL}/designers.html"
     description = (
-        f"{len(designers_with_slugs)} independent product designers on Formground, {total_products} credited "
+        f"{len(designers_with_slugs) + len(portfolio_cards)} designers on Formground, {total_products} credited "
         "products total - browse the work, credited to the person who designed it."
     )
     return f"""<!DOCTYPE html>
@@ -360,6 +463,7 @@ def generate():
 
     slugs_seen = {}
     designers_with_slugs = []
+    designers_with_slugs_portfolio = []
     extra_page_slugs = []
     for designer_name, products in sorted(products_by_designer.items(), key=lambda kv: kv[0]):
         if len(products) < MIN_PRODUCTS:
@@ -376,6 +480,18 @@ def generate():
             (DESIGNERS_DIR / f"{page_slug}.html").write_text(render_designer_page(designer_name, slug, products, page=extra))
             extra_page_slugs.append(page_slug)
 
+    # designers shown by their own work (no maker's products): one page each, like an architect's houses
+    portfolio_cards = []
+    for d in sorted(portfolio_designers(), key=lambda d: d["name"].lower()):
+        if d["name"] in products_by_designer and len(products_by_designer[d["name"]]) >= MIN_PRODUCTS:
+            print(f"Skipping portfolio designer {d['name']}: already has a page from makers' products.")
+            continue
+        slug = unique_slug(slugify(d["name"]), d["name"], slugs_seen)
+        slugs_seen[slug] = d["name"]
+        (DESIGNERS_DIR / f"{slug}.html").write_text(render_portfolio_designer_page(d, slug))
+        portfolio_cards.append(portfolio_card_html(d, slug))
+        designers_with_slugs_portfolio.append(slug)
+
     # A designer who drops below MIN_PRODUCTS since the last run (a
     # brand's catalog shrank, a re-scrape lost a credit) shouldn't leave
     # a stale page reachable - same self-healing pattern
@@ -385,15 +501,15 @@ def generate():
         if existing.stem not in slugs_seen and existing.stem not in extra_page_slugs:
             existing.unlink()
 
-    index_html = render_designers_index(designers_with_slugs, products_by_designer)
+    index_html = render_designers_index(designers_with_slugs, products_by_designer, portfolio_cards)
     # Written to frontend/ as well (like the Marketplace and For Creators pages): frontend/designers.html used to be
     # the old "coming soon" placeholder, and copying it over docs/ replaced this real index with it (2026-10-04).
     for folder in (DOCS_DIR, SCRAPER_DIR.parent / "frontend"):
         (folder / "designers.html").write_text(index_html)
-    append_to_sitemap(sorted(s for _, s in designers_with_slugs))
+    append_to_sitemap(sorted([s for _, s in designers_with_slugs] + designers_with_slugs_portfolio))
 
     total_products = sum(len(products_by_designer[n]) for n, _ in designers_with_slugs)
-    print(f"Generated {len(designers_with_slugs)} designer pages ({total_products} credited products) + designers.html.")
+    print(f"Generated {len(designers_with_slugs) + len(designers_with_slugs_portfolio)} designer pages ({total_products} credited products) + designers.html.")
 
 
 if __name__ == "__main__":
