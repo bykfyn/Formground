@@ -9,8 +9,10 @@ the live number of houses / pieces so it cannot go stale. Fields per entry: grou
 facts [[label, value]], sources [[label, url]], edit {slug, standfirst, hero, picks [image URLs]}.
 """
 
+import datetime
 import html
 import json
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
@@ -30,10 +32,27 @@ CREATOR_TEXT_CSS = """
 """
 
 
-def load():
+def today():
+    """The build date. FG_TODAY (YYYY-MM-DD) overrides it, for tests and for previewing a scheduled day."""
+    return datetime.date.fromisoformat(os.environ["FG_TODAY"]) if os.environ.get("FG_TODAY") else datetime.date.today()
+
+
+def load_all():
+    """Every entry in the data file, published or scheduled."""
     if not DATA_PATH.exists():
         return {}
     return json.loads(DATA_PATH.read_text())
+
+
+def is_live(entry):
+    """An entry with a "publish" date (YYYY-MM-DD) goes live on that day's build; with none it is live already."""
+    return not entry.get("publish") or datetime.date.fromisoformat(entry["publish"]) <= today()
+
+
+def load():
+    """The entries that are live today. Everything the site builds (creator texts, profile Edits, hub tiles, the
+    Creators page cards, the sitemap) reads this, so a scheduled profile appears on its publish day and not before."""
+    return {k: v for k, v in load_all().items() if is_live(v)}
 
 
 def get(group, page_slug):
@@ -50,7 +69,9 @@ def text_block_html(group, page_slug, count):
     if not entry:
         return ""
     paras = "".join(f"<p>{html.escape(p)}</p>" for p in paragraphs(entry, count))
-    facts = "".join(f"<dt>{html.escape(k)}</dt><dd>{html.escape(v)}</dd>" for k, v in entry["facts"])
+    # only facts we actually know: a field with no answer is left out rather than shown as "Unknown"
+    facts = "".join(f"<dt>{html.escape(k)}</dt><dd>{html.escape(v)}</dd>" for k, v in entry["facts"]
+                    if v and v.strip().lower() != "unknown")
     sources = "; ".join(f'<a href="{html.escape(u)}" target="_blank" rel="noopener noreferrer">{html.escape(label)}</a>'
                         for label, u in entry["sources"])
     return f"""

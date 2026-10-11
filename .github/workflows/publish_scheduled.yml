@@ -1,0 +1,55 @@
+# WHAT THIS DOES:
+#   Publishes scheduled content. Profile Edits (and the creator text on each creator's page) carry a "publish"
+#   date in data/creator_texts.json; a build only shows an entry once that day has come. This workflow rebuilds the
+#   site every morning and pushes the result if anything changed, so a profile appears on its date without anyone
+#   running a build by hand. It does NOT scrape (scrape.yml does that on Mondays): it only regenerates pages from
+#   the data already in the repo, runs the test suite first, and refuses to push if a test fails.
+#
+# HOW TO CHECK / RUN IT:
+#   GitHub > Actions > "Publish scheduled content" > "Run workflow" runs it now.
+#   To change when a profile goes live, edit its "publish" date in data/creator_texts.json and push.
+
+name: Publish scheduled content
+
+on:
+  schedule:
+    - cron: "0 7 * * *"   # every day at 07:00 UTC (09:00 in Sweden in summer time)
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+# one site build at a time: the Monday scrape and this job must not push over each other
+concurrency:
+  group: site-build
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 pillow -r backend/requirements.txt httpx
+
+      - name: Regenerate the whole site
+        run: python scraper/build_site.py
+
+      - name: Run the tests (nothing is pushed if one fails)
+        run: python -m unittest discover tests
+
+      - name: Save the result if anything changed
+        run: |
+          git config user.name "formground-bot"
+          git config user.email "bot@formground.local"
+          git add data/sitemap_lastmod.json data/edit_dates.json docs
+          git diff --quiet --cached || git commit -m "Publish scheduled content for $(date -u +%Y-%m-%d)"
+          git pull --rebase
+          git push

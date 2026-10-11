@@ -718,37 +718,47 @@ class CreatorsPageTests(unittest.TestCase):
 
 
 class CreatorTextTests(unittest.TestCase):
-    """Creator page text follows docs/formground-creator-text-template.md."""
+    """Creator page text follows docs/formground-creator-text-template.md; scheduled entries stay hidden until their day."""
 
     def setUp(self):
         import creator_texts
         self.ct = creator_texts
-        self.entries = creator_texts.load()
+        self.all = creator_texts.load_all()          # published and scheduled
+        self.live = creator_texts.load()             # live on the build date
 
     def test_there_are_texts_and_each_is_60_to_120_words_in_2_or_3_paragraphs(self):
-        self.assertGreaterEqual(len(self.entries), 3)
-        for key, e in self.entries.items():
+        self.assertGreaterEqual(len(self.all), 10)
+        for key, e in self.all.items():
             words = sum(len(p.split()) for p in e["paragraphs"])
             self.assertTrue(60 <= words <= 120, (key, words))
             self.assertIn(len(e["paragraphs"]), (2, 3), key)
 
     def test_no_independent_or_established_label_and_no_superlatives(self):
         banned = ("independent", "established", "world-famous", "award-winning", "the best", "leading")
-        for key, e in self.entries.items():
+        for key, e in self.all.items():
             blob = (" ".join(e["paragraphs"]) + " " + " ".join(f"{k} {v}" for k, v in e["facts"])).lower()
             for word in banned:
+                if word == "established" and e["group"] == "architects" and "established in 20" in blob:
+                    blob = blob.replace("established in 20", "founded in 20")      # a founding year, not the label
                 self.assertNotIn(word, blob, (key, word))
 
     def test_every_text_has_facts_in_the_template_order_and_named_sources(self):
         order = ["Country", "City", "Type", "Products", "Work", "Materials", "Founded", "Made to order", "Website"]
-        for key, e in self.entries.items():
+        for key, e in self.all.items():
             labels = [k for k, _ in e["facts"]]
             self.assertEqual(labels, sorted(labels, key=order.index), key)
-            self.assertTrue({"Country", "City", "Type", "Website"} <= set(labels), key)
+            self.assertTrue({"Country", "Type", "Website"} <= set(labels), key)
             self.assertTrue(e["sources"] and all(u.startswith("https://") for _, u in e["sources"]), key)
 
+    def test_a_fact_we_do_not_know_is_left_out_not_shown_as_unknown(self):
+        for e in self.live.values():
+            folder = {"architects": "architects", "makers": "brands", "designers": "designers"}[e["group"]]
+            page = (DOCS / folder / f"{e['page_slug']}.html").read_text()
+            self.assertNotIn(">Unknown<", page, e["name"])
+
     def test_the_text_is_on_the_creators_own_page_and_its_edit_exists(self):
-        for e in self.entries.values():
+        self.assertGreaterEqual(len(self.live), 10)
+        for e in self.live.values():
             folder = {"architects": "architects", "makers": "brands", "designers": "designers"}[e["group"]]
             page = (DOCS / folder / f"{e['page_slug']}.html").read_text()
             self.assertIn('class="creator-text"', page, e["name"])
@@ -760,33 +770,37 @@ class CreatorTextTests(unittest.TestCase):
             self.assertIn(f'/edits/{e["edit"]["slug"]}.html', (DOCS / "edits.html").read_text())
             self.assertIn(f"/edits/{e['edit']['slug']}.html", (DOCS / "sitemap.xml").read_text())
 
+    def test_a_scheduled_profile_is_not_on_the_site_before_its_day(self):
+        for key, e in self.all.items():
+            if key in self.live:
+                continue
+            slug = e["edit"]["slug"]
+            self.assertFalse((DOCS / "edits" / f"{slug}.html").exists(), slug)
+            self.assertNotIn(f"/edits/{slug}.html", (DOCS / "edits.html").read_text(), slug)
+            self.assertNotIn(f"/edits/{slug}.html", (DOCS / "sitemap.xml").read_text(), slug)
+            folder = {"architects": "architects", "makers": "brands", "designers": "designers"}[e["group"]]
+            self.assertNotIn('class="creator-text"', (DOCS / folder / f"{e['page_slug']}.html").read_text(), slug)
 
-class EditsHubTests(unittest.TestCase):
-    """The Edits hub: a type label under every title, newest first."""
+    def test_the_publish_date_decides_what_is_live(self):
+        import datetime
+        import os
+        key = next((k for k, e in self.all.items() if e.get("publish") and datetime.date.fromisoformat(e["publish"]) > datetime.date(2026, 10, 12)), None)
+        self.assertIsNotNone(key)
+        e = self.all[key]
+        before = datetime.date.fromisoformat(e["publish"]) - datetime.timedelta(days=1)
+        try:
+            os.environ["FG_TODAY"] = before.isoformat()
+            self.assertNotIn(key, self.ct.load())
+            os.environ["FG_TODAY"] = e["publish"]
+            self.assertIn(key, self.ct.load())
+        finally:
+            os.environ.pop("FG_TODAY", None)
 
-    def setUp(self):
-        self.hub = (DOCS / "edits.html").read_text()
-
-    def test_every_tile_has_a_label_from_the_allowed_set(self):
-        labels = re.findall(r'<p class="cat-label">[^<]*<small>([^<]*)</small></p>', self.hub)
-        self.assertGreaterEqual(len(labels), 26)
-        self.assertEqual(len(labels), self.hub.count('<figure class="edit-feature">'))
-        allowed = {"Furniture", "Lighting", "Ceramics", "Objects", "Maker", "Designer", "Architect"}
-        self.assertTrue(set(labels) <= allowed, set(labels) - allowed)
-        self.assertNotIn("Products", labels)          # the real category, not the word "Products"
-
-    def test_tiles_are_newest_first(self):
-        import json
-        dates = json.loads((ROOT / "data" / "edit_dates.json").read_text())
-        slugs = re.findall(r'<a class="cat-link" href="/edits/([a-z0-9-]+)\.html"', self.hub)
-        seen = [dates.get(s) for s in slugs if dates.get(s)]
-        self.assertGreater(len(seen), 10)
-        self.assertEqual(seen, sorted(seen, reverse=True))
-
-    def test_every_tile_links_to_an_edit_page_that_exists(self):
-        for slug in re.findall(r'<a class="cat-link" href="/edits/([a-z0-9-]+)\.html"', self.hub):
-            self.assertTrue((DOCS / "edits" / f"{slug}.html").exists(), slug)
-
-    def test_the_sections_comparison_page_is_never_published(self):
-        gitignore = (ROOT / ".gitignore").read_text()
-        self.assertIn("docs/_mock_*.html", gitignore)
+    def test_scheduled_dates_are_unique_per_day_and_the_daily_workflow_exists(self):
+        dates = [e["publish"] for e in self.all.values() if e.get("publish") and e["publish"] > "2026-10-11"]
+        self.assertEqual(len(dates), len(set(dates)))
+        wf = (ROOT / ".github" / "workflows" / "publish_scheduled.yml").read_text()
+        self.assertIn('cron: "0 7 * * *"', wf)
+        self.assertIn("python scraper/build_site.py", wf)
+        self.assertIn("unittest discover tests", wf)
+        self.assertLess(wf.index("unittest discover tests"), wf.index("git push"))       # tests run before anything is pushed

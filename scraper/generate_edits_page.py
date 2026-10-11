@@ -473,7 +473,7 @@ def render_edits_index(themes_data, order=None):
           <span class="product-maker">{html.escape(credit)}</span>
         </div>
         <a class="visit-source" href="{html.escape(link)}" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>"""
-        profile_tiles.append((edit_date(edit["slug"]), entry["name"], f"""
+        profile_tiles.append((entry.get("publish") or edit_date(edit["slug"]), entry["name"], f"""
       <figure class="edit-feature">
         <a class="cat-link" href="/edits/{edit['slug']}.html" aria-label="In profile: {html.escape(entry['name'])}"></a>
         <img src="{html.escape(sized(edit['hero'], TILE))}" alt="{html.escape(entry['name'])}" loading="lazy">
