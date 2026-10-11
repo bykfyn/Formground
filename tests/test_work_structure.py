@@ -778,13 +778,13 @@ class EditsHubTests(unittest.TestCase):
     def test_tiles_are_newest_first(self):
         import json
         dates = json.loads((ROOT / "data" / "edit_dates.json").read_text())
-        slugs = re.findall(r'<a class="cat-link" href="/edits/([a-z0-9-]+)\\.html"', self.hub)
+        slugs = re.findall(r'<a class="cat-link" href="/edits/([a-z0-9-]+)\.html"', self.hub)
         seen = [dates.get(s) for s in slugs if dates.get(s)]
         self.assertGreater(len(seen), 10)
         self.assertEqual(seen, sorted(seen, reverse=True))
 
     def test_every_tile_links_to_an_edit_page_that_exists(self):
-        for slug in re.findall(r'<a class="cat-link" href="/edits/([a-z0-9-]+)\\.html"', self.hub):
+        for slug in re.findall(r'<a class="cat-link" href="/edits/([a-z0-9-]+)\.html"', self.hub):
             self.assertTrue((DOCS / "edits" / f"{slug}.html").exists(), slug)
 
     def test_the_sections_comparison_page_is_never_published(self):
