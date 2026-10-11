@@ -584,11 +584,6 @@ def generate():
         themes_data.append((theme, piece_count, brand_count, image, hero_product))
 
     (DOCS_DIR / "edits.html").write_text(render_edits_index(themes_data))
-    # a local-only comparison page (gitignored, never published): the same hub in two headed sections
-    import re as _re
-    sections = render_edits_index(themes_data, order="sections")
-    sections = _re.sub(r"<title>[^<]*</title>", "<title>Edit review (not published) — Edits in sections</title>", sections, count=1)
-    (DOCS_DIR / "_mock_edits_sections.html").write_text(sections)
     append_to_sitemap(["edits"])
     print(f"Generated edits.html ({len(themes_data)} edits).")
 
