@@ -3950,14 +3950,28 @@ def extract_shopify(brand):
     translations = {
         "Master & Master": {"stoly & stolové nohy": "Table", "židle": "Chair", "úložné prostory": "Storage"},
         "HOKII": {"充電台燈": "Table Lamp"},
+        "Superlife": {"lampes": "Lamp", "lampe de table": "Table Lamp", "table basse": "Coffee Table",
+                      "tables basses": "Coffee Table", "miroir": "Mirror", "décapsuleur": "Bottle Opener",
+                      "shelf": "Shelving", "storage": "Storage", "side table": "Side Table"},
     }.get(brand["name"])
     if translations is not None:
         for p in raw_products:
             p["product_type"] = translations.get((p.get("product_type") or "").strip().lower(), "")
+    if brand["name"] == "Superlife":
+        # confirmed live 2026-10-11: clothing, gift cards and a spare part for the Cady shelf are not design objects
+        raw_products = [p for p in raw_products
+                        if not any(w in p["title"].lower() for w in ("t-shirt", "hoodie", "gift card", "wheels for"))]
     if brand["name"] == "Formarkivet":
         # confirmed live 2026-10-11: the four "Marmacén" items (room spray, scented candle, hand wash, reed diffuser) are
         # a home-scent line, not furniture, lighting, ceramics or objects
         raw_products = [p for p in raw_products if "marmacén" not in p["title"].lower()]
+    if brand["name"] == "Superlife":
+        # the series with no product type on the site: Flow = coffee tables, Meuh = coat hooks, Cady = shelves (per their descriptions)
+        for p in raw_products:
+            if not p.get("product_type"):
+                for series, category in (("flow", "Coffee Table"), ("meuh", "Coat Hook"), ("cady", "Shelving")):
+                    if series in p["title"].lower():
+                        p["product_type"] = category
     if brand["name"] == "HOKII":
         # confirmed live 2026-10-09: the glass shade titled "(僅適用於MOGU檯燈)" = "only fits the MOGU lamp" is a
         # replacement part (the shop also has a spare-parts collection), not a standalone piece
@@ -9236,6 +9250,59 @@ def extract_sabu_studio(brand):
     return products
 
 
+# arwenn.com (Arwenn, confirmed live 2026-10-11): a headless Shopify storefront whose /products.json is 404, but the product
+# sitemap lists every product (37 at the time) and each page carries a full schema.org Product block (name, photo, price,
+# currency). Gift cards are skipped. robots.txt is the standard Shopify one.
+def extract_arwenn(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        sitemap = requests.get(f"{base}/sitemap/products/1.xml", headers=HEADERS, timeout=25)
+        sitemap.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch the Arwenn product sitemap: {e}")
+        return []
+    products = []
+    for url in re.findall(r"<loc>([^<]+/products/[^<]+)</loc>", sitemap.text):
+        if "gift-card" in url:
+            continue
+        time.sleep(1)
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        data = None
+        for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', page.text, re.S):
+            try:
+                candidate = json.loads(block)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(candidate, dict) and candidate.get("@type") == "Product":
+                data = candidate
+                break
+        if not data:
+            continue
+        name = html.unescape(data.get("name", "")).strip()
+        image = data.get("image")
+        image = (image[0].get("url") if isinstance(image[0], dict) else image[0]) if isinstance(image, list) and image else image
+        offers = data.get("offers") or {}
+        offer = offers[0] if isinstance(offers, list) and offers else offers
+        try:
+            price = float(offer.get("price"))
+        except (TypeError, ValueError):
+            price = None
+        if not name or not image:
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": _infer_category_from_name(name, "", brand["name"]), "material_options": [], "dimensions": "",
+            "notes": "", "image_url": image, "designer": "",
+            "price": price if price and price > 0 else None, "currency": offer.get("priceCurrency") if price else None,
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -9306,6 +9373,8 @@ EXTRACTORS = {
     "20by8": extract_twentybyeight,
     "Master & Master": extract_shopify,
     "Sabu Studio": extract_sabu_studio,
+    "Arwenn": extract_arwenn,
+    "Superlife": extract_shopify,
     "NORR11": extract_shopify,
     "Formarkivet": extract_shopify,
     "Chatterton Studio": extract_shopify,

@@ -148,6 +148,7 @@ TOOL_CATEGORIES = {
         {"name": "Fusion 360", "type": "CAD Software", "country": "USA", "website": "https://www.autodesk.com/products/fusion-360", "icon": "https://www.google.com/s2/favicons?domain=autodesk.com&sz=128"},
         {"name": "Shapeways", "type": "3D Printing Service", "country": "USA", "website": "https://www.shapeways.com", "icon": "https://www.shapeways.com/wp-content/uploads/2022/04/favicon.ico"},
         {"name": "Material District", "type": "Materials Database", "country": "Netherlands", "website": "https://materialdistrict.com", "icon": "https://materialdistrict.com/apple-icon.png"},
+        {"name": "Linolie & Pigment", "type": "Linseed Oil Paint & Wood Finishes", "country": "Denmark", "website": "https://linolie.dk", "icon": "https://www.google.com/s2/favicons?domain=linolie.dk&sz=128"},
         {"name": "99designs", "type": "Design Contest Platform", "country": "Australia", "website": "https://99designs.com", "icon": "https://99designs.com/touch-icon-iphone.png"},
         {"name": "Fiverr", "type": "Freelancer Marketplace", "country": "Israel", "website": "https://www.fiverr.com", "icon": "https://www.google.com/s2/favicons?domain=fiverr.com&sz=128"},
     ],
