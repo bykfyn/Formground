@@ -129,6 +129,14 @@ def fit_for_banner(url, force=False):
     return "", ""
 
 
+# Hand-set crops for photos the automatic fit cannot judge (a busy backdrop), keyed by the photo URL: the square window's
+# object-position. Used on every card that shows the photo (type pages, Edits).
+MANUAL_CARD_POSITION = {
+    # the lamp spans 28-86% of the photo's height, so the square window has to start about a quarter of the way down
+    "https://cdn.shopify.com/s/files/1/0177/8296/files/GB_Nov2024_IndiaHobson_LR-108A.jpg?v=1741619890": "50% 71%",
+}
+
+
 def fit_for_card(url):
     """Square product cards (2026-10-11, user: table lamp photos cropped badly). Cache only, never fetches at build
     time: run analyze_card_images.py for a type first. Returns (class, container style, image style).
@@ -137,6 +145,8 @@ def fit_for_card(url):
         (object-position), so nothing is cut off and nothing shrinks;
       - otherwise it is shown whole on its own edge colour (contain).
     Near-square or busy photos keep the normal centred crop."""
+    if url in MANUAL_CARD_POSITION:
+        return "", "", f"object-position:{MANUAL_CARD_POSITION[url]}"
     info = _load().get(url)
     if not info:
         return "", "", ""
