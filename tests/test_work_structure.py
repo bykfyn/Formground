@@ -734,6 +734,14 @@ class CreatorTextTests(unittest.TestCase):
             self.assertTrue(60 <= words <= 120, (key, words))
             self.assertIn(len(e["paragraphs"]), (2, 3), key)
 
+    def test_text_is_in_our_own_voice_and_has_no_materials_row(self):
+        import re
+        attribution = re.compile(r"\b(its own site|their own site|the site (says|names|describes|lists)|it says|says it|"
+                                 r"who say|(its|the) own profile)\b", re.I)
+        for key, e in self.all.items():
+            self.assertFalse(attribution.search(" ".join(e["paragraphs"])), key)
+            self.assertNotIn("Materials", [k for k, _ in e["facts"]], key)
+
     def test_card_bg_is_a_hex_colour_when_set(self):
         for key, entry in self.all.items():
             bg =(entry.get("edit") or {}).get("card_bg")
@@ -750,7 +758,7 @@ class CreatorTextTests(unittest.TestCase):
                 self.assertNotIn(word, blob, (key, word))
 
     def test_every_text_has_facts_in_the_template_order_and_named_sources(self):
-        order = ["Country", "City", "Type", "Products", "Work", "Materials", "Founded", "Made to order", "Website"]
+        order = ["Country", "City", "Type", "Products", "Work", "Founded", "Made to order", "Website"]
         for key, e in self.all.items():
             labels = [k for k, _ in e["facts"]]
             self.assertEqual(labels, sorted(labels, key=order.index), key)
@@ -765,7 +773,7 @@ class CreatorTextTests(unittest.TestCase):
         for e in self.all.values():
             page = self._page(e)
             self.assertIn('class="creator-text"', page, e["name"])
-            self.assertIn("To correct or remove this text", page, e["name"])
+            self.assertNotIn("Written by Formground", page, e["name"])       # the sourcing line is not shown on the page
             self.assertNotIn("{count}", page)
             self.assertNotIn(">Unknown<", page, e["name"])
 

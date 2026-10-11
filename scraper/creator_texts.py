@@ -3,7 +3,7 @@ Short, sourced text on creator pages (architects, makers, designers) and the pro
 Data: data/creator_texts.json, following docs/formground-creator-text-template.md:
   - 60-120 words in 2-3 paragraphs, plain and factual, paraphrased from the creator's own site or a named source
   - a facts block (never an "independent or established" line: that label is only used when it has been vouched for)
-  - the sources, and a line saying the text changes or goes on request
+  - (the sources stay in the data as a record, but are not shown on the page)
 Keys are "<group>:<page slug>" (group = architects | makers | designers). A paragraph may contain {count}, filled with
 the live number of houses / pieces so it cannot go stale. Fields per entry: group, name, page_slug, website, paragraphs,
 facts [[label, value]], sources [[label, url]], and optionally edit {slug, standfirst, hero, picks [image URLs]} plus
@@ -32,8 +32,6 @@ CREATOR_TEXT_CSS = """
   .creator-more { font-size: 13px; margin: 0 0 4px; }
   .creator-more a { color: var(--text-accent); text-decoration: none; }
   .creator-more a:hover { text-decoration: underline; }
-  .creator-sources { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin: 0; }
-  .creator-sources a { color: var(--text-accent); }
 """
 
 
@@ -80,8 +78,6 @@ def text_block_html(group, page_slug, count):
     # only facts we actually know: a field with no answer is left out rather than shown as "Unknown"
     facts = "".join(f"<dt>{html.escape(k)}</dt><dd>{html.escape(v)}</dd>" for k, v in entry["facts"]
                     if v and v.strip().lower() != "unknown")
-    sources = "; ".join(f'<a href="{html.escape(u)}" target="_blank" rel="noopener noreferrer">{html.escape(label)}</a>'
-                        for label, u in entry["sources"])
     # once the profile Edit is live, the creator's page points to it
     edit_link = ""
     if f"{group}:{page_slug}" in load():
@@ -90,7 +86,6 @@ def text_block_html(group, page_slug, count):
   <section class="creator-text">
     {paras}{edit_link}
     <dl class="creator-facts">{facts}</dl>
-    <p class="creator-sources">Written by Formground from the creator's own site and named sources: {sources}. To correct or remove this text, write to <a href="mailto:{CONTACT}">{CONTACT}</a>.</p>
   </section>"""
 
 
