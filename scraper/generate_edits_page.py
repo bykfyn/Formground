@@ -69,6 +69,7 @@ from generate_brand_pages import (  # noqa: E402
     site_nav_html,
 )
 from generate_theme_landing_pages import append_to_sitemap  # noqa: E402
+import creator_texts  # noqa: E402
 import generate_themed_edit_pages as gte  # noqa: E402
 from image_sizes import CARD, HERO, TILE, sized  # noqa: E402
 import image_fit  # noqa: E402
@@ -421,6 +422,15 @@ def render_edits_index(themes_data):
         <a class="cat-link" href="/edits/{theme['slug']}.html" aria-label="Browse {html.escape(theme['title'])}"></a>
         {image_tag}
         <p class="cat-label">{html.escape(theme['title'])}</p>{details}
+      </figure>"""
+    # profile Edits ("In profile: <name>", see generate_profile_edits.py) follow the themed ones in the same grid
+    for entry in creator_texts.load().values():
+        edit = entry["edit"]
+        tile_items += f"""
+      <figure class="edit-feature">
+        <a class="cat-link" href="/edits/{edit['slug']}.html" aria-label="In profile: {html.escape(entry['name'])}"></a>
+        <img src="{html.escape(sized(edit['hero'], TILE))}" alt="{html.escape(entry['name'])}" loading="lazy">
+        <p class="cat-label">{html.escape(entry['name'])}<small>In profile &middot; {creator_texts.KIND[entry['group']]}</small></p>
       </figure>"""
     tile_grid_html = f'<div class="maker-grid">{tile_items}\n  </div>' if tile_items else ""
 

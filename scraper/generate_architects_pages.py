@@ -32,6 +32,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from site_assets import SHARE_JS  # noqa: E402
+import creator_texts  # noqa: E402
 from generate_brand_pages import (
     fit_title, list_phrase,
     CARD_CLICK_TRACKING_JS,
@@ -155,6 +156,7 @@ def render_architect_page(firm_name, slug, meta, houses):
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
+{creator_texts.style_tag("architects", slug)}
 </head>
 <body>
 <header class="site-header">
@@ -167,7 +169,7 @@ def render_architect_page(firm_name, slug, meta, houses):
     <h1 class="maker-name">{html.escape(firm_name)}</h1>
     {site_link}
   </div>
-  {contact_html}
+  {contact_html}{creator_texts.text_block_html("architects", slug, len(houses))}
   <div class="maker-grid">{houses_html}
   </div>
   <p class="foot-note">

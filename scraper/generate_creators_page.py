@@ -30,7 +30,7 @@ FRONTEND = ROOT / "frontend"
 GROUPS = ("architects", "designers", "makers")
 SEE_ALL = {"architects": "firms", "designers": "designers", "makers": "brands"}
 SHOWN = 5                      # on a phone the page CSS shows the first three
-PROFILE_EDITS = {}             # {"makers": {"slug", "name", "line", "image"}} - see the docstring
+PROFILE_EDITS = {}             # {"makers": {"slug", "name", "line", "image"}}: filled from data/creator_texts.json (see profile_edits)
 
 CARD_RE = re.compile(
     r'<a class="maker-card" href="([^"]+)"[^>]*>.*?<img src="([^"]+)" alt="[^"]*".*?'
@@ -72,15 +72,35 @@ def edit_html(edit):
 
 
 def column_html(group, cards, today, count):
-    rows = "".join(row_html(c) for c in sample(cards, group, today))
+    featured_slug = (PROFILE_EDITS.get(group) or {}).get("page_slug")
+    pool = [c for c in cards if not (featured_slug and c["href"].endswith(f"/{featured_slug}.html"))]   # not twice in a column
+    rows = "".join(row_html(c) for c in sample(pool, group, today))
     featured = edit_html(PROFILE_EDITS[group]) if group in PROFILE_EDITS else ""
     return (f'{featured}\n    <p class="cr-label"><span>A few to start with</span></p>\n'
             f'    <div class="pf-list">{rows}</div>\n'
             f'    <a class="pf-all" href="{group}.html">See all {count:,} {SEE_ALL[group]} &rarr;</a>\n    ')
 
 
+def profile_edits(today):
+    """One profile Edit per category from data/creator_texts.json; with several in a category the week picks one."""
+    import creator_texts
+    by_group = {}
+    for entry in creator_texts.load().values():
+        by_group.setdefault(entry["group"], []).append(entry)
+    out = {}
+    for group, entries in by_group.items():
+        entries.sort(key=lambda e: e["name"])
+        entry = entries[today.isocalendar()[1] % len(entries)]
+        edit = entry["edit"]
+        out[group] = {"slug": edit["slug"], "name": entry["name"], "line": edit["standfirst"], "image": edit["hero"],
+                      "page_slug": entry["page_slug"]}
+    return out
+
+
 def render(text, today=None):
     today = today or datetime.date.today()
+    PROFILE_EDITS.clear()
+    PROFILE_EDITS.update(profile_edits(today))
     for group in GROUPS:
         cards = read_cards(group)
         if not cards:

@@ -675,12 +675,13 @@ class CreatorsPageTests(unittest.TestCase):
                 self.assertTrue((DOCS / href.lstrip("/")).exists(), href)
             self.assertIn(f'href="{group}.html">See all', block)
 
-    def test_no_placeholder_text_and_no_empty_profile_slot(self):
+    def test_no_placeholder_text_and_every_profile_slot_links_to_a_real_edit(self):
         page = self._page()
         self.assertNotIn("Placeholder", page)
-        import generate_creators_page as gc
-        if not gc.PROFILE_EDITS:
-            self.assertNotIn(">In profile<", page)
+        slugs = re.findall(r'<a class="ed-card" href="/edits/([a-z0-9-]+)\.html"', page)
+        self.assertEqual(len(slugs), page.count(">In profile<"))          # a label never appears without its card
+        for slug in slugs:
+            self.assertTrue((DOCS / "edits" / f"{slug}.html").exists(), slug)
 
     def test_the_sample_is_stable_within_a_week_and_changes_between_weeks(self):
         import datetime
@@ -694,14 +695,67 @@ class CreatorsPageTests(unittest.TestCase):
         import datetime
         import generate_creators_page as gc
         saved = dict(gc.PROFILE_EDITS)
+        gc.PROFILE_EDITS.clear()
         gc.PROFILE_EDITS["makers"] = {"slug": "kallemo", "name": "Källemo", "line": "A line.", "image": "https://x/y.jpg"}
         try:
-            out = gc.render("<!--PROFILES:makers--><!--/PROFILES:makers-->", datetime.date(2026, 10, 12))
+            out = gc.column_html("makers", gc.read_cards("makers"), datetime.date(2026, 10, 12), 205)
         finally:
             gc.PROFILE_EDITS.clear(); gc.PROFILE_EDITS.update(saved)
         self.assertIn('href="/edits/kallemo.html"', out)
         self.assertIn('href="/edits.html">All Edits', out)
         self.assertIn("In profile", out)
 
+    def test_the_profiled_creator_is_not_also_in_the_list_below_it(self):
+        page = self._page()
+        for group in ("architects", "designers", "makers"):
+            block = page[page.index(f"<!--PROFILES:{group}-->"):page.index(f"<!--/PROFILES:{group}-->")]
+            featured = re.search(r'<a class="ed-card" href="/edits/([a-z0-9-]+)\.html"', block)
+            if featured:
+                self.assertNotIn(f'/{featured.group(1)}.html"', block.split('class="pf-list"')[1])
+
     def test_phone_shows_three_entries(self):
         self.assertIn(".pf-list .pf-row:nth-child(n+4) { display: none; }", self._page())
+
+
+class CreatorTextTests(unittest.TestCase):
+    """Creator page text follows docs/formground-creator-text-template.md."""
+
+    def setUp(self):
+        import creator_texts
+        self.ct = creator_texts
+        self.entries = creator_texts.load()
+
+    def test_there_are_texts_and_each_is_60_to_120_words_in_2_or_3_paragraphs(self):
+        self.assertGreaterEqual(len(self.entries), 3)
+        for key, e in self.entries.items():
+            words = sum(len(p.split()) for p in e["paragraphs"])
+            self.assertTrue(60 <= words <= 120, (key, words))
+            self.assertIn(len(e["paragraphs"]), (2, 3), key)
+
+    def test_no_independent_or_established_label_and_no_superlatives(self):
+        banned = ("independent", "established", "world-famous", "award-winning", "the best", "leading")
+        for key, e in self.entries.items():
+            blob = (" ".join(e["paragraphs"]) + " " + " ".join(f"{k} {v}" for k, v in e["facts"])).lower()
+            for word in banned:
+                self.assertNotIn(word, blob, (key, word))
+
+    def test_every_text_has_facts_in_the_template_order_and_named_sources(self):
+        order = ["Country", "City", "Type", "Products", "Work", "Materials", "Founded", "Made to order", "Website"]
+        for key, e in self.entries.items():
+            labels = [k for k, _ in e["facts"]]
+            self.assertEqual(labels, sorted(labels, key=order.index), key)
+            self.assertTrue({"Country", "City", "Type", "Website"} <= set(labels), key)
+            self.assertTrue(e["sources"] and all(u.startswith("https://") for _, u in e["sources"]), key)
+
+    def test_the_text_is_on_the_creators_own_page_and_its_edit_exists(self):
+        for e in self.entries.values():
+            folder = {"architects": "architects", "makers": "brands", "designers": "designers"}[e["group"]]
+            page = (DOCS / folder / f"{e['page_slug']}.html").read_text()
+            self.assertIn('class="creator-text"', page, e["name"])
+            self.assertIn("To correct or remove this text", page, e["name"])
+            self.assertNotIn("{count}", page)
+            edit = (DOCS / "edits" / f"{e['edit']['slug']}.html").read_text()
+            self.assertIn("In profile", edit)
+            self.assertGreaterEqual(len(re.findall(r'class="(?:card|maker-card)"', edit)), 6, e["name"])
+            self.assertIn(f'/edits/{e["edit"]["slug"]}.html', (DOCS / "edits.html").read_text())
+            self.assertIn(f"/edits/{e['edit']['slug']}.html", (DOCS / "sitemap.xml").read_text())

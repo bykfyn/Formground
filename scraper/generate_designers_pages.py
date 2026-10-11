@@ -36,6 +36,7 @@ from collections import defaultdict
 from pathlib import Path
 
 from designer_credits import split_credit  # noqa: E402
+import creator_texts  # noqa: E402
 from site_assets import LISTING_JS, SHARE_JS  # noqa: E402
 from generate_brand_pages import (
     fit_title, list_phrase,
@@ -213,6 +214,7 @@ def render_designer_page(designer_name, slug, products, page=1):
 <link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
 {('<style>' + BRAND_CHIP_CSS + '</style>') if brand_chips else ''}
+{creator_texts.style_tag("designers", slug)}
 </head>
 <body>
 <header class="site-header">
@@ -224,6 +226,7 @@ def render_designer_page(designer_name, slug, products, page=1):
     <p class="eyebrow">Designer</p>
     <h1 class="maker-name">{html.escape(designer_name)}</h1>
   </div>
+  {creator_texts.text_block_html("designers", slug, len(products)) if page == 1 else ""}
   <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;"><span id="shown-count">{len(products)}</span> <span id="shown-noun">product{'' if len(products) == 1 else 's'}</span> credited to {html.escape(designer_name)}, each linked straight to its maker's own page.</p>{brand_chips}
   {earlier_html}
   <div class="grid" data-listing-grid>{products_html}

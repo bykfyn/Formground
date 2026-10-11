@@ -37,6 +37,7 @@ import unicodedata
 from pathlib import Path
 from urllib.parse import urlparse
 from designer_credits import credited_counts, split_credit  # noqa: E402
+import creator_texts  # noqa: E402
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "backend"))
 import site_sections  # noqa: E402
 import query_engine as qe  # noqa: E402  - one definition of "New" (is_new_piece) for pages and search
@@ -1350,6 +1351,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}{BRAND_DESIGNERS_CSS if designers_section else ''}</style>
+{creator_texts.style_tag("makers", slug) if page == 1 else ""}
 </head>
 <body>
 <header class="site-header">
@@ -1363,7 +1365,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     <div class="tags">{tags}</div>
     <a class="brand-site-link" href="{html.escape(brand_url)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>{promo_callout}
   </div>
-{news_section}{all_work_title}  {earlier_html}
+{creator_texts.text_block_html("makers", slug, len(products)) if page == 1 else ""}{news_section}{all_work_title}  {earlier_html}
   <div class="grid" data-listing-grid>{cards}</div>
   {see_more_html}
   {pager_html}
