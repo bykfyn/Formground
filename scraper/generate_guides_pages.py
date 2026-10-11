@@ -117,7 +117,7 @@ def _tail():
 
 
 def render_guide(guide, edit_exists):
-    title = fit_title(f"How to choose {guide['noun']}: what to consider")
+    title = fit_title(f"How to choose {guide['noun']}: what to consider", f"How to choose {guide['noun']}")
     description = (f"What to consider before choosing {guide['noun']}: sizes, materials, care and questions to ask "
                    "the maker. General guidance, no ratings.")
     url = f"{SITE_URL}/guides/{guide['slug']}.html"

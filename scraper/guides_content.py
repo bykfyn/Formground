@@ -512,6 +512,327 @@ GUIDES += [
     },
 ]
 
+OEKO_TEX = ("OEKO-TEX, which tests textiles for harmful substances", "https://www.oeko-tex.com/en/")
+GOODWEAVE = ("GoodWeave, a certification aimed at ending child labour in rug weaving", "https://goodweave.org/")
+KONSUMENTVERKET = ("Consumer rights and product safety from the Swedish Consumer Agency (in Swedish)", "https://www.konsumentverket.se/")
+PEFC = ("PEFC, another forest certification scheme", "https://pefc.org/")
+
+GUIDES += [
+    {
+        "slug": "armchairs",
+        "group": "Furniture",
+        "noun": "armchairs and lounge chairs",
+        "title": "Armchairs and lounge chairs",
+        "edit_slug": "armchairs",
+        "summary": "Seat height and depth, support, upholstery, frame and care for the chair you sit in longest.",
+        "about": (
+            "An armchair or lounge chair is the seat people stay in: for reading, for talking, for an evening. "
+            "Comfort depends on the shape of the seat and back more than on how soft it looks, and the same "
+            "chair can suit one person and not another. They range from compact wooden chairs with a cushion to "
+            "deep, low lounge chairs, swivel chairs and chairs with a matching footstool."
+        ),
+        "teasers": [
+            "Seat height is commonly around 40-45 cm; a deep, low seat is harder to get out of.",
+            "Check the depth of the seat against your legs, and whether the back supports your lower back or your head.",
+            "Ask what the frame is made of, how the cushions are filled and whether the cover can be replaced.",
+        ],
+        "intro": (
+            "An armchair is the piece of furniture you sit in longest, so how it fits you matters more than how it "
+            "looks in a photograph. These are the things worth settling before you choose one. The numbers are "
+            "common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Fit and posture", [
+                "Seat height is commonly around 40-45 cm. A lower seat feels relaxed but is harder to get out of, which matters for older people and for anyone with stiff knees.",
+                "Seat depth decides whether your back reaches the backrest while your knees still bend over the front edge. A deep seat suits tall people or sitting with the legs up; a shallower one suits upright sitting.",
+                "A high back that supports the head suits long reading or resting; a lower back leaves the shoulders free and suits conversation.",
+                "Arms should be at a height where your forearms rest without pushing the shoulders up, commonly around 20-25 cm above the seat.",
+            ]),
+            ("Seat and filling", [
+                "Foam of a higher density holds its shape longer; feather and fibre fillings feel softer and need plumping. A combination is common.",
+                "A firm seat feels less inviting in the shop and often more comfortable after an hour. If you can, ask how it feels when you have sat in it for a while.",
+                "Loose cushions can be turned and refilled; fixed upholstery is smoother but harder to repair.",
+            ]),
+            ("Covers and fabric", [
+                "Leather ages and can be treated; fabric varies widely. Wool and linen blends breathe, synthetic fibres resist stains, and light colours show marks sooner.",
+                "Ask whether the cover can be taken off and washed, or replaced by the maker or an upholsterer.",
+                "Check the fabric's rub rating (for example in Martindale cycles) if the chair will be used every day.",
+            ]),
+            ("Frame and construction", [
+                "A solid wood frame with joints that are glued and screwed is common in chairs built to last; ask what the frame is made of and how it is joined.",
+                "Swivel mechanisms and recliners are parts that wear; check whether they can be replaced.",
+                "Legs set at an angle or with a metal base change how stable the chair is on a soft carpet or an uneven floor.",
+            ]),
+            ("Practicalities", [
+                "Check the overall width against your door and your room; a chair that comes apart is easier to move.",
+                "Leave space behind a chair that reclines or swivels, and check the weight if it will move often.",
+                "Glides or felt pads protect the floor; ask which are included.",
+            ]),
+            ("Questions worth asking the maker", [
+                "What are the seat height, depth and width? What is the frame made of? How is the seat filled and can it be refilled? Can the cover be replaced? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [FSC, PEFC, OEKO_TEX, SWAN, GREEN_CLAIMS],
+    },
+    {
+        "slug": "coffee-tables",
+        "group": "Furniture",
+        "noun": "coffee tables",
+        "title": "Coffee tables",
+        "edit_slug": "coffee-tables",
+        "summary": "Height, size and proportion, materials and edges for the low table in front of the sofa.",
+        "about": (
+            "A coffee table sits between the people and the things they put down: a cup, a book, a candle, a "
+            "remote. It anchors a seating group and decides how easily you can move through it. They range from "
+            "low round tables to long rectangular ones, nests of two or three, tables with a shelf and tables "
+            "that lift to become a work surface."
+        ),
+        "teasers": [
+            "Height is commonly about the same as the sofa seat, or slightly lower, around 35-45 cm.",
+            "Leave about 40-50 cm between the table and the sofa so you can reach it and still walk by.",
+            "Check how the top handles heat, water and scratches, and what the edges are like at knee height.",
+        ],
+        "intro": (
+            "A coffee table is small and often the centre of a room, so proportion and use matter more than "
+            "decoration. These are the things worth settling before you choose one. The numbers are common rules "
+            "of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Height", [
+                "A coffee table is commonly about the height of the sofa seat or a little lower, around 35-45 cm. Much higher and it is awkward to reach over; much lower and it is hard to put anything on or lean forward to.",
+                "If you eat or work at it, a slightly higher table is more comfortable.",
+            ]),
+            ("Size and room", [
+                "A common guide is a table about two thirds the length of the sofa, so it does not dominate.",
+                "Leave about 40-50 cm between the table and the sofa, so you can reach it and still walk past.",
+                "A round or oval table is kinder to a small room and to knees; a rectangular one holds more.",
+                "Nests of two or three tables can be pulled apart and tucked away when you need the floor.",
+            ]),
+            ("Top and material", [
+                "Solid wood can be sanded and refinished. Veneer is more stable but allows less refinishing. Stone and ceramic resist heat and scratches but are heavy and can chip at the edges. Glass shows every mark.",
+                "Oiled wood marks more easily but is easier to repair in one spot. A lacquered finish resists marks and is harder to repair.",
+                "Whatever the top, use coasters under hot cups and wipe standing water, especially on wood and untreated stone.",
+            ]),
+            ("Edges and safety", [
+                "A coffee table sits at knee and shin height. Rounded or softened edges and corners are kinder where children or pets play.",
+                "Glass tops should be toughened or laminated safety glass.",
+            ]),
+            ("Storage and use", [
+                "A shelf or a drawer adds storage but also fills up. Consider whether you want a clear surface to put things on.",
+                "A table that raises or tilts is useful for work and meals, but check how stable it is when raised.",
+            ]),
+            ("Questions worth asking the maker", [
+                "What are the exact height and top dimensions? What is the top made of and how is it finished? Is the glass safety glass? Is the top heat-resistant? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [FSC, PEFC, ("Safety glass", "https://en.wikipedia.org/wiki/Safety_glass"), SWAN, GREEN_CLAIMS],
+    },
+    {
+        "slug": "side-tables",
+        "group": "Furniture",
+        "noun": "side tables",
+        "title": "Side tables",
+        "edit_slug": "side-tables",
+        "summary": "Height, footprint, stability and materials for the small table beside a sofa, chair or bed.",
+        "about": (
+            "A side table is the small surface beside a sofa, an armchair or a bed: somewhere to rest a drink, a "
+            "lamp or a book without getting up. It is often the smallest piece in the room and the one that is "
+            "moved the most. They range from tall slim tables and round pedestals to trays on legs, drum shapes "
+            "and tables that slide over a chair arm."
+        ),
+        "teasers": [
+            "Match the height to the arm of the chair or sofa, commonly about the same or a little lower.",
+            "Check the top is big enough for what you will put on it, and whether it is stable if bumped.",
+            "A lamp on a side table needs a base that will not tip, and room for the cable.",
+        ],
+        "intro": (
+            "A side table does one small job well, and the details decide whether it does. These are the things "
+            "worth settling before you choose one. The numbers are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Height", [
+                "A side table is commonly about the same height as the arm of the chair or sofa, or a little lower, so you can reach it without leaning.",
+                "Beside a bed, the top is commonly about level with the mattress or slightly above it.",
+            ]),
+            ("Top and footprint", [
+                "Decide what goes on it: a cup and a book need a smaller top than a lamp, a plant and a tray. A top around 40-50 cm across is common.",
+                "A pedestal or a wide base steadies a tall table; a slim leg is lighter and easier to move but tips more easily.",
+                "Rounded corners are kinder in tight spaces and near children.",
+            ]),
+            ("Stability", [
+                "Press down on the edge of the top. A table that wobbles or tips when you rest a hand on it is a table you will stop using.",
+                "Uneven floors and soft carpets affect stability; look for adjustable feet.",
+            ]),
+            ("Materials", [
+                "Solid wood can be refinished; stone and ceramic resist heat and scratches but are heavy; metal can dent or scratch; glass shows marks.",
+                "Whatever the top, use a coaster under hot cups and wipe standing water.",
+            ]),
+            ("With a lamp", [
+                "A lamp on a side table needs a stable surface, space for its base and a route for the cable that does not run across the walkway.",
+            ]),
+            ("Questions worth asking the maker", [
+                "What are the exact height and top dimensions? What is the top made of and how is it finished? Are there adjustable feet? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [FSC, PEFC, SWAN, GREEN_CLAIMS],
+    },
+    {
+        "slug": "cabinets",
+        "group": "Furniture",
+        "noun": "cabinets",
+        "title": "Cabinets",
+        "edit_slug": "cabinets",
+        "summary": "Size, doors and drawers, fixing to the wall, materials and care for storage you live with.",
+        "about": (
+            "A cabinet is storage that stays in view, so how it opens, how it stands and what it is made of "
+            "matter as much as what it holds. They range from low units and tall display cabinets to glazed "
+            "cases, cupboards on legs and wall-mounted cabinets, with doors, drawers or both."
+        ),
+        "teasers": [
+            "Measure the space and the clear room needed for doors and drawers to open.",
+            "Tall or top-heavy cabinets should be fixed to the wall to prevent tipping.",
+            "Check the hinges, runners and shelves, and whether the shelves are adjustable.",
+        ],
+        "intro": (
+            "A cabinet is a piece you open every day, so the parts that move are the parts that matter. These are "
+            "the things worth settling before you choose one. The numbers are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Size and placement", [
+                "Measure the wall and the space in front of it, including the room doors and drawers need to open fully.",
+                "Check the depth: deep cabinets hold more but stick out into the room; shallow ones suit hallways.",
+                "Check the plinth or legs against skirting boards and uneven floors; adjustable feet help.",
+            ]),
+            ("Doors and drawers", [
+                "Hinged doors need clear space in front; sliding doors do not. Soft-close hinges and runners are a common feature, but ask whether they can be replaced.",
+                "Drawers on full-extension runners show everything at the back; check the weight a drawer is built to carry.",
+                "A push-to-open door has no handle and needs a gentle touch; check how it works if you have little hands or full arms.",
+            ]),
+            ("Fixing to the wall", [
+                "A tall or top-heavy cabinet can tip if drawers are pulled out or a child climbs it. Fix it to the wall with fittings that suit your wall (concrete, brick, studs or plasterboard).",
+                "A wall-mounted cabinet needs fixings rated for the load and the wall, and often a mounting rail; the weight of what it will hold matters.",
+            ]),
+            ("Inside", [
+                "Adjustable shelves let you change the layout later. Check the shelf's span and the weight it can take.",
+                "Glass shelves and doors should be toughened or laminated safety glass.",
+            ]),
+            ("Materials and finish", [
+                "Solid wood can be refinished; veneer over a core is more stable but allows less refinishing. Lacquered surfaces resist marks and are harder to repair.",
+                "Check whether the back panel and inside are finished, and whether any smell from new finishes fades.",
+            ]),
+            ("Questions worth asking the maker", [
+                "What are the exact dimensions and clear opening room? What is the cabinet made of and how is it finished? How is it fixed to the wall? Are the shelves adjustable? Are spare hinges and runners available? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [FSC, PEFC, ("Safety glass", "https://en.wikipedia.org/wiki/Safety_glass"), KONSUMENTVERKET, SWAN, GREEN_CLAIMS],
+    },
+    {
+        "slug": "rugs",
+        "group": "Objects",
+        "noun": "rugs",
+        "title": "Rugs",
+        "edit_slug": "rugs",
+        "summary": "Size and placement, pile and fibre, backing, care and the questions to ask about how a rug was made.",
+        "about": (
+            "A rug does more than cover a floor: it warms a room, softens the sound in it and ties a group of "
+            "furniture together. The size and the position matter more than the pattern. They range from hand-knotted "
+            "and hand-woven rugs to tufted, flat-woven and machine-made ones, in wool, cotton, jute, silk, "
+            "synthetic fibres and blends."
+        ),
+        "teasers": [
+            "Size matters most: in a living room, the front legs of the sofa and chairs commonly sit on the rug.",
+            "Pile height and fibre decide how it feels underfoot and how it wears and cleans.",
+            "Ask how the rug was made and by whom; some certifications cover this, and each covers one aspect only.",
+        ],
+        "intro": (
+            "A rug is easy to choose too small, and hard to return once it is rolled out. These are the things "
+            "worth settling before you choose one. The numbers are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Size and placement", [
+                "Under a dining table, the rug commonly extends about 60-70 cm beyond the table on every side, so chairs stay on it when pulled out.",
+                "In a living room, a common guide is that at least the front legs of the sofa and chairs sit on the rug; a rug that floats in the middle of the room tends to make it feel smaller.",
+                "In a bedroom, a rug usually extends beyond both sides of the bed, or sits under the lower two thirds of it.",
+                "Measure the room and mark the rug's outline on the floor with tape before you decide.",
+            ]),
+            ("Pile and weave", [
+                "Pile height decides the feel: a high pile is soft and holds dust; a low or flat weave is easier to clean and suits chairs on wheels and high-traffic areas.",
+                "Hand-knotted rugs are made knot by knot and last for decades; tufted rugs are made faster with a gun and a backing; flat-weaves are woven without pile. Ask which one you are looking at.",
+            ]),
+            ("Fibres", [
+                "Wool is resilient, warm and naturally dirt-resistant, and sheds a little at first. Cotton is easy to wash. Jute and sisal are coarse underfoot and suit rooms where you are not often barefoot. Silk is delicate. Synthetic fibres resist stains and moisture but wear differently.",
+                "A rug in a hallway or a kitchen needs to be tougher than one beside a bed.",
+            ]),
+            ("Underlay and floor", [
+                "A rug pad stops slipping, adds cushioning and protects the floor. Check that the pad is made for your floor: some can mark vinyl or lacquered wood.",
+                "On underfloor heating, check that the rug and the pad are suitable.",
+            ]),
+            ("Care", [
+                "Vacuum regularly, turn the rug now and then so it wears evenly, and deal with spills quickly by blotting rather than rubbing.",
+                "Hand-knotted and silk rugs are best cleaned by a specialist.",
+            ]),
+            ("How it was made", [
+                "Ask where the rug was woven, by whom and under what conditions. Certifications such as GoodWeave focus on child labour and labour conditions in rug weaving; OEKO-TEX focuses on substances in textiles. Each covers one aspect and is not a verdict on the whole product.",
+            ]),
+            ("Questions worth asking the maker", [
+                "What are the exact dimensions and pile height? What is the rug made of, and how was it made? Can it be used with underfloor heating? How should it be cleaned? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [OEKO_TEX, GOODWEAVE, SWAN, GREEN_CLAIMS],
+    },
+    {
+        "slug": "mirrors",
+        "group": "Objects",
+        "noun": "mirrors",
+        "title": "Mirrors",
+        "edit_slug": "mirrors",
+        "summary": "Size, height, glass, hanging and placement for mirrors that light, widen and finish a room.",
+        "about": (
+            "A mirror does a practical job, helping you see yourself, and a spatial one, because it bounces light "
+            "and doubles a view. Where it hangs and what it reflects matter as much as the frame. They range from "
+            "full-length floor mirrors and tall leaning mirrors to wall mirrors in round, oval and arched shapes, "
+            "mirrors with shelves or lights, and small tabletop mirrors."
+        ),
+        "teasers": [
+            "Hang it so the centre sits at about eye level, commonly around 145-155 cm from the floor.",
+            "Think about what it will reflect: a window brings light in; clutter looks twice as big.",
+            "A heavy mirror needs fixings rated for its weight and the wall, and often two people to hang it.",
+        ],
+        "intro": (
+            "A mirror is as much about what it reflects as about how it looks. These are the things worth settling "
+            "before you choose one. The numbers are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Size and height", [
+                "Hang a wall mirror so its centre is at about eye level, commonly around 145-155 cm from the floor. A mirror above a console, sideboard or basin is commonly a little narrower than the piece below it.",
+                "For checking an outfit, a full-length mirror is about 150-180 cm tall; a floor mirror that leans needs a stable angle and a non-slip foot.",
+            ]),
+            ("Placement and light", [
+                "A mirror opposite or beside a window brings daylight further into the room; one opposite a bright light can glare at night.",
+                "Think about what it will reflect. A view, a lamp or a plant doubles well; a bin or a pile of cables does not.",
+                "In a hallway, a mirror helps with a last check on the way out; in a bathroom, check the lighting from the sides, not only from above.",
+            ]),
+            ("The glass", [
+                "Thin glass can show slight distortion. Judge the reflection from a distance, not only up close.",
+                "Antique or aged mirrors have a deliberately uneven surface; that is a look, not a defect.",
+                "Mirrors in children's rooms, near stairs or in a busy hallway should be made from safety glass or have a safety backing film.",
+            ]),
+            ("Hanging and fixing", [
+                "Mirrors can be heavy. Check the weight and use fixings suited to your wall (concrete, brick, studs or plasterboard); often two people hang it.",
+                "A leaning mirror is easier to place but can slip; ask about anti-slip feet and a wall strap.",
+                "Bathrooms and damp rooms need a mirror made for damp: look for edges and a back that are protected from moisture.",
+            ]),
+            ("Care", [
+                "Clean with a soft cloth and a glass cleaner sprayed on the cloth, not on the mirror, so liquid does not run behind the edge.",
+            ]),
+            ("Questions worth asking the maker", [
+                "What are the exact dimensions and weight? Is the glass safety glass or backed with a safety film? How is it hung, and what fixings are included? Is it suitable for a damp room? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [("Mirrors, how they work and are made", "https://en.wikipedia.org/wiki/Mirror"), ("Safety glass", "https://en.wikipedia.org/wiki/Safety_glass"), KONSUMENTVERKET, GREEN_CLAIMS],
+    },
+]
+
 GUIDES_BY_SLUG = {g["slug"]: g for g in GUIDES}
 GROUP_ORDER = ["Furniture", "Lighting", "Objects"]
 
