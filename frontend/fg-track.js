@@ -175,3 +175,29 @@
     init();
   }
 })();
+
+
+/*
+ * Broken-photo fallback (2026-10-11). A maker can take a photo down at any time; the card then showed a broken-image
+ * icon and the alt text. When a card photo fails to load, hide it so the plain tile (its own background) shows instead.
+ * Covers every card style on the site, and the cards search.js adds later (the listener is on the document).
+ */
+(function () {
+  "use strict";
+  var CARD_PHOTOS = ".card-image img, .maker-card-hero img, .recent-card-image img, .edit-photo img, " +
+    ".feature-banner-frame img, .banner-slide img, .cat-tile img, .duo-carousel-frame img";
+  function hide(img) {
+    img.style.visibility = "hidden";
+  }
+  document.addEventListener("error", function (e) {
+    var t = e.target;
+    if (t && t.tagName === "IMG" && t.matches && t.matches(CARD_PHOTOS)) hide(t);
+  }, true);
+  function sweep() {
+    var imgs = document.querySelectorAll(CARD_PHOTOS);
+    for (var i = 0; i < imgs.length; i++) {
+      if (imgs[i].complete && imgs[i].naturalWidth === 0 && imgs[i].getAttribute("src")) hide(imgs[i]);
+    }
+  }
+  if (document.readyState === "complete") sweep(); else window.addEventListener("load", sweep);
+})();

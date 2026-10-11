@@ -47,3 +47,7 @@ jobs:
           git add data/formground.db data/sitemap_lastmod.json docs
           git diff --quiet --cached || git commit -m "Update link-check flags and regenerate brand pages"
           git push
+
+      # After the save, so a broken photo never stops the flags being saved: this step only turns the run red.
+      - name: Check the photos on the home page, hub and Edits
+        run: python scraper/check_curated_images.py

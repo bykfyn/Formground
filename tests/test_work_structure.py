@@ -867,3 +867,20 @@ class SheerdFooterLinkTests(unittest.TestCase):
             if 'href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>' not in text:
                 missing.append(os.path.relpath(f, DOCS))
         self.assertEqual(missing[:5], [])
+
+
+class PhotoSafetyTests(unittest.TestCase):
+    def test_broken_photo_fallback_ships_with_the_shared_script(self):
+        front = (ROOT / "frontend" / "fg-track.js").read_text()
+        self.assertIn("Broken-photo fallback", front)
+        self.assertEqual(front, (DOCS / "fg-track.js").read_text())
+
+    def test_curated_photo_check_finds_the_photos_on_the_pages_people_see_first(self):
+        import sys
+        sys.path.insert(0, str(ROOT / "scraper"))
+        import check_curated_images as c
+        photos = c.photos_by_page()
+        self.assertGreater(len(photos), 150)
+        self.assertTrue(any("index.html" in pages for pages in photos.values()))
+        self.assertTrue(any(p.startswith("edits/") for pages in photos.values() for p in pages))
+        self.assertIn("check_curated_images.py", (ROOT / ".github" / "workflows" / "check_links.yml").read_text())
