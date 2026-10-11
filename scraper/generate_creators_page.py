@@ -66,8 +66,11 @@ def row_html(c):
 
 def edit_html(edit):
     slug = html.escape(edit["slug"])
+    bg = edit.get("bg")     # photo that should sit whole in the frame (shown in full on this background colour)
+    frame = f' style="background: {html.escape(bg)}"' if bg else ""
+    fit = ' style="object-fit: contain"' if bg else ""
     return (f'\n    <p class="cr-label"><span>In profile</span><a href="/edits.html">All Edits &rarr;</a></p>\n'
-            f'    <a class="ed-card" href="/edits/{slug}.html"><span class="ed-photo"><img src="{html.escape(edit["image"])}" alt="" loading="lazy"></span>'
+            f'    <a class="ed-card" href="/edits/{slug}.html"><span class="ed-photo"{frame}><img src="{html.escape(edit["image"])}" alt="" loading="lazy"{fit}></span>'
             f'<span class="ed-title">{html.escape(edit["name"])}</span><span class="ed-line">{html.escape(edit["line"])}</span></a>')
 
 
@@ -93,7 +96,7 @@ def profile_edits(today):
         entry = entries[today.isocalendar()[1] % len(entries)]
         edit = entry["edit"]
         out[group] = {"slug": edit["slug"], "name": entry["name"], "line": edit["standfirst"], "image": edit["hero"],
-                      "page_slug": entry["page_slug"]}
+                      "bg": edit.get("card_bg"), "page_slug": entry["page_slug"]}
     return out
 
 

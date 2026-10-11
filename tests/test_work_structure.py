@@ -734,6 +734,12 @@ class CreatorTextTests(unittest.TestCase):
             self.assertTrue(60 <= words <= 120, (key, words))
             self.assertIn(len(e["paragraphs"]), (2, 3), key)
 
+    def test_card_bg_is_a_hex_colour_when_set(self):
+        for key, entry in self.all.items():
+            bg =(entry.get("edit") or {}).get("card_bg")
+            if bg:
+                self.assertRegex(bg, r"^#[0-9a-fA-F]{6}$", key)
+
     def test_no_independent_or_established_label_and_no_superlatives(self):
         banned = ("independent", "established", "world-famous", "award-winning", "the best", "leading")
         for key, e in self.all.items():

@@ -292,3 +292,8 @@ chips, and the "N finishes" badge was shorter than the brand tags.)
 ## Building the site (2026-10-06)
 - `python3 scraper/build_site.py` runs every generator in the right order, then stamps the asset versions and writes honest sitemap `lastmod` dates (`scraper/sitemap_lastmod.py`, record in `data/sitemap_lastmod.json`). The scrape and check-links workflows call it; do not list generators by hand elsewhere. After editing a hand-written page in `frontend/`, copy it to `docs/` yourself (the build does not).
 - `lastmod` = the date a page's content really changed (versioned asset links ignored). The first build after this change dated every URL that day; from then on only changed pages move.
+
+## Photos in 4:3 frames (2026-10-11)
+- The Creators tiles, the "In profile" cards and Edit heroes crop a photo to fill a 4:3 frame (`object-fit: cover`). A photo that is not close to 4:3 (portrait, or a wide 1.6 product shot) loses legs, edges or the top of the piece.
+- **Rule:** pick photos where the subject sits fully inside a centred 4:3 crop. If a good photo does not, show it whole on its own background: for an "In profile" card set `"card_bg": "<colour>"` on the entry's `edit` block in `data/creator_texts.json`; for a hand-set tile, set `object-fit: contain` and the same background colour on `.group-photo`.
+- **Check:** run `python3 scraper/check_image_fit.py` after adding or changing a hero (or pass image URLs). It lists photos that would be clipped, with the colour to use, and photos on busy backgrounds to look at by eye. The same script's output is the review step before pushing a new profile Edit.
