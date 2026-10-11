@@ -9749,6 +9749,20 @@ def _enrich_prices_from_pages(brand, products, deadline):
     print(f"  Price step for {name}: {filled} of {len(todo)} products priced from their pages.")
 
 
+_URL_FIXES_PATH = Path(__file__).parent.parent / "data" / "dcw_url_fixes.json"
+
+
+def _apply_url_fixes(brand, products):
+    """DCW éditions' feed lists some pieces under US-market handles that 404 on the main storefront; fix_dcw_links.py
+    verifies the working address of each and records it in data/dcw_url_fixes.json, applied here after every scrape."""
+    if brand["name"] != "DCW éditions" or not _URL_FIXES_PATH.exists():
+        return
+    fixes = json.loads(_URL_FIXES_PATH.read_text())
+    for p in products:
+        if p.get("product_url") in fixes:
+            p["product_url"] = fixes[p["product_url"]]
+
+
 def _scrape_one_brand(brand, extractor):
     """
     Runs in a worker thread (see run()) - touches no shared state, only
@@ -9763,6 +9777,7 @@ def _scrape_one_brand(brand, extractor):
     brand_start = time.monotonic()
     try:
         products = extractor(brand)
+        _apply_url_fixes(brand, products)
         _enrich_prices_from_pages(brand, products, brand_start + MAX_SECONDS_PER_BRAND - 20)
     except Exception as e:
         return brand, None, round(time.monotonic() - brand_start, 1), str(e)
