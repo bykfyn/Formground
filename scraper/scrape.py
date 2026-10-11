@@ -1633,6 +1633,8 @@ def extract_marset(brand):
             "dimensions": "",
             "notes": "",
             "image_url": image_url,
+            # the catalog page names no designers; the Fragile family's own pages credit Jaume Ramírez (checked 2026-10-11)
+            "designer": "Jaume Ramírez" if "/fragile" in product_url else "",
         })
 
     return products
