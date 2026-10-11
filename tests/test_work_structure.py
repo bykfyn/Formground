@@ -748,7 +748,7 @@ class CreatorTextTests(unittest.TestCase):
         for key, e in self.all.items():
             labels = [k for k, _ in e["facts"]]
             self.assertEqual(labels, sorted(labels, key=order.index), key)
-            self.assertTrue({"Country", "Type", "Website"} <= set(labels), key)
+            self.assertTrue({"Type", "Website"} <= set(labels), key)          # Country and City only when we know them
             self.assertTrue(e["sources"] and all(u.startswith("https://") for _, u in e["sources"]), key)
 
     def _page(self, e):
