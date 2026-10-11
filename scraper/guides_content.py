@@ -833,6 +833,323 @@ GUIDES += [
     },
 ]
 
+ERGONOMICS = ("Ergonomics, the study of how people fit the things they use", "https://en.wikipedia.org/wiki/Human_factors_and_ergonomics")
+WORK_ENV = ("Work environment advice from the Swedish Work Environment Authority", "https://www.av.se/en/")
+
+GUIDES += [
+    {
+        "slug": "stools",
+        "group": "Furniture",
+        "noun": "stools",
+        "title": "Stools",
+        "edit_slug": "stools",
+        "summary": "Height, seat shape, stability and materials for the small seat that does many jobs.",
+        "about": (
+            "A stool is the most flexible seat in a home: at a table, beside a bed, in a hallway to put on shoes, "
+            "at a worktop or as an extra surface. With no back it takes little space and is easy to move. They "
+            "range from low three-legged stools and stacking stools to padded seats, step stools and tall "
+            "stools for counters."
+        ),
+        "teasers": [
+            "Match the height to the surface: commonly around 45 cm at a dining table, 60-65 cm at a counter.",
+            "Check the seat shape and size, because with no back the seat does all the work.",
+            "Three legs sit steadier on an uneven floor; four need a level one.",
+        ],
+        "intro": (
+            "A stool does many jobs, so first decide which one it is for. These are the things worth settling "
+            "before you choose one. The numbers are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Height", [
+                "A stool at a dining table is commonly about 45 cm to the seat. At a kitchen counter, around 60-65 cm; at a taller bar, around 70-75 cm. Leave about 25-30 cm between the seat and the underside of the surface.",
+                "A low stool, around 30-40 cm, works as a perch, a footrest or a side table.",
+            ]),
+            ("Seat", [
+                "With no back, the seat does all the work: a shaped or slightly dished seat is more comfortable for longer than a flat one.",
+                "A seat around 30-35 cm across suits short sittings; a wider one suits longer.",
+                "A padded seat is softer; check whether the cover can be replaced.",
+            ]),
+            ("Stability", [
+                "Three legs sit steadily on an uneven floor, while four need a level one. Legs that splay outward are harder to tip.",
+                "A footrest ring helps at counter height, and also braces the legs.",
+                "Check the weight rating if more than one person will use it, or if it will be used as a step.",
+            ]),
+            ("Materials and care", [
+                "Solid wood can be refinished. Metal can scratch or dent; powder-coated finishes can chip. Stone, ceramic and concrete are heavy and can chip at the edges.",
+                "Leather and fabric padding age differently; ask whether the cover can be replaced.",
+                "Check the feet. Glides or felt pads protect floors; rubber feet may mark some floors.",
+            ]),
+            ("Stacking and storing", [
+                "Stacking stools save space but add wear where they touch. Check how many can be stacked and whether they mark each other.",
+            ]),
+            ("Questions worth asking the maker", [
+                "What is the exact seat height and width? What is the weight rating? Are the feet replaceable? Can the seat cover be replaced? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [FSC, PEFC, ERGONOMICS, SWAN, GREEN_CLAIMS],
+    },
+    {
+        "slug": "bar-stools",
+        "group": "Furniture",
+        "noun": "bar stools",
+        "title": "Bar stools",
+        "edit_slug": "bar-stools",
+        "summary": "Counter and bar height, footrests, backs, swivel and materials for tall seats.",
+        "about": (
+            "A bar stool lifts you to counter or bar height, so the choice starts with a measurement. A stool that "
+            "is too tall or too low is uncomfortable however good it looks. They range from backless stools and "
+            "stools with a low back to full chairs on tall legs, in fixed, swivel and adjustable-height versions."
+        ),
+        "teasers": [
+            "Measure the counter, not the room: counter height is commonly 85-95 cm, bar height 105-115 cm.",
+            "Leave about 25-30 cm between the seat and the underside of the surface.",
+            "Look for a footrest, a stable base and floor protection.",
+        ],
+        "intro": (
+            "A bar stool is chosen from a measurement: the height of the surface it sits at. These are the things "
+            "worth settling before you choose one. The numbers are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Seat height", [
+                "Measure from the floor to the underside of the counter or bar. Leave about 25-30 cm between the seat and that surface.",
+                "Counter height is commonly 85-95 cm, which suits a seat of about 60-65 cm. Bar height is commonly 105-115 cm, which suits about 70-80 cm.",
+                "An adjustable-height stool covers different surfaces, but check how the mechanism wears and whether it can be replaced.",
+            ]),
+            ("Back, arms and swivel", [
+                "A backless stool tucks fully under the counter and suits short stays. A back supports longer sitting; a low back is a compromise.",
+                "A swivel makes getting in and out easy and suits tight spaces; a fixed stool is steadier. Look for a swivel that stops or returns.",
+                "Check the width of the seat and the space between stools; allow around 60-65 cm each along the counter.",
+            ]),
+            ("Footrest and stability", [
+                "A footrest matters at this height: with none, feet dangle. A ring or a rail also braces the legs.",
+                "Check the base. A wide base resists tipping; a narrow base needs more care. Check the weight rating.",
+            ]),
+            ("Floors and noise", [
+                "Fit glides or felt pads that suit the floor. Some feet mark vinyl or lacquered floors, and some stools scrape when pulled out.",
+            ]),
+            ("Materials and care", [
+                "Solid wood can be refinished. Metal frames can scratch; powder-coated finishes can chip. Upholstery and leather age differently, and a wipeable seat suits a kitchen.",
+            ]),
+            ("Questions worth asking the maker", [
+                "What is the exact seat height, and is it adjustable? What is the weight rating? Which feet are fitted, and can they be replaced? Can the seat cover be replaced? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [("Bar stools", "https://en.wikipedia.org/wiki/Bar_stool"), FSC, PEFC, ERGONOMICS, GREEN_CLAIMS],
+    },
+    {
+        "slug": "beds",
+        "group": "Furniture",
+        "noun": "beds",
+        "title": "Beds",
+        "edit_slug": "beds",
+        "summary": "Size, base, headboard, materials and assembly for the piece you spend a third of your life on.",
+        "about": (
+            "A bed frame is the biggest piece in a bedroom, and the mattress and base inside it matter as much as "
+            "the look. Standards for size differ by country, so measuring both room and mattress is the first step. "
+            "Frames range from simple platforms and slatted beds to upholstered beds, four-posters, daybeds and "
+            "beds with storage."
+        ),
+        "teasers": [
+            "Mattress sizes differ by country (for example 160 x 200 cm is common in Sweden); check the frame fits your mattress.",
+            "Check how the base supports the mattress: slats, a solid platform or a sprung base.",
+            "Measure the room, the door and the stairwell, as a bed has to get into the room.",
+        ],
+        "intro": (
+            "A bed is a frame around a mattress, and the two have to fit. These are the things worth settling "
+            "before you choose one. The numbers are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Size and fit", [
+                "Mattress sizes differ between countries. In Sweden, for example, 160 x 200 cm is a common double; elsewhere a king or queen size is different. Check the frame's internal dimensions against the mattress you will use.",
+                "Allow space around the bed: around 60-70 cm on each side makes it easy to walk past and to make the bed.",
+                "Check the overall height of the frame and the headboard if you will have a window, a wall light or a shelf behind it.",
+            ]),
+            ("Base and support", [
+                "A slatted base lets the mattress breathe and is common; the slats' spacing and number matter for some mattresses, so check what the mattress maker requires.",
+                "A solid platform or a sprung base feels different and suits different mattresses. Ask which the frame is designed for.",
+                "A double bed benefits from a centre support, so the base does not sag.",
+            ]),
+            ("Headboard and design", [
+                "A headboard protects the wall and gives something to lean on; a low or no headboard suits a small room or a bed against a wall.",
+                "Upholstered frames are soft and quiet; ask whether the cover can be removed or replaced.",
+            ]),
+            ("Storage", [
+                "Drawers or a lifting base add storage but also weight and parts that move. Check how easily they open and how much space they need beside or at the end of the bed.",
+            ]),
+            ("Materials and construction", [
+                "Solid wood frames can be tightened and refinished; check how the joints are made and whether the bed can be taken apart and put together again if you move.",
+                "Check the wood's origin and finish if that matters to you, and the finish if the bed is for a child.",
+            ]),
+            ("Delivery and assembly", [
+                "Measure the doors, stairs and turns the bed has to pass. Many frames arrive flat-packed or in sections.",
+                "Check whether assembly is included and what tools are needed.",
+            ]),
+            ("Questions worth asking the maker", [
+                "What are the internal dimensions? What base is included, and what support does it give? Can it be taken apart? Is assembly included? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [("Mattresses, types and sizes", "https://en.wikipedia.org/wiki/Mattress"), FSC, PEFC, OEKO_TEX, SWAN, GREEN_CLAIMS],
+    },
+    {
+        "slug": "desks",
+        "group": "Furniture",
+        "noun": "desks",
+        "title": "Desks",
+        "edit_slug": "desks",
+        "summary": "Height, depth, cables, storage and light for the surface you work at every day.",
+        "about": (
+            "A desk is a work surface you use for hours, so its height, depth and edges matter more than its looks. "
+            "Where it stands, the light it gets and the cables it has to hide are part of the choice. They range "
+            "from slim writing desks and console desks to large work desks, standing and height-adjustable desks "
+            "and desks with drawers."
+        ),
+        "teasers": [
+            "Desk height is commonly about 72-75 cm; check your chair, elbows and screen.",
+            "Allow depth for a screen: around 60-80 cm is common.",
+            "Check where cables, sockets and light will go before you choose.",
+        ],
+        "intro": (
+            "A desk is the surface you work at, so the details that fit your body matter. These are the things "
+            "worth settling before you choose one. The numbers are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Height and posture", [
+                "Desk height is commonly about 72-75 cm. Check it against your chair: your forearms should rest on the surface with the elbows at about a right angle.",
+                "The top of a screen should be about at eye level or slightly below. A laptop usually needs a stand or a separate screen to get this right.",
+                "A height-adjustable desk lets you stand part of the time; check the range, the motor's noise and whether it remains stable when raised.",
+            ]),
+            ("Size and depth", [
+                "A depth of around 60-80 cm is common; a deeper desk suits one or two screens or paper work. A width of around 120-160 cm suits one person.",
+                "Check the space under the top for your legs and the chair, including any drawers or a frame beam.",
+            ]),
+            ("Cables and power", [
+                "Plan where the cables will go: a cut-out, a tray, a channel or a leg that can carry them. Check the distance to the socket.",
+                "A desk against a wall may be fine; a desk in the middle of a room needs a different solution.",
+            ]),
+            ("Storage", [
+                "Drawers add storage and weight; a shelf or a tray keeps things off the surface. A clean desk often works better with a place for what you need every day.",
+            ]),
+            ("Light", [
+                "Place a desk so that daylight comes from the side rather than from behind or in front of the screen. A lamp, set on the side opposite your writing hand, reduces shadows.",
+            ]),
+            ("Materials and care", [
+                "Solid wood can be refinished; laminate and veneer resist wear in different ways. Glass shows marks, and metal can scratch.",
+                "A top with a soft finish is kinder to wrists and a mouse; a hard one is easier to clean. A desk mat can help.",
+            ]),
+            ("Questions worth asking the maker", [
+                "What are the exact height and top dimensions? If adjustable, what is the range and weight limit? Where do cables run? What is the top made of and how is it finished? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [ERGONOMICS, WORK_ENV, FSC, PEFC, GREEN_CLAIMS],
+    },
+    {
+        "slug": "shelving",
+        "group": "Furniture",
+        "noun": "shelving",
+        "title": "Shelving",
+        "edit_slug": "shelving",
+        "summary": "Load, spacing, fixing to the wall and materials for shelves that hold what you own.",
+        "about": (
+            "Shelving holds what you own, so the weight it takes and how it is fixed matter before the look. "
+            "Open shelves show everything; deeper or taller ones give more room but need more care. They range "
+            "from wall-mounted shelves and rails to freestanding bookcases, ladder shelves and modular systems "
+            "that grow."
+        ),
+        "teasers": [
+            "Check the load per shelf: books are heavy, commonly around 20-25 kg per metre of shelf.",
+            "Tall or freestanding shelving should be fixed to the wall to stop it tipping.",
+            "Wall-mounted shelves need fixings that suit your wall (concrete, brick, studs or plasterboard).",
+        ],
+        "intro": (
+            "Shelves carry weight, and a shelf that bends or a unit that tips is more than a nuisance. These are the "
+            "things worth settling before you choose some. The numbers are common rules of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Load and span", [
+                "Books are heavy, commonly around 20-25 kg per metre of shelf. Check the load the maker states for a shelf, and for the whole unit.",
+                "A long span between supports bends over time, especially in thin boards. A shelf around 80 cm or shorter is stiffer; for a longer span, check the thickness and any reinforcement.",
+                "Heavy things go on lower shelves.",
+            ]),
+            ("Fixing to the wall", [
+                "Tall or freestanding shelving can tip if a child climbs it or the load is uneven. Fix it to the wall with fittings that suit your wall.",
+                "Wall-mounted shelves need fixings rated for the load and the wall: concrete, brick, studs and plasterboard each need different ones. Check what is included, and whether it suits your wall.",
+                "A rail or track system adds adjustment; check how it is fixed and how much weight it carries.",
+            ]),
+            ("Depth and spacing", [
+                "A depth of about 25-30 cm suits books; about 35-40 cm suits storage boxes and larger objects. Deeper shelves are harder to reach into.",
+                "Adjustable shelves let you change the layout later; check how they are held in place.",
+            ]),
+            ("Open or closed", [
+                "Open shelving shows everything, which suits objects and books, and collects dust. Doors or boxes hide the rest.",
+            ]),
+            ("Materials and care", [
+                "Solid wood can be refinished; veneer resists warping better but allows less refinishing. Metal and glass suit different looks; glass shelves should be toughened or laminated safety glass.",
+                "Check the edges and the finish where things will be put on and taken off.",
+            ]),
+            ("Modular and growing systems", [
+                "Modular systems let you add to a unit over time. Check that parts are still being made, and that new ones will match.",
+            ]),
+            ("Questions worth asking the maker", [
+                "What load does each shelf take, and the whole unit? How is it fixed to the wall, and what fixings are included? Are the shelves adjustable? Can I add parts later? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [KONSUMENTVERKET, ("Safety glass", "https://en.wikipedia.org/wiki/Safety_glass"), FSC, PEFC, GREEN_CLAIMS],
+    },
+    {
+        "slug": "sideboards",
+        "group": "Furniture",
+        "noun": "sideboards",
+        "title": "Sideboards",
+        "edit_slug": "sideboards",
+        "summary": "Size, doors and drawers, legs, wall fixing and finish for the long, low piece of storage.",
+        "about": (
+            "A sideboard is long, low storage that doubles as a surface: for a lamp, a vase, a record player or the "
+            "serving dishes at dinner. It often anchors a wall, so proportion and the space in front of it matter. "
+            "They range from slim sideboards on legs to wide, low units with sliding doors, drawers or both, in "
+            "wood, lacquer, metal and stone."
+        ),
+        "teasers": [
+            "Measure the wall and the room in front of it, including how far doors and drawers open.",
+            "Height is commonly about 70-90 cm; a lower unit suits a low sofa or a window.",
+            "Check the load rating, the leg or plinth, and whether it can be fixed to the wall.",
+        ],
+        "intro": (
+            "A sideboard is storage you open every day and a surface you put things on, so how it moves and how it "
+            "stands matter. These are the things worth settling before you choose one. The numbers are common rules "
+            "of thumb, not fixed rules."
+        ),
+        "sections": [
+            ("Size and placement", [
+                "Measure the wall and the room in front of it, including the space doors and drawers need to open. Sliding doors need less space in front.",
+                "Height is commonly about 70-90 cm. A lower sideboard suits a space under a window or behind a low sofa; a higher one suits a dining room.",
+                "Depth is commonly about 40-50 cm; a shallower one suits a hallway.",
+            ]),
+            ("Doors and drawers", [
+                "Check what the doors and drawers do: hinged doors, sliding doors and push-to-open each feel different. Soft-close is common; ask whether the parts can be replaced.",
+                "Drawers on full-extension runners show everything at the back. Check the weight a drawer is built to carry.",
+            ]),
+            ("Legs, plinth and floor", [
+                "Legs let you see the floor and clean beneath; a plinth looks heavier and is steadier. Check adjustable feet for an uneven floor.",
+                "A heavy sideboard needs felt or glides that protect the floor.",
+            ]),
+            ("Fixing to the wall", [
+                "A tall or deep sideboard can tip, and a wall-mounted one needs fixings that suit your wall. Check what the maker supplies and the load it is rated for.",
+            ]),
+            ("Top and finish", [
+                "A sideboard top takes hot dishes, lamps and drinks. Solid wood can be refinished; lacquered tops resist marks and are harder to repair; stone resists heat and scratches but is heavy.",
+                "Use coasters and trivets whatever the top.",
+            ]),
+            ("Cables and use as a media unit", [
+                "If it will hold a television or speakers, check for cable cut-outs and for ventilation, and ask whether glass or perforated doors suit remote controls.",
+            ]),
+            ("Questions worth asking the maker", [
+                "What are the exact dimensions and clear opening room? What load does the top and each shelf take? How is it fixed to the wall? What is the top made of and how is it finished? What are the delivery and return terms?",
+            ]),
+        ],
+        "sources": [KONSUMENTVERKET, FSC, PEFC, SWAN, GREEN_CLAIMS],
+    },
+]
+
 GUIDES_BY_SLUG = {g["slug"]: g for g in GUIDES}
 GROUP_ORDER = ["Furniture", "Lighting", "Objects"]
 
