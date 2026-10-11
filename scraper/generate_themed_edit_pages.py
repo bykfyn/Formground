@@ -291,7 +291,7 @@ THEMES = [
             "light to where you sit: a reading chair, a sofa corner, the dark "
             "end of a room. Every product links straight to the maker's own site."
         ),
-        "hero_image": ("Minimalux", "Rota: Floor Lamp"),
+        "hero_image": ("Sé Collections", "Moirai Floor Lamp Trio"),
     },
     {
         "slug": "chairs",

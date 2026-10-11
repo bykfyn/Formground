@@ -204,55 +204,44 @@ EDITS_PAGE_CSS = (
      the tile fills both rows. A sibling link layer, not a wrapping <a>, so the
      edit link and the maker link never nest. */
   .edits-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin: 34px 0 14px; }
-  .edit-feature {
-    grid-column: span 2; aspect-ratio: 1 / 1;
-    position: relative; overflow: hidden; margin: 0;
-    border: 0.5px solid var(--border); background: var(--surface-1);
-  }
-  .edit-feature img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
-  .edit-feature:hover img { transform: scale(1.03); }
-  .edit-feature .cat-link { position: absolute; inset: 0; z-index: 1; }
-  /* soft top scrim so the white title reads on light photos too */
-  .edit-feature::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 40%; z-index: 1; pointer-events: none;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0)); }
-  .edit-feature .cat-label { position: absolute; top: 16px; left: 16px; right: 16px; z-index: 2; margin: 0; pointer-events: none;
-    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.15; color: #fff; letter-spacing: -0.005em; }
-  .edit-feature .cat-label small { display: block; margin-top: 4px; font-family: inherit; font-weight: 600; font-size: 12px; opacity: 0.85; letter-spacing: 0; }
-  .edit-feature .cat-details {
-    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-    padding: 36px 16px 14px; padding-right: 130px;
-    background: linear-gradient(to top, rgba(0,0,0,0.68), rgba(0,0,0,0));
-    color: #fff; opacity: 0; transform: translateY(6px);
-    transition: opacity 0.25s ease, transform 0.25s ease; pointer-events: none;
-  }
-  .edit-feature:hover .cat-details { opacity: 1; transform: translateY(0); }
-  .edit-feature .product-name { display: block; font-size: 13.5px; font-weight: 600; margin: 0 0 2px; }
-  .edit-feature .product-maker { display: block; font-size: 12px; opacity: 0.85; }
+  /* Edit tiles (2026-10-11, user: the grey shading behind the title was not as crisp as the rest of the site): the
+     home page's own row pattern - the title above (14px / 600) with the kind on the right in muted grey, then a clean
+     photo with no text or shading on it. On desktop, hovering the photo shows a small light credit pill (the pictured
+     item, linked to its maker); on touch screens and phones it is not shown (the item is credited inside the Edit). */
+  .maker-grid { row-gap: 30px; }
+  .edit-feature { grid-column: span 2; position: relative; margin: 0; }
+  .edit-feature .edit-link { display: block; color: inherit; text-decoration: none; }
+  .edit-feature .edit-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0 0 12px; }
+  .edit-feature .edit-title { font-size: 14px; font-weight: 600; color: var(--text-primary); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-feature .edit-kind { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+  .edit-feature .edit-link:hover .edit-title { text-decoration: underline; }
+  .edit-feature .edit-photo { display: block; aspect-ratio: 1 / 1; position: relative; overflow: hidden;
+    border: 0.5px solid var(--border); background: var(--surface-1); }
+  .edit-feature .edit-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .edit-feature:hover .edit-photo img { transform: scale(1.03); }
   .edit-feature .visit-source {
-    position: absolute; bottom: 12px; right: 12px; z-index: 3;
-    display: flex; align-items: center; gap: 5px;
-    font-size: 11px; font-weight: 600; color: #fff;
-    background: rgba(255,255,255,0.16); border: 0.5px solid rgba(255,255,255,0.4);
-    backdrop-filter: blur(4px); padding: 6px 10px; border-radius: 999px; text-decoration: none;
-    opacity: 0; transform: translateY(6px);
-    transition: opacity 0.25s ease, transform 0.25s ease, background 0.15s ease;
+    position: absolute; bottom: 12px; right: 12px; z-index: 2; max-width: calc(100% - 24px);
+    display: flex; align-items: center; gap: 5px; overflow: hidden; white-space: nowrap;
+    font-size: 12px; font-weight: 600; color: var(--text-primary); background: rgba(255,255,255,0.94);
+    padding: 6px 11px; border-radius: 999px; text-decoration: none; border: 0.5px solid var(--border);
+    opacity: 0; transform: translateY(4px); pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
-  .edit-feature:hover .visit-source { opacity: 1; transform: translateY(0); }
-  .edit-feature .visit-source:hover { background: rgba(255,255,255,0.3); }
-  .edit-feature .visit-source i { font-size: 13px; }
+  .edit-feature .visit-source span { overflow: hidden; text-overflow: ellipsis; }
+  .edit-feature:hover .visit-source { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .edit-feature .visit-source i { font-size: 13px; flex: none; }
   @media (max-width: 959px) {
     .maker-grid { grid-template-columns: repeat(4, 1fr); }
     .edit-feature { grid-column: span 2; }  /* 2 across on the 4-column tier */
   }
   @media (max-width: 639px) {
-    .maker-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .edit-feature { grid-column: span 2; aspect-ratio: 4 / 3; }
-    .edit-feature .cat-label { font-size: 20px; }
+    .maker-grid { grid-template-columns: repeat(2, 1fr); gap: 24px 16px; }
+    .edit-feature { grid-column: span 2; }
+    .edit-feature .edit-photo { aspect-ratio: 4 / 3; }
   }
-  /* Hover never fires on touch: show the product and the maker link always
-     (same breakpoint as the homepage tiles, plus any touch-only device). */
+  /* no hover on touch: the credit pill is not shown there (nothing is laid over the photo on a phone) */
   @media (max-width: 760px), (hover: none) {
-    .edit-feature .cat-details, .edit-feature .visit-source { opacity: 1; transform: none; pointer-events: auto; }
+    .edit-feature .visit-source { display: none; }
   }
 """
 )
@@ -435,19 +424,16 @@ def render_edits_index(themes_data, order=None):
         )
         details = ""
         if hero_product is not None:
-            # the real product pictured, credited and linked to its maker
+            # the real product pictured, credited and linked to its maker (a small pill, on hover)
             src = hero_product["brand_url"] if hero_product.get("link_dead") else hero_product["product_url"]
             details = f"""
-        <div class="cat-details">
-          <span class="product-name">{html.escape(hero_product['product_name'])}</span>
-          <span class="product-maker">{html.escape(hero_product['brand'])}</span>
-        </div>
-        <a class="visit-source" href="{html.escape(src)}" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>"""
+        <a class="visit-source" href="{html.escape(src)}" target="_blank" rel="noopener noreferrer"><span>{html.escape(hero_product['product_name'])} &middot; {html.escape(hero_product['brand'])}</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>"""
         themed_tiles.append((edit_date(theme["slug"]), theme["title"], f"""
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/{theme['slug']}.html" aria-label="Browse {html.escape(theme['title'])}"></a>
-        {image_tag}
-        <p class="cat-label">{html.escape(theme['title'])}<small>{theme_category(theme)}</small></p>{details}
+        <a class="edit-link" href="/edits/{theme['slug']}.html" aria-label="Browse {html.escape(theme['title'])}">
+          <span class="edit-row"><span class="edit-title">{html.escape(theme['title'])}</span><span class="edit-kind">{theme_category(theme)}</span></span>
+          <span class="edit-photo">{image_tag}</span>
+        </a>{details}
       </figure>"""))
     # Profile Edits ("In profile: <name>", see generate_profile_edits.py). Every tile in the hub has the same two lines:
     # the title (what the Edit is about) and a small label under it - the site's own category for a themed Edit
@@ -468,16 +454,13 @@ def render_edits_index(themes_data, order=None):
         if item:
             name, credit, link = item
             details = f"""
-        <div class="cat-details">
-          <span class="product-name">{html.escape(name)}</span>
-          <span class="product-maker">{html.escape(credit)}</span>
-        </div>
-        <a class="visit-source" href="{html.escape(link)}" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>"""
+        <a class="visit-source" href="{html.escape(link)}" target="_blank" rel="noopener noreferrer"><span>{html.escape(name)} &middot; {html.escape(credit)}</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>"""
         profile_tiles.append((entry.get("publish") or edit_date(edit["slug"]), entry["name"], f"""
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/{edit['slug']}.html" aria-label="In profile: {html.escape(entry['name'])}"></a>
-        <img src="{html.escape(sized(edit['hero'], TILE))}" alt="{html.escape(entry['name'])}" loading="lazy">
-        <p class="cat-label">{html.escape(entry['name'])}<small>{creator_texts.KIND[entry['group']]}</small></p>{details}
+        <a class="edit-link" href="/edits/{edit['slug']}.html" aria-label="In profile: {html.escape(entry['name'])}">
+          <span class="edit-row"><span class="edit-title">{html.escape(entry['name'])}</span><span class="edit-kind">{creator_texts.KIND[entry['group']]}</span></span>
+          <span class="edit-photo"><img src="{html.escape(sized(edit['hero'], TILE))}" alt="{html.escape(entry['name'])}" loading="lazy"></span>
+        </a>{details}
       </figure>"""))
     conn.close()
 

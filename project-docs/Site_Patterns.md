@@ -183,10 +183,13 @@ tried on Two Seater Sofas and decided against for Edit pages - it stays on the E
 page keeps its masthead. The grid uses the Work page's own card (photo with share button, name, maker) in its `results-grid`
 and stylesheet (`work-results.css`), like every type page - one product card design site-wide.
 
-Edits hub grid (2026-10-04): every Edit is the same tile - 2 columns wide and 2 rows tall of the 6-column grid
-(a square, 360px at full width; 3 across, 2 on the 4-column tier, one full-width 4:3 tile on phones) - photo
-filling it, the title on it (no piece/maker count: almost every Edit has 12, so it was noise), the pictured product and a "Visit site" pill on hover. No featured
-(larger) tile any more.
+Edits hub grid (2026-10-11): every Edit is the same tile, 2 columns wide of the 6-column grid (3 across, 2 on the 4-column tier,
+one full-width 4:3 tile on phones). It follows the home page's own row pattern: the title above the photo (14px / 600) with the kind
+on the right in muted grey (Maker / Designer / Architect, or Furniture / Lighting / Ceramics / Objects), then a clean square photo with
+nothing laid over it and no shading. On desktop, hovering the photo shows a small light credit pill (the pictured item and its maker,
+linked to the maker's own site); on phones and touch screens the pill is not shown. It replaced the earlier title-on-photo tile with a grey
+top gradient (2026-10-04 to 2026-10-11), which looked less crisp than the rest of the site. The home page hero bento (section 2) keeps its
+white title on the photo: it is a deliberate hero collage, with no shading at rest.
 
 ## 2. Tiles (the home page bento, the Edits hub's featured edit)
 

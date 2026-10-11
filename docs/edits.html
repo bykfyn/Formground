@@ -377,55 +377,44 @@
      the tile fills both rows. A sibling link layer, not a wrapping <a>, so the
      edit link and the maker link never nest. */
   .edits-section-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin: 34px 0 14px; }
-  .edit-feature {
-    grid-column: span 2; aspect-ratio: 1 / 1;
-    position: relative; overflow: hidden; margin: 0;
-    border: 0.5px solid var(--border); background: var(--surface-1);
-  }
-  .edit-feature img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
-  .edit-feature:hover img { transform: scale(1.03); }
-  .edit-feature .cat-link { position: absolute; inset: 0; z-index: 1; }
-  /* soft top scrim so the white title reads on light photos too */
-  .edit-feature::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 40%; z-index: 1; pointer-events: none;
-    background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0)); }
-  .edit-feature .cat-label { position: absolute; top: 16px; left: 16px; right: 16px; z-index: 2; margin: 0; pointer-events: none;
-    font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 24px; line-height: 1.15; color: #fff; letter-spacing: -0.005em; }
-  .edit-feature .cat-label small { display: block; margin-top: 4px; font-family: inherit; font-weight: 600; font-size: 12px; opacity: 0.85; letter-spacing: 0; }
-  .edit-feature .cat-details {
-    position: absolute; left: 0; right: 0; bottom: 0; z-index: 2;
-    padding: 36px 16px 14px; padding-right: 130px;
-    background: linear-gradient(to top, rgba(0,0,0,0.68), rgba(0,0,0,0));
-    color: #fff; opacity: 0; transform: translateY(6px);
-    transition: opacity 0.25s ease, transform 0.25s ease; pointer-events: none;
-  }
-  .edit-feature:hover .cat-details { opacity: 1; transform: translateY(0); }
-  .edit-feature .product-name { display: block; font-size: 13.5px; font-weight: 600; margin: 0 0 2px; }
-  .edit-feature .product-maker { display: block; font-size: 12px; opacity: 0.85; }
+  /* Edit tiles (2026-10-11, user: the grey shading behind the title was not as crisp as the rest of the site): the
+     home page's own row pattern - the title above (14px / 600) with the kind on the right in muted grey, then a clean
+     photo with no text or shading on it. On desktop, hovering the photo shows a small light credit pill (the pictured
+     item, linked to its maker); on touch screens and phones it is not shown (the item is credited inside the Edit). */
+  .maker-grid { row-gap: 30px; }
+  .edit-feature { grid-column: span 2; position: relative; margin: 0; }
+  .edit-feature .edit-link { display: block; color: inherit; text-decoration: none; }
+  .edit-feature .edit-row { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin: 0 0 12px; }
+  .edit-feature .edit-title { font-size: 14px; font-weight: 600; color: var(--text-primary); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .edit-feature .edit-kind { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+  .edit-feature .edit-link:hover .edit-title { text-decoration: underline; }
+  .edit-feature .edit-photo { display: block; aspect-ratio: 1 / 1; position: relative; overflow: hidden;
+    border: 0.5px solid var(--border); background: var(--surface-1); }
+  .edit-feature .edit-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
+  .edit-feature:hover .edit-photo img { transform: scale(1.03); }
   .edit-feature .visit-source {
-    position: absolute; bottom: 12px; right: 12px; z-index: 3;
-    display: flex; align-items: center; gap: 5px;
-    font-size: 11px; font-weight: 600; color: #fff;
-    background: rgba(255,255,255,0.16); border: 0.5px solid rgba(255,255,255,0.4);
-    backdrop-filter: blur(4px); padding: 6px 10px; border-radius: 999px; text-decoration: none;
-    opacity: 0; transform: translateY(6px);
-    transition: opacity 0.25s ease, transform 0.25s ease, background 0.15s ease;
+    position: absolute; bottom: 12px; right: 12px; z-index: 2; max-width: calc(100% - 24px);
+    display: flex; align-items: center; gap: 5px; overflow: hidden; white-space: nowrap;
+    font-size: 12px; font-weight: 600; color: var(--text-primary); background: rgba(255,255,255,0.94);
+    padding: 6px 11px; border-radius: 999px; text-decoration: none; border: 0.5px solid var(--border);
+    opacity: 0; transform: translateY(4px); pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
-  .edit-feature:hover .visit-source { opacity: 1; transform: translateY(0); }
-  .edit-feature .visit-source:hover { background: rgba(255,255,255,0.3); }
-  .edit-feature .visit-source i { font-size: 13px; }
+  .edit-feature .visit-source span { overflow: hidden; text-overflow: ellipsis; }
+  .edit-feature:hover .visit-source { opacity: 1; transform: translateY(0); pointer-events: auto; }
+  .edit-feature .visit-source i { font-size: 13px; flex: none; }
   @media (max-width: 959px) {
     .maker-grid { grid-template-columns: repeat(4, 1fr); }
     .edit-feature { grid-column: span 2; }  /* 2 across on the 4-column tier */
   }
   @media (max-width: 639px) {
-    .maker-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
-    .edit-feature { grid-column: span 2; aspect-ratio: 4 / 3; }
-    .edit-feature .cat-label { font-size: 20px; }
+    .maker-grid { grid-template-columns: repeat(2, 1fr); gap: 24px 16px; }
+    .edit-feature { grid-column: span 2; }
+    .edit-feature .edit-photo { aspect-ratio: 4 / 3; }
   }
-  /* Hover never fires on touch: show the product and the maker link always
-     (same breakpoint as the homepage tiles, plus any touch-only device). */
+  /* no hover on touch: the credit pill is not shown there (nothing is laid over the photo on a phone) */
   @media (max-width: 760px), (hover: none) {
-    .edit-feature .cat-details, .edit-feature .visit-source { opacity: 1; transform: none; pointer-events: auto; }
+    .edit-feature .visit-source { display: none; }
   }
 </style>
 </head>
@@ -457,264 +446,186 @@
   </div>
   <div class="maker-grid">
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/byarums-bruk.html" aria-label="In profile: Byarums Bruk"></a>
-        <img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/classicsoffa.jpg?v=1705328286&amp;width=1000" alt="Byarums Bruk" loading="lazy">
-        <p class="cat-label">Byarums Bruk<small>Maker</small></p>
-        <div class="cat-details">
-          <span class="product-name">Classic soffa</span>
-          <span class="product-maker">Byarums Bruk</span>
-        </div>
-        <a class="visit-source" href="https://www.byarumsbruk.se/products/classic-soffa" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/byarums-bruk.html" aria-label="In profile: Byarums Bruk">
+          <span class="edit-row"><span class="edit-title">Byarums Bruk</span><span class="edit-kind">Maker</span></span>
+          <span class="edit-photo"><img src="https://cdn.shopify.com/s/files/1/0599/8673/9244/products/classicsoffa.jpg?v=1705328286&amp;width=1000" alt="Byarums Bruk" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.byarumsbruk.se/products/classic-soffa" target="_blank" rel="noopener noreferrer"><span>Classic soffa &middot; Byarums Bruk</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/garsnas.html" aria-label="In profile: Gärsnäs"></a>
-        <img src="https://garsnas.se/wp-content/uploads/2016/02/GARSh_0007-810x1080.jpg" alt="Gärsnäs" loading="lazy">
-        <p class="cat-label">Gärsnäs<small>Maker</small></p>
-        <div class="cat-details">
-          <span class="product-name">Button fåtölj*</span>
-          <span class="product-maker">Gärsnäs</span>
-        </div>
-        <a class="visit-source" href="https://garsnas.se/product/button-ii-2/" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/garsnas.html" aria-label="In profile: Gärsnäs">
+          <span class="edit-row"><span class="edit-title">Gärsnäs</span><span class="edit-kind">Maker</span></span>
+          <span class="edit-photo"><img src="https://garsnas.se/wp-content/uploads/2016/02/GARSh_0007-810x1080.jpg" alt="Gärsnäs" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://garsnas.se/product/button-ii-2/" target="_blank" rel="noopener noreferrer"><span>Button fåtölj* &middot; Gärsnäs</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/hella-jongerius.html" aria-label="In profile: Hella Jongerius"></a>
-        <img src="https://www.galeriekreo.com/sync4D/images/pieces/F68B713BC7E5DA40A8029D31D52E93C6.jpg.webp" alt="Hella Jongerius" loading="lazy">
-        <p class="cat-label">Hella Jongerius<small>Designer</small></p>
-        <div class="cat-details">
-          <span class="product-name">Dragonfly Coffee Table</span>
-          <span class="product-maker">Galerie Kreo</span>
-        </div>
-        <a class="visit-source" href="https://www.galeriekreo.com/en/piece/hella-jongerius/dragonfly-coffee-table" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/hella-jongerius.html" aria-label="In profile: Hella Jongerius">
+          <span class="edit-row"><span class="edit-title">Hella Jongerius</span><span class="edit-kind">Designer</span></span>
+          <span class="edit-photo"><img src="https://www.galeriekreo.com/sync4D/images/pieces/F68B713BC7E5DA40A8029D31D52E93C6.jpg.webp" alt="Hella Jongerius" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.galeriekreo.com/en/piece/hella-jongerius/dragonfly-coffee-table" target="_blank" rel="noopener noreferrer"><span>Dragonfly Coffee Table &middot; Galerie Kreo</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/innauer-matt-architekten.html" aria-label="In profile: Innauer Matt Architekten"></a>
-        <img src="https://www.innauer-matt.com/wp-content/uploads/2014/10/FSB_INNAUER_MATT_02.jpg" alt="Innauer Matt Architekten" loading="lazy">
-        <p class="cat-label">Innauer Matt Architekten<small>Architect</small></p>
-        <div class="cat-details">
-          <span class="product-name">Haus Feurstein</span>
-          <span class="product-maker">Schwarzenberg, Austria</span>
-        </div>
-        <a class="visit-source" href="https://www.innauer-matt.com/projekt/haus-feurstein" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/innauer-matt-architekten.html" aria-label="In profile: Innauer Matt Architekten">
+          <span class="edit-row"><span class="edit-title">Innauer Matt Architekten</span><span class="edit-kind">Architect</span></span>
+          <span class="edit-photo"><img src="https://www.innauer-matt.com/wp-content/uploads/2014/10/FSB_INNAUER_MATT_02.jpg" alt="Innauer Matt Architekten" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.innauer-matt.com/projekt/haus-feurstein" target="_blank" rel="noopener noreferrer"><span>Haus Feurstein &middot; Schwarzenberg, Austria</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/konstantin-grcic.html" aria-label="In profile: Konstantin Grcic"></a>
-        <img src="https://www.galeriekreo.com/sync4D/images/pieces/456ECE2DBAEDD84F8D54F3F62E89C6BE.jpg.webp" alt="Konstantin Grcic" loading="lazy">
-        <p class="cat-label">Konstantin Grcic<small>Designer</small></p>
-        <div class="cat-details">
-          <span class="product-name">Jetdog Table</span>
-          <span class="product-maker">Galerie Kreo</span>
-        </div>
-        <a class="visit-source" href="https://www.galeriekreo.com/en/piece/konstantin-grcic/jetdog-table" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/konstantin-grcic.html" aria-label="In profile: Konstantin Grcic">
+          <span class="edit-row"><span class="edit-title">Konstantin Grcic</span><span class="edit-kind">Designer</span></span>
+          <span class="edit-photo"><img src="https://www.galeriekreo.com/sync4D/images/pieces/456ECE2DBAEDD84F8D54F3F62E89C6BE.jpg.webp" alt="Konstantin Grcic" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.galeriekreo.com/en/piece/konstantin-grcic/jetdog-table" target="_blank" rel="noopener noreferrer"><span>Jetdog Table &middot; Galerie Kreo</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/kristina-dam-studio.html" aria-label="In profile: Kristina Dam Studio"></a>
-        <img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/400500425.jpg?v=1780562347&amp;width=1000" alt="Kristina Dam Studio" loading="lazy">
-        <p class="cat-label">Kristina Dam Studio<small>Maker</small></p>
-        <div class="cat-details">
-          <span class="product-name">Collector Dining Chair</span>
-          <span class="product-maker">Kristina Dam Studio</span>
-        </div>
-        <a class="visit-source" href="https://kristinadamstudio.com/products/400500425" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/kristina-dam-studio.html" aria-label="In profile: Kristina Dam Studio">
+          <span class="edit-row"><span class="edit-title">Kristina Dam Studio</span><span class="edit-kind">Maker</span></span>
+          <span class="edit-photo"><img src="https://cdn.shopify.com/s/files/1/0980/1924/6419/files/400500425.jpg?v=1780562347&amp;width=1000" alt="Kristina Dam Studio" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://kristinadamstudio.com/products/400500425" target="_blank" rel="noopener noreferrer"><span>Collector Dining Chair &middot; Kristina Dam Studio</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/loader-monteith.html" aria-label="In profile: Loader Monteith"></a>
-        <img src="https://loadermonteith.co.uk/wp-content/uploads/2020/05/Loader-Monteith-Architecture-Scotland-Strone-01.jpg" alt="Loader Monteith" loading="lazy">
-        <p class="cat-label">Loader Monteith<small>Architect</small></p>
-        <div class="cat-details">
-          <span class="product-name">Strone of Glenbanchor</span>
-          <span class="product-maker">Scottish Highlands</span>
-        </div>
-        <a class="visit-source" href="https://loadermonteith.co.uk/projects/strone-of-glenbanchor/" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/loader-monteith.html" aria-label="In profile: Loader Monteith">
+          <span class="edit-row"><span class="edit-title">Loader Monteith</span><span class="edit-kind">Architect</span></span>
+          <span class="edit-photo"><img src="https://loadermonteith.co.uk/wp-content/uploads/2020/05/Loader-Monteith-Architecture-Scotland-Strone-01.jpg" alt="Loader Monteith" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://loadermonteith.co.uk/projects/strone-of-glenbanchor/" target="_blank" rel="noopener noreferrer"><span>Strone of Glenbanchor &middot; Scottish Highlands</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/omar-gandhi-architect.html" aria-label="In profile: Omar Gandhi Architect"></a>
-        <img src="https://cdn.prod.website-files.com/68d1aef3afb6755fe8ef3a2a/68f7da5d4550aff3a932d9de_OG_Naramata%2B_1204.webp" alt="Omar Gandhi Architect" loading="lazy">
-        <p class="cat-label">Omar Gandhi Architect<small>Architect</small></p>
-        <div class="cat-details">
-          <span class="product-name">Schlotfeldt Residence</span>
-          <span class="product-maker">Okanagan Valley, British Columbia</span>
-        </div>
-        <a class="visit-source" href="https://www.omargandhi.com/work/schlotfeldt-residence" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/omar-gandhi-architect.html" aria-label="In profile: Omar Gandhi Architect">
+          <span class="edit-row"><span class="edit-title">Omar Gandhi Architect</span><span class="edit-kind">Architect</span></span>
+          <span class="edit-photo"><img src="https://cdn.prod.website-files.com/68d1aef3afb6755fe8ef3a2a/68f7da5d4550aff3a932d9de_OG_Naramata%2B_1204.webp" alt="Omar Gandhi Architect" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.omargandhi.com/work/schlotfeldt-residence" target="_blank" rel="noopener noreferrer"><span>Schlotfeldt Residence &middot; Okanagan Valley, British Columbia</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/pierre-charpin.html" aria-label="In profile: Pierre Charpin"></a>
-        <img src="https://www.galeriekreo.com/sync4D/images/pieces/19CBB21002790943AEF4706CEB206BFA.jpg.webp" alt="Pierre Charpin" loading="lazy">
-        <p class="cat-label">Pierre Charpin<small>Designer</small></p>
-        <div class="cat-details">
-          <span class="product-name">All&#x27;aperto Coffee Table - grand model</span>
-          <span class="product-maker">Galerie Kreo</span>
-        </div>
-        <a class="visit-source" href="https://www.galeriekreo.com/en/piece/pierre-charpin/allaperto-coffee-table-grand-model" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/pierre-charpin.html" aria-label="In profile: Pierre Charpin">
+          <span class="edit-row"><span class="edit-title">Pierre Charpin</span><span class="edit-kind">Designer</span></span>
+          <span class="edit-photo"><img src="https://www.galeriekreo.com/sync4D/images/pieces/19CBB21002790943AEF4706CEB206BFA.jpg.webp" alt="Pierre Charpin" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.galeriekreo.com/en/piece/pierre-charpin/allaperto-coffee-table-grand-model" target="_blank" rel="noopener noreferrer"><span>All&#x27;aperto Coffee Table - grand model &middot; Galerie Kreo</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/wittman-estes.html" aria-label="In profile: Wittman Estes"></a>
-        <img src="https://static1.squarespace.com/static/5e86844eeff3b74636311354/5e86ae1e75b09077b6c4abbd/5eb35c5d0e88401283cfe281/1735000552365/Wittman+Estes_Pogue_Yo+Ju_01.jpg?format=1000w" alt="Wittman Estes" loading="lazy">
-        <p class="cat-label">Wittman Estes<small>Architect</small></p>
-        <div class="cat-details">
-          <span class="product-name">Yo-Ju Courtyard House</span>
-          <span class="product-maker">Clyde Hill, WA</span>
-        </div>
-        <a class="visit-source" href="https://www.wittman-estes.com/projects/yojucourtyardhouse" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/wittman-estes.html" aria-label="In profile: Wittman Estes">
+          <span class="edit-row"><span class="edit-title">Wittman Estes</span><span class="edit-kind">Architect</span></span>
+          <span class="edit-photo"><img src="https://static1.squarespace.com/static/5e86844eeff3b74636311354/5e86ae1e75b09077b6c4abbd/5eb35c5d0e88401283cfe281/1735000552365/Wittman+Estes_Pogue_Yo+Ju_01.jpg?format=1000w" alt="Wittman Estes" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.wittman-estes.com/projects/yojucourtyardhouse" target="_blank" rel="noopener noreferrer"><span>Yo-Ju Courtyard House &middot; Clyde Hill, WA</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/candle-holders.html" aria-label="Browse Candle Holders"></a>
-        <img src="https://cdn.shopify.com/s/files/1/0579/6016/9666/files/DSC_0291.jpg?v=1774266796&amp;width=1000" alt="Ljusstake by Anna Löwenhielm Ceramics" loading="lazy">
-        <p class="cat-label">Candle Holders<small>Objects</small></p>
-        <div class="cat-details">
-          <span class="product-name">Ljusstake</span>
-          <span class="product-maker">Anna Löwenhielm Ceramics</span>
-        </div>
-        <a class="visit-source" href="https://annalowenhielm.se/products/carol-candle-holder-incl-shipping" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/candle-holders.html" aria-label="Browse Candle Holders">
+          <span class="edit-row"><span class="edit-title">Candle Holders</span><span class="edit-kind">Objects</span></span>
+          <span class="edit-photo"><img src="https://cdn.shopify.com/s/files/1/0579/6016/9666/files/DSC_0291.jpg?v=1774266796&amp;width=1000" alt="Ljusstake by Anna Löwenhielm Ceramics" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://annalowenhielm.se/products/carol-candle-holder-incl-shipping" target="_blank" rel="noopener noreferrer"><span>Ljusstake &middot; Anna Löwenhielm Ceramics</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/chairs.html" aria-label="Browse Chairs"></a>
-        <img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21955245_264003_Nama_Lounge_Chair_Classic_Brown_Oak_-_Aniline_Leather_Black_1.jpg?v=1781652518&amp;width=1000" alt="Nama Lounge Chair by 101cph" loading="lazy">
-        <p class="cat-label">Chairs<small>Furniture</small></p>
-        <div class="cat-details">
-          <span class="product-name">Nama Lounge Chair</span>
-          <span class="product-maker">101cph</span>
-        </div>
-        <a class="visit-source" href="https://101cph.com/products/nama-lounge-chair-classic-brown-oak-aniline-leather-black" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/chairs.html" aria-label="Browse Chairs">
+          <span class="edit-row"><span class="edit-title">Chairs</span><span class="edit-kind">Furniture</span></span>
+          <span class="edit-photo"><img src="https://cdn.shopify.com/s/files/1/1885/3155/files/21955245_264003_Nama_Lounge_Chair_Classic_Brown_Oak_-_Aniline_Leather_Black_1.jpg?v=1781652518&amp;width=1000" alt="Nama Lounge Chair by 101cph" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://101cph.com/products/nama-lounge-chair-classic-brown-oak-aniline-leather-black" target="_blank" rel="noopener noreferrer"><span>Nama Lounge Chair &middot; 101cph</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/mirrors.html" aria-label="Browse Mirrors"></a>
-        <img src="https://admin.jorispoggioli.com/wp-content/uploads/2022/12/KIKA-DETOURE-1-1097x1536.png" alt="KIKA by Joris Poggioli" loading="lazy">
-        <p class="cat-label">Mirrors<small>Objects</small></p>
-        <div class="cat-details">
-          <span class="product-name">KIKA</span>
-          <span class="product-maker">Joris Poggioli</span>
-        </div>
-        <a class="visit-source" href="https://jorispoggioli.com/design/mirrors/kika" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/mirrors.html" aria-label="Browse Mirrors">
+          <span class="edit-row"><span class="edit-title">Mirrors</span><span class="edit-kind">Objects</span></span>
+          <span class="edit-photo"><img src="https://admin.jorispoggioli.com/wp-content/uploads/2022/12/KIKA-DETOURE-1-1097x1536.png" alt="KIKA by Joris Poggioli" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://jorispoggioli.com/design/mirrors/kika" target="_blank" rel="noopener noreferrer"><span>KIKA &middot; Joris Poggioli</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/rugs.html" aria-label="Browse Rugs"></a>
-        <img src="https://www.anothercountry.com/wp-content/uploads/Another-Country-Mojave-Cashew-01-1024x1024.jpg" alt="Mojave Rug by Armadillo by Another Country" loading="lazy">
-        <p class="cat-label">Rugs<small>Objects</small></p>
-        <div class="cat-details">
-          <span class="product-name">Mojave Rug by Armadillo</span>
-          <span class="product-maker">Another Country</span>
-        </div>
-        <a class="visit-source" href="https://www.anothercountry.com/contemporary-craft-products/mojave-rug-by-armadillo/" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/rugs.html" aria-label="Browse Rugs">
+          <span class="edit-row"><span class="edit-title">Rugs</span><span class="edit-kind">Objects</span></span>
+          <span class="edit-photo"><img src="https://www.anothercountry.com/wp-content/uploads/Another-Country-Mojave-Cashew-01-1024x1024.jpg" alt="Mojave Rug by Armadillo by Another Country" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.anothercountry.com/contemporary-craft-products/mojave-rug-by-armadillo/" target="_blank" rel="noopener noreferrer"><span>Mojave Rug by Armadillo &middot; Another Country</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/side-tables.html" aria-label="Browse Side Tables"></a>
-        <img src="https://cdn.shopify.com/s/files/1/0593/6984/9030/files/Zaven_ZAV_00103_03.webp?v=1743698357&amp;width=1000" alt="Tavolino by Bitossi Ceramiche" loading="lazy">
-        <p class="cat-label">Side Tables<small>Furniture</small></p>
-        <div class="cat-details">
-          <span class="product-name">Tavolino</span>
-          <span class="product-maker">Bitossi Ceramiche</span>
-        </div>
-        <a class="visit-source" href="https://bitossiceramiche.it/products/sidetable-c-verde-zav00103-zaven-isola-curve" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/side-tables.html" aria-label="Browse Side Tables">
+          <span class="edit-row"><span class="edit-title">Side Tables</span><span class="edit-kind">Furniture</span></span>
+          <span class="edit-photo"><img src="https://cdn.shopify.com/s/files/1/0593/6984/9030/files/Zaven_ZAV_00103_03.webp?v=1743698357&amp;width=1000" alt="Tavolino by Bitossi Ceramiche" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://bitossiceramiche.it/products/sidetable-c-verde-zav00103-zaven-isola-curve" target="_blank" rel="noopener noreferrer"><span>Tavolino &middot; Bitossi Ceramiche</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/vases.html" aria-label="Browse Vases"></a>
-        <img src="https://sizaralexis.se/wp-content/uploads/2023/06/G6A2148-scaled.jpg" alt="Lahmu Vase by Sizar Alexis" style="object-position:50% 100%" loading="lazy">
-        <p class="cat-label">Vases<small>Ceramics</small></p>
-        <div class="cat-details">
-          <span class="product-name">Lahmu Vase</span>
-          <span class="product-maker">Sizar Alexis</span>
-        </div>
-        <a class="visit-source" href="https://sizaralexis.se/lahmu/" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/vases.html" aria-label="Browse Vases">
+          <span class="edit-row"><span class="edit-title">Vases</span><span class="edit-kind">Ceramics</span></span>
+          <span class="edit-photo"><img src="https://sizaralexis.se/wp-content/uploads/2023/06/G6A2148-scaled.jpg" alt="Lahmu Vase by Sizar Alexis" style="object-position:50% 100%" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://sizaralexis.se/lahmu/" target="_blank" rel="noopener noreferrer"><span>Lahmu Vase &middot; Sizar Alexis</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/ceiling-lamps.html" aria-label="Browse Ceiling Lamps"></a>
-        <img src="https://www.marset.com/wp-content/uploads/lamparas/suspension/ringo/marset-lr-ringo-c70-wine-rose-scaled-e1751294655527-1030x1200.jpg" alt="Ringo Ceiling Lamp by Marset" loading="lazy">
-        <p class="cat-label">Ceiling Lamps<small>Lighting</small></p>
-        <div class="cat-details">
-          <span class="product-name">Ringo Ceiling Lamp</span>
-          <span class="product-maker">Marset</span>
-        </div>
-        <a class="visit-source" href="https://www.marset.com/en/indoor-lighting/ceiling-lamps/ringo-3/" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/ceiling-lamps.html" aria-label="Browse Ceiling Lamps">
+          <span class="edit-row"><span class="edit-title">Ceiling Lamps</span><span class="edit-kind">Lighting</span></span>
+          <span class="edit-photo"><img src="https://www.marset.com/wp-content/uploads/lamparas/suspension/ringo/marset-lr-ringo-c70-wine-rose-scaled-e1751294655527-1030x1200.jpg" alt="Ringo Ceiling Lamp by Marset" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.marset.com/en/indoor-lighting/ceiling-lamps/ringo-3/" target="_blank" rel="noopener noreferrer"><span>Ringo Ceiling Lamp &middot; Marset</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/pendant-lamps.html" aria-label="Browse Pendant Lamps"></a>
-        <img src="https://cdn.shopify.com/s/files/1/0005/7730/6687/files/APPARATUS_LANTERN_1_PENDANT_AB_01.jpg?v=1773334971&amp;width=1000" alt="LANTERN : 1 PENDANT by Apparatus" loading="lazy">
-        <p class="cat-label">Pendant Lamps<small>Lighting</small></p>
-        <div class="cat-details">
-          <span class="product-name">LANTERN : 1 PENDANT</span>
-          <span class="product-maker">Apparatus</span>
-        </div>
-        <a class="visit-source" href="https://apparatusstudio.com/products/lantern-1-pendant" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/pendant-lamps.html" aria-label="Browse Pendant Lamps">
+          <span class="edit-row"><span class="edit-title">Pendant Lamps</span><span class="edit-kind">Lighting</span></span>
+          <span class="edit-photo"><img src="https://cdn.shopify.com/s/files/1/0005/7730/6687/files/APPARATUS_LANTERN_1_PENDANT_AB_01.jpg?v=1773334971&amp;width=1000" alt="LANTERN : 1 PENDANT by Apparatus" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://apparatusstudio.com/products/lantern-1-pendant" target="_blank" rel="noopener noreferrer"><span>LANTERN : 1 PENDANT &middot; Apparatus</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/portable-lamps.html" aria-label="Browse Portable Lamps"></a>
-        <img src="https://www.incommonwith.com/cdn/shop/files/InCommonWith_DuneTableLamp_Pool_VillaCaffetto_17.jpg?v=1787171332&amp;width=1500" alt="Dune Portable Table Lamp by In Common With" loading="lazy">
-        <p class="cat-label">Portable Lamps<small>Lighting</small></p>
-        <div class="cat-details">
-          <span class="product-name">Dune Portable Table Lamp</span>
-          <span class="product-maker">In Common With</span>
-        </div>
-        <a class="visit-source" href="https://www.incommonwith.com/products/dune-portable-table-lamp" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/portable-lamps.html" aria-label="Browse Portable Lamps">
+          <span class="edit-row"><span class="edit-title">Portable Lamps</span><span class="edit-kind">Lighting</span></span>
+          <span class="edit-photo"><img src="https://www.incommonwith.com/cdn/shop/files/InCommonWith_DuneTableLamp_Pool_VillaCaffetto_17.jpg?v=1787171332&amp;width=1500" alt="Dune Portable Table Lamp by In Common With" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.incommonwith.com/products/dune-portable-table-lamp" target="_blank" rel="noopener noreferrer"><span>Dune Portable Table Lamp &middot; In Common With</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/table-lamps.html" aria-label="Browse Table Lamps"></a>
-        <img src="https://images.squarespace-cdn.com/content/v1/57b3208aff7c50dc3b5aef6a/1701278909340-GBM23PQ69EQS6XQMETU5/HannahBigeleisen_Lamp_1022_LizClayman_09.jpg?format=1000w" alt="IO Brushed Brass Table Lamp by H. Bigeleisen" loading="lazy">
-        <p class="cat-label">Table Lamps<small>Lighting</small></p>
-        <div class="cat-details">
-          <span class="product-name">IO Brushed Brass Table Lamp</span>
-          <span class="product-maker">H. Bigeleisen</span>
-        </div>
-        <a class="visit-source" href="https://hbigeleisen.com/in-stock/io-brushed-copper-table-lamp" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/table-lamps.html" aria-label="Browse Table Lamps">
+          <span class="edit-row"><span class="edit-title">Table Lamps</span><span class="edit-kind">Lighting</span></span>
+          <span class="edit-photo"><img src="https://images.squarespace-cdn.com/content/v1/57b3208aff7c50dc3b5aef6a/1701278909340-GBM23PQ69EQS6XQMETU5/HannahBigeleisen_Lamp_1022_LizClayman_09.jpg?format=1000w" alt="IO Brushed Brass Table Lamp by H. Bigeleisen" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://hbigeleisen.com/in-stock/io-brushed-copper-table-lamp" target="_blank" rel="noopener noreferrer"><span>IO Brushed Brass Table Lamp &middot; H. Bigeleisen</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/wall-lamps.html" aria-label="Browse Wall Lamps"></a>
-        <img src="https://www.marset.com/wp-content/uploads/lamparas/pared/fragile-a/marset-hr-fragile-a1-rsc-white-cone-sphere-1200x1200.jpg" alt="Fragile Wall Lamp by Marset" loading="lazy">
-        <p class="cat-label">Wall Lamps<small>Lighting</small></p>
-        <div class="cat-details">
-          <span class="product-name">Fragile Wall Lamp</span>
-          <span class="product-maker">Marset</span>
-        </div>
-        <a class="visit-source" href="https://www.marset.com/en/indoor-lighting/wall-lamps/fragile-a/" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/wall-lamps.html" aria-label="Browse Wall Lamps">
+          <span class="edit-row"><span class="edit-title">Wall Lamps</span><span class="edit-kind">Lighting</span></span>
+          <span class="edit-photo"><img src="https://www.marset.com/wp-content/uploads/lamparas/pared/fragile-a/marset-hr-fragile-a1-rsc-white-cone-sphere-1200x1200.jpg" alt="Fragile Wall Lamp by Marset" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.marset.com/en/indoor-lighting/wall-lamps/fragile-a/" target="_blank" rel="noopener noreferrer"><span>Fragile Wall Lamp &middot; Marset</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/two-seater-sofas.html" aria-label="Browse Two Seater Sofas"></a>
-        <img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/391HepburnModular-2-seaterarmlesssofabyMatthewHiltoninwhiteoiledoakandfabricweb.jpg?v=1600420063&amp;width=1000" alt="HEPBURN MODULAR 2-SEATER ARMLESS SOFA by De La Espada" loading="lazy">
-        <p class="cat-label">Two Seater Sofas<small>Furniture</small></p>
-        <div class="cat-details">
-          <span class="product-name">HEPBURN MODULAR 2-SEATER ARMLESS SOFA</span>
-          <span class="product-maker">De La Espada</span>
-        </div>
-        <a class="visit-source" href="https://delaespada.com/products/hepburn-modular-2-seater-armless-sofa" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/two-seater-sofas.html" aria-label="Browse Two Seater Sofas">
+          <span class="edit-row"><span class="edit-title">Two Seater Sofas</span><span class="edit-kind">Furniture</span></span>
+          <span class="edit-photo"><img src="https://cdn.shopify.com/s/files/1/0352/4870/1499/products/391HepburnModular-2-seaterarmlesssofabyMatthewHiltoninwhiteoiledoakandfabricweb.jpg?v=1600420063&amp;width=1000" alt="HEPBURN MODULAR 2-SEATER ARMLESS SOFA by De La Espada" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://delaespada.com/products/hepburn-modular-2-seater-armless-sofa" target="_blank" rel="noopener noreferrer"><span>HEPBURN MODULAR 2-SEATER ARMLESS SOFA &middot; De La Espada</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/floor-lamps.html" aria-label="Browse Floor Lamps"></a>
-        <img src="https://cdn.shopify.com/s/files/1/0467/2903/5944/files/ROTA-F1-03r-72dpi.jpg?v=1757846540&amp;width=1000" alt="Rota: Floor Lamp by Minimalux" loading="lazy">
-        <p class="cat-label">Floor Lamps<small>Lighting</small></p>
-        <div class="cat-details">
-          <span class="product-name">Rota: Floor Lamp</span>
-          <span class="product-maker">Minimalux</span>
-        </div>
-        <a class="visit-source" href="https://minimalux.com/products/rota-floor-lamp" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/floor-lamps.html" aria-label="Browse Floor Lamps">
+          <span class="edit-row"><span class="edit-title">Floor Lamps</span><span class="edit-kind">Lighting</span></span>
+          <span class="edit-photo"><img src="https://new.se-collections.com/wp-content/uploads/2021/04/Moirai-Floor-Lamp-Trio-800x800.jpg" alt="Moirai Floor Lamp Trio by Sé Collections" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.se-collections.com/products/lighting/moirai-floor-lamp-trio" target="_blank" rel="noopener noreferrer"><span>Moirai Floor Lamp Trio &middot; Sé Collections</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/round-coffee-tables.html" aria-label="Browse Round Coffee Tables"></a>
-        <img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375&amp;width=1000" alt="Landry coffee table circular bronze by Pinch" loading="lazy">
-        <p class="cat-label">Round Coffee Tables<small>Furniture</small></p>
-        <div class="cat-details">
-          <span class="product-name">Landry coffee table circular bronze</span>
-          <span class="product-maker">Pinch</span>
-        </div>
-        <a class="visit-source" href="https://pinchdesign.com/products/landry-coffee-table-circular-bronze" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/round-coffee-tables.html" aria-label="Browse Round Coffee Tables">
+          <span class="edit-row"><span class="edit-title">Round Coffee Tables</span><span class="edit-kind">Furniture</span></span>
+          <span class="edit-photo"><img src="https://cdn.shopify.com/s/files/1/0885/7986/6973/files/Pinch_LandryCT_Circular_bronze_Sept25_00034_ad7df82a-6f2a-41fa-bcc9-6e438fab8b35.jpg?v=1759916375&amp;width=1000" alt="Landry coffee table circular bronze by Pinch" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://pinchdesign.com/products/landry-coffee-table-circular-bronze" target="_blank" rel="noopener noreferrer"><span>Landry coffee table circular bronze &middot; Pinch</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/round-dining-tables.html" aria-label="Browse Round Dining Tables"></a>
-        <img src="https://cdn.shopify.com/s/files/1/0177/8296/products/GALVINBROSWORKSHOP-DepartmentTwo-21.jpg?v=1626789553&amp;width=1000" alt="Titan Dining Table by Galvin Brothers" loading="lazy">
-        <p class="cat-label">Round Dining Tables<small>Furniture</small></p>
-        <div class="cat-details">
-          <span class="product-name">Titan Dining Table</span>
-          <span class="product-maker">Galvin Brothers</span>
-        </div>
-        <a class="visit-source" href="https://galvinbrothers.co.uk/products/titan-round" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/round-dining-tables.html" aria-label="Browse Round Dining Tables">
+          <span class="edit-row"><span class="edit-title">Round Dining Tables</span><span class="edit-kind">Furniture</span></span>
+          <span class="edit-photo"><img src="https://cdn.shopify.com/s/files/1/0177/8296/products/GALVINBROSWORKSHOP-DepartmentTwo-21.jpg?v=1626789553&amp;width=1000" alt="Titan Dining Table by Galvin Brothers" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://galvinbrothers.co.uk/products/titan-round" target="_blank" rel="noopener noreferrer"><span>Titan Dining Table &middot; Galvin Brothers</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
       <figure class="edit-feature">
-        <a class="cat-link" href="/edits/scandinavian-dining-tables.html" aria-label="Browse Scandinavian Dining Tables"></a>
-        <img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Draft_204.0001_62c2a3bc-a5bb-419f-b233-a13112992543.png?v=1755858633&amp;width=1000" alt="Draft Dining Table Ø700 by Mass Productions" loading="lazy">
-        <p class="cat-label">Scandinavian Dining Tables<small>Furniture</small></p>
-        <div class="cat-details">
-          <span class="product-name">Draft Dining Table Ø700</span>
-          <span class="product-maker">Mass Productions</span>
-        </div>
-        <a class="visit-source" href="https://www.massproductions.se/products/draft-dining-table-o700" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+        <a class="edit-link" href="/edits/scandinavian-dining-tables.html" aria-label="Browse Scandinavian Dining Tables">
+          <span class="edit-row"><span class="edit-title">Scandinavian Dining Tables</span><span class="edit-kind">Furniture</span></span>
+          <span class="edit-photo"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Draft_204.0001_62c2a3bc-a5bb-419f-b233-a13112992543.png?v=1755858633&amp;width=1000" alt="Draft Dining Table Ø700 by Mass Productions" loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="https://www.massproductions.se/products/draft-dining-table-o700" target="_blank" rel="noopener noreferrer"><span>Draft Dining Table Ø700 &middot; Mass Productions</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
       </figure>
   </div>
   <p class="foot-note">
