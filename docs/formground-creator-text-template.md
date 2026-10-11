@@ -1,6 +1,6 @@
-# Formground creator page text: template
+# Formground creator profile text: template
 
-Purpose: short, accurate, consistent text on each Creator page (Maker, Designer, Architect). Written to help a visitor decide whether to click through, and to be useful to AI search and agents.
+Purpose: the short, accurate, consistent profile text on each Creator page (called the "profile", not the "bio": most creators are studios, brands and practices, and the text is Formground's own description; a profile Edit is its longer, scheduled counterpart) (Maker, Designer, Architect). Written to help a visitor decide whether to click through, and to be useful to AI search and agents.
 
 ## Length and shape
 - 60-120 words in 2-3 short paragraphs, plus a facts block.

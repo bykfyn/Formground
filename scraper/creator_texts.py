@@ -1,5 +1,6 @@
 """
-Short, sourced text on creator pages (architects, makers, designers) and the profile Edits built from it.
+The creator profile text on creator pages (architects, makers, designers), and the profile Edits built from it. "Profile" is the name
+for this text (not "bio": most creators are studios, brands and practices).
 Data: data/creator_texts.json, following docs/formground-creator-text-template.md:
   - 60-120 words in 2-3 paragraphs, plain and factual, paraphrased from the creator's own site or a named source
   - a facts block (never an "independent or established" line: that label is only used when it has been vouched for)

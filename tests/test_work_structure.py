@@ -719,7 +719,7 @@ class CreatorsPageTests(unittest.TestCase):
 
 
 class CreatorTextTests(unittest.TestCase):
-    """Creator page text follows docs/formground-creator-text-template.md; scheduled entries stay hidden until their day."""
+    """The creator profile text follows docs/formground-creator-text-template.md; scheduled entries stay hidden until their day."""
 
     def setUp(self):
         import creator_texts
