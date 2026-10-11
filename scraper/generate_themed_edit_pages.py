@@ -214,6 +214,14 @@ THEMES = [
         # A real, moody in-situ shot (an antique desk, a folding chair,
         # real books) - H. Bigeleisen is a genuinely independent studio.
         "hero_image": ("H. Bigeleisen", "IO Brushed Brass Table Lamp"),
+        # hand-swapped pieces (2026-10-11, user): each (dropped, put in its place), kept in the dropped piece's position
+        "swap": [
+            (("101cph", "Beetle Portable Lamp"), ("Anour", "DONYA Table")),
+            (("Buro Berger", "Table Lamp Beln off White"), ("Danny Kaplan Studio", "Helena Table Lamp")),
+            (("Piet Hein Eek", "Tafellamp"), ("Hyfer Objects", "Kakta Table Lamp Large")),
+            (("Eric Schmitt Studio", "Lampe à poser Walie"), ("Tala", "Heath Table Lamp in Port Red")),
+            (("Marset", "Fragile Table Lamp"), ("New Works DK", "Kizu Table Lamp Small")),
+        ],
     },
     {
         "slug": "wall-lamps",
@@ -725,6 +733,14 @@ def capped_edit_cards(theme, products):
         products = [p for p in products if _variant_key(p) not in hero_keys]
     cards_to_render, variant_counts = _group_color_variants(products)
     capped = _cap_products_fairly(cards_to_render)
+    # hand-swapped pieces: replace each named card in place (the piece that goes in carries no finishes badge)
+    for out_key, in_key in theme.get("swap", []):
+        incoming = _lookup_product_by_identity(*in_key)
+        for i, card in enumerate(capped):
+            if (card["brand"], card["product_name"]) == out_key and incoming is not None:
+                variant_counts.pop(id(card), None)
+                capped[i] = incoming
+                break
     # swap in hand-chosen photos; variant_counts is keyed by id(card), so re-key it
     swapped = [_with_image_override(p) for p in capped]
     variant_counts = {id(new): variant_counts[id(old)] for old, new in zip(capped, swapped) if id(old) in variant_counts}
