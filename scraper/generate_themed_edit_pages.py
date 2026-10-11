@@ -124,12 +124,10 @@ THEMES = [
             "maker's own site."
         ),
         "exclude": {("Vaarnii", "001 Dining Table Round Files"), ("Fogia", "Supper Round Table")},
-        # A real workshop shot, not a styled room - Galvin Brothers' own
-        # Titan photographed in their actual UK workshop, sawdust and
-        # tools included. Picked over Pinch's own "Tove dining table
-        # circular" (also excellent) for the same fairness reason.
-        "hero_image": ("Galvin Brothers", "Titan (Round) Dining Table"),
-        "hero_label": "Titan Dining Table",
+        # De La Espada's Marlon Round Table (Luca Nichetto), black oiled walnut with a Carrara marble top (2026-10-11, user's pick;
+        # it replaced Galvin Brothers' Titan workshop shot).
+        "hero_image": ("De La Espada", "MARLON ROUND TABLE"),
+        "hero_label": "Marlon Round Table",
     },
     {
         "slug": "round-coffee-tables",
@@ -292,6 +290,8 @@ THEMES = [
             "end of a room. Every product links straight to the maker's own site."
         ),
         "hero_image": ("Sé Collections", "Moirai Floor Lamp Trio"),
+        # Halo Light Sculpture is a table lamp on a pedestal, not a floor lamp (2026-10-11, user)
+        "drop": {("Louise Roe", "HALO LIGHT SCULPTURE")},
     },
     {
         "slug": "chairs",
@@ -717,6 +717,9 @@ def capped_edit_cards(theme, products):
     # out before grouping and capping, so the grid backfills with the next
     # pieces and stays a full MAX_PRODUCTS_PER_EDIT. The hero is shown (and
     # counted - see edit_totals) as its own piece above the grid.
+    dropped = theme.get("drop")
+    if dropped:
+        products = [p for p in products if (p["brand"], p["product_name"]) not in dropped]
     hero_keys = {_variant_key({"brand": b, "product_name": n}) for b, n in _hero_identities(theme)}
     if hero_keys:
         products = [p for p in products if _variant_key(p) not in hero_keys]
@@ -775,6 +778,12 @@ EDIT_IMAGE_OVERRIDES = {
     # the scraped photo is a wide room with a tiny lamp; this is a landscape close-up of its brass ball and base
     "https://hbigeleisen.com/in-stock/io-brushed-copper-table-lamp":
         "https://images.squarespace-cdn.com/content/v1/57b3208aff7c50dc3b5aef6a/1701278909340-GBM23PQ69EQS6XQMETU5/HannahBigeleisen_Lamp_1022_LizClayman_09.jpg",
+    # the scraped photo is an extreme close-up of the shade; this is the whole lamp on grey (2026-10-11, user: better crop)
+    "https://www.mercoeur-edition.com/products/lamp-arcy":
+        "https://cdn.prod.website-files.com/65f8e4972094d2411f63ed1d/6a677826cb453e3bfb356590_Mercoeur_ARCY-Sand_Front-p-1080.jpg",
+    # the scraped photo is the lamp on black with a hard white glow; this is the whole lamp, lit, on soft grey
+    "https://silcohaus.com/products/mo_-_a-bamboo-floor-lamp":
+        "https://cdn.shopify.com/s/files/1/0704/0063/9269/files/fcb3b5a0-bcd9-417f-b856-ab67a5a97ed0-e245b4f726cc.jpg?v=1790140486",
 }
 
 
@@ -783,7 +792,21 @@ def _with_image_override(p):
     return {**p, "image_url": alt} if alt else p
 
 
-EDIT_IMAGE_FIT_CONTAIN = {"https://newworks.dk/en/product/kantarell-pendant-lamp-o60"}
+# Shown whole instead of cropped: product_url -> the fill behind the photo (None = the card's own surface)
+EDIT_IMAGE_FIT_CONTAIN = {
+    "https://newworks.dk/en/product/kantarell-pendant-lamp-o60": None,
+    # a lightbox shot whose backdrop runs from light grey on the left to mid grey on the right (2026-10-11)
+    "https://www.ericschmitt.com/produit_lumieres_lampadaire-in-love":
+        "linear-gradient(to right, #e6e6e6 0%, #e3e3e3 17%, #9c9c9c 83%, #9c9c9c 100%)",
+    # a tall lamp on a soft grey studio backdrop that runs a little darker at the top
+    "https://silcohaus.com/products/mo_-_a-bamboo-floor-lamp":
+        "linear-gradient(#858a8e, #9aa0a4 50%, #c8c9cb)",
+}
+# Cropped, but with the window moved onto the piece: product_url -> object-position
+EDIT_IMAGE_POSITION = {
+    # a room with the lamp's shade at the very top: start the crop at the top so the shade is not cut off
+    "https://newworks.dk/en/product/nebra-floor-lamp": "50% 0%",
+}
 
 _TRAILING_SIZE_RE = re.compile(r"\s*[\u00d8\u2300]\s?\d+(?:[.,]\d+)?\s*(?:cm|mm)?\s*$", re.I)
 
@@ -819,6 +842,11 @@ def _render_feature_grid(cards, variant_counts=None):
         card = _listing_card_html({**p, "product_name": names[id(p)]}, variant_counts.get(id(p)))
         if p["product_url"] in EDIT_IMAGE_FIT_CONTAIN:
             card = card.replace("<img ", '<img class="contain-fit" ', 1)
+            fill = EDIT_IMAGE_FIT_CONTAIN[p["product_url"]]
+            if fill:
+                card = card.replace('<div class="card-image">', f'<div class="card-image" style="background:{fill}">', 1)
+        if p["product_url"] in EDIT_IMAGE_POSITION:
+            card = card.replace("<img ", f'<img style="object-position:{EDIT_IMAGE_POSITION[p["product_url"]]}" ', 1)
         items.append(card)
     return f'<div class="results-grid">{"".join(items)}</div>'
 
