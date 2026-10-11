@@ -364,7 +364,7 @@ THEMES = [
             "table for the long dark evenings. Every product links straight to "
             "the maker's own site."
         ),
-        "hero_image": ("Anna L\u00f6wenhielm Ceramics", "Ljusstake"),
+        "hero_image": ("Buro Berger", "Candle Holder Cassata"),  # the whole piece on white (the Ljusstake photo is cut off at the top, 2026-10-11)
     },
 ]
 

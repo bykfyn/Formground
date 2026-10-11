@@ -96,7 +96,14 @@ BANNER_SLUGS = ["round-coffee-tables"]
 
 # Hub-tile crop override per hero photo (object-position). The default is a centred crop; Sizar Alexis' Lahmu
 # vase stands in the lower half of a portrait photo, so a centred square cut off its base (2026-10-06).
+# A different photo for an Edit's hub tile than the one its own page uses (2026-10-11, user: better crop): the IO lamp
+# close-up is cut off in a square, so the tile shows the whole lamp in its room, with the crop moved onto it.
+HUB_TILE_IMAGE = {
+    "table-lamps": "https://images.squarespace-cdn.com/content/v1/57b3208aff7c50dc3b5aef6a/1701278906295-AT1K9TVXW1EH3QRN2K4H/HannahBigeleisen_Lamp_1022_LizClayman_05.jpg?format=1000w",
+}
+
 TILE_OBJECT_POSITION = {
+    "https://images.squarespace-cdn.com/content/v1/57b3208aff7c50dc3b5aef6a/1701278906295-AT1K9TVXW1EH3QRN2K4H/HannahBigeleisen_Lamp_1022_LizClayman_05.jpg?format=1000w": "50% 20%",
     "https://sizaralexis.se/wp-content/uploads/2023/06/G6A2148-scaled.jpg": "50% 100%",
 }
 
@@ -217,6 +224,7 @@ EDITS_PAGE_CSS = (
   .edit-feature .edit-link:hover .edit-title { text-decoration: underline; }
   .edit-feature .edit-photo { display: block; aspect-ratio: 1 / 1; position: relative; overflow: hidden;
     border: 0.5px solid var(--border); background: var(--surface-1); }
+  .edit-feature .edit-photo img.contain-fit { object-fit: contain; }
   .edit-feature .edit-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.4s ease; }
   .edit-feature:hover .edit-photo img { transform: scale(1.03); }
   .edit-feature .visit-source {
@@ -411,6 +419,7 @@ def render_edits_index(themes_data, order=None):
 
     themed_tiles = []     # (date, sort title, html) - one tile per themed (product) Edit
     for theme, count, brand_count, image, hero_product in ordered:
+        image = HUB_TILE_IMAGE.get(theme["slug"], image)
         # every edit is the same tile: 2 columns wide, 2 rows tall of the 6-column grid (a 373px square at
         # full width), photo filling it, the Edit's title on it, the pictured product on hover
         image_alt = (f"{hero_product['product_name']} by {hero_product['brand']}" if hero_product is not None
@@ -450,6 +459,10 @@ def render_edits_index(themes_data, order=None):
     for entry in creator_texts.load().values():
         edit = entry["edit"]
         item = gpe.hero_item(entry, houses_by_image, conn)
+        # a photo that would be cropped badly is shown whole on its own background (edit.card_bg, see check_image_fit.py)
+        bg = edit.get("card_bg")
+        photo_style = f' style="background:{html.escape(bg)}"' if bg else ""
+        img_class = ' class="contain-fit"' if bg else ""
         details = ""
         if item:
             name, credit, link = item
@@ -459,7 +472,7 @@ def render_edits_index(themes_data, order=None):
       <figure class="edit-feature">
         <a class="edit-link" href="/edits/{edit['slug']}.html" aria-label="In profile: {html.escape(entry['name'])}">
           <span class="edit-row"><span class="edit-title">{html.escape(entry['name'])}</span><span class="edit-kind">{creator_texts.KIND[entry['group']]}</span></span>
-          <span class="edit-photo"><img src="{html.escape(sized(edit['hero'], TILE))}" alt="{html.escape(entry['name'])}" loading="lazy"></span>
+          <span class="edit-photo"{photo_style}><img{img_class} src="{html.escape(sized(edit['hero'], TILE))}" alt="{html.escape(entry['name'])}" loading="lazy"></span>
         </a>{details}
       </figure>"""))
     conn.close()
