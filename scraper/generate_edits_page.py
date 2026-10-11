@@ -421,17 +421,38 @@ def render_edits_index(themes_data):
       <figure class="edit-feature">
         <a class="cat-link" href="/edits/{theme['slug']}.html" aria-label="Browse {html.escape(theme['title'])}"></a>
         {image_tag}
-        <p class="cat-label">{html.escape(theme['title'])}</p>{details}
+        <p class="cat-label">{html.escape(theme['title'])}<small>Products</small></p>{details}
       </figure>"""
-    # profile Edits ("In profile: <name>", see generate_profile_edits.py) follow the themed ones in the same grid
+    # profile Edits ("In profile: <name>", see generate_profile_edits.py) follow the themed ones in the same grid.
+    # Every tile has the same two lines: the title (what the Edit is about) and a small type label under it - "Products"
+    # for a themed Edit, "Maker" / "Designer" / "Architect" for a profile - and the same hover caption: the pictured
+    # item, credited and linked to its maker.
+    import json as _json
+    import sqlite3 as _sqlite3
+    import generate_profile_edits as gpe
+    houses = _json.loads((gte.ROOT / "data" / "houses.json").read_text()) if hasattr(gte, "ROOT") else _json.loads((Path(__file__).parent.parent / "data" / "houses.json").read_text())
+    houses_by_image = {h["image"]: h for h in houses if h.get("image")}
+    conn = _sqlite3.connect(gpe.DB_PATH)
+    conn.row_factory = _sqlite3.Row
     for entry in creator_texts.load().values():
         edit = entry["edit"]
+        item = gpe.hero_item(entry, houses_by_image, conn)
+        details = ""
+        if item:
+            name, credit, link = item
+            details = f"""
+        <div class="cat-details">
+          <span class="product-name">{html.escape(name)}</span>
+          <span class="product-maker">{html.escape(credit)}</span>
+        </div>
+        <a class="visit-source" href="{html.escape(link)}" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>"""
         tile_items += f"""
       <figure class="edit-feature">
         <a class="cat-link" href="/edits/{edit['slug']}.html" aria-label="In profile: {html.escape(entry['name'])}"></a>
         <img src="{html.escape(sized(edit['hero'], TILE))}" alt="{html.escape(entry['name'])}" loading="lazy">
-        <p class="cat-label">{html.escape(entry['name'])}<small>In profile &middot; {creator_texts.KIND[entry['group']]}</small></p>
+        <p class="cat-label">{html.escape(entry['name'])}<small>{creator_texts.KIND[entry['group']]}</small></p>{details}
       </figure>"""
+    conn.close()
     tile_grid_html = f'<div class="maker-grid">{tile_items}\n  </div>' if tile_items else ""
 
     by_slug = {

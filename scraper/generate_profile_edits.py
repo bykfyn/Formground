@@ -62,6 +62,22 @@ def _find_cards(entry, houses_by_image, conn):
     return cards
 
 
+def hero_item(entry, houses_by_image, conn):
+    """(name, credit, link) of the item pictured in the Edit's hero image, for the hover caption on the Edits hub:
+    a house (its location) or a product (its maker). None if the picture is no longer in the data."""
+    image = entry["edit"]["hero"]
+    if entry["group"] == "architects":
+        house = houses_by_image.get(image)
+        if house:
+            return house["name"] or "House", house.get("location") or entry["name"], house.get("url") or entry["website"]
+        return None
+    row = conn.execute("SELECT product_name, brand, product_url, brand_url, link_dead FROM products WHERE image_url = ? LIMIT 1",
+                       (image,)).fetchone()
+    if not row:
+        return None
+    return row["product_name"], row["brand"], row["brand_url"] if row["link_dead"] else row["product_url"]
+
+
 def _count(entry, houses, conn):
     group = entry["group"]
     if group == "architects":
