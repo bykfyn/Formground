@@ -92,6 +92,7 @@ from generate_brand_pages import (
     SITE_NAV_HTML,
     SITE_URL,
     product_card_html,
+    card_fit,
 )
 from generate_theme_landing_pages import (  # noqa: E402
     _group_color_variants,
@@ -390,13 +391,14 @@ def _listing_card_html(p, variant_count=None):  # p may carry "detail": a houses
     button over its corner, name (2-line slot), maker, and the empty detail line that keeps rows even."""
     url = p["brand_url"] if p["link_dead"] else p["product_url"]
     name, brand = html.escape(p["product_name"]), html.escape(p["brand"])
-    image = (f'<img src="{html.escape(sized(p["image_url"], CARD))}" alt="{html.escape(p["product_name"])} by {brand}" loading="lazy">'
+    fit_style, fit_class = card_fit(p["image_url"])
+    image = (f'<img{fit_class} src="{html.escape(sized(p["image_url"], CARD))}" alt="{html.escape(p["product_name"])} by {brand}" loading="lazy">'
              if p["image_url"] else "")
     badge = f'<span class="variant-badge">{variant_count} finishes</span>' if variant_count and variant_count > 1 else ""
     return (
         f'<a class="card" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer" '
         f'data-product="{name}" data-brand="{brand}">'
-        f'<div class="card-image">{image}{badge}'
+        f'<div class="card-image"{fit_style}>{image}{badge}'
         '<button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>'
         f'<div class="card-body"><div class="card-title-wrap"><p class="card-title">{name}</p></div>'
         f'<p class="card-brand">{brand}</p><p class="card-detail">{html.escape(p.get("detail") or "")}</p></div></a>'

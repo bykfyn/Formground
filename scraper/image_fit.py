@@ -58,14 +58,39 @@ def _measure(url):
     n = len(edge)
     mean = [sum(p[c] for p in edge) / n for c in range(3)]
     std = max((sum((p[c] - mean[c]) ** 2 for p in edge) / n) ** 0.5 for c in range(3))
-    return {"ratio": round(ratio, 3), "bg": "#%02x%02x%02x" % tuple(round(v) for v in mean), "edge_std": round(std, 1)}
+    out = {"ratio": round(ratio, 3), "bg": "#%02x%02x%02x" % tuple(round(v) for v in mean), "edge_std": round(std, 1)}
+    box = _subject_box(rgba, ratio, mean) if std <= FLAT_EDGE_MAX else None
+    if box:
+        out["box"] = box
+    return out
 
 
-def analyze(url):
+def _subject_box(rgba, ratio, bg):
+    """(left, top, right, bottom) of everything that differs clearly from the flat background, as shares of the
+    photo; None when nothing stands out. A soft shadow is below the threshold on purpose."""
+    small = rgba.resize((96, max(12, round(96 / ratio))))
+    w, h = small.size
+    px = small.load()
+    xs, ys = [], []
+    for y in range(h):
+        for x in range(w):
+            r, g, b, a = px[x, y]
+            if a < 128:
+                continue
+            if max(abs(r - bg[0]), abs(g - bg[1]), abs(b - bg[2])) > 38:
+                xs.append(x)
+                ys.append(y)
+    if len(xs) < 6:
+        return None
+    return [round(min(xs) / w, 3), round(min(ys) / h, 3), round((max(xs) + 1) / w, 3), round((max(ys) + 1) / h, 3)]
+
+
+def analyze(url, fetch_url=None):
+    """fetch_url: a smaller copy of the same photo to measure (the cache is still keyed by `url`)."""
     cache = _load()
     if url not in cache:
         try:
-            cache[url] = _measure(url)
+            cache[url] = _measure(fetch_url or url)
         except Exception as e:  # noqa: BLE001 - any failure just means "crop as before"
             print(f"  image_fit: could not analyze {url[:70]} ({type(e).__name__})")
             return None
@@ -102,3 +127,42 @@ def fit_for_banner(url, force=False):
     if info["ratio"] < LANDSCAPE_MIN:
         print(f"  image_fit: {url[:70]} is portrait/square (ratio {info['ratio']}) with a busy background - banner will crop it; consider another image")
     return "", ""
+
+
+def fit_for_card(url):
+    """Square product cards (2026-10-11, user: table lamp photos cropped badly). Cache only, never fetches at build
+    time: run analyze_card_images.py for a type first. Returns (class, container style, image style).
+    A photo clearly taller or wider than square, on flat edges:
+      - if the piece fits inside the square window, it stays full-size and the window is moved onto the piece
+        (object-position), so nothing is cut off and nothing shrinks;
+      - otherwise it is shown whole on its own edge colour (contain).
+    Near-square or busy photos keep the normal centred crop."""
+    info = _load().get(url)
+    if not info:
+        return "", "", ""
+    ratio = info["ratio"]
+    if TILE_SQUARE_RANGE[0] <= ratio <= TILE_SQUARE_RANGE[1] or info["edge_std"] > FLAT_EDGE_MAX:
+        return "", "", ""
+    box = info.get("box")
+    if box:
+        left, top, right, bottom = box
+        if ratio < 1:                       # taller than square: the window is `ratio` of the height
+            window, lo, hi = ratio, top, bottom
+            fits = (hi - lo) <= window - CARD_MARGIN
+            pos = f"50% {_pos(lo, hi, window)}"
+        else:                               # wider than square: the window is 1/ratio of the width
+            window, lo, hi = 1 / ratio, left, right
+            fits = (hi - lo) <= window - CARD_MARGIN
+            pos = f"{_pos(lo, hi, window)} 50%"
+        if fits:
+            return "", "", f"object-position:{pos}"
+    return "contain-fit", _bg_style(info), ""
+
+
+CARD_MARGIN = 0.03          # the piece needs this much air (of the photo's own length) inside the square window
+
+
+def _pos(lo, hi, window):
+    """object-position percentage that centres the span [lo, hi] in a window of the given size (clamped to the photo)."""
+    offset = min(max((lo + hi) / 2 - window / 2, 0.0), 1.0 - window)
+    return f"{round(100 * offset / (1.0 - window), 1)}%" if window < 1 else "50%"

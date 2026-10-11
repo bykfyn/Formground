@@ -431,6 +431,16 @@ def primary_image_for(products, umbrellas):
     return ""
 
 
+def card_fit(image_url):
+    """(style attribute for .card-image, attributes for its <img>) from the photo-fit cache (image_fit.fit_for_card): an
+    off-square studio shot keeps the piece whole, either by moving the square window onto it or by showing the photo
+    whole on its own edge colour. Empty strings when the photo is not in the cache."""
+    import image_fit
+    cls, box_style, img_style = image_fit.fit_for_card(image_url) if image_url else ("", "", "")
+    img_attrs = (f' class="{cls}"' if cls else "") + (f' style="{img_style}"' if img_style else "")
+    return (f' style="{box_style}"' if box_style else "", img_attrs)
+
+
 def product_card_html(p, show_brand=False, variant_count=None, share=False):
     """
     show_brand adds a brand-name line under the title - off by default
@@ -449,8 +459,9 @@ def product_card_html(p, show_brand=False, variant_count=None, share=False):
     """
     url = p["brand_url"] if p["link_dead"] else p["product_url"]
     alt_text = html.escape(f'{p["product_name"]} by {p["brand"]}')
+    fit_style, fit_class = card_fit(p["image_url"])
     image = (
-        f'<img src="{html.escape(sized(p["image_url"], CARD))}" alt="{alt_text}" loading="lazy">'
+        f'<img{fit_class} src="{html.escape(sized(p["image_url"], CARD))}" alt="{alt_text}" loading="lazy">'
         if p["image_url"] else ""
     )
     if image and variant_count and variant_count > 1:
@@ -468,7 +479,7 @@ def product_card_html(p, show_brand=False, variant_count=None, share=False):
     share_btn = SHARE_BTN_HTML if share else ""
     return f"""
       <a class="card" href="{html.escape(url)}" target="_blank" rel="noopener noreferrer" data-product="{html.escape(p["product_name"])}" data-brand="{html.escape(p["brand"])}">
-        <div class="card-image">{image}{share_btn}</div>
+        <div class="card-image"{fit_style}>{image}{share_btn}</div>
         <div class="card-body">
           {title_html}
           {brand_line}
