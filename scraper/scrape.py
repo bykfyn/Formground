@@ -2668,6 +2668,9 @@ MANUAL_CATEGORY_OVERRIDES = {
 # Applied in run()'s save loop like MANUAL_CATEGORY_OVERRIDES, so it
 # survives this brand's weekly re-scrape instead of reverting.
 MANUAL_IMAGE_OVERRIDES = {
+    # NORR11's first photo of the Wood sofa is the BACK of it (the wooden plate); its second is the straight-on front.
+    ("NORR11", "Hippo Sofa | Wood"):
+        "https://cdn.shopify.com/s/files/1/0106/7008/0063/files/Hippo_Sofa_Wood-Dark_Smoked_Oak-Baru_0390-NORR11-001.png?v=1758534951",
     ("Sizar Alexis", "BEL – A Waste Vessel"):
         "https://sizaralexis.se/wp-content/uploads/2026/08/IMG_1998-scaled.jpg",
     ("Sizar Alexis", "ITOORABA Dining Chair"):
