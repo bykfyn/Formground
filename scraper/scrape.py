@@ -39,6 +39,7 @@ import urllib.parse
 from pathlib import Path
 
 import requests
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
 
 SCRAPER_DIR = Path(__file__).parent
@@ -9305,6 +9306,421 @@ def extract_arwenn(brand):
     return products
 
 
+# bocci.com (Bocci, Vancouver; confirmed live 2026-10-11): the /shop/lighting/ page server-renders every lighting product
+# (name, USD price, photo; 48 at the time). Names are Bocci's own series numbers plus a type word ("14.1 Random",
+# "28t Table", "73s Wall and Ceiling"), so the category comes from that word. The limited-edition glass objects
+# (/shop/editions/, numbered 19.2019.5 and priced $575-14,000), parts and merchandise are left out.
+def extract_bocci(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/shop/lighting/", headers=HEADERS, timeout=25)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch Bocci's lighting page: {e}")
+        return []
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products, seen = [], set()
+    for a in soup.select('a[href*="/shop/products/"]'):
+        text = re.sub(r"\s+", " ", a.get_text(" ", strip=True))
+        href = urljoin(resp.url, a["href"]).split("#")[0]
+        m = re.match(r"(.+?)\s+\$([\d,]+(?:\.\d+)?)\s*USD$", text)
+        if not m or href in seen:
+            continue
+        seen.add(href)
+        name = re.sub(r"\s+", " ", m.group(1).replace("plug icon", "")).strip()
+        lower = name.lower()
+        category = ("Table Lamp" if lower.endswith("table") or "portable" in lower else
+                    "Wall Lamp" if "wall and ceiling" in lower else
+                    "Outdoor Lamp" if "outdoor" in lower else "Pendant Lamp")
+        img = a.find("img")
+        image = (img.get("src") or img.get("data-src") or "") if img else ""
+        if not image:
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": href,
+            "category": category, "material_options": [], "dimensions": "", "notes": "", "image_url": image,
+            "designer": "", "price": float(m.group(2).replace(",", "")), "currency": "USD",
+        })
+    return products
+
+
+# dzovagkotchian.com (Dzovag Kotchian, Le Cannet, France; confirmed live 2026-10-12): a Zyro store whose /boutique page draws its
+# list with script, but the sitemap lists every page and each product page carries a full schema.org Product block (name,
+# photo, description, EUR price). The two wall pieces (Sculpture Murale, Ekho bas-relief) are art and are left out.
+_DZOVAG_NOT_PRODUCTS = {"", "en", "ekho", "boutique-dzovag-kotchian", "a-propos", "contact-dzovag-kotchian",
+                        "terms-and-conditions", "refund-policy", "privacy-policy", "bas-relief-ekho"}
+
+
+def extract_dzovag_kotchian(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        sitemap = requests.get(f"{base}/sitemap.xml", headers=HEADERS, timeout=25)
+        sitemap.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch the Dzovag Kotchian sitemap: {e}")
+        return []
+    products = []
+    for url in re.findall(r"<loc>([^<]+)</loc>", sitemap.text):
+        slug = url.rstrip("/").rsplit("/", 1)[-1]
+        if "/en/" in url or slug in _DZOVAG_NOT_PRODUCTS or slug.startswith("collection-") or "sculpture" in slug:
+            continue
+        time.sleep(1)
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        page.encoding = "utf-8"
+        data = None
+        for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', page.text, re.S):
+            try:
+                candidate = json.loads(block)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(candidate, dict) and candidate.get("@type") == "Product":
+                data = candidate
+                break
+        if not data or not data.get("image"):
+            continue
+        name = html.unescape(data.get("name", "")).strip()
+        offer = data.get("offers") or {}
+        try:
+            price = float(offer.get("price"))
+        except (TypeError, ValueError):
+            price = None
+        lower = name.lower()
+        category = ("Wall Lamp" if lower.startswith("applique") else "Table Lamp" if lower.startswith("lampe") else
+                    "Mirror" if lower.startswith("miroir") else "Vase" if lower.startswith("vase") else
+                    "Table" if lower.startswith("table") else _infer_category_from_name(name, "", brand["name"]))
+        image = data["image"][0] if isinstance(data["image"], list) else data["image"]
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": [], "dimensions": "", "notes": "", "image_url": image,
+            "designer": "", "price": price if price and price > 0 else None,
+            "currency": (offer.get("priceCurrency") or "").upper() if price else None,
+        })
+    return products
+
+
+# giacomotomazzi.com (Giácomo Tomazzi Studio, Brazil; confirmed live 2026-10-12): a Wix site. The menu lists every piece with its own
+# page (no prices); /shop lists seven of them as Wix Stores products with BRL prices and product pages. A piece's photo is the
+# first gallery image on its page (the blur-placeholder thumbnails), rebuilt at full size. Collections and lines
+# ("Coleção ...", "Linha ..."), hardware, tiles and candles are left out.
+_TOMAZZI_SKIP = ("coleção", "linha ", "maçaneta", "ladrilho", "vela ", "cuba", "bar ", "collabs", "manifesto", "sobre",
+                 "contato", "shop", "loja", "política", "direitos", "móveis", "luminárias", "acessórios", "mobiliário",
+                 "iluminação", "objetos")
+_TOMAZZI_CATEGORIES = (("arandela", "Wall Lamp"), ("luminária", "Floor Lamp"), ("banqu", "Stool"), ("banco", "Stool"),
+                       ("cabideiro", "Coat Rack"), ("cadeira", "Chair"), ("mesa", "Table"), ("poltrona", "Armchair"),
+                       ("rack", "Sideboard"), ("sofá", "Sofa"), ("chaise", "Chaise Longue"), ("castiçal", "Candle Holder"),
+                       ("espelho", "Mirror"), ("tapete", "Rug"), ("vaso", "Vase"), ("cactos", "Vase"))
+
+
+def _tomazzi_main_image(page_html):
+    for m in re.finditer(r"https://static\.wixstatic\.com/media/([^/\"'\s\\]+)/v1/(?:fit|fill)/([^/\"'\s\\]+)/", page_html):
+        if "blur_2" in m.group(2):
+            return f"https://static.wixstatic.com/media/{m.group(1)}/v1/fit/w_1000,h_1000,q_85/file.jpg"
+    og = re.search(r'<meta property="og:image" content="([^"]+)"', page_html)
+    return og.group(1) if og else ""
+
+
+def extract_giacomo_tomazzi(brand):
+    base = brand["url"].rstrip("/")
+
+    def get(path):
+        time.sleep(1)
+        try:
+            r = requests.get(base + path if path.startswith("/") else path, headers=HEADERS, timeout=25)
+            r.raise_for_status()
+            r.encoding = "utf-8"
+            return r.text
+        except requests.RequestException as e:
+            print(f"  Could not fetch {path}: {e}")
+            return None
+
+    home = get("/")
+    shop = get("/shop")
+    if not home:
+        return []
+    soup = BeautifulSoup(home, "html.parser")
+    pieces, seen = [], set()
+    for a in soup.select("a[href]"):
+        href = urljoin(base + "/", a["href"]).split("#")[0]
+        text = a.get_text(" ", strip=True)
+        path = href.replace(base, "")
+        if not text or not path.startswith("/") or path.count("/") != 1 or path in seen:
+            continue
+        if any(text.lower().startswith(w) or text.lower() == w.strip() for w in _TOMAZZI_SKIP):
+            continue
+        seen.add(path)
+        pieces.append((text, path))
+    shop_items = {}        # name -> (product page, BRL price), read from each Wix Stores product page's own title
+    if shop:
+        links = []
+        for m in re.finditer(r'href="(https://www\.giacomotomazzi\.com/product-page/[^"]+)"', shop):
+            if m.group(1) not in links:
+                links.append(m.group(1))
+        prices = re.findall(r"Preço\s+R\$\s*([\d.]+,\d{2})", re.sub(r"\s+", " ", BeautifulSoup(shop, "html.parser").get_text(" ", strip=True)))
+        for link, price in zip(links, prices):
+            page_html = get(link)
+            title = re.search(r'<meta property="og:title" content="([^"]+)"', page_html or "")
+            if title:
+                name = html.unescape(title.group(1)).split("|")[0].strip()
+                shop_items[name] = (link, float(price.replace(".", "").replace(",", ".")))
+    products = []
+
+    def add(name, url, price, page_html):
+        image = _tomazzi_main_image(page_html or "")
+        lower = name.lower()
+        category = next((c for key, c in _TOMAZZI_CATEGORIES if key in lower), "")
+        if not image or not category:
+            return
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": [], "dimensions": "", "notes": "", "image_url": image,
+            "designer": "", "price": price, "currency": "BRL" if price else None,
+        })
+
+    done = set()
+    for name, path in pieces:
+        key = next((k for k in shop_items if k.lower() == name.lower()), None)
+        if key:
+            link, price = shop_items[key]
+            add(name, link, price, get(link))
+            done.add(key)
+        else:
+            add(name, base + path, None, get(path))
+    for name, (link, price) in shop_items.items():
+        if name not in done:
+            add(name, link, price, get(link))
+    return products
+
+
+def _extract_og_catalog(brand, listing_urls, link_re, skip_words=(), title_cut=" - ", max_pages=60):
+    """A catalogue site with no prices and one page per piece: the listing pages give the piece links, each piece page's own
+    og:title / og:image give its name and photo (confirmed on Studio Gameiro 2026-10-12). Polite: one page a second."""
+    products, seen = [], set()
+    links = []
+    for url in listing_urls:
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=25)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        for a in BeautifulSoup(resp.text, "html.parser").select("a[href]"):
+            href = urljoin(resp.url, a["href"]).split("#")[0].split("?")[0]
+            if re.search(link_re, href) and href not in links:
+                links.append(href)
+    for href in links[:max_pages]:
+        time.sleep(1)
+        try:
+            page = requests.get(href, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {href}: {e}")
+            continue
+        page.encoding = page.encoding or "utf-8"
+        title = re.search(r'<meta property="og:title" content="([^"]+)"', page.text)
+        image = re.search(r'<meta property="og:image" content="([^"]+)"', page.text)
+        if not title or not image:
+            continue
+        name = html.unescape(title.group(1)).split(title_cut)[0].strip()
+        if not name or any(w in name.lower() for w in skip_words) or href in seen:
+            continue
+        seen.add(href)
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": href,
+            "category": _infer_category_from_name(name, "", brand["name"]), "material_options": [], "dimensions": "",
+            "notes": "", "image_url": image.group(1), "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
+def extract_studio_gameiro(brand):
+    # the bioethanol fireplace is not furniture, lighting or an object for the home table
+    products = _extract_og_catalog(brand, [brand["url"].rstrip("/") + "/collections/"], r"studiogameiro\.com/collection/[^/]+/?$",
+                                   skip_words=("fireplace",))
+    for p in products:
+        if "standing lamp" in p["product_name"].lower():
+            p["category"] = "Floor Lamp"
+    return products
+
+
+# catellanismith.com (Catellani & Smith, Azzano San Paolo, Italy; confirmed live 2026-10-12): a Next.js catalogue. The product sitemap
+# lists every page (130 in English); each page's text gives "Lamps - <collection> - <type> - <name>", og:title and
+# og:image give the name and photo. No prices. One lamp family often has a page per type (Wall, Pendant, Table...), so a
+# name that repeats is given its type in brackets. Recessed (technical) fittings are left out.
+_CATELLANI_TYPES = {"pendant": "Pendant Lamp", "ceiling": "Ceiling Lamp", "chandelier": "Chandelier", "wall": "Wall Lamp",
+                    "table": "Table Lamp", "standing/floor": "Floor Lamp", "outdoor": "Outdoor Lamp"}
+
+
+def extract_catellani_smith(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        sitemap = requests.get(f"{base}/sitemap-products.xml", headers=HEADERS, timeout=25)
+        sitemap.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch the Catellani & Smith product sitemap: {e}")
+        return []
+    products = []
+    for url in re.findall(r"<loc>([^<]+/en/[^<]+)</loc>", sitemap.text):
+        time.sleep(0.6)
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        title = re.search(r'<meta property="og:title" content="([^"]+)"', page.text)
+        image = re.search(r'<meta property="og:image" content="([^"]+)"', page.text)
+        text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", "", page.text))))
+        crumb = re.search(r"Catellani & Smith Lamps \u2014 .+? \u2014 ([A-Za-z/]+) \u2014", text)
+        if not title or not image or not crumb:
+            continue
+        category = _CATELLANI_TYPES.get(crumb.group(1).strip().lower())
+        if not category:
+            continue
+        name = html.unescape(title.group(1)).split(" - Catellani")[0].strip()
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": [], "dimensions": "", "notes": "", "image_url": image.group(1),
+            "designer": "", "price": None, "currency": None,
+        })
+    unique, seen_pairs = [], set()
+    for p in products:                     # two pages of one lamp with the same photo and type are one piece
+        key = (p["product_name"].lower(), p["image_url"], p["category"])
+        if key not in seen_pairs:
+            seen_pairs.add(key)
+            unique.append(p)
+    products = unique
+    counts = {}
+    for p in products:
+        counts[p["product_name"].lower()] = counts.get(p["product_name"].lower(), 0) + 1
+    for p in products:
+        if counts[p["product_name"].lower()] > 1:
+            p["product_name"] = f"{p['product_name']} ({p['category'].replace(' Lamp', '')})"
+    return products
+
+
+# dooqdetails.com (Dooq, Lisbon; confirmed live 2026-10-12): a catalogue site whose category pages carry a card per piece with its name
+# (the photo's alt text), photo (data-src, lazy-loaded) and detail-page address (relative to the site root). No prices.
+_DOOQ_CATEGORIES = {"tables": "Table", "lounge-seating": "Armchair", "modular-seating": "Sofa", "dinning-seating": "Chair",
+                    "lighting": "Lamp", "storage": "Storage", "outdoor-1768400819911": "Outdoor Furniture"}
+
+
+def extract_dooq(brand):
+    base = brand["url"].rstrip("/")
+    products, seen = [], set()
+    for slug, fallback in _DOOQ_CATEGORIES.items():
+        time.sleep(1)
+        try:
+            resp = requests.get(f"{base}/products/{slug}/", headers=HEADERS, timeout=25)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch Dooq's {slug} page: {e}")
+            continue
+        resp.encoding = "utf-8"
+        for a in BeautifulSoup(resp.text, "html.parser").select('a[href*="detail-produtos"]'):
+            img = a.find("img")
+            href = a["href"].strip("/").split("/")[-2:]
+            if not img or len(href) < 2 or href[0] != "detail-produtos":
+                continue
+            url = f"{base}/detail-produtos/{href[1]}/"
+            image = (img.get("data-src") or "").replace("&amp;", "&")
+            name = " ".join(w.capitalize() if w.islower() else w for w in html.unescape(img.get("alt", "")).strip().split())
+            if not name or not image or url in seen:
+                continue
+            seen.add(url)
+            category = "Coffee Table" if "center table" in name.lower() else (_infer_category_from_name(name, "", brand["name"]) or fallback)
+            products.append({
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+                "category": category, "material_options": [], "dimensions": "", "notes": "", "image_url": image,
+                "designer": "", "price": None, "currency": None,
+            })
+    return products
+
+
+# giopatocoombes.com (Giopato & Coombes, Italy; confirmed live 2026-10-12): a Nuxt app whose /products page has no product markup until
+# script runs. The page's own state (window.__NUXT__.data[0].products) holds each product family (name, slug, collection) with
+# its size/configuration versions as children; one piece per family is stored, with its first version's photo, so a
+# chandelier offered in nine sizes is one piece. Needs a browser, so the brand is scrape_from=local (refresh with
+# `python3 scraper/scrape.py --local-only`). No prices.
+def extract_giopato_coombes(brand):
+    from playwright.sync_api import sync_playwright
+    base = brand["url"].rstrip("/")
+    with sync_playwright() as p:
+        browser = p.chromium.launch()
+        page = browser.new_context(user_agent=HEADERS["User-Agent"]).new_page()
+        try:
+            page.goto(f"{base}/products", wait_until="domcontentloaded", timeout=60000)
+            page.wait_for_timeout(5000)
+            families = json.loads(page.evaluate("JSON.stringify(window.__NUXT__.data[0].products)"))
+        except Exception as e:  # noqa: BLE001 - any failure means no products this run
+            print(f"  Could not read the Giopato & Coombes product list: {e}")
+            return []
+        finally:
+            browser.close()
+    products, seen = [], set()
+    for fam in families:
+        children = fam.get("children") or []
+        name = (fam.get("name") or "").strip()
+        if not children or not name or fam.get("slug") in seen:
+            continue
+        image = (children[0].get("mainImage") or {}).get("src") or (fam.get("mainImage") or {}).get("src") or ""
+        if not image:
+            continue
+        seen.add(fam["slug"])
+        lower = name.lower()
+        category = ("Chandelier" if "chandelier" in lower else "Floor Lamp" if "floor" in lower else "Table Lamp" if "table" in lower
+                    else "Wall Lamp" if lower.endswith("wall") or "ceiling/wall" in lower else "Pendant Lamp")
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": re.sub(r"\s+", " ", name),
+            "product_url": f"{base}/products/{fam['slug']}", "category": category, "material_options": [],
+            "dimensions": "", "notes": "", "image_url": image, "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
+# atelierareti.com (Atelier Areti, UK and Germany; confirmed live 2026-10-12): a Squarespace site whose collection pages list every piece
+# as a card with its name and photo (no per-page fetches). Prices are a 0.00 placeholder, so none are stored. The same name
+# can appear several times in one category (configurations of one design): the first is kept.
+_ARETI_CATEGORIES = {"pendant-lights": "Pendant Lamp", "wall-lights": "Wall Lamp", "desk-lights": "Table Lamp",
+                     "floor-lights": "Floor Lamp", "furniture": None}
+
+
+def extract_atelier_areti(brand):
+    base = brand["url"].rstrip("/")
+    products, seen = [], set()
+    for slug, category in _ARETI_CATEGORIES.items():
+        time.sleep(1)
+        try:
+            resp = requests.get(f"{base}/collection/{slug}", headers=HEADERS, timeout=25)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch Areti's {slug} page: {e}")
+            continue
+        resp.encoding = "utf-8"
+        for a in BeautifulSoup(resp.text, "html.parser").select('a[href*="/collection/p/"]'):
+            name = re.sub(r"\s+", " ", a.get_text(" ", strip=True))
+            img = a.find("img")
+            image = ((img.get("data-src") or img.get("src") or "") if img else "")
+            if image.startswith("//"):
+                image = "https:" + image
+            url = urljoin(resp.url, a["href"]).split("?")[0]
+            key = (slug, name.lower())
+            if not name or not image.startswith("http") or key in seen or url in {p["product_url"] for p in products}:
+                continue
+            seen.add(key)
+            products.append({
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+                "category": category or _infer_category_from_name(name, "", brand["name"]) or "Furniture",
+                "material_options": [], "dimensions": "", "notes": "", "image_url": image + ("" if "?" in image else "?format=1000w"),
+                "designer": "", "price": None, "currency": None,
+            })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -9376,6 +9792,14 @@ EXTRACTORS = {
     "Master & Master": extract_shopify,
     "Sabu Studio": extract_sabu_studio,
     "Arwenn": extract_arwenn,
+    "Bocci": extract_bocci,
+    "Atelier Areti": extract_atelier_areti,
+    "Giopato & Coombes": extract_giopato_coombes,
+    "Dooq": extract_dooq,
+    "Catellani & Smith": extract_catellani_smith,
+    "Studio Gameiro": extract_studio_gameiro,
+    "Giacomo Tomazzi": extract_giacomo_tomazzi,
+    "Dzovag Kotchian": extract_dzovag_kotchian,
     "Superlife": extract_shopify,
     "NORR11": extract_shopify,
     "Formarkivet": extract_shopify,
