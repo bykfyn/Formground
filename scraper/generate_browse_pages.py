@@ -638,8 +638,8 @@ def house_entries(groups):
 
 def _house_as_card(h):
     """A house in the shape of a product card (what the Work search returns for a house): the firm is the
-    'brand', the house links to its architect's own project page, and the detail line is location + year."""
-    detail = " · ".join(x for x in [h.get("location"), str(h["year"]) if h.get("year") else None] if x)
+    'brand', the house links to its architect's own project page, and there is no detail line (the location and year used to sit there)."""
+    detail = ""        # no location or year under the firm's name (2026-10-12, user): the card is the house and its architect
     return {"brand": h["firm"], "brand_url": h.get("url") or "#", "product_name": h["name"] or "Untitled house",
             "product_url": h.get("url") or "#", "image_url": h["image"], "link_dead": False, "detail": detail,
             "category": "house"}

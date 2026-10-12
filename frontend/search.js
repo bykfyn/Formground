@@ -254,9 +254,8 @@ function renderCard(r) {
   // equivalent "one real fact worth a line" for a house the way
   // "Available in black" is for a chair (see _normalize_house in
   // query_engine.py for the aliased fields this reads).
-  const houseDetail = r.type === "house"
-    ? [r.location, r.year].filter(Boolean).join(" · ")
-    : "";
+  // A house card shows no location or year under the firm's name (2026-10-12, user's call).
+  const houseDetail = "";
   const noteText = matchedTerms.length
     ? `Available in ${matchedTerms.map((t) => t.charAt(0).toUpperCase() + t.slice(1)).join(", ")}`
     : (r.type === "house" ? "" : (r.notes || ""));

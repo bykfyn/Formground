@@ -301,7 +301,7 @@ class StructureTests(unittest.TestCase):
             self.assertLessEqual(len(re.findall(r'<a class="card"', page)), 60, name)
             self.assertEqual(len(re.findall(r'<a class="card"', page)), page.count('<button class="share-btn"'), name)
         austria = (DOCS / "work" / "houses-austria.html").read_text()
-        self.assertRegex(austria, r'<p class="card-detail">[^<]*Austria[^<]*20\d\d</p>')   # location . year, as in search
+        self.assertNotRegex(austria, r'<p class="card-detail">[^<]+</p>')                  # no location or year under the firm (2026-10-12)
         self.assertIn('<h2><a href="/architects.html">Architects &rarr;</a></h2>', austria)
         self.assertIn('/architects/bernardo-bader-architekten.html', austria)
         houses = (DOCS / "work" / "houses.html").read_text()
