@@ -2143,6 +2143,7 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 # uncapturable names are found, per-product, only after checking the
 # real thing.
 MANUAL_CATEGORY_OVERRIDES = {
+    ("Sizar Alexis", "Ode Chair"): "side chair, Chair",     # was tagged this before the 2026-10-12 re-scrape; kept
     ("Pinch", "Nim Copper"): "Coffee Table",
     ("Pinch", "Nim Dune"): "Coffee Table",
     ("Pinch", "Mercier press"): "Cabinet",
@@ -2673,6 +2674,33 @@ MANUAL_IMAGE_OVERRIDES = {
         "https://sizaralexis.se/wp-content/uploads/2025/05/IMG_0033-scaled.jpg",
     ("Sizar Alexis", "ITOORABA Sideboard"):
         "https://sizaralexis.se/wp-content/uploads/2025/05/ITOORABA-Sideboard-Front1.jpg",
+    # 2026-10-12: more of the same - the gallery's LAST image was a macro or a pale-pine variant; these are the
+    # straight-on full-piece shots in the black-burned finish that the brand is known for (natural-pine versions
+    # of Ode, Ousia and Pilier sit in the same per-piece blocks if a pale shot is ever wanted).
+    ("Sizar Alexis", 'ITOORABA Stool'):
+        'https://sizaralexis.se/wp-content/uploads/2025/05/IMG_0062-scaled.jpg',
+    ("Sizar Alexis", 'Lahmu Low Console/Bench'):
+        'https://sizaralexis.se/wp-content/uploads/2023/06/SizarAlexis_00708-scaled.jpg',
+    ("Sizar Alexis", 'Ode Chair'):
+        'https://sizaralexis.se/wp-content/uploads/2023/06/Namnlost-2-scaled.jpg',
+    ("Sizar Alexis", 'Ode Three Legged Stool'):
+        'https://sizaralexis.se/wp-content/uploads/2023/06/Ode-Stool-Three-Legged-scaled.jpg',
+    ("Sizar Alexis", 'Ode Side Table'):
+        'https://sizaralexis.se/wp-content/uploads/2023/06/Ode-Stool-Press-scaled.jpg',
+    ("Sizar Alexis", 'Pilier Low Console'):
+        'https://sizaralexis.se/wp-content/uploads/2023/06/MG_1859-scaled.jpg',
+    ("Sizar Alexis", 'Pilier Side Table'):
+        'https://sizaralexis.se/wp-content/uploads/2023/06/MG_1739-scaled.jpg',
+    ("Sizar Alexis", 'Pilier Small Tray'):
+        'https://sizaralexis.se/wp-content/uploads/2023/06/Blackened-Steel-Tray-small-scaled.jpg',
+    ("Sizar Alexis", 'Ousia Chair'):
+        'https://sizaralexis.se/wp-content/uploads/2023/06/Ousia-stol2-scaled.jpg',
+    ("Sizar Alexis", 'Ousia Stool'):
+        'https://sizaralexis.se/wp-content/uploads/2023/06/Ousia-pall1-scaled.jpg',
+    ("Sizar Alexis", 'Amal Cup'):
+        'https://sizaralexis.se/wp-content/uploads/2023/06/amal-cup-2-scaled.jpg',
+    ("Sizar Alexis", 'Amal glass'):
+        'https://sizaralexis.se/wp-content/uploads/2023/06/Amal-Glass-scaled.jpg',
 }
 
 
@@ -6818,6 +6846,12 @@ def extract_sizar_alexis(brand):
                 "image_url": last_image,
             })
 
+        if slug == "itooraba":     # named in plain text (no <strong>), so the walk above misses it: W60 D60 H70 cm, black-burned or natural pine
+            products.append({
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": "ITOORABA Lounge Chair", "product_url": url,
+                "category": "Lounge Chair", "material_options": [], "dimensions": "", "notes": "",
+                "image_url": f"{domain}/wp-content/uploads/2023/05/ItooRaba-Lounge-Chair-burned-Press-scaled.jpg",
+            })
         if not found_any:
             title = soup.find("title")
             name = title.get_text(strip=True).split(" – ")[0].strip() if title else slug.title()
