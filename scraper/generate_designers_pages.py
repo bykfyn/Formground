@@ -31,6 +31,7 @@ append to):
 """
 
 import html
+import re
 import json
 import sqlite3
 from collections import defaultdict
@@ -68,6 +69,8 @@ DOCS_DIR = SCRAPER_DIR.parent / "docs"
 DESIGNERS_DIR = DOCS_DIR / "designers"
 DB_PATH = DATA_DIR / "formground.db"
 PORTFOLIO_PATH = DATA_DIR / "portfolio_designers.json"   # designers shown by their own work (no maker's products), like architects' houses
+PIECES_PATH = DATA_DIR / "designer_pieces.json"          # pilot: pieces from a designer's own project index (scrape_designer_projects.py)
+EXCLUDE_PATH = DATA_DIR / "designer_piece_exclusions.json"   # pieces left out of "Further work": see the rule in designer_pieces()
 SITEMAP_PATH = DOCS_DIR / "sitemap.xml"
 
 MIN_PRODUCTS = 2  # see module docstring - a one-credit page reads as thin
@@ -150,6 +153,60 @@ def brand_filter_html(products):
     return '\n  <div class="tier-filters" id="brand-filters">' + "".join(chips) + "</div>"
 
 
+def designer_pieces(designer_name, products):
+    """Pieces taken from the designer's own project index, shown only on this designer's page (never in Work or search).
+    Pieces already in the catalogue as credited products (same maker, same name) are left out so nothing shows twice."""
+    if not PIECES_PATH.exists():
+        return []
+    entry = json.loads(PIECES_PATH.read_text()).get(designer_name)
+    if not entry:
+        return []
+    norm = lambda t: re.sub(r"[^a-z0-9]", "", (t or "").lower())
+    have = [(norm(p["brand"]), norm(p["product_name"])) for p in products]
+    # The rule: a piece is shown only if its photo shows a product or category we cover (furniture, lighting, rugs and textiles,
+    # tableware, vessels, objects), and no recognisable person is the subject of the photo (rights). Anything else is listed,
+    # with the reason, in data/designer_piece_exclusions.json.
+    left_out = set()
+    if EXCLUDE_PATH.exists():
+        left_out = {(norm(x["maker"]), norm(x["title"])) for x in json.loads(EXCLUDE_PATH.read_text()).get(designer_name, [])}
+    out = []
+    for piece in entry["pieces"]:
+        mk, tt = norm(piece["maker"]), norm(piece["title"])
+        if (mk, tt) in left_out:
+            continue
+        # same maker, and one name contains the other ("KG01" / "KG01 Pepper Grinder"): already in the catalogue
+        if any(b == mk and n and tt and (n in tt or tt in n) for b, n in have):
+            continue
+        out.append(piece)
+    # a retrospective, newest first (pieces with no year last)
+    return sorted(out, key=lambda x: (-int(x["year"]) if x["year"] else 0, x["maker"].lower(), x["title"].lower()))
+
+
+def designer_links_html(designer_name):
+    """Links the designer runs themselves (a shop), from the designer's entry in designer_pieces.json; shown under the name."""
+    if not PIECES_PATH.exists():
+        return ""
+    links = json.loads(PIECES_PATH.read_text()).get(designer_name, {}).get("links", [])
+    return "".join(f'\n    <a class="brand-site-link" href="{html.escape(l["url"])}" target="_blank" rel="noopener noreferrer">{html.escape(l["label"])} &rarr;</a>'
+                   for l in links)
+
+
+def piece_section_html(designer_name, pieces):
+    """'Further work': pieces credited to their maker, each linking to the maker's page when one is known, else the designer's project page."""
+    if not pieces:
+        return ""
+    from generate_architects_pages import house_card_html
+    cards = "".join(
+        house_card_html({"name": f'{x["title"]}', "image": x["image"], "url": x["maker_url"] or x["project_url"],
+                         "location": x["maker"], "year": x["year"], "firm": x["maker"]})
+        for x in pieces)
+    return f"""
+  <h2 class="section-heading" style="text-align:center;margin:44px 0 6px;font-size:18px;font-weight:500;">Further work</h2>
+  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">{len(pieces)} more pieces from {html.escape(designer_name)}'s career, newest first, from makers whose catalogues are not on Formground. Many are no longer in production, which makes this a way to learn what to look for second-hand. Each links to the maker or to the designer's own project page.</p>
+  <div class="maker-grid">{cards}
+  </div>"""
+
+
 def render_designer_page(designer_name, slug, products, page=1):
     page_url = f"{SITE_URL}/designers/{brand_page_slug(slug, page)}.html"
     brands = sorted({p["brand"] for p in products})
@@ -226,7 +283,7 @@ def render_designer_page(designer_name, slug, products, page=1):
 <main>
   <div class="maker-header">
     <p class="eyebrow">Designer</p>
-    <h1 class="maker-name">{html.escape(designer_name)}</h1>
+    <h1 class="maker-name">{html.escape(designer_name)}</h1>{designer_links_html(designer_name)}
   </div>
   {creator_texts.text_block_html("designers", slug, len(products)) if page == 1 else ""}
   <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;"><span id="shown-count">{len(products)}</span> <span id="shown-noun">product{'' if len(products) == 1 else 's'}</span> credited to {html.escape(designer_name)}, each linked straight to its maker's own page.</p>{brand_chips}
@@ -234,13 +291,13 @@ def render_designer_page(designer_name, slug, products, page=1):
   <div class="grid" data-listing-grid>{products_html}
   </div>
   {see_more_html}
-  {pager_html}
+  {pager_html}{piece_section_html(designer_name, designer_pieces(designer_name, products)) if page == 1 else ""}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
 </main>
 <script>
-  document.querySelectorAll(".card-image img").forEach(function (img) {{
+  document.querySelectorAll(".card-image img, .maker-card-hero img").forEach(function (img) {{
     img.addEventListener("load", function () {{
       var ratio = img.naturalWidth / img.naturalHeight;
       if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
