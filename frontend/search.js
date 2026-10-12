@@ -409,7 +409,11 @@ function renderResults(results, metaText, emptyText, trimToFullRows, totalOverri
     shuffle.className = "meta-shuffle";
     shuffle.innerHTML = '<i class="ti ti-arrows-shuffle" aria-hidden="true"></i> Shuffle';
     shuffle.addEventListener("click", () => submitQuery(input.value.trim()));
-    metaEl.append(" \u00b7 ", shuffle);
+    // Phones only (work-results.css hides it above 640px, where the whole chip row is visible)
+    const wrap = document.createElement("span");
+    wrap.className = "meta-shuffle-wrap";
+    wrap.append(" \u00b7 ", shuffle);
+    metaEl.append(wrap);
   }
   metaEl.style.display = "block";
 }
