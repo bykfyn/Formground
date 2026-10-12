@@ -687,7 +687,8 @@ def _write_house_pages(houses, groups, entries):
             chunk = products[(page - 1) * LISTING_CARDS_PER_PAGE: page * LISTING_CARDS_PER_PAGE]
             (BROWSE_DIR / f"{_page_slug(slug, page)}.html").write_text(
                 render_listing_page(None, chunk, {}, page, pages, products, entries, cards_all, view=view))
-            out_slugs.append(f"work/{_page_slug(slug, page)}")
+            if page == 1:   # numbered continuation pages stay linked and crawlable but are not listed in the sitemap (12 Oct 2026)
+                out_slugs.append(f"work/{_page_slug(slug, page)}")
         print(f"work/{slug}: {len(hs)} houses, {pages} page(s)")
     return out_slugs
 
@@ -824,7 +825,8 @@ def _new_view_pages(entries, sets):
             chunk = cards[(page - 1) * LISTING_CARDS_PER_PAGE: page * LISTING_CARDS_PER_PAGE]
             out = BROWSE_DIR / f"{_page_slug(vslug, page)}.html"
             out.write_text(render_listing_page(None, chunk, variant_counts, page, pages, products, entries, cards, view=view))
-            slugs.append(f"work/{_page_slug(vslug, page)}")
+            if page == 1:   # numbered continuation pages stay linked and crawlable but are not listed in the sitemap (12 Oct 2026)
+                slugs.append(f"work/{_page_slug(vslug, page)}")
         print(f"work/{vslug}: {len(products)} products -> {len(cards)} cards, {pages} page(s)")
     return slugs
 
@@ -911,7 +913,8 @@ def generate():
             chunk = cards[(page - 1) * per_page: page * per_page]
             out = BROWSE_DIR / f"{_page_slug(category['slug'], page)}.html"
             out.write_text(render_listing_page(category, chunk, variant_counts, page, pages, products, entries, cards))
-            sitemap_slugs.append(f"work/{_page_slug(category['slug'], page)}")
+            if page == 1:   # numbered continuation pages stay linked and crawlable but are not listed in the sitemap (12 Oct 2026)
+                sitemap_slugs.append(f"work/{_page_slug(category['slug'], page)}")
         print(f"work/{category['slug']}: {len(products)} products -> {len(cards)} cards, {pages} page(s)")
 
     for cat_name, cat_slug in work_menu.CATEGORY_SLUGS.items():

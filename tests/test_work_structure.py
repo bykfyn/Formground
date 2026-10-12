@@ -247,7 +247,8 @@ class StructureTests(unittest.TestCase):
         small = (DOCS / "brands" / "oven-editions.html").read_text()
         self.assertNotIn('id="see-more"', small)                        # 60 pieces or fewer: one page
         sm = (DOCS / "sitemap.xml").read_text()
-        self.assertIn("/brands/serax-2.html", sm)
+        self.assertIn("/brands/serax.html", sm)
+        self.assertNotIn("/brands/serax-2.html", sm)                    # continuation pages: linked and crawlable, not in the sitemap
         for f in _g.glob(str(DOCS / "brands" / "*.html")):
             self.assertLess(Path(f).stat().st_size, 400_000, f)         # was 1.9 MB for the biggest maker
 
@@ -287,9 +288,18 @@ class StructureTests(unittest.TestCase):
         self.assertIn('href="/designers/hella-jongerius-2.html"', first)
         second = (DOCS / "designers" / "hella-jongerius-2.html").read_text()
         self.assertIn('<p class="earlier-results"><a href="/designers/hella-jongerius.html" rel="prev">', second)
-        self.assertIn("/designers/hella-jongerius-2.html", (DOCS / "sitemap.xml").read_text())
+        self.assertNotIn("/designers/hella-jongerius-2.html", (DOCS / "sitemap.xml").read_text())   # continuation pages: not in the sitemap
         small = (DOCS / "designers" / "claire-vos.html").read_text()
         self.assertNotIn('id="see-more"', small)
+
+    def test_sitemap_lists_primary_pages_only_not_numbered_continuation_pages(self):
+        sm = (DOCS / "sitemap.xml").read_text()
+        for url in ("/work/sofas.html", "/brands/serax.html", "/designers/hella-jongerius.html"):
+            self.assertIn(url, sm, url)
+        for url in ("/work/sofas-2.html", "/work/chairs-24.html", "/brands/serax-2.html", "/designers/hella-jongerius-2.html"):
+            self.assertNotIn(url, sm, url)
+            self.assertTrue((DOCS / url.lstrip("/")).exists(), url)       # the pages themselves still exist (and stay linked)
+        self.assertLess(sm.count("<loc>"), 800)
 
     def test_houses_pages_are_listing_pages_with_the_standard_card(self):
         for name in ("houses-austria", "houses", "houses-sweden"):

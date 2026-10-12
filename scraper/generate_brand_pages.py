@@ -1759,7 +1759,7 @@ def render_sitemap(brand_slugs):
         urls.append(("https://formground.com/designers.html", "weekly", "0.7", today))
         urls += [
             (f"https://formground.com/designers/{slug}.html", "weekly", "0.5", today)
-            for slug in sorted(designer_slugs + _designers_extra_page_slugs())
+            for slug in sorted(designer_slugs)
         ]
     architect_slugs = _architects_sitemap_slugs()
     if architect_slugs:
@@ -1872,7 +1872,9 @@ def generate():
     (DOCS_DIR / "makers.html").write_text(render_makers_index(makers_data))
     for slug in RETIRED_CATEGORY_SLUGS:
         (DOCS_DIR / f"{slug}.html").write_text(render_category_redirect_stub(slug))
-    (DOCS_DIR / "sitemap.xml").write_text(render_sitemap(sorted([m[1] for m in makers_data] + extra_page_slugs)))
+    # Numbered continuation pages (<brand>-2 ...) stay linked and crawlable but are left out of the sitemap, so it lists
+    # only the primary pages (12 Oct 2026: they were over half of it, and most of what Google crawled and did not keep).
+    (DOCS_DIR / "sitemap.xml").write_text(render_sitemap(sorted(m[1] for m in makers_data)))
     update_creators_hub_counts(len(makers_data), len(_designers_sitemap_slugs()), len(_architects_sitemap_slugs()))
 
     print(f"Generated {len(makers_data)} brand pages, makers.html, "
