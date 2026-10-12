@@ -365,7 +365,7 @@ function trimTrailingPartialRow(renderedItems) {
   return renderedItems.slice(renderedItems.length - carryCount);
 }
 
-function renderResults(results, metaText, emptyText, trimToFullRows, totalOverride) {
+function renderResults(results, metaText, emptyText, trimToFullRows, totalOverride, shuffleLink) {
   gridEl.innerHTML = "";
   statusEl.style.display = "none";
   hideLoadMore();
@@ -401,6 +401,16 @@ function renderResults(results, metaText, emptyText, trimToFullRows, totalOverri
   // /search's total_matches) - falls back to the rendered count itself
   // for Discover, which has no such hidden total to report.
   metaEl.textContent = metaText(totalOverride ?? results.length);
+  // A random selection says what it is and offers the way to change it right here. The "Surprise me" chip does the
+  // same, but on a phone the chip row scrolls sideways and the chip is off-screen on first visit.
+  if (shuffleLink) {
+    const shuffle = document.createElement("button");
+    shuffle.type = "button";
+    shuffle.className = "meta-shuffle";
+    shuffle.innerHTML = '<i class="ti ti-arrows-shuffle" aria-hidden="true"></i> Shuffle';
+    shuffle.addEventListener("click", () => submitQuery(input.value.trim()));
+    metaEl.append(" \u00b7 ", shuffle);
+  }
   metaEl.style.display = "block";
 }
 
@@ -683,6 +693,8 @@ async function runDiscover() {
       data.results || [],
       (n) => `${n} random pieces, no rankings, no paid results`,
       "Nothing to discover yet.",
+      true,
+      undefined,
       true
     );
   } catch (err) {
