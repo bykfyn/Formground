@@ -2702,6 +2702,8 @@ MANUAL_IMAGE_OVERRIDES = {
         'https://sizaralexis.se/wp-content/uploads/2023/06/Ousia-pall1-scaled.jpg',
     ("Sizar Alexis", 'Amal Cup'):
         'https://sizaralexis.se/wp-content/uploads/2023/06/amal-cup-2-scaled.jpg',
+    ("Sizar Alexis", 'Lahmu Vase'):
+        'https://sizaralexis.se/wp-content/uploads/2023/06/G6A2152-scaled.jpg',
     ("Sizar Alexis", 'Amal glass'):
         'https://sizaralexis.se/wp-content/uploads/2023/06/Amal-Glass-scaled.jpg',
 }

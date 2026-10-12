@@ -132,6 +132,8 @@ def fit_for_banner(url, force=False):
 # Hand-set crops for photos the automatic fit cannot judge (a busy backdrop), keyed by the photo URL: the square window's
 # object-position. Used on every card that shows the photo (type pages, Edits).
 MANUAL_CARD_POSITION = {
+    # Sizar Alexis Lahmu Vase: a tall photo with the vase between 38% and 75% of its height; the square window starts a fifth of the way down
+    "https://sizaralexis.se/wp-content/uploads/2023/06/G6A2152-scaled.jpg": "50% 74%",
     # the lamp spans 28-86% of the photo's height, so the square window has to start about a quarter of the way down
     "https://cdn.shopify.com/s/files/1/0177/8296/files/GB_Nov2024_IndiaHobson_LR-108A.jpg?v=1741619890": "50% 71%",
 }
