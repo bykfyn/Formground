@@ -36,6 +36,15 @@ GUIDE_PICKS = {
     "Lighting": ["floor-lamps", "table-lamps", "pendant-lamps"],
     "Objects": ["rugs", "candle-holders"],
 }
+# The hub shows an Edit's photo in a 4:3 frame (the Edits page's own frame is wider), so a few photos need their own focal point here
+EDIT_HUB_STYLE = {
+    "/edits/warm-minimal-living-room.html": ("object-position:50% 90%", ""),
+    "/edits/nordic-noir-living-room.html": ("object-position:60% 66%", ""),
+    "/edits/pendant-lamps.html": ("object-position:50% 75%", ""),
+    # tall pieces cannot fit a 4:3 frame by cropping: show the whole photo, on the photo's own ground
+    "/edits/candle-holders.html": ("object-fit:contain;padding:3%;box-sizing:border-box;mix-blend-mode:multiply", ""),
+    "/edits/mirrors.html": ("object-fit:contain", "background:#000"),
+}
 NEW_ROW = 8
 EDITS_MAX = 2      # the newest two, in one row; all of them are on the Edits page
 SHOW_CLOSING_TEXT = False   # the short paragraph under the types (removed for now, 2026-10-14); CLOSING holds its text
@@ -87,7 +96,7 @@ def _home():
 
 
 def _edit_tiles(category):
-    """[(slug, title, image, alt, product, brand)] for this category's Edits, from the Edits hub page."""
+    """[(slug, title, image, alt, product, brand, object-position)] for this category's Edits, from the Edits hub page."""
     soup = _soup(DOCS / "edits.html")
     out = []
     for fig in soup.find_all("figure", class_="edit-feature"):
@@ -101,8 +110,10 @@ def _edit_tiles(category):
         if credit:
             parts = [p.strip() for p in credit.find("span").get_text(" ", strip=True).split("·")]
             product, brand = parts[0], (parts[-1] if len(parts) > 1 else "")
+        own = (re.search(r"object-position:\s*([^;]+)", img.get("style", "") or "") or [None, ""])[1]
+        position = EDIT_HUB_STYLE.get(link["href"], (f"object-position:{own}" if own else "", ""))
         out.append((link["href"], fig.find(class_="edit-title").get_text(strip=True), img["src"] if img else "",
-                    img.get("alt", "") if img else "", product, brand))
+                    img.get("alt", "") if img else "", product, brand, position))
     return out
 
 
@@ -193,11 +204,13 @@ def render_hub(category):
     edits_html = ""
     if edits:
         cols = []
-        for href, title, img, alt, product, brand in edits:
+        for href, title, img, alt, product, brand, position in edits:
+            pos_attr = f' style="{position[0]}"' if position[0] else ""
+            frame_attr = f' style="{position[1]}"' if position[1] else ""
             cols.append(
                 f'<div class="duo-col"><div class="recent-group-header"><h3>{html.escape(title)}</h3>'
                 f'<a href="{html.escape(href)}">See the edit &rarr;</a></div>'
-                f'<a class="duo-card" href="{html.escape(href)}"><div class="duo-card-image"><img alt="{html.escape(alt)}" loading="lazy" src="{html.escape(img)}"></div>'
+                f'<a class="duo-card" href="{html.escape(href)}"><div class="duo-card-image"{frame_attr}><img alt="{html.escape(alt)}" loading="lazy" src="{html.escape(img)}"{pos_attr}></div>'
                 f'<span class="duo-name">{html.escape(product)}</span><span class="duo-brand">{html.escape(brand)}</span></a></div>')
         rows = "".join(f'<div class="recent-group"><div class="duo-row">{"".join(cols[i:i + 2])}</div></div>' for i in range(0, len(cols), 2))
         edits_html = (f'<section class="recent-section"><div class="recent-header"><h2><a class="cat-link section-header-link" href="/edits.html">'
