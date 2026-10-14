@@ -145,10 +145,10 @@ TOOL_CATEGORIES = {
         {"name": "Pamono", "type": "Collectible Design Marketplace", "country": "Germany", "website": "https://www.pamono.com", "icon": "https://www.pamono.com/skin/frontend/lamono/redesign/images/mobile-icons/pamono-app-icon-512.png"},
     ],
     "design": [
-        {"name": "Fusion 360", "type": "CAD Software", "country": "USA", "website": "https://www.autodesk.com/products/fusion-360", "icon": "https://www.google.com/s2/favicons?domain=autodesk.com&sz=128"},
+        {"name": "Fusion 360", "type": "CAD Software", "country": "USA", "website": "https://www.autodesk.com/products/fusion-360", "icon": "/logo/tools/fusion-360.svg"},
         {"name": "Shapeways", "type": "3D Printing Service", "country": "USA", "website": "https://www.shapeways.com", "icon": "https://www.shapeways.com/wp-content/uploads/2022/04/favicon.ico"},
         {"name": "Material District", "type": "Materials Database", "country": "Netherlands", "website": "https://materialdistrict.com", "icon": "https://materialdistrict.com/apple-icon.png"},
-        {"name": "Linolie & Pigment", "type": "Linseed Oil Paint & Wood Finishes", "country": "Denmark", "website": "https://linolie.dk", "icon": "https://www.google.com/s2/favicons?domain=linolie.dk&sz=128"},
+        {"name": "Linolie & Pigment", "type": "Linseed Oil Paint & Wood Finishes", "country": "Denmark", "website": "https://linolie.dk", "icon": "/logo/tools/linolie-pigment.svg"},
         {"name": "99designs", "type": "Design Contest Platform", "country": "Australia", "website": "https://99designs.com", "icon": "https://99designs.com/touch-icon-iphone.png"},
         {"name": "Fiverr", "type": "Freelancer Marketplace", "country": "Israel", "website": "https://www.fiverr.com", "icon": "https://www.google.com/s2/favicons?domain=fiverr.com&sz=128"},
     ],
