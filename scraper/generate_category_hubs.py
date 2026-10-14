@@ -178,11 +178,13 @@ def render_hub(category):
     if pop:
         tiles = {}                                                  # the old page's own type tiles: href -> (photo, name, count)
         for a in old_main.select("div.type-grid > a.maker-card"):
-            tiles[a["href"]] = (a.find("img")["src"], a.find(class_="maker-name").get_text(strip=True), a.find(class_="maker-country").get_text(strip=True))
+            tiles[a["href"]] = (a.find("img")["src"], a.find(class_="maker-name").get_text(strip=True), a.find(class_="maker-country").get_text(strip=True),
+                                a.find("img").get("style", ""))
 
         def tile(slug, image, alt, cls="", whole=False, style=""):
             href = f"/work/{slug}.html"
-            _img, name, count = tiles[href]
+            _img, name, count, _style = tiles[href]
+            style = style or (_style if not image else "")
             src = html.escape(image or _img)
             frame = " bt-whole-frame" if whole else ""
             klass = ' class="bt-whole"' if whole else ""
