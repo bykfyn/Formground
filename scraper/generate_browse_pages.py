@@ -563,11 +563,29 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
 """
 
 
+# A hand-picked tile photo for a type, instead of the first card of its list (2026-10-14): the first card (the first brand
+# alphabetically) was often not a typical piece - a wall shelf for Desks, a sofa for Beds, a trolley for Sideboards.
+# data/type_tile_images.json holds one reviewed, clean whole-product photo per type; scraper/pick_type_tile_images.py scores
+# candidates to choose from. A type with no entry falls back to the first card of its list.
+TYPE_TILE_IMAGE = json.loads((Path(__file__).parent.parent / "data" / "type_tile_images.json").read_text()) \
+    if (Path(__file__).parent.parent / "data" / "type_tile_images.json").exists() else {}
+
+
+# A tile photo that fills its frame edge to edge (the Maruni folding chair is 97% of its photo's height) is shown with
+# margin so it weighs the same as its neighbours: contain + padding, and multiply so the photo's white blends into the
+# tile's own light grey instead of showing as a white square.
+TYPE_TILE_STYLE = {
+    "folding-chairs": "object-fit:contain;padding:13%;box-sizing:border-box;mix-blend-mode:multiply",
+    "stools": "object-fit:contain;padding:6%;box-sizing:border-box;mix-blend-mode:multiply",       # a tall photo: shown whole
+}
+
+
 def _type_tile_html(e):
     """One type's tile on a category page: a photo, the type's name, how many pieces."""
     image = ""
     if e.get("image"):
-        image = f'<img src="{html.escape(sized(e["image"], CARD))}" alt="{html.escape(e["title"])}" loading="lazy">'
+        style = f' style="{TYPE_TILE_STYLE[e["slug"]]}"' if e.get("slug") in TYPE_TILE_STYLE else ""
+        image = f'<img src="{html.escape(sized(e["image"], CARD))}" alt="{html.escape(e["title"])}"{style} loading="lazy">'
     return (
         f'<a class="maker-card" href="/work/{e["slug"]}.html">'
         f'<div class="maker-card-hero">{image}</div>'
@@ -897,7 +915,7 @@ def generate():
         cards = _interleave_by_brand(cards)
         computed.append((category, products, cards, variant_counts))
         entries.append({"slug": category["slug"], "title": category["title"], "n": len(products), "group": category["group"],
-                        "image": cards[0]["image_url"] if cards else ""})
+                        "image": TYPE_TILE_IMAGE.get(category["slug"]) or (cards[0]["image_url"] if cards else "")})
 
     houses = load_houses()
     groups = house_groups(houses)

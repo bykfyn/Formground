@@ -943,3 +943,25 @@ class LookEditTests(unittest.TestCase):
             self.assertIn("grid-template-columns: repeat(12, 1fr)", page)
             self.assertIn("gap: 8px", page)
             self.assertIn('<p class="eyebrow">Edit &middot; ', page)
+
+
+class FooterOrderTests(unittest.TestCase):
+    def test_footer_lists_edits_in_the_same_order_as_the_main_nav(self):
+        """The header nav reads Work, Creators, Edits; the footer follows that order (a page leaves out its own link)."""
+        for name in ("index.html", "about.html", "creators.html", "brands/hay.html", "work/sofas.html", "edits/chairs.html"):
+            page = (DOCS / name).read_text()
+            footer = page[page.index("&copy; 2026 Formground"):]
+            footer = footer[:footer.index("Powered by Sheerd")]
+            links = re.findall(r'<a href="/([a-z-]+)\.html">', footer)
+            present = [l for l in ("work", "creators", "edits") if l in links]
+            self.assertEqual(links[links.index(present[0]):links.index(present[0]) + len(present)], present, name)
+            if "marketplace" in links and "edits" in links:
+                self.assertLess(links.index("edits"), links.index("marketplace"), name)
+
+
+class TypeTileImageTests(unittest.TestCase):
+    def test_hand_picked_type_tile_photos_are_used_on_the_furniture_hub(self):
+        page = (DOCS / "work" / "furniture.html").read_text()
+        for slug, needle in (("folding-chairs", "beech_NL0.jpg"), ("office-chairs", "wick-swivel-ash-wheels.jpg")):
+            tile = re.search(rf'<a class="maker-card" href="/work/{slug}\.html">(.*?)</a>', page, re.S).group(1)
+            self.assertIn(needle, tile, slug)
