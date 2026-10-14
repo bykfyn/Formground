@@ -144,9 +144,9 @@ PAGE_CSS = """
      makers.html/architects.html; the chips act as the category filter
      on top of that query, not a separate search of their own). */
   .ask-box {
-    display: flex; align-items: center; gap: 10px; min-height: 57px;
+    display: flex; align-items: center; gap: 10px; height: 47px; box-sizing: border-box;
     background: var(--surface-1); border: 0.5px solid var(--border);
-    border-radius: var(--radius); padding: 13px 16px;
+    border-radius: var(--radius); padding: 0 16px;
   }
   .ask-box i { font-size: 18px; color: var(--text-muted); }
   .ask-box input {

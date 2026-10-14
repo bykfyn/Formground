@@ -965,3 +965,55 @@ class TypeTileImageTests(unittest.TestCase):
         for slug, needle in (("folding-chairs", "beech_NL0.jpg"), ("office-chairs", "wick-swivel-ash-wheels.jpg")):
             tile = re.search(rf'<a class="maker-card" href="/work/{slug}\.html">(.*?)</a>', page, re.S).group(1)
             self.assertIn(needle, tile, slug)
+
+
+class CategoryHubTests(unittest.TestCase):
+    """/work/furniture|lighting|objects: the home page's look at category scale (generate_category_hubs.py)."""
+
+    def _page(self, slug):
+        return (DOCS / "work" / f"{slug}.html").read_text()
+
+    def test_each_hub_has_the_sections_in_order_one_hidden_h1_and_the_menu_with_the_category_current(self):
+        order = ["Popular types", "Browse every type", "New in ", "Edits in ", "Buying guides"]
+        for slug in ("furniture", "lighting", "objects"):
+            page = self._page(slug)
+            body = page[page.index("<body"):]
+            main = body[body.index("<main"):body.index("</main>")]
+            positions = [main.index(f"<h2>{h}" if h in ("Popular types", "Browse every type") else h) for h in order]
+            self.assertEqual(positions, sorted(positions), slug)
+            self.assertEqual(len(re.findall(r"<h1[\s>]", main)), 1, slug)
+            self.assertIn('<h1 class="sr-only">', main)
+            self.assertIn(f'class="work-menu-cat is-current"', main)
+            self.assertLess(main.index('class="search-wide"'), main.index('class="work-menu"'))
+            self.assertLess(main.index('class="work-menu"'), main.index("<h2>Popular types"))      # search and chips come first
+
+    def test_each_hub_lists_every_type_a_new_row_and_edits(self):
+        for slug, tiles in (("furniture", 27), ("lighting", 7), ("objects", 10)):
+            page = self._page(slug)
+            self.assertGreaterEqual(page.count('class="maker-card"'), tiles, slug)
+            self.assertEqual(page.count('class="recent-card"') >= 8, True, slug)
+            self.assertIn('class="duo-col"', page, slug)
+            self.assertIn('class="guide-card"', page, slug)
+
+    def test_popular_types_is_a_five_tile_bento_and_the_closing_text_is_off(self):
+        import json as _json
+        popular = _json.loads((ROOT / "data" / "hub_popular.json").read_text())
+        for slug, cat in (("furniture", "Furniture"), ("lighting", "Lighting"), ("objects", "Objects")):
+            page = self._page(slug)
+            self.assertEqual(page.count('class="bento"'), 1, slug)
+            self.assertEqual(page.count('class="maker-card bt bt-big"'), 1, slug)
+            self.assertEqual(page.count('class="maker-card bt"'), 4, slug)
+            self.assertNotIn('class="feature-banner-frame banner-carousel"', page, slug)
+            for s in [popular[cat]["big"]["slug"]] + popular[cat]["types"]:
+                self.assertIn(f'class="maker-card bt', page[page.index('class="bento"'):])
+                self.assertIn(f'href="/work/{s}.html"', page[page.index('class="bento"'):page.index("Browse every type")], s)
+            self.assertNotIn('class="hub-about"', page, slug)             # the closing paragraph is switched off for now
+            self.assertEqual(page.count('class="duo-col"'), 2, slug)       # two Edits, one row
+
+    def test_hub_head_is_intact_and_houses_keeps_its_own_page(self):
+        for slug in ("furniture", "lighting", "objects"):
+            page = self._page(slug)
+            self.assertRegex(page, r'<meta name="description" content="[^"]+">')
+            self.assertIn(f'<link rel="canonical" href="https://formground.com/work/{slug}.html">', page)
+        houses = (DOCS / "work" / "houses.html").read_text()
+        self.assertNotIn("Popular types", houses)

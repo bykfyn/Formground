@@ -138,13 +138,16 @@
   function bindClicks() {
     if (document.querySelector('script[src*="search.js"]')) return;
     document.addEventListener("click", function (ev) {
-      var el = ev.target.closest && ev.target.closest(".maker-card, .card, .look-tile, .brand-site-link");
+      var el = ev.target.closest && ev.target.closest(".maker-card, .card, .look-tile, .recent-card, .brand-site-link");
       if (!el) return;
       if (!el.hostname || el.hostname === window.location.hostname) return;
       if (ev.target.closest(".share-btn")) return;  // sharing is its own event (share.js)
 
       var brand, productName;
-      if (el.classList.contains("look-tile")) {         // a piece on a Look Edit's board (data attributes, no card text)
+      if (el.classList.contains("recent-card")) {       // a "New in ..." piece on a category hub
+        productName = textOf(el.querySelector(".recent-name"));
+        brand = textOf(el.querySelector(".recent-brand"));
+      } else if (el.classList.contains("look-tile")) {         // a piece on a Look Edit's board (data attributes, no card text)
         brand = el.getAttribute("data-brand");
         productName = el.getAttribute("data-product");
       } else if (el.classList.contains("card")) {
@@ -187,7 +190,7 @@
  */
 (function () {
   "use strict";
-  var CARD_PHOTOS = ".card-image img, .maker-card-hero img, .look-tile img, .recent-card-image img, .edit-photo img, " +
+  var CARD_PHOTOS = ".card-image img, .maker-card-hero img, .look-tile img, .recent-card-image img, .recent-card-image img, .edit-photo img, " +
     ".feature-banner-frame img, .banner-slide img, .cat-tile img, .duo-carousel-frame img";
   function hide(img) {
     img.style.visibility = "hidden";
