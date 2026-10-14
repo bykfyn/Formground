@@ -306,3 +306,14 @@ Shown only on the designer's page, never in Work or search. A piece is left out 
 (appliances, electronics, watches, eyewear, bags and shoes, bathroom fittings, tiles, cutlery and cookware, drinks) or (2) a person is the
 subject of the photo (rights: an identifiable or well-known person is not worth the risk; a cropped hand or torso holding the product is fine).
 Exclusions, with the reason, live in data/designer_piece_exclusions.json. Review new pieces on a contact sheet before showing them.
+
+## Look boards (2026-10-14): Edits made of pieces from different makers
+A "Look" Edit (data/looks.json, scraper/generate_look_pages.py, e.g. Warm minimal / Nordic noir living room) is a hand-picked room, not a
+query result. Layout: title and intro, then a board, then every piece as the standard product card with its role above it.
+- Board: 12-column grid, 8px gaps and 8px padding, every piece in its own box, boxes fill edge to edge (photo cropped to the box; a photo
+  that must show whole takes its own edge colour). Row heights are fractions (aspect 996/608), so crops are the same at any width.
+- Top row: one large anchor piece (6 columns), then two equal-height portrait pieces (3 columns each). Bottom row: equal 3-column boxes;
+  two small objects may share a box stacked (jug over mirror). Each look can vary its tile areas; the gaps, boxes and card row do not.
+- The photos are the makers' originals, never recoloured. No type chips on the board (the cards carry labels and links); each tile links to the maker.
+- Hub tile: one clean photo of one piece (not the board), credited on hover like every other tile; label = kind of room.
+- A photo with a person as its subject, or a product we do not cover, is not used (same rule as designer pages).

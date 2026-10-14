@@ -477,6 +477,27 @@ def render_edits_index(themes_data, order=None):
       </figure>"""))
     conn.close()
 
+    # Look Edits ("Warm minimal living room", see generate_look_pages.py): one clean photo of one piece on the tile, the
+    # piece credited and linked to its maker on hover, like every other tile; the label is the kind of room.
+    import generate_look_pages as glp
+    lconn = _sqlite3.connect(gpe.DB_PATH)
+    lconn.row_factory = _sqlite3.Row
+    for look in glp.load():
+        item = glp.hub_item(look, lconn)
+        if not item or len(glp.resolve(look, lconn)) < glp.MIN_PIECES:
+            continue
+        image, pos, (pname, pbrand, plink) = item
+        pos_attr = f' style="object-position:{pos}"' if pos else ""
+        themed_tiles.append((edit_date(look["slug"]), look["title"], f"""
+      <figure class="edit-feature">
+        <a class="edit-link" href="/edits/{look['slug']}.html" aria-label="{html.escape(look['title'])}">
+          <span class="edit-row"><span class="edit-title">{html.escape(look['title'])}</span><span class="edit-kind">{html.escape(look['kind'])}</span></span>
+          <span class="edit-photo"><img src="{html.escape(sized(image, TILE))}" alt="{html.escape(pname)} by {html.escape(pbrand)}"{pos_attr} loading="lazy"></span>
+        </a>
+        <a class="visit-source" href="{html.escape(plink)}" target="_blank" rel="noopener noreferrer"><span>{html.escape(pname)} &middot; {html.escape(pbrand)}</span> <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+      </figure>"""))
+    lconn.close()
+
     def grid(tiles):
         return f'<div class="maker-grid">{"".join(t[2] for t in tiles)}\n  </div>' if tiles else ""
 

@@ -24,6 +24,7 @@ GENERATORS = [
     "generate_themed_edit_pages",
     "generate_edits_page",
     "generate_profile_edits",
+    "generate_look_pages",
     "generate_guides_pages",
     "generate_designers_pages",
     "generate_architects_pages",

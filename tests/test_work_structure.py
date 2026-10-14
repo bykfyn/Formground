@@ -894,3 +894,52 @@ class PhotoSafetyTests(unittest.TestCase):
         self.assertTrue(any("index.html" in pages for pages in photos.values()))
         self.assertTrue(any(p.startswith("edits/") for pages in photos.values() for p in pages))
         self.assertIn("check_curated_images.py", (ROOT / ".github" / "workflows" / "check_links.yml").read_text())
+
+
+class LookEditTests(unittest.TestCase):
+    """Look Edits (data/looks.json, generate_look_pages.py): a room from pieces by different makers, on one grid board."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.looks = json.loads((ROOT / "data" / "looks.json").read_text())
+
+    def test_every_look_has_a_page_a_board_tile_and_a_card_per_piece_and_is_in_the_sitemap_and_hub(self):
+        sitemap = (DOCS / "sitemap.xml").read_text()
+        hub = (DOCS / "edits.html").read_text()
+        self.assertGreaterEqual(len(self.looks), 2)
+        for look in self.looks:
+            page = (DOCS / "edits" / f"{look['slug']}.html").read_text()
+            n = len(look["picks"])
+            self.assertEqual(len(re.findall(r'<a class="look-tile', page)), n, look["slug"])
+            self.assertEqual(len(re.findall(r'<p class="look-role">', page)), n, look["slug"])
+            self.assertEqual(page.count('<a class="card"'), n, look["slug"])
+            self.assertIn(f"/edits/{look['slug']}.html", sitemap)
+            self.assertIn(f'href="/edits/{look["slug"]}.html"', hub)
+            self.assertIn(look["title"], hub)
+
+    def test_board_tiles_link_out_to_the_maker_and_carry_tracking_attributes(self):
+        for look in self.looks:
+            page = (DOCS / "edits" / f"{look['slug']}.html").read_text()
+            for tile in re.findall(r'<a class="look-tile[^>]*>', page):
+                self.assertIn('target="_blank"', tile)
+                self.assertIn('rel="noopener noreferrer"', tile)
+                self.assertIn("data-brand=", tile)
+                self.assertIn("data-product=", tile)
+                self.assertRegex(tile, r'href="https?://')
+
+    def test_every_pick_has_a_board_area_and_no_two_tiles_overlap(self):
+        for look in self.looks:
+            taken = set()
+            for pick in look["picks"]:
+                c0, c1, r0, r1 = look["areas"][pick["slot"]]
+                cells = {(c, r) for c in range(c0, c1) for r in range(r0, r1)}
+                self.assertFalse(cells & taken, (look["slug"], pick["slot"]))
+                taken |= cells
+                self.assertTrue(1 <= c0 < c1 <= 13, look["slug"])
+
+    def test_look_pages_use_the_shared_board_grid_and_one_card_row(self):
+        for look in self.looks:
+            page = (DOCS / "edits" / f"{look['slug']}.html").read_text()
+            self.assertIn("grid-template-columns: repeat(12, 1fr)", page)
+            self.assertIn("gap: 8px", page)
+            self.assertIn('<p class="eyebrow">Edit &middot; ', page)
