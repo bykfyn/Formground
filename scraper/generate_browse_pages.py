@@ -204,7 +204,7 @@ def _category_products(category):
 TYPE_GRID_CSS = """
   /* the category pages' type tiles: fixed 6 / 4 / 2 columns like every card grid (Site_Patterns.md) */
   .type-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 20px; margin: 0 0 36px; align-items: start; }
-  .type-grid .maker-card-hero { aspect-ratio: 1/1; }
+  .type-grid .maker-card-hero { aspect-ratio: 1/1; overflow: hidden; }
   .type-group-title { font-size: 13px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); margin: 30px 0 14px; }
   @media (max-width: 959px) { .type-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   @media (max-width: 639px) { .type-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; } }
