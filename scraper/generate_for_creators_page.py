@@ -222,6 +222,8 @@ PAGE_CSS = """
     border: 0.5px solid var(--border-strong); background: var(--surface-2);
     color: var(--text-muted); font-family: inherit; opacity: 0.7; cursor: pointer;
   }
+  /* the Guides chip stands apart: it opens articles, not a list of organisations, and is not part of All */
+  .chip-sep { width: 1px; align-self: stretch; margin: 4px 6px; background: var(--border-strong); flex-shrink: 0; }
   .chip.active { background: var(--surface-1); color: var(--text-secondary); border-color: var(--border-strong); opacity: 1; }
 
   /* Mobile: a 9-category row wraps to 4 lines on a phone, pushing the
@@ -258,7 +260,20 @@ PAGE_CSS = """
      does - auto-fit only removes empty tracks, it doesn't hand their
      freed space to the remaining ones unless they're sized with a
      flexible unit, which 190px is not. */
-  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, 190px); justify-content: center; gap: 16px; align-items: start; }
+  .maker-grid { display: grid; grid-template-columns: repeat(5, 190px); justify-content: center; gap: 16px; align-items: start; }
+  /* 2026-10-14: the same column tracks in every section (a short section such as Hosting now starts at the left of the same
+     grid as the others, instead of centering as a small group), and fewer columns as the window narrows. */
+  @media (max-width: 1100px) { .maker-grid { grid-template-columns: repeat(4, 190px); } }
+  @media (max-width: 880px) { .maker-grid { grid-template-columns: repeat(3, 190px); } }
+  @media (max-width: 680px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .cat-panel { max-width: 1014px; margin-left: auto; margin-right: auto; }
+  /* Section headings: only in the All view, where every section is on one page. In a single category the chip already names it. */
+  .cat-heading { display: none; font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -0.005em;
+    color: var(--text-primary); margin: 0 0 16px; padding-top: 28px; border-top: 0.5px solid var(--border); }
+  .view-all .cat-heading { display: block; }
+  .view-all .cat-panel { margin-bottom: 44px; }
+  .view-all .chips + .cat-panel .cat-heading { border-top: 0; padding-top: 0; }
+  .view-all .guides-list { max-width: 640px; }
 """ + MAKER_CARD_CSS + """
   /* .maker-card/.maker-card-hero/etc. above come from generate_brand_
      pages.py's shared MAKER_CARD_CSS (unified 2026-09-27 - this file
@@ -352,10 +367,15 @@ def _tool_card(t):
       </a>"""
 
 
+def _heading(cat_id):
+    return f'      <h2 class="cat-heading">{html.escape(dict(CATEGORIES)[cat_id])}</h2>\n'
+
+
 def render_craftspeople_panel():
     sorted_people = sorted(CRAFTSPEOPLE, key=_craftsperson_rank)
     cards = "\n".join(_craftsperson_card(c) for c in sorted_people)
-    return f'    <div class="maker-grid cat-panel" data-cat="craftspeople">\n{cards}\n    </div>'
+    return (f'    <div class="cat-panel" data-cat="craftspeople">\n{_heading("craftspeople")}'
+            f'    <div class="maker-grid">\n{cards}\n    </div>\n    </div>')
 
 
 def render_tool_panel(cat_id):
@@ -376,10 +396,11 @@ def render_tool_panel(cat_id):
     free_cards = "\n".join(_tool_card(t) for t in free)
     free_grid = f'    <div class="maker-grid">\n{free_cards}\n    </div>' if free else ""
     body = "\n".join(part for part in (sponsored_section, free_grid) if part)
-    return f'    <div class="cat-panel" data-cat="{cat_id}" style="display: none;">\n{body}\n    </div>'
+    return f'    <div class="cat-panel" data-cat="{cat_id}" style="display: none;">\n{_heading(cat_id)}{body}\n    </div>'
 
 
 GUIDES_HTML = """    <div class="guides-list cat-panel" data-cat="guides" style="display: none;">
+      <h2 class="cat-heading">Guides</h2>
 
       <p class="guide-intro">Formground exists to help independent designers and makers get found — and a lot of that work happens before anyone searches for you at all. The brands and makers already featured here have their own stores, their own domains, their own way of showing up. If you're earlier in that journey, these are written for you: honest, friendly starting points, not verdicts on the "right" choice — because the right one really does depend on where you are.</p>
 
@@ -456,8 +477,10 @@ PAGE_SCRIPT = """
       document.querySelectorAll('.chip').forEach(function (b) {
         b.classList.toggle('active', b === btn);
       });
+      document.body.classList.toggle('view-all', cat === 'all');
       document.querySelectorAll('.cat-panel').forEach(function (panel) {
-        var show = panel.dataset.cat === cat || (cat === 'all' && (ALL_SHOWS === '*' || panel.dataset.cat === ALL_SHOWS));
+        // the guides are articles, not a list of organisations: they are never part of All, only their own chip
+        var show = panel.dataset.cat === cat || (cat === 'all' && panel.dataset.cat !== 'guides' && (ALL_SHOWS === '*' || panel.dataset.cat === ALL_SHOWS));
         panel.style.display = show ? '' : 'none';
       });
     });
@@ -471,7 +494,8 @@ def render_page():
     # the page opens on its first real category: Craftspeople when shown, otherwise Selling & Distribution
     default_cat = "craftspeople" if show_craftspeople else "selling"
     chips_html = "\n".join(
-        f'    <button class="chip{" active" if cat_id == default_cat else ""}" data-cat="{cat_id}">{html.escape(label)}</button>'
+        ('    <span class="chip-sep" aria-hidden="true"></span>\n' if cat_id == "guides" else "")
+        + f'    <button class="chip{" active" if cat_id == default_cat else ""}" data-cat="{cat_id}">{html.escape(label)}</button>'
         for cat_id, label in categories
     )
 

@@ -47,6 +47,8 @@
     border: 0.5px solid var(--border-strong); background: var(--surface-2);
     color: var(--text-muted); font-family: inherit; opacity: 0.7; cursor: pointer;
   }
+  /* the Guides chip stands apart: it opens articles, not a list of organisations, and is not part of All */
+  .chip-sep { width: 1px; align-self: stretch; margin: 4px 6px; background: var(--border-strong); flex-shrink: 0; }
   .chip.active { background: var(--surface-1); color: var(--text-secondary); border-color: var(--border-strong); opacity: 1; }
 
   /* Mobile: a 9-category row wraps to 4 lines on a phone, pushing the
@@ -83,7 +85,20 @@
      does - auto-fit only removes empty tracks, it doesn't hand their
      freed space to the remaining ones unless they're sized with a
      flexible unit, which 190px is not. */
-  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, 190px); justify-content: center; gap: 16px; align-items: start; }
+  .maker-grid { display: grid; grid-template-columns: repeat(5, 190px); justify-content: center; gap: 16px; align-items: start; }
+  /* 2026-10-14: the same column tracks in every section (a short section such as Hosting now starts at the left of the same
+     grid as the others, instead of centering as a small group), and fewer columns as the window narrows. */
+  @media (max-width: 1100px) { .maker-grid { grid-template-columns: repeat(4, 190px); } }
+  @media (max-width: 880px) { .maker-grid { grid-template-columns: repeat(3, 190px); } }
+  @media (max-width: 680px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .cat-panel { max-width: 1014px; margin-left: auto; margin-right: auto; }
+  /* Section headings: only in the All view, where every section is on one page. In a single category the chip already names it. */
+  .cat-heading { display: none; font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 17px; letter-spacing: -0.005em;
+    color: var(--text-primary); margin: 0 0 16px; padding-top: 28px; border-top: 0.5px solid var(--border); }
+  .view-all .cat-heading { display: block; }
+  .view-all .cat-panel { margin-bottom: 44px; }
+  .view-all .chips + .cat-panel .cat-heading { border-top: 0; padding-top: 0; }
+  .view-all .guides-list { max-width: 640px; }
 
   .maker-card { display: block; text-decoration: none; color: inherit; }
   .maker-card-hero {
@@ -182,10 +197,12 @@
     <button class="chip" data-cat="marketing">Marketing &amp; Fulfillment</button>
     <button class="chip" data-cat="fairs">Fairs &amp; Exhibitions</button>
     <button class="chip" data-cat="associations">Associations</button>
+    <span class="chip-sep" aria-hidden="true"></span>
     <button class="chip" data-cat="guides">Guides</button>
   </div>
 
     <div class="cat-panel" data-cat="selling">
+      <h2 class="cat-heading">Selling &amp; Distribution</h2>
     <div class="maker-grid">
       <a class="maker-card" href="https://www.shopify.com" target="_blank" rel="noopener noreferrer">
         <div class="maker-card-hero tool-card-hero"><img src="https://cdn.shopify.com/b/shopify-brochure2-assets/c97c60ca19c64a8b5378d9f9e971f7bd.png" alt="Shopify" loading="lazy"></div>
@@ -263,6 +280,7 @@
     </div>
 
     <div class="cat-panel" data-cat="design" style="display: none;">
+      <h2 class="cat-heading">Design &amp; Prototyping</h2>
     <div class="maker-grid">
       <a class="maker-card" href="https://www.autodesk.com/products/fusion-360" target="_blank" rel="noopener noreferrer">
         <div class="maker-card-hero tool-card-hero"><img src="https://www.google.com/s2/favicons?domain=autodesk.com&amp;sz=128" alt="Fusion 360" loading="lazy"></div>
@@ -316,6 +334,7 @@
     </div>
 
     <div class="cat-panel" data-cat="hosting" style="display: none;">
+      <h2 class="cat-heading">Hosting</h2>
     <div class="maker-grid">
       <a class="maker-card" href="https://wpengine.com" target="_blank" rel="noopener noreferrer">
         <div class="maker-card-hero tool-card-hero"><img src="https://wpengine.com/assets/manifest/apple-touch-icon.png" alt="WP Engine" loading="lazy"></div>
@@ -353,6 +372,7 @@
     </div>
 
     <div class="cat-panel" data-cat="marketing" style="display: none;">
+      <h2 class="cat-heading">Marketing &amp; Fulfillment</h2>
     <div class="maker-grid">
       <a class="maker-card" href="https://www.klaviyo.com" target="_blank" rel="noopener noreferrer">
         <div class="maker-card-hero tool-card-hero"><img src="https://www.klaviyo.com/icons/icon-48x48.png" alt="Klaviyo" loading="lazy"></div>
@@ -406,6 +426,7 @@
     </div>
 
     <div class="cat-panel" data-cat="fairs" style="display: none;">
+      <h2 class="cat-heading">Fairs &amp; Exhibitions</h2>
     <div class="maker-grid">
       <a class="maker-card" href="https://www.salonemilano.it" target="_blank" rel="noopener noreferrer">
         <div class="maker-card-hero tool-card-hero"><img src="https://www.salonemilano.it/themes/custom/sdm/favicon.ico" alt="Salone del Mobile" loading="lazy"></div>
@@ -443,6 +464,7 @@
     </div>
 
     <div class="cat-panel" data-cat="associations" style="display: none;">
+      <h2 class="cat-heading">Associations</h2>
     <div class="maker-grid">
       <a class="maker-card" href="https://interiorcluster.se" target="_blank" rel="noopener noreferrer">
         <div class="maker-card-hero tool-card-hero"><div class="monogram" title="Interior Cluster Sweden">IC</div></div>
@@ -472,6 +494,7 @@
     </div>
 
     <div class="guides-list cat-panel" data-cat="guides" style="display: none;">
+      <h2 class="cat-heading">Guides</h2>
 
       <p class="guide-intro">Formground exists to help independent designers and makers get found — and a lot of that work happens before anyone searches for you at all. The brands and makers already featured here have their own stores, their own domains, their own way of showing up. If you're earlier in that journey, these are written for you: honest, friendly starting points, not verdicts on the "right" choice — because the right one really does depend on where you are.</p>
 
@@ -554,8 +577,10 @@
       document.querySelectorAll('.chip').forEach(function (b) {
         b.classList.toggle('active', b === btn);
       });
+      document.body.classList.toggle('view-all', cat === 'all');
       document.querySelectorAll('.cat-panel').forEach(function (panel) {
-        var show = panel.dataset.cat === cat || (cat === 'all' && (ALL_SHOWS === '*' || panel.dataset.cat === ALL_SHOWS));
+        // the guides are articles, not a list of organisations: they are never part of All, only their own chip
+        var show = panel.dataset.cat === cat || (cat === 'all' && panel.dataset.cat !== 'guides' && (ALL_SHOWS === '*' || panel.dataset.cat === ALL_SHOWS));
         panel.style.display = show ? '' : 'none';
       });
     });
