@@ -39,7 +39,8 @@ GUIDE_PICKS = {
 # The hub shows an Edit's photo in a 4:3 frame (the Edits page's own frame is wider), so a few photos need their own focal point here
 EDIT_HUB_STYLE = {
     "/edits/warm-minimal-living-room.html": ("object-position:50% 90%", ""),
-    "/edits/nordic-noir-living-room.html": ("object-position:60% 66%", ""),
+    # the chair photo is portrait on a plain grey wall: shown at 75% of the frame width, the wall colour filling the sides, the photo's edges fading into it
+    "/edits/nordic-noir-living-room.html": ("width:75%;margin:0 auto;object-position:50% 70%;-webkit-mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent);mask-image:linear-gradient(to right,transparent,#000 14%,#000 86%,transparent)", "background:#c0c0c0"),
     "/edits/pendant-lamps.html": ("object-position:50% 75%", ""),
     # tall pieces cannot fit a 4:3 frame by cropping: show the whole photo, on the photo's own ground
     "/edits/candle-holders.html": ("object-fit:contain;padding:3%;box-sizing:border-box;mix-blend-mode:multiply", ""),
@@ -64,6 +65,10 @@ HUB_CSS = """
   .bento .bt-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .bento .bt-big { grid-column: 1 / 3; grid-row: 1 / 3; }
   .bento .bt-big .bt-img { aspect-ratio: auto; min-height: 0; }
+  /* a wide photo shown whole in the tall tile: its studio wall continues above and below it, the photo's top and bottom edges fading in */
+  .bento .bt-img.bt-whole-frame { background: linear-gradient(#eeedf1, #fbfbfc 70%); }
+  .bento .bt-img img.bt-whole { top: 50%; bottom: auto; height: auto; transform: translateY(-50%); -webkit-mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent);
+    mask-image: linear-gradient(transparent, #000 22%, #000 78%, transparent); }
   @media (max-width: 639px) { .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
     .bento .bt-big { grid-column: 1 / 3; grid-row: auto; } .bento .bt-big .bt-img { aspect-ratio: 4 / 3; } }
   .hub-about { max-width: 640px; margin: 10px auto 36px; padding-top: 22px; border-top: 0.5px solid var(--border); }
@@ -175,14 +180,19 @@ def render_hub(category):
         for a in old_main.select("div.type-grid > a.maker-card"):
             tiles[a["href"]] = (a.find("img")["src"], a.find(class_="maker-name").get_text(strip=True), a.find(class_="maker-country").get_text(strip=True))
 
-        def tile(slug, image, alt, cls=""):
+        def tile(slug, image, alt, cls="", whole=False, style=""):
             href = f"/work/{slug}.html"
             _img, name, count = tiles[href]
-            return (f'<a class="maker-card bt{cls}" href="{href}"><div class="maker-card-hero bt-img"><img alt="{html.escape(alt or name)}" loading="lazy" '
-                    f'src="{html.escape(image or _img)}"></div><div class="maker-card-body"><span class="maker-name">{html.escape(name)}</span>'
+            src = html.escape(image or _img)
+            frame = " bt-whole-frame" if whole else ""
+            klass = ' class="bt-whole"' if whole else ""
+            if style:
+                klass += f' style="{html.escape(style)}"'
+            return (f'<a class="maker-card bt{cls}" href="{href}"><div class="maker-card-hero bt-img{frame}"><img{klass} alt="{html.escape(alt or name)}" loading="lazy" '
+                    f'src="{src}"></div><div class="maker-card-body"><span class="maker-name">{html.escape(name)}</span>'
                     f'<span class="maker-country">{html.escape(count)}</span></div></a>')
         big = pop["big"]
-        grid = tile(big["slug"], sized(big["image"], HERO), f'{big["name"]} by {big["brand"]}', " bt-big")
+        grid = tile(big["slug"], sized(big["image"], HERO), f'{big["name"]} by {big["brand"]}', " bt-big", big.get("fit") == "whole", big.get("style", ""))
         grid += "".join(tile(slug, None, None) for slug in pop["types"])
         popular_html = ('<section class="recent-section hub-first"><div class="recent-header"><h2>Popular types</h2>'
                         f'<div class="recent-header-rule"></div></div><div class="recent-group"><div class="bento">{grid}</div></div></section>')
