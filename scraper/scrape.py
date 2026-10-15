@@ -3379,6 +3379,41 @@ def _refine_seating_by_name(product_name, category):
     return ", ".join(add + tags) if add else category
 
 
+# Ligne Roset runs the model, the type and the finish together ("Naïa Dining table legs in bronze-stained oak"). The finish clauses
+# ("legs in ...", "base in ...", "top in ...") are cut so the rest reads "Naïa Dining table"; sizes, shapes and arm options stay,
+# because those are different pieces, not finishes. Checked 2026-10-15: 28 of its 1,158 titles carry such a clause.
+_FINISH_PART = r"(?:top|tops|base|bases|legs?|feet|foot|frame|structure|seat|shell|cover|covers|upholstery|plinth|stand|arms?)"
+_FINISH_CLAUSE_RE = re.compile(
+    rf"\s+(?:{_FINISH_PART})\s+in\s+[^+,/]*?(?=\s+(?:{_FINISH_PART})\s+in\s+|\s*[+,/]|$)", re.IGNORECASE)
+_FINISH_TAIL_RE = re.compile(r"(?:\s+[a-z\-]+)?\s+(?:top|base|legs)\s*$", re.IGNORECASE)
+
+
+def _strip_finish_clauses(name):
+    """Cut "<part> in <finish>" clauses and the finish words they leave behind at the end ("walnut top", "+ black fenix laminate")."""
+    out = _FINISH_CLAUSE_RE.sub("", name or "")
+    if out == name:
+        return name
+    out = re.sub(r"\s+", " ", out).strip(" -–,+")
+    out = re.sub(r"\s+\+\s+[a-z ]+$", "", out, flags=re.IGNORECASE)       # "Desk walnut + black fenix laminate"
+    out = _FINISH_TAIL_RE.sub("", out)                                       # "Desk walnut top"
+    return re.sub(r"\s+", " ", out).strip(" -–,+")
+
+
+# A listing's name, set by hand when the maker's own title is wrong (data/name_overrides.json: brand, name, display).
+_NAME_OVERRIDES_PATH = Path(__file__).parent.parent / "data" / "name_overrides.json"
+NAME_OVERRIDES = (
+    {(e["brand"], e["name"]): e["display"] for e in json.loads(_NAME_OVERRIDES_PATH.read_text())}
+    if _NAME_OVERRIDES_PATH.exists() else {}
+)
+
+
+def _display_name(brand, name):
+    """The name to store: a hand-set one, else (for Ligne Roset) the title without its finish clauses."""
+    if (brand, name) in NAME_OVERRIDES:
+        return NAME_OVERRIDES[(brand, name)]
+    return _strip_finish_clauses(name) if brand == "Ligne Roset" else name
+
+
 def _infer_category_from_name(product_name, current_category, brand_name=None):
     # A purely-numeric category is never a real category name for any
     # brand - confirmed live 2026-09-29 on Design House Stockholm, whose
@@ -10551,6 +10586,7 @@ def run(brand_name=None, local_only=False):
                     product["currency"] = brand_currency.get(brand["name"])
                 if _is_out_of_scope_product(product["product_name"], product["category"], brand["name"], sibling_names_lower):
                     continue
+                product["product_name"] = _display_name(brand["name"], product["product_name"])
                 save_product(conn, product)
                 products_saved += 1
             print(f"  Saved {products_saved} products in {brand_seconds}s.")

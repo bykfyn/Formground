@@ -535,6 +535,29 @@ class ChairSparePartTests(unittest.TestCase):
         self.assertFalse(scrape._is_out_of_scope_product("Eternity Stool", "stool", "Someone Else"))
 
 
+class DisplayNameTests(unittest.TestCase):
+    """_display_name (2026-10-15): Ligne Roset's finish clauses are cut; sizes, shapes and arm options stay; a hand-set name wins."""
+
+    def test_finish_clauses_are_cut(self):
+        f = scrape._strip_finish_clauses
+        self.assertEqual(f("Naïa Dining table legs in bronze-stained oak"), "Naïa Dining table")
+        self.assertEqual(f("Oxydation Occasional table base in marquinia marble"), "Oxydation Occasional table")
+        self.assertEqual(f("Extensia Dining table top in white marble-effect ceramic stoneware base in black stained ash"), "Extensia Dining table")
+        self.assertEqual(f("Ennéa Oval dining table base in black stained ash"), "Ennéa Oval dining table")
+        self.assertEqual(f("Ennéa Desk walnut top base in black stained ash"), "Ennéa Desk")
+
+    def test_sizes_shapes_and_arm_options_stay(self):
+        f = scrape._strip_finish_clauses
+        for name in ("Ennéa Round dining table", "Enki Large settee - high back cushions", "Do not disturb 2 Bed settee with 2 arms",
+                     "Pukka Rug sauge", "Alster Low table marble top white lacquered base", "Humphrey Armchair"):
+            self.assertEqual(f(name), name)
+
+    def test_only_ligne_roset_and_hand_set_names_change(self):
+        self.assertEqual(scrape._display_name("Ligne Roset", "Naïa Dining table legs in bronze-stained oak"), "Naïa Dining table")
+        self.assertEqual(scrape._display_name("Someone Else", "Oak table legs in black steel"), "Oak table legs in black steel")
+        self.assertEqual(scrape._display_name("Another Country", "Another Sofa & Armchair"), "Another Sofa")
+
+
 class ReleasedAtTests(unittest.TestCase):
     """released_at (2026-10-04): the maker's own date for a piece, as YYYY-MM-DD."""
 
