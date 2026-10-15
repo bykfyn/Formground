@@ -48,7 +48,7 @@ function render(){const f=$('#f').value,und=(!location.search.includes('check')&
  const list=items.filter(r=>(!f||r.suggest.includes(f))&&(!und||!dec[r.id]));
  list.forEach(r=>m.appendChild(card(r)));if(!list.length)m.innerHTML='<div class="empty">Nothing left in this view.</div>';
  const n=items.filter(r=>dec[r.id]).length;$('#prog').textContent=n+' of '+items.length+' reviewed';$('#bar').style.width=(100*n/items.length)+'%'}
-Promise.all([fetch(location.search.includes('check')?'/check.json':'/items.json'+Q).then(r=>r.json()),fetch('/decisions.json'+Q).then(r=>r.json())]).then(([i,d])=>{setup(i);items=Array.isArray(i)?i:i.items;dec=d;
+Promise.all([fetch(location.search.includes('check')?'/check.json':'/items.json'+Q).then(r=>r.json()),fetch('/decisions.json'+Q).then(r=>r.json())]).then(async([i,d])=>{if(location.search.includes('check')&&FAM!=='chairs'){const cfg=await fetch('/items.json'+Q).then(r=>r.json());setup(cfg);items=i}else{setup(i);items=Array.isArray(i)?i:i.items}dec=d;
  const counts={};items.forEach(r=>r.suggest.forEach(s=>counts[s]=(counts[s]||0)+1));
  $('#f').innerHTML='<option value="">All suggestions ('+items.length+')</option>'+Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([s,c])=>`<option value="${s}">${L[s]||s} (${c})</option>`).join('');
  $('#f').onchange=render;$('#und').onchange=render;render()});

@@ -33,7 +33,7 @@ CANONICAL = {"table-lamps": "table lamp", "floor-lamps": "floor lamp", "pendant-
 IMPLIED = {}
 GENERIC = re.compile(r"^(lamps?|lighting|light|lights)$", re.I)
 NOTE_TYPES = {}
-NOTE_REPLACE = {}
+NOTE_REPLACE = {"mirror": "Mirror"}
 NOTE_ACCESSORY = {"parts", "part", "spare part", "spare parts"}
 KEEP_AS_IS_NOTES = set()
 
@@ -82,7 +82,9 @@ def new_category(cat, d):
         return "EXCLUDE"
     if d.get("none") and not note:
         return ", ".join(non_seating) if non_seating else "Objects"
-    if note in NOTE_ACCESSORY:
+    if d.get("types"):
+        note = ""                                         # a type was chosen: the note is only a remark
+    if note in NOTE_ACCESSORY or re.search(r"\bparts?\b", note):
         return "Accessories"
     if note in KEEP_AS_IS_NOTES:
         return cat
