@@ -765,6 +765,7 @@ class CreatorTextTests(unittest.TestCase):
         banned = ("independent", "established", "world-famous", "award-winning", "the best", "leading")
         for key, e in self.all.items():
             blob = (" ".join(e["paragraphs"]) + " " + " ".join(f"{k} {v}" for k, v in e["facts"])).lower()
+            blob = blob.replace("established & sons", "the brand").replace("establishedandsons.com", "the brand.com")   # a maker's own name, not the label
             for word in banned:
                 if word == "established" and e["group"] == "architects" and "established in 20" in blob:
                     blob = blob.replace("established in 20", "founded in 20")      # a founding year, not the label
