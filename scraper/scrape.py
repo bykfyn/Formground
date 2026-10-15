@@ -1576,10 +1576,24 @@ def extract_resident(brand):
                     "dimensions": "",
                     "notes": "",
                     "image_url": urllib.parse.urljoin(base, image_path),
+                    "designer": "",
                 })
             time.sleep(1)  # be polite - don't hammer the site
             if new_on_page == 0:
                 break
+
+    # Every product page credits its designer in a "designer-detail-intro" section (2026-10-15):
+    # <section class="designer-detail-intro"><div class="designers-intro-text"><h2>Léonard Kadid</h2>
+    for product in products:
+        try:
+            page = requests.get(product["product_url"], headers=HEADERS, timeout=20).text
+        except requests.RequestException:
+            continue
+        m = re.search(r'class="designer-detail-intro">\s*<div class="designers-intro-text">\s*<h2>([^<]+)</h2>', page)
+        if m:
+            credit = html.unescape(m.group(1)).strip()
+            product["designer"] = "" if credit.lower() in ("resident studio", "resident") else credit   # the maker's own in-house studio is not a designer page
+        time.sleep(0.25)
 
     return products
 
