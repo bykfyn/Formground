@@ -1630,7 +1630,7 @@ def extract_marset(brand):
         return []
 
     cards = re.findall(
-        r'data-category="\s*([a-z-]+)">\s*<a class="image-holder" href="([^"]+)">\s*'
+        r'data-category="\s*([a-z -]+?)\s*">\s*<a class="image-holder" href="([^"]+)">\s*'
         r'<img class="primary-image[^"]*" alt="([^"]+)" data-src="" src="([^"]+)"',
         resp.text,
     )
@@ -1640,7 +1640,11 @@ def extract_marset(brand):
         if product_url in seen_urls:
             continue
         seen_urls.add(product_url)
-        category = MARSET_CATEGORY_MAP.get(raw_category, "")
+        # a lamp can sit in two groups ("ceiling-lamps pendant-lamps"): the
+        # one that matches the type named in its alt text wins, else the first
+        lamp_type = alt_text.partition(" - ")[0].strip()
+        mapped = [MARSET_CATEGORY_MAP[c] for c in raw_category.split() if c in MARSET_CATEGORY_MAP]
+        category = lamp_type if lamp_type in mapped else (mapped[0] if mapped else "")
         # alt is "{Type} - {Name}" (e.g. "Table Lamp - Gambosa") - swapped
         # to "{Name} {Type}" to match this site's own convention of
         # naming the design first, type second (e.g. "Gambosa Table Lamp").
@@ -1818,25 +1822,42 @@ def extract_baleri_italia(brand):
     Shopify store it returns a page of pre-rendered HTML in a "content"
     field rather than structured product data - a custom AJAX setup, not
     the Shopify API. Its "page" query param is silently ignored (every
-    page number returns the identical first page, and "hasMorePages" is
-    always true regardless) - confirmed by comparing page=1/2/3 directly,
-    and the real cause of a run that hit the 5-minute per-brand safety
-    limit fetching the same 24 products over and over. No working
-    pagination mechanism was found without reverse-engineering the site's
-    own frontend requests, which isn't worth it for one brand - so this
-    only fetches the single page it can reliably get. Real catalog is
-    almost certainly larger than the ~24 products this returns; that's a
-    known, documented limitation, not a bug in this function.
+    page number returns the identical first page), so that endpoint only
+    ever yields the first 24 products. The rest are reached through the
+    site's own English product-category pages (listed in its pages
+    sitemap, e.g. /en/products/sedie), which render the same previewBox
+    cards server-side: 24 products became 59 once those were read too
+    (checked 2026-10-15). Cards are de-duplicated by link.
     """
     base = brand["url"].rstrip("/")
     products = []
 
+    fragments = []
     data = _fetch_json(f"{base}/products.json?limit=24&page=1")
-    if data is None or not data.get("content"):
+    if data and data.get("content"):
+        fragments.append(data["content"])
+    try:
+        sitemap = requests.get(f"{base}/sitemaps/pages-1.xml", headers=HEADERS, timeout=20).text
+    except requests.RequestException:
+        sitemap = ""
+    for category_url in re.findall(r"<loc>([^<]+/en/products/[^<]+)</loc>", sitemap):
+        try:
+            fragments.append(requests.get(category_url, headers=HEADERS, timeout=20).text)
+        except requests.RequestException:
+            continue
+        time.sleep(0.5)
+    if not fragments:
         return products
 
-    fragment = BeautifulSoup(data["content"], "html.parser")
-    for a in fragment.find_all("a", class_="previewBox", href=True):
+    seen_links = set()
+    cards = []
+    for fragment_html in fragments:
+        for card in BeautifulSoup(fragment_html, "html.parser").find_all("a", class_="previewBox", href=True):
+            if card["href"] not in seen_links:
+                seen_links.add(card["href"])
+                cards.append(card)
+
+    for a in cards:
         title_el = a.find(class_="previewBox__title")
         type_el = title_el.find_next("p") if title_el else None
         # Designer/year ("subtitle" element) is collected but not shown
