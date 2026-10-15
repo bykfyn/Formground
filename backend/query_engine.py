@@ -1002,6 +1002,23 @@ def is_new_piece(product, cutoff=None):
     return fs > _PRODUCT_ROWS_CACHE["first_scan"].get(product["brand"], "")
 
 
+# Most bowls, vases, plates and cups are ceramic, but makers rarely record it: "ceramic bowl" found 4 of about 680 bowls (2026-10-15).
+# For those types a ceramic search keeps every piece not visibly made of something else (a wooden or glass bowl is left out).
+CERAMIC_ASSUMED_CATEGORIES = {"bowl", "vase", "plate", "cup", "mug", "jug", "dish", "platter"}
+_OTHER_MATERIAL_RE = re.compile(
+    r"\b(wood|wooden|walnut|oak|sycamore|beech|bamboo|rattan|glass|crystal|metal|steel|brass|copper|bronze|aluminium|aluminum|marble|"
+    r"plastic|resin|leather|paper|cork|textile|felt|wool|linen|cotton|silver|gold|iron|stone(?!ware))\b", re.IGNORECASE)
+
+
+def _assumed_ceramic(product: dict, wanted_material: str, wanted_category) -> bool:
+    if (wanted_material or "").lower() not in ("ceramic", "ceramics") or not wanted_category:
+        return False
+    if wanted_category.lower().rstrip("s") not in CERAMIC_ASSUMED_CATEGORIES:
+        return False
+    text = " ".join(str(product.get(k) or "") for k in ("product_name", "material_options", "notes", "category"))
+    return not _OTHER_MATERIAL_RE.search(text)
+
+
 def filter_products(intent: dict) -> list:
     """
     Filters stored products on the hard facts: category + material +
@@ -1074,7 +1091,8 @@ def filter_products(intent: dict) -> list:
         if wanted_category and _is_protective_cover(product["product_name"]):
             continue
         if wanted_material and wanted_material not in product["material_options"].lower():
-            continue
+            if not _assumed_ceramic(product, wanted_material, wanted_category):
+                continue
         if wanted_color and wanted_color not in product["material_options"].lower():
             continue
         if new_cutoff and not is_new_piece(product, new_cutoff):

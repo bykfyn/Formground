@@ -23,6 +23,33 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "backend"))
 import query_engine as qe  # noqa: E402
 
 
+class CeramicAssumedTests(unittest.TestCase):
+    """A ceramic bowl search finds the bowls nobody recorded a material for, not wooden or glass ones (2026-10-15)."""
+
+    def test_unrecorded_bowls_count_but_wooden_and_glass_ones_do_not(self):
+        f = qe._assumed_ceramic
+        self.assertTrue(f({"product_name": "Large oval bowl", "material_options": "[]", "notes": "", "category": "Bowls"}, "ceramic", "bowl"))
+        self.assertFalse(f({"product_name": "Bowl in ebonised walnut", "material_options": "[]", "notes": "", "category": "Bowls"}, "ceramic", "bowl"))
+        self.assertFalse(f({"product_name": "Glass bowl", "material_options": "[]", "notes": "", "category": "Bowls"}, "ceramic", "bowl"))
+        self.assertTrue(f({"product_name": "Stoneware bowl", "material_options": "[]", "notes": "", "category": "Bowls"}, "ceramic", "bowl"))
+
+    def test_only_for_ceramic_and_for_ceramic_types(self):
+        p = {"product_name": "Large oval bowl", "material_options": "[]", "notes": "", "category": "Bowls"}
+        self.assertFalse(qe._assumed_ceramic(p, "wood", "bowl"))
+        self.assertFalse(qe._assumed_ceramic(p, "ceramic", "chair"))
+        self.assertFalse(qe._assumed_ceramic(p, "ceramic", None))
+
+    def test_a_ceramic_bowl_search_now_finds_most_bowls(self):
+        original = qe.translate_query
+        qe.translate_query = lambda q: {"category": "bowl", "material": "ceramic"}
+        try:
+            r = qe.search_full("ceramic bowl")
+        finally:
+            qe.translate_query = original
+        self.assertGreater(r["total_matches"], 300)
+        self.assertFalse(any("walnut" in m["product_name"].lower() for m in r["results"]))
+
+
 class DesignerSearchTests(unittest.TestCase):
     """A designer's name finds their pieces, not only products with the name in the title (2026-10-15)."""
 
