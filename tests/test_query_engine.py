@@ -23,6 +23,51 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "backend"))
 import query_engine as qe  # noqa: E402
 
 
+class DesignerSearchTests(unittest.TestCase):
+    """A designer's name finds their pieces, not only products with the name in the title (2026-10-15)."""
+
+    def setUp(self):
+        self._translate = qe.translate_query
+        qe.translate_query = lambda q: {}
+
+    def tearDown(self):
+        qe.translate_query = self._translate
+
+    def test_a_surname_finds_every_piece_by_that_designer(self):
+        r = qe.search_full("bouroullec")
+        self.assertGreater(r["total_matches"], 60)
+        self.assertTrue(all("Bouroullec" in (m.get("designer") or "") or "bouroullec" in m["product_name"].lower() for m in r["results"]))
+
+    def test_a_full_name_works_and_generic_words_do_not(self):
+        self.assertGreater(qe.search_full("arne jacobsen")["total_matches"], 0)
+        self.assertEqual(qe.filter_by_designer("studio"), [])
+        self.assertEqual(qe.filter_by_designer("copenhagen"), [])
+        self.assertEqual(qe.filter_by_designer("a table"), [])
+
+    def test_a_query_with_a_category_is_left_alone(self):
+        qe.translate_query = lambda q: {"category": "chair"}
+        r = qe.search_full("bouroullec chair")
+        self.assertTrue(all(m["category"] and "chair" in m["category"].lower() for m in r["results"] if m.get("designer")))
+
+
+class CategoryAliasTests(unittest.TestCase):
+    """Makers tag the same kind of piece differently; a search finds all of them (2026-10-15)."""
+
+    def test_pendant_in_all_its_makers_spellings(self):
+        for tag in ("Pendant", "Pendants", "Pendant Lamp", "Pendant Light", "Pendant Lighting", "Suspension", "Suspension Lamp"):
+            for asked in ("pendant lamp", "pendant lamps", "pendant", "pendant light", "suspension"):
+                self.assertTrue(qe._category_matches(tag, asked), (tag, asked))
+
+    def test_a_bedroom_lamp_is_a_table_lamp(self):
+        self.assertTrue(qe._category_matches("Table Lamp", "bedroom lamp"))
+        self.assertTrue(qe._category_matches("Bedside Lamp", "bedroom lamp"))
+
+    def test_it_does_not_widen_unrelated_words(self):
+        self.assertFalse(qe._category_matches("Wall Lamp", "pendant lamp"))
+        self.assertFalse(qe._category_matches("Floor Lamp", "bedroom lamp"))
+        self.assertFalse(qe._category_matches("Table Lamp", "pendant"))
+
+
 class CategoryMatchesTests(unittest.TestCase):
     """
     Covers the real bug from 2026-09-08: "chunky table" was surfacing
@@ -829,10 +874,16 @@ class UnrecognisedQueryTests(unittest.TestCase):
                 self.assertTrue(qe._fold(brand).startswith(fold + " "), (fold, brand))
 
     def test_invented_compound_category_falls_back_to_head_noun(self):
+        qe.translate_query = lambda q: {"category": "hallway lamp"}
+        r = qe.search_full("lamp for the hallway")
+        self.assertGreater(r["total_matches"], 0)
+        self.assertEqual(r["intent"]["category"], "lamp")
+
+    def test_a_bedroom_lamp_search_finds_table_lamps_directly(self):
         qe.translate_query = lambda q: {"category": "bedroom lamp"}
         r = qe.search_full("lamp for bedroom")
         self.assertGreater(r["total_matches"], 0)
-        self.assertEqual(r["intent"]["category"], "lamp")
+        self.assertLess(r["total_matches"], 1500)         # table lamps, not every lamp in the catalogue
 
     def test_brand_link_slugs_match_the_scraper_slugify(self):
         sys.path.insert(0, str(Path(__file__).parent.parent / "scraper"))

@@ -673,6 +673,17 @@ def _call_with_retry(raw_query: str) -> dict:
 _load_seed_intents()
 
 
+# One kind of piece, several names in makers' own tags (checked against the real tags 2026-10-15: a search for "pendant lamp" found
+# only the 288 pieces tagged "Pendant Lamp" and missed the 1,000+ tagged "Pendant", "Pendant Light", "Suspension" ...).
+# "asked" are the words a search can arrive with, "tags" every tag ending that means the same. Matched like any other category word.
+CATEGORY_ALIAS_GROUPS = (
+    {"asked": {"pendant", "pendant lamp", "pendant light", "pendant lighting", "suspension", "suspension lamp", "suspended lamp", "hanging lamp"},
+     "tags": {"pendant", "pendant lamp", "pendant light", "pendant lighting", "suspension", "suspension lamp"}},
+    {"asked": {"bedroom lamp", "bedside lamp", "bedroom light", "bedside light"},
+     "tags": {"table lamp", "bedside lamp"}},
+)
+
+
 def _category_matches(category_field: str, wanted: str) -> bool:
     """
     A plain substring match ("%table%") is too crude - confirmed live:
@@ -702,6 +713,9 @@ def _category_matches(category_field: str, wanted: str) -> bool:
     candidates = {wanted}
     if wanted.lower().endswith("s"):
         candidates.add(wanted[:-1])
+    for group in CATEGORY_ALIAS_GROUPS:
+        if candidates & group["asked"]:
+            candidates |= group["tags"]                   # same thing under the other names makers use
 
     tags = [t.strip() for t in category_field.split(",")]
     for candidate in candidates:
@@ -1181,6 +1195,49 @@ def filter_by_name(raw_query: str, tier=None) -> list:
             product["thin"] = bool(product["thin"])
             matches.append(product)
     return matches
+
+
+# Words that appear inside many designers' names but name nothing on their own ("Studio Job", "Space Copenhagen"): a query made only of
+# these never matches a designer.
+GENERIC_DESIGNER_TOKENS = {"studio", "design", "designs", "designer", "atelier", "space", "copenhagen", "lab", "collective", "group", "works",
+                           "objects", "and", "the", "by", "van", "von", "de", "der", "den", "la", "le", "del", "di", "jean", "marie", "john", "jan"}
+_DESIGNER_INDEX_CACHE = {"key": None, "index": []}
+
+
+def _designer_index() -> list:
+    """[(token set of the designer's folded name, designer)] for every designer on a visible product. Rebuilt when the DB file changes."""
+    rows = _all_product_rows()
+    cache = _DESIGNER_INDEX_CACHE
+    if cache["key"] is not rows:
+        names = {r["designer"] for r in rows if r["designer"] and r["brand"] not in HIDDEN_BRANDS}
+        cache["index"] = [(set(_fold(n).split()), n) for n in names if _fold(n)]
+        cache["key"] = rows
+    return cache["index"]
+
+
+def filter_by_designer(raw_query: str, tier=None) -> list:
+    """Products by a designer the query names ("bouroullec", "arne jacobsen", "pawson"): every word of the query is a word of the
+    designer's name. Added 2026-10-15 - the Designers pages list these pieces, but the search only looked at product names, so
+    "bouroullec" found 16 of Ronan Bouroullec's 89. Only used for a query nothing else recognised (no category, material or brand)."""
+    query_tokens = _fold(raw_query).split()
+    if not query_tokens or len(query_tokens) > 3 or any(len(t) < 4 for t in query_tokens):
+        return []
+    if all(t in GENERIC_DESIGNER_TOKENS for t in query_tokens):
+        return []
+    wanted = {name for tokens, name in _designer_index() if all(t in tokens for t in query_tokens)}
+    if not wanted:
+        return []
+    out = []
+    for row in _all_product_rows():
+        if row["designer"] not in wanted or not row["image_url"] or row["brand"] in HIDDEN_BRANDS:
+            continue
+        if tier and BRAND_TIERS.get(row["brand"], "independent") != tier:
+            continue
+        product = dict(row)
+        product["material_options"] = json.loads(product["material_options"] or "[]")
+        product["thin"] = bool(product["thin"])
+        out.append(product)
+    return out
 
 
 def _load_houses() -> list:
@@ -1675,6 +1732,12 @@ def _match_all(raw_query: str, intent: dict) -> list:
         for m in filter_by_name(raw_query, tier=intent.get("tier")):
             if wanted_brands and m["brand"] not in wanted_brands:
                 continue
+            if m["id"] not in seen_ids:
+                matches.append(m)
+                seen_ids.add(m["id"])
+
+    if not is_house_intent and not _has_hard_filter(intent):
+        for m in filter_by_designer(raw_query, tier=intent.get("tier")):
             if m["id"] not in seen_ids:
                 matches.append(m)
                 seen_ids.add(m["id"])
