@@ -964,7 +964,7 @@ class FooterOrderTests(unittest.TestCase):
 class TypeTileImageTests(unittest.TestCase):
     def test_hand_picked_type_tile_photos_are_used_on_the_furniture_hub(self):
         page = (DOCS / "work" / "furniture.html").read_text()
-        for slug, needle in (("folding-chairs", "beech_NL0.jpg"), ("office-chairs", "wick-swivel-ash-wheels.jpg")):
+        for slug, needle in (("folding-chairs", "Magis_stanley_folding_chair"), ("office-chairs", "sheriff-stol-kategori")):
             tile = re.search(rf'<a class="maker-card" href="/work/{slug}\.html">(.*?)</a>', page, re.S).group(1)
             self.assertIn(needle, tile, slug)
 

@@ -590,8 +590,6 @@ TYPE_TILE_IMAGE = json.loads((Path(__file__).parent.parent / "data" / "type_tile
 # margin so it weighs the same as its neighbours: contain + padding, and multiply so the photo's white blends into the
 # tile's own light grey instead of showing as a white square.
 TYPE_TILE_STYLE = {
-    "folding-chairs": "object-fit:contain;padding:13%;box-sizing:border-box;mix-blend-mode:multiply",
-    "stools": "object-fit:contain;padding:6%;box-sizing:border-box;mix-blend-mode:multiply",       # a tall photo: shown whole
     "bowls": "transform:scale(1.5);transform-origin:50% 62%",                                       # a small bowl in a wide studio shot: zoomed in
 }
 
