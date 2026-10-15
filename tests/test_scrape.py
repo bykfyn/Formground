@@ -458,6 +458,64 @@ class ChairSubtypeTests(unittest.TestCase):
         self.assertEqual(scrape._refine_chair_subtype("ELLIOT DINING CHAIR", once), once)
 
 
+class BarStoolRefineTests(unittest.TestCase):
+    """_refine_bar_stool (2026-10-15): a bar or counter stool/chair by NAME gets a bar-stool tag the maker's own tags lack."""
+
+    def test_the_name_decides_and_the_makers_tags_are_kept(self):
+        f = scrape._refine_bar_stool
+        self.assertEqual(f("Hardy Bar Stool", "All Series, Furniture, Stools"), "bar stool, All Series, Furniture, Stools")
+        self.assertEqual(f("Harbour Side Bar Chair", "Chair"), "bar stool, Chair")
+        self.assertEqual(f("Eternity Counter Stool | Wood Waste Grey", "Counter Stool"), "bar stool, Counter Stool")
+        self.assertEqual(f("Harbour Side Bar Chair", "Bar Chair"), "bar stool, Bar Chair")
+        self.assertEqual(f("PIET HEIN Bar Chair Black", "Chair, Piet Hein"), "bar stool, Chair, Piet Hein")
+
+    def test_no_change_when_already_tagged_or_not_a_seat_or_a_part(self):
+        f = scrape._refine_bar_stool
+        for name, cat in [("Hardy Bar Stool", "bar stool, Stools"), ("Hardy Bar Stool", "Bar Stools"), ("Bar Table", "Table"),
+                          ("Glides for Primum Bar Stool", "Bar Stool"), ("Bold stool cover", "Accessories"),
+                          ("Bar Stool Seat Pad", "Stool"), ("Bar Stool Lamp", "Table Lamps"), ("Dining Chair", "Chair")]:
+            self.assertEqual(f(name, cat), cat, name)
+
+    def test_it_is_idempotent(self):
+        once = scrape._refine_bar_stool("Hardy Bar Stool", "Stools")
+        self.assertEqual(scrape._refine_bar_stool("Hardy Bar Stool", once), once)
+
+
+class SeatingByNameTests(unittest.TestCase):
+    """_refine_seating_by_name (2026-10-15): every type the NAME states that the maker's tags lack is added; the maker's tags stay."""
+
+    def test_the_name_adds_the_missing_type(self):
+        f = scrape._refine_seating_by_name
+        self.assertEqual(f("Harbour Dining Chair", "Office Chair"), "dining chair, Office Chair")
+        self.assertEqual(f("TWENTY-FIVE LOUNGE ARMCHAIR", "LARGE CHAIRS"), "lounge chair, LARGE CHAIRS")
+        self.assertEqual(f("98.6F OUTDOOR LOUNGE CHAIR", "LOUNGE CHAIRS"), "garden chair, LOUNGE CHAIRS")
+        self.assertEqual(f("SELA SMALL BENCH", "LARGE CHAIRS"), "bench, LARGE CHAIRS")
+        self.assertEqual(f("DS11 Dining chair foldable Ash", "Dining Chair"), "folding chair, Dining Chair")
+        self.assertEqual(f("Eternity Stool", "Garden Chair"), "stool, Garden Chair")
+
+    def test_ottomans_sofas_and_cross_leg_chairs(self):
+        f = scrape._refine_seating_by_name
+        self.assertEqual(f("Brasilia Ottoman", "Lounge Chair"), "ottoman, Lounge Chair")
+        self.assertEqual(f("Define Sofa - Mod. 6", "Stool"), "sofa, Stool")
+        self.assertEqual(f("Cross Leg Side Chair", "Dining Chairs"), "side chair, Dining Chairs")
+        self.assertEqual(f("Ravioli armchair and ottoman", "Stool"), "lounge chair, Stool")
+        self.assertEqual(f("Beetley Chair Metal Legs", "Chairs"), "Chairs")
+
+    def test_a_dining_armchair_is_a_dining_chair_not_a_lounge_chair(self):
+        self.assertEqual(scrape._refine_seating_by_name("Maasto Dining Armchair", "Armchair"), "dining chair, Armchair")
+
+    def test_no_change_when_tagged_or_a_part_or_not_seating(self):
+        f = scrape._refine_seating_by_name
+        for name, cat in [("Harbour Dining Chair", "Dining Chair"), ("Hardy Seat Pad", "Chairs"), ("Loose Cover for Lounge Chair", "Accessories"),
+                          ("Outdoor Footstool", "Footstool"), ("Ocean Table", "Garden Chair, Table"), ("Bench Lamp", "Table Lamps"),
+                          ("Ribs Bench Outdoor", "Benches")]:
+            self.assertEqual(f(name, cat), cat, name)
+
+    def test_it_is_idempotent(self):
+        once = scrape._refine_seating_by_name("Harbour Dining Chair", "Office Chair")
+        self.assertEqual(scrape._refine_seating_by_name("Harbour Dining Chair", once), once)
+
+
 class ReleasedAtTests(unittest.TestCase):
     """released_at (2026-10-04): the maker's own date for a piece, as YYYY-MM-DD."""
 

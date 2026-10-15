@@ -3308,6 +3308,71 @@ def _refine_chair_subtype(product_name, category):
     return category
 
 
+BAR_STOOL_NAME_RE = re.compile(r"\bbar ?stools?\b|\bcounter ?stools?\b|\bbar chairs?\b|\bcounter chairs?\b|\bbarstools?\b", re.I)
+BAR_STOOL_TAG_RE = re.compile(r"bar stool", re.I)     # what the Bar Stools page matches on; a "Bar Chair" or "Counter Stool" tag does not
+SEATING_TAG_RE = re.compile(r"chair|stool|seating|seat", re.I)
+
+
+def _refine_bar_stool(product_name, category):
+    """Prepend "bar stool" to a seat whose NAME says bar/counter stool or chair but whose own tags do not
+    (Another Country tags its "Hardy Bar Stool" only "Stools", Sibast and Audo tag their "Bar Chair"s only
+    "Chair"). The maker's tags stay. Parts, covers and glides are left alone. Idempotent."""
+    tags = [t.strip() for t in (category or "").split(",") if t.strip()]
+    if not BAR_STOOL_NAME_RE.search(product_name or ""):
+        return category
+    if any(BAR_STOOL_TAG_RE.search(t) for t in tags):
+        return category   # already tagged (this also catches our own prepend)
+    if tags and not any(SEATING_TAG_RE.search(t) for t in tags):
+        return category   # tags say something else entirely (a lamp, a table): leave it to the review
+    if CHAIR_NOT_A_CHAIR_RE.search(product_name or ""):
+        return category
+    return f"bar stool, {category}" if tags else "bar stool"
+
+
+# (type tag to add, what the NAME must say, a tag that already counts as that type). Each type page matches on its own tag, so a
+# piece whose name says "Dining Armchair" but whose maker tagged it "Armchair" is missing from Dining Chairs.
+SEATING_NAME_RULES = (
+    ("stool", re.compile(r"(?<!foot)(?<!foot )\bstool\b|\bstool\b", re.I), re.compile(r"stool", re.I)),
+    ("bench", re.compile(r"\bbench(es)?\b", re.I), re.compile(r"bench", re.I)),
+    ("dining chair", re.compile(r"\bdining (arm)?chair", re.I), re.compile(r"dining", re.I)),
+    ("lounge chair", re.compile(r"\blounge (arm)?chair|armchair|arm chair|easy chair|club chair|bergere|bergère|fauteuil|recliner", re.I),
+     re.compile(r"arm ?chair|lounge|easy|club|bergere", re.I)),
+    ("side chair", re.compile(r"\bside chair", re.I), re.compile(r"side chair", re.I)),
+    ("garden chair", re.compile(r"\b(outdoor|garden|patio|terrace)\b.*(chair|armchair)|(chair|armchair).*\b(outdoor|garden|patio|terrace)\b", re.I),
+     re.compile(r"garden|outdoor", re.I)),
+    ("folding chair", re.compile(r"\b(folding|stacking|stackable|foldable)\b.*(chair|armchair)|(chair|armchair).*\b(folding|stacking|stackable|foldable)\b", re.I),
+     re.compile(r"folding|stacking|stackable", re.I)),
+    ("kids chair", re.compile(r"\b(kids?|child(ren)?|baby|junior)\b.*(chair|armchair)", re.I), re.compile(r"kids|child|baby", re.I)),
+    ("office chair", re.compile(r"\boffice chair|\bdesk chair|\btask chair", re.I), re.compile(r"office|desk|task", re.I)),
+    ("ottoman", re.compile(r"\bottoman|\bpouf|\bpouffe|\bpuff\b", re.I), re.compile(r"ottoman|pouf|puff", re.I)),
+    ("sofa", re.compile(r"\bsofa\b|\bcouch\b|\bdaybed\b|\bloveseat\b|\bsettee\b", re.I), re.compile(r"sofa|couch|daybed|loveseat|settee", re.I)),
+)
+# a part, cover or hardware (like CHAIR_NOT_A_CHAIR_RE, but "Cross Leg Side Chair" is a chair and only a name ending in "Legs" is a part)
+SEATING_NOT_A_SEAT_RE = re.compile(CHAIR_NOT_A_CHAIR_RE.pattern.replace(r"\blegs?\b|", "") + r"|\blegs\s*$", re.I)
+
+
+def _refine_seating_by_name(product_name, category):
+    """Prepend a type tag for every type the NAME states that the maker's own tags do not (see SEATING_NAME_RULES). The
+    maker's tags stay; parts, covers and pads are left alone; "dining ... armchair" is a dining chair, not a lounge chair.
+    Idempotent."""
+    tags = [t.strip() for t in (category or "").split(",") if t.strip()]
+    name = product_name or ""
+    if tags and not any(SEATING_TAG_RE.search(t) for t in tags):
+        return category
+    if SEATING_NOT_A_SEAT_RE.search(name) or re.search(r"foot ?stool|foot ?rest", name, re.I):
+        return category
+    add = []
+    for subtype, name_rx, tag_rx in SEATING_NAME_RULES:
+        if not name_rx.search(name) or any(tag_rx.search(t) for t in tags):
+            continue
+        if subtype == "lounge chair" and re.search(r"\bdining\b", name, re.I):
+            continue
+        if subtype == "ottoman" and re.search(r"chair|sofa|bench", name, re.I):
+            continue   # "armchair and ottoman" is a set, "Ottoman Armchair" a chair
+        add.append(subtype)
+    return ", ".join(add + tags) if add else category
+
+
 def _infer_category_from_name(product_name, current_category, brand_name=None):
     # A purely-numeric category is never a real category name for any
     # brand - confirmed live 2026-09-29 on Design House Stockholm, whose
@@ -10456,6 +10521,8 @@ def run(brand_name=None, local_only=False):
                         product["category"] = _infer_category_for_blank(product["product_name"], brand["name"]) or ""
                     product["category"] = _backfill_foreign_category(product["product_name"], product["category"])
                     product["category"] = _refine_chair_subtype(product["product_name"], product["category"])
+                    product["category"] = _refine_bar_stool(product["product_name"], product["category"])
+                    product["category"] = _refine_seating_by_name(product["product_name"], product["category"])
                 if not product.get("price") and url in old_prices:
                     # The page-price step (a failed fetch, a time budget) did
                     # not refresh this one: keep what we had rather than

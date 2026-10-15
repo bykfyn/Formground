@@ -2,7 +2,7 @@
 One-time backfill (2026-10-04): give chairs that carry only the generic "chair"/"chairs" tag a
 sub-type when their NAME says what they are ("ELLIOT DINING CHAIR", "Era Armchair", "Task chair 3").
 
-Applies scrape.py's _refine_chair_subtype() - the same function the scraper now runs on every save, so a
+Applies scrape.py's _refine_chair_subtype() and _refine_bar_stool() (2026-10-15: a bar/counter stool or chair by name) - the same functions the scraper now runs on every save, so a
 re-scrape keeps these - to the rows already in data/formground.db, so the browse pages are right now
 without re-running every brand's scraper. It only ever PREPENDS a tag ("dining chair, Chair"); the
 brand's own tags stay.
@@ -15,7 +15,7 @@ import argparse
 import collections
 import sqlite3
 
-from scrape import DB_PATH, _refine_chair_subtype
+from scrape import DB_PATH, _refine_bar_stool, _refine_chair_subtype, _refine_seating_by_name
 
 
 def main():
@@ -26,7 +26,7 @@ def main():
     rows = conn.execute("SELECT id, brand, product_name, category FROM products").fetchall()
     changes = []
     for pid, brand, name, category in rows:
-        new = _refine_chair_subtype(name, category)
+        new = _refine_seating_by_name(name, _refine_bar_stool(name, _refine_chair_subtype(name, category)))
         if new != category:
             changes.append((pid, brand, name, category, new))
     by_tag = collections.Counter(c[4].split(",")[0] for c in changes)
