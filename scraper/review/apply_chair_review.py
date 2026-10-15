@@ -104,7 +104,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--apply", action="store_true")
     args = ap.parse_args()
-    decisions = json.loads(DECISIONS.read_text())
+    decisions = json.loads(DECISIONS.read_text()) if DECISIONS.exists() else {}
     conn = sqlite3.connect(DB)
     changes, skipped, unknown, excluded = [], [], [], []
     for pid, d in decisions.items():

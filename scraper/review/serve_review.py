@@ -3,16 +3,19 @@
     python3 scraper/review/serve_review.py        # then open http://localhost:8094/
 """
 import json
+import re
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 HERE = Path(__file__).parent
 DATA = HERE.parent.parent / "data"
-FAMILIES = {"chairs": ("chairs_items.json", "category_review_chairs.json"), "tables": ("tables_items.json", "category_review_tables.json")}
+FAMILIES = {"chairs": ("chairs_items.json", "category_review_chairs.json"), "tables": ("tables_items.json", "category_review_tables.json"),
+            "lighting": ("lighting_items.json", "category_review_lighting.json")}
 
 
 def family_of(path):
-    return "tables" if "family=tables" in path else "chairs"
+    m = re.search(r"family=(\w+)", path)
+    return m.group(1) if m and m.group(1) in FAMILIES else "chairs"
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -46,5 +49,5 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    print("review page on http://localhost:8094/  (tables: ?family=tables)")
+    print("review page on http://localhost:8094/  (tables: ?family=tables, lighting: ?family=lighting)")
     HTTPServer(("127.0.0.1", 8094), Handler).serve_forever()
