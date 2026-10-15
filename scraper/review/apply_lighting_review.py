@@ -28,7 +28,7 @@ SLUG_TAG = {
     "table-lamps": r"table lamp", "floor-lamps": r"floor lamp", "pendant-lamps": r"pendant", "wall-lamps": r"wall lamp",
     "ceiling-lamps": r"ceiling lamp|flush mount|surface mount", "chandeliers": r"chandelier",
 }
-CANONICAL = {"table-lamps": "table lamp", "floor-lamps": "floor lamp", "pendant-lamps": "pendant lamp", "wall-lamps": "wall lamp",
+CANONICAL = {"table-lamps": "table lamp", "floor-lamps": "floor lamp", "pendant-lamps": "pendant", "wall-lamps": "wall lamp",
              "ceiling-lamps": "ceiling lamp", "chandeliers": "chandelier"}
 IMPLIED = {}
 GENERIC = re.compile(r"^(lamps?|lighting|light|lights)$", re.I)

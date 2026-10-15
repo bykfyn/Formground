@@ -109,7 +109,11 @@ import guides_content  # noqa: E402
 BROWSE_CATEGORIES = [
     # Lighting
     {"slug": "table-lamps", "title": "Table Lamps", "group": "Lighting", "intent": {"category": "table lamp"}},
-    {"slug": "pendant-lamps", "title": "Pendant Lamps", "group": "Lighting", "intent": {"category": "pendant"}},
+    # Makers tag these as "Pendant", "Pendant Lamp", "Pendant Light", "Pendant Lighting" or "Suspension" (2026-10-15: the page matched only
+    # "Pendant", which left about 400 pendant lamps off it)
+    {"slug": "pendant-lamps", "title": "Pendant Lamps", "group": "Lighting",
+     "intents": [{"category": "pendant"}, {"category": "pendant lamp"}, {"category": "pendant light"}, {"category": "pendant lighting"},
+                 {"category": "suspension"}, {"category": "suspension lamp"}]},
     {"slug": "wall-lamps", "title": "Wall Lamps", "group": "Lighting", "intent": {"category": "wall lamp"}},
     # Flush and surface mounts are ceiling fixtures (In Common With,
     # Palefire, Danny Kaplan tag them that way instead of "ceiling lamp").

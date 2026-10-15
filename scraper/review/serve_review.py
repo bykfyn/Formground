@@ -10,7 +10,8 @@ from pathlib import Path
 HERE = Path(__file__).parent
 DATA = HERE.parent.parent / "data"
 FAMILIES = {"chairs": ("chairs_items.json", "category_review_chairs.json"), "tables": ("tables_items.json", "category_review_tables.json"),
-            "lighting": ("lighting_items.json", "category_review_lighting.json"), "sofas": ("sofas_items.json", "category_review_sofas.json")}
+            "lighting": ("lighting_items.json", "category_review_lighting.json"), "sofas": ("sofas_items.json", "category_review_sofas.json"),
+            "objects": ("objects_items.json", "category_review_objects.json")}
 
 
 def family_of(path):
@@ -49,5 +50,5 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    print("review page on http://localhost:8094/  (tables: ?family=tables, lighting: ?family=lighting, sofas: ?family=sofas)")
+    print("review page on http://localhost:8094/  (tables: ?family=tables, lighting: ?family=lighting, sofas: ?family=sofas, objects: ?family=objects)")
     HTTPServer(("127.0.0.1", 8094), Handler).serve_forever()
