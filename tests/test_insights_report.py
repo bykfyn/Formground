@@ -33,6 +33,23 @@ class FakeClient:
 
 
 @unittest.skipUnless(HAVE, "google-cloud-bigquery not installed")
+class TestQueryListTests(unittest.TestCase):
+    def test_the_file_is_read_as_exact_lines_and_prefixes(self):
+        with tempfile.TemporaryDirectory() as d:
+            p = Path(d) / "q.txt"
+            p.write_text("# note\n\n  ZZZZ \nprefix: Chair  Very long\nxyzzy qwerty\n")
+            self.assertEqual(ir.load_test_queries(p), (["zzzz", "xyzzy qwerty"], ["chair very long"]))
+
+    def test_the_shipped_list_names_the_known_test_strings(self):
+        exact, prefixes = ir.load_test_queries()
+        self.assertIn("zzzz", exact)
+        self.assertTrue(any("chair very long" in p for p in prefixes))
+
+    def test_a_missing_file_means_no_exclusions(self):
+        self.assertEqual(ir.load_test_queries(Path("/nonexistent/q.txt")), ([], []))
+
+
+@unittest.skipUnless(HAVE, "google-cloud-bigquery not installed")
 class PaidTestTests(unittest.TestCase):
     def test_verdict_follows_the_locked_thresholds(self):
         self.assertTrue(ir.verdict(29, 5).startswith("too few"))

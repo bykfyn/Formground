@@ -49,11 +49,25 @@ one visit in one tab, never a person, and cannot be linked across visits.
 
 import argparse
 import os
+from pathlib import Path
 import csv
 
 from google.cloud import bigquery
 
 DATASET, TABLE = "formground_analytics", "events"
+TEST_QUERIES_PATH = Path(__file__).parent.parent / "data" / "insights_test_queries.txt"
+
+
+def load_test_queries(path=TEST_QUERIES_PATH):
+    """(exact, prefixes) of our own test searches, lower-cased with single spaces. See the header of the file."""
+    exact, prefixes = [], []
+    if path.exists():
+        for line in path.read_text().splitlines():
+            line = " ".join(line.strip().lower().split())
+            if not line or line.startswith("#"):
+                continue
+            (prefixes if line.startswith("prefix:") else exact).append(line[len("prefix:"):].strip() if line.startswith("prefix:") else line)
+    return exact, prefixes
 
 # Paid-test thresholds (kr per outbound click), locked in writing before spend starts.
 CONTINUE_KR = 17
@@ -67,6 +81,9 @@ WITH ev AS (
   WHERE timestamp >= COALESCE(TIMESTAMP(@since), TIMESTAMP_SUB(CURRENT_TIMESTAMP(), INTERVAL @days DAY))
     AND (@campaign IS NULL OR utm_campaign = @campaign)
     AND NOT STARTS_WITH(COALESCE(utm_campaign, ''), 'test')   -- end-to-end test links: name the campaign test_...
+    AND NOT (event_type = 'search' AND (
+      LOWER(TRIM(query)) IN UNNEST(@test_exact)             -- our own test searches: data/insights_test_queries.txt
+      OR EXISTS (SELECT 1 FROM UNNEST(@test_prefix) p WHERE STARTS_WITH(LOWER(TRIM(query)), p))))
 ),
 searches AS (
   SELECT * FROM ev WHERE event_type = 'search' AND surface = 'work'
@@ -393,15 +410,19 @@ def main():
     ap.add_argument("--days", type=int, default=14)
     ap.add_argument("--since", default=None, help="launch-date cutoff YYYY-MM-DD; leaves out earlier test traffic (overrides --days)")
     ap.add_argument("--spend", default=None, help="CSV with columns campaign,spend_kr[,week_start]: adds the paid-test section")
+    ap.add_argument("--include-tests", action="store_true", help="count our own test searches too (data/insights_test_queries.txt)")
     ap.add_argument("--campaign", default=None, help="only events carrying this utm_campaign")
     args = ap.parse_args()
 
+    test_exact, test_prefix = load_test_queries()
     client = bigquery.Client(project=os.environ.get("GOOGLE_CLOUD_PROJECT") or DEFAULT_PROJECT)
     table = f"{client.project}.{DATASET}.{TABLE}"
     config = bigquery.QueryJobConfig(query_parameters=[
         bigquery.ScalarQueryParameter("days", "INT64", args.days),
         bigquery.ScalarQueryParameter("since", "STRING", args.since),
         bigquery.ScalarQueryParameter("campaign", "STRING", args.campaign),
+        bigquery.ArrayQueryParameter("test_exact", "STRING", [] if args.include_tests else test_exact),
+        bigquery.ArrayQueryParameter("test_prefix", "STRING", [] if args.include_tests else test_prefix),
     ])
     print(f"Formground insights, " + (f"since {args.since}" if args.since else f"last {args.days} days") + (f", campaign {args.campaign}" if args.campaign else ""))
     for title, sql, ratios in REPORTS:
