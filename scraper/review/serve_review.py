@@ -7,7 +7,12 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 
 HERE = Path(__file__).parent
-SAVE = HERE.parent.parent / "data" / "category_review_chairs.json"
+DATA = HERE.parent.parent / "data"
+FAMILIES = {"chairs": ("chairs_items.json", "category_review_chairs.json"), "tables": ("tables_items.json", "category_review_tables.json")}
+
+
+def family_of(path):
+    return "tables" if "family=tables" in path else "chairs"
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -20,18 +25,20 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(data)
 
     def do_GET(self):
+        fam = family_of(self.path)
+        save = DATA / FAMILIES[fam][1]
         if self.path.startswith("/items.json"):
-            self._send((HERE / "chairs_items.json").read_bytes())
+            self._send((HERE / FAMILIES[fam][0]).read_bytes())
         elif self.path.startswith("/check.json"):
             self._send((HERE / "check_items.json").read_bytes())
         elif self.path.startswith("/decisions.json"):
-            self._send(SAVE.read_bytes() if SAVE.exists() else b"{}")
+            self._send(save.read_bytes() if save.exists() else b"{}")
         else:
             self._send((HERE / "chair_review.html").read_bytes(), "text/html")
 
     def do_POST(self):
         body = self.rfile.read(int(self.headers.get("Content-Length", 0)))
-        SAVE.write_text(json.dumps(json.loads(body), ensure_ascii=False, indent=1))
+        (DATA / FAMILIES[family_of(self.path)][1]).write_text(json.dumps(json.loads(body), ensure_ascii=False, indent=1))
         self._send('{"ok":true}')
 
     def log_message(self, *a):
@@ -39,5 +46,5 @@ class Handler(BaseHTTPRequestHandler):
 
 
 if __name__ == "__main__":
-    print("review page on http://localhost:8094/")
+    print("review page on http://localhost:8094/  (tables: ?family=tables)")
     HTTPServer(("127.0.0.1", 8094), Handler).serve_forever()

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Chairs review — Formground</title>
+<title>Review — Formground</title>
 <style>
 :root{--bg:#faf9f7;--surface:#f1efec;--text:#1c1b1a;--muted:#8a847c;--line:#d9d5ce;--accent:#4a6670;--ok:#3f7a4e;--warn:#a0522d}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 -apple-system,Helvetica,Arial,sans-serif}
@@ -21,26 +21,26 @@ main{padding:20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250
 .what{margin-top:6px;width:100%;padding:6px 8px;border:1px solid var(--line);border-radius:6px;font:inherit;font-size:12px}.accept{margin-top:4px;padding:6px;border:0;border-radius:6px;background:var(--text);color:#fff;font-size:12px;cursor:pointer}
 .empty{padding:40px;color:var(--muted)}
 </style></head><body>
-<header><h1>Chairs review</h1><span class="prog" id="prog"></span><div class="bar"><i id="bar"></i></div>
+<header><h1 id="ttl">Chairs review</h1><span class="prog" id="prog"></span><div class="bar"><i id="bar"></i></div>
 <select id="f"></select><label class="chk"><input type="checkbox" id="und" checked> undecided only</label></header>
 <main id="m"></main>
 <script>
-const TYPES=[["dining-chairs","Dining chair"],["armchairs","Armchair / lounge"],["side-chairs","Side chair"],["office-chairs","Office chair"],["garden-chairs","Garden chair"],["folding-chairs","Folding / stacking"],["kids-chairs","Kids' chair"],["stools","Stool"],["bar-stools","Bar stool"],["benches","Bench"],["footstools","Footstool"],["ottomans-and-poufs","Ottoman / pouf"],["sofas","Sofa / daybed"]];
-const L=Object.fromEntries(TYPES);L["not-a-seat"]="Not seating";L["accessory"]="Accessory (pad, cover, part)";L["chairs"]="Chairs";
+const FAM=location.search.includes('family=tables')?'tables':'chairs';const Q='?family='+FAM;let TYPES=[["dining-chairs","Dining chair"],["armchairs","Armchair / lounge"],["side-chairs","Side chair"],["office-chairs","Office chair"],["garden-chairs","Garden chair"],["folding-chairs","Folding / stacking"],["kids-chairs","Kids' chair"],["stools","Stool"],["bar-stools","Bar stool"],["benches","Bench"],["footstools","Footstool"],["ottomans-and-poufs","Ottoman / pouf"],["sofas","Sofa / daybed"]];
+let L={},CFG={none:"Not seating at all",acc:"Accessory (pad, cover, part)"};function setup(p){if(!Array.isArray(p)){TYPES=p.types;CFG={none:"Not a table",acc:"Part (top, base, legs)"};$("#ttl").textContent=p.title}L=Object.fromEntries(TYPES);L["not-a-seat"]="Not seating";L["accessory"]="Accessory (pad, cover, part)";L["chairs"]="Chairs";if(p.labels)Object.assign(L,p.labels)}
 let items=[],dec={},timer;
 const $=s=>document.querySelector(s);const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-function save(){clearTimeout(timer);timer=setTimeout(()=>fetch('/save',{method:'POST',body:JSON.stringify(dec)}),250)}
+function save(){clearTimeout(timer);timer=setTimeout(()=>fetch('/save'+Q,{method:'POST',body:JSON.stringify(dec)}),250)}
 function setDec(id,v){const w=(dec[id]||{}).what;if(v===null){if(w)dec[id]={types:[],what:w};else delete dec[id]}else{if(w)v.what=w;dec[id]=v}save();render()}
 function toggle(id,t){const d=dec[id]||{types:[]};if(d.fine||d.none||d.acc)d.types=[];d.fine=false;d.none=false;d.acc=false;const i=d.types.indexOf(t);i<0?d.types.push(t):d.types.splice(i,1);setDec(id,d.types.length?d:null)}
 function card(r){const d=dec[r.id],on=t=>d&&!d.fine&&!d.none&&!d.acc&&d.types.includes(t);
  const sugg=r.suggest.filter(s=>s!=="not-a-seat"&&s!=="sofas"||s==="sofas");
  const chips=TYPES.map(([s,n])=>`<span class="chip${r.suggest.includes(s)?' sug':''}${on(s)?' on':''}" data-t="${s}">${n}</span>`).join('')+
-  `<span class="chip acc${d&&d.acc?' on':''}" data-a="1">Accessory (pad, cover, part)</span><span class="chip none${d&&d.none?' on':''}" data-n="1">Not seating at all</span><span class="chip fine${d&&d.fine?' on':''}" data-f="1">Fine as it is</span>`;
+  `<span class="chip acc${d&&d.acc?' on':''}" data-a="1">${CFG.acc}</span><span class="chip none${d&&d.none?' on':''}" data-n="1">${CFG.none}</span><span class="chip fine${d&&d.fine?' on':''}" data-f="1">Fine as it is</span>`;
  const el=document.createElement('div');el.className='card'+(d?' done':'')+(d&&d.fine?' fine':'');
  el.innerHTML=`<div class="img"><img loading="lazy" src="${esc(r.image)}" alt=""></div><div class="body"><div class="name"><a target="_blank" rel="noopener" href="${esc(r.url)}">${esc(r.name)}</a></div>
  <div class="meta">${esc(r.brand)} · tag: ${esc(r.tag||'none')}</div><div class="meta">Now on: ${r.pages.map(p=>L[p]||p.replace(/-/g,' ')).join(', ')}</div><div class="why">${r.reasons.join('. ')}</div>
  ${r.suggest.length?`<button class="accept">Accept suggestion: ${r.suggest.map(s=>L[s]||s).join(' + ')}</button>`:''}<div class="chips">${chips}</div><input class="what" type="text" placeholder="What is it? e.g. shelf, trolley, pouf" value="${esc((d&&d.what)||'')}"></div>`;
- const ab=el.querySelector('.accept');if(ab)ab.onclick=()=>{const s=r.suggest;setDec(r.id,s.includes('accessory')?{types:[],acc:true}:s.includes('not-a-seat')?{types:[],none:true}:{types:s})};
+ const ab=el.querySelector('.accept');if(ab)ab.onclick=()=>{const s=r.suggest;setDec(r.id,(s.includes('accessory')||s.includes('part'))?{types:[],acc:true}:(s.includes('not-a-seat')||s.includes('not-a-table'))?{types:[],none:true}:{types:s})};
  el.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{if(c.dataset.t)toggle(r.id,c.dataset.t);else if(c.dataset.a)setDec(r.id,d&&d.acc?null:{types:[],acc:true});else if(c.dataset.n)setDec(r.id,d&&d.none?null:{types:[],none:true});else setDec(r.id,d&&d.fine?null:{types:[],fine:true})});
  const w=el.querySelector('.what');w.oninput=()=>{const x=dec[r.id]||{types:[]};x.what=w.value.trim();if(!x.what)delete x.what;if(!x.what&&!x.types.length&&!x.fine&&!x.none&&!x.acc)delete dec[r.id];else dec[r.id]=x;save()};w.onchange=render;
  return el}
@@ -48,7 +48,7 @@ function render(){const f=$('#f').value,und=(!location.search.includes('check')&
  const list=items.filter(r=>(!f||r.suggest.includes(f))&&(!und||!dec[r.id]));
  list.forEach(r=>m.appendChild(card(r)));if(!list.length)m.innerHTML='<div class="empty">Nothing left in this view.</div>';
  const n=items.filter(r=>dec[r.id]).length;$('#prog').textContent=n+' of '+items.length+' reviewed';$('#bar').style.width=(100*n/items.length)+'%'}
-Promise.all([fetch(location.search.includes('check')?'/check.json':'/items.json').then(r=>r.json()),fetch('/decisions.json').then(r=>r.json())]).then(([i,d])=>{items=i;dec=d;
+Promise.all([fetch(location.search.includes('check')?'/check.json':'/items.json'+Q).then(r=>r.json()),fetch('/decisions.json'+Q).then(r=>r.json())]).then(([i,d])=>{setup(i);items=Array.isArray(i)?i:i.items;dec=d;
  const counts={};items.forEach(r=>r.suggest.forEach(s=>counts[s]=(counts[s]||0)+1));
  $('#f').innerHTML='<option value="">All suggestions ('+items.length+')</option>'+Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([s,c])=>`<option value="${s}">${L[s]||s} (${c})</option>`).join('');
  $('#f').onchange=render;$('#und').onchange=render;render()});
