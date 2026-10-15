@@ -1528,50 +1528,58 @@ RESIDENT_CATEGORY_PATHS = {
 
 def extract_resident(brand):
     """
-    Custom NZ site, no product API - each real /en/{furniture|lighting}/
-    overview page server-renders its full grid in one page (confirmed
-    live: 12 furniture + 12 lighting = 24 real products, no pagination).
-    One fetch per section, not per sub-path - an earlier version fetched
-    once per RESIDENT_CATEGORY_PATHS entry, which reused the SAME page's
-    full, unfiltered image list against a much shorter per-subpath href
-    list, misaligning almost every pairing once zip() ran out of the
-    shorter list. Each card also shows TWO images (primary + hover-swap)
-    sharing the exact same markup shape - handled by collecting hrefs and
-    images as two separate ordered lists (scoped to the whole page, not
-    per sub-path) and taking every OTHER image (index 0, 2, 4...),
-    confirmed live to realign correctly with the real, matching href.
+    Custom NZ site, no product API. Each /en/{furniture|lighting}/ overview server-renders its grid
+    12 cards at a time and PAGINATES with ?p=2, ?p=3 ... (found 2026-10-15: furniture has 4 pages and
+    lighting 3, about 62 pieces; an earlier version read only page 1 and so missed the Pier Chair and
+    about 40 others). Pages are read until one has no new products.
+    One fetch per page, not per sub-path - an earlier version fetched once per RESIDENT_CATEGORY_PATHS
+    entry, which reused the SAME page's full, unfiltered image list against a much shorter per-subpath
+    href list, misaligning almost every pairing once zip() ran out of the shorter list. Each card also
+    shows TWO images (primary + hover-swap) sharing the exact same markup shape - handled by collecting
+    hrefs and images as two separate ordered lists (scoped to the whole page, not per sub-path) and taking
+    every OTHER image (index 0, 2, 4...), confirmed live to realign correctly with the real, matching href.
     """
     base = brand["url"].rstrip("/")
     products = []
+    seen = set()
     for section in ("furniture", "lighting"):
-        url = f"{base}/en/{section}/"
-        try:
-            resp = requests.get(url, headers=HEADERS, timeout=20)
-            resp.raise_for_status()
-        except requests.RequestException as e:
-            print(f"  Could not fetch {url}: {e}")
-            continue
+        for page in range(1, 9):                                    # a hard ceiling; the site has 3-4 pages per section
+            url = f"{base}/en/{section}/" + (f"?p={page}" if page > 1 else "")
+            try:
+                resp = requests.get(url, headers=HEADERS, timeout=20)
+                resp.raise_for_status()
+            except requests.RequestException as e:
+                if page == 1:
+                    print(f"  Could not fetch {url}: {e}")      # a missing LATER page just means the last page was reached
+                break
 
-        hrefs = re.findall(rf'<a href="(/en/{section}/[a-z-]+/[a-z0-9-]+)">', resp.text)
-        img_pairs = re.findall(r'<img src="([^"]+)" width=450 height=450\s*\n\s*alt="([^"]+)"', resp.text)
-        primary_images = img_pairs[0::2]
-        for href, (image_path, raw_name) in zip(hrefs, primary_images):
-            name = html.unescape(raw_name).strip()
-            subpath = href.split("/")[3]
-            coarse_category = RESIDENT_CATEGORY_PATHS.get(subpath, "")
-            category = _infer_category_from_name(name, coarse_category, brand_name=brand["name"])
-            products.append({
-                "brand": brand["name"],
-                "brand_url": brand["url"],
-                "product_name": name,
-                "product_url": urllib.parse.urljoin(base, href),
-                "category": category,
-                "material_options": [],
-                "dimensions": "",
-                "notes": "",
-                "image_url": urllib.parse.urljoin(base, image_path),
-            })
-        time.sleep(1)  # be polite - don't hammer the site
+            hrefs = re.findall(rf'<a href="(/en/{section}/[a-z-]+/[a-z0-9-]+)">', resp.text)
+            img_pairs = re.findall(r'<img src="([^"]+)" width=450 height=450\s*\n\s*alt="([^"]+)"', resp.text)
+            primary_images = img_pairs[0::2]
+            new_on_page = 0
+            for href, (image_path, raw_name) in zip(hrefs, primary_images):
+                if href in seen:
+                    continue
+                seen.add(href)
+                new_on_page += 1
+                name = html.unescape(raw_name).strip()
+                subpath = href.split("/")[3]
+                coarse_category = RESIDENT_CATEGORY_PATHS.get(subpath, "")
+                category = _infer_category_from_name(name, coarse_category, brand_name=brand["name"])
+                products.append({
+                    "brand": brand["name"],
+                    "brand_url": brand["url"],
+                    "product_name": name,
+                    "product_url": urllib.parse.urljoin(base, href),
+                    "category": category,
+                    "material_options": [],
+                    "dimensions": "",
+                    "notes": "",
+                    "image_url": urllib.parse.urljoin(base, image_path),
+                })
+            time.sleep(1)  # be polite - don't hammer the site
+            if new_on_page == 0:
+                break
 
     return products
 
