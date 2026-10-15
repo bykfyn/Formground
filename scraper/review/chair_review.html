@@ -39,16 +39,16 @@ function card(r){const d=dec[r.id],on=t=>d&&!d.fine&&!d.none&&!d.acc&&d.types.in
  const el=document.createElement('div');el.className='card'+(d?' done':'')+(d&&d.fine?' fine':'');
  el.innerHTML=`<div class="img"><img loading="lazy" src="${esc(r.image)}" alt=""></div><div class="body"><div class="name"><a target="_blank" rel="noopener" href="${esc(r.url)}">${esc(r.name)}</a></div>
  <div class="meta">${esc(r.brand)} · tag: ${esc(r.tag||'none')}</div><div class="meta">Now on: ${r.pages.map(p=>L[p]||p.replace(/-/g,' ')).join(', ')}</div><div class="why">${r.reasons.join('. ')}</div>
- <button class="accept">Accept suggestion: ${r.suggest.map(s=>L[s]||s).join(' + ')}</button><div class="chips">${chips}</div><input class="what" type="text" placeholder="What is it? e.g. shelf, trolley, pouf" value="${esc((d&&d.what)||'')}"></div>`;
- el.querySelector('.accept').onclick=()=>{const s=r.suggest;setDec(r.id,s.includes('accessory')?{types:[],acc:true}:s.includes('not-a-seat')?{types:[],none:true}:{types:s})};
+ ${r.suggest.length?`<button class="accept">Accept suggestion: ${r.suggest.map(s=>L[s]||s).join(' + ')}</button>`:''}<div class="chips">${chips}</div><input class="what" type="text" placeholder="What is it? e.g. shelf, trolley, pouf" value="${esc((d&&d.what)||'')}"></div>`;
+ const ab=el.querySelector('.accept');if(ab)ab.onclick=()=>{const s=r.suggest;setDec(r.id,s.includes('accessory')?{types:[],acc:true}:s.includes('not-a-seat')?{types:[],none:true}:{types:s})};
  el.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{if(c.dataset.t)toggle(r.id,c.dataset.t);else if(c.dataset.a)setDec(r.id,d&&d.acc?null:{types:[],acc:true});else if(c.dataset.n)setDec(r.id,d&&d.none?null:{types:[],none:true});else setDec(r.id,d&&d.fine?null:{types:[],fine:true})});
  const w=el.querySelector('.what');w.oninput=()=>{const x=dec[r.id]||{types:[]};x.what=w.value.trim();if(!x.what)delete x.what;if(!x.what&&!x.types.length&&!x.fine&&!x.none&&!x.acc)delete dec[r.id];else dec[r.id]=x;save()};w.onchange=render;
  return el}
-function render(){const f=$('#f').value,und=$('#und').checked,m=$('#m');m.innerHTML='';
+function render(){const f=$('#f').value,und=(!location.search.includes('check')&&$('#und').checked),m=$('#m');m.innerHTML='';
  const list=items.filter(r=>(!f||r.suggest.includes(f))&&(!und||!dec[r.id]));
  list.forEach(r=>m.appendChild(card(r)));if(!list.length)m.innerHTML='<div class="empty">Nothing left in this view.</div>';
  const n=items.filter(r=>dec[r.id]).length;$('#prog').textContent=n+' of '+items.length+' reviewed';$('#bar').style.width=(100*n/items.length)+'%'}
-Promise.all([fetch('/items.json').then(r=>r.json()),fetch('/decisions.json').then(r=>r.json())]).then(([i,d])=>{items=i;dec=d;
+Promise.all([fetch(location.search.includes('check')?'/check.json':'/items.json').then(r=>r.json()),fetch('/decisions.json').then(r=>r.json())]).then(([i,d])=>{items=i;dec=d;
  const counts={};items.forEach(r=>r.suggest.forEach(s=>counts[s]=(counts[s]||0)+1));
  $('#f').innerHTML='<option value="">All suggestions ('+items.length+')</option>'+Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([s,c])=>`<option value="${s}">${L[s]||s} (${c})</option>`).join('');
  $('#f').onchange=render;$('#und').onchange=render;render()});

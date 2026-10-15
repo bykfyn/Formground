@@ -22,6 +22,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path.startswith("/items.json"):
             self._send((HERE / "chairs_items.json").read_bytes())
+        elif self.path.startswith("/check.json"):
+            self._send((HERE / "check_items.json").read_bytes())
         elif self.path.startswith("/decisions.json"):
             self._send(SAVE.read_bytes() if SAVE.exists() else b"{}")
         else:

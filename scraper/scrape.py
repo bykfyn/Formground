@@ -2650,6 +2650,12 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("The Conran Shop", "Nicholson Loose Cover Sofa 200cm"): "Sofa Covers",
 }
 
+# Answers saved from the review pages (scraper/review/apply_chair_review.py), merged in so a re-scrape keeps them.
+_REVIEW_OVERRIDES_PATH = Path(__file__).parent.parent / "data" / "category_overrides.json"
+if _REVIEW_OVERRIDES_PATH.exists():
+    for _entry in json.loads(_REVIEW_OVERRIDES_PATH.read_text()):
+        MANUAL_CATEGORY_OVERRIDES[(_entry["brand"], _entry["name"])] = _entry["category"]
+
 # Same idea as MANUAL_CATEGORY_OVERRIDES above, but for a picked image
 # that's flat wrong rather than a missing category - confirmed by opening
 # the extractor's chosen image_url directly and comparing it against the
@@ -3499,6 +3505,9 @@ def _looks_like_a_maintenance_item(title):
     """
     keywords = (
         "assembly kit", "cleaning kit", "kit di pulizia", "gift card", "giftcard",
+        # Spare parts for chairs (2026-10-15, chair review): feet glides and sliders, adjustment kits and wall brackets are
+        # fittings for a real chair listed beside it, never a design object.
+        "glides for", "felt glides", "height adjustment kit", "wall mount for",
         # Artetica's own "Spare Parts: Ashtray"/"Spare Parts: Burner
         # Incense" listings, confirmed live 2026-09-25 - replacement
         # components for its real Ashtray/Burner Incense products.
@@ -3832,6 +3841,14 @@ def _is_sibling_accessory_bulb(name_lower, sibling_names_lower):
     return False
 
 
+# Exact listings taken out by hand in a review (data/excluded_listings.json: brand + name), e.g. a spare part listed under the name of its chair.
+_EXCLUDED_LISTINGS_PATH = Path(__file__).parent.parent / "data" / "excluded_listings.json"
+EXCLUDED_LISTINGS = (
+    {(e["brand"], e["name"].strip().lower()) for e in json.loads(_EXCLUDED_LISTINGS_PATH.read_text())}
+    if _EXCLUDED_LISTINGS_PATH.exists() else set()
+)
+
+
 def _is_out_of_scope_product(name, category, brand=None, sibling_names_lower=()):
     """
     A final, post-category-resolution check (called once per product,
@@ -3854,6 +3871,8 @@ def _is_out_of_scope_product(name, category, brand=None, sibling_names_lower=())
     the brand's own "Rug" category tag.
     """
     category_lower = category.strip().lower()
+    if (brand, name.strip().lower()) in EXCLUDED_LISTINGS:
+        return True
     if category_lower in OUT_OF_SCOPE_CATEGORIES:
         return True
     if brand and (brand, category_lower) in OUT_OF_SCOPE_CATEGORIES_BY_BRAND:

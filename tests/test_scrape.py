@@ -516,6 +516,25 @@ class SeatingByNameTests(unittest.TestCase):
         self.assertEqual(scrape._refine_seating_by_name("Harbour Dining Chair", once), once)
 
 
+class ChairSparePartTests(unittest.TestCase):
+    """Chair spare parts (2026-10-15) are left out of the catalogue; real chairs and sofas with similar words are not."""
+
+    def test_glides_kits_and_wall_mounts_are_spare_parts(self):
+        f = scrape._looks_like_a_maintenance_item
+        for name in ("Glides for Primum Dining Chair", "Felt glides", "Height adjustment kit 30 mm for Primum Chair",
+                     "DS12 Wall mount for folding chair DS11 Ash"):
+            self.assertTrue(f(name), name)
+
+    def test_real_seating_is_not(self):
+        f = scrape._looks_like_a_maintenance_item
+        for name in ("Glider Rocking Chair", "Offset Sofa w. Loose Cover", "Primum dining chair castor black base", "Eternity Swivel"):
+            self.assertFalse(f(name), name)
+
+    def test_a_listing_taken_out_by_hand_is_excluded_by_brand_and_name(self):
+        self.assertTrue(scrape._is_out_of_scope_product("Eternity Stool", "stool", "Mater"))
+        self.assertFalse(scrape._is_out_of_scope_product("Eternity Stool", "stool", "Someone Else"))
+
+
 class ReleasedAtTests(unittest.TestCase):
     """released_at (2026-10-04): the maker's own date for a piece, as YYYY-MM-DD."""
 
