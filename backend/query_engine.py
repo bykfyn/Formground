@@ -679,6 +679,9 @@ _load_seed_intents()
 CATEGORY_ALIAS_GROUPS = (
     {"asked": {"pendant", "pendant lamp", "pendant light", "pendant lighting", "suspension", "suspension lamp", "suspended lamp", "hanging lamp"},
      "tags": {"pendant", "pendant lamp", "pendant light", "pendant lighting", "suspension", "suspension lamp"}},
+    {"asked": {"seat cushion", "seat pad", "chair cushion", "chair pad", "stool cushion", "bench cushion", "lounger cushion",
+               "furniture accessory", "furniture accessories", "chair cover", "loose cover"},
+     "tags": {"furniture accessory"}},
     {"asked": {"bedroom lamp", "bedside lamp", "bedroom light", "bedside light"},
      "tags": {"table lamp", "bedside lamp"}},
 )

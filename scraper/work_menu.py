@@ -21,7 +21,7 @@ TAXONOMY = {
     # Houses are a category of Work like the rest (the project treats a house as a product,
     # an architect's output); their "types" are countries (the architect's country).
     "Houses": ["Houses"],
-    "Furniture": ["Seating", "Tables and desks", "Storage, beds and mirrors"],
+    "Furniture": ["Seating", "Tables and desks", "Storage, beds and mirrors", "Accessories"],
     "Lighting": ["Lighting"],
     "Objects": ["Objects", "Soft furnishings"],
 }

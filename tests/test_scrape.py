@@ -625,3 +625,15 @@ class CleanProductNameTests(unittest.TestCase):
     def test_circled_r_becomes_the_registered_mark(self):
         self.assertEqual(scrape.clean_product_name("TABLE 130 (rectangular, corian\u24c7 top)"),
                          "TABLE 130 (rectangular, corian\u00ae top)")
+
+
+class FurnitureAccessoryTests(unittest.TestCase):
+    def test_seat_pads_and_chair_cushions_are_furniture_accessories(self):
+        for name in ("HAY AAC Seat Pad", "Seat cushion for Eames DSR", "Cushion sun lounger white August",
+                     "Brutus Dining Cushion", "Loose Cover for Tearoom Club Chair", "Nicholson Sofa Cover Only 180cm"):
+            self.assertEqual(scrape._normalize_furniture_accessory(name, "Cushion"), "Furniture Accessory", name)
+
+    def test_decorating_cushions_and_sofas_with_covers_are_left_alone(self):
+        for name in ("Hybrid Cushion Pirra with plume padding", "Cushion Pad 50 x 50cm",
+                     "Nicholson Loose Cover Sofa 180cm", "Multi-Seat Cushion"):
+            self.assertEqual(scrape._normalize_furniture_accessory(name, "Cushion"), "Cushion", name)

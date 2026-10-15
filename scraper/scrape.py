@@ -3238,6 +3238,26 @@ def _normalize_footstool(product_name, category):
     return ", ".join(["Footstool"] + kept)
 
 
+# Seat pads, chair/stool/bench/lounger cushions and loose covers belong to a piece of
+# furniture, not to the decorating cushions: they get their own type, "Furniture
+# Accessory" (browse page Furniture Accessories), and the Cushions page keeps the
+# general cushions (user ruling 2026-10-15). A name that says what it fits decides;
+# an inner "cushion pad" (the filling for a decorative cushion) stays a cushion.
+FURNITURE_ACCESSORY_NAME_RE = re.compile(
+    r"seat ?pads?\b|seat cushions?|\b(?:chair|armchair|stool|bench|lounger|dining|lounge) (?:cushion|pad)s?\b|"
+    r"\bcushions? (?:for |on )?(?:the )?(?:two seater|three seater|sun lounger|lounge chair|compact chair|"
+    r"dining chair|bar stool|chair|stool|bench)\b|"
+    r"loose cover for|\bcover only\b|^(?!.*\bsofa\b)[\w ]*loose cover$|\b(?:chair|bench|stool|armchair) cover\b", re.I)
+# a sofa SOLD with a loose cover (Conran Nicholson, Audo Offset, Pinch Moreau) is still a sofa
+FURNITURE_ACCESSORY_NOT_RE = re.compile(r"cushion pad|multi-seat|cushion cover for|pillow cover|loose cover sofa|sofa w\. loose cover|slipcover sofa", re.I)
+
+
+def _normalize_furniture_accessory(product_name, category):
+    if FURNITURE_ACCESSORY_NAME_RE.search(product_name) and not FURNITURE_ACCESSORY_NOT_RE.search(product_name):
+        return "Furniture Accessory"
+    return category
+
+
 def _fix_glass_material_tag(product_name, category):
     """A category of exactly "Glass" on a product whose name is not a
     drinking glass is the material word mis-read as a type (Sekt's and
@@ -10620,6 +10640,7 @@ def run(brand_name=None, local_only=False):
                     product["category"] = _refine_chair_subtype(product["product_name"], product["category"])
                     product["category"] = _refine_bar_stool(product["product_name"], product["category"])
                     product["category"] = _refine_seating_by_name(product["product_name"], product["category"])
+                product["category"] = _normalize_furniture_accessory(product["product_name"], product["category"])
                 if not product.get("price") and url in old_prices:
                     # The page-price step (a failed fetch, a time budget) did
                     # not refresh this one: keep what we had rather than

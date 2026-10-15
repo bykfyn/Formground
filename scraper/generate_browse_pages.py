@@ -173,6 +173,12 @@ BROWSE_CATEGORIES = [
     {"slug": "shelving", "title": "Shelving", "group": "Storage, beds and mirrors", "intent": {"category": "shelving"}},
     {"slug": "beds", "title": "Beds", "group": "Storage, beds and mirrors", "intent": {"category": "bed"}},
     {"slug": "mirrors", "title": "Mirrors", "group": "Storage, beds and mirrors", "intent": {"category": "mirror"}},
+    # Accessories that belong to a piece of furniture (seat pads, chair and lounger cushions, loose covers);
+    # the general decorating cushions stay under Cushions (scrape.py _normalize_furniture_accessory, 2026-10-15).
+    {"slug": "furniture-accessories", "title": "Furniture Accessories", "group": "Accessories",
+     "intent": {"category": "furniture accessory"},
+     "blurb": "Seat pads, chair and lounger cushions and loose covers, made to fit a piece of furniture.",
+     "related": ["cushions"]},
     # Objects. Candle holders and candles are distinct types (user
     # ruling 2026-10-02) - see _normalize_candle_holder in scrape.py.
     {"slug": "candle-holders", "title": "Candle Holders", "group": "Objects",
@@ -186,10 +192,11 @@ BROWSE_CATEGORIES = [
     {"slug": "trays", "title": "Trays", "group": "Objects", "intent": {"category": "tray"}},
     # Soft furnishings
     {"slug": "rugs", "title": "Rugs", "group": "Soft furnishings", "intent": {"category": "rug"}},
-    {"slug": "cushions", "title": "Cushions", "group": "Soft furnishings", "intent": {"category": "cushion"}},
+    {"slug": "cushions", "title": "Cushions", "group": "Soft furnishings", "intent": {"category": "cushion"},
+     "related": ["furniture-accessories"]},
     {"slug": "blankets", "title": "Blankets and Throws", "group": "Soft furnishings", "intent": {"category": "blanket"}},
 ]
-GROUP_ORDER = ["Lighting", "Seating", "Tables and desks", "Storage, beds and mirrors", "Soft furnishings", "Objects"]
+GROUP_ORDER = ["Lighting", "Seating", "Tables and desks", "Storage, beds and mirrors", "Accessories", "Soft furnishings", "Objects"]
 CATEGORY_BY_SLUG = {c["slug"]: c for c in BROWSE_CATEGORIES}
 
 
