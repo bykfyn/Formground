@@ -48,6 +48,7 @@ one visit in one tab, never a person, and cannot be linked across visits.
 """
 
 import argparse
+import os
 import csv
 
 from google.cloud import bigquery
@@ -382,6 +383,11 @@ def paid_test(client, table, config, spend_csv):
         print("  Overall: ITERATE.")
 
 
+# The Cloud project that holds the log, by number (signing in with `gcloud auth application-default login` sets no default project).
+# GOOGLE_CLOUD_PROJECT overrides it.
+DEFAULT_PROJECT = "182928637479"
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--days", type=int, default=14)
@@ -390,7 +396,7 @@ def main():
     ap.add_argument("--campaign", default=None, help="only events carrying this utm_campaign")
     args = ap.parse_args()
 
-    client = bigquery.Client()
+    client = bigquery.Client(project=os.environ.get("GOOGLE_CLOUD_PROJECT") or DEFAULT_PROJECT)
     table = f"{client.project}.{DATASET}.{TABLE}"
     config = bigquery.QueryJobConfig(query_parameters=[
         bigquery.ScalarQueryParameter("days", "INT64", args.days),
