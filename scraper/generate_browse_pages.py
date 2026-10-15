@@ -489,6 +489,17 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
     <p><a href="/guides/{guide['slug']}.html">Read the full buying guide &rarr;</a></p>
   </section>
   """
+    elif not view and page == 1 and slug in guides_content.TYPE_ABOUT:
+        # a type without a buying guide: the one-line preamble and a short About block
+        noun_about, about_text = guides_content.TYPE_ABOUT[slug]
+        facts = guides_content.type_facts(products)
+        preamble_html = (f'<p class="listing-intro">{html.escape(guides_content.preamble_text({"noun": noun_about}, facts))}</p>')
+        about_html = f"""<section class="listing-about">
+    <h2>About {html.escape(noun_about)}</h2>
+    <p>{html.escape(about_text)}</p>
+    <p>{html.escape(guides_content.facts_sentences(facts))}</p>
+  </section>
+  """
     makers_heading = view.get("makers_heading") if view and view.get("makers_heading") else '<a href="/makers.html">Makers &rarr;</a>'
     menu_html = work_menu.render_menu(entries, current_slug=slug, current_category=cat_name)
     earlier = (f'<p class="earlier-results"><a href="/work/{_page_slug(slug, page - 1)}.html" rel="prev">'

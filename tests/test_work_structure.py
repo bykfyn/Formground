@@ -482,9 +482,11 @@ class StructureTests(unittest.TestCase):
             self.assertEqual(type_page.count('<section class="listing-about">'), 1)
             self.assertIn(f'href="/guides/{slug}.html"', type_page)
             self.assertIn('<p class="listing-intro">', type_page)
-        # page 2+ and other types stay as they were
+        # page 2+ stays without it; a type without a guide has the short About block but no guide link (see TypeAboutTests)
         self.assertEqual((DOCS / "work" / "pendant-lamps-2.html").read_text().count('<section class="listing-about">'), 0)
-        self.assertEqual((DOCS / "work" / "vases.html").read_text().count('<section class="listing-about">'), 0)
+        vases = (DOCS / "work" / "vases.html").read_text()
+        self.assertEqual(vases.count('<section class="listing-about">'), 1)
+        self.assertNotIn('href="/guides/vases.html"', vases)
 
     def test_guide_source_links_are_https_and_labelled_as_not_endorsements(self):
         import guides_content
@@ -965,6 +967,31 @@ class TypeTileImageTests(unittest.TestCase):
         for slug, needle in (("folding-chairs", "beech_NL0.jpg"), ("office-chairs", "wick-swivel-ash-wheels.jpg")):
             tile = re.search(rf'<a class="maker-card" href="/work/{slug}\.html">(.*?)</a>', page, re.S).group(1)
             self.assertIn(needle, tile, slug)
+
+
+class TypeAboutTests(unittest.TestCase):
+    """Types without a buying guide still get the one-line preamble and a short About block on page 1 (2026-10-15)."""
+
+    def test_every_type_without_a_guide_has_an_about_block_on_page_one_only(self):
+        sys.path.insert(0, str(ROOT / "scraper"))
+        import guides_content as gc
+        for slug, (noun, text) in gc.TYPE_ABOUT.items():
+            page = (DOCS / "work" / f"{slug}.html").read_text()
+            self.assertIn('<section class="listing-about">', page, slug)
+            self.assertIn(f"<h2>About {noun}</h2>", page.replace("&#x27;", "'"), slug)
+            self.assertIn('class="listing-intro"', page, slug)
+            self.assertNotIn("Buying guide", page.split('<section class="listing-about">', 1)[1].split("</section>", 1)[0], slug)
+            second = DOCS / "work" / f"{slug}-2.html"
+            if second.exists():
+                self.assertNotIn('class="listing-about"', second.read_text(), slug)
+
+    def test_the_texts_keep_to_the_house_rules(self):
+        sys.path.insert(0, str(ROOT / "scraper"))
+        import guides_content as gc
+        banned = re.compile(r"\b(real|genuine|authentic|best|leading|iconic|timeless|sustainable|eco-friendly)\b", re.I)
+        for slug, (noun, text) in gc.TYPE_ABOUT.items():
+            self.assertIsNone(banned.search(text), slug)
+            self.assertLess(len(text.split()), 80, slug)
 
 
 class CategoryHubTests(unittest.TestCase):
