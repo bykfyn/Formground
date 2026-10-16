@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grupa: furniture and lighting — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Grupa's work on Formground - 44 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/grupa.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Grupa: furniture and lighting — Formground">
+<meta property="og:description" content="Grupa's work on Formground - 44 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/grupa.html">
+<meta property="og:image" content="https://formground.com/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://formground.com/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Grupa: furniture and lighting — Formground">
+<meta name="twitter:description" content="Grupa's work on Formground - 44 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Grupa", "item": "https://formground.com/brands/grupa.html"}]}</script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/icons.css?v=86479f05">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  /* "New from X" sits at the TOP of a maker page, above the full range (and only exists when there is something new) */
+  .brand-section--top { margin: 0 0 44px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent; /* same box as .tag so the two small labels are one height */
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  /* two to a row on a phone (a single 190px-minimum column left the directories one long list) */
+  @media (max-width: 640px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px; height: 47px; box-sizing: border-box;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+/* SHARE-BTN:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .share-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 1;
+    width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(250, 249, 247, 0.85); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+  }
+  .share-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+  .share-btn i { font-size: 14px; }
+  .share-btn.copied::after {
+    content: "Copied"; position: absolute; bottom: 32px; right: 0;
+    background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  /* LOAD-MORE:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .load-more-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 40px 0 8px; text-align: center;
+  }
+  .load-more-btn {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: none; border: none; padding: 6px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .load-more-btn:hover { color: var(--text-primary); }
+  .load-more-btn:disabled { opacity: 0.6; cursor: default; text-decoration: none; }
+  .load-more-progress { font-size: 11.5px; color: var(--text-muted); }
+  
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 28px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
+  .has-load-more .pager { display: none; }
+  .earlier-results { display: none; margin: 0 0 14px; font-size: 13px; }
+  .has-load-more .earlier-results { display: block; }
+  .earlier-results a { color: var(--text-muted); text-decoration: none; }
+  .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
+</style>
+
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/edits.html">Edits</a>
+</nav>
+</header>
+<main data-brand="Grupa">
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Grupa</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Croatia</span></div>
+    <a class="brand-site-link" href="https://www.grupa.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  
+  <div class="grid" data-listing-grid>
+      <a class="card" href="https://www.grupa.com/collections/arigato/ar-c/" target="_blank" rel="noopener noreferrer" data-product="Arigato Ceiling" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/99ef7b75b55d9c5328501777d197d0e1/w_730;f_auto/AR-C_index.png" alt="Arigato Ceiling by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arigato Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/arigato/ar-c2/" target="_blank" rel="noopener noreferrer" data-product="Arigato Ceiling Double" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/fcf51ab005d0b365b8944a594b3931da/w_730;f_auto/AR-C2_index.png" alt="Arigato Ceiling Double by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arigato Ceiling Double</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/arigato/ar-cp3/" target="_blank" rel="noopener noreferrer" data-product="Arigato Ceiling P3" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/59b069f3f63c04f02a458dd1ffca33ab/w_730;f_auto/2.8157_copy.png" alt="Arigato Ceiling P3 by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arigato Ceiling P3</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/arigato/ar-f/" target="_blank" rel="noopener noreferrer" data-product="Arigato Floor" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/78580401610f707f4ea7a7116a0b4d34/w_730;f_auto/AR-F_index.png" alt="Arigato Floor by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arigato Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/arigato/ar-f2/" target="_blank" rel="noopener noreferrer" data-product="Arigato Floor Double" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/67f9bf934c2bce710a94a6f63c25d620/w_730;f_auto/AR-F2_index.png" alt="Arigato Floor Double by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arigato Floor Double</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/arigato/ar-fp/" target="_blank" rel="noopener noreferrer" data-product="Arigato Floor Palace" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/21953bff3829cd328ea113b52aadffa3/w_730;f_auto/AR-FP_index.png" alt="Arigato Floor Palace by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arigato Floor Palace</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/arigato/ar-p/" target="_blank" rel="noopener noreferrer" data-product="Arigato Pendant" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/e53a883c9ee1e9b0a5bb5637a58ec853/w_730;f_auto/AR-P_index.png" alt="Arigato Pendant by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arigato Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/arigato/ar-t/" target="_blank" rel="noopener noreferrer" data-product="Arigato Table" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/86545d00f80eeea18191475ca9581d06/w_730;f_auto/AR-T_index.png" alt="Arigato Table by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arigato Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/arigato/ar-tp/" target="_blank" rel="noopener noreferrer" data-product="Arigato Table Palace" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/a8b89f109eef6174d5d83ebfae943b22/w_730;f_auto/AR-TP_index.png" alt="Arigato Table Palace by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arigato Table Palace</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/arigato/ar-w/" target="_blank" rel="noopener noreferrer" data-product="Arigato Wall" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/9c082cbf3132858a78a648ceb468f0ad/w_730;f_auto/AR-W_index.png" alt="Arigato Wall by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arigato Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/arigato/ar-w2/" target="_blank" rel="noopener noreferrer" data-product="Arigato Wall Double" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/ca454d156288017951468d11a75965f4/w_730;f_auto/AR-W2_index.png" alt="Arigato Wall Double by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arigato Wall Double</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/arigato/ar-wp2/" target="_blank" rel="noopener noreferrer" data-product="Arigato Wall P2" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/64e9e194a372cf729546c283c78c8fe3/w_730;f_auto/AR-WP2_index.png" alt="Arigato Wall P2 by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arigato Wall P2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/baluna/ba-c/" target="_blank" rel="noopener noreferrer" data-product="Baluna Ceiling" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/a22c093b221ca2d69dadc64725d78bf6/w_730;f_auto/BA-C_pdp_new.png" alt="Baluna Ceiling by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Baluna Ceiling</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/baluna/ba-c-w-t/" target="_blank" rel="noopener noreferrer" data-product="Baluna Ceiling Wall Table" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/1d20a9019075f8edc5600db5fb8147ac/w_730;f_auto/BA-CWT_related.png" alt="Baluna Ceiling Wall Table by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Baluna Ceiling Wall Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/baluna/ba-ch3/" target="_blank" rel="noopener noreferrer" data-product="Baluna Chandelier" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/5380ba83cf8defed08804b22212ac15d/w_730;f_auto/BA-CH6_related_copy.png" alt="Baluna Chandelier by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Baluna Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/baluna/ba-f/" target="_blank" rel="noopener noreferrer" data-product="Baluna Floor" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/02593c9b1e3125473068ce782e377bde/w_730;f_auto/BA-F_PDP_new.png" alt="Baluna Floor by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Baluna Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/baluna/ba-p/" target="_blank" rel="noopener noreferrer" data-product="Baluna Pendant" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/cd909b07940adf9755e5c99edd997585/w_730;f_auto/BA-P_copy.png" alt="Baluna Pendant by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Baluna Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/baluna/ba-t/" target="_blank" rel="noopener noreferrer" data-product="Baluna Table" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/4a14f4e21598a36acf43f8627e039387/w_730;f_auto/BA-T_copy.png" alt="Baluna Table by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Baluna Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/baluna/ba-w-m/" target="_blank" rel="noopener noreferrer" data-product="Baluna Wall" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/039420fdab2dbf092c98a4e50e3b4edf/w_730;f_auto/BA-WM_left_copy.png" alt="Baluna Wall by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Baluna Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/dot/dot-l/" target="_blank" rel="noopener noreferrer" data-product="Dot Large Side Table" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/4f8d16e06d0639758cbdab8f49c25d89/w_730;f_auto/DOT-L.png" alt="Dot Large Side Table by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Dot Large Side Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/dot/dot-s/" target="_blank" rel="noopener noreferrer" data-product="Dot Small Side Table" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/cc6ba7902d84ed86e49fe565d215b137/w_730;f_auto/DOT-S.png" alt="Dot Small Side Table by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Dot Small Side Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/igram/ig-lt/" target="_blank" rel="noopener noreferrer" data-product="Igram Lamp + Table" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/a1b52e168c2620d9d00fe40b2c2e77ac/w_730;f_auto/igram_lamptable.png" alt="Igram Lamp + Table by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Igram Lamp + Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/igram/ig-pt/" target="_blank" rel="noopener noreferrer" data-product="Igram Portable Table Lamp" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/34e688613c780d332e3d526d38329f31/w_730;f_auto/Igram_portable_J.png" alt="Igram Portable Table Lamp by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Igram Portable Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/igram/ig-w/" target="_blank" rel="noopener noreferrer" data-product="Igram Wall Lamp" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/5eb7f2afc1a4683d16ea5bd190515fe8/w_730;f_auto/Igram_wall.png" alt="Igram Wall Lamp by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Igram Wall Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/ili-ili/ili-aef/" target="_blank" rel="noopener noreferrer" data-product="Ili Ili Cat&#x27;s Hat" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/1d03212b0f964dda62b16df8e3ef2538/w_730;f_auto/AEF-9005_index.png" alt="Ili Ili Cat&#x27;s Hat by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ili Ili Cat&#x27;s Hat</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/ili-ili/ili-adb/" target="_blank" rel="noopener noreferrer" data-product="Ili Ili Cocktail Please" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/e3ac5d7335226bb0722bf3e751f2f2f4/w_730;f_auto/ADB-9005_index.png" alt="Ili Ili Cocktail Please by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ili Ili Cocktail Please</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/ili-ili/ili-abc/" target="_blank" rel="noopener noreferrer" data-product="Ili Ili Coney Cone" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/4eea891ff72c22a9f946b1f842c4f5dc/w_730;f_auto/ABC-9005_index.png" alt="Ili Ili Coney Cone by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ili Ili Coney Cone</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/ili-ili/ili-bbc/" target="_blank" rel="noopener noreferrer" data-product="Ili Ili Dance All Night" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/b4885a093c78fbff800840e947b8532d/w_730;f_auto/BBC-9005_index.png" alt="Ili Ili Dance All Night by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ili Ili Dance All Night</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/ili-ili/ili-aab/" target="_blank" rel="noopener noreferrer" data-product="Ili Ili Gone Fishing" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/0a044954246eede364b953bcba2d7073/w_730;f_auto/AAB-9005_index.png" alt="Ili Ili Gone Fishing by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ili Ili Gone Fishing</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/ili-ili/ili-ee/" target="_blank" rel="noopener noreferrer" data-product="Ili Ili Kiss Me" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/bf5489c77612647d63be67077716f58e/w_730;f_auto/EE-9005_index.png" alt="Ili Ili Kiss Me by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ili Ili Kiss Me</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/ili-ili/ili-abd/" target="_blank" rel="noopener noreferrer" data-product="Ili Ili La Lava" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/f0e26ec8abbe873aea2e2da44b4f9de9/w_730;f_auto/ABD-9005_index.png" alt="Ili Ili La Lava by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ili Ili La Lava</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/ili-ili/ili-bb/" target="_blank" rel="noopener noreferrer" data-product="Ili Ili Madame Bovary" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/eddc5983f678ed05d74f03804879c938/w_730;f_auto/BB-9005_index.png" alt="Ili Ili Madame Bovary by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ili Ili Madame Bovary</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/ili-ili/ili-bc/" target="_blank" rel="noopener noreferrer" data-product="Ili Ili Morning After" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/b22be3f67f87461bf30e93d21388c826/w_730;f_auto/BC-9005_index.png" alt="Ili Ili Morning After by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ili Ili Morning After</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/ili-ili/ili-abb/" target="_blank" rel="noopener noreferrer" data-product="Ili Ili Nighty Night" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/2cb8dc8ac742a5b3a11972417f31edc4/w_730;f_auto/ABB-9005_index.png" alt="Ili Ili Nighty Night by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ili Ili Nighty Night</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/ili-ili/ili-bde/" target="_blank" rel="noopener noreferrer" data-product="Ili Ili Prom Queen" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/22b2a185c41c122ec5fb803ae6f1b2d1/w_730;f_auto/BDE-9005_index.png" alt="Ili Ili Prom Queen by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ili Ili Prom Queen</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/ili-ili/ili-ab-w/" target="_blank" rel="noopener noreferrer" data-product="Ili Ili Wall Lamp" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/6dbba68860e16f1445316e0ee71493d6/w_730;f_auto/AB-W_index.png" alt="Ili Ili Wall Lamp by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ili Ili Wall Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/model/m1/" target="_blank" rel="noopener noreferrer" data-product="Model 1" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/238b8264d924af5e25bd80f24c8ca3da/w_730;f_auto/MODEL_1_bezsjene.png" alt="Model 1 by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Model 1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/model/m2/" target="_blank" rel="noopener noreferrer" data-product="Model 2" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/5df57e5ab72578edcaa06157466941d2/w_730;f_auto/MODEL_2_bezsjene.png" alt="Model 2 by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Model 2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/model/m3/" target="_blank" rel="noopener noreferrer" data-product="Model 3" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/5d35dfc32e94d38f5701e5b297ff0347/w_730;f_auto/MODEL_3_bezsjene.png" alt="Model 3 by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Model 3</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/okolo/okolo-floor/" target="_blank" rel="noopener noreferrer" data-product="Okolo Floor" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/24bbfaa60fbffce5bd2e082cfd8b8f08/w_730;f_auto/Okolo_Floor_square.png" alt="Okolo Floor by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Okolo Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/okolo/okolo-pendant-35/" target="_blank" rel="noopener noreferrer" data-product="Okolo Pendant" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/f8dce0bb85d7da631ca2bb2561c8fa3d/w_730;f_auto/Okolo_Pendant_35_02.png" alt="Okolo Pendant by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Okolo Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/okolo/okolo-table-lamp/" target="_blank" rel="noopener noreferrer" data-product="Okolo Table" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/f8a3ef86d3f153db0decae6561ce3dea/w_730;f_auto/Okolo_Table.png" alt="Okolo Table by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Okolo Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/okolo/okolo-wall-long/" target="_blank" rel="noopener noreferrer" data-product="Okolo Wall" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/def63fc610b8703eb33cbbfb2a13435e/w_730;f_auto/Okolo_Wall_L_2x2.png" alt="Okolo Wall by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Okolo Wall</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.grupa.com/collections/onda/onda-pendant-lamp/" target="_blank" rel="noopener noreferrer" data-product="Onda Pendant Lamp" data-brand="Grupa">
+        <div class="card-image"><img src="https://flare.shape404.agency/grupa/images/4bb3bd356b76a11d8bdf73c62952f9ff/w_730;f_auto/Onda_packshot.png" alt="Onda Pendant Lamp by Grupa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Onda Pendant Lamp</p>
+          
+        </div>
+      </a></div>
+  
+  
+
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    // The tracking itself (page views, click-throughs, landing-page and
+    // campaign carry-over) lives in ONE shared file, /fg-track.js, instead
+    // of being pasted into hundreds of generated pages - see that file and
+    // backend/analytics.py for what is logged.
+    var s = document.createElement("script");
+    s.src = "/fg-track.js";
+    s.async = true;
+    document.head.appendChild(s);
+  })();
+</script>
+<script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=b09d5657" defer></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

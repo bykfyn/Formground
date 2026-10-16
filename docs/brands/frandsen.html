@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frandsen: lighting — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Frandsen's work on Formground - 49 pieces, linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/frandsen.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Frandsen: lighting — Formground">
+<meta property="og:description" content="Frandsen's work on Formground - 49 pieces, linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/frandsen.html">
+<meta property="og:image" content="https://formground.com/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://formground.com/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Frandsen: lighting — Formground">
+<meta name="twitter:description" content="Frandsen's work on Formground - 49 pieces, linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Frandsen", "item": "https://formground.com/brands/frandsen.html"}]}</script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/icons.css?v=86479f05">
+<style>
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  /* "New from X" sits at the TOP of a maker page, above the full range (and only exists when there is something new) */
+  .brand-section--top { margin: 0 0 44px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent; /* same box as .tag so the two small labels are one height */
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  /* two to a row on a phone (a single 190px-minimum column left the directories one long list) */
+  @media (max-width: 640px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px; height: 47px; box-sizing: border-box;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+/* SHARE-BTN:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .share-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 1;
+    width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(250, 249, 247, 0.85); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+  }
+  .share-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+  .share-btn i { font-size: 14px; }
+  .share-btn.copied::after {
+    content: "Copied"; position: absolute; bottom: 32px; right: 0;
+    background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  /* LOAD-MORE:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .load-more-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 40px 0 8px; text-align: center;
+  }
+  .load-more-btn {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: none; border: none; padding: 6px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .load-more-btn:hover { color: var(--text-primary); }
+  .load-more-btn:disabled { opacity: 0.6; cursor: default; text-decoration: none; }
+  .load-more-progress { font-size: 11.5px; color: var(--text-muted); }
+  
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 28px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
+  .has-load-more .pager { display: none; }
+  .earlier-results { display: none; margin: 0 0 14px; font-size: 13px; }
+  .has-load-more .earlier-results { display: block; }
+  .earlier-results a { color: var(--text-muted); text-decoration: none; }
+  .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
+
+  .designer-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .designer-chip {
+    display: inline-flex; align-items: baseline; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .designer-chip:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .designer-chip-name { font-weight: 500; }
+  .designer-chip-count { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .designer-more { margin-top: 12px; }
+  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; margin-bottom: 12px; }
+  .designer-more[open] summary { margin-bottom: 12px; }
+</style>
+
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/edits.html">Edits</a>
+</nav>
+</header>
+<main data-brand="Frandsen">
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Frandsen</h1>
+    <div class="tags"><span class="tag">Lighting</span><span class="tag">Denmark</span></div>
+    <a class="brand-site-link" href="https://www.frandsen.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  
+  <div class="grid" data-listing-grid>
+      <a class="card" href="https://www.frandsen.com/ami-portable" target="_blank" rel="noopener noreferrer" data-product="Ami Portable" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/9563af1c-73c3-40b2-ab08-a634b0124282/145740_Frandsen_Ami_Table_H32_Olive+stone_05.png?format=500w" alt="Ami Portable by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ami Portable</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/bfquadrotable" target="_blank" rel="noopener noreferrer" data-product="BF Quadro Table Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/233329bf-be1d-4e2b-9847-9952df380403/BF+Quadro+Table+Matt+Black+4-5.png?format=500w" alt="BF Quadro Table Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">BF Quadro Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/bfquadrowall" target="_blank" rel="noopener noreferrer" data-product="BF Quadro Wall Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/7d943838-0070-4f5e-b980-cfd8b23b030e/BF+Quadro+Wall+Matt+Black+4-5.png?format=500w" alt="BF Quadro Wall Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">BF Quadro Wall Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/balldoublefloor" target="_blank" rel="noopener noreferrer" data-product="Ball Double Floor Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/ae29c504-aaf4-453f-94af-5c3938c7f2e9/Ball+Double+Floor+Matt+Black+4-5.png?format=500w" alt="Ball Double Floor Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Double Floor Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/ballglassfloor" target="_blank" rel="noopener noreferrer" data-product="Ball Glass Floor" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/7470f266-9d48-47ea-b8b6-7df1c20d11cd/Ball-Glass-Floor-Amber-4-5.png?format=500w" alt="Ball Glass Floor by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Glass Floor</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/ballglass" target="_blank" rel="noopener noreferrer" data-product="Ball Glass Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/22881615-1ab3-4b79-ab76-fdf45d9967b8/Ball+Glass+%C3%9818+Amber+4-5.png?format=500w" alt="Ball Glass Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Glass Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/ballglasstable" target="_blank" rel="noopener noreferrer" data-product="Ball Glass Table" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/ed682035-83c5-4308-b667-cec2b040242e/Ball+glass+winner.png?format=500w" alt="Ball Glass Table by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Glass Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/ballhandle" target="_blank" rel="noopener noreferrer" data-product="Ball Handle Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/bcf078fe-1327-41ba-8ef4-3af67cec9803/Ball+Handle+Matt+Black++4-5.png?format=500w" alt="Ball Handle Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Handle Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/ballportable" target="_blank" rel="noopener noreferrer" data-product="Ball Portable" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/66682ebe-53db-4286-a89f-bd660aedf50f/147183_Frandsen_Ball+Portable_Black+01+Light.png?format=500w" alt="Ball Portable by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Portable</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/balltable" target="_blank" rel="noopener noreferrer" data-product="Ball Table Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/ecb3a932-6980-4519-9f4b-e574808c6865/Ball+Table+Matt+Black+4-5.png?format=500w" alt="Ball Table Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/ballwallusb" target="_blank" rel="noopener noreferrer" data-product="Ball USB Wall Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/34b6f7fc-d2ce-42dc-a3b2-8f968504e088/Ball+Wall+USB+Matt+White+4-5.png?format=500w" alt="Ball USB Wall Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball USB Wall Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/ballwall" target="_blank" rel="noopener noreferrer" data-product="Ball Wall Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/df8db94c-7ba2-4373-afc8-f7ae0a5a670c/Ball+Wall+Glossy+Mint+4-5.png?format=500w" alt="Ball Wall Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Wall Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/ballwoodo12" target="_blank" rel="noopener noreferrer" data-product="Ball Wood Ø12 Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/22939e7d-30e6-4160-b350-322d546c2f6f/ball+walnut.png?format=500w" alt="Ball Wood Ø12 Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Wood Ø12 Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/ballo12" target="_blank" rel="noopener noreferrer" data-product="Ball Ø12 Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/6cf14868-c26c-434a-abd5-5e964e201001/Ball+%C3%9812+Matt+White+4-5.png?format=500w" alt="Ball Ø12 Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Ø12 Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/ballo18" target="_blank" rel="noopener noreferrer" data-product="Ball Ø18 Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/1d633de4-d73e-431a-8763-19373ad57a25/Ball+%C3%9818+Glossy+Mint+4-5_.png?format=500w" alt="Ball Ø18 Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Ø18 Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/ballo25" target="_blank" rel="noopener noreferrer" data-product="Ball Ø25 Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/625732e4-f03b-4c06-9737-eb60bdbe5539/119322_Frandsen_Ball_Pendant_%C3%9825_Matt+Black.png?format=500w" alt="Ball Ø25 Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Ø25 Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/ballo40" target="_blank" rel="noopener noreferrer" data-product="Ball Ø40 Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/d9f19c6d-cd88-45c1-aadd-dac688f2e700/Ball+pendant+%C3%B840+Matt+Black.png?format=500w" alt="Ball Ø40 Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ball Ø40 Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/benjaminpendant" target="_blank" rel="noopener noreferrer" data-product="Benjamin Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/70bd9703-81c7-45b8-8652-32266e599dbc/Benjamin+Pendant+%C3%9830+Matt+Black+4-5.png?format=500w" alt="Benjamin Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Benjamin Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/bridgependant" target="_blank" rel="noopener noreferrer" data-product="Bridge Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/25d52306-3370-4a83-b398-812621a53f09/Bridge+Pendant+Matt+Black+4-5.png?format=500w" alt="Bridge Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bridge Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/butterflyfloor" target="_blank" rel="noopener noreferrer" data-product="Butterfly Floor Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/19ddc290-64b3-498b-9347-5dfeb3588393/Butterfly+Floor+Brass+4-5.png?format=500w" alt="Butterfly Floor Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Butterfly Floor Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/butterflypendant" target="_blank" rel="noopener noreferrer" data-product="Butterfly Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/b55a313d-ec1a-4302-956c-f389da2a766a/Butterfly+%C3%9821+Matt+Green+4-5.png?format=500w" alt="Butterfly Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Butterfly Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/butterflytable" target="_blank" rel="noopener noreferrer" data-product="Butterfly Table Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/6cd4ed6a-1371-40cd-99d9-bd371c981a02/Butterfly+Table+Brass+4-5.png?format=500w" alt="Butterfly Table Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Butterfly Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/butterflywall" target="_blank" rel="noopener noreferrer" data-product="Butterfly Wall Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/ec61827b-8ac4-40fe-93a5-6adfa1996346/Butterfly+Wall+Chrome+4-5.png?format=500w" alt="Butterfly Wall Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Butterfly Wall Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/fm2014pendant" target="_blank" rel="noopener noreferrer" data-product="FM2014 Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/0e6870bf-842a-4ff5-a06f-dc7e27a95b6b/FM2014+Pendant+H24+Matt+Grey+4-5.png?format=500w" alt="FM2014 Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">FM2014 Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/flakependant" target="_blank" rel="noopener noreferrer" data-product="Flake Pendant" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/28ac0033-e8e1-46a7-8362-b9e14355104b/161025_Frandsen_Flake+Pendant_Frosted+White_02+Light.png?format=500w" alt="Flake Pendant by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Flake Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/grasppendant" target="_blank" rel="noopener noreferrer" data-product="Grasp Pendant" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/8f1fbe46-4aa7-4a0e-8edf-c3bbb86c778f/161031_Frandsen_Grasp+Pendant_White.png?format=500w" alt="Grasp Pendant by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grasp Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/graspgardenspear" target="_blank" rel="noopener noreferrer" data-product="Grasp Portable Garden Spear" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/a171f51c-48a5-406a-89ad-7002f2ec5c53/Grasp+Garden+Spear+Matt+Black+4-5.png?format=500w" alt="Grasp Portable Garden Spear by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grasp Portable Garden Spear</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/grasptable" target="_blank" rel="noopener noreferrer" data-product="Grasp Portable Table Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/8e939325-5d37-408e-af67-fcd109e7066f/Grasp-H47-Shamrock-Green-4-5.png?format=500w" alt="Grasp Portable Table Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grasp Portable Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/graspwall" target="_blank" rel="noopener noreferrer" data-product="Grasp Portable Wall Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/ec5175a5-1ecf-4274-9829-42b2b09da460/Grasp+Wall+Matt+Beetroot+4-5.png?format=500w" alt="Grasp Portable Wall Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grasp Portable Wall Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/graspwallwired" target="_blank" rel="noopener noreferrer" data-product="Grasp Wall Wired" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/92ae1d24-f722-4cea-86f6-bbdbdafe6bd1/Grasp+Wall+Wired+Matt+White+4-5.png?format=500w" alt="Grasp Wall Wired by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grasp Wall Wired</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/hito" target="_blank" rel="noopener noreferrer" data-product="Hito" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/a5b6f4d4-6baf-4449-85bb-bbbc3f1d5753/147253_Hito+Table+01.png?format=500w" alt="Hito by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Hito</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/kikufloor" target="_blank" rel="noopener noreferrer" data-product="Kiku Floor Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/6d377c59-dbb9-470e-ad63-afc72ecb43d1/147169_Kiku+Floor.png?format=500w" alt="Kiku Floor Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Kiku Floor Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/kikupendant" target="_blank" rel="noopener noreferrer" data-product="Kiku Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/b753ae86-1680-4440-8109-b23f6d8242d5/Kiku+Pendant+4-5.png?format=500w" alt="Kiku Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Kiku Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/kikutable" target="_blank" rel="noopener noreferrer" data-product="Kiku Table Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/4a6f2499-c087-4a0c-ac4c-4018f1221538/Kiku+table+4-5.png?format=500w" alt="Kiku Table Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Kiku Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/lyssfloor" target="_blank" rel="noopener noreferrer" data-product="Lyss Floor Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/7f60ee5a-1f07-4845-bd91-cc705fed8aa9/Lyss+Floor+Matt+Almond+4-5.png?format=500w" alt="Lyss Floor Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lyss Floor Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/lysspendant" target="_blank" rel="noopener noreferrer" data-product="Lyss Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/7a3fdf63-9fc2-4176-9084-d69d01ac9341/Lyss+Pendant+Matt+Black+4-5.png?format=500w" alt="Lyss Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lyss Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/lysspendant-1" target="_blank" rel="noopener noreferrer" data-product="Lyss Table Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/95072d46-840f-428f-b359-29b06231098a/Lyss+Table+Matt+Black+4-5.png?format=500w" alt="Lyss Table Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lyss Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/lysswall" target="_blank" rel="noopener noreferrer" data-product="Lyss Wall Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/b44a9636-032b-43eb-9671-4fa16e8b7099/Lyss+Wall+Matt+Black+4-5.png?format=500w" alt="Lyss Wall Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lyss Wall Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/nova" target="_blank" rel="noopener noreferrer" data-product="Nova Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/8b7713a1-c4a8-49b9-9307-c530666ffbca/131256_Frandsen+Nova-+Pendant+-%C3%B852cm_opal+white_3_LR.jpg?format=500w" alt="Nova Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Nova Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/peelpendant" target="_blank" rel="noopener noreferrer" data-product="Peel Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/39e1c30d-a46a-4a41-b3b6-8157e93d140a/Peel+Pendant+Front+4-5.png?format=500w" alt="Peel Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peel Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/peeltable" target="_blank" rel="noopener noreferrer" data-product="Peel Table Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/bc783349-582d-46f4-af2c-8c554350342e/Peel+Table+Front+4-5.png?format=500w" alt="Peel Table Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peel Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/peelwall" target="_blank" rel="noopener noreferrer" data-product="Peel Wall Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/2606351c-f4df-45b3-80bb-ff73450edfd6/Peel+Wall+Front+4-5.png?format=500w" alt="Peel Wall Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peel Wall Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/pila-portable" target="_blank" rel="noopener noreferrer" data-product="Pila Portable Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/8c73d0b2-aa82-4b49-b818-83d098261573/146457_Frandsen_Pila_Table_H20_Brushed+aluminium_06.png?format=500w" alt="Pila Portable Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pila Portable Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/rotate" target="_blank" rel="noopener noreferrer" data-product="Rotate Wall Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/b626dd06-6dc5-4da4-b4a2-b8ead908f7bb/Rotate+Brushed+Aluminium+4-5.png?format=500w" alt="Rotate Wall Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Rotate Wall Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/satellitetable" target="_blank" rel="noopener noreferrer" data-product="Satellite Table Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/0e533700-d1c0-4131-8914-53bf3b411011/Satellite+Table+Matt+Black+4-5.png?format=500w" alt="Satellite Table Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Satellite Table Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/sora" target="_blank" rel="noopener noreferrer" data-product="Sora Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/57407898-744c-4a6e-98da-6d24ccd74b8f/Sora+Front+Light+4-5.png?format=500w" alt="Sora Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Sora Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/supernateceiling" target="_blank" rel="noopener noreferrer" data-product="Supernate Ceiling Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/3c824313-37b7-499f-bd4f-9bd00a5ebd94/Supernate+Ceiling+Light+4-5.png?format=500w" alt="Supernate Ceiling Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Supernate Ceiling Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/supernatependant" target="_blank" rel="noopener noreferrer" data-product="Supernate Pendant Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/662331ce-6dac-4e19-90ba-06700888e252/Supernate+Pendant+%C3%9828.png?format=500w" alt="Supernate Pendant Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Supernate Pendant Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.frandsen.com/supernatetable" target="_blank" rel="noopener noreferrer" data-product="Supernate Table Lamp" data-brand="Frandsen">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/66c6113f16e3800238eefc85/453b47f1-b72f-40df-ada9-ea173b3fa957/Supernate+Table+%C3%9838.png?format=500w" alt="Supernate Table Lamp by Frandsen" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Supernate Table Lamp</p>
+          
+        </div>
+      </a></div>
+  
+  
+
+  <section class="brand-section">
+    <p class="brand-section-title">Designers who work with Frandsen</p>
+    <div class="designer-row"><a class="designer-chip" href="/designers/benny-frandsen.html" title="16 pieces on Formground"><span class="designer-chip-name">Benny Frandsen</span><span class="designer-chip-count">16</span></a><a class="designer-chip" href="/designers/toni-rie.html" title="8 pieces on Formground"><span class="designer-chip-name">Toni Rie</span><span class="designer-chip-count">8</span></a><a class="designer-chip" href="/designers/thomas-albertsen.html" title="5 pieces on Formground"><span class="designer-chip-name">Thomas Albertsen</span><span class="designer-chip-count">5</span></a><a class="designer-chip" href="/designers/jonas-wagell.html" title="3 pieces on Formground"><span class="designer-chip-name">Jonas Wagell</span><span class="designer-chip-count">3</span></a><a class="designer-chip" href="/designers/naija-ilse.html" title="3 pieces on Formground"><span class="designer-chip-name">Naija Ilsøe</span><span class="designer-chip-count">3</span></a><a class="designer-chip" href="/designers/sissel-gram-warringa.html" title="3 pieces on Formground"><span class="designer-chip-name">Sissel Gram Warringa</span><span class="designer-chip-count">3</span></a></div>
+  </section>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    // The tracking itself (page views, click-throughs, landing-page and
+    // campaign carry-over) lives in ONE shared file, /fg-track.js, instead
+    // of being pasted into hundreds of generated pages - see that file and
+    // backend/analytics.py for what is logged.
+    var s = document.createElement("script");
+    s.src = "/fg-track.js";
+    s.async = true;
+    document.head.appendChild(s);
+  })();
+</script>
+<script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=b09d5657" defer></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

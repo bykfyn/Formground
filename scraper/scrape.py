@@ -252,6 +252,13 @@ def setup_database():
     return conn
 
 
+# one person or studio spelled two ways by different makers' sites: the spelling already used on Formground wins
+DESIGNER_NAME_ALIASES = {
+    "note design studio": "Note (design studio)",
+    "note (design studio)": "Note (design studio)",
+}
+
+
 def _normalize_designer_name(name):
     """
     Different brands' own sites credit designers in different raw
@@ -273,7 +280,7 @@ def _normalize_designer_name(name):
     name = re.sub(r",\s*\d{4}$", "", name).strip()
     if name.isupper():
         name = name.title()
-    return name
+    return DESIGNER_NAME_ALIASES.get(name.lower(), name)
 
 
 def clean_product_name(name):
@@ -1709,6 +1716,816 @@ def extract_faye_toogood(brand):
             "currency": "GBP" if price else None,
         })
         time.sleep(0.25)
+    return products
+
+
+def extract_btd(brand):
+    """
+    b-td.com (Melbourne lighting studio, Squarespace). The /lighting page is a gallery of every
+    catalogue fixture (20 cards, one fetch, checked 2026-10-16): each card has the name, the link
+    and a square product photo (the first gallery image of that product). The sitemap also lists
+    duplicate "...1" pages and one-off/commission/art pieces under /limited (Crash II, Cloud
+    Vortex, Ode to the Airbag, Crash Diptych) - those are not catalogue products and are skipped,
+    as are the /collection-* pages and the 'Heavy Metal' edition (finish variants of listed pieces).
+    Each product page is fetched once for its finish options and the details bullet (material).
+    No prices (made to order, "request quote").
+    """
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/lighting", headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}/lighting: {e}")
+        return []
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products = []
+    seen = set()
+    for a in soup.select("a.image-slide-anchor"):
+        href = a.get("href", "")
+        if not href.startswith("/") or href in seen or href.startswith("/collection") or href in ("/lighting", "/limited", "/heavy-metal-collection"):
+            continue
+        img = a.find("img", class_="thumb-image") or a.find("img")
+        title = a.find_next_sibling(class_="image-slide-title")
+        name = html.unescape((title.get_text(strip=True) if title else (img.get("alt", "") if img else ""))).strip()
+        image_url = (img.get("data-image") or img.get("data-src") or img.get("src") or "") if img else ""
+        if not name or not image_url:
+            continue
+        name = name.replace(" | ", ", ")
+        seen.add(href)
+        url = base + href
+        materials, notes = [], ""
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=30).text
+            psoup = BeautifulSoup(page, "html.parser")
+            for x in psoup(["script", "style", "noscript"]):
+                x.decompose()
+            lines = [l for l in psoup.get_text("\n", strip=True).split("\n")]
+            # finish options: the lines after the product name up to the first "Custom Option"
+            up = [l.upper() for l in lines]
+            if name.upper() in up and "CUSTOM OPTION" in up:
+                i = up.index(name.upper())
+                j = up.index("CUSTOM OPTION", i)
+                materials = [re.sub(r"\s+", " ", re.sub(r"^All\s+", "", l)).strip() for l in lines[i + 1:j]
+                             if len(l) < 40 and not l.isupper()][:12]
+            if "DETAILS" in up:
+                k = up.index("DETAILS")
+                for l in lines[k + 1:k + 4]:
+                    if "marble" in l.lower() and "pendant" in name.lower():
+                        break  # the site's linear-pendant page repeats the floor lamp's marble line
+                    if l.startswith("•") and re.search(r"alumin|brass|steel|marble|glass|metal|bronze", l, re.I):
+                        notes = l.lstrip("• ").strip()
+                        break
+        except requests.RequestException:
+            pass
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": _infer_category_from_name(name, "", brand_name=brand["name"]),
+            "material_options": materials,
+            "dimensions": "",
+            "notes": notes,
+            "image_url": image_url,
+            "designer": "",
+            "price": None,
+            "currency": None,
+        })
+        time.sleep(0.4)
+    return products
+
+
+GRUPA_INCLUDE_PRICE = False  # product pages carry "Price: 360,00€ (excl. VAT)" only inside the inquiry modal; off by default
+GRUPA_VARIANT_WORDS = ("Extra Short", "Long Short", "Short", "Long", "Medium", "Small", "Large", "35", "47", "60", "45", "3", "6")
+
+
+def extract_grupa(brand):
+    """
+    grupa.com (Grupa Studio, Zagreb, Croatia; Nuxt, server-rendered). The /products/ page lists
+    every catalogue product in one grid (58 cards, checked 2026-10-16: lighting from eight
+    collections plus the Dot side tables), each with a packshot (cut-out on a plain ground).
+    Cards that differ only by a size/length word (Okolo Pendant 35/47/60, Arigato Wall Short/Long/45,
+    Baluna Wall Medium/Long, ...) are grouped into one entry using the base-name card, the variants
+    listed in the notes. Each representative product page is fetched once for colours, dimensions and
+    the characteristics line. Everything is "send inquiry" / dealers; the price inside the inquiry
+    modal is excl. VAT and is only used when GRUPA_INCLUDE_PRICE is switched on.
+    """
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/products/", headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}/products/: {e}")
+        return []
+    soup = BeautifulSoup(resp.text, "html.parser")
+    cards = []
+    for a in soup.select("a.gridItem"):
+        href = a.get("href", "").split("?")[0]
+        title = a.find("h4")
+        if not title or not re.match(r"^/collections/[^/]+/[^/]+/$", href):
+            continue
+        src = a.find("source")
+        srcset = (src.get("data-srcset") or src.get("srcset") or "") if src else ""
+        urls = re.findall(r"(https?://\S+?)\s+[12]x", srcset)
+        image = urls[-1] if urls else ""
+        name = html.unescape(title.get_text(" ", strip=True))
+        if name and image and not any(c[1] == href for c in cards):
+            cards.append((name, href, image))
+
+    def family(name):
+        stem = name
+        for _ in range(2):
+            for w in GRUPA_VARIANT_WORDS:
+                if stem.endswith(" " + w) and len(stem[: -len(w) - 1].split()) >= 2:
+                    stem = stem[: -len(w) - 1]
+                    break
+        return stem
+
+    groups = {}
+    for name, href, image in cards:
+        groups.setdefault((href.split("/")[2], family(name)), []).append((name, href, image))
+
+    products = []
+    for (_coll, stem), members in groups.items():
+        rep = next((m for m in members if m[0] == stem), members[0])
+        name, href, image = rep
+        image = re.sub(r"/w_\d+;", "/w_730;", image)
+        if len(members) > 1:
+            name = stem  # grouped sizes/lengths: one entry under the base name
+        url = base + href
+        colours, dims, chars, price = [], "", "", None
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=30).text
+            psoup = BeautifulSoup(page, "html.parser")
+            for x in psoup(["script", "style", "noscript"]):
+                x.decompose()
+            lines = psoup.get_text("\n", strip=True).split("\n")
+            def block(head, stops):
+                if head not in lines:
+                    return []
+                i = lines.index(head) + 1
+                out = []
+                while i < len(lines) and lines[i] not in stops:
+                    out.append(lines[i]); i += 1
+                return out
+            ch = block("Characteristics", {"Colours", "Colors", "Technical"})
+            chars = " ".join(ch).strip()
+            cl = block("Colours", {"Technical", "Dimensions", "Availability"}) or block("Colors", {"Technical", "Dimensions", "Availability"})
+            if len(cl) == 1 and ":" not in cl[0]:
+                colours = [c.strip() for c in cl[0].split(",") if c.strip()]
+            else:
+                colours = [c for c in cl if len(c) < 90][:6]
+            dims = "; ".join(block("Dimensions", {"Availability", "Customisation", "Extras"})[:6])
+            pm = re.search(r"Price:\s*([\d.,]+)\s*€", " ".join(lines))
+            if pm and GRUPA_INCLUDE_PRICE:
+                price = float(pm.group(1).replace(".", "").replace(",", "."))
+        except requests.RequestException:
+            pass
+        low = name.lower()
+        if low.startswith("dot "):
+            category = "Side Table"
+        elif "chandelier" in low:
+            category = "Chandelier"
+        elif low.startswith("model "):
+            category = "Floor Lamp"  # Model 1-3 are the tripod floor lamps
+        elif low.startswith("ili ili") and "wall" not in low:
+            category = "Pendant"
+        elif "pendant" in low:
+            category = "Pendant"
+        elif "wall" in low:
+            category = "Wall Lamp"
+        elif "ceiling" in low:
+            category = "Ceiling Lamp"
+        elif "floor" in low:
+            category = "Floor Lamp"
+        elif "table" in low or "igram" in low:
+            category = "Table Lamp"
+        else:
+            category = _infer_category_from_name(name, "", brand_name=brand["name"])
+        others = [m[0] for m in members if m[0] != rep[0] or name != rep[0]]
+        others = [o for o in others if o != name]
+        notes = chars
+        if others:
+            notes = (notes + " " if notes else "") + "Also made as: " + ", ".join(others) + "."
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": category,
+            "material_options": colours,
+            "dimensions": dims,
+            "notes": notes,
+            "image_url": image,
+            "designer": "",
+            "price": price,
+            "currency": "EUR" if price else None,
+        })
+        time.sleep(0.4)
+    return products
+
+
+VIBIA_TYPE_LABELS = {
+    "Hanging": ("Pendant Lamp", "Pendant"),
+    "Ceiling": ("Ceiling Lamp", "Ceiling Lamp"),
+    "Wall": ("Wall Lamp", "Wall Lamp"),
+    "Floor & Table": ("Floor and Table Lamp", "Floor Lamp, Table Lamp"),
+}
+
+
+def extract_vibia(brand):
+    """
+    vibia.com (Barcelona; the canonical host is vibia.com, www redirects). /en/int/collections
+    server-renders 83 collection cards (Palma, Asia, Skan, ...); each card lists the models by
+    installation type (Hanging / Ceiling / Wall / Floor & Table / Outdoor - ...), 142 distinct
+    type pages in all (checked 2026-10-16). Each type page is one entry ("Palma Pendant Lamp",
+    "Palma Wall Lamp"), de-duplicated by page URL (several cards repeat the same page). The
+    Plusminus/Sticks "lighting toolkit" system pages are skipped (modular kits, not single pieces).
+    Names and photos come from the listing; the designer is read from the "Design by" line of one
+    page per collection (83 fetches). No prices on the site. Photo: the type's own image from the
+    card where it is a still, else the card's main image (some types only have a video).
+    "Floor and Table" pages cover both lamps; category is set to Floor Lamp unless the page URL
+    or name says table.
+    """
+    base = "https://vibia.com"
+    try:
+        resp = requests.get(f"{base}/en/int/collections", headers=HEADERS, timeout=40)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch the collections page: {e}")
+        return []
+    soup = BeautifulSoup(resp.text, "html.parser")
+    entries = {}
+    order = []
+    for card in soup.select(".vib-new-product-card"):
+        header = card.select_one("header")
+        coll = " ".join(w[:1].upper() + w[1:] for w in html.unescape(header.get_text(" ", strip=True)).split()) if header else ""
+        main_img = card.select_one(".vib-new-product-card__media img")
+        main_src = main_img.get("src", "") if main_img else ""
+        if not coll:
+            continue
+        for li in card.select("li.vib-new-product-card__item"):
+            a = li.find("a")
+            if not a or not a.get("href"):
+                continue
+            href = a["href"].split("?")[0]
+            slug = href.rstrip("/").split("/")[-1]
+            if slug.startswith("lighting-toolkit") or not slug.endswith(("-hanging", "-ceiling", "-wall", "-floor-table")):
+                continue
+            if href in entries:
+                continue
+            label = html.unescape(a.get_text(" ", strip=True))
+            img = li.find("img")
+            image = (img.get("src", "") if img else "") or main_src
+            entries[href] = {"coll": coll, "label": label, "image": image, "slug": slug}
+            order.append(href)
+
+    designers = {}
+    products = []
+    for href in order:
+        e = entries[href]
+        coll = e["coll"]
+        label = e["label"]
+        outdoor = label.lower().startswith("outdoor") or e["slug"].startswith("outdoor-lamps-")
+        kind = label.replace("Outdoor - ", "").strip()
+        type_name, category = VIBIA_TYPE_LABELS.get(kind, (kind + " Lamp", ""))
+        name = f"{coll} {type_name}"
+        if outdoor and "outdoor" not in coll.lower():
+            name = f"{coll} Outdoor {type_name}"
+        if coll not in designers:
+            designers[coll] = ""
+            try:
+                page = requests.get(base + href, headers=HEADERS, timeout=30).text
+                psoup = BeautifulSoup(page, "html.parser")
+                for x in psoup(["script", "style", "noscript"]):
+                    x.decompose()
+                lines = psoup.get_text("\n", strip=True).split("\n")
+                if "Design by" in lines:
+                    nxt = lines[lines.index("Design by") + 1]
+                    if len(nxt) < 60:
+                        designers[coll] = nxt
+            except requests.RequestException:
+                pass
+            time.sleep(0.3)
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": base + href,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": e["image"],
+            "designer": designers[coll],
+            "price": None,
+            "currency": None,
+        })
+    return products
+
+
+LEE_BROOM_FINISH_RE = re.compile(
+    r"[,\s]+(?:(?:polished|brushed|satin|blackened|matte?|matt)\s+"
+    r"(?:brass|gold|silver|bronze|chrome|gunmetal|black|white|nickel)|black marble|white marble|travertine)\s*$",
+    re.I,
+)
+
+
+def extract_lee_broom(brand):
+    """
+    leebroom.com (WordPress + Elementor) has three real listing pages - /lighting/, /furniture/ and
+    /accessories/ - whose cards are `a.e-con[href=/<section>/<slug>/]` with an <h2> title and the studio
+    photo as an inline CSS background-image in the <style> block just before the card (checked 2026-10-16;
+    studio shots on a pale grey ground). Every finish of a piece is its own page and card (Hail in
+    gold/silver/bronze, Musico Chair in three finishes, four Carousels...), so cards are grouped by name
+    once the finish is stripped from the end of the title, and the finishes become material_options. The
+    Orion titles are inconsistent on the site itself, so those are grouped by Globe/Tube taken from the
+    slug. One product page per group is fetched for the dimensions and the short description. No prices
+    are shown (the shop is a separate store); the two "Fashioning Design" books and the bare "Crystal
+    Bulb" (a light bulb) are skipped.
+    """
+    base = brand["url"].rstrip("/")
+    groups = {}
+    for section in ("lighting", "furniture", "accessories"):
+        try:
+            resp = requests.get(f"{base}/{section}/", headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {section} for {brand['name']}: {e}")
+            continue
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for a in soup.select(f'a.e-con[href*="/{section}/"]'):
+            h = a.find("h2")
+            href = a.get("href", "")
+            if not h or not href:
+                continue
+            title = re.sub(r"\s+", " ", h.get_text(" ", strip=True))
+            if title.isupper():
+                title = title.title()
+            if re.search(r"fashioning design", title, re.I) or title.lower() == "crystal bulb":
+                continue
+            slug = href.rstrip("/").rsplit("/", 1)[-1]
+            style = a.find_previous_sibling("style")
+            img = re.search(r'url\("([^"]+)"', style.string or "") if style else None
+            finish = LEE_BROOM_FINISH_RE.search(title)
+            name = LEE_BROOM_FINISH_RE.sub("", title).strip(" ,")
+            if slug.startswith("orion-"):
+                name = "Orion Globe Light" if "globe" in slug else "Orion Tube Light" if "tube" in slug else "Orion Light"
+            g = groups.setdefault((section, name.lower()), {
+                "name": name, "title": title, "url": href, "section": section,
+                "image": img.group(1) if img else "", "finishes": [],
+            })
+            if not g["image"] and img:
+                g["image"] = img.group(1)
+            fin = finish.group(0).strip(" ,").title() if finish else ""
+            if fin and fin not in g["finishes"]:
+                g["finishes"].append(fin)
+        time.sleep(0.5)
+
+    products = []
+    for g in groups.values():
+        dims = notes = ""
+        try:
+            page = requests.get(g["url"], headers=HEADERS, timeout=30).text
+            text = html.unescape(re.sub(r"\s+", " ", BeautifulSoup(page, "html.parser").get_text(" ")))
+            d = re.search(r"Dimensions:\s*(.*?)\s*(?:Materials:|Finish:|Cable:|Upholstery:|Buy\b)", text)
+            if d:
+                dims = re.sub(r"\s+(?:Finishes?|Weight|Base Fi\w*|Fabric|Seat)\b.*$", "", d.group(1).strip())
+            m = re.search(r"Finish:\s*(.*?)\s*(?:Materials:|Cable:|Bulb:|Illumination:|Voltage:|Buy\b)", text)
+            if m and not g["finishes"]:
+                for f in re.split(r"\s+or\s+|\s*/\s*", m.group(1)):
+                    f = f.strip().title()
+                    if f and len(f.split()) <= 3 and "With" not in f and "Diffuser" not in f and f not in g["finishes"]:
+                        g["finishes"].append(f)
+            head = text.split("TECHNICAL SPECIFICATION")[0].split("CONTACT")[-1].strip()
+            if head.lower().startswith(g["title"].lower()):
+                head = head[len(g["title"]):].strip()
+            notes = head[:400] if len(head) > 30 else ""
+        except requests.RequestException:
+            pass
+        time.sleep(0.3)
+        category = _infer_category_from_name(g["name"], "", brand_name=brand["name"])
+        if g["section"] == "lighting" and category in ("", "Light", "Lamp"):
+            category = "Lighting"
+        elif g["name"] == "Time Machine":
+            category = "Clock"
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": g["name"],
+            "product_url": g["url"],
+            "category": category,
+            "material_options": g["finishes"],
+            "dimensions": dims,
+            "notes": notes,
+            "image_url": g["image"],
+            "designer": "",
+            "price": None,
+            "currency": None,
+        })
+    return products
+
+
+def extract_frandsen(brand):
+    """
+    frandsen.com (Squarespace, Danish lighting). The seven /collection/<type> pages link every product by
+    image only (no names), so the product set is those links plus the links on the nine "<x>-family"
+    pages (which also state "Designed by ..." and catch Ball O12, missing from the collection pages),
+    and each product page is fetched once (about 60 fetches, checked 2026-10-16). A product page gives
+    the name (title), the description, "From RRP EUR n" (the recommended retail price), materials,
+    colour variations and dimensions. Colours are listed as material_options, they are not separate
+    products. The photo is the transparent cut-out PNG ("... 4-5.png") when the page has one, otherwise
+    the first photo; the site's first photo is a lifestyle shot. Ball Glass appears as two pages (the
+    second is the O25 size, already listed on the first) so a repeated name is kept once; Frandsen ONE is
+    a bulb-style light source and is skipped.
+    """
+    base = brand["url"].rstrip("/")
+
+    def path_of(href):
+        href = re.sub(r"^https?://(?:www\.)?frandsen\.com", "", href.strip())
+        return href.split("?")[0].split("#")[0].rstrip("/")
+
+    def get(path):
+        try:
+            r = requests.get(base + path, headers=HEADERS, timeout=30)
+            r.raise_for_status()
+            time.sleep(0.4)
+            return r.text
+        except requests.RequestException as e:
+            print(f"  Could not fetch {path} for {brand['name']}: {e}")
+            return ""
+
+    skip = {"", "/", "/collection", "/retailers", "/why", "/contact", "/designers", "/collection-overview",
+            "/light-source-type", "/home", "/career", "/our-commitment", "/terms", "/press"}
+    paths = {}
+    for c in ("table", "floor", "wall", "pendant", "portable", "outdoor", "ceiling"):
+        soup = BeautifulSoup(get(f"/collection/{c}"), "html.parser")
+        main = soup.find("main") or soup
+        for a in main.find_all("a", href=True):
+            p = path_of(a["href"])
+            if a.find("img") and p.startswith("/") and p.count("/") == 1 and p not in skip:
+                paths.setdefault(p, "")
+    families = ("satellite", "lyss", "butterfly", "bf-quadro", "peel", "ball", "supernate", "grasp", "kiku")
+    for fam in families:
+        soup = BeautifulSoup(get(f"/{fam}-family"), "html.parser")
+        main = soup.find("main") or soup
+        text = re.sub(r"\s+", " ", main.get_text(" "))
+        d = re.search(r"Designed by ([A-ZÆØÅ][\w .&'-]+?)(?: DESIGN FAMILY|\s{2,}|$| The )", text)
+        designer = d.group(1).strip() if d else ""
+        for a in main.find_all("a", href=True):
+            p = path_of(a["href"])
+            if p.startswith("/") and p.count("/") == 1 and p not in skip and not p.endswith("-family"):
+                if not paths.get(p):
+                    paths[p] = designer
+
+    products = []
+    seen_names = set()
+    for p, designer in paths.items():
+        page = get(p)
+        if not page:
+            continue
+        soup = BeautifulSoup(page, "html.parser")
+        title = soup.find("meta", property="og:title")
+        name = html.unescape(title["content"]) if title and title.get("content") else (soup.title.string if soup.title else "")
+        name = re.sub(r"\s*[—-]\s*F R A N D S E N\s*$", "", name).strip()
+        name = " ".join(
+            w.capitalize() if (w.isalpha() and (w.islower() or (w.isupper() and len(w) >= 4))) else w
+            for w in name.split()
+        )
+        main = soup.find("main") or soup
+        text = html.unescape(re.sub(r"\s+", " ", main.get_text(" ")))
+        if not name or "Product Details" not in text or name in seen_names:
+            continue
+        style = re.search(r"Product Style\s*(.*?)\s*Materials", text)
+        style = style.group(1).lower() if style else ""
+        if "light source" in style:
+            continue  # Frandsen ONE is a magnetic light source (a bulb), not a luminaire
+        seen_names.add(name)
+        category = ("Outdoor Lamp" if "garden" in style else "Ceiling Lamp" if "ceiling" in style
+                    else "Pendant" if "pendant" in style else "Floor Lamp" if "floor" in style
+                    else "Wall Lamp" if re.search(r"\bwall\b", style) and not re.search(r"\btable\b", style)
+                    else "Table Lamp" if re.search(r"\btable\b", style)
+                    else _infer_category_from_name(name, "", brand_name=brand["name"]))
+        desc = re.search(r"Product Details\s*(.*?)\s*(?:_{2,}|From RRP|RRP|RETAILER NEAR YOU)", text)
+        price = re.search(r"RRP\s*€\s?([\d.,]+)", text)
+        colours = re.search(r"Color Variations\s*(.*?)\s*Light Source", text)
+        mats = re.search(r"Materials\s*(.*?)\s*Color Variations", text)
+        dims = re.search(r"Dimensions\s*(.*?)\s*(?:Download|Visit our|$)", text)
+        imgs = [i.get("data-src") or i.get("src") or "" for i in main.find_all("img")]
+        imgs = [u for u in imgs if "squarespace" in u]
+        png = [u for u in imgs if re.search(r"\.png($|\?)", u, re.I)]
+        image = (png or imgs or [""])[0]
+        if image:
+            image = image.split("?")[0] + "?format=1000w"
+        options = []
+        if colours:
+            raw = re.sub(r"Ø\s?\d+\s?:?", ",", colours.group(1))
+            for c in re.split(r"[,/.]", raw):
+                c = c.strip()
+                if c and c not in options:
+                    options.append(c)
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": base + p,
+            "category": category,
+            "material_options": options,
+            "dimensions": dims.group(1).strip() if dims else "",
+            "notes": (desc.group(1).strip()[:400] if desc else ""),
+            "image_url": image,
+            "designer": designer,
+            "price": float(price.group(1).replace(",", "")) if price else None,
+            "currency": "EUR" if price else None,
+        })
+    return products
+
+
+def extract_wonderglass(brand):
+    """
+    wonderglass.com (Murano glass lighting and objects, WordPress with a custom "design" post type; the
+    WooCommerce Store API is empty and the shop is a country/customer-type gate with no visible
+    prices). The real catalogue is /design/collection/ (31 designer pieces) and /design/edition/ (35
+    limited editions), whose cards give "NAME by DESIGNER" and a cover photo; /design/lighting-collection/,
+    /design/objects-collection/ and the two -edition equivalents split them into lighting and objects
+    (checked 2026-10-16). One page per piece is fetched for the dimensions, materials and text (about
+    72 fetches). The /art/ pages repeat editions and the /bespoke/ pages are one-off contract projects,
+    both skipped. No prices are shown.
+    """
+    base = brand["url"].rstrip("/")
+
+    def get(path):
+        try:
+            r = requests.get(f"{base}{path}", headers=HEADERS, timeout=30)
+            r.raise_for_status()
+            time.sleep(0.4)
+            return BeautifulSoup(r.text, "html.parser")
+        except requests.RequestException as e:
+            print(f"  Could not fetch {path} for {brand['name']}: {e}")
+            return None
+
+    def slugs_of(soup):
+        return [a["href"].rstrip("/").rsplit("/", 1)[-1] for a in soup.select(".branded-archive__item a")] if soup else []
+
+    section = {}
+    for kind in ("collection", "edition"):
+        for sub in ("lighting", "objects"):
+            for slug in slugs_of(get(f"/design/{sub}-{kind}/")):
+                section[slug] = sub
+
+    def tidy(s):
+        s = s.strip()
+        if s.isupper() or s.upper() == s:
+            s = s.title()
+        return re.sub(r"\[t\]", "[T]", s)
+
+    products = []
+    seen = set()
+    for kind in ("collection", "edition"):
+        soup = get(f"/design/{kind}/")
+        if not soup:
+            continue
+        for a in soup.select(".branded-archive__item a"):
+            url = a["href"]
+            slug = url.rstrip("/").rsplit("/", 1)[-1]
+            if slug in seen:
+                continue
+            seen.add(slug)
+            content = a.select_one(".branded-archive__item__content")
+            by = content.select_one(".branded-archive__item__content__designby") if content else None
+            designer = tidy(re.sub(r"^by\s+", "", by.get_text(" ", strip=True), flags=re.I)) if by else ""
+            name = tidy(re.sub(r"\s+", " ", content.get_text(" ", strip=True).replace(by.get_text(" ", strip=True), "") if by else content.get_text(" ", strip=True)))
+            cover = a.select_one(".branded-archive__item__image")
+            m = re.search(r"url\(([^)]+)\)", (cover.get("style") if cover else "") or "")
+            image = m.group(1).strip("'\"") if m else ""
+            image = re.sub(r"-\d{3,4}x\d{3,4}(\.\w+)$", r"\1", image)  # full-size file instead of the 1024 crop
+            page = get(f"/design/{slug}/")
+            dims = mats = notes = ""
+            if page:
+                text = re.sub(r"\s+", " ", page.get_text(" "))
+                d = re.search(r"DIMENSIONS?\s*(.*?)\s*MATERIALS?\b", text)
+                dims = d.group(1).strip() if d else ""
+                mt = re.search(r"MATERIALS?\s*(.*?)\s*COLOU?RS?\b", text)
+                mats = mt.group(1).strip() if mt else ""
+                if not image:
+                    og = page.find("meta", property="og:image")
+                    image = og["content"] if og else ""
+            category = _infer_category_from_name(name, "", brand_name=brand["name"])
+            if not category or category == "Glass":
+                category = "Lighting" if section.get(slug) == "lighting" else "Objects"
+            products.append({
+                "brand": brand["name"],
+                "brand_url": brand["url"],
+                "product_name": name,
+                "product_url": url,
+                "category": category,
+                "material_options": [x.strip() for x in mats.split(",") if x.strip()] if mats and "|" not in mats else [],
+                "dimensions": dims[:160],
+                "notes": "",
+                "image_url": image,
+                "designer": designer,
+                "price": None,
+                "currency": None,
+            })
+    return products
+
+
+ROSS_GARDAM_EDITION_TYPES = {
+    "Relic": "Table Lamp", "Vestige": "Table Lamp", "Ora Raw": "Desk Lamp", "Ora 23K": "Desk Lamp",
+    "Ora Gold": "Desk Lamp", "Hemera Accorsi": "Desk Lamp", "Noctiluca": "Chandelier",
+    "Ceto Circlet": "Chandelier", "Nebulae 23k": "Chandelier", "Breeze Gardano": "Dining Table",
+}
+ROSS_GARDAM_FINISH_ATTRS = {"body finish", "glass finish", "finish", "top finish", "table finish", "frame"}
+
+
+def extract_ross_gardam(brand):
+    """
+    rossgardam.com.au (Melbourne): WooCommerce Store API, one request returns all 66 products.
+    Written separately from extract_woocommerce because (checked 2026-10-16):
+    - the shop has no product categories at all, so categories come from the product name
+      (the "... Lounge" ranges are modular upholstered sofas);
+    - the numbered "Editions" pieces (Relic, Vestige, Ora Raw ...) have no category tag either: ROSS_GARDAM_EDITION_TYPES;
+      the sold-out ones carry placeholder prices (Ora 23K / Ora Gold show AU$100), so sold-out pieces get no price;
+    - the API gives a 300px thumbnail; the 600px size from the same srcset is used for the card.
+    Prices are the shop's default-variant price in AUD (the Store API answers in AUD for the bot UA).
+    """
+    base = brand["url"].rstrip("/")
+    raw = _fetch_json(f"{base}/wp-json/wc/store/v1/products?per_page=100")
+    if not raw:
+        return []
+    products = []
+    for p in raw:
+        name = html.unescape(p.get("name", "")).strip()
+        if not name:
+            continue
+        in_stock = p.get("is_in_stock", True)
+        url = p.get("permalink") or base
+        price, _, currency = _woocommerce_price_info([p])
+        if not in_stock:
+            price = currency = None
+        category = ""
+        if re.search(r"\bLounge\b", name):
+            category = "Sofa"
+        category = ROSS_GARDAM_EDITION_TYPES.get(name) or _infer_category_from_name(name, category, brand_name=brand["name"])
+        materials = []
+        for a in p.get("attributes", []):
+            if a.get("name", "").strip().lower() in ROSS_GARDAM_FINISH_ATTRS:
+                for t in a.get("terms", []):
+                    n = html.unescape(t.get("name", "")).strip()
+                    if n and n not in materials:
+                        materials.append(n)
+        images = p.get("images") or []
+        image_url = ""
+        if images:
+            im = images[0]
+            m = re.search(r"(https?://[^,]*?-600x\d+\.\w+)\s+600w", im.get("srcset", ""))
+            image_url = requests.utils.requote_uri(m.group(1) if m else (im.get("src") or im.get("thumbnail") or ""))
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": category,
+            "material_options": materials[:8],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image_url,
+            "designer": "Ross Gardam",
+            "price": price,
+            "currency": currency,
+        })
+    return products
+
+
+SOWDEN_NOT_PIECES = re.compile(
+    r"\b(cr\b|ceiling rose|shade|led disc|thermal flask|tote|backpack|tin\b|tin box|poster|frame|towel|blanket|scarf|"
+    r"t-shirt|book|silk ?screen|print|bag|cushion|brac)\b", re.I)
+SOWDEN_OWN_DESIGN = re.compile(r"^(?:SOWDEN|George\s+Sowden)\s+for\s+(?:raawii|Memphis|INDUSTREAL)\b", re.I)
+SOWDEN_CATEGORY = {"Evesham Porcelain Fruitbowl": "Bowl", "Pepper Salt": "Mill", "PC1 Portable/Table/Wall Lamp": "Table Lamp"}
+
+
+def _sowden_listing(base, path):
+    """[(href, title, price_text, image_path)] from one Odoo shop listing page."""
+    page = requests.get(f"{base}{path}", headers=HEADERS, timeout=30).text
+    items = []
+    for m in re.finditer(r'<article class="oe_product_cart.*?</article>', page, re.S):
+        a = m.group(0)
+        href = re.search(r'href="/shop/(?:[a-z0-9-]+/)?([^"?/]+)"', a)
+        title = re.search(r"<span>([^<]*)</span>\s*</a>\s*</h6>", a)
+        price = re.search(r'oe_currency_value">([\d.,]+)', a)
+        img = re.search(r'<img src="(/web/image/[^"]+)"', a)
+        if href and title:
+            items.append((href.group(1), re.sub(r"\s+", " ", html.unescape(title.group(1))).strip(),
+                          price.group(1) if price else None, img.group(1) if img else ""))
+    return items
+
+
+def _sowden_name(title):
+    """The maker's own name for a piece, from the shop title."""
+    t = re.sub(r"\s+(EU/UK|UK/EU)\s*$", "", title).strip()
+    m = re.match(r"(.+?)\s+in silicone\s+[–-]\s+Sowden\s+(\w+)$", t)           # Table Lamp in silicone – Sowden TL2
+    if m:
+        return f"{m.group(2)} {m.group(1)}"
+    m = re.match(r"(.+?)\s+[–-]\s+Sowden\s+(\w+)$", t)                          # Portable and Table Lamp – Sowden PL6
+    if m:
+        return f"{m.group(2)} {m.group(1)}"
+    m = re.match(r"Pierre Charpin for SOWDEN\s+-\s+(.+?)\s+(\w+)$", t)           # ... - Portable/Table/Wall Lamp PC1
+    if m:
+        return f"{m.group(2)} {m.group(1)}"
+    m = re.match(r'.+? for (?:Memphis|INDUSTREAL)\s+-\s+(?:Vase\s+)?(.+)$', t)  # Vase "Giugno" / Porcelain fruitbowl - Evesham
+    if m:
+        rest = m.group(1).strip().strip('"“”')
+        if t.split(" - ", 1)[1].startswith("Vase"):
+            return f"{rest} Vase"
+        if " - " in rest:
+            kind, nm = rest.split(" - ", 1)
+            return f"{nm} {kind.title()}"
+        return rest
+    m = re.match(r'SOWDEN for raawii\s+-\s+(.+?)\s+"(.+)"$', t)                 # Coffee table "Coffee Thing"
+    if m:
+        return f"{m.group(2).title()} {m.group(1).title()}"
+    m = re.match(r'(.+?)\s+-\s+(.+?)\s+"(.+)"$', t)                             # Teapot with filter - 0,5 L "Jakob"
+    if m:
+        return f'{m.group(3)} {m.group(1)}'
+    return t
+
+
+def extract_sowden(brand):
+    """
+    sowden.it is an Odoo shop. /shop (2 pages) lists ~100 items, but most are other makers' goods the studio
+    "curates" (Memphis, Mutina, raawii, Yvon Lambert posters, blankets, books ...), so the Light and Lifestyle
+    categories (2 more listing fetches) decide what is SOWDEN's own: the silicone lamps (PL/TL/CL/FL series and
+    the Pierre Charpin PC1), the Clock, Pepper Salt, Glass and Teapot, plus George Sowden's own designs sold under
+    other labels (raawii Thing tables, Memphis vases, Industreal fruitbowl: SOWDEN_OWN_DESIGN). Merchandise,
+    ceiling-rose kits, shades and LED discs are left out (SOWDEN_NOT_PIECES). Each included piece gets one page
+    fetch for designer, size and the colour options. Prices are EUR as shown. The shop's photos are in-situ shots;
+    the first listing image is used (512px).
+    """
+    base = brand["url"].rstrip("/")
+    try:
+        seen, listing = set(), []
+        for path in ("/shop", "/shop/page/2"):
+            for it in _sowden_listing(base, path):
+                if it[0] not in seen:
+                    seen.add(it[0])
+                    listing.append(it)
+            time.sleep(0.5)
+        own = set()
+        for path in ("/shop/category/light-1", "/shop/category/lifestyle-2"):
+            own.update(it[0] for it in _sowden_listing(base, path))
+            time.sleep(0.5)
+    except requests.RequestException as e:
+        print(f"  Could not fetch the shop listing for {brand['name']}: {e}")
+        return []
+
+    products = []
+    for slug, title, price_text, img in listing:
+        if SOWDEN_NOT_PIECES.search(title):
+            continue
+        if slug not in own and not SOWDEN_OWN_DESIGN.match(title):
+            continue
+        url = f"{base}/shop/{slug}"
+        designer, dims, colours = "", "", []
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=30).text
+            desc = re.search(r'og:description" content="([^"]*)', page)
+            d = re.search(r"[Dd]esigned by ([A-Z][\w .&-]+?)(?:,|\.| and |$)", html.unescape(desc.group(1))) if desc else None
+            if d:
+                designer = d.group(1).strip()
+                designer = re.sub(r"\s+for\s+Sowden$", "", designer)
+                if designer.lower() == "sowden":
+                    designer = "George Sowden"
+            body = re.search(r'id="product_details".*?(?=You may be interested)', page, re.S)
+            text = html.unescape(re.sub(r"<[^>]+>", "\n", body.group(0))) if body else ""
+            dm = (re.search(r"Dimensions?:\s*([^\n]*?cm)", text)
+                  or re.search(r"^\s*-?\s*((?:Ø|⌀|[LWHD])\s?[\d.,]+\s?(?:x\s?[HLWD]?\s?[\d.,]+\s?)*cm)\s*$", text, re.M))
+            if dm:
+                dims = dm.group(1).strip()
+            colours = list(dict.fromkeys(html.unescape(c) for c in re.findall(r'data-value-name="([^"]+)"[^>]*data-attribute-name="Color"', page)))
+        except requests.RequestException:
+            pass
+        if not designer:
+            if title.startswith("Pierre Charpin"):
+                designer = "Pierre Charpin"
+            elif SOWDEN_OWN_DESIGN.match(title) or title.startswith(("Portable", "Table", "Ceiling", "Floor")):
+                designer = "George Sowden"
+        name = _sowden_name(title)
+        price = float(price_text.replace(",", "")) if price_text else None
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": SOWDEN_CATEGORY.get(name) or _infer_category_from_name(name, "", brand_name=brand["name"]),
+            "material_options": colours,
+            "dimensions": dims,
+            "notes": "",
+            "image_url": f"{base}{img.replace('image_1024', 'image_512')}" if img else "",
+            "designer": designer,
+            "price": price,
+            "currency": "EUR" if price else None,
+        })
+        time.sleep(0.5)
     return products
 
 
@@ -10098,6 +10915,14 @@ EXTRACTORS = {
     "Source Édition": extract_shopify,
     "Feldspar": extract_shopify,
     "Faye Toogood": extract_faye_toogood,
+    "B-TD": extract_btd,
+    "Grupa": extract_grupa,
+    "Vibia": extract_vibia,
+    "Lee Broom": extract_lee_broom,
+    "Frandsen": extract_frandsen,
+    "WonderGlass": extract_wonderglass,
+    "Ross Gardam": extract_ross_gardam,
+    "SOWDEN": extract_sowden,
     "Galvin Brothers": extract_shopify,
     "Verk": extract_woocommerce,
     "Sibast": extract_woocommerce,
