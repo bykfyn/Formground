@@ -2873,6 +2873,8 @@ def _clean_product_type(product_type, brand_name=None):
         # rug - excluded outright in extract_shopify instead.
         value = (product_type or "").strip()
         return value if value else "Rug"
+    if brand_name == "Gustaf Westman":
+        return ""                                   # "Objects" / "Small Objects" says nothing: the type comes from the name
     if brand_name == "Source Édition":
         # product_type holds the designer ("André Monpoix x Mobilier national"), read as the
         # designer below; the type comes from the name ("Dialogue sofa", "TU-TU Side table")
@@ -3451,6 +3453,14 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Lemon Furniture", "Barboure unit"): "Cabinet",
     ("Lemon Furniture", "Aquarama Headboard"): "Headboard",
     ("Lemon Furniture", "Conservatory Sun Lounger"): "Sun Lounger",
+    # Gustaf Westman: names that carry no type word
+    ("Gustaf Westman", "Ice Bucket"): "Ice Bucket",
+    ("Gustaf Westman", "Chunky Tea Strainer"): "Tea Strainer",
+    ("Gustaf Westman", "Chunky Cat Tree"): "Cat Tree",
+    ("Gustaf Westman", "Chunky Snack Stadium"): "Serving Dish",
+    ("Gustaf Westman", "Chunky Coffee Maker"): "Coffee Maker",
+    ("Gustaf Westman", "Spiral Stand"): "Stand",
+    ("Gustaf Westman", "Chunky Flower Pot"): "Planter",
     ("Source Édition", "Dialogue"): "Lounge Chair",  # a single Dialogue module, used alone as a lounge chair
     ("Source Édition", "Pliée lamp"): "Wall Lamp, Table Lamp",  # the maker: "wall light or table lamp"
     ("Source Édition", "Jumelles lamp"): "Wall Lamp, Table Lamp",
@@ -4899,6 +4909,26 @@ def _is_out_of_scope_product(name, category, brand=None, sibling_names_lower=())
     return False
 
 
+# Gustaf Westman lists every colourway of a piece as its own product ("Chunky Serving Plate Cobalt Blue",
+# "... Pink", "... Bright Red"): the colour phrase at the end of the title is the variant (2026-10-16).
+GUSTAF_COLOURS = (
+    "Transparent Green", "Pale Yellow", "Bright Red", "Dark Oak", "Cerise", "Cobalt Blue", "Light Blue", "Dark Green", "Dark Brown",
+    "Transparent", "Burgundy", "Lilac", "Purple", "Orange", "Yellow", "Cream", "Brown", "Green", "Chrome",
+    "Black", "White", "Grey", "Gray", "Pink", "Blue", "Red", "Ash", "Oak", "Pine",
+)
+# which colourway's photo stands for the piece on a card: the calmest first, the loudest last
+GUSTAF_HERO_ORDER = ("Cream", "Transparent", "Ash", "Oak", "Pine", "Chrome", "White", "Grey", "Gray", "Black",
+                     "Light Blue", "Pale Yellow", "Dark Oak", "Dark Brown", "Brown", "Lilac", "Pink", "Cerise", "Dark Green", "Green",
+                     "Transparent Green", "Burgundy", "Cobalt Blue", "Blue", "Yellow", "Orange", "Purple",
+                     "Red", "Bright Red")
+GUSTAF_COLOUR_RE = re.compile(r"\s+(" + "|".join(GUSTAF_COLOURS) + r")$")
+
+
+def _gustaf_colour(title):
+    m = GUSTAF_COLOUR_RE.search(title.strip())
+    return m.group(1) if m else ""
+
+
 def _base_name(title, brand_name=None):
     """
     Several Shopify and WooCommerce brands don't use real variants - they
@@ -4940,6 +4970,8 @@ def _base_name(title, brand_name=None):
         # name, same "brand/design is the unit" model as every other
         # brand this function already handles.
         return "CUT 'N PASTE"
+    if brand_name == "Gustaf Westman":
+        return GUSTAF_COLOUR_RE.sub("", title.strip())
     if brand_name == "Massimo Copenhagen" and " - " in title:
         # User-reported 2026-09-25 ("results include samples") - the
         # real bug: titles are "{Colour} - {Collection}" (confirmed
@@ -5025,7 +5057,7 @@ def _shopify_price_info(group):
 
 # Brands whose first photo is usually a room scene or a detail, with a clean studio shot of the piece
 # further down the gallery: the card photo is the first image shot on a plain white ground (2026-10-16).
-STUDIO_CUTOUT_BRANDS = {"Lemon Furniture"}
+STUDIO_CUTOUT_BRANDS = {"Lemon Furniture", "Gustaf Westman"}
 
 
 def _is_studio_cutout(image_bytes):
@@ -5171,6 +5203,10 @@ def extract_shopify(brand):
         # this, not scoped elsewhere since "till" is too common a
         # Swedish word to safely exclude on generically.
         raw_products = [p for p in raw_products if " till " not in p["title"].lower()]
+    if brand["name"] == "Gustaf Westman":
+        # the Disney collaboration listings are tagged "ej-klickbar" (not clickable), carry graphic artwork instead of
+        # product photos and several have no price; two other listings (Ice Bucket, Pipe Office Chair) have no photo at all
+        raw_products = [p for p in raw_products if "disney" not in [t.lower() for t in (p.get("tags") or [])] and p.get("images")]
     if brand["name"] == "Asplund":
         # Asplund Store is a multi-brand boutique, not a single design
         # house - confirmed live 2026-09-22: of 789 raw listings, only
@@ -5452,8 +5488,13 @@ def extract_shopify(brand):
 
     products = []
     for (product_type, base_name), group in grouped.items():
+        if brand["name"] == "Gustaf Westman":
+            # the card shows the calmest colourway, the others go in material_options
+            group.sort(key=lambda p: GUSTAF_HERO_ORDER.index(_gustaf_colour(p["title"])) if _gustaf_colour(p["title"]) in GUSTAF_HERO_ORDER else 99)
         first = group[0]
         price, compare_at_price = _shopify_price_info(group)
+        if not price:
+            price = None                                  # a 0.00 listing is a piece with no public price
         released_at = _earliest_date(d for p in group for d in (p.get("created_at"), p.get("published_at")))
         material_options = set()
         for option in first.get("options", []):
@@ -5531,7 +5572,7 @@ def extract_shopify(brand):
             # a specific searched-for material instead is handled at
             # query time (see filter_products()'s matched_material).
             "notes": "",
-            "image_url": (_studio_cutout_image(images) if brand["name"] in STUDIO_CUTOUT_BRANDS else "") or (images[0]["src"] if images else ""),
+            "image_url": (_studio_cutout_image([i for p in group for i in (p.get("images") or [])[:2]], look_at=10) if brand["name"] in STUDIO_CUTOUT_BRANDS else "") or (images[0]["src"] if images else ""),
             "designer": designer,
             "price": price,
             "compare_at_price": compare_at_price,
@@ -10913,6 +10954,7 @@ EXTRACTORS = {
     "Raawii": extract_shopify,
     "Utilitario Mexicano": extract_shopify,
     "Source Édition": extract_shopify,
+    "Gustaf Westman": extract_shopify,
     "Feldspar": extract_shopify,
     "Faye Toogood": extract_faye_toogood,
     "B-TD": extract_btd,
