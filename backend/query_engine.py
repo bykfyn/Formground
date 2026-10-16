@@ -1354,6 +1354,31 @@ def filter_houses_by_name(raw_query: str, houses=None) -> list:
     return matches
 
 
+# Words that are not part of a practice's name when someone types it ("houses by Lowén Widman Arkitekter").
+FIRM_QUERY_FILLER = {"house", "houses", "villa", "villas", "home", "homes", "by", "from", "of", "the", "and", "architect", "architects",
+                     "architecture", "arkitekt", "arkitekter", "arkitektkontor", "studio", "ab", "aps", "as", "gmbh", "ltd", "llc", "office",
+                     "associates", "partners", "design", "work", "projects", "project"}
+
+
+def filter_houses_by_firm(raw_query: str, houses=None) -> list:
+    """Every house of the practice a query names ("lowen widman", "houses by tham videgard", "stra"): each word of the query that
+    is not filler is a word of the practice's name, and at least one is 4+ letters (or the whole name is typed). Added 2026-10-16:
+    houses were found by their own name or a place, but a practice's name found nothing."""
+    tokens = [t for t in _fold(raw_query).split() if t not in FIRM_QUERY_FILLER]
+    if not tokens or len(tokens) > 4:
+        return []
+    matches = []
+    for house in (houses if houses is not None else _load_houses()):
+        firm = house.get("firm") or ""
+        firm_tokens = set(_fold(firm).split())
+        if not firm_tokens or not all(t in firm_tokens for t in tokens):
+            continue
+        whole_name = " ".join(tokens) == " ".join(t for t in _fold(firm).split() if t not in FIRM_QUERY_FILLER)
+        if any(len(t) >= 4 for t in tokens) or whole_name:
+            matches.append(_normalize_house(house))
+    return matches
+
+
 def discover(per_brand: int = DISCOVER_PER_BRAND, total_cap: int = DISCOVER_TOTAL_CAP, tier=None) -> list:
     """
     Random browse across the whole catalog, no query/filtering involved -
@@ -1776,6 +1801,11 @@ def _match_all(raw_query: str, intent: dict) -> list:
         if h["id"] not in seen_ids:
             matches.append(h)
             seen_ids.add(h["id"])
+    if not _has_hard_filter(intent) or is_house_intent:      # a practice's name ("Lowén Widman", "houses by Tham Videgård")
+        for h in filter_houses_by_firm(raw_query):
+            if h["id"] not in seen_ids:
+                matches.append(h)
+                seen_ids.add(h["id"])
 
     return matches
 

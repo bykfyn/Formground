@@ -917,3 +917,28 @@ class UnrecognisedQueryTests(unittest.TestCase):
         from generate_brand_pages import slugify
         for brand in qe._brand_folds().values():
             self.assertEqual(qe.brand_links({"brands": [brand]})[0]["slug"], slugify(brand), brand)
+
+
+class HouseFirmSearchTests(unittest.TestCase):
+    """A practice's name finds its houses (2026-10-16)."""
+
+    def setUp(self):
+        self._translate = qe.translate_query
+        qe.translate_query = lambda q: {}
+
+    def tearDown(self):
+        qe.translate_query = self._translate
+
+    def test_a_practice_name_finds_its_houses(self):
+        for q in ("Lowén Widman", "lowen widman arkitekter", "houses by Lowén Widman"):
+            found = qe.filter_houses_by_firm(q)
+            self.assertGreaterEqual(len(found), 10, q)
+            self.assertTrue(all(h["firm"].startswith("Lowén Widman") for h in found), q)
+
+    def test_filler_and_short_words_find_nothing(self):
+        for q in ("architects", "studio", "house", "the", "ab", "a table"):
+            self.assertEqual(qe.filter_houses_by_firm(q), [], q)
+
+    def test_the_search_returns_them(self):
+        r = qe.search_full("Lowén Widman")
+        self.assertGreaterEqual(r["total_matches"], 10)
