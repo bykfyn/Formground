@@ -2011,6 +2011,10 @@ def _clean_product_type(product_type, brand_name=None):
         # rug - excluded outright in extract_shopify instead.
         value = (product_type or "").strip()
         return value if value else "Rug"
+    if brand_name == "Source Édition":
+        # product_type holds the designer ("André Monpoix x Mobilier national"), read as the
+        # designer below; the type comes from the name ("Dialogue sofa", "TU-TU Side table")
+        return ""
     if brand_name == "Utilitario Mexicano":
         # Every surviving product for this brand (see the raw_products
         # filter above) is already restricted to its real "CERAMICAS"
@@ -2556,6 +2560,10 @@ MANUAL_CATEGORY_OVERRIDES = {
     # pages (/collection/categories/{name}), 7 more checked against
     # their own real "Description:" field since they're current
     # products the category pages don't happen to list (2026-09-21).
+    ("Source Édition", "Dialogue"): "Lounge Chair",  # a single Dialogue module, used alone as a lounge chair
+    ("Source Édition", "Pliée lamp"): "Wall Lamp, Table Lamp",  # the maker: "wall light or table lamp"
+    ("Source Édition", "Jumelles lamp"): "Wall Lamp, Table Lamp",
+    ("Source Édition", "Miniflore flower holder"): "Vase",  # a porcelain flower holder
     ("Established & Sons", "Font Clock"): "Accessories",
     ("Established & Sons", "Wrongwoods Tray"): "Accessories",
     ("Established & Sons", "Drift"): "Bench",  # "Description: Bench"
@@ -4566,6 +4574,8 @@ def extract_shopify(brand):
             m = re.search(r"\bby (?:architect |designer )?([A-Z][A-Za-z'.\-]+(?:\s+[A-Z][A-Za-z'.\-]+){0,3})(?:\s+of\s+[^,.]+)?\s+for Serax\b", body_html_plain)
             if m:
                 designer = m.group(1).strip()
+        if not designer and brand["name"] == "Source Édition":
+            designer = next(((p.get("product_type") or "").split(" x ")[0].strip() for p in group if (p.get("product_type") or "").strip()), "")
         if not designer:
             # Some Shopify stores (confirmed on Alessi) tag every product
             # with a structured "Designer: <name>" tag - or "Designers: X
@@ -9977,6 +9987,7 @@ EXTRACTORS = {
     "Designbythem": extract_shopify,
     "Raawii": extract_shopify,
     "Utilitario Mexicano": extract_shopify,
+    "Source Édition": extract_shopify,
     "Galvin Brothers": extract_shopify,
     "Verk": extract_woocommerce,
     "Sibast": extract_woocommerce,
