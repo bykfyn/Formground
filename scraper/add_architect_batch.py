@@ -131,6 +131,9 @@ BATCH = [
      "include": r"^/projets/[^/]+", "listing_url": "https://www.bodenezlegallasalle.com/projets", "link_prefix": "/projets/"},
     {"name": "Studio Razavi", "excluded": "project pages gave no locations/descriptions and many are unbuilt or urban interiors; needs a per-slug hand-written entry", "site": "https://studiorazavi.com", "city": "Paris", "country": "France",
      "include": r"^/work/[^/]+", "listing_url": "https://studiorazavi.com/work", "link_prefix": "/work/"},
+    {"name": "Lowén Widman Arkitekter", "site": "https://www.lowenwidman.se", "city": "Stockholm", "country": "Sweden",
+     "sitemap_url": "https://www.lowenwidman.se/sitemap.xml",
+     "include": r"^/projekt/privatbostader-", "listing_url": "https://www.lowenwidman.se/projekt", "link_prefix": "/projekt/privatbostader-"},
 ]
 
 
