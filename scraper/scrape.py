@@ -3461,6 +3461,11 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Gustaf Westman", "Chunky Coffee Maker"): "Coffee Maker",
     ("Gustaf Westman", "Spiral Stand"): "Stand",
     ("Gustaf Westman", "Chunky Flower Pot"): "Planter",
+    # Sons Design: the shop's categories are Swedish department words
+    ("Sons Design", "Sunflower Stool | MIND Collection"): "Stool",
+    ("Sons Design", "The Bow Chair | MIND Collection"): "Chair",
+    ("Sons Design", "Temple Dining Table | MIND Collection"): "Dining Table",
+    ("Sons Design", "The Wavy Coffee Table | MIND Collection"): "Coffee Table",
     ("Source Édition", "Dialogue"): "Lounge Chair",  # a single Dialogue module, used alone as a lounge chair
     ("Source Édition", "Pliée lamp"): "Wall Lamp, Table Lamp",  # the maker: "wall light or table lamp"
     ("Source Édition", "Jumelles lamp"): "Wall Lamp, Table Lamp",
@@ -10967,6 +10972,7 @@ EXTRACTORS = {
     "SOWDEN": extract_sowden,
     "Galvin Brothers": extract_shopify,
     "Verk": extract_woocommerce,
+    "Sons Design": extract_woocommerce,
     "Sibast": extract_woocommerce,
     "Another Country": extract_woocommerce,
     "Piet Hein Eek": extract_woocommerce,
