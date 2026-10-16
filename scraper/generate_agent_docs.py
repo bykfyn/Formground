@@ -45,7 +45,7 @@ def _catalog_counts():
         "AND COALESCE(link_dead, 0) = 0"
     ).fetchall()
     conn.close()
-    brands = {b for (b,) in rows if b not in qe.HIDDEN_BRANDS}
+    brands = {b for (b,) in rows if b not in qe.HIDDEN_BRANDS and b not in qe.PORTFOLIO_BRANDS}
     products = sum(1 for (b,) in rows if b not in qe.HIDDEN_BRANDS)
     return products, len(brands)
 

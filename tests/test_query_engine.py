@@ -942,3 +942,28 @@ class HouseFirmSearchTests(unittest.TestCase):
     def test_the_search_returns_them(self):
         r = qe.search_full("Lowén Widman")
         self.assertGreaterEqual(r["total_matches"], 10)
+
+
+class PortfolioPiecesTests(unittest.TestCase):
+    """A designer shown by their own work ("portfolio" in brands.json) is searchable as pieces, without a maker page (2026-10-16)."""
+
+    def setUp(self):
+        self._translate = qe.translate_query
+        qe.translate_query = lambda q: {}
+
+    def tearDown(self):
+        qe.translate_query = self._translate
+
+    def test_their_pieces_are_found_and_the_name_links_to_the_designers_page(self):
+        self.assertIn("Salem Charabi", qe.PORTFOLIO_BRANDS)
+        r = qe.search_full("Salem Charabi")
+        self.assertTrue(any(m["brand"] == "Salem Charabi" for m in r["results"]))
+        self.assertEqual(r["brand_links"][0]["href"], "/designers/salem-charabi.html")
+
+    def test_a_type_search_can_return_them(self):
+        found = [m for m in qe.filter_products({"category": "daybed"}) if m["brand"] in qe.PORTFOLIO_BRANDS]
+        self.assertTrue(found)
+
+    def test_they_have_no_maker_page(self):
+        from pathlib import Path
+        self.assertFalse((Path(__file__).parent.parent / "docs" / "brands" / "salem-charabi.html").exists())

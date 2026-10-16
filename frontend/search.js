@@ -611,7 +611,7 @@ function showBrandLinks(links) {
     const p = document.createElement("p");
     p.className = "brand-link";
     const a = document.createElement("a");
-    a.href = `/brands/${encodeURIComponent(b.slug)}.html`;
+    a.href = b.href || `/brands/${encodeURIComponent(b.slug)}.html`;
     a.textContent = `See ${b.name}'s own page \u2192`;
     p.appendChild(a);
     metaEl.insertAdjacentElement("afterend", p);

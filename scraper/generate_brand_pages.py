@@ -194,7 +194,8 @@ def load_hidden_brands():
     still-reachable file.
     """
     brands = json.loads(BRANDS_PATH.read_text())
-    return {b["name"] for b in brands if b.get("hidden")}
+    # a portfolio designer ("portfolio": true) is shown as pieces but is not a maker: no brand page, no makers.html entry
+    return {b["name"] for b in brands if b.get("hidden") or b.get("portfolio")}
 
 
 def load_brand_tiers():

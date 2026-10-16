@@ -146,6 +146,19 @@ def _load_hidden_brands() -> set:
 HIDDEN_BRANDS = _load_hidden_brands()
 
 
+def _load_portfolio_brands() -> set:
+    """Designers shown by their own work ("portfolio": true in brands.json): their works are pieces in search and on the type pages,
+    but they are not makers, so they get no brand page and are left out of the maker counts."""
+    try:
+        brands = json.loads(BRANDS_PATH.read_text())
+    except (FileNotFoundError, json.JSONDecodeError):
+        return set()
+    return {b["name"] for b in brands if b.get("portfolio")}
+
+
+PORTFOLIO_BRANDS = _load_portfolio_brands()
+
+
 def _load_brand_countries() -> dict:
     """
     Brand -> country, same source and same "only ever present when
@@ -1744,7 +1757,10 @@ def brand_links(intent: dict) -> list:
     for name in intent.get("brands") or []:
         ascii_only = unicodedata.normalize("NFKD", name.replace("Ł", "L").replace("ł", "l")).encode("ascii", "ignore").decode("ascii")
         slug = re.sub(r"[^a-zA-Z0-9]+", "-", ascii_only).strip("-").lower() or "brand"
-        out.append({"name": name, "slug": slug})
+        link = {"name": name, "slug": slug}
+        if name in PORTFOLIO_BRANDS:
+            link["href"] = f"/designers/{slug}.html"      # a designer shown by their own work has a Designers page, no maker page
+        out.append(link)
     return out
 
 

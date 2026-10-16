@@ -2529,6 +2529,46 @@ def extract_sowden(brand):
     return products
 
 
+PORTFOLIO_DESIGNERS_PATH = Path(__file__).parent.parent / "data" / "portfolio_designers.json"
+PORTFOLIO_TYPES_PATH = Path(__file__).parent.parent / "data" / "portfolio_work_types.json"
+
+
+def extract_portfolio_designer(brand):
+    """
+    A designer whose own site presents the work like artwork (a portfolio, no shop, "get in touch") is kept in
+    data/portfolio_designers.json (see the Designers pages). Their works are also pieces on the type pages and in search
+    (2026-10-16, user's call: Formground is about discovery, so a piece is not held back for not being on sale):
+    one product per work, linked to the work's page on the designer's own site, no price, the brand is the designer.
+    The type of each work was set by looking at its photo (data/portfolio_work_types.json, "Designer|Work": {category,
+    keep}). The designer field is left empty on purpose: these designers keep their own page from the portfolio file.
+    """
+    designers = json.loads(PORTFOLIO_DESIGNERS_PATH.read_text())
+    types = json.loads(PORTFOLIO_TYPES_PATH.read_text()) if PORTFOLIO_TYPES_PATH.exists() else {}
+    entry = next((d for d in designers if d["name"] == brand["name"]), None)
+    if not entry:
+        return []
+    products = []
+    for work in entry["works"]:
+        verdict = types.get(f"{entry['name']}|{work['name']}")
+        if not verdict or not verdict.get("keep", True) or not work.get("image"):
+            continue
+        products.append({
+            "brand": brand["name"],
+            "brand_url": entry["url"],
+            "product_name": work["name"],
+            "product_url": work["url"],
+            "category": verdict["category"],
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": work["image"],
+            "designer": "",
+            "price": None,
+            "currency": None,
+        })
+    return products
+
+
 DECERES_NON_PRODUCT_PATHS = {"all-products", "studio", "cart", "home", ""}
 
 
@@ -10960,6 +11000,12 @@ EXTRACTORS = {
     "Utilitario Mexicano": extract_shopify,
     "Source Édition": extract_shopify,
     "Gustaf Westman": extract_shopify,
+    "Jonah Takagi": extract_portfolio_designer,
+    "Aurélien Veyrat": extract_portfolio_designer,
+    "Sho Ota": extract_portfolio_designer,
+    "Krystian Kowalski": extract_portfolio_designer,
+    "Giulio Zizzari": extract_portfolio_designer,
+    "Salem Charabi": extract_portfolio_designer,
     "Feldspar": extract_shopify,
     "Faye Toogood": extract_faye_toogood,
     "B-TD": extract_btd,
