@@ -1667,6 +1667,51 @@ def extract_marset(brand):
     return products
 
 
+def extract_faye_toogood(brand):
+    """
+    fayetoogood.com (a Next.js site) lists every furniture and lighting piece in its sitemap
+    (/furniture/<slug>, 41 pages, checked 2026-10-16), and each product page is server-rendered
+    with og:title / og:image and a visible "From £x" price. Names such as "Johnny pendant. Large"
+    and "Palette coffee table. Stained" use a full stop before the variant: turned into a comma.
+    The price is the starting price shown (the lowest size), in pounds.
+    """
+    base = brand["url"].rstrip("/")
+    try:
+        sitemap = requests.get(f"{base}/sitemap.xml", headers=HEADERS, timeout=20).text
+    except requests.RequestException as e:
+        print(f"  Could not fetch the sitemap for {brand['name']}: {e}")
+        return []
+    products = []
+    for url in dict.fromkeys(re.findall(r"<loc>([^<]*/furniture/[^<]+)</loc>", sitemap)):
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=30).text
+        except requests.RequestException:
+            continue
+        title = re.search(r'property="og:title" content="([^"]*)"', page)
+        image = re.search(r'property="og:image" content="([^"]*)"', page)
+        if not title:
+            continue
+        name = html.unescape(title.group(1)).strip().replace(". ", ", ", 1).replace(" & ", " and ")
+        text = html.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", re.sub(r"<script.*?</script>|<style.*?</style>", "", page, flags=re.S))))
+        price = re.search(r"£\s?([\d,]+)", text)
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": name,
+            "product_url": url,
+            "category": _infer_category_from_name(name, "", brand_name=brand["name"]),
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": html.unescape(image.group(1)).replace("w=1200", "w=800") if image else "",
+            "designer": "",
+            "price": float(price.group(1).replace(",", "")) if price else None,
+            "currency": "GBP" if price else None,
+        })
+        time.sleep(0.25)
+    return products
+
+
 DECERES_NON_PRODUCT_PATHS = {"all-products", "studio", "cart", "home", ""}
 
 
@@ -2575,6 +2620,10 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Feldspar", "Small Pet Bowl"): "Pet Bowl",
     ("Feldspar", "Medium Pet Bowl"): "Pet Bowl",
     ("Feldspar", "Large Pet Bowl"): "Pet Bowl",
+    ("Faye Toogood", "Johnny table light"): "Table Lamp",
+    ("Faye Toogood", "Roly Poly low table"): "Coffee Table",  # the site calls it a low table
+    ("Faye Toogood", "Cobble tall side table and stool"): "Side Table, Stool",
+    ("Faye Toogood", "Cobble low side table and stool"): "Side Table, Stool",
     ("Source Édition", "Dialogue"): "Lounge Chair",  # a single Dialogue module, used alone as a lounge chair
     ("Source Édition", "Pliée lamp"): "Wall Lamp, Table Lamp",  # the maker: "wall light or table lamp"
     ("Source Édition", "Jumelles lamp"): "Wall Lamp, Table Lamp",
@@ -10004,6 +10053,7 @@ EXTRACTORS = {
     "Utilitario Mexicano": extract_shopify,
     "Source Édition": extract_shopify,
     "Feldspar": extract_shopify,
+    "Faye Toogood": extract_faye_toogood,
     "Galvin Brothers": extract_shopify,
     "Verk": extract_woocommerce,
     "Sibast": extract_woocommerce,
