@@ -2560,6 +2560,21 @@ MANUAL_CATEGORY_OVERRIDES = {
     # pages (/collection/categories/{name}), 7 more checked against
     # their own real "Description:" field since they're current
     # products the category pages don't happen to list (2026-09-21).
+    # Feldspar's own type field is a department ("Homeware", "Drinkware"); these are vases, lights, a candle and pet bowls
+    ("Feldspar", "Giant Footed Vase"): "Vase",
+    ("Feldspar", "Big Eared Vase"): "Vase",
+    ("Feldspar", "Tubby Vase"): "Vase",
+    ("Feldspar", "Gold Bud Vase"): "Vase",
+    ("Feldspar", "Gold Bunch Vase"): "Vase",
+    ("Feldspar", "Striped Handled Vase"): "Vase",
+    ("Feldspar", "Large Canelé Pendant"): "Pendant",
+    ("Feldspar", "Small Canelé Pendant"): "Pendant",
+    ("Feldspar", "Madeleine Sconce"): "Sconce",
+    ("Feldspar", "Large Footed Bowl"): "Bowl",
+    ("Feldspar", "Dartmoor Beeswax Candles"): "Candle",
+    ("Feldspar", "Small Pet Bowl"): "Pet Bowl",
+    ("Feldspar", "Medium Pet Bowl"): "Pet Bowl",
+    ("Feldspar", "Large Pet Bowl"): "Pet Bowl",
     ("Source Édition", "Dialogue"): "Lounge Chair",  # a single Dialogue module, used alone as a lounge chair
     ("Source Édition", "Pliée lamp"): "Wall Lamp, Table Lamp",  # the maker: "wall light or table lamp"
     ("Source Édition", "Jumelles lamp"): "Wall Lamp, Table Lamp",
@@ -9988,6 +10003,7 @@ EXTRACTORS = {
     "Raawii": extract_shopify,
     "Utilitario Mexicano": extract_shopify,
     "Source Édition": extract_shopify,
+    "Feldspar": extract_shopify,
     "Galvin Brothers": extract_shopify,
     "Verk": extract_woocommerce,
     "Sibast": extract_woocommerce,
