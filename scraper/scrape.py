@@ -2624,6 +2624,16 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Faye Toogood", "Roly Poly low table"): "Coffee Table",  # the site calls it a low table
     ("Faye Toogood", "Cobble tall side table and stool"): "Side Table, Stool",
     ("Faye Toogood", "Cobble low side table and stool"): "Side Table, Stool",
+    # Lemon Furniture: the maker's own collection tags (checked 2026-10-16) where the type came out blank or as a bare Plinth
+    ("Lemon Furniture", "Chelmsford"): "Coffee Table",
+    ("Lemon Furniture", "Riviera Plinth Short"): "Side Table, Plinth",
+    ("Lemon Furniture", "Riviera Plinth Medium"): "Side Table, Plinth",
+    ("Lemon Furniture", "Riviera Plinth Tall"): "Side Table, Plinth",
+    ("Lemon Furniture", "Winston Server"): "Sideboard",
+    ("Lemon Furniture", "Various Positions Server"): "Sideboard",
+    ("Lemon Furniture", "Barboure unit"): "Cabinet",
+    ("Lemon Furniture", "Aquarama Headboard"): "Headboard",
+    ("Lemon Furniture", "Conservatory Sun Lounger"): "Sun Lounger",
     ("Source Édition", "Dialogue"): "Lounge Chair",  # a single Dialogue module, used alone as a lounge chair
     ("Source Édition", "Pliée lamp"): "Wall Lamp, Table Lamp",  # the maker: "wall light or table lamp"
     ("Source Édition", "Jumelles lamp"): "Wall Lamp, Table Lamp",
