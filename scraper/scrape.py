@@ -4206,6 +4206,40 @@ def _shopify_price_info(group):
     return None, None
 
 
+# Brands whose first photo is usually a room scene or a detail, with a clean studio shot of the piece
+# further down the gallery: the card photo is the first image shot on a plain white ground (2026-10-16).
+STUDIO_CUTOUT_BRANDS = {"Lemon Furniture"}
+
+
+def _is_studio_cutout(image_bytes):
+    """True when all four corners are near-white and flat: the piece on a plain studio ground."""
+    from io import BytesIO
+    from PIL import Image
+    im = Image.open(BytesIO(image_bytes)).convert("L")
+    w, h = im.size
+    if w < 40 or h < 40:
+        return False
+    n = max(8, min(w, h) // 12)
+    for box in ((0, 0, n, n), (w - n, 0, w, n), (0, h - n, n, h), (w - n, h - n, w, h)):
+        px = list(im.crop(box).getdata())
+        if sum(px) / len(px) < 210 or max(px) - min(px) > 30:
+            return False
+    return True
+
+
+def _studio_cutout_image(images, look_at=8):
+    for image in images[:look_at]:
+        src = image.get("src") or ""
+        try:
+            resp = requests.get(src + ("&" if "?" in src else "?") + "width=300", headers=HEADERS, timeout=20)
+            if resp.ok and _is_studio_cutout(resp.content):
+                return src
+        except Exception:
+            continue
+    # no plain-white shot: the maker's own "ProductPhotography" file, if any, beats a room scene
+    return next((i["src"] for i in images if "ProductPhotography" in (i.get("src") or "")), "")
+
+
 def extract_shopify(brand):
     """
     Generic extractor for any brand running a standard Shopify store.
@@ -4680,7 +4714,7 @@ def extract_shopify(brand):
             # a specific searched-for material instead is handled at
             # query time (see filter_products()'s matched_material).
             "notes": "",
-            "image_url": images[0]["src"] if images else "",
+            "image_url": (_studio_cutout_image(images) if brand["name"] in STUDIO_CUTOUT_BRANDS else "") or (images[0]["src"] if images else ""),
             "designer": designer,
             "price": price,
             "compare_at_price": compare_at_price,
