@@ -390,6 +390,37 @@ THEMES = [
         ),
         "hero_image": ("Buro Berger", "Candle Holder Cassata"),  # the whole piece on white (the Ljusstake photo is cut off at the top, 2026-10-11)
     },
+    {
+        # Hand-picked 2026-10-17 (fit and variety first, then smaller makers: 11 of 12). Low stools only: bar and
+        # counter stools have their own page, footstools and poufs are armchair companions, not stools.
+        "slug": "stools",
+        "title": "Stools",
+        "fetch": lambda: [
+            p for p in qe.filter_products({"category": "stool"})
+            if not re.search(r"bar|counter|high|foot|pouf|ottoman|cushion|cover|pad\b", (p["product_name"] + " " + p["category"]).lower())
+        ],
+        "intro": (
+            "A stool does more than one job: a seat at the table, a step, a "
+            "side table in the corner, a sculpture when nobody sits on it. "
+            "Wood, stone, ceramic, leather and metal, from makers large and "
+            "small. Every product links straight to the maker's own site."
+        ),
+        "hero_image": ("Feldspar", "Shilstone (Gus's) Stool"),
+        "picks": [
+            ("Verk", "Stool V.SS.01"),
+            ("Kalon", "Live Edge Stump"),
+            ("Lland", "Masonry Stool"),
+            ("Studio Sam Klemick", "Bell Stool"),
+            ("Bitossi Ceramiche", "Sgabello"),
+            ("Tim Teven Studio", "Pressure Stool"),
+            ("Mass Productions", "Albert Stool H500"),
+            ("Ingridsdotter", "KARUSELL stool"),
+            ("Cultivation Objects", "Fig 14"),
+            ("Giulio Zizzari", "Eros"),
+            ("Källemo", "NATIONALPALLEN"),
+            ("Another Country", "Stool Five"),
+        ],
+    },
 ]
 
 CAROUSEL_SIZE = 3
