@@ -1,0 +1,25 @@
+name: IndexNow ping
+
+# After a push that changes pages, tell Bing, Yandex and the other IndexNow engines which addresses changed.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "data/sitemap_lastmod.json"
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install requests
+      - name: Wait for GitHub Pages to publish the new pages
+        run: sleep 150
+      - name: Ping IndexNow with the pages changed in this push
+        run: python3 scraper/indexnow_ping.py

@@ -1045,3 +1045,22 @@ class CategoryHubTests(unittest.TestCase):
             self.assertIn(f'<link rel="canonical" href="https://formground.com/work/{slug}.html">', page)
         houses = (DOCS / "work" / "houses.html").read_text()
         self.assertNotIn("Popular types", houses)
+
+
+class ContinuationPageIndexingTests(unittest.TestCase):
+    """Page 2 and up of a long list are for visitors, not the index (2026-10-17): noindex, follow; page 1 stays indexable."""
+
+    def test_continuation_pages_are_noindex_and_first_pages_are_not(self):
+        for first, later in (("work/plates.html", "work/plates-2.html"), ("brands/serax.html", "brands/serax-2.html")):
+            self.assertNotIn('name="robots"', (DOCS / first).read_text(), first)
+            self.assertIn('<meta name="robots" content="noindex, follow">', (DOCS / later).read_text(), later)
+
+    def test_continuation_pages_are_not_in_the_sitemap(self):
+        sitemap = (DOCS / "sitemap.xml").read_text()
+        self.assertNotIn("/work/plates-2.html", sitemap)
+        self.assertNotIn("/brands/serax-2.html", sitemap)
+
+    def test_the_indexnow_key_file_is_live_and_matches_its_name(self):
+        keys = [p for p in DOCS.glob("*.txt") if re.fullmatch(r"[0-9a-f]{32}", p.stem)]
+        self.assertEqual(len(keys), 1)
+        self.assertEqual(keys[0].read_text().strip(), keys[0].stem)

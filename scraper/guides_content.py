@@ -1150,6 +1150,160 @@ GUIDES += [
     },
 ]
 
+# Wall lamps, ceiling lamps and chandeliers (2026-10-17): the three lighting types that had no guide.
+GUIDES += [
+    {
+        "slug": "wall-lamps",
+        "group": "Lighting",
+        "noun": "wall lamps",
+        "title": "Wall lamps",
+        "edit_slug": "wall-lamps",
+        "summary": "Position, light direction, wiring, projection and care for lamps that fix to the wall.",
+        "about": "A wall lamp, also called a wall light or sconce, fixes to the wall and frees the floor and the table. It can wash a wall with light, read beside a bed, mark a hallway or flank a mirror. Some are wired into the wall, some plug in and carry a visible cable, and some swing out on an arm.",
+        "teasers": [
+            "Decide the height from where you will sit or stand, then check the lamp against it.",
+            "Wired-in or plug-in changes the installation and what the wall looks like.",
+            "Check how far the lamp projects from the wall, especially in a hallway or by a door.",
+        ],
+        "intro": "A wall lamp lights a spot and decorates a wall at the same time. These are the things worth settling before you choose one. The numbers are common rules of thumb, not fixed rules.",
+        "sections": [
+            ["Position and height", [
+                "Beside a bed, the light for reading is commonly placed so the lamp sits somewhere around shoulder height of a person sitting up, often about 120-140 cm above the floor. Check it against your own bed and pillows.",
+                "In a hallway, wall lamps are often mounted around eye level, about 150-165 cm, and a few metres apart so the light overlaps.",
+                "Beside a bathroom mirror, lamps at about eye level light the face evenly; one on each side avoids shadows.",
+                "Mark the position with tape and look at it from where you will be before you drill.",
+            ]],
+            ["Light", [
+                "Check the fitting (for example E14, E27, G9 or a built-in LED), the maximum wattage, whether it can be dimmed and whether a bulb is included.",
+                "A lamp that sends light up, down or both shapes the room differently: up lights the ceiling, down lights the surface below, both gives a softer glow on the wall.",
+                "A swing arm or a movable shade lets you aim the light, which suits reading. A fixed lamp suits a steady background glow.",
+                "Warm white light (around 2700 K) is the usual choice for living spaces and bedrooms.",
+            ]],
+            ["Wiring and installation", [
+                "A wired-in lamp needs a connection point in the wall where you want it. Fixed wiring should be done by a qualified electrician, and the rules differ by country.",
+                "A plug-in lamp needs a socket nearby and shows its cable. A cover or a cable channel can hide it, which is an extra part to plan.",
+                "Check the fixing: the wall type (concrete, brick, plasterboard), the weight of the lamp and the plate it hangs on.",
+            ]],
+            ["Projection and clearance", [
+                "Check how far the lamp sticks out from the wall, and how far a swing arm reaches when it is turned out.",
+                "In a narrow hallway, by a door or over a bed, a lamp that projects far can be knocked or hit with a head.",
+            ]],
+            ["Materials and care", [
+                "Raw brass and untreated metals darken with age. Painted or powder-coated finishes keep their look but can chip.",
+                "Glass and polished metal show fingerprints and dust. Fabric and paper shades suit dry rooms and sit badly beside hot bulbs.",
+                "Bathrooms and outdoor walls need a fitting rated for damp or wet conditions (look for an IP rating).",
+            ]],
+            ["Longevity and repair", [
+                "A lamp lasts longer if its parts can be replaced: the bulb or LED module, the cable, the switch and the wall plate. With a built-in LED the whole lamp is the part that wears out.",
+                "Ask whether the shade can be taken off for cleaning or replaced if it breaks.",
+            ]],
+            ["Questions worth asking the maker", [
+                "What are the exact dimensions and projection? Is the bulb included and replaceable? Is it wired-in, plug-in or both? Can it be dimmed? Are spare parts and finishes available later? What are the delivery and return terms?",
+            ]],
+        ],
+        "sources": [
+            COLOR_TEMP, LUMEN, EPREL, GREEN_CLAIMS,
+            ("How IP ratings work (protection against dust and water)", "https://en.wikipedia.org/wiki/IP_Code"),
+            ("Electrical safety rules in Sweden, including who may do fixed installation work", "https://www.elsakerhetsverket.se/"),
+        ],
+    },
+    {
+        "slug": "ceiling-lamps",
+        "group": "Lighting",
+        "noun": "ceiling lamps",
+        "title": "Ceiling lamps",
+        "edit_slug": "ceiling-lamps",
+        "summary": "Size, ceiling height, light, fixing and care for lamps that sit on or close to the ceiling.",
+        "about": "A ceiling lamp sits on the ceiling or hangs only a short way below it, as a flush or semi-flush fitting. It gives the general light of a room, and where there is no space or height for a pendant it is often the main source. Shades range from a plain disc to sculptural domes, clusters and linear fittings.",
+        "teasers": [
+            "A lower ceiling usually suits a flush or semi-flush fitting.",
+            "Check the size against the room, and how the light spreads, not only how the lamp looks.",
+            "Check how the bulb or LED is replaced once the lamp is up.",
+        ],
+        "intro": "A ceiling lamp is often the main light in a room, and it is easy to underestimate. These are the things worth settling before you choose one. The numbers are common rules of thumb, not fixed rules.",
+        "sections": [
+            ["Ceiling height and size", [
+                "In a room with a ceiling lower than about 2.4 m, a flush or semi-flush lamp keeps clear of heads and tall furniture. A tall room can take a lamp that hangs lower.",
+                "A lamp usually looks right when it is clearly smaller than the room but large enough to be seen as a feature. A small lamp in a large room looks lost and lights it badly.",
+                "A large room can use several lamps in a row or a grid, which spreads the light more evenly than one big one.",
+            ]],
+            ["Light", [
+                "Check the fitting, the maximum wattage, whether the lamp can be dimmed, and whether the bulb or LED module is included.",
+                "A diffuser of opal glass or fabric spreads the light softly. A clear shade or an open design gives more sparkle and can glare when you look up.",
+                "Warm white light (around 2700 K) is the usual choice for living spaces and bedrooms; a cooler white is common in kitchens and work areas.",
+                "Check the number of lumens against the size of the room, not only the watts.",
+            ]],
+            ["Installation", [
+                "A ceiling lamp needs a ceiling outlet where you want it. Fixed wiring should be done by a qualified electrician, and the rules differ by country.",
+                "Heavy glass, stone or metal needs a fixing that suits your ceiling (concrete, joists or plasterboard). Check the weight against what the fixing is rated for.",
+                "Enclosed lamps trap heat. Check the maximum wattage and whether the lamp is made for the bulb type you want to use.",
+            ]],
+            ["Materials and care", [
+                "Opal glass and fabric diffusers collect dust and insects and need a regular wipe. Metals and finishes vary: raw brass darkens, powder coating chips.",
+                "Bathrooms, kitchens and covered outdoor areas need a fitting rated for damp, steam or wet conditions (look for an IP rating).",
+            ]],
+            ["Longevity and repair", [
+                "Look at how the bulb or LED module is changed once the lamp is up: a diffuser that unscrews or clips off is easier than one that needs the whole lamp taken down.",
+                "A lamp lasts longer if its parts can be replaced: the bulb or module, the driver, the diffuser and the ceiling plate. With a built-in LED the whole lamp is the part that wears out.",
+            ]],
+            ["Questions worth asking the maker", [
+                "What are the exact dimensions and the height it takes below the ceiling? Is the bulb included and replaceable, and how is it changed? Can it be dimmed? What does it weigh? Are spare parts and finishes available later? What are the delivery and return terms?",
+            ]],
+        ],
+        "sources": [
+            COLOR_TEMP, LUMEN, EPREL, GREEN_CLAIMS,
+            ("How IP ratings work (protection against dust and water)", "https://en.wikipedia.org/wiki/IP_Code"),
+            ("Electrical safety rules in Sweden, including who may do fixed installation work", "https://www.elsakerhetsverket.se/"),
+        ],
+    },
+    {
+        "slug": "chandeliers",
+        "group": "Lighting",
+        "noun": "chandeliers",
+        "title": "Chandeliers",
+        "edit_slug": "chandeliers",
+        "summary": "Scale, hanging height, weight, bulbs and care for lamps with several lights hung together.",
+        "about": "A chandelier hangs several lights together from one point on the ceiling, as arms, rings, tiers or clusters of glass, brass or other materials. It lights a room and is meant to be looked at: over a dining table, in an entrance or stairwell, or in a living room with a high ceiling. Modern chandeliers run from classical crystal to open, sculptural frames.",
+        "teasers": [
+            "Check the weight and the ceiling fixing before anything else.",
+            "Count the bulbs: the total wattage and how often you will have to change them.",
+            "Plan how you will reach it for cleaning and changing bulbs.",
+        ],
+        "intro": "A chandelier is a large, heavy and often fragile object that you will look at every day and have to reach. These are the things worth settling before you choose one. The numbers are common rules of thumb, not fixed rules.",
+        "sections": [
+            ["Scale and height", [
+                "Over a dining table, the lower edge is commonly hung about 75-85 cm above the surface, so nobody has to look around it. Choose a chandelier clearly narrower than the table.",
+                "In an entrance or a stairwell, keep the lower edge well clear of heads, at least about 2 metres above the floor.",
+                "In a high room, the chain or rod can be lengthened so the chandelier hangs at a good height. Check how long it can be made and what that costs.",
+            ]],
+            ["Weight and fixing", [
+                "A chandelier can be heavy, especially in glass, stone or solid brass. Check the weight and what your ceiling can carry: concrete, joists and plasterboard need different fixings.",
+                "Fixed wiring and heavy fixings should be done by a qualified electrician, and the rules differ by country.",
+            ]],
+            ["Light and bulbs", [
+                "Check how many bulbs there are, the fitting (candle E14 and E27 are common), the maximum wattage for each and in total, and whether a dimmer can be used.",
+                "Many bulbs give plenty of light and a lot of tasks later. LED candle and filament bulbs run cooler and last longer than older types.",
+                "Warm white light (around 2700 K) is the usual choice for dining and living spaces. Check how much of the light is visible when you are seated, because bare bulbs at eye level can glare.",
+            ]],
+            ["Materials and care", [
+                "Glass and crystal show fingerprints and dust, and need regular cleaning. Hand-blown glass can be fragile in transit: ask how it is packed and what happens if a piece breaks.",
+                "Raw brass and untreated metals darken with age; painted and plated finishes keep their look but can chip.",
+                "Plan how you will reach it: a ladder, or a lift that lowers it. A chandelier that is hard to reach is cleaned and relamped less often.",
+            ]],
+            ["Longevity and repair", [
+                "A chandelier lasts longer if its parts can be replaced: single glass elements, the sockets, the cable or chain, the ceiling plate and the bulbs. Ask whether replacement parts are made after the first delivery.",
+            ]],
+            ["Questions worth asking the maker", [
+                "What are the exact dimensions, the weight and the drop, and can the drop be adjusted? How many bulbs, of which type, and are they included? Can it be dimmed? How is it packed and shipped, and are spare glass parts available? What are the delivery and return terms?",
+            ]],
+        ],
+        "sources": [
+            COLOR_TEMP, LUMEN, EPREL, GREEN_CLAIMS,
+            ("Electrical safety rules in Sweden, including who may do fixed installation work", "https://www.elsakerhetsverket.se/"),
+        ],
+    },
+]
+
 GUIDES_BY_SLUG = {g["slug"]: g for g in GUIDES}
 GROUP_ORDER = ["Furniture", "Lighting", "Objects"]
 
@@ -1204,18 +1358,6 @@ def facts_sentences(facts):
 # Types that have no buying guide (yet) still get a short "About" block and the one-line preamble (2026-10-15). Plain description of the
 # type and its range; no claims about makers; the data sentence (countries, independent makers, new pieces) is added from the catalogue.
 TYPE_ABOUT = {
-    "wall-lamps": ("wall lamps",
-        "A wall lamp lights from the side of a room instead of from the ceiling or a table. That frees the floor and puts the light where it is "
-        "used: beside a bed, over a mirror, along a hallway or above a desk. They range from small fixed sconces and swing-arm reading lights to "
-        "long linear wall lights, and from lamps wired into the wall to plug-in designs with a visible cable."),
-    "ceiling-lamps": ("ceiling lamps",
-        "A ceiling lamp is fixed straight to the ceiling with no drop, which makes it the choice for low rooms, hallways and kitchens where a "
-        "hanging lamp would be in the way. They include flush mounts and surface mounts, from simple discs and domes to sculpted shades and "
-        "multi-arm fittings."),
-    "chandeliers": ("chandeliers",
-        "A chandelier is a ceiling lamp with several arms, lights or elements, made to be looked at as much as to give light. Classic crystal and "
-        "glass designs sit beside contemporary ones in metal, blown glass, paper and ceramic, in sizes from a compact cluster over a table to a "
-        "centrepiece for a stairwell."),
     "garden-chairs": ("garden and outdoor chairs",
         "Garden and outdoor chairs are made to stay outside for part of the year, so the material matters: teak and other hardwoods, powder-coated "
         "aluminium and steel, woven synthetic fibre, stone and weather-resistant fabric. They range from folding bistro chairs to deep lounge "

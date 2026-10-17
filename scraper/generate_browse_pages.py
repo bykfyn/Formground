@@ -525,6 +525,7 @@ def render_listing_page(category, cards, variant_counts, page, pages, products, 
 {FAVICON_TAGS}
 <meta name="description" content="{html.escape(description)}">
 <link rel="canonical" href="{page_url}">
+{'<meta name="robots" content="noindex, follow">' if page > 1 else ""}
 <meta property="og:type" content="website">
 <meta property="og:title" content="{html.escape(seo_title)}">
 <meta property="og:description" content="{html.escape(description)}">
