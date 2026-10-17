@@ -157,7 +157,7 @@ Used on: the home page's category sections, the Edits hub (individual Edit pages
 - **Title row ABOVE the photo.** The edit/section name on the left, a "See the
   edit →" / "See all →" link on the right (internal link).
 - **Clean photo.** 2:1 frame (4:3 on phones), 0.5px border, no text laid over it.
-- **Caption BELOW the photo:** the product name, then the maker underneath
+- **Caption BELOW the photo:** the product name, then the maker underneath (2026-10-17: set like every other tier's tile name, 14px / weight 500, the maker 12px muted; the earlier 24px bold read too large on a phone)
   (smaller, secondary colour). Photo and caption both link to the maker's own
   site, new tab.
 - Hierarchy: the edit/section title is primary, the product and maker are secondary.
