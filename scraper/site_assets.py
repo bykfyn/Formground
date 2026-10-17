@@ -57,11 +57,12 @@ def stamp_html(paths=None):
             continue
         if "work-results.css" in new:
             new = _RESULTS_CSS_RE.sub(f'<link rel="stylesheet" href="{WORK_RESULTS_CSS}">', new)
-        if 'class="work-menu"' in new:
+        if 'class="work-menu"' in new or 'class="work-menu-cats cr-jump"' in new:   # the Creators page's jump chips use the same chip CSS
             if "work-menu.css" in new:
                 new = _MENU_CSS_RE.sub(MENU_HEAD_LINKS, new)
             else:
                 new = new.replace("</head>", MENU_HEAD_LINKS + "\n</head>", 1)
+        if 'class="work-menu"' in new:
             if "work-menu.js" in new:
                 new = _MENU_JS_RE.sub(MENU_SCRIPT, new)
             else:

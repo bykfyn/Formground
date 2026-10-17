@@ -25,6 +25,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="site.css">
 <link rel="stylesheet" href="/icons.css?v=86479f05">
+<link rel="stylesheet" href="/work-menu.css?v=76f589b1">
 <style>
   /* padding-top: 24px, and site-header's margin-bottom overridden to 0
      below - matches work.html/the homepage's own header-to-search-box
@@ -124,7 +125,13 @@
   .pf-all { font-size: 13px; color: var(--text-accent); text-decoration: none; margin-top: 12px; }
   .pf-all:hover { text-decoration: underline; }
   @media (min-width: 761px) { .cr-col .group-body { min-height: 112px; } }
+  /* phone-only jump chips: the three groups stack to ~3,600px, so Makers is almost three screens down.
+     Same Form chip as the Work page (work-menu.css: 32px, 13px/500, full pill), here as links. */
+  .cr-jump { display: none; margin: 14px auto 20px; }
+  .cr-col { scroll-margin-top: 16px; }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
   @media (max-width: 760px) {
+    .cr-jump { display: flex; }
     .cr-grid { grid-template-columns: 1fr; gap: 40px; }
     .pf-list .pf-row:nth-child(n+4) { display: none; }   /* three entries on a phone, five on desktop */
   }
@@ -153,8 +160,10 @@
     </form>
   </div>
 
+  <nav class="work-menu-cats cr-jump" aria-label="Jump to a group"><a class="work-menu-act" href="#cr-architects">Architects</a><a class="work-menu-act" href="#cr-designers">Designers</a><a class="work-menu-act" href="#cr-makers">Makers</a></nav>
+
   <div class="cr-grid">
-    <div class="cr-col" data-group="architects">
+    <div class="cr-col" id="cr-architects" data-group="architects">
     <a class="group-card" href="architects.html">
       <div class="group-photo">
         <img src="http://static1.squarespace.com/static/68e7d1ef65f5323eae3c3b6c/68fa320b5b04cb318608db95/6981a89900e843417f888e2e/1772734362523/JSA_pinehouse_FINAL_WEB-37.jpg?format=1500w" alt="Pine House by Johan Sundberg Arkitektur">
@@ -174,7 +183,7 @@
     <!--/PROFILES:architects-->
     </div>
 
-    <div class="cr-col" data-group="designers">
+    <div class="cr-col" id="cr-designers" data-group="designers">
     <a class="group-card" href="designers.html">
       <div class="group-photo" style="background: linear-gradient(#d5d5d5, #e9e9e9);">
         <img src="https://framerusercontent.com/images/qJWeo3GdGmJ09sSvy4sPJxFXGPo.webp?scale-down-to=1024" alt="Bun chair by Sergei Grigorev for 20by8" style="object-fit: contain; transform: scale(1.2); transform-origin: 50% 62%">
@@ -194,7 +203,7 @@
     <!--/PROFILES:designers-->
     </div>
 
-    <div class="cr-col" data-group="makers">
+    <div class="cr-col" id="cr-makers" data-group="makers">
     <a class="group-card" href="makers.html">
       <div class="group-photo">
         <img src="https://cdn.shopify.com/s/files/1/0604/7773/5136/files/seandavidson_dannykaplan_13.jpg?v=1727813360&amp;width=900" alt="Angle Sconce by Danny Kaplan Studio" style="object-position: 50% 50%">
