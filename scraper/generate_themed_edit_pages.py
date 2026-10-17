@@ -243,6 +243,22 @@ THEMES = [
         # images as placeholders where relevant... they seem to work well
         # as banners") while they manually source a permanent replacement.
         "hero_image": ("Pinch", "Remu wall light whiskey"),
+        # Hand-picked 2026-10-17 (fit and variety first, then smaller makers: 10 of 12): paper, wood, stone,
+        # glass, brass, ceramic and woven metal, one adjustable arm, about 90 EUR to 900+ EUR.
+        "picks": [
+            ("Oven Editions", "VETA WALL LAMP"),
+            ("Motarasu", "Dawn Wall Lamp"),
+            ("Moebe", "Pivoting Wall Lamp"),
+            ("Palefire Studio", "Garland Wall Light"),
+            ("Dzovag Kotchian", "Applique Corail"),
+            ("Rieul Lighting", "Cheongpung Wall Lamp"),
+            ("Mingardo", "Sfoglia / Piega"),
+            ("Joe Armitage", "Classic Wall Lamp"),
+            ("Giacomo Tomazzi", "Arandela Galho"),
+            ("Coco Flip", "Honey Wall Light"),
+            ("NORR11", "Gallery Wall Lamp"),
+            ("Artek", 'Wall Light A330S "Golden Bell"'),
+        ],
     },
     {
         "slug": "ceiling-lamps",
@@ -732,7 +748,13 @@ def capped_edit_cards(theme, products):
     if hero_keys:
         products = [p for p in products if _variant_key(p) not in hero_keys]
     cards_to_render, variant_counts = _group_color_variants(products)
-    capped = _cap_products_fairly(cards_to_render)
+    if theme.get("picks"):
+        # a fully hand-curated edit (2026-10-17): every piece chosen by eye for fit and variety, in this order
+        by_identity = {(c["brand"], c["product_name"]): c for c in cards_to_render}
+        capped = [by_identity.get(k) or _lookup_product_by_identity(*k) for k in theme["picks"]]
+        capped = [c for c in capped if c is not None]
+    else:
+        capped = _cap_products_fairly(cards_to_render)
     # hand-swapped pieces: replace each named card in place (the piece that goes in carries no finishes badge)
     for out_key, in_key in theme.get("swap", []):
         incoming = _lookup_product_by_identity(*in_key)
