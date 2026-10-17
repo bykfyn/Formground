@@ -737,6 +737,7 @@ def render_banner_carousel(slides_html):
 # h1, .tag, .foot-note) live in /site.css, linked with an absolute path
 # below since these pages are nested under /brands/.
 PAGE_CSS = """
+  .curated-note { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; }
   main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
   .maker-header { text-align: center; margin-bottom: 32px; }
   .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
@@ -1282,6 +1283,15 @@ def render_news_section(brand, new_products):
   </section>"""
 
 
+def curated_note_html(brand, shown):
+    """A large catalogue is shown as a selection (data/curated_selections.json): say so, and send people to the whole range."""
+    entry = json.loads((DATA_DIR / "curated_selections.json").read_text()).get(brand) if (DATA_DIR / "curated_selections.json").exists() else None
+    if not entry:
+        return ""
+    return (f'<p class="curated-note">A selection of {shown} pieces from a range of about {entry["full_count"]}. '
+            f'The full range is on the maker\'s own site.</p>')
+
+
 def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None, stockists=None, new_products=None, page=1, designers=None):
     tag_list = list(umbrellas) + ([country] if country else [])
     tags = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
@@ -1378,7 +1388,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     <div class="tags">{tags}</div>
     <a class="brand-site-link" href="{html.escape(brand_url)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>{promo_callout}
   </div>
-{creator_texts.text_block_html("makers", slug, len(products)) if page == 1 else ""}{news_section}{all_work_title}  {earlier_html}
+{creator_texts.text_block_html("makers", slug, len(products)) if page == 1 else ""}{curated_note_html(brand, len(products)) if page == 1 else ""}{news_section}{all_work_title}  {earlier_html}
   <div class="grid" data-listing-grid>{cards}</div>
   {see_more_html}
   {pager_html}

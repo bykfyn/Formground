@@ -961,8 +961,13 @@ class PortfolioPiecesTests(unittest.TestCase):
         self.assertEqual(r["brand_links"][0]["href"], "/designers/salem-charabi.html")
 
     def test_a_type_search_can_return_them(self):
-        found = [m for m in qe.filter_products({"category": "daybed"}) if m["brand"] in qe.PORTFOLIO_BRANDS]
+        found = [m for m in qe.filter_products({"category": "stool"}) if m["brand"] in qe.PORTFOLIO_BRANDS]
         self.assertTrue(found)
+
+    def test_pieces_that_cannot_be_obtained_are_not_in_work(self):
+        names = {m["product_name"] for m in qe.filter_products({}) if m["brand"] == "Salem Charabi"}
+        self.assertNotIn("For Louis Kahn, daybed", names)        # a private commission
+        self.assertIn("Karmstol, woven chair", names)             # an edition on offer
 
     def test_they_have_no_maker_page(self):
         from pathlib import Path

@@ -182,12 +182,25 @@ def designer_pieces(designer_name, products):
     return sorted(out, key=lambda x: (-int(x["year"]) if x["year"] else 0, x["maker"].lower(), x["title"].lower()))
 
 
-def designer_links_html(designer_name):
-    """Links the designer runs themselves (a shop), from the designer's entry in designer_pieces.json; shown under the name."""
-    if not PIECES_PATH.exists():
+SITES_PATH = DATA_DIR / "designer_sites.json"            # {designer name: {"url": the designer's own website, ...}}
+
+
+def designer_site_url(designer_name):
+    """The designer's own website (2026-10-17: every designer page links to it, the starting point for a richer page)."""
+    if not SITES_PATH.exists():
         return ""
+    return (json.loads(SITES_PATH.read_text()).get(designer_name) or {}).get("url", "")
+
+
+def designer_links_html(designer_name):
+    """The designer's own website, then links the designer runs themselves (a shop, from designer_pieces.json); shown under the name."""
+    site = designer_site_url(designer_name)
+    site_html = (f'\n    <a class="brand-site-link" href="{html.escape(site)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>'
+                 if site else "")
+    if not PIECES_PATH.exists():
+        return site_html
     links = json.loads(PIECES_PATH.read_text()).get(designer_name, {}).get("links", [])
-    return "".join(f'\n    <a class="brand-site-link" href="{html.escape(l["url"])}" target="_blank" rel="noopener noreferrer">{html.escape(l["label"])} &rarr;</a>'
+    return site_html + "".join(f'\n    <a class="brand-site-link" href="{html.escape(l["url"])}" target="_blank" rel="noopener noreferrer">{html.escape(l["label"])} &rarr;</a>'
                    for l in links)
 
 
