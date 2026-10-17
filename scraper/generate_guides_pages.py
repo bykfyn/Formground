@@ -117,9 +117,10 @@ def _tail():
 
 
 def render_guide(guide, edit_exists):
-    title = fit_title(f"How to choose {guide['noun']}: what to consider", f"How to choose {guide['noun']}")
-    description = (f"What to consider before choosing {guide['noun']}: sizes, materials, care and questions to ask "
-                   "the maker. General guidance, no ratings.")
+    h1 = guide.get("h1") or f"How to choose {guide['noun']}: what to consider"
+    title = fit_title(h1, guide.get("h1_short") or f"How to choose {guide['noun']}")
+    description = guide.get("description") or (f"What to consider before choosing {guide['noun']}: sizes, materials, care and questions to ask "
+                                               "the maker. General guidance, no ratings.")
     url = f"{SITE_URL}/guides/{guide['slug']}.html"
     crumbs = [("Formground", f"{SITE_URL}/"), ("Buying guides", f"{SITE_URL}/guides.html"), (guide["title"], url)]
     sections = "".join(
@@ -130,9 +131,12 @@ def render_guide(guide, edit_exists):
         f'\n    <li><a href="{html.escape(href)}" target="_blank" rel="noopener noreferrer">{html.escape(label)}</a></li>'
         for label, href in guide["sources"]
     )
-    links = [f'<a href="/work/{guide["slug"]}.html">Browse {html.escape(guide["noun"])} &rarr;</a>']
-    if edit_exists:
-        links.append(f'<a href="/edits/{guide["edit_slug"]}.html">See an Edit &rarr;</a>')
+    if guide.get("related"):       # a guide built around a purpose ("a reading light for the bed"), not one type: links to several
+        links = [f'<a href="{html.escape(href)}">{html.escape(label)} &rarr;</a>' for label, href in guide["related"]]
+    else:
+        links = [f'<a href="/work/{guide["slug"]}.html">Browse {html.escape(guide["noun"])} &rarr;</a>']
+        if edit_exists:
+            links.append(f'<a href="/edits/{guide["edit_slug"]}.html">See an Edit &rarr;</a>')
     link_row = '<span class="sep">&middot;</span>'.join(links)
     return (
         _head(title, description, url, _breadcrumb_json(crumbs))
@@ -143,7 +147,7 @@ def render_guide(guide, edit_exists):
 </header>
 <main class="guide">
   <p class="guide-crumb"><a href="/guides.html">Buying guides</a></p>
-  <h1>How to choose {html.escape(guide['noun'])}: what to consider</h1>
+  <h1>{html.escape(h1)}</h1>
   <p class="guide-intro">{html.escape(guide['intro'])}</p>
   <p class="guide-links">{link_row}</p>{sections}
   <section class="guide-sources">
@@ -171,10 +175,13 @@ def render_hub(groups, edit_slugs):
             continue
         body += f'\n  <section class="guides-group">\n    <h2>{html.escape(group)}</h2>'
         for g in sorted(entries, key=lambda e: e['title']):
-            links = [f'<a href="/guides/{g["slug"]}.html">Read the guide &rarr;</a>',
-                     f'<a href="/work/{g["slug"]}.html">Browse {html.escape(g["noun"])}</a>']
-            if g["edit_slug"] in edit_slugs:
-                links.append(f'<a href="/edits/{g["edit_slug"]}.html">See an Edit</a>')
+            links = [f'<a href="/guides/{g["slug"]}.html">Read the guide &rarr;</a>']
+            if g.get("related"):
+                links += [f'<a href="{html.escape(href)}">{html.escape(label)}</a>' for label, href in g["related"][:2]]
+            else:
+                links.append(f'<a href="/work/{g["slug"]}.html">Browse {html.escape(g["noun"])}</a>')
+                if g["edit_slug"] in edit_slugs:
+                    links.append(f'<a href="/edits/{g["edit_slug"]}.html">See an Edit</a>')
             body += f"""
     <div class="guide-entry">
       <h3><a href="/guides/{g['slug']}.html">{html.escape(g['title'])}</a></h3>
@@ -204,7 +211,7 @@ def generate():
     edit_slugs = {p.stem for p in (DOCS_DIR / "edits").glob("*.html")}
     groups = {}
     for guide in GUIDES:
-        (DOCS_DIR / "guides" / f"{guide['slug']}.html").write_text(render_guide(guide, guide["edit_slug"] in edit_slugs))
+        (DOCS_DIR / "guides" / f"{guide['slug']}.html").write_text(render_guide(guide, guide.get("edit_slug") in edit_slugs))
         groups.setdefault(guide["group"], []).append(guide)
     (DOCS_DIR / "guides.html").write_text(render_hub(groups, edit_slugs))
     append_to_sitemap(["guides"] + [f"guides/{g['slug']}" for g in GUIDES])

@@ -1304,6 +1304,230 @@ GUIDES += [
     },
 ]
 
+# Purpose-led lighting guides (2026-10-17): built around what you are lighting, not one type; each links to the types that answer it.
+GUIDES += [
+    {
+        "slug": 'lighting-over-a-dining-table',
+        "group": "Lighting",
+        "noun": 'lighting over a dining table',
+        "title": 'Lighting over a dining table',
+        "h1": 'How to light a dining table: what to consider',
+        "h1_short": 'How to light a dining table',
+        "description": 'What to consider before choosing the light over a dining table: hanging height, width, light, dimming and questions for the maker. General guidance.',
+        "summary": 'Hanging height, width, spread of light and dimming for the lamp over the table where you eat.',
+        "intro": 'The light over a dining table is looked at every day and has to work for eating, talking and homework. These are the things worth settling before you choose it. The numbers are common rules of thumb, not fixed rules.',
+        "sections": [
+            ['Height and width', [
+                'The lower edge is commonly hung about 75-85 cm above the table, so nobody has to look around it. Hang it lower in a low room and higher in a tall one.',
+                'Choose a lamp, or a group, clearly narrower than the table so it stays well inside the edges. A long table suits a row of pendants or a linear fitting better than one large lamp.',
+                'Centre the light over the table, not over the room. If the table can be moved or extended, check that the light still sits well in the new position.',
+            ]],
+            ['Which kind', [
+                'One pendant suits a round or square table. A row of two or three, or a linear fitting, suits a rectangular one.',
+                'A chandelier suits a larger room and a high ceiling, and it is a heavy object: check the weight and the fixing.',
+                'A lamp with an adjustable drop, or a cable that can be shortened, makes the height easy to correct after it is up.',
+            ]],
+            ['Light for eating and talking', [
+                'Warm white light (around 2700 K) is the usual choice for dining. Check that it can be dimmed, so the same lamp serves a meal, homework and a late evening.',
+                'An opaque shade sends the light straight down onto the table and leaves the room around it darker. Glass, paper or fabric spreads it more widely. Think about how visible the bulb is when you are seated: a bare bulb at eye level can glare.',
+                'A second, lower source in the room, such as a wall lamp or a floor lamp, keeps the room from feeling dark beyond the table.',
+            ]],
+            ['Installation', [
+                'A hanging lamp needs a ceiling outlet where the table is. Fixed wiring should be done by a qualified electrician, and the rules differ by country.',
+                'If you may move the table, think about where the outlet is now. Moving it later is a job; a plug-in lamp on a swagged cable is another option, with a visible cable.',
+                'Heavy glass, stone or metal needs fixings that suit your ceiling (concrete, joists or plasterboard).',
+            ]],
+            ['Materials and care', [
+                'Glass shows fingerprints and dust, and a lamp over a table in an open kitchen collects grease. Check how it is cleaned and how it comes apart.',
+                'Raw brass and untreated metals darken with age; painted and powder-coated finishes keep their look but can chip.',
+            ]],
+            ['Questions worth asking the maker', [
+                'What are the exact dimensions and the drop, and can the drop be adjusted? Is the bulb included and replaceable? Can it be dimmed? What does it weigh? Are spare parts and finishes available later? What are the delivery and return terms?',
+            ]],
+        ],
+        "related": [
+            ('Pendant lamps', '/work/pendant-lamps.html'),
+            ('Chandeliers', '/work/chandeliers.html'),
+            ('Buying guide: pendant lamps', '/guides/pendant-lamps.html'),
+        ],
+        "sources": [COLOR_TEMP, LUMEN, EPREL, GREEN_CLAIMS, ("Electrical safety rules in Sweden, including who may do fixed installation work", "https://www.elsakerhetsverket.se/")],
+    },
+    {
+        "slug": 'reading-light-for-the-bed',
+        "group": "Lighting",
+        "noun": 'a reading light for the bed',
+        "title": 'A reading light for the bed',
+        "h1": 'How to choose a reading light for the bed: what to consider',
+        "h1_short": 'How to choose a reading light for the bed',
+        "description": 'What to consider before choosing a bed reading light: position, aim, switch, safety and questions for the maker. General guidance, no ratings.',
+        "summary": 'Position, direction, switch and safety for the light you read by before sleep.',
+        "intro": 'A reading light for the bed has to light the page without lighting the person next to you, and be switched off without getting up. These are the things worth settling before you choose it. The numbers are common rules of thumb, not fixed rules.',
+        "sections": [
+            ['Where it goes', [
+                'A wall lamp frees the bedside table and keeps the light at a steady height. Mounted so the lamp sits about at the shoulder height of a person sitting up, often about 120-140 cm above the floor, it lights the page without glare. Check it against your own bed and pillows.',
+                'A table lamp on a bedside table is easier to move and needs no wiring. Check that the table is big enough and that the shade sits at a good height when you are sitting up.',
+                'A floor lamp with an arm can reach over a bed from a corner. Check that it is stable and that the cable does not cross where you walk.',
+            ]],
+            ['Aim and spread', [
+                'A swing arm or a movable shade lets you aim the light at the page and away from your partner. A fixed lamp with a wide shade lights the whole bed more softly.',
+                'Two lamps, one on each side, with separate switches, let two people read at different times.',
+            ]],
+            ['Light', [
+                'Warm white light (around 2700 K) is the usual choice in a bedroom. Check that the lamp can be dimmed.',
+                'A high colour rendering index (CRI) makes print and skin look natural. 80 or more is common; 90 or more is better for reading.',
+                'Check the fitting, the maximum wattage and whether a bulb is included.',
+            ]],
+            ['Switch and cable', [
+                'The switch should be within reach from the pillow: on the lamp, on the cable or at the wall. A dimmer on the cable is useful.',
+                'Check the cable length and where the nearest socket is. A plug-in wall lamp shows its cable; a cover or channel can hide it.',
+                'Some lamps have a USB socket for a phone, which is worth checking if you want it.',
+            ]],
+            ['Safety', [
+                'Keep hot bulbs and lamps away from bedding and curtains. An enclosed or LED light runs cooler than an open halogen bulb.',
+                'A wired-in wall lamp needs a qualified electrician, and the rules differ by country.',
+            ]],
+            ['Questions worth asking the maker', [
+                'Can it be aimed? Can it be dimmed? Where is the switch and how long is the cable? Is the bulb included and replaceable? What are the exact dimensions and how far does it project from the wall? What are the delivery and return terms?',
+            ]],
+        ],
+        "related": [
+            ('Wall lamps', '/work/wall-lamps.html'),
+            ('Table lamps', '/work/table-lamps.html'),
+            ('Floor lamps', '/work/floor-lamps.html'),
+        ],
+        "sources": [COLOR_TEMP, LUMEN, EPREL, GREEN_CLAIMS, ("Electrical safety rules in Sweden, including who may do fixed installation work", "https://www.elsakerhetsverket.se/")],
+    },
+    {
+        "slug": 'lighting-a-room-with-a-low-ceiling',
+        "group": "Lighting",
+        "noun": 'lighting a room with a low ceiling',
+        "title": 'Lighting a room with a low ceiling',
+        "h1": 'How to light a room with a low ceiling: what to consider',
+        "h1_short": 'How to light a room with a low ceiling',
+        "description": 'What to consider when lighting a low-ceilinged room: flush fittings, light from the sides, uplight and questions for the maker. General guidance.',
+        "summary": 'Flush fittings, light from the sides and uplight for rooms where a hanging lamp would be in the way.',
+        "intro": 'In a room with a low ceiling a hanging lamp is in the way and a single bright light in the middle makes the room feel lower. These are the things worth settling before you choose. The numbers are common rules of thumb, not fixed rules.',
+        "sections": [
+            ['Keep the ceiling clear', [
+                'In a room with a ceiling lower than about 2.4 m, a flush or semi-flush ceiling lamp keeps clear of heads and tall furniture. A pendant needs its lower edge well above head height, at least about 2 metres over a walkway.',
+                'A shallow, wide fitting or a slim linear lamp takes less height than a deep dome.',
+            ]],
+            ['Light from the sides', [
+                'Wall lamps and floor lamps put the light at different heights, so the ceiling is not the only source. Wall lamps also free the floor and the tables.',
+                'A lamp that sends light up, such as a floor lamp with an uplight or a wall lamp with an upward beam, lights the ceiling and makes the room feel higher. Check that the ceiling is a light colour, or the light will be lost.',
+            ]],
+            ['Spread the light', [
+                'Several small sources spread the light more evenly than one large one in the centre, and avoid the glare of a bright light overhead.',
+                'Check that all of them can be dimmed, so you can lower the whole room together.',
+            ]],
+            ['Installation', [
+                'A ceiling lamp needs a ceiling outlet. Fixed wiring should be done by a qualified electrician, and the rules differ by country.',
+                'Recessed fittings need space above the ceiling and a hole cut for each one: check what is above before you plan them.',
+                'A plug-in floor or table lamp needs no work in the ceiling or the wall.',
+            ]],
+            ['Materials and care', [
+                'Opal glass and fabric shades collect dust and insects and need a regular wipe. Metals and finishes vary: raw brass darkens, powder coating chips.',
+                'Check how the bulb is changed once a flush lamp is up: a diffuser that clips off is easier than one that needs the whole lamp taken down.',
+            ]],
+            ['Questions worth asking the maker', [
+                'What is the exact height the lamp takes below the ceiling? Can it be dimmed? Is the bulb included and replaceable, and how is it changed? What does it weigh? What are the delivery and return terms?',
+            ]],
+        ],
+        "related": [
+            ('Ceiling lamps', '/work/ceiling-lamps.html'),
+            ('Wall lamps', '/work/wall-lamps.html'),
+            ('Floor lamps', '/work/floor-lamps.html'),
+        ],
+        "sources": [COLOR_TEMP, LUMEN, EPREL, GREEN_CLAIMS, ("Electrical safety rules in Sweden, including who may do fixed installation work", "https://www.elsakerhetsverket.se/")],
+    },
+    {
+        "slug": 'lighting-a-hallway-or-stairs',
+        "group": "Lighting",
+        "noun": 'lighting a hallway or stairs',
+        "title": 'Lighting a hallway or stairs',
+        "h1": 'How to light a hallway or stairs: what to consider',
+        "h1_short": 'How to light a hallway or stairs',
+        "description": 'What to consider when lighting a hallway or stairs: even light, safety, switches, clearance and questions to ask the maker. General guidance, no ratings.',
+        "summary": 'Even light, switches at both ends, clearance and care for the places you pass through.',
+        "intro": 'A hallway or a staircase is not a place to sit but a place to pass, and bad light there shows as a missed step. These are the things worth settling before you choose. The numbers are common rules of thumb, not fixed rules.',
+        "sections": [
+            ['Safety first', [
+                'Stairs need even light that shows each step. A single bright light at the top or bottom can throw shadows over the steps in between and glare in the eyes.',
+                'Switches at both ends of a hallway or stair, or a sensor, mean you never walk in the dark. Fixed wiring should be done by a qualified electrician, and the rules differ by country.',
+            ]],
+            ['Which lamps', [
+                'Wall lamps along a hallway, a few metres apart, give an even light and leave the ceiling free. Mounted at about eye level, around 150-165 cm, they are often a good height.',
+                'Flush ceiling lamps suit a low hallway. A pendant on a stair needs its lower edge clear of heads, at least about 2 metres above the floor or the step.',
+                'Small lights low on the wall beside the steps show the way at night without lighting the whole house.',
+            ]],
+            ['Projection and width', [
+                'Check how far a wall lamp projects. In a narrow hallway a lamp that sticks out far can be knocked or hit with a shoulder.',
+                'A shade that is closed at the sides is less likely to be bumped than an open arm.',
+            ]],
+            ['Light', [
+                'Warm white light (around 2700 K) is the usual choice at home. A dimmer, or a sensor that gives a low light at night, is useful.',
+                'Check that the shades do not glare when you look up a stair.',
+            ]],
+            ['Materials and care', [
+                'Hallway lamps are touched and knocked more than most: check how the finish holds up. Glass shows dust and fingerprints.',
+                'Check how the bulb is changed at the top of a stair. A lamp that needs a long ladder or a stair tower is a poor choice for the place where it is hard to reach.',
+            ]],
+            ['Questions worth asking the maker', [
+                'What are the exact dimensions and how far does it project from the wall? Is the bulb included, replaceable and easy to change? Can it be dimmed or used with a sensor? What are the delivery and return terms?',
+            ]],
+        ],
+        "related": [
+            ('Wall lamps', '/work/wall-lamps.html'),
+            ('Ceiling lamps', '/work/ceiling-lamps.html'),
+            ('Pendant lamps', '/work/pendant-lamps.html'),
+        ],
+        "sources": [COLOR_TEMP, LUMEN, EPREL, GREEN_CLAIMS, ("Electrical safety rules in Sweden, including who may do fixed installation work", "https://www.elsakerhetsverket.se/")],
+    },
+    {
+        "slug": 'layering-light-in-a-living-room',
+        "group": "Lighting",
+        "noun": 'layering light in a living room',
+        "title": 'Layering light in a living room',
+        "h1": 'How to layer light in a living room: what to consider',
+        "h1_short": 'How to layer light in a living room',
+        "description": 'What to consider when layering light in a living room: ambient, task and accent light, lamp heights, dimming and questions for the maker.',
+        "summary": 'Ambient, task and accent light, and how a few lamps at different heights beat one bright ceiling lamp.',
+        "intro": 'A living room is used for many things at different times, and one bright ceiling light does none of them well. Designers often build the light in layers instead. These are the things worth settling before you choose. The numbers are common rules of thumb, not fixed rules.',
+        "sections": [
+            ['Three layers', [
+                'Ambient light fills the room: a ceiling lamp, a pendant, wall lamps that wash the walls, or a floor lamp with an uplight.',
+                'Task light is for doing something: a reading lamp beside a chair, a table lamp on a desk.',
+                'Accent light picks something out: a wall lamp over a picture, a small lamp on a shelf.',
+            ]],
+            ['Lamps at different heights', [
+                'Many rooms feel better with several sources at different heights, often at least three, than with one at the ceiling. A floor lamp by the sofa, a table lamp on a sideboard and a wall lamp give light at eye level and below.',
+                'Put task lights where you sit, not where the lamp looks best. Sit down in the chair and check where the light falls.',
+            ]],
+            ['Dimming and colour', [
+                'Dimmers on the main lights let the room change from a bright afternoon to a low evening. Check that each lamp can be dimmed.',
+                'Keep the colour temperature similar across the lamps in one room: warm white (around 2700 K) is the usual choice. Lamps of very different colour in one room can look wrong together.',
+            ]],
+            ['Where to start', [
+                'Start with the main light and decide whether it is enough on its own. Then add a lamp beside the place where you read, then one on the far side of the room, then a light for a wall or a shelf.',
+                'Plug-in floor and table lamps need no work in the walls or the ceiling, so they are the easy way to add a layer.',
+            ]],
+            ['Materials and care', [
+                'Check how each lamp is cleaned: fabric and paper shades suit dry rooms and sit badly beside hot bulbs. Metals and finishes vary; raw brass darkens with age.',
+                'Check the cable length and where the sockets are, so the cables do not cross the floor.',
+            ]],
+            ['Questions worth asking the maker', [
+                'What are the exact dimensions and the height of the light? Can it be dimmed? Is the bulb included and replaceable? Where is the switch and how long is the cable? Are spare parts and finishes available later? What are the delivery and return terms?',
+            ]],
+        ],
+        "related": [
+            ('Floor lamps', '/work/floor-lamps.html'),
+            ('Table lamps', '/work/table-lamps.html'),
+            ('Wall lamps', '/work/wall-lamps.html'),
+        ],
+        "sources": [COLOR_TEMP, LUMEN, EPREL, GREEN_CLAIMS, ("Electrical safety rules in Sweden, including who may do fixed installation work", "https://www.elsakerhetsverket.se/")],
+    },
+]
+
 GUIDES_BY_SLUG = {g["slug"]: g for g in GUIDES}
 GROUP_ORDER = ["Furniture", "Lighting", "Objects"]
 
