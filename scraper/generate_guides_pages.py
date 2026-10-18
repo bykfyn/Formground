@@ -116,9 +116,22 @@ def _tail():
 """
 
 
+SINGULAR_PHRASE = {
+    "pendant-lamps": "a pendant lamp", "dining-tables": "a dining table", "sofas": "a sofa",
+    "portable-lamps": "a portable lamp", "table-lamps": "a table lamp", "floor-lamps": "a floor lamp",
+    "chairs": "a chair", "candle-holders": "a candle holder", "armchairs": "an armchair or lounge chair",
+    "coffee-tables": "a coffee table", "side-tables": "a side table", "cabinets": "a cabinet", "rugs": "a rug",
+    "mirrors": "a mirror", "stools": "a stool", "bar-stools": "a bar stool", "beds": "a bed", "desks": "a desk",
+    "sideboards": "a sideboard", "wall-lamps": "a wall lamp", "ceiling-lamps": "a ceiling lamp",
+    "chandeliers": "a chandelier",
+}   # "shelving" has no singular and keeps its plural noun
+
+
 def render_guide(guide, edit_exists):
-    h1 = guide.get("h1") or f"How to choose {guide['noun']}: what to consider"
-    title = fit_title(h1, guide.get("h1_short") or f"How to choose {guide['noun']}")
+    # People search "how to choose a floor lamp", not "floor lamps" (Search Console, 18 Oct): title it the way it is asked
+    asked = SINGULAR_PHRASE.get(guide["slug"], guide["noun"])
+    h1 = guide.get("h1") or f"How to choose {asked}: what to consider"
+    title = fit_title(h1, guide.get("h1_short") or f"How to choose {asked}")
     description = guide.get("description") or (f"What to consider before choosing {guide['noun']}: sizes, materials, care and questions to ask "
                                                "the maker. General guidance, no ratings.")
     url = f"{SITE_URL}/guides/{guide['slug']}.html"

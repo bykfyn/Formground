@@ -1292,6 +1292,29 @@ def curated_note_html(brand, shown):
             f'The full range is on the maker\'s own site.</p>')
 
 
+def possessive(name):
+    """"Galvin Brothers'" / "Hay's": names ending in s take a bare apostrophe."""
+    return name + ("'" if name.endswith("s") else "'s")
+
+
+def opening_sentences(text, limit=155):
+    """The first whole sentences of a text that fit in `limit` characters (a meta description). When the first
+    sentence alone is short (under 90), the next one is added cut at a word with an ellipsis; a single sentence longer
+    than the limit is cut the same way. Initials ("J.T.") do not end a sentence."""
+    text = " ".join(text.split())
+    out = ""
+    sentences = re.split(r"(?<![A-Z]\.)(?<=[.!?])\s+", text)
+    for n, sentence in enumerate(sentences):
+        candidate = f"{out} {sentence}".strip()
+        if len(candidate) <= limit:
+            out = candidate
+            continue
+        if len(out) < 90:
+            out = candidate[: limit - 1].rsplit(" ", 1)[0].rstrip(",;:") + "\u2026"
+        break
+    return out
+
+
 def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None, stockists=None, new_products=None, page=1, designers=None):
     tag_list = list(umbrellas) + ([country] if country else [])
     tags = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
@@ -1328,7 +1351,12 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     pg = f", page {page}" if page > 1 else ""
     kinds = list_phrase([u.lower() for u in umbrellas]) if umbrellas else ""
     seo_title = fit_title(*([f"{brand}: {kinds}{pg}"] if kinds else []), f"{brand} products{pg}", f"{brand}{pg}")
-    description = f"{html.escape(brand)}'s work on Formground - {len(products)} pieces{page_note}, linked straight to their own site."
+    description = f"{html.escape(possessive(brand))} work on Formground - {len(products)} pieces{page_note}, linked straight to their own site."
+    entry = creator_texts.get("makers", slug) if page == 1 else None
+    if entry and entry.get("paragraphs"):
+        # page 1 of a maker with a profile text: the description is the text's opening (unique per maker, and what a
+        # searcher can judge), not the template above (2026-10-18; Search Console showed brand-name queries with no clicks)
+        description = html.escape(opening_sentences(" ".join(entry["paragraphs"][:2]).replace("{count}", f"{len(products):,}")))
     # Social preview: the one default Formground image, not the maker's own
     # photo - we don't have the maker's permission to use their images as
     # our preview card (decision 2026-10-05).

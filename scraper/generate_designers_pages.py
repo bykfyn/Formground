@@ -215,7 +215,7 @@ def piece_section_html(designer_name, pieces):
         for x in pieces)
     return f"""
   <h2 class="section-heading" style="text-align:center;margin:44px 0 6px;font-size:18px;font-weight:500;">Further work</h2>
-  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">{len(pieces)} more pieces from {html.escape(designer_name)}'s career, newest first, from makers whose catalogues are not on Formground. Many are no longer in production, which makes this a way to learn what to look for second-hand. Each links to the maker or to the designer's own project page.</p>
+  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;">{len(pieces)} more pieces from {html.escape(designer_name)}{chr(39) if designer_name.endswith('s') else chr(39) + 's'} career, newest first, from makers whose catalogues are not on Formground. Many are no longer in production, which makes this a way to learn what to look for second-hand. Each links to the maker or to the designer's own project page.</p>
   <div class="maker-grid">{cards}
   </div>"""
 
@@ -236,7 +236,7 @@ def render_designer_page(designer_name, slug, products, page=1):
     else:
         across = f"{len(brands)} makers, including {brands[0]} and {brands[1]}"
     description = (
-        f"{html.escape(designer_name)}'s work on Formground: {len(products)} product{'' if len(products) == 1 else 's'}"
+        f"{html.escape(designer_name)}{chr(39) if designer_name.endswith('s') else chr(39) + 's'} work on Formground: {len(products)} product{'' if len(products) == 1 else 's'}"
         f"{page_note}, credited across {across}."
     )
     if len(description) + 45 <= 160:
