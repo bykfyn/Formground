@@ -17,6 +17,11 @@ on:
     - cron: "0 6 * * *"  # every day at 6am UTC
   workflow_dispatch: {}    # adds the manual "Run workflow" button in GitHub
 
+# The save step pushes to the repo, so the job needs write access (the other workflows that push already have this;
+# without it the push was refused on every run since at least 7 Oct and the flags were never saved).
+permissions:
+  contents: write
+
 jobs:
   check-links:
     runs-on: ubuntu-latest
@@ -46,6 +51,7 @@ jobs:
           git config user.email "bot@formground.local"
           git add data/formground.db data/sitemap_lastmod.json docs
           git diff --quiet --cached || git commit -m "Update link-check flags and regenerate brand pages"
+          git pull --rebase
           git push
 
       # After the save, so a broken photo never stops the flags being saved: this step only turns the run red.
