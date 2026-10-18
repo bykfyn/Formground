@@ -478,6 +478,35 @@ THEMES = [
             ("Fogia", "Boss Sideboard 3 Doors, Low"),
         ],
     },
+    {
+        # Hand-picked 2026-10-18 (fit and variety first, then smaller makers: 10 of 12). The type page holds two
+        # categories, "console table" and "console" (a hall or sofa console); both are the pool here.
+        "slug": "console-tables",
+        "title": "Console Tables",
+        "fetch": lambda: [p for q in ({"category": "console table"}, {"category": "console"}) for p in qe.filter_products(q)],
+        "intro": (
+            "A console table is the narrow piece that makes an entrance or "
+            "finishes a wall: a lamp and a bowl on top, a bench or a bag "
+            "underneath. Stone, lacquer, oak, marble and steel, from small "
+            "studios and a few larger names. Every product links straight "
+            "to the maker's own site."
+        ),
+        "hero_image": ("Seer Studio", "Finn Console"),
+        "picks": [
+            ('Galvin Brothers', 'Bobbin Console Table (Short)'),
+            ('Sé Collections', 'Atlas Console Lacquered'),
+            ('Fleur Studios', 'Butter Honeycomb Console'),
+            ('No Early Birds', 'NEB Console Table in Zinc Top'),
+            ('Mokko Amsterdam', 'Fenestra Console'),
+            ('Luke Malaney', 'Felix Table'),
+            ('Joris Poggioli', 'CONSOLE'),
+            ('Mingardo', 'Trestle Collection'),
+            ('Giulio Zizzari', 'Selene'),
+            ('Vikens Hantverkeri', 'Strandlyckevägen Avlastningsbord'),
+            ('Dooq', 'Pliè Console'),
+            ('Kristina Dam Studio', 'Foldable Console Table'),
+        ],
+    },
 ]
 
 CAROUSEL_SIZE = 3
@@ -1102,6 +1131,7 @@ EDIT_BROWSE_LINKS = {
     "candle-holders": ("candle-holders", "candle holders"),
     "stools": ("stools", "stools"),
     "sideboards": ("sideboards", "sideboards"),
+    "console-tables": ("console-tables", "console tables"),
 }
 
 
