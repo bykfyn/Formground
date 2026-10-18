@@ -420,6 +420,34 @@ THEMES = [
             ("Källemo", "NATIONALPALLEN"),
             ("Another Country", "Stool Five"),
         ],
+    },    {
+        # Hand-picked 2026-10-17 (fit and variety first, then smaller makers: all 12). A material Edit crosses
+        # types on purpose: chairs, tables, storage, lighting and objects, in oak, ash, walnut, cherry and pine.
+        "slug": "wood",
+        "title": "Wood",
+        "fetch": lambda: qe.filter_products({"material": "wood"}),
+        "intro": (
+            "Oak, ash, walnut, cherry and pine, worked by hand or turned and "
+            "joined: a chair, a table, a lamp, a tray. Wood changes with the "
+            "light and with age, and every piece here shows it. Every "
+            "product links straight to the maker's own site."
+        ),
+        "description_noun": "pieces in wood",
+        "hero_image": ("Kalon", "Divan Twin"),
+        "picks": [
+            ("Host & Toast", "Eld Chair (White Oak and Utility Leather)"),
+            ("Chatterton Studio", "Pyramid Chair"),
+            ("Alexis & Ginger", "Reflection Table - Dyed Ash"),
+            ("Grain", "Dish Side Table Walnut"),
+            ("Deceres Studio", "Aequs Oak Accent Table"),
+            ("Galvin Brothers", "Fluted Bedside Cabinet (with Drawer)"),
+            ("MOR", "FRONT Sideboard"),
+            ("Ceramicah", "Cuadra Floor Lamp"),
+            ("Form & Refine", "Andon Pendant Long"),
+            ("Arwenn", "DIN Tray Oak"),
+            ("Gustaf Westman", "Chunky Wood Bowl"),
+            ("Moebe", "Storage Box"),
+        ],
     },
 ]
 
@@ -1043,6 +1071,7 @@ EDIT_BROWSE_LINKS = {
     "rugs": ("rugs", "rugs"),
     "mirrors": ("mirrors", "mirrors"),
     "candle-holders": ("candle-holders", "candle holders"),
+    "stools": ("stools", "stools"),
 }
 
 
@@ -1098,7 +1127,8 @@ def render_themed_edit_page(theme, products):
     # card already advertises for this theme.
     cards_to_render, variant_counts = capped_edit_cards(theme, products)
     n, _makers = edit_totals(theme, cards_to_render)
-    description = _meta_description(f"A curated Edit of {n} {title.lower()}{'' if title.lower().endswith('s') else 's'} from makers. {theme['intro']}")
+    noun_phrase = theme.get("description_noun") or f"{title.lower()}{'' if title.lower().endswith('s') else 's'}"   # "wood" is a material, not a plural: "pieces in wood"
+    description = _meta_description(f"A curated Edit of {n} {noun_phrase} from makers. {theme['intro']}")
 
     picks = _resolve_carousel_picks(theme, cards_to_render) if EDIT_PAGE_BANNER else []
     carousel_html = _render_carousel(picks)
