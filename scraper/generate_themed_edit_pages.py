@@ -449,6 +449,35 @@ THEMES = [
             ("Moebe", "Storage Box"),
         ],
     },
+    {
+        # Hand-picked 2026-10-18 (fit and variety first, then smaller makers: 8 of 12; only 12 sideboard makers are
+        # small and several have no usable photo). Low storage on legs or a plinth, in wood, lacquer, stone and brass.
+        "slug": "sideboards",
+        "title": "Sideboards",
+        "fetch": lambda: qe.filter_products({"category": "sideboard"}),
+        "intro": (
+            "A sideboard is the long, low piece that holds a room together: "
+            "plates and linens behind the doors, lamps and books on top. "
+            "Oak, pear, walnut, lacquer and brass, from a handful of "
+            "workshops to long-established houses. Every product links "
+            "straight to the maker's own site."
+        ),
+        "hero_image": ("Łukasz Korol", "Kredens z jesionu"),
+        "picks": [
+            ("Galvin Brothers", "Konig Sideboard"),
+            ("Łukasz Korol", "Kredens z gruszy"),
+            ("G.A.D", "Wisby Sideboard"),
+            ("Gustaf Westman", "Curvy Sideboard"),
+            ("Lemon Furniture", "Winston Server"),
+            ("Mingardo", "Be-lieve"),
+            ("Giacomo Tomazzi", "Rack Taquaras"),
+            ("Dooq", "Kisho Sideboard"),
+            ("Kristina Dam Studio", "Grid Sideboard"),
+            ("Piet Hein Eek", "Sloophout Dressoir 6 laden"),
+            ("Galerie Kreo", "Divided Sideboard #1"),
+            ("Fogia", "Boss Sideboard 3 Doors, Low"),
+        ],
+    },
 ]
 
 CAROUSEL_SIZE = 3
@@ -1072,6 +1101,7 @@ EDIT_BROWSE_LINKS = {
     "mirrors": ("mirrors", "mirrors"),
     "candle-holders": ("candle-holders", "candle holders"),
     "stools": ("stools", "stools"),
+    "sideboards": ("sideboards", "sideboards"),
 }
 
 

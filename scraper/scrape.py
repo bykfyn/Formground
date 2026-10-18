@@ -36,6 +36,7 @@ import re
 import sqlite3
 import time
 import urllib.parse
+import urllib.request
 from pathlib import Path
 
 import requests
@@ -6173,6 +6174,15 @@ def _studio_cutout_image(images, look_at=8):
     return next((i["src"] for i in images if "ProductPhotography" in (i.get("src") or "")), "")
 
 
+def _page_answers(url):
+    """True when the page returns 200 (a plain GET, redirects followed)."""
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+        return urllib.request.urlopen(req, timeout=20).status == 200
+    except Exception:
+        return False
+
+
 def extract_shopify(brand):
     """
     Generic extractor for any brand running a standard Shopify store.
@@ -6273,6 +6283,27 @@ def extract_shopify(brand):
             p for p in raw_products
             if not any(kw in p["title"].lower() for kw in gift_shop_keywords)
         ]
+    if brand["name"] == "Lemon Furniture":
+        # Confirmed live 2026-10-18: the store lists every piece twice under two handles ("winston-server" and
+        # "winston-server-za", or "...-1"), and exactly one of each pair has a working page; the other is a 404. The
+        # dedup further down kept the first one listed, which was the dead one for 43 of 47 pieces. Keep the handle
+        # whose page answers (checked one at a time, politely).
+        by_title = {}
+        for p in raw_products:
+            by_title.setdefault(p["title"], []).append(p)
+        kept = []
+        for title, group in by_title.items():
+            if len(group) == 1:
+                kept.append(group[0])
+                continue
+            live = None
+            for cand in sorted(group, key=lambda q: q["handle"].endswith(("-1", "-za"))):
+                time.sleep(0.4)
+                if _page_answers(f"{base}/products/{cand['handle']}"):
+                    live = cand
+                    break
+            kept.append(live or sorted(group, key=lambda q: q["handle"].endswith(("-1", "-za")))[0])
+        raw_products = kept
     if brand["name"] == "Byarums Bruk":
         # 106 of 183 real catalog entries (58%, confirmed 2026-09-22) are
         # literally replacement components sold for Byarums Bruk's own
