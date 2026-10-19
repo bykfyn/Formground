@@ -82,6 +82,16 @@ from site_assets import ICONS_CSS, SHARE_JS, WORK_RESULTS_CSS  # noqa: E402
 # straight to its own real source (see generate_edits_page.py's
 # _edit_banner_slide_html for the same rule on the hub's own banner) -
 # credit and traffic go to the actual maker, not just their photo.
+# Makers added most recently (the "New Makers" Edit draws one piece from some of them); newest batch first.
+NEW_MAKERS = [
+    "Benchmark Furniture", "Mingardo", "Fredericia", "nanimarquina", "Kalon", "Y.S.M", "Articolo", "CVL", "David Pompa",
+    "Sons Design", "Gustaf Westman", "Faye Toogood", "Feldspar", "Source Édition",
+    "Vibia", "Lee Broom", "Ross Gardam", "WonderGlass", "Frandsen", "Grupa", "SOWDEN", "B-TD",
+    "Bocci", "Dzovag Kotchian", "Giacomo Tomazzi", "Studio Gameiro", "Catellani & Smith", "Dooq", "Giopato & Coombes", "Atelier Areti",
+    "Superlife", "Sabu Studio", "NORR11", "Formarkivet", "Chatterton Studio",
+    "Tlachï Design", "Rieul Lighting", "Master & Master", "Host & Toast", "20by8", "Ed Heritage", "HOKII", "Salma", "Vikens Hantverkeri",
+]
+
 THEMES = [
     {
         # Replaces the old "Wood Sofas" theme (2026-09-29) - "two seater
@@ -507,6 +517,35 @@ THEMES = [
             ('Kristina Dam Studio', 'Foldable Console Table'),
         ],
     },
+    {
+        # One page that is refreshed as makers arrive (user, 2026-10-19: "New Makers - refresh"), not a dated edition.
+        # To refresh: update NEW_MAKERS and the picks (one piece per maker, types alternating), keep the hero out of the picks.
+        # Picked 2026-10-19 from the makers added 9-17 Oct: fit and variety first, then smaller makers (10 of 12).
+        "slug": "new-makers",
+        "title": "New Makers",
+        "fetch": lambda: _products_by_brands(NEW_MAKERS),
+        "intro": (
+            "Makers who have recently joined Formground, one piece from each: "
+            "a cabinet, a chair, lamps, tables, a mirror and a rug. Many are "
+            "small studios, and every product links straight to the maker's "
+            "own site. This page is refreshed as new makers arrive."
+        ),
+        "hero_image": ("Formarkivet", "Cubio Shelf"),
+        "picks": [
+            ("Salma", "THE GENTHELMAN | Bar Cabinet"),
+            ("Formarkivet", "Ferra Wood Dining Armchair"),
+            ("Faye Toogood", "Johnny table light"),
+            ("Superlife", "BOBOLA TABLE"),
+            ("Dzovag Kotchian", "Miroir Eros"),
+            ("Studio Gameiro", "MINE(ral) Armchair"),
+            ("WonderGlass", "Berg Coffee Table"),
+            ("Chatterton Studio", "Candle Holder 06"),
+            ("Tlachï Design", "MESA VANO"),
+            ("Y.S.M", "NIGHT BOOK"),
+            ("nanimarquina", "Lucia Eames Butterfly Tapestry"),
+            ("Dooq", "Pliè Center Table"),
+        ],
+    },
 ]
 
 CAROUSEL_SIZE = 3
@@ -627,6 +666,18 @@ def _resolve_carousel_picks(theme, products):
         if product is not None:
             resolved.append(_with_image_override(product))
     return resolved
+
+
+def _products_by_brands(brands):
+    """Every live product (with a picture) of the named makers, for an Edit about makers, not a type."""
+    conn = sqlite3.connect(qe.DB_PATH)
+    conn.row_factory = sqlite3.Row
+    marks = ",".join("?" * len(brands))
+    rows = conn.execute(
+        f"SELECT * FROM products WHERE brand IN ({marks}) AND link_dead = 0 AND image_url != ''", list(brands)
+    ).fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
 
 
 def _lookup_product_by_identity(brand, product_name):

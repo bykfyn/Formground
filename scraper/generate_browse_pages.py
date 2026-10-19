@@ -47,6 +47,7 @@ generate_themed_edit_pages.py, whose pages link here):
 """
 
 import html
+import random
 import json
 import math
 import sys
@@ -242,17 +243,33 @@ PAGER_CSS = """
 """
 
 
-def _interleave_by_brand(products):
-    """Deterministic one-per-brand-per-pass ordering (brands alphabetical,
-    each brand's own products in the order filter_products() returned
-    them, which is stable DB order)."""
+def _week_rng(seed):
+    """A random generator fixed for one ISO week, so a type page keeps the same order all week for everyone (and between
+    builds) and moves to a new one the week after. The same approach as the Creators page's sample (2026-10-19)."""
+    import creator_texts
+    year, week, _ = creator_texts.today().isocalendar()
+    return random.Random(f"{seed}-{year}-{week}")
+
+
+def _interleave_by_brand(products, seed=None):
+    """One product per brand per pass. With a `seed` (the type page's name) the brands and each brand's pieces are put in
+    a random order that is fixed for the ISO week and changes weekly: the democratic pattern the search box uses, no
+    maker permanently first (2026-10-19, user: the lists looked alphabetical). Without a seed: brands alphabetical,
+    each brand's own products in the order filter_products() returned them (stable DB order)."""
     by_brand = {}
     for p in products:
         by_brand.setdefault(p["brand"], []).append(p)
-    queues = [by_brand[b] for b in sorted(by_brand, key=str.lower)]
+    names = sorted(by_brand, key=str.lower)
+    rng = _week_rng(seed) if seed else None
+    if rng:
+        for b in names:
+            rng.shuffle(by_brand[b])
+    queues = [by_brand[b] for b in names]
     out = []
     i = 0
     while queues:
+        if rng:
+            rng.shuffle(queues)
         remaining = []
         for q in queues:
             out.append(q[i])
@@ -617,15 +634,23 @@ def _type_tile_html(e):
     )
 
 
-def _interleave_by_firm(houses):
-    """Round-robin one house per firm per pass (firms alphabetical) so one practice with a
-    deep list does not fill a page; deterministic, like _interleave_by_brand."""
+def _interleave_by_firm(houses, seed=None):
+    """Round-robin one house per firm per pass so one practice with a deep list does not fill a page. With a `seed` the
+    firms and their houses are in a random order fixed for the ISO week (see _interleave_by_brand); without one, firms
+    alphabetical."""
     by_firm = {}
     for h in houses:
         by_firm.setdefault(h["firm"], []).append(h)
-    queues = [by_firm[f] for f in sorted(by_firm)]
+    names = sorted(by_firm)
+    rng = _week_rng(seed) if seed else None
+    if rng:
+        for f in names:
+            rng.shuffle(by_firm[f])
+    queues = [by_firm[f] for f in names]
     out = []
     while any(queues):
+        if rng:
+            rng.shuffle(queues)
         for q in queues:
             if q:
                 out.append(q.pop(0))
@@ -693,10 +718,10 @@ def _write_house_pages(houses, groups, entries):
     firm_pages = generate_architects_pages.firm_slugs()
     out_slugs = []
     n_countries = len({h["country"] for h in houses if h.get("country")})
-    targets = [("houses", "Houses", f" in {n_countries} countries", _interleave_by_firm(houses),
+    targets = [("houses", "Houses", f" in {n_countries} countries", _interleave_by_firm(houses, "houses"),
                 [("Houses", "/work/houses.html")])]
     for country, slug, hs in groups:
-        targets.append((slug, f"Houses in {country}", f" in {country}", _interleave_by_firm(hs),
+        targets.append((slug, f"Houses in {country}", f" in {country}", _interleave_by_firm(hs, slug),
                         [("Houses", "/work/houses.html"), (country, f"/work/{slug}.html")]))
 
     def firm_link(name):
@@ -847,7 +872,7 @@ def _new_view_pages(entries, sets):
         vslug = f"new-{work_menu.CATEGORY_SLUGS[cat]}"
         products = sets[cat]
         cards, variant_counts = _group_color_variants(products)
-        cards = _interleave_by_brand(cards)
+        cards = _interleave_by_brand(cards, vslug)
         title = f"New in {cat}"
         crumbs = [(cat, f"/work/{work_menu.CATEGORY_SLUGS[cat]}.html"), (title, f"/work/{vslug}.html")]
         siblings = " &middot; ".join(
@@ -935,7 +960,7 @@ def generate():
     for category in BROWSE_CATEGORIES:
         products = _category_products(category)
         cards, variant_counts = _group_color_variants(products)
-        cards = _interleave_by_brand(cards)
+        cards = _interleave_by_brand(cards, category["slug"])
         computed.append((category, products, cards, variant_counts))
         entries.append({"slug": category["slug"], "title": category["title"], "n": len(products), "group": category["group"],
                         "image": TYPE_TILE_IMAGE.get(category["slug"]) or (cards[0]["image_url"] if cards else "")})
