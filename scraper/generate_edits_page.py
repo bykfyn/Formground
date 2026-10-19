@@ -105,6 +105,8 @@ HUB_TILE_IMAGE = {
 TILE_OBJECT_POSITION = {
     "https://images.squarespace-cdn.com/content/v1/57b3208aff7c50dc3b5aef6a/1701278906295-AT1K9TVXW1EH3QRN2K4H/HannahBigeleisen_Lamp_1022_LizClayman_05.jpg?format=1000w": "50% 20%",
     "https://sizaralexis.se/wp-content/uploads/2023/06/G6A2148-scaled.jpg": "50% 100%",
+    # Kalon's Bough Table Round stands left of centre in a wide photo: the square tile's window is moved onto it (2026-10-19)
+    "https://images.kalonstudios.com/cb:EU5d~4b753/w:900/h:900/q:90/f:best/ig:avif/https://kalonstudios.com/wp-content/uploads/2022/06/Bough-Table-Round-Hero-1.jpg": "8% 50%",
 }
 
 # Layout of the hub's top block (2026-10-04, a trial the user asked for):

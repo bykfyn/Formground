@@ -443,7 +443,7 @@ THEMES = [
             "product links straight to the maker's own site."
         ),
         "description_noun": "pieces in wood",
-        "hero_image": ("Kalon", "Divan Twin"),
+        "hero_image": ("Kalon", "Bough Table Round"),   # centred in its photo (the Divan Twin sat to the left, and its original is a 9 MB file)
         "picks": [
             ("Host & Toast", "Eld Chair (White Oak and Utility Leather)"),
             ("Chatterton Studio", "Pyramid Chair"),
