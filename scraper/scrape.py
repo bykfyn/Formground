@@ -10144,6 +10144,49 @@ FOGIA_CATEGORY_SLUGS = {
 }
 
 
+def extract_sokketz(brand):
+    """Sokketz (Sweden): lacquers the visible plastic parts of ABB Impressivo wall switches, dimmers and sockets in set
+    colours (or any NCS code on request); the electrical parts are bought separately and installed by an electrician.
+    Shopify, 40 listings = 10 colours x {frame, switch, dimmer, socket}, titled "COLOUR - Swedish type". Not the generic
+    Shopify extractor: its " - finish" stripping would drop the type and keep only the colour. Prices in SEK."""
+    base = brand["url"].rstrip("/")
+    data = _fetch_json(f"{base}/products.json?limit=250")
+    types = {"ram": ("Frame", "Switch Frame"), "strömbrytare": ("Switch", "Wall Switch"), "syrömbrytare": ("Switch", "Wall Switch"),
+             "dimmer": ("Dimmer", "Dimmer Switch"), "eluttag": ("Socket", "Wall Socket"), "uttag": ("Socket", "Wall Socket")}
+    products = []
+    for p in (data or {}).get("products", []):
+        colour, _, kind = p["title"].rpartition(" - ")
+        hit = types.get(kind.strip().lower())
+        if not hit or not colour.strip():
+            continue
+        colour = re.sub(r"[!?]", "", colour).strip()
+        if colour.lower() == "beige beige":          # the frame listing's spelling of "Beigy Beige"
+            colour = "Beigy Beige"
+        images = p.get("images") or []
+        variant = (p.get("variants") or [{}])[0]
+        try:
+            price = float(variant.get("price"))
+        except (TypeError, ValueError):
+            price = None
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": f"{colour.strip().title()} {hit[0]}",
+            "product_url": f"{base}/products/{p['handle']}",
+            "category": hit[1],
+            "material_options": [],
+            "dimensions": "",
+            "notes": "Painted ABB Impressivo part; the electrical component is bought separately.",
+            "image_url": images[0]["src"] if images else "",
+            "designer": "",
+            "price": price,
+            "compare_at_price": None,
+            "currency": "SEK" if price else None,
+            "released_at": (p.get("published_at") or "")[:10] or None,
+        })
+    return products
+
+
 def extract_fogia(brand):
     domain = brand["url"].rstrip("/")
     products = []
@@ -12194,6 +12237,7 @@ EXTRACTORS = {
     "G.A.D": extract_woocommerce,
     "Fabrikant": extract_woocommerce,
     "Fogia": extract_fogia,
+    "Sokketz": extract_sokketz,
     "Blå Station": extract_blastation,
     "Gärsnäs": extract_garsnas,
     "Davsjö": extract_davsjo,
