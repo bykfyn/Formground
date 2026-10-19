@@ -69,7 +69,7 @@ class HouseCountryTests(unittest.TestCase):
     def test_a_house_is_filed_where_it_stands_not_where_its_architect_is_based(self):
         import generate_browse_pages as g
         by_name = {h["name"]: h for h in g.load_houses()}
-        self.assertEqual(by_name["Casa Kiké"]["country"], "Costa Rica")       # UK practice
+        self.assertEqual(by_name["Naisoso Island"]["country"], "Fiji")        # New Zealand practice
         self.assertEqual(by_name["House with a hidden atrium"]["country"], "Denmark")  # Swedish practice
         self.assertEqual(by_name["Velamsund"]["country"], "Sweden")           # no change
         for h in g.load_houses():
