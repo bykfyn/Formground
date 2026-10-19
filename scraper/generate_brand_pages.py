@@ -29,6 +29,7 @@ WHO RUNS THIS:
 
 import datetime
 import html
+import random
 import json
 import re
 import sqlite3
@@ -1205,6 +1206,111 @@ BRAND_DESIGNERS_CSS = """
   .designer-more[open] summary { margin-bottom: 12px; }
 """
 
+# "Makers like X" (mockup v3, 2026-10-19): matched through the work. Each maker is described by which /work/ types their
+# pieces fall in (sideboards, side tables, pendant lamps ...) and how much of their output each is; the closest makers
+# (type overlap, with a small allowance for similar catalogue size) are shown as maker cards, each with a piece from a
+# shared type as its picture and the shared types as its caption. Matching the work avoids having to judge style.
+SIMILAR_SHOWN = 6
+SIMILAR_POOL = 18                       # the best matches the six are drawn from (random order fixed for the ISO week)
+SIMILAR_MOCKUP = None   # None = every maker (approved 2026-10-19); a set of slugs limits it to those pages; empty = off
+BRAND_SIMILAR_CSS = """
+  .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
+  .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
+"""
+_TYPE_POOLS = None
+
+
+def _type_pools():
+    """{type page slug: (category entry, its products)} - the same pools the /work/ type pages list (built once)."""
+    global _TYPE_POOLS
+    if _TYPE_POOLS is None:
+        import generate_browse_pages as gb
+        _TYPE_POOLS = {}
+        for cat in gb.BROWSE_CATEGORIES:
+            try:
+                _TYPE_POOLS[cat["slug"]] = (cat, gb._category_products(cat))
+            except Exception:
+                continue
+    return _TYPE_POOLS
+
+
+def maker_work_profiles():
+    """{brand: {"n": pieces, "types": {type slug: share}, "piece": {type slug: a piece}}}: each piece counts once, in the
+    most specific /work/ type it belongs to (the smallest pool), so "chairs" does not swallow "dining chairs"."""
+    pools = _type_pools()
+    by_id = {}
+    for slug, (cat, pool) in pools.items():
+        for p in pool:
+            held = by_id.get(p["id"])
+            if held is None or len(pools[held[0]][1]) > len(pool):
+                by_id[p["id"]] = (slug, p)
+    profiles = {}
+    for slug, p in by_id.values():
+        m = profiles.setdefault(p["brand"], {"n": 0, "types": {}, "piece": {}})
+        m["n"] += 1
+        m["types"][slug] = m["types"].get(slug, 0) + 1
+        if p.get("image_url"):
+            m["piece"].setdefault(slug, p)
+    for m in profiles.values():
+        n = m["n"]
+        m["types"] = {t: c / n for t, c in m["types"].items()}
+    return profiles
+
+
+def similar_makers(brand, profiles, info, count=SIMILAR_SHOWN, pool=SIMILAR_POOL):
+    """Makers whose work overlaps this maker's (histogram overlap of /work/ types, scaled down a little for very different
+    catalogue sizes). The `pool` best are put in an order fixed for the ISO week and `count` shown: equal weight over time."""
+    import math
+    me = profiles.get(brand)
+    if not me or me["n"] < 3:
+        return []
+    scored = []
+    for other, o in profiles.items():
+        if other == brand or other not in info or o["n"] < 3:
+            continue
+        shared = {t: min(sh, o["types"].get(t, 0)) for t, sh in me["types"].items() if t in o["types"]}
+        overlap = sum(shared.values())
+        if overlap < 0.15:
+            continue
+        size = 1 / (1 + 0.3 * abs(math.log2(me["n"] / o["n"])))
+        scored.append((overlap * size, other, shared))
+    scored.sort(key=lambda x: (-x[0], x[1]))
+    best = scored[:pool]
+    import creator_texts
+    year, week, _ = creator_texts.today().isocalendar()
+    random.Random(f"similar-{info[brand]['slug']}-{year}-{week}").shuffle(best)
+    out = []
+    for _score, other, shared in best[:count]:
+        top = sorted(shared, key=lambda t: -shared[t])[:2]          # the types they share most
+        titles = [_type_pools()[t][0]["title"] for t in top]
+        piece = profiles[other]["piece"].get(top[0]) or next(iter(profiles[other]["piece"].values()), None)
+        out.append({**info[other], "caption": " \u00b7 ".join(titles), "piece_image": piece["image_url"] if piece else info[other]["image"]})
+    return out
+
+
+def render_similar_section(brand, similar):
+    """The "Makers like X" block: maker cards in the Makers page's style, picture = a piece from a shared type."""
+    if not similar:
+        return ""
+    items = ""
+    for m in similar:
+        country = html.escape(m["country"]) if m["country"] else "&nbsp;"
+        img = f'<img src="{html.escape(sized(m["piece_image"], CARD))}" alt="{html.escape(m["brand"])}" loading="lazy">' if m["piece_image"] else ""
+        items += (f'\n      <a class="maker-card" href="/brands/{m["slug"]}.html"><div class="maker-card-hero">{img}</div>'
+                  f'<div class="maker-card-body"><span class="maker-name">{html.escape(m["brand"])}</span>'
+                  f'<span class="maker-country">{country}</span>'
+                  f'<span class="maker-categories">{html.escape(m["caption"])}</span></div></a>')
+    return f"""
+  <section class="brand-section">
+    <p class="brand-section-title">Makers like {html.escape(brand)}</p>
+    <p class="like-note">Other makers on Formground whose work overlaps with theirs.</p>
+    <div class="like-grid">{items}
+    </div>
+  </section>"""
+
+
 DESIGNERS_SHOWN = 12   # the rest sit behind "and N more" (Alessi has 77, Galerie Kreo 68)
 
 
@@ -1315,7 +1421,7 @@ def opening_sentences(text, limit=155):
     return out
 
 
-def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None, stockists=None, new_products=None, page=1, designers=None):
+def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None, stockists=None, new_products=None, page=1, designers=None, similar=None):
     tag_list = list(umbrellas) + ([country] if country else [])
     tags = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
     # Real, live cross-link to Marketplace's Promotions tab (2026-09-28,
@@ -1345,6 +1451,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     news_section = render_news_section(brand, new_products) if page == 1 else ""
     all_work_title = f'  <p class="brand-section-title">All of {html.escape(brand)}</p>\n' if news_section else ""
     designers_section = render_designers_section(brand, designers) if page == 1 else ""
+    similar_section = render_similar_section(brand, similar) if page == 1 else ""
     stockist_section = "" if site_sections.is_hidden("maker_stockists") else render_stockist_section(brand, stockists)
     page_url = f"{SITE_URL}/brands/{brand_page_slug(slug, page)}.html"
     page_note = f" (page {page} of {pages})" if pages > 1 else ""
@@ -1402,7 +1509,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
 <script type="application/ld+json">{breadcrumb_json}</script>
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
-<style>{PAGE_CSS}{BRAND_DESIGNERS_CSS if designers_section else ''}</style>
+<style>{PAGE_CSS}{BRAND_DESIGNERS_CSS if designers_section else ''}{BRAND_SIMILAR_CSS if similar_section else ''}</style>
 {creator_texts.style_tag("makers", slug) if page == 1 else ""}
 </head>
 <body>
@@ -1421,7 +1528,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
   <div class="grid" data-listing-grid>{cards}</div>
   {see_more_html}
   {pager_html}
-{designers_section}{stockist_section}
+{similar_section}{designers_section}{stockist_section}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
@@ -1871,6 +1978,16 @@ def generate():
         base = re.sub(r"-\d+$", "", old_page.stem)
         if base in _brand_slugs_now and old_page.stem not in _brand_slugs_now:
             old_page.unlink()
+    # What every shown maker makes (by /work/ type), for the "Makers like X" block: needs all makers, so before the page loop
+    maker_info, work_profiles = {}, None
+    if SIMILAR_MOCKUP is None or SIMILAR_MOCKUP:
+        work_profiles = maker_work_profiles()
+        for _b, _products in by_brand.items():
+            if _b in hidden_brands:
+                continue
+            _umb = umbrella_categories_for(_products)
+            maker_info[_b] = {"brand": _b, "slug": slugify(_b), "umbrellas": _umb, "country": countries.get(_b),
+                              "image": primary_image_for(_products, _umb)}
     for brand, products in by_brand.items():
         slug = slugify(brand)
         # Extremely unlikely at current scale, but two brands could
@@ -1897,6 +2014,7 @@ def generate():
             stockists_by_brand.get(brand),
             new_arrivals_by_brand.get(brand),
             designers=designers_for_brand(brand, products, designer_info),
+            similar=(similar_makers(brand, work_profiles, maker_info) if work_profiles and (SIMILAR_MOCKUP is None or slug in SIMILAR_MOCKUP) else None),
         )
         (BRANDS_DIR / f"{slug}.html").write_text(page)
         brand_pages = max(1, -(-len(products) // BRAND_CARDS_PER_PAGE))
