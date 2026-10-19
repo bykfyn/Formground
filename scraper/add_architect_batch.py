@@ -360,6 +360,12 @@ def _merge_and_save(firms, report, replace=False):
         total_added += added
         if added and firm["name"] not in have_firms:
             architects.append(firm_record(firm))
+    # renderings, drawings and unbuilt proposals stay out (data/house_exclusions.json)
+    excl = json.loads((DATA_DIR / "house_exclusions.json").read_text())
+    skip_firms = {f["firm"] for f in excl["firms"]}
+    skip_houses = {(x["firm"], x["name"]) for x in excl["houses"]}
+    houses = [h for h in houses if h["firm"] not in skip_firms and (h["firm"], h["name"]) not in skip_houses]
+    architects = [a for a in architects if a["name"] not in skip_firms]
     HOUSES_PATH.write_text(json.dumps(houses, indent=2, ensure_ascii=False))
     ARCHITECTS_PATH.write_text(json.dumps(architects, indent=2, ensure_ascii=False))
 
