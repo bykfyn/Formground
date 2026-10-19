@@ -10200,6 +10200,14 @@ def extract_fogia(brand):
             if "images.fogia.com" in src and "LineDrawings" not in src:
                 image_url = html.unescape(src)
                 break
+        if not image_url:
+            # From Oct 2026 the site's pictures are on the plytix-files.com CDN and the page carries its markup as an
+            # escaped string inside a script (src=\"https://...\"), so no <img> tag is found above: read the first
+            # picture that is not a line drawing from that text (the first one is the product packshot).
+            for src in re.findall(r'src=\\"(https://plytix-files\.com/[^"\\]+)\\"', resp.text):
+                if "LineDrawings" not in src:
+                    image_url = html.unescape(src)
+                    break
 
         designer_match = re.search(r"The designers?\s*/\s*([^<]+)</h2>", resp.text)
         designer = html.unescape(designer_match.group(1).strip()) if designer_match else ""
