@@ -22,7 +22,7 @@ sys.path.insert(0, str(ROOT / "scraper"))
 
 def indexed_set(folder):
     out = set()
-    for path in sorted(folder.glob("*.csv")):
+    for path in sorted(folder.rglob("*.csv")):   # exports may sit in sub-folders (GCS-indexed/formground-6)
         with open(path, newline="", encoding="utf-8-sig") as f:
             for row in csv.reader(f):
                 if row and row[0].startswith("http"):
@@ -37,7 +37,20 @@ def requested_set(path):
     return {u.rstrip("/").lower() for u in re.findall(r"\[x\]\s+(https://formground\.com/\S+)", path.read_text())}
 
 
-def role(url, texts):
+def established_slugs():
+    """Pages of the 'established' (well-known, multinational) houses go last: the strategy leans into smaller makers (2026-10-26), since in
+    Search Console and the insights report they, the architects and the houses pages are what send visitors on (tier is set by hand in brands.json)."""
+    import json
+    import unicodedata
+    out = set()
+    for b in json.loads((ROOT / "scraper" / "brands.json").read_text()):
+        if b.get("tier") == "established":
+            n = unicodedata.normalize("NFKD", b["name"]).encode("ascii", "ignore").decode().lower()
+            out.add(re.sub(r"[^a-z0-9]+", "-", n).strip("-"))
+    return out
+
+
+def role(url, texts, established=frozenset()):
     path = url.replace("https://formground.com", "")
     if path in ("/", "/work.html", "/work/furniture.html", "/work/lighting.html", "/work/objects.html", "/creators.html", "/edits.html", "/guides.html"):
         return 0
@@ -47,6 +60,8 @@ def role(url, texts):
         return 2
     slug = path.rsplit("/", 1)[-1].replace(".html", "")
     if path.startswith("/brands/"):
+        if slug in established:
+            return 7
         return 3 if f"makers:{slug}" in texts else 5
     if path.startswith("/designers/"):
         return 3 if f"designers:{slug}" in texts else 5
@@ -68,7 +83,8 @@ def main():
     sitemap = (ROOT / "docs" / "sitemap.xml").read_text()
     todo = [u for u in re.findall(r"<loc>([^<]+)</loc>", sitemap) if u.rstrip("/").lower() not in have]
     lighting = re.compile(r"lamp|light|chandelier|pendant|sconce")       # the strategy leads with lighting (2026-10-17)
-    todo.sort(key=lambda u: (role(u, texts), not lighting.search(u), u))
+    est = established_slugs()
+    todo.sort(key=lambda u: (role(u, texts, est), not lighting.search(u), u))
     print(f"{len(todo)} sitemap addresses are neither in the indexed export nor already requested ({len(have)} addresses known). Next {args.n}:")
     for u in todo[:args.n]:
         print("  -", u)
