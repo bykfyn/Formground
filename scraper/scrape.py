@@ -11542,6 +11542,46 @@ def extract_ed_heritage(brand):
     return _extract_squarespace_store(brand, "/products")
 
 
+# inherit.design (formerly Fred Rigby Studio; Cotswolds, England; confirmed live 2026-11-03): Squarespace Commerce with the shop under
+# /collection/. /collection/all misses a few pieces, so the type collections are read too and merged by address. The page names alone
+# do not give the type ("Raindrop 300"), so the type comes from the collection the piece sits in. The cushions are left out.
+INHERIT_COLLECTIONS = (("sofas", "Sofa"), ("armchairs", "Armchair"), ("desks", "Desk"), ("coffee-tables", "Coffee Table"),
+                       ("side-tables", "Side Table"), ("footstools", "Footstool"), ("ottomans", "Footstool"),
+                       ("occasional-seating", "Armchair"), ("all", ""))
+
+
+def extract_inherit_design(brand):
+    base = brand["url"].rstrip("/")
+    found = {}
+    for slug, category in INHERIT_COLLECTIONS:
+        for item in _extract_squarespace_commerce_page(f"{base}/collection/{slug}"):
+            full_url = item.get("fullUrl", "")
+            if full_url and full_url not in found:
+                found[full_url] = (item, category)
+        time.sleep(1)
+    products = []
+    for full_url, (item, category) in found.items():
+        name = html.unescape(item.get("title", "")).strip()
+        if not name or "cushion" in name.lower():
+            continue
+        price = item.get("price") or {}
+        try:
+            value = float(price.get("value"))
+        except (TypeError, ValueError):
+            value = None
+        description = re.sub(r"<[^>]+>", " ", html.unescape(item.get("description") or "")).lower()
+        words = re.findall(r"[a-z]+", f"{name.lower()} {description}")
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": base + full_url,
+            "category": category or _infer_category_from_name(name, "", brand["name"]),
+            "material_options": [label for word, label in SQUARESPACE_MATERIALS if word in words],
+            "dimensions": "", "notes": "", "image_url": (item.get("mainImage") or {}).get("assetUrl", ""),
+            "designer": "", "price": value if value and value > 0 else None,
+            "currency": price.get("currency") if value and value > 0 else None,
+        })
+    return products
+
+
 # rieullighting.com (Rieul Lighting, Korea; confirmed live 2026-10-09) is a Cafe24 shop: the "All" category page
 # server-renders every product tile (name, won price, photo) and robots.txt is open.
 def extract_rieul_lighting(brand):
@@ -12205,6 +12245,7 @@ EXTRACTORS = {
     "HOKII": extract_shopify,
     "Host & Toast": extract_host_and_toast,
     "Ed Heritage": extract_ed_heritage,
+    "inherit.design": extract_inherit_design,
     "Rieul Lighting": extract_rieul_lighting,
     "Monsieur Cailloux": extract_monsieur_cailloux,
     "Jonas Lindholm": extract_woocommerce,
@@ -12289,6 +12330,8 @@ EXTRACTORS = {
     "Artetica": extract_shopify,
     "Wontek": extract_shopify,
     "Tala": extract_shopify,
+    "Lebanto": extract_shopify,        # 2026-11-03, from the Maker Cohort Ledger shortlist
+    "Marbera": extract_shopify,        # 2026-11-03, full catalogue (345)
     # 2026-09-24/25 furniture/objects triage - small/independent makers
     # with clean Shopify/WooCommerce catalogs, built first per user
     # request (established houses triaged in the same pass are held for
