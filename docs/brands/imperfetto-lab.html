@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Imperfetto Lab: furniture, lighting and objects — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Imperfetto Lab&#x27;s work on Formground - 89 pieces (page 1 of 2), linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/imperfetto-lab.html">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Imperfetto Lab: furniture, lighting and objects — Formground">
+<meta property="og:description" content="Imperfetto Lab&#x27;s work on Formground - 89 pieces (page 1 of 2), linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/imperfetto-lab.html">
+<meta property="og:image" content="https://formground.com/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://formground.com/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Imperfetto Lab: furniture, lighting and objects — Formground">
+<meta name="twitter:description" content="Imperfetto Lab&#x27;s work on Formground - 89 pieces (page 1 of 2), linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Imperfetto Lab", "item": "https://formground.com/brands/imperfetto-lab.html"}]}</script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/icons.css?v=86479f05">
+<style>
+  .curated-note { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; }
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  /* "New from X" sits at the TOP of a maker page, above the full range (and only exists when there is something new) */
+  .brand-section--top { margin: 0 0 44px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent; /* same box as .tag so the two small labels are one height */
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  /* two to a row on a phone (a single 190px-minimum column left the directories one long list) */
+  @media (max-width: 640px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px; height: 47px; box-sizing: border-box;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+/* SHARE-BTN:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .share-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 1;
+    width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(250, 249, 247, 0.85); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+  }
+  .share-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+  .share-btn i { font-size: 14px; }
+  .share-btn.copied::after {
+    content: "Copied"; position: absolute; bottom: 32px; right: 0;
+    background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  /* LOAD-MORE:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .load-more-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 40px 0 8px; text-align: center;
+  }
+  .load-more-btn {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: none; border: none; padding: 6px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .load-more-btn:hover { color: var(--text-primary); }
+  .load-more-btn:disabled { opacity: 0.6; cursor: default; text-decoration: none; }
+  .load-more-progress { font-size: 11.5px; color: var(--text-muted); }
+  
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 28px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
+  .has-load-more .pager { display: none; }
+  .earlier-results { display: none; margin: 0 0 14px; font-size: 13px; }
+  .has-load-more .earlier-results { display: block; }
+  .earlier-results a { color: var(--text-muted); text-decoration: none; }
+  .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
+
+  .designer-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .designer-chip {
+    display: inline-flex; align-items: baseline; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .designer-chip:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .designer-chip-name { font-weight: 500; }
+  .designer-chip-count { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+  .designer-more { margin-top: 12px; }
+  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; margin-bottom: 12px; }
+  .designer-more[open] summary { margin-bottom: 12px; }
+
+  .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
+  .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
+</style>
+
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/edits.html">Edits</a>
+</nav>
+</header>
+<main data-brand="Imperfetto Lab">
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Imperfetto Lab</h1>
+    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">Italy</span></div>
+    <a class="brand-site-link" href="https://www.imperfettolab.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  
+  <div class="grid" data-listing-grid>
+      <a class="card" href="https://www.imperfettolab.com/en/p/arenaria-3/" target="_blank" rel="noopener noreferrer" data-product="ARENARIA" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Scaffalature/ARENARIA-sculptural-shelf-design-Verter-Turroni-x-Imperfettolab-2026/ARENARIA-sculptural-shelf-design-Verter-Turroni-x-Imperfettolab-2026_2.jpg" alt="ARENARIA by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">ARENARIA</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/alma/" target="_blank" rel="noopener noreferrer" data-product="Alma" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/complementi/Alma/Alma_imperfettolab_02.jpg" alt="Alma by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Alma</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/anita/" target="_blank" rel="noopener noreferrer" data-product="Anita" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/complementi/Anita/Anita_imperfettolab_1.jpg" alt="Anita by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Anita</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/arche/" target="_blank" rel="noopener noreferrer" data-product="Archè Armchair" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/2024/06/Arche-01-a.jpg" alt="Archè Armchair by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Archè Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/aspis/" target="_blank" rel="noopener noreferrer" data-product="Aspis" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/2024/05/Aspis_imperfettolab_03.jpg" alt="Aspis by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Aspis</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/b-olla/" target="_blank" rel="noopener noreferrer" data-product="B.olla" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/specchio/B.olla/Bolla-black.jpg" alt="B.olla by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">B.olla</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/ba/" target="_blank" rel="noopener noreferrer" data-product="BA&#x27;" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/BA_web.jpg" alt="BA&#x27; by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">BA&#x27;</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/berliner/" target="_blank" rel="noopener noreferrer" data-product="BERLINER" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Berliner/Berliner-front.jpg" alt="BERLINER by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">BERLINER</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/bacone/" target="_blank" rel="noopener noreferrer" data-product="Bacone Table" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/Bacone/Bacone-01.jpg" alt="Bacone Table by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bacone Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/basalto/" target="_blank" rel="noopener noreferrer" data-product="Basalto" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/Basalto/Basalto-03.jpg" alt="Basalto by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Basalto</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/beetle/" target="_blank" rel="noopener noreferrer" data-product="Beetle" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Beetle/Beetle_imperfettolab_03.jpg" alt="Beetle by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Beetle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/bell-a/" target="_blank" rel="noopener noreferrer" data-product="Bell.a Lamp" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Illuminazione/Bell.a/Bell.a_imperfettolab_3.jpg" alt="Bell.a Lamp by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bell.a Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/bi/" target="_blank" rel="noopener noreferrer" data-product="Bi" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/Bi/Bi-01-02.jpg" alt="Bi by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bi</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/bruma/" target="_blank" rel="noopener noreferrer" data-product="Bruma Sofa" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Bruma/Bruma_imperfettolab_2.jpg" alt="Bruma Sofa by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bruma Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/bulbo/" target="_blank" rel="noopener noreferrer" data-product="Bulbo" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/complementi/Bulbo/bulbo_imperfettolab_1.jpg" alt="Bulbo by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bulbo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/canoa/" target="_blank" rel="noopener noreferrer" data-product="Canoa" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Canoa/Canoa-01.jpg" alt="Canoa by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Canoa</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/chiasmo/" target="_blank" rel="noopener noreferrer" data-product="Chiasmo Table" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/Chiasmo/Chiasmo-ovale.jpg" alt="Chiasmo Table by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chiasmo Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/ciottolo/" target="_blank" rel="noopener noreferrer" data-product="Ciottolo" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Ciottolo/Ciottolo_imperfettolab_02.jpg" alt="Ciottolo by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ciottolo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/ciottolo1/" target="_blank" rel="noopener noreferrer" data-product="Ciottolo#1" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Ciottolo1/Ciottolo1_imperfettolab_1.jpg" alt="Ciottolo#1 by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ciottolo#1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/circus/" target="_blank" rel="noopener noreferrer" data-product="Circus Wall Lamp" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Illuminazione/Circus/circus_imperfettolab_1.jpg" alt="Circus Wall Lamp by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Circus Wall Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/deco/" target="_blank" rel="noopener noreferrer" data-product="Deco" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/complementi/Deco/Deco-07.jpg" alt="Deco by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Deco</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/diade/" target="_blank" rel="noopener noreferrer" data-product="Diade Side Table" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/Diade/Diade-01-black.jpg" alt="Diade Side Table by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Diade Side Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/e42/" target="_blank" rel="noopener noreferrer" data-product="E42" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/E42/E42-03.jpg" alt="E42 by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">E42</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/echo/" target="_blank" rel="noopener noreferrer" data-product="Echo" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/complementi/Echo/Echo_imperfettolab_gruppo2.jpg" alt="Echo by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Echo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/epoche/" target="_blank" rel="noopener noreferrer" data-product="Epochè Armchair" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/2024/06/Epoche-01.jpg" alt="Epochè Armchair by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Epochè Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/equilibria/" target="_blank" rel="noopener noreferrer" data-product="Equilibria" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Equilibria/Equilibria_imperfettolab_1.jpg" alt="Equilibria by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Equilibria</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/equilibrium/" target="_blank" rel="noopener noreferrer" data-product="Equilibrium Table" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/Equilibrium/Equilibrium-02.jpg" alt="Equilibrium Table by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Equilibrium Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/esopo/" target="_blank" rel="noopener noreferrer" data-product="Esopo" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/complementi/Esopo/Esopo_imperfettolab_3.jpg" alt="Esopo by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Esopo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/favo/" target="_blank" rel="noopener noreferrer" data-product="Favo" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Scaffalature/Favo/Favo-01-02.jpg" alt="Favo by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Favo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/flora/" target="_blank" rel="noopener noreferrer" data-product="Flora Lamp" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Illuminazione/Flora/flora_imperfettolab_1.jpg" alt="Flora Lamp by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Flora Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/flow/" target="_blank" rel="noopener noreferrer" data-product="Flow" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Flow/Flow-01-a.jpg" alt="Flow by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Flow</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/gu/" target="_blank" rel="noopener noreferrer" data-product="GU&#x27;" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/GU_web/GU-design-Eusebio-Turroni-and-Verter-Turroni-x-Imperfettolab-2026_2.jpg" alt="GU&#x27; by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">GU&#x27;</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/gamete/" target="_blank" rel="noopener noreferrer" data-product="Gamete" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Gamete/Gamete_imperfettolab_3.jpg" alt="Gamete by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Gamete</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/guscio/" target="_blank" rel="noopener noreferrer" data-product="Guscio" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/complementi/Guscio/Guscio_imperfettolab_2.jpg" alt="Guscio by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Guscio</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/i-dem/" target="_blank" rel="noopener noreferrer" data-product="I-dem" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/specchio/i-dem/i-dem-1-2-3.jpg" alt="I-dem by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">I-dem</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/incline/" target="_blank" rel="noopener noreferrer" data-product="Incline" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/complementi/Incline/Incline_imperfettolab_1.jpg" alt="Incline by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Incline</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/introverso/" target="_blank" rel="noopener noreferrer" data-product="Introverso" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/specchio/Introverso/Introverso-02.jpg" alt="Introverso by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Introverso</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/io/" target="_blank" rel="noopener noreferrer" data-product="Io" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Io/Io_imperfettolab_2.jpg" alt="Io by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Io</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/isola/" target="_blank" rel="noopener noreferrer" data-product="Isola Side Table" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/Isola/Isola-01-black.jpg" alt="Isola Side Table by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Isola Side Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/koneo/" target="_blank" rel="noopener noreferrer" data-product="Koneo" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/complementi/Koneo/Koneo-imperfetto-lab-01-02-03-04.jpg" alt="Koneo by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Koneo</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/etty/" target="_blank" rel="noopener noreferrer" data-product="Lamp" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Illuminazione/Etty/etty_imperfettolab_2.jpg" alt="Lamp by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/libra/" target="_blank" rel="noopener noreferrer" data-product="Libra" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/Libra/Libra-anteprima.jpg" alt="Libra by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Libra</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/limes/" target="_blank" rel="noopener noreferrer" data-product="Limes" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/complementi/Limes/Limes_imperfettolab_A.jpg" alt="Limes by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Limes</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/lucilla/" target="_blank" rel="noopener noreferrer" data-product="Lucilla" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Illuminazione/Lucilla/lucilla_imperfettolab_1.jpg" alt="Lucilla by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lucilla</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/ludmilla/" target="_blank" rel="noopener noreferrer" data-product="Ludmilla" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Illuminazione/Ludmilla/ludmilla_imperfettolab_1.jpg" alt="Ludmilla by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ludmilla</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/lume/" target="_blank" rel="noopener noreferrer" data-product="Lume Lamp" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Illuminazione/Lume_web/Lume-01.jpg" alt="Lume Lamp by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lume Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/matau/" target="_blank" rel="noopener noreferrer" data-product="MATAU" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Matau/Matau-f.jpg" alt="MATAU by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">MATAU</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/maam/" target="_blank" rel="noopener noreferrer" data-product="Ma&#x27;am Armchair" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Ma039am/Maam_imperfettolab_1.jpg" alt="Ma&#x27;am Armchair by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ma&#x27;am Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/macula/" target="_blank" rel="noopener noreferrer" data-product="Macula" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/complementi/Macula/Macula_imperfettolab_1.jpg" alt="Macula by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Macula</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/mercurio/" target="_blank" rel="noopener noreferrer" data-product="Mercurio Armchair" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Mercurio/Mercurio_imperfettolab_3.jpg" alt="Mercurio Armchair by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Mercurio Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/midi/" target="_blank" rel="noopener noreferrer" data-product="Midi Armchair" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/unnamed-file.Midi/Midi_imperfettolab_3.jpg" alt="Midi Armchair by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Midi Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/mirroe/" target="_blank" rel="noopener noreferrer" data-product="Mirroe Mirror" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/specchio/Mirroe/MIR-01-02-black.jpg" alt="Mirroe Mirror by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Mirroe Mirror</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/miss/" target="_blank" rel="noopener noreferrer" data-product="Miss Table" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/Miss/Miss-gruppo-B.jpg" alt="Miss Table by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Miss Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/mondo/" target="_blank" rel="noopener noreferrer" data-product="Mondo Table" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/Mondo/Bacone-01-profilo.jpg" alt="Mondo Table by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Mondo Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/nulla/" target="_blank" rel="noopener noreferrer" data-product="NULLA" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/NULLA_web.jpeg" alt="NULLA by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">NULLA</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/nido/" target="_blank" rel="noopener noreferrer" data-product="Nido Armchair" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Nido/nido_imperfettolab_1.jpg" alt="Nido Armchair by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Nido Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/nok/" target="_blank" rel="noopener noreferrer" data-product="Nok" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/complementi/Nok/Nok-A.jpg" alt="Nok by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Nok</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/nur/" target="_blank" rel="noopener noreferrer" data-product="Nur Lamp" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Illuminazione/Nur_web/Nur-01.jpg" alt="Nur Lamp by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Nur Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/olav/" target="_blank" rel="noopener noreferrer" data-product="Olav Table" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Tavoli/Olav/Olav-web-01-black.jpg" alt="Olav Table by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Olav Table</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.imperfettolab.com/en/p/ombra/" target="_blank" rel="noopener noreferrer" data-product="Ombra" data-brand="Imperfetto Lab">
+        <div class="card-image"><img src="https://www.imperfettolab.com/app/uploads/prodotti/Sedute/Ombra/Ombra-01-a.jpg" alt="Ombra by Imperfetto Lab" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ombra</p>
+          
+        </div>
+      </a></div>
+  <div class="load-more-row"><a class="load-more-btn" id="see-more" data-total="89" data-start="0" href="/brands/imperfetto-lab-2.html">See more pieces</a><span class="load-more-progress" id="see-more-progress"></span></div>
+  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/brands/imperfetto-lab-2.html">2</a><a href="/brands/imperfetto-lab-2.html" rel="next">Next &rarr;</a></nav>
+
+  <section class="brand-section">
+    <p class="brand-section-title">Makers like Imperfetto Lab</p>
+    <p class="like-note">Other makers on Formground whose work overlaps with theirs.</p>
+    <div class="like-grid">
+      <a class="maker-card" href="/brands/kin-and-co.html"><div class="maker-card-hero"><img src="https://www.kinandcompany.com/user/pages/01.work/06.drape-mirror-1/Drape Series copy.jpg" alt="Kin and Co" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Kin and Co</span><span class="maker-country">United States</span><span class="maker-categories">Mirrors · Shelving</span></div></a>
+      <a class="maker-card" href="/brands/mass-productions.html"><div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0934/1167/2393/files/Astro_ClubChair_Ecriture_100_Black_0001_a4490135-7bf0-4f99-a1b3-f364e29c4cd2.png?v=1757944790&amp;width=500" alt="Mass Productions" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Mass Productions</span><span class="maker-country">Sweden</span><span class="maker-categories">Armchairs and Lounge Chairs · Side Tables</span></div></a>
+      <a class="maker-card" href="/brands/fogia.html"><div class="maker-card-hero"><img src="https://images.fogia.com/82/d8/70/69/6970d8827991180a249ecae1/FogiaBarba Club Chair Beech lacquered-Vidar 0693Front.png?auto=format&amp;q=90&amp;w=500" alt="Fogia" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Fogia</span><span class="maker-country">Sweden</span><span class="maker-categories">Armchairs and Lounge Chairs · Shelving</span></div></a>
+      <a class="maker-card" href="/brands/omelette-editions.html"><div class="maker-card-hero"><img src="https://omeletteeditions.com/wp-content/uploads/2023/06/Omelette-Editions_Alex_Lounge_8.jpg" alt="Omelette Editions" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Omelette Editions</span><span class="maker-country">Spain</span><span class="maker-categories">Armchairs and Lounge Chairs · Side Tables</span></div></a>
+      <a class="maker-card" href="/brands/se-collections.html"><div class="maker-card-hero"><img src="https://new.se-collections.com/wp-content/uploads/2021/04/Oshun-Sofa-Perennials-in-The-Loop-982-124-Sea-Salt-800x800.jpg" alt="Sé Collections" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Sé Collections</span><span class="maker-country">United Kingdom</span><span class="maker-categories">Armchairs and Lounge Chairs · Mirrors</span></div></a>
+      <a class="maker-card" href="/brands/seer-studio.html"><div class="maker-card-hero"><img src="https://static1.squarespace.com/static/685cbf0ea407153d32694a31/685d64acb9168b109a1c68d9/685ded31ca08731a1dfc7d54/1750996072951/Screen+Shot+2025-06-26+at+8.01.45+PM.png?format=500w" alt="Seer Studio" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Seer Studio</span><span class="maker-country">&nbsp;</span><span class="maker-categories">Side Tables · Mirrors</span></div></a>
+    </div>
+  </section>
+  <section class="brand-section">
+    <p class="brand-section-title">Designers who work with Imperfetto Lab</p>
+    <div class="designer-row"><a class="designer-chip" href="/designers/verter-turroni.html" title="58 pieces on Formground"><span class="designer-chip-name">Verter Turroni</span><span class="designer-chip-count">58</span></a><a class="designer-chip" href="/designers/emanuela-ravelli.html" title="3 pieces on Formground"><span class="designer-chip-name">Emanuela Ravelli</span><span class="designer-chip-count">3</span></a></div>
+  </section>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    // The tracking itself (page views, click-throughs, landing-page and
+    // campaign carry-over) lives in ONE shared file, /fg-track.js, instead
+    // of being pasted into hundreds of generated pages - see that file and
+    // backend/analytics.py for what is logged.
+    var s = document.createElement("script");
+    s.src = "/fg-track.js";
+    s.async = true;
+    document.head.appendChild(s);
+  })();
+</script>
+<script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=b09d5657" defer></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

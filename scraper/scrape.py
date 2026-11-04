@@ -11905,6 +11905,157 @@ def extract_giacomo_tomazzi(brand):
     return products
 
 
+# darestudio.com (Dare Studio, London; confirmed live 2026-11-04): a Wix Stores site. store-products-sitemap.xml lists every piece's
+# /product-page/<slug>; each page carries a schema.org Product block with GBP price and gallery. Names are bare ("Monroe",
+# "Katakana" x4 for different pieces), so the type is read from the description's opening and added to the name.
+_DARE_CATEGORIES = (("sofa and lounge", "Sofa"), ("wingback", "Armchair"), ("lounge chair", "Armchair"), ("armoire", "Cabinet"), ("dressing table", "Dressing Table"),
+                    ("dining table", "Dining Table"), ("coffee and side", "Coffee Table"), ("coffee and over", "Coffee Table"),
+                    ("coffee table", "Coffee Table"), ("side table", "Side Table"), ("console", "Console"), ("desk", "Desk"),
+                    ("coat stand", "Coat Stand"), ("bed frame", "Bed"), ("sideboard", "Sideboard"), ("shelving", "Shelving"),
+                    ("storage system", "Shelving"), ("cabinets", "Cabinet"), ("pendant", "Pendant"), ("floor lamp", "Floor Lamp"), ("lamp", "Table Lamp"),
+                    ("bar stool", "Bar Stool"), ("stool", "Stool"), ("sofa", "Sofa"), ("armchair", "Armchair"),
+                    ("chair", "Chair"), ("drawer", "Cabinet"), ("modular", "Sofa"), ("table", "Table"), ("floor", "Floor Lamp"))
+
+
+def extract_dare_studio(brand):
+    base = brand["url"].rstrip("/")
+
+    def get(url):
+        time.sleep(1)
+        try:
+            r = requests.get(url, headers=HEADERS, timeout=25)
+            r.raise_for_status()
+            r.encoding = "utf-8"
+            return r.text
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            return None
+
+    sitemap = get(f"{base}/store-products-sitemap.xml")
+    if not sitemap:
+        return []
+    products, seen = [], set()
+    for url in re.findall(r"<loc>([^<]+)</loc>", sitemap):
+        page = get(url)
+        data = None
+        for block in re.findall(r'<script type="application/ld\+json"[^>]*>(.*?)</script>', page or "", re.S):
+            try:
+                candidate = json.loads(block)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(candidate, dict) and candidate.get("@type") == "Product":
+                data = candidate
+                break
+        if not data:
+            continue
+        images = data.get("image") or []
+        image = images[0].get("contentUrl") if images and isinstance(images[0], dict) else (images[0] if images else "")
+        image = re.sub(r"/v1/fit/w_\d+,h_\d+,q_\d+/", "/v1/fit/w_1000,h_1000,q_85/", image or "")
+        name = html.unescape(data.get("name", "")).strip()
+        description = html.unescape(data.get("description", ""))
+        head = f"{name} {url.rsplit('/', 1)[-1].replace('-', ' ')} {description[:300]}".lower()
+        category = next((c for key, c in _DARE_CATEGORIES if key in head), "")
+        if not category:          # nothing in the opening: take the type the full text mentions first
+            full = description.lower()
+            hits = sorted((full.index(key), c) for key, c in _DARE_CATEGORIES if key in full)
+            category = hits[0][1] if hits else ""
+        if not name or not image or not category:
+            print(f"  Skipped {url}: name={name!r} category={category!r}")
+            continue
+        if category.lower().split()[-1] not in name.lower() and "chair" not in name.lower():
+            name = f"{name} {category}"
+        if name in seen:
+            continue
+        seen.add(name)
+        offer = data.get("offers") or {}
+        if isinstance(offer, list):
+            offer = offer[0] if offer else {}
+        try:
+            price = float(offer.get("price"))
+        except (TypeError, ValueError):
+            price = None
+        designer = re.search(r"Designed by ([^.\n]+)", description)
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": [], "dimensions": "", "notes": "", "image_url": image,
+            "designer": designer.group(1).strip() if designer else "",
+            "price": price if price and price > 0 else None, "currency": (offer.get("priceCurrency") or "GBP").upper() if price else None,
+        })
+    return products
+
+
+# imperfettolab.com (Imperfetto Lab, Italy; confirmed live 2026-11-04): a WooCommerce site whose robots.txt disallows /wp-json/, so the
+# Store API is not used. product-sitemap.xml lists each piece's Italian page (/p/<slug>/, with duplicates); the English page
+# (/en/p/<slug>/) gives name, photo, designer and EUR price in its details line ("Category: Seats Designer: ... Year: ... EUR 4.899,00"),
+# and the Italian title's type word ("Poltrona Arche") refines the broad shop category.
+_IMPERFETTO_BROAD = {"seats": "Chair", "tables": "Table", "lighting": "Lamp", "mirrors": "Mirror", "shelves": "Shelving",
+                     "accessories": "Objects", "complements": "Objects", "bookcases": "Shelving"}
+_IMPERFETTO_TYPES = (("lampada da parete", "Wall Lamp"), ("lampada da terra", "Floor Lamp"), ("lampada da tavolo", "Table Lamp"),
+                     ("sospensione", "Pendant"), ("lampadario", "Chandelier"), ("applique", "Wall Lamp"), ("lampada", "Lamp"),
+                     ("poltrona", "Armchair"), ("sedia", "Chair"), ("sgabello", "Stool"), ("panca", "Bench"), ("divano", "Sofa"),
+                     ("pouf", "Ottoman"), ("tavolino", "Side Table"), ("tavolo", "Table"), ("specchio", "Mirror"),
+                     ("libreria", "Shelving"), ("scaffale", "Shelving"), ("vaso", "Vase"), ("contenitore", "Storage"))
+
+
+def extract_imperfetto_lab(brand):
+    base = brand["url"].rstrip("/")
+
+    def get(url):
+        time.sleep(1)
+        try:
+            r = requests.get(url, headers=HEADERS, timeout=25)
+            r.raise_for_status()
+            r.encoding = "utf-8"
+            return r.text
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            return None
+
+    def og(page, prop):
+        m = re.search(rf'<meta property="og:{prop}" content="([^"]*)"', page or "")
+        return html.unescape(m.group(1)) if m else ""
+
+    sitemap = get(f"{base}/product-sitemap.xml")
+    if not sitemap:
+        return []
+    slugs = []
+    for slug in re.findall(r"/p/([^/<]+)/</loc>", sitemap):
+        if slug not in slugs:
+            slugs.append(slug)
+    products = []
+    for slug in slugs:
+        en = get(f"{base}/en/p/{slug}/")
+        if not en or not og(en, "image"):
+            continue
+        name = og(en, "title").rsplit(" - ", 1)[0].strip()
+        text = html.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[^>]*>.*?</\1>", "", en, flags=re.S))))
+        details = re.search(r"Category: (.*?)(?: aggiungi al carrello| Request information|$)", text)
+        line = details.group(1) if details else ""
+        broad = re.match(r"([A-Za-z ]+?)(?: Designer:| Year:| Dimensions|$)", line)
+        category = _IMPERFETTO_BROAD.get((broad.group(1) if broad else "").strip().lower(), "")
+        designer = re.search(r"Designer: (.*?)(?: Target:| Year:| €|$)", line)
+        designer = designer.group(1).replace(",", ", ").replace("  ", " ").strip() if designer else ""
+        it_title = ""
+        if category not in ("Objects", "Mirror", "Shelving"):
+            it_title = og(get(f"{base}/p/{slug}/"), "title").lower()
+        refined = next((c for key, c in _IMPERFETTO_TYPES if it_title.startswith(key)), "")
+        if refined:
+            category = refined
+            if refined.split()[-1].lower() not in name.lower():
+                name = f"{name} {refined}"
+        elif category == "Chair":
+            category = "Seating"          # the shop's "Sedute" mixes chairs, stools, benches and sofas
+        if not name or not category:
+            print(f"  Skipped {slug}: no usable category ({line!r})")
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": f"{base}/en/p/{slug}/",
+            "category": category, "material_options": [], "dimensions": "", "notes": "", "image_url": og(en, "image"),
+            "designer": "" if designer.lower().startswith("imperfetto") else designer, "price": None, "currency": None,
+        })
+    return products
+
+
 def _extract_og_catalog(brand, listing_urls, link_re, skip_words=(), title_cut=" - ", max_pages=60):
     """A catalogue site with no prices and one page per piece: the listing pages give the piece links, each piece page's own
     og:title / og:image give its name and photo (confirmed on Studio Gameiro 2026-10-12). Polite: one page a second."""
@@ -12236,6 +12387,8 @@ EXTRACTORS = {
     "Catellani & Smith": extract_catellani_smith,
     "Studio Gameiro": extract_studio_gameiro,
     "Giacomo Tomazzi": extract_giacomo_tomazzi,
+    "Dare Studio": extract_dare_studio,
+    "Imperfetto Lab": extract_imperfetto_lab,
     "Dzovag Kotchian": extract_dzovag_kotchian,
     "Superlife": extract_shopify,
     "NORR11": extract_shopify,
