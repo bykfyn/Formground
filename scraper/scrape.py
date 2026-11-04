@@ -12056,6 +12056,128 @@ def extract_imperfetto_lab(brand):
     return products
 
 
+# humbertodamata.com (Humberto da Mata, Sao Paulo; confirmed live 2026-11-04): a Wix site. Only the "colecao" (edition collection: Trama,
+# Tramawood, Neotrama, Cloud, Neocloud) is taken; the ~90 one-off "pecas unicas" were left out on purpose. Pieces come from the two
+# dynamic-colecao sitemaps; titles are bilingual ("Tramawood Cadeira / Chair"), so the Portuguese type words are dropped and the English
+# type kept. No prices (contact for information).
+_HUMBERTO_PT = {"cadeira", "banqueta", "banquetona", "banco", "poltrona", "sofá", "alta", "retangular", "pequena", "pequeno", "grande"}
+_HUMBERTO_TYPES = (("high stool", "Bar Stool"), ("stool", "Stool"), ("bench", "Bench"), ("sofa", "Sofa"), ("armchair", "Armchair"),
+                   ("lounge chair", "Armchair"), ("chair", "Chair"))
+
+
+def extract_humberto_da_mata(brand):
+    base = brand["url"].rstrip("/")
+
+    def get(url):
+        time.sleep(1)
+        try:
+            r = requests.get(url, headers=HEADERS, timeout=25)
+            r.raise_for_status()
+            r.encoding = "utf-8"
+            return r.text
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            return None
+
+    index = get(f"{base}/sitemap.xml")
+    if not index:
+        return []
+    urls = []
+    for sm in re.findall(r"<loc>([^<]*dynamic-colecao[^<]*)</loc>", index):
+        for url in re.findall(r"<loc>([^<]+)</loc>", get(sm) or ""):
+            if url not in urls:
+                urls.append(html.unescape(url))
+    products = []
+    for url in urls:
+        page = get(url)
+        title = re.search(r'<meta property="og:title" content="([^"]*)"', page or "")
+        image = re.search(r'<meta property="og:image" content="([^"]*)"', page or "")
+        if not title or not image or " / " not in title.group(1):
+            print(f"  Skipped {url}: no bilingual title or photo")
+            continue
+        left, right = (part.strip() for part in html.unescape(title.group(1)).split(" / ", 1))
+        words = left.split()
+        while len(words) > 1 and words[-1].lower() in _HUMBERTO_PT:
+            words.pop()
+        category = next((c for key, c in _HUMBERTO_TYPES if key in right.lower()), "")
+        if right.lower() == "stool" and "banquetona" in left.lower():
+            right = "Large Stool"          # banqueta = small stool, banquetona = the 60 cm one; both are called "Stool" in English
+        if not category:
+            print(f"  Skipped {url}: unknown type {right!r}")
+            continue
+        text = html.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[^>]*>.*?</\1>", "", page, flags=re.S))))
+        size = re.search(r"(\d+(?:[.,]\d+)? x \d+(?:[.,]\d+)?(?: x \d+(?:[.,]\d+)?)? cm) /", text)
+        photo = re.sub(r"/v1/fill/w_\d+,h_\d+,[^/]*/", "/v1/fit/w_1000,h_1000,q_85/", image.group(1))
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": f"{' '.join(words)} {right}", "product_url": url,
+            "category": category, "material_options": [], "dimensions": size.group(1) if size else "", "notes": "", "image_url": photo,
+            "designer": "Humberto da Mata", "price": None, "currency": None,
+        })
+    return products
+
+
+# houe.com (Houe, Ry, Denmark; confirmed live 2026-11-04): a custom Umbraco site, no robots.txt, no prices. /our-furniture/<group>/<family>/
+# lists the families on each group page; one card per family (variants and sizes stay on the family page), photo = the family's first
+# wide lifestyle image. The pages carry no type word for the card, so the 21 known families are named and typed in
+# _HOUE_FAMILIES; a new family falls back to its group (chairs/tables/lounge/lighting/rugs). The Click serving cart is left out.
+_HOUE_FAMILIES = {
+    "alua": ("Alua Dining Chair", "Chair"), "click": ("Click Dining Chair", "Chair"), "falk-indoor": ("Falk Indoor Chair", "Chair"),
+    "falk-outdoor": ("Falk Outdoor Chair", "Chair"), "reclips": ("ReCLIPS Chair", "Chair"), "avanti": ("Avanti Table", "Table"),
+    "circle": ("Circle Dining Table", "Dining Table"), "edge": ("Edge Side Table", "Side Table"),
+    "eyelet": ("Eyelet Side Table", "Side Table"), "four": ("Four Dining Table", "Dining Table"),
+    "leaf": ("Leaf Dining Table", "Dining Table"), "pico": ("Pico Café Table", "Table"), "sketch": ("Sketch Dining Table", "Dining Table"),
+    "avon": ("Avon Lounge Sofa", "Sofa"), "drift": ("Drift Sofa", "Sofa"), "level": ("Level Lounge Sofa", "Sofa"),
+    "level2": ("Level 2 Lounge Sofa", "Sofa"), "molo": ("Molo Sunbed", "Daybed"), "light-no-1": ("Light no 1", "Lamp"),
+    "luu": ("LUU Portable Lamp", "Table Lamp"), "field": ("Field Outdoor Rug", "Rug"),
+}
+_HOUE_GROUPS = {"chairs": "Chair", "tables": "Table", "lounge": "Sofa", "lighting": "Lamp", "rugs": "Rug"}
+
+
+def extract_houe(brand):
+    base = brand["url"].rstrip("/")
+
+    def get(path):
+        time.sleep(1)
+        try:
+            r = requests.get(base + path, headers=HEADERS, timeout=25)
+            r.raise_for_status()
+            r.encoding = "utf-8"
+            return r.text
+        except requests.RequestException as e:
+            print(f"  Could not fetch {path}: {e}")
+            return None
+
+    products = []
+    for group, group_category in _HOUE_GROUPS.items():
+        listing = get(f"/our-furniture/{group}/")
+        families = []
+        for family in re.findall(rf'href="/our-furniture/{group}/([^"/#?]+)/"', listing or ""):
+            if family not in families:
+                families.append(family)
+        for family in families:
+            if group == "tables" and family == "click":
+                continue
+            page = get(f"/our-furniture/{group}/{family}/")
+            hero = re.search(r'<img src="(/media/[^"?]+)', page or "")
+            title = re.search(r"<title>(.*?)</title>", page or "", re.S)
+            if not hero:
+                print(f"  Skipped {group}/{family}: no photo")
+                continue
+            name, category = _HOUE_FAMILIES.get(family, (None, group_category))
+            if not name:
+                name = f"{html.unescape(title.group(1)).strip().title()} {group_category}" if title else family.title()
+            text = html.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[^>]*>.*?</\1>", "", page, flags=re.S))))
+            size = re.search(r"Height ([\d,]+) cm Width ([\d,]+) cm (?:Depth|Length) ([\d,]+) cm", text)
+            dims = " x ".join(str(round(float(v.replace(",", ".")))) for v in size.groups()) + " cm (H x W x D)" if size else ""
+            products.append({
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+                "product_url": f"{base}/our-furniture/{group}/{family}/", "category": category, "material_options": [],
+                "dimensions": dims, "notes": "", "image_url": f"{base}{hero.group(1)}?width=1200", "designer": "",
+                "price": None, "currency": None,
+            })
+    return products
+
+
 def _extract_og_catalog(brand, listing_urls, link_re, skip_words=(), title_cut=" - ", max_pages=60):
     """A catalogue site with no prices and one page per piece: the listing pages give the piece links, each piece page's own
     og:title / og:image give its name and photo (confirmed on Studio Gameiro 2026-10-12). Polite: one page a second."""
@@ -12388,6 +12510,8 @@ EXTRACTORS = {
     "Studio Gameiro": extract_studio_gameiro,
     "Giacomo Tomazzi": extract_giacomo_tomazzi,
     "Dare Studio": extract_dare_studio,
+    "Houe": extract_houe,
+    "Humberto da Mata": extract_humberto_da_mata,
     "Imperfetto Lab": extract_imperfetto_lab,
     "Dzovag Kotchian": extract_dzovag_kotchian,
     "Superlife": extract_shopify,
