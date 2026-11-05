@@ -196,14 +196,7 @@ def load_hidden_brands():
     """
     brands = json.loads(BRANDS_PATH.read_text())
     # a portfolio designer ("portfolio": true) is shown as pieces but is not a maker: no brand page, no makers.html entry
-    hidden = {b["name"] for b in brands if b.get("hidden") or b.get("portfolio")}
-    # a company that makes a portfolio designer's work (LK Hjelle for Jonah Takagi's Ami) is named on the piece's card, but it is not
-    # a curated brand here either: no brand page, no makers.html entry (2026-11-05)
-    availability = DATA_DIR / "portfolio_availability.json"
-    if availability.exists():
-        known = {b["name"] for b in brands}
-        hidden |= {v["maker"] for v in json.loads(availability.read_text()).values() if v.get("maker") and v["maker"] not in known}
-    return hidden
+    return {b["name"] for b in brands if b.get("hidden") or b.get("portfolio")}
 
 
 def load_brand_tiers():
