@@ -70,8 +70,9 @@ def paragraphs(entry, count):
     return [p.replace("{count}", f"{count:,}") for p in entry["paragraphs"]]
 
 
-def text_block_html(group, page_slug, count):
-    """The text, facts and sources for a creator page, or "" when there is no text for this creator."""
+def text_block_html(group, page_slug, count, on_profile_edit=False):
+    """The text, facts and sources for a creator page, or "" when there is no text for this creator. The profile Edit
+    itself passes on_profile_edit=True: it shows the same text, and must not link to itself."""
     entry = get(group, page_slug)
     if not entry:
         return ""
@@ -81,7 +82,7 @@ def text_block_html(group, page_slug, count):
                     if v and v.strip().lower() != "unknown")
     # once the profile Edit is live, the creator's page points to it
     edit_link = ""
-    if f"{group}:{page_slug}" in load():
+    if not on_profile_edit and f"{group}:{page_slug}" in load():
         edit_link = f'\n    <p class="creator-more"><a href="/edits/{html.escape(entry["edit"]["slug"])}.html">Read the profile Edit &rarr;</a></p>'
     return f"""
   <section class="creator-text">

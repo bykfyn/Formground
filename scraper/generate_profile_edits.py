@@ -141,7 +141,7 @@ def render(entry, count, cards):
     <p class="eyebrow">In profile &middot; {creator_texts.KIND[group]}</p>
     <h1 class="maker-name">{html.escape(name)}</h1>
   </div>
-  <p class="profile-links">{links}</p>{creator_texts.text_block_html(group, page_slug, count)}
+  <p class="profile-links">{links}</p>{creator_texts.text_block_html(group, page_slug, count, on_profile_edit=True)}
   <p class="profile-picks-title">A selection</p>
   <div class="{grid_class}">{"".join(cards)}
   </div>
