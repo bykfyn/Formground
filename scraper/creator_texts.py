@@ -14,6 +14,7 @@ Edit, shown from its publish date; an entry without one is a text-only creator p
 
 import datetime
 import html
+import re
 import json
 import os
 from pathlib import Path
@@ -66,8 +67,27 @@ def get(group, page_slug):
     return load_all().get(f"{group}:{page_slug}")
 
 
-def paragraphs(entry, count):
-    return [p.replace("{count}", f"{count:,}") for p in entry["paragraphs"]]
+def paragraphs(entry, count, editorial=False):
+    """editorial=True is for the profile Edit: the "On Formground it is shown through N pieces..." sentence is a note about
+    the site, not editorial, so it is left out there (it stays on the creator's own page)."""
+    out = [p.replace("{count}", f"{count:,}") for p in entry["paragraphs"]]
+    if editorial:
+        out = [_without_site_notes(p) for p in out]
+        out = [p for p in out if p]
+    return out
+
+
+def _without_site_notes(paragraph):
+    """Strips the sentences and clauses that describe Formground's own listing rather than the creator."""
+    p = re.sub(r", with [\d,]+ pieces shown on Formground, each linked to its own page", "", paragraph)
+    p = re.sub(r"The range on Formground includes (.*?), with [\d,]+ pieces shown, each linked to its own page", r"The range includes \1", p)
+    p = re.sub(r"\s*On Formground[^.]*\.", "", p)
+    p = re.sub(r"\s*Each links to its project page on [^.]*\.", "", p)
+    return p.strip()
+
+
+def _editorial_fact(value):
+    return re.sub(r"\s*\((?:as |houses )?shown on Formground\)", "", value)
 
 
 def text_block_html(group, page_slug, count, on_profile_edit=False):
@@ -76,9 +96,9 @@ def text_block_html(group, page_slug, count, on_profile_edit=False):
     entry = get(group, page_slug)
     if not entry:
         return ""
-    paras = "".join(f"<p>{html.escape(p)}</p>" for p in paragraphs(entry, count))
+    paras = "".join(f"<p>{html.escape(p)}</p>" for p in paragraphs(entry, count, editorial=on_profile_edit))
     # only facts we actually know: a field with no answer is left out rather than shown as "Unknown"
-    facts = "".join(f"<dt>{html.escape(k)}</dt><dd>{html.escape(v)}</dd>" for k, v in entry["facts"]
+    facts = "".join(f"<dt>{html.escape(k)}</dt><dd>{html.escape(_editorial_fact(v) if on_profile_edit else v)}</dd>" for k, v in entry["facts"]
                     if v and v.strip().lower() != "unknown")
     # once the profile Edit is live, the creator's page points to it
     edit_link = ""
