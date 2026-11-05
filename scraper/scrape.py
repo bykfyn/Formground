@@ -2559,15 +2559,21 @@ def extract_portfolio_designer(brand):
         if not verdict or not verdict.get("keep", True) or not work.get("image") or status.get("status") not in ("for_sale", "enquire"):
             continue
         where = status.get("where") or ""
+        maker = status.get("maker") or ""
+        # a work some company makes and sells is that company's product, not the designer's (Ami is LK Hjelle's sofa, found
+        # 2026-11-05): the card's maker line names the company. A company that is already a brand here owns the piece through
+        # its own scrape, so it is not added a second time; the work stays on the designer's page either way.
+        if maker.lower() in {b["name"].lower() for b in json.loads(BRANDS_PATH.read_text())}:
+            continue
         products.append({
-            "brand": brand["name"],
-            "brand_url": entry["url"],
+            "brand": maker or brand["name"],
+            "brand_url": status.get("maker_url") or entry["url"] if maker else entry["url"],
             "product_name": work["name"],
             "product_url": where if where.startswith("http") else work["url"],      # where it is sold or enquired, else the designer's page
             "category": verdict["category"],
             "material_options": [],
             "dimensions": "",
-            "notes": "",
+            "notes": f"portfolio:{brand['name']}" if maker else "",      # lets the next scrape of this designer clear these rows (run())
             "image_url": work["image"],
             "designer": "",
             "price": None,
@@ -13098,9 +13104,12 @@ def run(brand_name=None, local_only=False):
             # today's date; a url present keeps whatever it already had,
             # including NULL (a pre-existing product with an unknown real
             # add-date must never be re-stamped as "new today").
+            # a portfolio designer's works that a company makes are stored under that company (extract_portfolio_designer),
+            # marked in notes; the marker is never matched for any other brand
+            owned_marker = f"portfolio:{brand['name']}" if brand.get("portfolio") else "\x00"
             old_first_seen = dict(conn.execute(
-                "SELECT product_url, first_seen FROM products WHERE brand = ?",
-                (brand["name"],),
+                "SELECT product_url, first_seen FROM products WHERE brand = ? OR notes = ?",
+                (brand["name"], owned_marker),
             ).fetchall())
             old_prices = {
                 url: (price, currency) for url, price, currency in conn.execute(
@@ -13117,7 +13126,7 @@ def run(brand_name=None, local_only=False):
             # cleared since nothing ever deletes old rows. Scoped to one brand
             # at a time (not a full-table wipe) so a mid-run stop leaves
             # brands not yet reached untouched.
-            conn.execute("DELETE FROM products WHERE brand = ?", (brand["name"],))
+            conn.execute("DELETE FROM products WHERE brand = ? OR notes = ?", (brand["name"], owned_marker))
             conn.commit()
             # A brand's very first scrape has no prior rows at all, so
             # old_first_seen comes back empty and every one of its
