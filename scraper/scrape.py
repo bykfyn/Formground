@@ -1800,6 +1800,7 @@ GRUPA_INCLUDE_PRICE = False  # product pages carry "Price: 360,00€ (excl. VAT)
 GRUPA_VARIANT_WORDS = ("Extra Short", "Long Short", "Short", "Long", "Medium", "Small", "Large", "35", "47", "60", "45", "3", "6")
 
 
+GRUPA_NO_NOTES = {"Arigato Floor Double"}   # description removed on request (2026-11-06)
 def extract_grupa(brand):
     """
     grupa.com (Grupa Studio, Zagreb, Croatia; Nuxt, server-rendered). The /products/ page lists
@@ -1908,6 +1909,8 @@ def extract_grupa(brand):
         notes = chars
         if others:
             notes = (notes + " " if notes else "") + "Also made as: " + ", ".join(others) + "."
+        if name in GRUPA_NO_NOTES:
+            notes = ""
         products.append({
             "brand": brand["name"],
             "brand_url": brand["url"],
@@ -2838,7 +2841,8 @@ def extract_articolo(brand):
         blurb = ""
         for el in soup.find_all(["p", "div"]):
             t = re.sub(r"\s+", " ", el.get_text(" ", strip=True))
-            if 120 < len(t) < 900 and not el.find(["p", "div"]) and "Subscribe" not in t and "handcrafted in Australia" not in t:
+            if 120 < len(t) < 900 and not el.find(["p", "div"]) and "Subscribe" not in t and "handcrafted in Australia" not in t \
+                    and t[-1] in ".!?\u201d\u2019":   # the page has no blurb; the collection menu list is not one
                 blurb = t
                 break
         for a in soup.find_all("a", href=True):
@@ -12018,6 +12022,200 @@ def extract_mve_collection(brand):
     return products
 
 
+# emmanuellesimon.com (Emmanuelle Simon, Paris furniture and lighting designer, added 2026-11-06): WooCommerce Store API, EUR
+# prices. The site is bilingual and every piece is listed twice (/en/ and /mobilier/ permalinks) so only the /en/ listings are
+# read; names are bare ("Armchair", "Sofa") so each is prefixed with its collection (the API category: Isla, Ary, Baba...).
+# Colour/size-code listings (Oyo sconce 01-A/01-B, Samba bed Queen/King) are one piece; identical repeats (Baba ceiling light,
+# OLD mirror) are one piece. A 0 price is a placeholder and is left out.
+def extract_emmanuelle_simon(brand):
+    base = brand["url"].rstrip("/")
+    batch, page = [], 1
+    while page <= 4:
+        data = _fetch_json(f"{base}/wp-json/wc/store/v1/products?per_page=100&page={page}")
+        if not data:
+            break
+        batch.extend(data)
+        page += 1
+        time.sleep(1)
+    groups = {}
+    for p in batch:
+        if "/en/" not in (p.get("permalink") or ""):
+            continue
+        name = html.unescape(p.get("name") or "").strip()
+        cats = [html.unescape(c["name"]) for c in p.get("categories", [])]
+        if not name or not cats:
+            continue
+        stem = re.sub(r"\s*\((?:\d+-[A-Z])\)\s*$", "", name).strip()
+        stem = re.sub(r"\s*[–-]\s*(Queen|King)$", "", stem).strip()
+        # "High chair - Bar" is a bar-height chair, not a child's high chair (the shared kids-chair rule would claim it)
+        stem = re.sub(r"\bHigh (chair|stool)\s*[–-]\s*(Bar|Counter)\b", lambda m: f"{m.group(2)} {m.group(1)}", stem, flags=re.I)
+        stem = re.sub(r"\b([A-Z]{2,})\b", lambda m: m.group(1).capitalize() if len(m.group(1)) > 3 else m.group(1), stem)
+        stem = f"{cats[0]} {stem[0].upper() + stem[1:]}" if not stem.lower().startswith(cats[0].lower()) else stem
+        g = groups.setdefault(stem.lower(), [])
+        g.append((stem, p))
+    products = []
+    for items in groups.values():
+        stem, first = items[0]
+        items = [p for _, p in items]
+        prices = []
+        for p in items:
+            pr = p.get("prices") or {}
+            try:
+                val = int(pr["price"]) / (10 ** int(pr.get("currency_minor_unit", 0)))
+            except (KeyError, TypeError, ValueError):
+                continue
+            if val > 0:
+                prices.append(val)
+        price = min(prices) if prices else None
+        images = first.get("images") or []
+        image = (images[0].get("thumbnail") or images[0].get("src")) if images else ""
+        category = _infer_category_from_name(stem, "", brand["name"])
+        low = stem.lower()
+        # "Nomad Sofa with side tables" is a sofa, "Samba Bed 2 - Bedside tables" a bed, "Baba High chair" a chair
+        if re.search(r"\bhigh chair\b", low):
+            category = "Chair"
+        elif re.search(r"\bbed \d\b", low) or "headboard" in low:
+            category = "Bed"
+        elif re.search(r"\bsofa\b", low):
+            category = "Sofa"
+        elif re.search(r"\bbench\b", low):
+            category = "Bench"
+        elif "buffet" in low:
+            category = "Sideboard"
+        elif not category:
+            category = "Object"
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": stem,
+            "product_url": first.get("permalink") or base, "category": category, "material_options": [],
+            "dimensions": "", "notes": "", "image_url": image, "designer": "",
+            "price": price, "currency": "EUR" if price else None,
+        })
+    return products
+
+
+# victoriawilmotte.fr (Victoria Wilmotte, Paris designer, added 2026-11-06): WooCommerce without the Store API; /shop lists
+# 43 cards, each product page carries a schema.org Offer (EUR, shown excluding VAT). Colour listings of one form (Sfera small
+# in four colours, Zigzag vase in nine) are one piece with the colours as options; sizes stay separate pieces.
+WILMOTTE_COLOURS = re.compile(
+    r"\b(tangerine|blue cobalt|cobalt|lime|titan blue|orange pur|orange|aluminium|green|blue|candy purple|purple|anodized blue|"
+    r"melon|zinc|bleu ciel|bleu acier|outremer|glossy|pur)\b", re.I)
+WILMOTTE_COLOUR_NAMES = {"bleu ciel": "Sky Blue", "bleu acier": "Steel Blue", "outremer": "Ultramarine", "orange pur": "Orange",
+                         "blue cobalt": "Cobalt Blue", "glossy": "", "pur": ""}
+def extract_victoria_wilmotte(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/shop/", headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}/shop/: {e}")
+        return []
+    cards = []
+    for li in BeautifulSoup(resp.text, "html.parser").select("li.product"):
+        a, h2, img = li.select_one("a[href]"), li.select_one("h2"), li.select_one("img")
+        if a and h2 and img:
+            cards.append((a["href"], html.unescape(h2.get_text(" ", strip=True)), img.get("src") or ""))
+    groups = {}
+    for url, name, image in cards:
+        time.sleep(1)
+        price = None
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+            m = re.search(r'"@type":"Offer","price":"([\d.]+)"', page.text)
+            price = float(m.group(1)) if m else None
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+        colours = [WILMOTTE_COLOUR_NAMES.get(c.lower(), c.title()) for c in WILMOTTE_COLOURS.findall(name)]
+        colours = [c for c in colours if c]
+        stem = re.sub(r"\s+", " ", WILMOTTE_COLOURS.sub("", name)).strip(" /")
+        stem = {"Zigzag Candy Set": "Zigzag Set", "Zigzag Vases Set": "Zigzag Set"}.get(stem.title(), stem)
+        stem = re.sub(r"\bZig Zag\b", "Zigzag", stem, flags=re.I)
+        stem = re.sub(r"Portaoggetti", "Portaogetti", stem, flags=re.I)
+        stem = stem.title() if stem.isupper() or stem.islower() or re.search(r"[A-Z]{3,}", stem) else stem
+        if stem == "Curva Side / Stool Textured":
+            stem = "Curva Side / Stool"
+            colours = ["Lime Textured"]
+        stem = {"Zigzag": "Zigzag Vase", "Factory Masks": "Factory Mask", "Vase W": "Vase W"}.get(stem, stem)
+        g = groups.setdefault(stem, {"price": None, "url": url, "image": image, "colours": []})
+        for c in colours:
+            if c not in g["colours"]:
+                g["colours"].append(c)
+        if price and (g["price"] is None or price < g["price"]):
+            g["price"] = price
+    products = []
+    for stem, g in groups.items():
+        category = _infer_category_from_name(stem, "", brand["name"])
+        if category == "Light":
+            category = "Lighting"
+        if not category:
+            low = stem.lower()
+            category = ("Vase" if "vase" in low else "Stool" if "stool" in low else "Side Table" if "side" in low
+                        else "Tray" if re.search(r"plateau|plate|portaogetti", low) else
+                        "Sculpture" if "mask" in low else "Wall Hook" if "pat" in low else "Lighting" if "light" in low else "Object")
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": stem, "product_url": g["url"],
+            "category": category, "material_options": g["colours"], "dimensions": "", "notes": "",
+            "image_url": g["image"], "designer": "", "price": g["price"], "currency": "EUR" if g["price"] else None,
+        })
+    return products
+
+
+# sattiostudio.com (Sattio Studio, French sculptural furniture studio, added 2026-11-06): Squarespace; each series page
+# (/tt1../tt5, the special editions /tt1se../tt5se, /accessories-1) links one page per piece and colour (tt101fw, tt101fg...).
+# One product per code with the colour letter dropped; one page per code is read for the type, materials, dimensions and the
+# colours offered. Pieces are known by their codes, so the name is "TT1.01F Side Board". No prices on the site (enquiry).
+SATTIO_PAGES = ["/tt1", "/tt2", "/tt3", "/tt4", "/tt5", "/tt1se", "/tt2se", "/tt3se", "/tt4se", "/tt5se", "/accessories-1"]
+SATTIO_KINDS = {"side board": "Sideboard", "storage cabinet": "Cabinet", "box": "Object"}
+def extract_sattio_studio(brand):
+    base = brand["url"].rstrip("/")
+    stems = {}
+    for path in SATTIO_PAGES:
+        time.sleep(1)
+        try:
+            resp = requests.get(base + path, headers=HEADERS, timeout=25)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {base}{path}: {e}")
+            continue
+        for a in BeautifulSoup(resp.text, "html.parser").find_all("a", href=True):
+            href = a["href"]
+            if not re.match(r"^/[a-z0-9-]+/tt[a-z0-9]+$", href):
+                continue
+            slug = href.rsplit("/", 1)[1]
+            if re.match(r"^tt\d{3}[fa][a-z]$|^tt\dse\d\d[fa][a-z]$", slug):
+                slug = slug[:-1]
+            stems.setdefault(slug, href)
+    products = []
+    for stem, href in stems.items():
+        time.sleep(1)
+        try:
+            page = requests.get(base + href, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {base}{href}: {e}")
+            continue
+        soup = BeautifulSoup(page.text, "html.parser")
+        images = [(i.get("data-src") or i.get("src") or "") for i in soup.select("img")]
+        images = ["https:" + u if u.startswith("//") else u for u in images]
+        images = [u for u in images if "images.squarespace-cdn.com/content" in u and "LOGO" not in u.split("?")[0].upper()]
+        for t in soup(["script", "style", "nav", "header", "footer"]):
+            t.decompose()
+        text = re.sub(r"\s+", " ", soup.get_text(" ", strip=True))
+        m = re.search(r"SATTIO STUDIO 0 (.+?) (TT\S+?)(?:\.[A-Z])? Materials? ?: (.+?) Dimensions ?: (.+?) cm(?: (.+?) colou?rs? proposed)?", text)
+        if not m or not images:
+            continue
+        kind, code, materials, dims, colours = m.groups()
+        code = re.sub(r"\.[A-Z]$", "", code)
+        options = [c.strip().capitalize() for c in re.split(r",| and ", colours or "") if c.strip()]
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": f"{code} {kind.title()}",
+            "product_url": base + href, "category": SATTIO_KINDS.get(kind.lower()) or _infer_category_from_name(kind.title(), "", brand["name"]) or kind.title(),
+            "material_options": options, "dimensions": dims + " cm", "notes": materials.split(" / ")[0][:200],
+            "image_url": images[0] + ("" if "?" in images[0] else "?format=1000w"), "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
 # arwenn.com (Arwenn, confirmed live 2026-10-11): a headless Shopify storefront whose /products.json is 404, but the product
 # sitemap lists every product (37 at the time) and each page carries a full schema.org Product block (name, photo, price,
 # currency). Gift cards are skipped. robots.txt is the standard Shopify one.
@@ -12861,6 +13059,9 @@ EXTRACTORS = {
     "Gödecke Ark": extract_godecke_ark,
     "Örsjö": extract_orsjo,
     "Wartel": extract_wartel,
+    "Sattio Studio": extract_sattio_studio,
+    "Emmanuelle Simon": extract_emmanuelle_simon,
+    "Victoria Wilmotte": extract_victoria_wilmotte,
     "Novocastrian": extract_novocastrian,
     "Jamie Gaunt Designs": extract_jamie_gaunt,
     "OMK 1965": extract_omk_1965,
