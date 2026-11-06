@@ -258,7 +258,7 @@ function renderCard(r) {
   const houseDetail = "";
   const noteText = matchedTerms.length
     ? `Available in ${matchedTerms.map((t) => t.charAt(0).toUpperCase() + t.slice(1)).join(", ")}`
-    : (r.type === "house" ? "" : (r.notes || ""));
+    : "";   // r.notes (the maker's own description) is not shown on a card (2026-11-06): thirteen brands carried one, the rest none, and a card is a photo, a name and a brand
 
   const body = document.createElement("div");
   body.className = "card-body";
@@ -282,7 +282,7 @@ function renderCard(r) {
     // the maker's own product page where real dimensions and variants
     // live. r.notes is kept as a general-purpose per-item note field for
     // any future real per-item fact, but nothing populates it today.
-    body.querySelector(".card-detail").textContent = houseDetail || r.notes || "";
+    body.querySelector(".card-detail").textContent = houseDetail;
   }
 
   // The "deep link" is the same destination the card itself already
