@@ -4418,6 +4418,11 @@ MANUAL_CATEGORY_OVERRIDES = {
     # unlike its siblings) are the two round, bulbous vase-shaped
     # pieces shown on its own real collection photo, distinct from the
     # flat plate-shaped pieces also in that collection.
+    ("GATOMIKIO", "AEKA Object Round (180x90)"): "Vase",
+    ("GATOMIKIO", "AEKA Object Round (210x110)"): "Vase",
+    ("GATOMIKIO", "AEKA Object Round (240x120)"): "Vase",
+    ("GATOMIKIO", "AEKA Object Slim (150x50)"): "Vase",
+    ("GATOMIKIO", "AEKA Object Slim (210x70)"): "Vase",
     ("GATOMIKIO", "AEKA Object  Round（180×90）"): "Vase",
     ("GATOMIKIO", "AEKA Object  Round（210×110）"): "Vase",
     ("GATOMIKIO", "AEKA Object Round（240×120）"): "Vase",
@@ -12216,6 +12221,106 @@ def extract_sattio_studio(brand):
     return products
 
 
+# GATOMIKIO's Shopify catalogue names a lot of pieces in Japanese ("うすびき カップ（L）", "TSUMUGI 汁椀", "KARMI 塔"). Categories are
+# worked out from the original names (GATOMIKIO_JAPANESE_KEYWORDS above); the shown name is then put into English here, with the
+# model names (TSUMUGI, KARMI...) and shape names kept as the maker spells them. Longer terms first so "一汁三菜椀" is not read as "椀".
+GATOMIKIO_EN = {
+    "一汁三菜椀": "Ichiju-Sansai Bowl", "高台盛器": "Footed Serving Bowl", "デザートボウル": "Dessert Bowl", "背高鉢": "Tall Bowl",
+    "うすびき": "Usubiki", "金輪寺": "Kinrinji Tea Caddy", "中次": "Nakatsugi Tea Caddy", "吹雪": "Fubuki Tea Caddy",
+    "平棗": "Flat Natsume Tea Caddy", "中棗": "Medium Natsume Tea Caddy", "蓋付椀": "Lidded Bowl", "一輪挿し": "Single-Stem Vase",
+    "丸重": "Round Stacking Box", "湯呑": "Yunomi Tea Cup", "酒カップ": "Sake Cup", "酒杯": "Sake Cup", "猪口": "Choko Cup",
+    "片口": "Katakuchi Pitcher", "台皿": "Footed Plate", "茶筒": "Tea Canister", "茶椀": "Rice Bowl", "汁椀": "Soup Bowl",
+    "プレート": "Plate", "ボウル": "Bowl", "カップ": "Cup", "中鉢": "Medium Bowl", "大鉢": "Large Bowl", "小鉢": "Small Bowl",
+    "布袋": "Hotei", "羽反": "Flared Rim", "椀": "Bowl", "皿": "Plate", "杯": "Sakazuki Cup",
+    "桜": "Cherry Bowl", "楓": "Maple Bowl", "楢": "Oak Bowl", "橅": "Beech Bowl", "欅": "Zelkova Bowl",
+    "俵": "Tawara Vase", "元": "Moto Vase", "塔": "Tower Vase", "実": "Fruit Vase", "帽": "Hat Vase", "座": "Seat Bowl",
+    "徳": "Toku Vase", "樽": "Barrel Vase", "瓶": "Bottle Vase", "礎": "Foundation Bowl", "菱": "Diamond Vase",
+    "重": "Layered Box", "釜": "Kettle Vase", "頸": "Neck Vase",
+}
+GATOMIKIO_FULLWIDTH = str.maketrans({"（": "(", "）": ")", "＋": "+", "－": "-", "×": "x", "／": "/"})
+_GATOMIKIO_JA = re.compile(r"[぀-ヿ一-鿿]")
+
+def _gatomikio_english(name):
+    out = name.translate(GATOMIKIO_FULLWIDTH)
+    for ja in sorted(GATOMIKIO_EN, key=len, reverse=True):
+        if ja in out:
+            out = out.replace(ja, f" {GATOMIKIO_EN[ja]} ")
+    out = re.sub(r"\s+", " ", out).replace(" )", ")").replace("( ", "(").strip()
+    out = re.sub(r"(\S)\(", r"\1 (", out)
+    return re.sub(r"\)([+-])", r") \1", out)
+
+def extract_gatomikio(brand):
+    products = extract_shopify(brand)
+    for p in products:
+        p["product_name"] = _gatomikio_english(p["product_name"])
+        if _GATOMIKIO_JA.search(p["product_name"]):
+            print(f"  GATOMIKIO: no English for {p['product_name']!r} - add it to GATOMIKIO_EN")
+    return products
+
+
+# forestgiaconia.com (Forest & Giaconia, Paris design studio, added 2026-11-06): the /furniture page is one Squarespace page of
+# titled blocks, each followed by a loose set of photos laid out in two columns, so photos cannot be matched by document order.
+# Each piece is therefore given the filename of its best photo (checked against the rendered page); a piece whose photo has
+# gone from the page is skipped. Pieces are shown on enquiry; there are no per-piece pages, so the cards link to /furniture.
+FOREST_GIACONIA_PIECES = (
+    ("Coffee Table #03", "Coffee Table", "CoffeeTable01_3"), ("Toro Chair", "Chair", "Toro_chair_nomades"),
+    ("SWN Collection", "Lighting", "SWN_photoMaudRemyLonvis_11"), ("Table #02", "Table", "Table02_H"),
+    ("BOB Collection", "Sofa", "BOB_Sofa_DelcourtCollection_02XL"), ("IHI Lamp", "Floor Lamp", "IHI_photoMaudRemyLonvis_01"),
+    ("Totem #01", "Side Table", "DSC03449"), ("Console #01", "Console", "Console01_03"),
+    ("AHA Table", "Table", "Table_AHA_02"), ("Table #03", "Table", "Table02_MarbreBrunA"),
+)
+def extract_forest_giaconia(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/furniture", headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}/furniture: {e}")
+        return []
+    images = [i.get("data-image") or "" for i in BeautifulSoup(resp.text, "html.parser").find_all("img")]
+    products = []
+    for name, category, fragment in FOREST_GIACONIA_PIECES:
+        image = next((u for u in images if fragment in u), None)
+        if not image:
+            print(f"  Forest & Giaconia: no photo for {name} - skipped")
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": f"{base}/furniture",
+            "category": category, "material_options": [], "dimensions": "", "notes": "",
+            "image_url": image + "?format=1000w", "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
+# hayungpark.com (Hayung Park, London furniture and lighting designer, added 2026-11-06): the Work page is one page with three
+# pieces, each a title and short text, with seven photos in the markup that do not say which piece they show; the photo of each
+# piece was picked by eye (DK-01 = the Kong desk, WL-01 = the San San light, DK-01_0011 = Baby Kong).
+HAYUNG_PARK_PIECES = (
+    ("Kong Desk", "Desk", "DK-01_0036"), ("San San Wall Light", "Wall Lamp", "WL-01_0003"), ("Baby Kong Desk", "Desk", "DK-01_0011"),
+)
+def extract_hayung_park(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(base + "/", headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}/: {e}")
+        return []
+    images = [i.get("src") or "" for i in BeautifulSoup(resp.text, "html.parser").find_all("img")]
+    products = []
+    for name, category, fragment in HAYUNG_PARK_PIECES:
+        image = next((u for u in images if fragment in u), None)
+        if not image or name.split()[0] not in resp.text:
+            print(f"  Hayung Park: {name} not found on the page - skipped")
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": base + "/",
+            "category": category, "material_options": [], "dimensions": "", "notes": "",
+            "image_url": image, "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
 # arwenn.com (Arwenn, confirmed live 2026-10-11): a headless Shopify storefront whose /products.json is 404, but the product
 # sitemap lists every product (37 at the time) and each page carries a full schema.org Product block (name, photo, price,
 # currency). Gift cards are skipped. robots.txt is the standard Shopify one.
@@ -12980,7 +13085,7 @@ EXTRACTORS = {
     "Thorup Copenhagen": extract_shopify,
     "Pinch": extract_shopify,
     "Bitossi Ceramiche": extract_shopify,
-    "GATOMIKIO": extract_shopify,
+    "GATOMIKIO": extract_gatomikio,
     "101cph": extract_shopify,
     "In Common With": extract_shopify,
     "Anna Löwenhielm Ceramics": extract_shopify,
@@ -13059,6 +13164,8 @@ EXTRACTORS = {
     "Gödecke Ark": extract_godecke_ark,
     "Örsjö": extract_orsjo,
     "Wartel": extract_wartel,
+    "Forest & Giaconia": extract_forest_giaconia,
+    "Hayung Park": extract_hayung_park,
     "Sattio Studio": extract_sattio_studio,
     "Emmanuelle Simon": extract_emmanuelle_simon,
     "Victoria Wilmotte": extract_victoria_wilmotte,
