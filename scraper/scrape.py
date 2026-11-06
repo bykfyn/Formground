@@ -11667,6 +11667,84 @@ def extract_sabu_studio(brand):
     return products
 
 
+# godecke.se (Gödecke Ark, Göteborg architecture studio with its own lamp series, added 2026-11-06): the shop page is static HTML
+# whose products sit in an inline JS array (id, name, price in SEK, photo). Each id is also an element anchor, so product_url is
+# shop.html#<id>. robots.txt allows everything. Sale prices only: the shop's struck-through old prices are not stored.
+def extract_godecke_ark(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(base + "/shop.html", headers=HEADERS, timeout=25)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}/shop.html: {e}")
+        return []
+    resp.encoding = "utf-8"
+    products = []
+    for m in re.finditer(r'\{\s*id:"([^"]+)",\s*name:"([^"]+)".*?price:(\d+).*?<img src="([^"]+)"', resp.text, re.S):
+        pid, name, price, img = m.groups()
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": html.unescape(name).strip(),
+            "product_url": f"{base}/shop.html#{pid}", "category": "Pendant", "material_options": ["Marble", "Resin"],
+            "dimensions": "", "notes": "", "image_url": f"{base}/{img.lstrip('/')}", "designer": "",
+            "price": float(price), "currency": "SEK",
+        })
+    return products
+
+
+# mve-collection.com (MVE Collection, France, added 2026-11-06): a Cargo site. /collection-2 lists every piece in a gallery
+# (French type label + model code + an order-by-email button, no prices); the photo URL is built from the media hash and file
+# name that Cargo embeds as JSON in the same page. The shop's own bot block returns 403 to a plain curl but serves our declared
+# FormgroundBot user agent. Hardware (handles, knobs, door stop, towel rail) and "Bientôt disponible" pieces are skipped.
+MVE_TYPES = {
+    "table d'appoint": ("Side Table", "Side Table"),
+    "suspension linéaire": ("Linear Pendant", "Pendant"),
+    "suspension luminaire lumineuse": ("Linear Pendant", "Pendant"),
+    "lampe d'appoint": ("Table Lamp", "Table Lamp"),
+    "vase": ("Vase", "Vase"),
+    "table de co-working": ("Co-working Table", "Table"),
+    "tabouret": ("Stool and Side Table", "Stool"),
+    "banc": ("Bench", "Bench"),
+    "stèle": ("Stele", "Objects"),
+    "table": ("Table", "Table"),
+    "bureau individuel": ("Desk", "Desk"),
+}
+
+
+def extract_mve_collection(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(base + "/collection-2", headers=HEADERS, timeout=25)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}/collection-2: {e}")
+        return []
+    resp.encoding = "utf-8"
+    names_by_hash = {h: n for n, h in re.findall(r'"name":"([^"]+)","hash":"([^"]+)"', resp.text)}
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products, seen = [], set()
+    for item in soup.select("media-item"):
+        link = item.select_one('figcaption a[href]:not([href^="mailto:"])')
+        href = item.get("href") or (link["href"] if link else "")
+        mail = item.select_one('a[href^="mailto:"]')
+        file_name = names_by_hash.get(item.get("hash", ""))
+        if not href or href in seen or not mail or not file_name:
+            continue
+        # the order-by-email link carries the one consistently formatted "CODE - type" pair (the visible captions vary)
+        subject = html.unescape(mail["href"].split("subject=", 1)[1].split("&body", 1)[0]).replace("’", "'")
+        code, _, label = subject.partition(" - ")
+        if label.strip().lower() not in MVE_TYPES:
+            continue
+        seen.add(href)
+        english, category = MVE_TYPES[label.strip().lower()]
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": f"{re.sub(r'^AL13[.]', 'AL.13 ', code.strip())} {english}",
+            "product_url": f"{base}/{href}", "category": category, "material_options": [], "dimensions": "",
+            "notes": "", "image_url": f"https://freight.cargo.site/w/1400/i/{item['hash']}/{file_name}",
+            "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
 # arwenn.com (Arwenn, confirmed live 2026-10-11): a headless Shopify storefront whose /products.json is 404, but the product
 # sitemap lists every product (37 at the time) and each page carries a full schema.org Product block (name, photo, price,
 # currency). Gift cards are skipped. robots.txt is the standard Shopify one.
@@ -12507,6 +12585,8 @@ EXTRACTORS = {
     "Master & Master": extract_shopify,
     "Sabu Studio": extract_sabu_studio,
     "Arwenn": extract_arwenn,
+    "Gödecke Ark": extract_godecke_ark,
+    "MVE Collection": extract_mve_collection,
     "Bocci": extract_bocci,
     "Atelier Areti": extract_atelier_areti,
     "Giopato & Coombes": extract_giopato_coombes,
