@@ -382,7 +382,7 @@ class StructureTests(unittest.TestCase):
         self.assertEqual(problems[:6], [])
 
     def test_maker_pages_use_the_default_preview_not_the_makers_photo(self):
-        for name in ("hay.html", "serax.html", "graypants.html"):
+        for name in ("hay.html", "serax.html", "artek.html"):
             page = (DOCS / "brands" / name).read_text()
             self.assertIn('property="og:image" content="https://formground.com/og-default.png"', page, name)
             self.assertIn('name="twitter:image" content="https://formground.com/og-default.png"', page, name)
@@ -784,7 +784,10 @@ class CreatorTextTests(unittest.TestCase):
         return (DOCS / folder / f"{e['page_slug']}.html").read_text()
 
     def test_every_text_is_on_its_creators_page_at_once_and_unknown_facts_are_left_out(self):
+        hidden = {b["name"] for b in json.loads((ROOT / "scraper" / "brands.json").read_text()) if b.get("hidden")}
         for e in self.all.values():
+            if e["group"] == "makers" and e["name"] in hidden:      # a hidden brand has no page; its text waits for it
+                continue
             page = self._page(e)
             self.assertIn('class="creator-text"', page, e["name"])
             self.assertNotIn("Written by Formground", page, e["name"])       # the sourcing line is not shown on the page
