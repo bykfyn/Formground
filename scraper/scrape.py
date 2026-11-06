@@ -8649,6 +8649,72 @@ def extract_danny_kaplan_studio(brand):
     return products
 
 
+def _extract_squarespace_json_shop(brand, shop_path, type_words, dedupe_titles=False, allow_unpriced=False, skip_titles=()):
+    """
+    Squarespace 7.1 shops list every product in the page's own ?format=json feed (the ProductList markup above is the older
+    7.0 template). Used by Florian Gadsby (/shop) and Rut Fjågesund (/nettbutikk), added 2026-11-06; both robots.txt files are
+    the Squarespace default, which does not cover ?format=json. type_words maps a lower-case word in the title to a category;
+    items without a price (a book listing, an info page) are skipped, and a trailing "(15)" piece number is stripped.
+    dedupe_titles keeps the first listing of each identical title (Fjågesund lists 37 one-off bowls under one name).
+    """
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/{shop_path}?format=json", headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+        items = resp.json().get("items", [])
+    except (requests.RequestException, ValueError) as e:
+        print(f"  Could not fetch {base}/{shop_path}?format=json: {e}")
+        return []
+    products, seen = [], set()
+    for item in items:
+        title = re.sub(r"[\s,]*\(\d+\)\s*$", "", (item.get("title") or "").strip())
+        variant = ((item.get("structuredContent") or {}).get("variants") or [{}])[0]
+        money = variant.get("salePriceMoney") if variant.get("onSale") else variant.get("priceMoney")
+        try:
+            price = float((money or {}).get("value"))
+        except (TypeError, ValueError):
+            price = 0.0
+        if not title or not item.get("fullUrl") or not item.get("assetUrl") or (price <= 0 and not allow_unpriced):
+            continue
+        if title.lower() in skip_titles:
+            continue
+        if dedupe_titles and title.lower() in seen:
+            continue
+        seen.add(title.lower())
+        lower = title.lower()
+        category = next((cat for word, cat in type_words.items() if word in lower), "")
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": title,
+            "product_url": base + item["fullUrl"] if item["fullUrl"].startswith("/") else item["fullUrl"],
+            "category": category, "material_options": [], "dimensions": "", "notes": "",
+            "image_url": item["assetUrl"], "designer": "", "price": price if price > 0 else None,
+            "currency": (money or {}).get("currency") if price > 0 else None,
+        })
+    return products
+
+
+def extract_florian_gadsby(brand):
+    return _extract_squarespace_json_shop(brand, "shop", {
+        "vase": "Vase", "bud vase": "Vase", "urn": "Vase", "bowl": "Bowl", "mug": "Cup", "cup": "Cup", "beaker": "Cup",
+        "jar": "Jar", "box": "Box", "pourer": "Jug", "bottle": "Bottle"})
+
+
+def extract_zacarias_1925(brand):
+    # Manila hand-weaving house; the Bags page is out of scope, /home-accessories lists woven furniture, lamps and baskets as
+    # portfolio items without prices. The playful one-offs (skateboard, sewing machine, bowling pins, rugs, panels) are left out.
+    return _extract_squarespace_json_shop(brand, "home-accessories", {
+        "bench": "Bench", "lamp": "Lamp", "table": "Table", "basket": "Basket", "pouf": "Pouf"}, allow_unpriced=True,
+        skip_titles=("skateboard", "sewing machine", "bowling pins", "g/hw", "g/p", "pipe collection", "pakwan collection",
+                     "monolith panels", "vintage chair", "salagubang (beetle) rug", "salagubang (beetle) floor decor"))
+
+
+def extract_rut_fjagesund(brand):
+    return _extract_squarespace_json_shop(brand, "nettbutikk", {
+        "bolle": "Bowl", "ljosestake": "Candle Holder", "lysestake": "Candle Holder", "adventsstake": "Candle Holder",
+        "saltskål": "Bowl", "frukosttallerken": "Plate", "serveringsbrett": "Tray", "smørkniv": "Objects",
+        "kjøkkenreiskap": "Objects"}, dedupe_titles=True)
+
+
 def extract_squarespace_commerce(brand):
     base = brand["url"].rstrip("/")
     items = _extract_squarespace_commerce_page(f"{base}/shop")
@@ -11667,6 +11733,213 @@ def extract_sabu_studio(brand):
     return products
 
 
+def _extract_wix_store(brand, fallback_category=""):
+    """
+    Wix Stores sites publish /store-products-sitemap.xml and a schema.org Product block (name, photo, price, currency) on each
+    product page. Used by Jamie Gaunt Designs and OMK 1965 (added 2026-11-06); the type comes from the name and description.
+    """
+    base = brand["url"].rstrip("/")
+
+    def get(url):
+        time.sleep(1)
+        try:
+            r = requests.get(url, headers=HEADERS, timeout=25)
+            r.raise_for_status()
+            r.encoding = "utf-8"
+            return r.text
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            return None
+
+    sitemap = get(f"{base}/store-products-sitemap.xml")
+    if not sitemap:
+        return []
+    products = []
+    for url in re.findall(r"<loc>([^<]+)</loc>", sitemap):
+        page = get(url)
+        data = None
+        for block in re.findall(r'<script type="application/ld\+json"[^>]*>(.*?)</script>', page or "", re.S):
+            try:
+                candidate = json.loads(block)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(candidate, dict) and candidate.get("@type") == "Product":
+                data = candidate
+                break
+        if not data:
+            continue
+        images = data.get("image") or []
+        image = images[0].get("contentUrl") if images and isinstance(images[0], dict) else (images[0] if images else "")
+        image = re.sub(r"/v1/fit/w_\d+,h_\d+,q_\d+/", "/v1/fit/w_1000,h_1000,q_85/", image or "")
+        name = html.unescape(data.get("name", "")).strip()
+        offers = data.get("offers") or {}
+        offer = offers[0] if isinstance(offers, list) and offers else offers
+        try:
+            price = float(offer.get("price"))
+        except (TypeError, ValueError):
+            price = None
+        if not name or not image or "replacement" in name.lower():   # OMK sells a spare sling for the T1 chair
+            continue
+        description = html.unescape(data.get("description", ""))
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": (_infer_category_from_name(name, "", brand["name"])
+                         or _infer_category_from_english_keywords(f"{name} {description[:150]}") or fallback_category),
+            "material_options": [], "dimensions": "", "notes": "", "image_url": image, "designer": "",
+            "price": price if price and price > 0 else None, "currency": offer.get("priceCurrency") if price else None,
+        })
+    return products
+
+
+def extract_jamie_gaunt(brand):
+    return _extract_wix_store(brand, fallback_category="Objects")
+
+
+def extract_omk_1965(brand):
+    products = _extract_wix_store(brand)
+    for p in products:
+        if "omkstak" in p["product_name"].lower():   # the stacking chair, named for the model only
+            p["category"] = "Chair"
+    return products
+
+
+# wartel-design.com (Wartel, French lighting maker, added 2026-11-06): a Webflow site with one page per lamp ("IONIE / lampadaire").
+# The photos are slide backgrounds defined in the shared CSS file (class slide-1-<name>), not <img> tags, so the first slide's
+# URL is looked up there. No prices are published (made to order, dealers), so none are stored.
+WARTEL_PAGES = ["parure", "masque", "phos-800", "phos-420", "comete-lampadaire", "comete-suspension", "ionie", "arcades-2",
+                "karnak", "pagaie-lampadaire", "pagaie-lampe-a-poser", "pagaie-applique", "pagaie-suspension"]
+
+
+def extract_wartel(brand):
+    base = brand["url"].rstrip("/")
+    types = {"lampadaire": ("Floor Lamp", "Floor Lamp"), "suspension": ("Pendant", "Pendant"),
+             "applique": ("Wall Lamp", "Wall Lamp"), "lampe": ("Table Lamp", "Table Lamp")}
+    css = None
+    products = []
+    for slug in WARTEL_PAGES:
+        time.sleep(1)
+        try:
+            page = requests.get(f"{base}/{slug}", headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {base}/{slug}: {e}")
+            continue
+        page.encoding = "utf-8"
+        if css is None:
+            m = re.search(r'https://cdn\.prod\.website-files\.com/[^"]+\.css', page.text)
+            try:
+                css = requests.get(m.group(0), headers=HEADERS, timeout=30).text if m else ""
+            except requests.RequestException:
+                css = ""
+        title = re.search(r'class="text-block-7">([^<]+)<', page.text)
+        image = None
+        for classes in re.findall(r'<div[^>]*class="([^"]*)\s+w-slide"', page.text):
+            tokens = classes.split()
+            for selector in ([".".join(tokens)] if len(tokens) > 1 else []) + tokens:   # "slide-1-pagaie-l aposer" is one rule
+                image = re.search(r"\." + re.escape(selector).replace(r"\.", ".") + r"\s*\{[^}]*background-image:\s*url\(\"?([^)\"]+)\"?\)", css)
+                if image:
+                    break
+            if image:
+                break
+        if not title or not image:
+            continue
+        name, _, kind = html.unescape(title.group(1)).partition("/")
+        kind = kind.strip().lower()
+        label, category = types.get(kind.split()[0], ("", "Lamp")) if kind else ("", "Lamp")
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": f"{name.strip().title()} {label}".strip(),
+            "product_url": f"{base}/{slug}", "category": category, "material_options": [], "dimensions": "", "notes": "",
+            "image_url": image.group(1), "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
+# novocastrian.co (Novocastrian, Newcastle furniture and lighting maker, added 2026-11-06): the collection, stock and Otterburn
+# pages list the pieces as /product/<slug> cards; each product page shows the GBP price (other currencies are a switcher).
+def extract_novocastrian(brand):
+    base = brand["url"].rstrip("/")
+    cards = {}
+    for path in ("/collection/", "/stock/", "/the-otterburn-collection/"):
+        time.sleep(1)
+        try:
+            resp = requests.get(base + path, headers=HEADERS, timeout=25)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {base}{path}: {e}")
+            continue
+        soup = BeautifulSoup(resp.text, "html.parser")
+        for a in soup.select('a[href*="/product/"]'):
+            img = a.select_one("img")
+            name = a.get_text(" ", strip=True)
+            if a["href"] not in cards and name and img and "wp-content/uploads" in (img.get("src") or ""):
+                cards[a["href"]] = (name, re.sub(r"-\d+x\d+(?=\.\w+$)", "", img["src"]))
+    products = []
+    for url, (name, image) in cards.items():
+        time.sleep(1)
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        m = re.search(r"£\s?([\d,]+)", page.text)
+        price = float(m.group(1).replace(",", "")) if m else None
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": _infer_category_from_name(name, "", brand["name"]), "material_options": [], "dimensions": "",
+            "notes": "", "image_url": image, "designer": "", "price": price if price else None,
+            "currency": "GBP" if price else None,
+        })
+    return products
+
+
+# orsjo.com (Örsjö Belysning, Sweden, added 2026-11-06): the server-rendered /products page lists every lamp as a thumbnail with
+# name, designer and a SEK price; the real photo sits in the thumbnail's <noscript> srcset (the visible <img> is a blur
+# placeholder). The type comes from the slug suffix (-ceiling, -table, -floor, -wall); /se/products/<slug> redirects to
+# /products/<slug>, which is the link stored. robots.txt only disallows /pricelist.
+def extract_orsjo(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(base + "/products", headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}/products: {e}")
+        return []
+    soup = BeautifulSoup(resp.text, "html.parser")
+    types = {"ceiling": "Ceiling Lamp", "table": "Table Lamp", "floor": "Floor Lamp", "wall": "Wall Lamp", "pendant": "Pendant"}
+    products, seen = [], set()
+    for a in soup.select('a[href*="/products/"]'):
+        slug = a["href"].rstrip("/").rsplit("/", 1)[-1]
+        title_el = a.select_one('[class*="__title"]')
+        if not title_el or slug in seen:
+            continue
+        seen.add(slug)
+        sub = title_el.select_one('[class*="__subtitle"]')
+        designer = sub.get_text(strip=True) if sub else ""
+        title = title_el.get_text(" ", strip=True)
+        if designer and title.endswith(designer):
+            title = title[: -len(designer)].strip()
+        words = slug.split("-")
+        suffix = [w for w in words if w in types]
+        name = title if not suffix or suffix[-1].lower() in title.lower() else f"{title} {suffix[-1].capitalize()}"
+        price_el = a.select_one('[class*="__price"]')
+        digits = re.sub(r"[^\d]", "", price_el.get_text()) if price_el else ""
+        noscript = a.find("noscript")
+        image = ""
+        if noscript:
+            m = re.search(r"https://www\.datocms-assets\.com/[^\s\"',]+?\.(?:jpe?g|png|webp)", str(noscript))
+            image = m.group(0) if m else ""
+        if not image:
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+            "product_url": f"{base}/products/{slug}", "category": types.get(suffix[-1], "Lamp") if suffix else "Lamp",
+            "material_options": [], "dimensions": "", "notes": "", "image_url": image + "?auto=format&w=1200",
+            "designer": designer, "price": float(digits) if digits else None, "currency": "SEK" if digits else None,
+        })
+    return products
+
+
 # godecke.se (Gödecke Ark, Göteborg architecture studio with its own lamp series, added 2026-11-06): the shop page is static HTML
 # whose products sit in an inline JS array (id, name, price in SEK, photo). Each id is also an element anchor, so product_url is
 # shop.html#<id>. robots.txt allows everything. Sale prices only: the shop's struck-through old prices are not stored.
@@ -12586,6 +12859,11 @@ EXTRACTORS = {
     "Sabu Studio": extract_sabu_studio,
     "Arwenn": extract_arwenn,
     "Gödecke Ark": extract_godecke_ark,
+    "Örsjö": extract_orsjo,
+    "Wartel": extract_wartel,
+    "Novocastrian": extract_novocastrian,
+    "Jamie Gaunt Designs": extract_jamie_gaunt,
+    "OMK 1965": extract_omk_1965,
     "MVE Collection": extract_mve_collection,
     "Bocci": extract_bocci,
     "Atelier Areti": extract_atelier_areti,
@@ -12694,6 +12972,12 @@ EXTRACTORS = {
     "Tala": extract_shopify,
     "Lebanto": extract_shopify,        # 2026-11-03, from the Maker Cohort Ledger shortlist
     "Marbera": extract_shopify,        # 2026-11-03, full catalogue (345)
+    "Obstacles": extract_shopify,      # 2026-11-06
+    "Six Dots": extract_shopify,       # 2026-11-06
+    "Isokon Plus": extract_shopify,    # 2026-11-06
+    "Florian Gadsby": extract_florian_gadsby,        # 2026-11-06
+    "Rut Fjågesund": extract_rut_fjagesund,          # 2026-11-06
+    "Zacarias 1925": extract_zacarias_1925,          # 2026-11-06
     # 2026-09-24/25 furniture/objects triage - small/independent makers
     # with clean Shopify/WooCommerce catalogs, built first per user
     # request (established houses triaged in the same pass are held for

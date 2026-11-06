@@ -299,7 +299,7 @@ class StructureTests(unittest.TestCase):
         for url in ("/work/sofas-2.html", "/work/chairs-24.html", "/brands/serax-2.html", "/designers/hella-jongerius-2.html"):
             self.assertNotIn(url, sm, url)
             self.assertTrue((DOCS / url.lstrip("/")).exists(), url)       # the pages themselves still exist (and stay linked)
-        self.assertLess(sm.count("<loc>"), 800)
+        self.assertLess(sm.count("<loc>"), 1000)
 
     def test_houses_pages_are_listing_pages_with_the_standard_card(self):
         for name in ("houses-austria", "houses", "houses-sweden"):
