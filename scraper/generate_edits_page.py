@@ -318,7 +318,7 @@ def _edits_masthead_html(product):
     (shared with every Edit page: gte.masthead_html)."""
     return gte.masthead_html(
         "Edits",
-        "Editorial profiles of architects, designers and makers,<br>and curated Edits of their work.",
+        "Editorial profiles of designers and makers,<br>and curated Edits of their work.",
         product, HUB_MASTHEAD_TEXT)
 
 
@@ -532,11 +532,11 @@ def render_edits_index(themes_data, order=None):
     )
     classic_header = "" if masthead else f"""  <div class="edits-hero">
     <h1>Edits</h1>
-    <p class="edits-preamble">{html.escape("Editorial profiles of architects, designers and makers,")}<br>{html.escape("and curated Edits of their work.")}</p>
+    <p class="edits-preamble">{html.escape("Editorial profiles of designers and makers,")}<br>{html.escape("and curated Edits of their work.")}</p>
   </div>
 """
 
-    description = "Editorial profiles of architects, designers and makers, and curated Edits of their work."
+    description = "Editorial profiles of designers and makers, and curated Edits of their work."
 
     return f"""<!DOCTYPE html>
 <html lang="en">

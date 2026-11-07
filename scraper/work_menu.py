@@ -15,6 +15,8 @@ URL structure (decided 2026-10-04, see project-docs/Site_Patterns.md):
 
 import html
 
+import site_sections
+
 # category -> ordered browse groups (names as used in generate_browse_pages.BROWSE_CATEGORIES)
 TAXONOMY = {
     # Houses first: the order of the home page bento (Houses on the left, then the others).
@@ -25,6 +27,8 @@ TAXONOMY = {
     "Lighting": ["Lighting"],
     "Objects": ["Objects", "Soft furnishings"],
 }
+if site_sections.is_hidden("houses"):   # hidden 2026-11-07: Work is Furniture, Lighting and Objects (see site_sections.py)
+    TAXONOMY.pop("Houses")
 CATEGORY_SLUGS = {name: name.lower() for name in TAXONOMY}  # furniture | lighting | objects
 # Shown in the menu where a browse group's own name would read oddly under its category.
 GROUP_LABELS = {"Lighting": "By type", "Objects": "Tableware, glass and candles", "Houses": "By country"}

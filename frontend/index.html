@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Formground — Discover Work by Architects, Designers and Makers</title>
+<title>Formground — Discover Work by Designers and Makers</title>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<meta name="description" content="Discover houses by architects, and furniture, lighting and objects by designers and makers. No accounts, no rankings; every result links to its source.">
-<meta property="og:title" content="Formground — Discover Work by Architects, Designers and Makers">
-<meta property="og:description" content="Discover houses by architects, and furniture, lighting and objects by designers and makers. No accounts, no rankings; every result links to its source.">
+<meta name="description" content="Discover furniture, lighting and objects by designers and makers. No accounts, no rankings; every result links to its source.">
+<meta property="og:title" content="Formground — Discover Work by Designers and Makers">
+<meta property="og:description" content="Discover furniture, lighting and objects by designers and makers. No accounts, no rankings; every result links to its source.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://formground.com/">
 <meta property="og:site_name" content="Formground">
@@ -19,8 +19,8 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://formground.com/og-default.png">
-<meta name="twitter:title" content="Formground — Discover Work by Architects, Designers and Makers">
-<meta name="twitter:description" content="Discover houses by architects, and furniture, lighting and objects by designers and makers. No accounts, no rankings; every result links to its source.">
+<meta name="twitter:title" content="Formground — Discover Work by Designers and Makers">
+<meta name="twitter:description" content="Discover furniture, lighting and objects by designers and makers. No accounts, no rankings; every result links to its source.">
 <link rel="canonical" href="https://formground.com/">
 <script type="application/ld+json">
 {
@@ -28,7 +28,7 @@
   "@type": "WebSite",
   "name": "Formground",
   "url": "https://formground.com/",
-  "description": "Discover houses by architects, and furniture, lighting and objects by designers and makers. No accounts, no rankings - every result links straight back to the source."
+  "description": "Discover furniture, lighting and objects by designers and makers. No accounts, no rankings - every result links straight back to the source."
 }
 </script>
 <script type="application/ld+json">
@@ -116,9 +116,10 @@
   }
 
   /* --- browse by category --- */
-  /* Bento-style asymmetric grid: Houses is a tall hero, Objects/Lighting
-     are small squares, Furniture is a wide strip - real visual variety
-     instead of 4 identical squares (2026-09-20, replacing the uniform
+  /* Bento-style asymmetric grid: Furniture is a tall hero, Lighting and
+     Objects are stacked beside it (Houses was a fourth tile until it was
+     hidden on 2026-11-07, see scraper/site_sections.py) - real visual variety
+     instead of identical squares (2026-09-20, replacing the uniform
      2x2 grid; see project memory). Each tile now also carries a
      hover-reveal (product name + maker) and a real external "visit
      source" link, sibling to - not nested inside - the internal
@@ -126,21 +127,29 @@
      work.html's own share-btn). */
   .category-grid {
     display: grid;
-    grid-template-columns: 1.4fr 1fr 1fr;
+    grid-template-columns: 1.9fr 1fr;
     grid-template-rows: 1fr 1fr;
     gap: 20px;
-    height: 560px;
+    height: 500px;
     margin: 0 0 40px;
   }
-  .tile-houses { grid-column: 1; grid-row: 1 / 3; }
-  .tile-objects { grid-column: 2; grid-row: 1; }
-  .tile-lighting { grid-column: 3; grid-row: 1; }
-  .tile-furniture { grid-column: 2 / 4; grid-row: 2; }
+  .tile-furniture { grid-column: 1; grid-row: 1 / 3; }
+  .tile-lighting { grid-column: 2; grid-row: 1; }
+  .tile-objects { grid-column: 2; grid-row: 2; }
+  /* Each photo is placed so its product stays in the frame (the tiles are wide, the photos mostly are not). */
+  .tile-furniture img { object-position: 50% 60%; }
+  .tile-lighting img { object-position: 50% 75%; }
+  .tile-objects img { object-position: 50% 88%; }
 
   .cat-tile {
     position: relative; display: block; overflow: hidden;
     border: 0.5px solid var(--border); background: var(--surface-1);
     height: 100%; margin: 0;
+  }
+  /* A soft dark fade behind the white label, so it reads on pale photos too (the Furniture photo has a bright window). */
+  .cat-tile::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 0; height: 110px; z-index: 1; pointer-events: none;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0));
   }
   .cat-tile img {
     width: 100%; height: 100%; object-fit: cover; display: block;
@@ -253,7 +262,7 @@
 
   /* "Recently added" - a small preview strip below the category grid,
      not a 5th bento tile (that grid's row/column spans are deliberately
-     tuned - see .tile-houses/.tile-furniture above - a 5th tile would
+     tuned - see .tile-furniture above - a 5th tile would
      need reworking the whole layout, not just adding a cell). Solves a
      real gap found 2026-09-28: /new.html existed but nothing on the
      site linked to it. Lighter card style than .cat-tile on purpose -
@@ -616,7 +625,7 @@
 </header>
 
 <main>
-  <h1 class="sr-only">Discover work by architects, designers and makers.</h1>
+  <h1 class="sr-only">Discover work by designers and makers.</h1>
 
   <div class="search-wide">
     <form id="search-form">
@@ -628,9 +637,8 @@
   </div>
 
   <!-- Source order (2026-09-28, user's call): Furniture first (the
-       site's largest, strongest category), Houses last (its thinnest -
-       see architects_craftspeople_search_gap project memory). Desktop's
-       bento grid is unaffected - .tile-houses/.tile-furniture/etc. each
+       site's largest, strongest category), (Houses, its thinnest, was last until it was hidden).
+       Desktop's bento grid is unaffected - .tile-furniture/etc. each
        get an explicit grid-column/grid-row below, independent of source
        order. Mobile has no such placement, so it's a plain flex column
        that stacks in this exact order - leading with strength, ending
@@ -639,13 +647,13 @@
 
     <figure class="cat-tile tile-furniture">
       <a class="cat-link" href="/work/furniture.html" aria-label="Browse Furniture"></a>
-      <img fetchpriority="high" src="https://cdn.shopify.com/s/files/1/0177/8296/files/GalvinBrothers_Products_IndiaHobson_HR-25.jpg?v=1777467413&amp;width=800" alt="Split Turned Bench by Galvin Brothers">
+      <img fetchpriority="high" src="https://images.squarespace-cdn.com/content/v1/64860504292fcd05ee6a2778/1764881998035-BEY8URVOYVP6F2A1MTW5/251026013081010020+%281%29+copy.jpg?format=1500w" alt="Hale Coffee Table by Muhly">
       <p class="cat-label">Furniture</p>
       <div class="cat-details">
-        <span class="product-name">Split Turned Bench</span>
-        <span class="product-maker">Galvin Brothers</span>
+        <span class="product-name">Hale Coffee Table</span>
+        <span class="product-maker">Muhly</span>
       </div>
-      <a class="visit-source" href="https://galvinbrothers.co.uk/products/split-turned-bench" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
+      <a class="visit-source" href="https://www.muhly.studio/hale-coffee-table" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
     </figure>
 
     <figure class="cat-tile tile-objects">
@@ -670,16 +678,6 @@
       <a class="visit-source" href="https://www.wastberg.com/en/collections/pawson-w223?tab=Gallery" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
     </figure>
 
-    <figure class="cat-tile tile-houses">
-      <a class="cat-link" href="/work/houses.html" aria-label="Browse Houses"></a>
-      <img src="https://static1.squarespace.com/static/68e7d1ef65f5323eae3c3b6c/68fa320b5b04cb318608db95/6981a89900e843417f888e2e/1772734362523/JSA_pinehouse_FINAL_WEB-37.jpg?format=750w" alt="Pine House by Johan Sundberg Arkitektur">
-      <p class="cat-label">Houses</p>
-      <div class="cat-details">
-        <span class="product-name">Pine House</span>
-        <span class="product-maker">Johan Sundberg Arkitektur</span>
-      </div>
-      <a class="visit-source" href="https://www.johansundberg.com/projekt/alla/privatbostader/pine-house" target="_blank" rel="noopener noreferrer">Visit site <i class="ti ti-arrow-up-right" aria-hidden="true"></i></a>
-    </figure>
   </section>
 
   <section class="recent-section">
@@ -709,11 +707,6 @@
         <span class="recent-name">Artist Dining Table</span>
         <span class="recent-brand">101cph</span>
       </a>
-      <a class="recent-card" href="https://sandenhodnekvam.no/project/furukollen" target="_blank" rel="noopener noreferrer">
-        <div class="recent-card-image"><img src="https://sandenhodnekvam.no/uploads/_640xAUTO_crop_center-center_none/DSC6397-2-copy.jpg" alt="Furukollen by Sanden+Hodnekvam Architects" loading="lazy"></div>
-        <span class="recent-name">Furukollen</span>
-        <span class="recent-brand">Sanden+Hodnekvam Architects</span>
-      </a>
       <a class="recent-card" href="https://www.portaromana.com/products/bosco_coffee_table_large" target="_blank" rel="noopener noreferrer">
         <div class="recent-card-image"><img src="https://cdn.shopify.com/s/files/1/0597/0034/7073/files/CFT23L-PLW-HERO.jpg?v=1785328612&amp;width=500" alt="Bosco Coffee Table Large by Porta Romana" loading="lazy"></div>
         <span class="recent-name">Bosco Coffee Table Large</span>
@@ -739,162 +732,6 @@
         <span class="recent-name">High Stool</span>
         <span class="recent-brand">Mater</span>
       </a>
-    </div>
-  </section>
-
-  <section class="recent-section">
-    <div class="recent-header">
-      <h2><a class="cat-link section-header-link" href="/work/houses.html">Houses<span class="header-arrow"> &rarr;</span></a></h2>
-      <div class="recent-header-rule"></div>
-    </div>
-
-    <div class="recent-group">
-      <div class="recent-group-header">
-        <h3>Sweden</h3>
-        <a href="/work/houses-sweden.html">See all &rarr;</a>
-      </div>
-      <div class="feature-banner-frame banner-carousel">
-        <div class="banner-slide active" data-title="Archipelago House" data-desc="by Tham &amp; Videgård Arkitekter · Stockholm Archipelago, Sweden" data-href="https://thamvidegard.se/work/archipelago-house">
-          <a href="https://thamvidegard.se/work/archipelago-house" target="_blank" rel="noopener noreferrer">
-            <img loading="lazy" src="https://cdn.sanity.io/images/t8oavoia/production/485e4853658b76e5a11bb19f5faec59c9412c324-3000x2198.jpg?w=1200&amp;auto=format" alt="Archipelago House - by Tham &amp; Videgård Arkitekter · Stockholm Archipelago, Sweden">
-          </a>
-        </div>
-        <div class="banner-slide" data-title="Svinninge" data-desc="by Lowén Widman Arkitekter · Åkersberga, Sweden" data-href="https://www.lowenwidman.se/projekt/privatbostader-svinninge">
-          <a href="https://www.lowenwidman.se/projekt/privatbostader-svinninge" target="_blank" rel="noopener noreferrer">
-            <img loading="lazy" src="https://images.squarespace-cdn.com/content/v1/6374d578206774799ca7d57a/98e33a73-762c-4abc-89a8-d135e2cef526/Exterior+3.jpg?format=1500w" alt="Svinninge - by Lowén Widman Arkitekter · Åkersberga, Sweden">
-          </a>
-        </div>
-        <div class="banner-dots">
-          <button type="button" class="banner-dot active" data-index="0" aria-label="Slide 1"></button>
-          <button type="button" class="banner-dot" data-index="1" aria-label="Slide 2"></button>
-        </div>
-      </div>
-      <a class="feature-banner-caption" target="_blank" rel="noopener noreferrer">
-        <p class="feature-banner-title" data-field="title"></p>
-        <p class="feature-banner-desc" data-field="desc"></p>
-      </a>
-    </div>
-
-    <div class="recent-group">
-      <div class="duo-row">
-          <div class="duo-col">
-            <div class="recent-group-header">
-                      <h3>France</h3>
-                      <a href="/work/houses-france.html">See all &rarr;</a>
-                    </div>
-            <div class="duo-carousel">
-                      <div class="duo-carousel-frame banner-carousel">
-                        <div class="banner-slide active" data-name="Maison Mouvaux" data-brand="Tank Architectes" data-href="https://www.tank.fr/projets/maison-mouvaux">
-                        <a href="https://www.tank.fr/projets/maison-mouvaux" target="_blank" rel="noopener noreferrer">
-                            <img loading="lazy" src="https://static1.squarespace.com/static/62efa17b49fd451dca240878/62efa1b949fd451dca240d7d/62efa1b949fd451dca240e48/1667553594197/1594892184-95696700_l.jpeg?format=750w" alt="Maison Mouvaux - Tank Architectes">
-                        </a>
-                    </div>
-                        <div class="banner-slide" data-name="Maison dans le Pré" data-brand="arba" data-href="https://arba.pro/realisations/maison-dans-le-pre/">
-                          <a href="https://arba.pro/realisations/maison-dans-le-pre/" target="_blank" rel="noopener noreferrer">
-                            <img loading="lazy" src="https://arba.pro/images/realisations/maison-dans-le-pre/MDLP04-cover.jpg" alt="Maison dans le Pré - arba">
-                          </a>
-                        </div>
-                        <div class="banner-slide" data-name="Maison Bleue" data-brand="Bodenez + Le Gal La Salle" data-href="https://www.bodenezlegallasalle.com/projets/maison-bleue-rennes-35">
-                          <a href="https://www.bodenezlegallasalle.com/projets/maison-bleue-rennes-35" target="_blank" rel="noopener noreferrer">
-                            <img loading="lazy" src="https://www.bodenezlegallasalle.com/wp-content/uploads/2025/06/4-projet-maison-bleue-rennes-ille-et-vilaine-35-bodenezlegallasalle-architectes-rennes-bretagne-2560x1700-1.webp" alt="Maison Bleue - Bodenez + Le Gal La Salle">
-                          </a>
-                        </div>
-                        <div class="banner-dots">
-                          <button type="button" class="banner-dot active" data-index="0" aria-label="Slide 1"></button>
-                          <button type="button" class="banner-dot" data-index="1" aria-label="Slide 2"></button>
-                          <button type="button" class="banner-dot" data-index="2" aria-label="Slide 3"></button>
-                        </div>
-                      </div>
-                      <a class="duo-carousel-caption" target="_blank" rel="noopener noreferrer">
-                        <span class="duo-name" data-field="name"></span>
-                        <span class="duo-brand" data-field="brand"></span>
-                      </a>
-                    </div>
-          </div>
-          <div class="duo-col">
-            <div class="recent-group-header">
-                      <h3>Norway</h3>
-                      <a href="/work/houses-norway.html">See all &rarr;</a>
-                    </div>
-            <div class="duo-carousel">
-                      <div class="duo-carousel-frame banner-carousel">
-                        <div class="banner-slide active" data-name="Smallholding at Nesjestranda" data-brand="Rever &amp; Drage Architects" data-href="https://www.reverdrage.no/work/nesjastranda">
-                          <a href="https://www.reverdrage.no/work/nesjastranda" target="_blank" rel="noopener noreferrer">
-                            <img loading="lazy" src="https://static1.squarespace.com/static/635595076d9497682fd75754/635595b25eff997ad8ba48ba/69d7e7866085f21d5734c13f/1778154504744/03_Vikhagen_ReverDrage.jpg?format=750w" alt="Smallholding at Nesjestranda - Rever &amp; Drage Architects">
-                          </a>
-                        </div>
-                        <div class="banner-slide" data-name="Hus på Valderøya" data-brand="Svingen Arkitektkontor" data-href="https://www.svingen.no/prosjekter/krakeroy1-g3nal">
-                          <a href="https://www.svingen.no/prosjekter/krakeroy1-g3nal" target="_blank" rel="noopener noreferrer">
-                            <img loading="lazy" src="https://static1.squarespace.com/static/5e637e5eacc6d43b4e1ff5a3/651c611637876b5855700b7d/68399fe877cd446c1985a133/1749105215886/6.jpg?format=750w" alt="Hus på Valderøya - Svingen Arkitektkontor">
-                          </a>
-                        </div>
-                        <div class="banner-slide" data-name="Trolltind" data-brand="Rever &amp; Drage Architects" data-href="https://www.reverdrage.no/work/trolltind">
-                          <a href="https://www.reverdrage.no/work/trolltind" target="_blank" rel="noopener noreferrer">
-                            <img loading="lazy" src="https://static1.squarespace.com/static/635595076d9497682fd75754/635595b25eff997ad8ba48ba/63568550a1061a1d01d835b7/1666948706837/01.jpg?format=750w" alt="Trolltind - Rever &amp; Drage Architects">
-                          </a>
-                        </div>
-                        <div class="banner-dots">
-                          <button type="button" class="banner-dot active" data-index="0" aria-label="Slide 1"></button>
-                          <button type="button" class="banner-dot" data-index="1" aria-label="Slide 2"></button>
-                          <button type="button" class="banner-dot" data-index="2" aria-label="Slide 3"></button>
-                        </div>
-                      </div>
-                      <a class="duo-carousel-caption" target="_blank" rel="noopener noreferrer">
-                        <span class="duo-name" data-field="name"></span>
-                        <span class="duo-brand" data-field="brand"></span>
-                      </a>
-                    </div>
-          </div>
-        </div>
-    </div>
-
-    <div class="recent-group">
-      <div class="recent-group-header">
-        <h3>United Kingdom</h3>
-        <a href="/work/houses-united-kingdom.html">See all &rarr;</a>
-      </div>
-      <div class="recent-row">
-        <a class="recent-card" href="https://hudsonarchitects.co.uk/our-work/homes/new-homes/coast-house/" target="_blank" rel="noopener noreferrer">
-          <div class="recent-card-image"><img src="https://hudsonarchitects.co.uk/wp-content/uploads/2022/07/Coast-House.jpg" alt="Coast House - Hudson Architects" loading="lazy"></div>
-          <span class="recent-name">Coast House</span>
-          <span class="recent-brand">Hudson Architects</span>
-        </a>
-        <a class="recent-card" href="https://loadermonteith.co.uk/projects/ceangal-house/" target="_blank" rel="noopener noreferrer">
-          <div class="recent-card-image"><img src="https://loadermonteith.co.uk/wp-content/uploads/2022/01/private-home_8609-ME-scaled.jpg" alt="Ceangal House - Loader Monteith" loading="lazy"></div>
-          <span class="recent-name">Ceangal House</span>
-          <span class="recent-brand">Loader Monteith</span>
-        </a>
-        <a class="recent-card" href="https://www.saneihopkins.co.uk/projects/contour-house" target="_blank" rel="noopener noreferrer">
-          <div class="recent-card-image"><img src="https://static1.squarespace.com/static/637b6a2244f362433534f28f/637b6a2444f362433534f37f/637cd8b858875b26af418ad9/1670436075512/HM_006-web.jpg?format=750w" alt="Contour House - Sanei + Hopkins Architects" loading="lazy"></div>
-          <span class="recent-name">Contour House</span>
-          <span class="recent-brand">Sanei + Hopkins Architects</span>
-        </a>
-        <a class="recent-card" href="https://www.haysomwardmiller.co.uk/projects/private-houses/elm-end" target="_blank" rel="noopener noreferrer">
-                        <div class="recent-card-image"><img src="https://static.wixstatic.com/media/c112ce_db9f2dd617194c31bc49dc61424f66d7~mv2.jpg/v1/fit/w_500,h_500,q_80/file.jpg" alt="Elm End - Haysom Ward Miller Architects" loading="lazy"></div>
-                        <span class="recent-name">Elm End</span>
-                        <span class="recent-brand">Haysom Ward Miller Architects</span>
-                    </a>
-        <a class="recent-card" href="https://www.hughstrange.com/strange-house.html" target="_blank" rel="noopener noreferrer">
-          <div class="recent-card-image"><img src="https://www.hughstrange.com/images/strange-house/3-strange-house.jpg" alt="Strange House &amp; Studio - Hugh Strange Architects" loading="lazy"></div>
-          <span class="recent-name">Strange House &amp; Studio</span>
-          <span class="recent-brand">Hugh Strange Architects</span>
-        </a>
-        <a class="recent-card" href="https://www.haysomwardmiller.co.uk/projects/private-houses/accessible-house-barrington" target="_blank" rel="noopener noreferrer">
-                        <div class="recent-card-image"><img src="https://static.wixstatic.com/media/c112ce_7960b0f8e3034c388fb51956af9aba34~mv2.jpg/v1/fit/w_500,h_500,q_80/file.jpg" alt="Accessible House - Haysom Ward Miller Architects" loading="lazy"></div>
-                        <span class="recent-name">Accessible House</span>
-                        <span class="recent-brand">Haysom Ward Miller Architects</span>
-                    </a>
-        <a class="recent-card" href="https://www.haysomwardmiller.co.uk/projects/private-houses/stone-cottage" target="_blank" rel="noopener noreferrer">
-                        <div class="recent-card-image"><img src="https://static.wixstatic.com/media/c112ce_0decd5599a85459eae468b07d675a717~mv2.jpg/v1/fit/w_500,h_500,q_80/file.jpg" alt="Stone Cottage - Haysom Ward Miller Architects" loading="lazy"></div>
-                        <span class="recent-name">Stone Cottage</span>
-                        <span class="recent-brand">Haysom Ward Miller Architects</span>
-                    </a>
-        <a class="recent-card" href="https://www.saneihopkins.co.uk/projects/estuary-house" target="_blank" rel="noopener noreferrer">
-          <div class="recent-card-image"><img src="https://static1.squarespace.com/static/637b6a2244f362433534f28f/637b6a2444f362433534f37f/63876539c63c0b6619233ea6/1673821956308/Pano_1299_1301---210621_Sanei_Hopkins_The_Studio---Medium.jpg?format=1500w" alt="Estuary House - Sanei + Hopkins Architects" loading="lazy"></div>
-          <span class="recent-name">Estuary House</span>
-          <span class="recent-brand">Sanei + Hopkins Architects</span>
-        </a>
-      </div>
     </div>
   </section>
 
@@ -1456,7 +1293,7 @@
 
 
   <p class="foot-about">
-    Formground is a place to discover houses, furniture, lighting and objects by architects, designers and makers,
+    Formground is a place to discover furniture, lighting and objects by designers and makers,
     independent and established. Every piece links straight to the maker's own site. No accounts, no rankings.
     <a href="/about.html">Read more about Formground &rarr;</a>
   </p>

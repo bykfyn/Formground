@@ -789,6 +789,11 @@ class SearchSpeedTests(unittest.TestCase):
 class DiscoverHousesTests(unittest.TestCase):
     """"Surprise me" includes a few houses (2026-10-04): 1 to 3 per browse, different practices, inside the cap."""
 
+    def setUp(self):    # Houses are hidden on the site (scraper/site_sections.py); the house search itself is still tested
+        hidden = qe.HOUSES_HIDDEN
+        qe.HOUSES_HIDDEN = False
+        self.addCleanup(setattr, qe, "HOUSES_HIDDEN", hidden)
+
     def test_every_browse_has_one_to_three_houses_from_different_practices(self):
         for _ in range(15):
             results = qe.discover()
@@ -923,6 +928,9 @@ class HouseFirmSearchTests(unittest.TestCase):
     """A practice's name finds its houses (2026-10-16)."""
 
     def setUp(self):
+        hidden = qe.HOUSES_HIDDEN     # Houses are hidden on the site (scraper/site_sections.py); the house search itself is still tested
+        qe.HOUSES_HIDDEN = False
+        self.addCleanup(setattr, qe, "HOUSES_HIDDEN", hidden)
         self._translate = qe.translate_query
         qe.translate_query = lambda q: {}
 

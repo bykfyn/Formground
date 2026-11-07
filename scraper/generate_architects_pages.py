@@ -33,6 +33,7 @@ from pathlib import Path
 
 from site_assets import SHARE_JS  # noqa: E402
 import creator_texts  # noqa: E402
+import site_sections  # noqa: E402
 from generate_brand_pages import (
     fit_title, list_phrase,
     CARD_CLICK_TRACKING_JS,
@@ -293,6 +294,13 @@ def firm_slugs():
 
 
 def generate():
+    if site_sections.is_hidden("houses"):
+        # Hidden (scraper/site_sections.py): no architect pages and no index; remove what an earlier build wrote.
+        (DOCS_DIR / "architects.html").unlink(missing_ok=True)
+        for old in ARCHITECTS_DIR.glob("*.html"):
+            old.unlink()
+        print("Architect pages are hidden (scraper/site_sections.py): none generated.")
+        return
     firms = json.loads(ARCHITECTS_PATH.read_text())
     meta_by_name = {f["name"]: f for f in firms}
     houses = json.loads(HOUSES_PATH.read_text())

@@ -51,6 +51,21 @@ load_dotenv()
 DB_PATH = Path(__file__).parent.parent / "data" / "formground.db"
 BRANDS_PATH = Path(__file__).parent.parent / "scraper" / "brands.json"
 HOUSES_PATH = Path(__file__).parent.parent / "data" / "houses.json"
+SITE_SECTIONS_PATH = Path(__file__).parent.parent / "scraper" / "site_sections.py"
+
+
+def _houses_hidden() -> bool:
+    """True while "houses" is in scraper/site_sections.py's HIDDEN_SECTIONS (the one switch the static site uses too): houses
+    are then left out of search, name matching and discover. Read from that file, not copied, so the two cannot disagree. Fails
+    loudly when the file is missing (the Dockerfile copies it): a quiet fallback once left a hidden brand live for days."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("site_sections", SITE_SECTIONS_PATH)
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.is_hidden("houses")
+
+
+HOUSES_HIDDEN = _houses_hidden()
 
 # Words that mean "the user is looking for a house," not a product - the
 # LLM already extracts category as a free string (no fixed enum), so a
@@ -1284,7 +1299,7 @@ def _load_houses() -> list:
     style tagging is a manual-triage decision that hasn't happened yet,
     so this never fabricates one at query time either.
     """
-    if not HOUSES_PATH.exists():
+    if HOUSES_HIDDEN or not HOUSES_PATH.exists():
         return []
     return json.loads(HOUSES_PATH.read_text())
 

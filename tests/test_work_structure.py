@@ -19,6 +19,14 @@ DOCS = ROOT / "docs"
 sys.path.insert(0, str(ROOT / "scraper"))
 sys.path.insert(0, str(ROOT / "backend"))
 
+import site_sections  # noqa: E402
+
+# While Houses and the architect pages are hidden (scraper/site_sections.py) their pages do not exist and their tests are skipped;
+# HiddenHousesTests below checks that they really are gone.
+HOUSES_HIDDEN = site_sections.is_hidden("houses")
+HIDDEN_GROUPS = {"architects"} if HOUSES_HIDDEN else set()
+skip_if_houses_hidden = unittest.skipIf(HOUSES_HIDDEN, "Houses and the architect pages are hidden (scraper/site_sections.py)")
+
 EDIT_SLUGS = ["two-seater-sofas", "round-dining-tables", "round-coffee-tables", "scandinavian-dining-tables",
               "pendant-lamps", "table-lamps", "wall-lamps", "ceiling-lamps", "portable-lamps"]
 OLD_HREF = re.compile(r"^/(browse/|floor-lamps\.html|new\.html|(%s)\.html)" % "|".join(EDIT_SLUGS))
@@ -66,6 +74,7 @@ class HouseCountryTests(unittest.TestCase):
         self.assertEqual(g.stated_country("Devon"), None)
         self.assertEqual(g.stated_country(None), None)
 
+    @skip_if_houses_hidden
     def test_a_house_is_filed_where_it_stands_not_where_its_architect_is_based(self):
         import generate_browse_pages as g
         by_name = {h["name"]: h for h in g.load_houses()}
@@ -91,7 +100,7 @@ class StructureTests(unittest.TestCase):
     def test_edits_live_under_edits_and_types_under_work(self):
         for s in EDIT_SLUGS:
             self.assertFalse(_is_stub((DOCS / "edits" / f"{s}.html").read_text()), s)
-        for s in ("table-lamps", "floor-lamps", "portable-lamps", "sofas", "furniture", "lighting", "objects", "houses", "houses-sweden"):
+        for s in ("table-lamps", "floor-lamps", "portable-lamps", "sofas", "furniture", "lighting", "objects") + (() if HOUSES_HIDDEN else ("houses", "houses-sweden")):
             self.assertFalse(_is_stub((DOCS / "work" / f"{s}.html").read_text()), s)
 
     def test_no_live_page_links_to_an_old_address_and_no_internal_link_is_broken(self):
@@ -126,7 +135,7 @@ class StructureTests(unittest.TestCase):
         text = (DOCS / "work" / "table-lamps.html").read_text()
         self.assertIn('<a href="/work.html" class="current">Work</a>', text)
         self.assertIn('action="/work.html"', text)
-        self.assertEqual(text.count('<button type="button" class="work-menu-cat'), 4)
+        self.assertEqual(text.count('<button type="button" class="work-menu-cat'), 3 if HOUSES_HIDDEN else 4)
         self.assertIn('class="work-menu-cat is-current"', text)
         self.assertIn("/work-results.css?v=", text)
         self.assertIn('class="results-grid"', text)
@@ -252,6 +261,7 @@ class StructureTests(unittest.TestCase):
         for f in _g.glob(str(DOCS / "brands" / "*.html")):
             self.assertLess(Path(f).stat().st_size, 400_000, f)         # was 1.9 MB for the biggest maker
 
+    @skip_if_houses_hidden
     def test_architect_pages_have_share_buttons_and_no_left_hand_tagline(self):
         firm = (DOCS / "architects" / "bernardo-bader-architekten.html").read_text()
         body = firm[firm.index("<main>"):]
@@ -301,6 +311,7 @@ class StructureTests(unittest.TestCase):
             self.assertTrue((DOCS / url.lstrip("/")).exists(), url)       # the pages themselves still exist (and stay linked)
         self.assertLess(sm.count("<loc>"), 1000)
 
+    @skip_if_houses_hidden
     def test_houses_pages_are_listing_pages_with_the_standard_card(self):
         for name in ("houses-austria", "houses", "houses-sweden"):
             page = (DOCS / "work" / f"{name}.html").read_text()
@@ -577,17 +588,18 @@ class StructureTests(unittest.TestCase):
         box = work[work.index('class="ask-box"'):work.index("</form>")]
         self.assertNotIn("Surprise me", box)                              # the search box only searches
         self.assertNotIn("inline-chip", work)
-        for page in ("work/table-lamps.html", "work/furniture.html", "work/houses.html"):
+        for page in ("work/table-lamps.html", "work/furniture.html") + (() if HOUSES_HIDDEN else ("work/houses.html",)):
             text = (DOCS / page).read_text()
             self.assertIn('class="work-menu-act" href="/work.html"', text, page)
             self.assertNotIn("Surprise me", text[text.index('class="ask-box"'):text.index("</form>")] if 'class="ask-box"' in text else "", page)
 
-    def test_work_page_has_the_menu_with_four_categories(self):
+    def test_work_page_has_the_menu_with_its_categories(self):
         text = (DOCS / "work.html").read_text()
-        self.assertEqual(text.count('<button type="button" class="work-menu-cat'), 4)
-        # Houses first, as on the home page bento
-        self.assertTrue(text.index('href="/work/houses.html"') < text.index('href="/work/furniture.html"'))
-        for cat in ("houses", "furniture", "lighting", "objects"):
+        cats = ("furniture", "lighting", "objects") if HOUSES_HIDDEN else ("houses", "furniture", "lighting", "objects")
+        self.assertEqual(text.count('<button type="button" class="work-menu-cat'), len(cats))
+        if not HOUSES_HIDDEN:    # Houses first, as on the home page bento
+            self.assertTrue(text.index('href="/work/houses.html"') < text.index('href="/work/furniture.html"'))
+        for cat in cats:
             self.assertIn(f'href="/work/{cat}.html"', text)
         self.assertIn("/work-menu.css?v=", text)
         self.assertIn("/work-menu.js?v=", text)
@@ -595,6 +607,56 @@ class StructureTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+@unittest.skipUnless(HOUSES_HIDDEN, "Houses are shown")
+class HiddenHousesTests(unittest.TestCase):
+    """Houses and the architect pages are hidden (scraper/site_sections.py, 2026-11-07): no page, no link, no sitemap entry, no
+    search result. The data and the generators stay, so removing the switch brings them back."""
+
+    def test_no_architect_or_houses_page_exists(self):
+        self.assertFalse((DOCS / "architects.html").exists())
+        self.assertEqual(list((DOCS / "architects").glob("*.html")) if (DOCS / "architects").exists() else [], [])
+        self.assertEqual(list((DOCS / "work").glob("houses*.html")), [])
+
+    def test_the_architect_profile_edits_are_paused(self):
+        import creator_texts
+        self.assertFalse([e for e in creator_texts.load().values() if e["group"] == "architects"])
+        for e in creator_texts.load_all().values():
+            if e["group"] == "architects" and e.get("edit"):
+                self.assertFalse((DOCS / "edits" / f"{e['edit']['slug']}.html").exists(), e["name"])
+                self.assertNotIn(f"/edits/{e['edit']['slug']}.html", (DOCS / "edits.html").read_text(), e["name"])
+
+    def test_nothing_links_to_them_and_the_sitemap_omits_them(self):
+        sm = (DOCS / "sitemap.xml").read_text()
+        self.assertNotIn("/architects", sm)
+        self.assertNotIn("/work/houses", sm)
+        for page in ("index.html", "work.html", "creators.html", "edits.html", "llms.txt", "about.html"):
+            text = (DOCS / page).read_text()
+            links = re.findall(r'(?:href|src)="([^"]+)"', text) + re.findall(r"\]\(([^)]+)\)", text)     # real links, not CSS comments
+            for link in links:
+                self.assertFalse(re.match(r"(https://formground\.com)?/?(work/houses|architects)", link), f"{page} links to {link}")
+
+    def test_the_home_page_is_three_tiles_and_the_houses_shelf_is_gone(self):
+        home = (DOCS / "index.html").read_text()
+        self.assertEqual(home.count('<figure class="cat-tile'), 3)
+        self.assertNotIn("tile-houses", home)
+        self.assertEqual(home.count('class="recent-section"'), 5)       # New, Furniture, Lighting, Objects, Themed Edits
+        self.assertNotIn(">Houses", home)
+        head = home[:home.index("<style>")].lower()          # title, descriptions, structured data
+        self.assertNotIn("architect", head)
+        self.assertNotIn("houses", head)
+
+    def test_creators_has_designers_and_makers_only(self):
+        page = (DOCS / "creators.html").read_text()
+        self.assertEqual(page.count('class="cr-col"'), 2)
+        self.assertNotIn("cr-architects", page)
+
+    def test_search_leaves_houses_out_and_the_backend_image_carries_the_switch(self):
+        import query_engine as qe
+        self.assertTrue(qe.HOUSES_HIDDEN)
+        self.assertEqual(qe._load_houses(), [])
+        self.assertIn("COPY scraper/site_sections.py", (ROOT / "Dockerfile").read_text())
 
 
 class BrandDesignerLinkTests(unittest.TestCase):
@@ -679,7 +741,7 @@ class CreatorsPageTests(unittest.TestCase):
 
     def test_each_category_has_five_profile_links_that_exist(self):
         page = self._page()
-        for group in ("architects", "designers", "makers"):
+        for group in [g for g in ("architects", "designers", "makers") if g not in HIDDEN_GROUPS]:
             block = page[page.index(f"<!--PROFILES:{group}-->"):page.index(f"<!--/PROFILES:{group}-->")]
             hrefs = re.findall(r'<a class="pf-row" href="([^"]+)"', block)
             self.assertEqual(len(hrefs), 5, group)
@@ -720,7 +782,7 @@ class CreatorsPageTests(unittest.TestCase):
 
     def test_the_profiled_creator_is_not_also_in_the_list_below_it(self):
         page = self._page()
-        for group in ("architects", "designers", "makers"):
+        for group in [g for g in ("architects", "designers", "makers") if g not in HIDDEN_GROUPS]:
             block = page[page.index(f"<!--PROFILES:{group}-->"):page.index(f"<!--/PROFILES:{group}-->")]
             featured = re.search(r'<a class="ed-card" href="/edits/([a-z0-9-]+)\.html"', block)
             if featured:
@@ -788,6 +850,8 @@ class CreatorTextTests(unittest.TestCase):
         for e in self.all.values():
             if e["group"] == "makers" and e["name"] in hidden:      # a hidden brand has no page; its text waits for it
                 continue
+            if e["group"] in HIDDEN_GROUPS:                          # hidden architect pages: the text waits for them too
+                continue
             page = self._page(e)
             self.assertIn('class="creator-text"', page, e["name"])
             self.assertNotIn("Written by Formground", page, e["name"])       # the sourcing line is not shown on the page
@@ -796,6 +860,8 @@ class CreatorTextTests(unittest.TestCase):
 
     def test_a_creators_page_links_to_its_profile_edit_only_once_it_is_live(self):
         for key, e in self.edits.items():
+            if e["group"] in HIDDEN_GROUPS:
+                continue
             has_link = f'href="/edits/{e["edit"]["slug"]}.html">Read the profile Edit' in self._page(e)
             self.assertEqual(has_link, key in self.live, key)
 
@@ -816,12 +882,13 @@ class CreatorTextTests(unittest.TestCase):
             self.assertFalse((DOCS / "edits" / f"{slug}.html").exists(), slug)
             self.assertNotIn(f"/edits/{slug}.html", (DOCS / "edits.html").read_text(), slug)
             self.assertNotIn(f"/edits/{slug}.html", (DOCS / "sitemap.xml").read_text(), slug)
-            self.assertIn('class="creator-text"', self._page(e), slug)              # the creator's page text is live
+            if e["group"] not in HIDDEN_GROUPS:
+                self.assertIn('class="creator-text"', self._page(e), slug)          # the creator's page text is live
 
     def test_the_publish_date_decides_what_is_live(self):
         import datetime
         import os
-        key = next((k for k, e in self.edits.items() if e.get("publish") and datetime.date.fromisoformat(e["publish"]) > datetime.date(2026, 10, 12)), None)
+        key = next((k for k, e in self.edits.items() if e.get("publish") and e["group"] not in HIDDEN_GROUPS and datetime.date.fromisoformat(e["publish"]) > datetime.date(2026, 10, 12)), None)
         self.assertIsNotNone(key)
         e = self.edits[key]
         before = datetime.date.fromisoformat(e["publish"]) - datetime.timedelta(days=1)
@@ -1041,13 +1108,14 @@ class CategoryHubTests(unittest.TestCase):
             self.assertNotIn('class="hub-about"', page, slug)             # the closing paragraph is switched off for now
             self.assertEqual(page.count('class="duo-col"'), 2, slug)       # two Edits, one row
 
-    def test_hub_head_is_intact_and_houses_keeps_its_own_page(self):
+    def test_hub_head_is_intact(self):
         for slug in ("furniture", "lighting", "objects"):
             page = self._page(slug)
             self.assertRegex(page, r'<meta name="description" content="[^"]+">')
             self.assertIn(f'<link rel="canonical" href="https://formground.com/work/{slug}.html">', page)
-        houses = (DOCS / "work" / "houses.html").read_text()
-        self.assertNotIn("Popular types", houses)
+        if not HOUSES_HIDDEN:
+            houses = (DOCS / "work" / "houses.html").read_text()
+            self.assertNotIn("Popular types", houses)
 
 
 class ContinuationPageIndexingTests(unittest.TestCase):

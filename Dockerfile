@@ -2,7 +2,7 @@
 #
 # WHY THE BUILD CONTEXT IS THE REPO ROOT, NOT backend/:
 #   query_engine.py expects the database at ../data/formground.db and
-#   the hidden-brands list at ../scraper/brands.json, both relative to
+#   the hidden-brands list at ../scraper/brands.json (and the hidden-sections switch at ../scraper/site_sections.py), both relative to
 #   itself, so this image needs backend/, data/, and scraper/brands.json
 #   side by side, exactly like they are in the repo - not just backend/
 #   copied in on its own. (A brand marked "hidden": true silently had no
@@ -30,6 +30,7 @@ RUN pip install --no-cache-dir -r backend/requirements.txt
 COPY backend/ backend/
 COPY data/ data/
 COPY scraper/brands.json scraper/brands.json
+COPY scraper/site_sections.py scraper/site_sections.py
 
 WORKDIR /app/backend
 

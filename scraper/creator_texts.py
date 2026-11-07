@@ -19,6 +19,8 @@ import json
 import os
 from pathlib import Path
 
+import site_sections
+
 ROOT = Path(__file__).parent.parent
 DATA_PATH = ROOT / "data" / "creator_texts.json"
 CONTACT = "info@formground.com"
@@ -57,8 +59,11 @@ def is_live(entry):
 def load():
     """The entries whose profile EDIT is live today (entries with an "edit" block whose publish date has come).
     The profile Edits, the Edits hub tiles, the Creators page cards and the sitemap read this, so an Edit appears on
-    its publish day and not before. The text on a creator's own page does not wait: see get()."""
-    return {k: v for k, v in load_all().items() if v.get("edit") and is_live(v)}
+    its publish day and not before. The text on a creator's own page does not wait: see get().
+    While Houses and the architect pages are hidden (scraper/site_sections.py) the architects' Edits are paused here, so none
+    of those readers shows them and their scheduled dates pass without publishing."""
+    hidden_groups = {"architects"} if site_sections.is_hidden("houses") else set()
+    return {k: v for k, v in load_all().items() if v.get("edit") and is_live(v) and v["group"] not in hidden_groups}
 
 
 def get(group, page_slug):

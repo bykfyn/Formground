@@ -102,6 +102,7 @@ from generate_theme_landing_pages import (  # noqa: E402
 from image_sizes import CARD, sized  # noqa: E402
 from site_assets import ICONS_CSS, LISTING_JS, MENU_SCRIPT, SHARE_JS, WORK_MENU_CSS, WORK_RESULTS_CSS  # noqa: E402
 from redirects import write_redirect  # noqa: E402
+import site_sections  # noqa: E402
 import work_menu  # noqa: E402
 import guides_content  # noqa: E402
 
@@ -679,6 +680,8 @@ def stated_country(location):
 
 
 def load_houses():
+    if site_sections.is_hidden("houses"):
+        return []
     import json as _json
     houses = _json.loads((DATA_DIR / "houses.json").read_text())
     firms = {a["name"]: a for a in _json.loads((DATA_DIR / "architects.json").read_text())}
@@ -714,6 +717,8 @@ def _house_as_card(h):
 def _write_house_pages(houses, groups, entries):
     """Houses pages = the listing template (same as every type page) with the standard product card; returns sitemap
     slugs. /work/houses.html lists every house; /work/houses-<country>.html the houses standing in that country."""
+    if not houses:        # hidden (scraper/site_sections.py): no Houses pages, and the old ones were removed with the rest of /work/
+        return []
     import generate_architects_pages
     firm_pages = generate_architects_pages.firm_slugs()
     out_slugs = []

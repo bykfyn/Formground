@@ -17,6 +17,7 @@ sys.path.insert(0, str(SCRAPER_DIR))
 sys.path.insert(0, str(SCRAPER_DIR.parent / "backend"))
 
 import creator_texts  # noqa: E402
+import site_sections  # noqa: E402
 from generate_architects_pages import house_card_html  # noqa: E402
 from generate_brand_pages import (  # noqa: E402
     CARD_CLICK_TRACKING_JS,
@@ -34,6 +35,7 @@ from generate_theme_landing_pages import append_to_sitemap  # noqa: E402
 from site_assets import ICONS_CSS, SHARE_JS  # noqa: E402
 
 LISTING_PAGE = {"architects": "architects", "makers": "brands", "designers": "designers"}
+HIDDEN_GROUPS = {"architects"} if site_sections.is_hidden("houses") else set()
 SEE_ALL_NOUN = {"architects": "houses", "makers": "pieces", "designers": "pieces"}
 PROFILE_CSS = """
   .profile-links { font-size: 13px; text-align: center; margin: 4px 0 26px; }
@@ -168,6 +170,10 @@ def render(entry, count, cards):
 
 def generate():
     entries = creator_texts.load()
+    live_slugs = {e["edit"]["slug"] for e in entries.values()}
+    for entry in creator_texts.load_all().values():     # an Edit paused by the hidden-houses switch: remove its page
+        if entry.get("edit") and entry["edit"]["slug"] not in live_slugs and entry["group"] in HIDDEN_GROUPS:
+            (DOCS_DIR / "edits" / f"{entry['edit']['slug']}.html").unlink(missing_ok=True)
     if not entries:
         return
     houses = json.loads((SCRAPER_DIR.parent / "data" / "houses.json").read_text())

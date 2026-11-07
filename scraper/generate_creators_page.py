@@ -22,12 +22,15 @@ import re
 import sys
 from pathlib import Path
 
+import site_sections
+
 SCRAPER_DIR = Path(__file__).parent
 ROOT = SCRAPER_DIR.parent
 DOCS = ROOT / "docs"
 FRONTEND = ROOT / "frontend"
 
-GROUPS = ("architects", "designers", "makers")
+GROUPS = tuple(g for g in ("architects", "designers", "makers")
+               if not (g == "architects" and site_sections.is_hidden("houses")))   # hidden 2026-11-07: see site_sections.py
 SEE_ALL = {"architects": "firms", "designers": "designers", "makers": "brands"}
 SHOWN = 5                      # on a phone the page CSS shows the first three
 PROFILE_EDITS = {}             # {"makers": {"slug", "name", "line", "image"}}: filled from data/creator_texts.json (see profile_edits)

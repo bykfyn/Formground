@@ -1908,7 +1908,7 @@ def render_sitemap(brand_slugs):
             (f"https://formground.com/designers/{slug}.html", "weekly", "0.5", today)
             for slug in sorted(designer_slugs)
         ]
-    architect_slugs = _architects_sitemap_slugs()
+    architect_slugs = [] if site_sections.is_hidden("houses") else _architects_sitemap_slugs()
     if architect_slugs:
         urls.append(("https://formground.com/architects.html", "weekly", "0.7", today))
         urls += [
@@ -2033,7 +2033,8 @@ def generate():
     # Numbered continuation pages (<brand>-2 ...) stay linked and crawlable but are left out of the sitemap, so it lists
     # only the primary pages (12 Oct 2026: they were over half of it, and most of what Google crawled and did not keep).
     (DOCS_DIR / "sitemap.xml").write_text(render_sitemap(sorted(m[1] for m in makers_data)))
-    update_creators_hub_counts(len(makers_data), len(_designers_sitemap_slugs()), len(_architects_sitemap_slugs()))
+    update_creators_hub_counts(len(makers_data), len(_designers_sitemap_slugs()),
+                               0 if site_sections.is_hidden("houses") else len(_architects_sitemap_slugs()))
 
     print(f"Generated {len(makers_data)} brand pages, makers.html, "
           f"{len(RETIRED_CATEGORY_SLUGS)} retired-category redirect stubs, "

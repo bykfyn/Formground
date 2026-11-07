@@ -9,6 +9,12 @@ help (and can undercut trust). Add a name, with the reason, to hide another.
 """
 
 HIDDEN_SECTIONS = {
+    # Houses and the architect pages (2026-11-07, the user's call): the thinnest part of the catalogue (17 firms, a few
+    # hundred houses against ~28,000 products), and hiding it keeps Formground to furniture, lighting and objects. Possibly
+    # temporary. Hides /work/houses*.html, /architects.html and /architects/*, the Houses tile/shelf/menu entry, the
+    # Architects group on Creators, the architect profile Edits, and houses in search (the backend reads this file too).
+    # The houses/architect data, the scrapers and the generator stay, so bringing it back is removing this entry.
+    "houses": "thin next to the rest; Formground is furniture, lighting and objects for now",
     # The Craftspeople chip and panel on For Creators: 20 firms, thin, and not needed for the test.
     "craftspeople": "thin (20 firms); not needed for the traffic test",
     # Promotions on the Marketplace (and the brand-page "has a live promotion" callouts that link to it): 10 entries,
