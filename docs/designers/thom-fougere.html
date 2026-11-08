@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thom Fougere: designs and projects — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Thom Fougere - 33 works, Montréal. Each linked to its own page.">
+<link rel="canonical" href="https://formground.com/designers/thom-fougere.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Thom Fougere: designs and projects — Formground">
+<meta property="og:description" content="Thom Fougere - 33 works, Montréal. Each linked to its own page.">
+<meta property="og:url" content="https://formground.com/designers/thom-fougere.html">
+<meta property="og:image" content="https://formground.com/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://formground.com/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Designers", "item": "https://formground.com/designers.html"}, {"@type": "ListItem", "position": 3, "name": "Thom Fougere", "item": "https://formground.com/designers/thom-fougere.html"}]}</script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/icons.css?v=86479f05">
+<style>
+  .curated-note { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; }
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  /* "New from X" sits at the TOP of a maker page, above the full range (and only exists when there is something new) */
+  .brand-section--top { margin: 0 0 44px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent; /* same box as .tag so the two small labels are one height */
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  /* two to a row on a phone (a single 190px-minimum column left the directories one long list) */
+  @media (max-width: 640px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px; height: 47px; box-sizing: border-box;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+/* SHARE-BTN:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .share-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 1;
+    width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(250, 249, 247, 0.85); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+  }
+  .share-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+  .share-btn i { font-size: 14px; }
+  .share-btn.copied::after {
+    content: "Copied"; position: absolute; bottom: 32px; right: 0;
+    background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  /* LOAD-MORE:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .load-more-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 40px 0 8px; text-align: center;
+  }
+  .load-more-btn {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: none; border: none; padding: 6px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .load-more-btn:hover { color: var(--text-primary); }
+  .load-more-btn:disabled { opacity: 0.6; cursor: default; text-decoration: none; }
+  .load-more-progress { font-size: 11.5px; color: var(--text-muted); }
+  
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 28px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
+  .has-load-more .pager { display: none; }
+  .earlier-results { display: none; margin: 0 0 14px; font-size: 13px; }
+  .has-load-more .earlier-results { display: block; }
+  .earlier-results a { color: var(--text-muted); text-decoration: none; }
+  .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
+</style>
+<style>
+  .creator-text { max-width: 640px; margin: 0 auto 36px; }
+  .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
+  .creator-facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 18px; margin: 18px 0 14px;
+    padding: 14px 0; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .creator-facts dt { color: var(--text-muted); }
+  .creator-facts dd { margin: 0; color: var(--text-primary); }
+  .creator-text p.creator-more { font-size: 13px; margin: 0 0 4px; }   /* beats .creator-text p (15px): the link is small, like "Visit site" */
+  .creator-more a { color: var(--text-accent); text-decoration: none; }
+  .creator-more a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/edits.html">Edits</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Designer</p>
+    <h1 class="maker-name">Thom Fougere</h1>
+    <a class="brand-site-link" href="https://thomfougere.com/" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  
+  <section class="creator-text">
+    <p>Thom Fougere is a Canadian designer working in Montréal across furniture, lighting, objects, interiors and architecture. He began his career running the design department of an international furniture manufacturer, was Creative Director of the Winnipeg design house EQ3 from 2010 to 2019, and set up his own studio in Montréal in 2021.</p><p>His pieces are made with craftspeople and partners, among them Mjolk in Toronto, EQ3, ThreeH and Ourse: tambour-fronted oak and walnut cabinets, saddle-leather and steel chairs, and the Tyndall series in stone. On Formground his work is shown through 33 works, each linked to his own website.</p>
+    <dl class="creator-facts"><dt>Country</dt><dd>Canada</dd><dt>City</dt><dd>Montréal</dd><dt>Type</dt><dd>Designer</dd><dt>Products</dt><dd>Furniture, lighting and objects</dd><dt>Website</dt><dd>thomfougere.com</dd></dl>
+  </section>
+  <div class="maker-grid">
+      <a class="maker-card" href="https://thomfougere.com/Mjolk-Arm-Sofa" target="_blank" rel="noopener noreferrer" data-product="Mjolk Arm Sofa" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/0c693385841918d62bca4dd12fe3d2724bb7fb0f5b6cec72b2d791b226efb31f/Thom_Fougere_Mjolk_Arm_Sofa-2-web.jpg" alt="Mjolk Arm Sofa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mjolk Arm Sofa</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Tambour-Cabinet" target="_blank" rel="noopener noreferrer" data-product="Tambour Cabinet" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/c2952d1ba344b162e249343b0ee9f3f6e50b05c3f91e0647918b47a04fe2d713/Mjolk_Tambour_Oak_Thom_Fougere-21-web-crop.jpg" alt="Tambour Cabinet" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tambour Cabinet</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Fireside-Rocker" target="_blank" rel="noopener noreferrer" data-product="Fireside Rocker" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/1ecb6fe4791f8a56f1ce3cd4e276e7e63641c9190bd2a8a7724a2a71254c1bfb/Thom_Fougere_Fireside_Rocker-17-crop-web.jpg" alt="Fireside Rocker" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fireside Rocker</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Glass-Pendant-Light" target="_blank" rel="noopener noreferrer" data-product="Glass Pendant Light" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/937ffe52ee45aa7a3837313a7ef1538df73da214c69a8a9e109a3d0a554f52c1/Thom_Fougere_Glass_Pendant-3-2-website.jpg" alt="Glass Pendant Light" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Glass Pendant Light</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Mjolk-Wall-Light" target="_blank" rel="noopener noreferrer" data-product="Mjolk Wall Light" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/7dd656b43ff362989459f8451412e1217cb50d43515f47ffd270614b2c124014/mjolk_wall_light_Thom_Fougere_1-crop.jpg" alt="Mjolk Wall Light" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mjolk Wall Light</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Tyndall-Vessel-Collection" target="_blank" rel="noopener noreferrer" data-product="Tyndall Vessel Collection" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/a72a9de117a38e601c25e40fbe1e0789b7e8cc674f874bcc1680790173229d20/Thom_Fougere_Tyndall_Vessel_Collection.jpg" alt="Tyndall Vessel Collection" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tyndall Vessel Collection</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Saddle-Chair" target="_blank" rel="noopener noreferrer" data-product="Saddle Chair" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/6ac52fcab1dca478b3623715f549cdeddc379b0e531c7ccc1ed21190b3550cee/Thom_Fougere_Saddle_Chair.jpg" alt="Saddle Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Saddle Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Table-Trestles" target="_blank" rel="noopener noreferrer" data-product="Table Trestles" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/028f50a33f9b25cb33a98601900342e47c8624d7026d12a8b271beca560314f5/Table_Trestle-o-web2.jpg" alt="Table Trestles" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Table Trestles</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Tyndall-Vase" target="_blank" rel="noopener noreferrer" data-product="Tyndall Vase" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/5e587e2f12c3863d387222c8520b1c6af6b104909232bc2a828eff58152968ce/Thom_Fougere_Tyndall_Vase_Web_c.jpg" alt="Tyndall Vase" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tyndall Vase</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Mjolk-Daybed" target="_blank" rel="noopener noreferrer" data-product="Mjolk Daybed" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/4f9abb7802ab65d851002b16fd78cf934f5b06ae0991ca6091a5cc878a2751a1/Thom_Fougere_Mjolk_Daybed.jpg" alt="Mjolk Daybed" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mjolk Daybed</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Bench-Rack" target="_blank" rel="noopener noreferrer" data-product="Bench Rack" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/4e230d3cdcc47e5aaa0448d5958ad3561f7f5552ed5f29c1faa7021777efbfd5/Thom_Fougere_Bench_Rack.jpg" alt="Bench Rack" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bench Rack</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Tambour-Collection" target="_blank" rel="noopener noreferrer" data-product="Tambour Collection" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/8a06f2316d214f45e28946598d49036e5a1e7149bda754742bb6b5ee6be7bf0c/Thom_Fougere_Tambour_Collection.jpg" alt="Tambour Collection" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tambour Collection</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Tripod-Stool" target="_blank" rel="noopener noreferrer" data-product="Tripod Stool" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/c71addfc9ea42fe477bc6fb6cd921d0ef10324e9102f08648d0d318b7a99c36a/Thom_Fougere_EQ3_Assembly_Stool.jpg" alt="Tripod Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tripod Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Steel-Wood-Table" target="_blank" rel="noopener noreferrer" data-product="Steel Wood Table" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/9c122ef424dec9d3757d709aea49d33c23845b87da74e39ae54ef80644ab3ee8/Thom_Fougere_Steel_Wood_Table.jpg" alt="Steel Wood Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Steel Wood Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Cast-Iron-Wall-Sconce" target="_blank" rel="noopener noreferrer" data-product="Cast Iron Wall Sconce" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/b121dab79e332801e704c91a2616972c7ea422cd7e1c4de3f2ded2607d4e262d/Thom-Fougere-Cast-Sconce.jpg" alt="Cast Iron Wall Sconce" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Cast Iron Wall Sconce</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Abbey-Dining-Chair" target="_blank" rel="noopener noreferrer" data-product="Abbey Dining Chair" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/fe2bbf25eec0a66e8c4213c44dd9be6eb7dbff4193c6c40a439bd280dccfcade/Thom-Fougere-Abbey-Dining-Chair-1-web.jpg" alt="Abbey Dining Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Abbey Dining Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Mjolk-Round-Coffee-Table" target="_blank" rel="noopener noreferrer" data-product="Mjolk Round Coffee Table" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/853f9a81d0ca6aeb3148c5828a0ebd339790ffb7b54008f2e01485dfc9cab628/Thom_Fougere_Mjolk_Round_Coffee_Table-3-web.jpg" alt="Mjolk Round Coffee Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mjolk Round Coffee Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Tambour-Hutch" target="_blank" rel="noopener noreferrer" data-product="Tambour Hutch" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/4a2087c26766f31865be1b5fae9e7f1aab19c75f88a90c957bb615b907e32846/Thom_Fougere_Mjolk_Tambour_Hutch.jpg" alt="Tambour Hutch" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tambour Hutch</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Arch-Lamp" target="_blank" rel="noopener noreferrer" data-product="Arch Lamp" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/1958039333a81d7d27839213628c5daec16e7ff9716e6f48bdc9d9f624dbe37b/Thom_Fougere_EQ3_Arch_Lamp.jpg" alt="Arch Lamp" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Arch Lamp</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Candle-Holder" target="_blank" rel="noopener noreferrer" data-product="Candle Holder" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/1c048ecaa1ded3957dfb6d12c9fdb847b6c9038f5a73c656d5097b09a5db054e/Thom_Fougere_EQ3_Candle_Holder.jpg" alt="Candle Holder" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Candle Holder</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Division-Twelve-Stool-Collection" target="_blank" rel="noopener noreferrer" data-product="Division Twelve Stool" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/228c2b4c566e233fc22a46ce5e922742b2e26fa89679898f8e67548ab6a5ffd0/Thom_Fougere_Division_Twleve_Spinni_Stool.jpg" alt="Division Twelve Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Division Twelve Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Rattan-Bench" target="_blank" rel="noopener noreferrer" data-product="Rattan Bench" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/cba82e38e11c8a3ac0093b428028df58aa0cec76735936b9ddf87589bfda8bba/Rattan_Bench.jpg" alt="Rattan Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rattan Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Tyndall-Stone-Bench" target="_blank" rel="noopener noreferrer" data-product="Tyndall Stone Bench" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/d9469132923cd7158f19d2507db5ede94c8d6f2d6e953c1425997b1169ae818d/Thom_Fougre_Tyndall_Bench.jpg" alt="Tyndall Stone Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tyndall Stone Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Cafe-Stool" target="_blank" rel="noopener noreferrer" data-product="Cafe Stool" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/909d026072c1111acba90716f594a9862f28c62b1714ba721f391ac3bc77e777/Thom_Fougere_Cafe_Stool.jpg" alt="Cafe Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Cafe Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Tyndall-Lamp" target="_blank" rel="noopener noreferrer" data-product="Tyndall Lamp" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/a165d31edb331a69a7e77a799ade517a3b412a0c930cd0977e548c604d8cc06e/ThomFougere_APPLIQUE_ArseniKhamzin_LR_2-cordless-web.jpg" alt="Tyndall Lamp" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tyndall Lamp</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Alder-Lounge-Chair-and-Ottoman" target="_blank" rel="noopener noreferrer" data-product="Alder Lounge Chair and Ottoman" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/22e310331685b33ddddae717520817179bf17529aee61f58b7012d4e86cf55cf/Thom-Fougere---Alder-Lounge-Chair--Chair-3-web.jpg" alt="Alder Lounge Chair and Ottoman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Alder Lounge Chair and Ottoman</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Mjolk-Stone-Table" target="_blank" rel="noopener noreferrer" data-product="Mjolk Stone Table" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/e750bf55c8532c0f4bca4fec5d1cb89d591d9330379c0fc809ae84b5dea3c788/Thom_Fougere_Mjolk2022-web1.jpg" alt="Mjolk Stone Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mjolk Stone Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Mjolk-Sofa" target="_blank" rel="noopener noreferrer" data-product="Mjolk Sofa" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/b7bbaf78b2927b75bebcacf7acd0629b96cff963aa4be8697bf30c807081cd35/Thom_Fougere_Mjolk_Sofa.jpg" alt="Mjolk Sofa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Mjolk Sofa</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Bar-Cart" target="_blank" rel="noopener noreferrer" data-product="Bar Cart" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/ee8b315f73f80fb571f3e3fe795a1b91255c4b9554267c107822673e02cc3fba/Thom_Fougere_Bar_Cart_7web-copy.jpg" alt="Bar Cart" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bar Cart</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Cafe-Bench" target="_blank" rel="noopener noreferrer" data-product="Cafe Bench" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/327ed42b3535613bcd146a1f7d17bb8c7b258612650855cb3356a1112a895d31/Thom_Fougere_Cafe_Bench_2web.jpg" alt="Cafe Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Cafe Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Tyndall-Side-Table" target="_blank" rel="noopener noreferrer" data-product="Tyndall Side Table" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/ce9595ae5a0addbe1a12af95aed75cc214e78efb9e938d7667d78ce4442b3c37/Thom_Fougere_Tyndall_Side_Table.jpg" alt="Tyndall Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tyndall Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Copper-Serving-Cart" target="_blank" rel="noopener noreferrer" data-product="Copper Serving Cart" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/239a642fa4b7955927dc7396e9625f9fbefe6430fcb7ae0c58f7c7dfea7c244c/Thom_Fougere_Copper_Bar_Cart.jpg" alt="Copper Serving Cart" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Copper Serving Cart</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://thomfougere.com/Tyndall-Table" target="_blank" rel="noopener noreferrer" data-product="Tyndall Table" data-brand="Thom Fougere">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/f67f90cbfde2e9b93365ee159986736f8e920b37e4b425ddc7ce84e27aae8d02/Thom_Fougere_Tyndall_Table.jpg" alt="Tyndall Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tyndall Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+  </div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    // The tracking itself (page views, click-throughs, landing-page and
+    // campaign carry-over) lives in ONE shared file, /fg-track.js, instead
+    // of being pasted into hundreds of generated pages - see that file and
+    // backend/analytics.py for what is logged.
+    var s = document.createElement("script");
+    s.src = "/fg-track.js";
+    s.async = true;
+    document.head.appendChild(s);
+  })();
+</script>
+<script src="/share.js?v=3dc65514" defer></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

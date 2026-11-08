@@ -12321,6 +12321,69 @@ def extract_hayung_park(brand):
     return products
 
 
+# korudesign.it (Koru, Como furniture brand, added 2026-11-07): a Nuxt front end on Shopify with no products.json, but the six
+# collection pages are server-rendered and list every product page. Size and module variants are separate pages, so they are
+# grouped into one piece per design code (AU01-AU06; the armchair and the sofa share AU05), shown on the first variant's page and
+# photo. Pieces are shown on enquiry ("Inquire now"); there are no prices. Designer: Federica Biasi (Aura collection).
+KORU_COLLECTIONS = ("chairs", "tables", "coffee-tables", "benches", "bookcases", "sofa-armchairs")
+KORU_PIECES = {
+    "au01": ("Chair AU01", "Chair", 0), "au02": ("Table AU02", "Table", 0), "au03": ("Bench AU03", "Bench", 0),
+    "au04": ("Bookcase AU04", "Shelving", 0), "au05-armchair": ("Armchair AU05", "Armchair", 2),
+    "au05-sofa": ("Modular Sofa AU05", "Sofa", 3), "au06": ("Coffee Table AU06", "Coffee Table", 0),
+}
+# The third value picks which of the page's photos is used: the first is a wide studio shot, and for the armchair and the sofa
+# it leaves the piece tiny in the frame, so a closer angle further down the gallery is used instead.
+def _koru_key(slug):
+    code = re.search(r"(au\d\d)w?$", slug)
+    if not code:
+        return None
+    if code.group(1) == "au05":
+        return "au05-armchair" if slug.startswith("armchair") else "au05-sofa"
+    return code.group(1)
+def extract_koru(brand):
+    base = brand["url"].rstrip("/")
+    first_page = {}
+    for collection in KORU_COLLECTIONS:
+        try:
+            resp = requests.get(f"{base}/collections/{collection}", headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch Koru {collection}: {e}")
+            continue
+        for slug in re.findall(r'href="/products/([a-z0-9-]+)"', resp.text):
+            key = _koru_key(slug)
+            if key:
+                first_page.setdefault(key, slug)
+    products = []
+    for key, (name, category, photo) in KORU_PIECES.items():
+        slug = first_page.get(key)
+        if not slug:
+            print(f"  Koru: {name} not found in the collections - skipped")
+            continue
+        page = f"{base}/products/{slug}"
+        try:
+            resp = requests.get(page, headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {page}: {e}")
+            continue
+        gallery = []
+        for u in re.findall(r'<img[^>]+src="([^"]+)"', resp.text):
+            u = html.unescape(u).split("&width=")[0]
+            if "cdn.shopify.com" in u and "/files/" in u and u not in gallery:
+                gallery.append(u)
+        image = gallery[photo] if len(gallery) > photo else None
+        if not image:
+            print(f"  Koru: no photo on {page} - skipped")
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": page,
+            "category": category, "material_options": ["Oak"], "dimensions": "", "notes": "",
+            "image_url": image, "designer": "Federica Biasi", "price": None, "currency": None,
+        })
+    return products
+
+
 # arwenn.com (Arwenn, confirmed live 2026-10-11): a headless Shopify storefront whose /products.json is 404, but the product
 # sitemap lists every product (37 at the time) and each page carries a full schema.org Product block (name, photo, price,
 # currency). Gift cards are skipped. robots.txt is the standard Shopify one.
@@ -13114,6 +13177,7 @@ EXTRACTORS = {
     "Krystian Kowalski": extract_portfolio_designer,
     "Giulio Zizzari": extract_portfolio_designer,
     "Salem Charabi": extract_portfolio_designer,
+    "Thom Fougere": extract_portfolio_designer,
     "Feldspar": extract_shopify,
     "Faye Toogood": extract_faye_toogood,
     "B-TD": extract_btd,
@@ -13166,6 +13230,7 @@ EXTRACTORS = {
     "Wartel": extract_wartel,
     "Forest & Giaconia": extract_forest_giaconia,
     "Hayung Park": extract_hayung_park,
+    "Koru": extract_koru,
     "Sattio Studio": extract_sattio_studio,
     "Emmanuelle Simon": extract_emmanuelle_simon,
     "Victoria Wilmotte": extract_victoria_wilmotte,
