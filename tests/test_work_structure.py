@@ -657,6 +657,9 @@ class HiddenHousesTests(unittest.TestCase):
         self.assertTrue(qe.HOUSES_HIDDEN)
         self.assertEqual(qe._load_houses(), [])
         self.assertIn("COPY scraper/site_sections.py", (ROOT / "Dockerfile").read_text())
+        # .dockerignore leaves out all of scraper/ except what is listed: without this line the COPY above fails the Cloud Run
+        # build, and the backend silently stays on its old revision (houses stayed in "Surprise me" for a day, 2026-11-08)
+        self.assertIn("!scraper/site_sections.py", (ROOT / ".dockerignore").read_text().splitlines())
 
 
 class BrandDesignerLinkTests(unittest.TestCase):
