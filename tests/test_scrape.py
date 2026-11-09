@@ -639,6 +639,16 @@ class FurnitureAccessoryTests(unittest.TestCase):
             self.assertEqual(scrape._normalize_furniture_accessory(name, "Cushion"), "Cushion", name)
 
 
+class TellMeMoreSampleTests(unittest.TestCase):
+    def test_sample_pieces_are_not_listed_but_the_rugs_are(self):
+        # user-reported 2026-11-09 on "Sumak hampamatta provbit": "provbit" is a sample piece of a rug sold in full
+        conn = sqlite3.connect(scrape.DB_PATH)
+        names = [r[0] for r in conn.execute("select product_name from products where brand = 'Tell Me More'")]
+        conn.close()
+        self.assertFalse([n for n in names if "provbit" in n.lower()])
+        self.assertIn("Edge hampamatta", names)
+
+
 class MasterAndMasterTabletopTests(unittest.TestCase):
     def test_replacement_tabletops_are_not_listed_but_the_complete_tables_are(self):
         # user-reported 2026-11-09 on "Triton Tabletop": a "<table> Tabletop" is a spare part for a table sold complete

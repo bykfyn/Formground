@@ -6226,6 +6226,9 @@ def extract_shopify(brand):
         # user-reported 2026-11-09 on "Triton Tabletop": each "<table> Tabletop" is a replacement top for a table that is
         # also listed complete ("Triton 73 × 70", "Fix 73", "Reverse 73 × 70"...), so a spare part, not a design object
         raw_products = [p for p in raw_products if not p["title"].lower().rstrip().endswith("tabletop")]
+    if brand["name"] == "Tell Me More":
+        # user-reported 2026-11-09 on "Sumak hampamatta provbit": "provbit" is Swedish for sample piece, sold alongside each rug
+        raw_products = [p for p in raw_products if "provbit" not in p["title"].lower()]
     # These two brands' product_type values are Czech / Chinese words: translated to the site's English category (or blank,
     # so the name-based inference takes over) instead of storing the foreign word as the category
     translations = {
