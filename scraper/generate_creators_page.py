@@ -33,6 +33,7 @@ GROUPS = tuple(g for g in ("architects", "designers", "makers")
                if not (g == "architects" and site_sections.is_hidden("houses")))   # hidden 2026-11-07: see site_sections.py
 SEE_ALL = {"architects": "firms", "designers": "designers", "makers": "brands"}
 SHOWN = 5                      # on a phone the page CSS shows the first three
+FEATURED_IN_PLACE_OF = {"another-country": "garsnas", "konstantin-grcic": "hella-jongerius"}   # 2026-11-09: each takes the replaced profile's slot in the weekly rotation, which no longer features the replaced one
 PROFILE_EDITS = {}             # {"makers": {"slug", "name", "line", "image"}}: filled from data/creator_texts.json (see profile_edits)
 
 CARD_RE = re.compile(
@@ -94,8 +95,11 @@ def profile_edits(today):
     for entry in creator_texts.load().values():
         by_group.setdefault(entry["group"], []).append(entry)
     out = {}
+    replaced = set(FEATURED_IN_PLACE_OF.values())
+    names = {e["page_slug"]: e["name"] for entries in by_group.values() for e in entries}
     for group, entries in by_group.items():
-        entries.sort(key=lambda e: e["name"])
+        entries = [e for e in entries if e["page_slug"] not in replaced]   # a replaced profile no longer rotates onto this page
+        entries.sort(key=lambda e: names[FEATURED_IN_PLACE_OF.get(e["page_slug"], e["page_slug"])])
         entry = entries[today.isocalendar()[1] % len(entries)]
         edit = entry["edit"]
         out[group] = {"slug": edit["slug"], "name": entry["name"], "line": edit["standfirst"], "image": edit["hero"],

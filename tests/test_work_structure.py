@@ -627,6 +627,21 @@ class HiddenHousesTests(unittest.TestCase):
                 self.assertFalse((DOCS / "edits" / f"{e['edit']['slug']}.html").exists(), e["name"])
                 self.assertNotIn(f"/edits/{e['edit']['slug']}.html", (DOCS / "edits.html").read_text(), e["name"])
 
+    def test_another_country_replaced_garsnas_in_the_maker_profile_rotation(self):
+        import datetime
+        import generate_creators_page as gc
+        featured = [gc.profile_edits(datetime.date(2026, 11, 2) + datetime.timedelta(weeks=w))["makers"]["page_slug"] for w in range(6)]
+        self.assertNotIn("garsnas", featured)
+        self.assertEqual(sorted(featured), sorted(set(featured)))
+        self.assertIn("another-country", featured)
+        self.assertEqual(featured.index("another-country"), featured.index("davsjo") + 1)
+
+    def test_grcic_replaced_jongerius_in_the_designer_profile_rotation(self):
+        import datetime
+        import generate_creators_page as gc
+        featured = {gc.profile_edits(datetime.date(2026, 11, 2) + datetime.timedelta(weeks=w))["designers"]["page_slug"] for w in range(6)}
+        self.assertEqual(featured, {"konstantin-grcic", "pierre-charpin"})
+
     def test_nothing_links_to_them_and_the_sitemap_omits_them(self):
         sm = (DOCS / "sitemap.xml").read_text()
         self.assertNotIn("/architects", sm)
