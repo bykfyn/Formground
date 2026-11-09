@@ -637,3 +637,13 @@ class FurnitureAccessoryTests(unittest.TestCase):
         for name in ("Hybrid Cushion Pirra with plume padding", "Cushion Pad 50 x 50cm",
                      "Nicholson Loose Cover Sofa 180cm", "Multi-Seat Cushion"):
             self.assertEqual(scrape._normalize_furniture_accessory(name, "Cushion"), "Cushion", name)
+
+
+class MasterAndMasterTabletopTests(unittest.TestCase):
+    def test_replacement_tabletops_are_not_listed_but_the_complete_tables_are(self):
+        # user-reported 2026-11-09 on "Triton Tabletop": a "<table> Tabletop" is a spare part for a table sold complete
+        conn = sqlite3.connect(scrape.DB_PATH)
+        names = [r[0] for r in conn.execute("select product_name from products where brand = 'Master & Master'")]
+        conn.close()
+        self.assertFalse([n for n in names if n.lower().rstrip().endswith("tabletop")])
+        self.assertIn("Triton 73 × 70", names)
