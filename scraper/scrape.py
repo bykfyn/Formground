@@ -1323,40 +1323,31 @@ def extract_noom(brand):
     return products
 
 
-# Eilersen's own real category-type labels (from each product card's
-# data-gtm attribute, confirmed live 2026-09-29) mapped to this site's
-# category vocabulary. /products/table-tops/ is deliberately excluded
-# from EILERSEN_CATEGORIES below, not mapped here - its "products" are
-# material swatches for a table's top surface ("Glass, Transparent",
-# "Marble, Brown"), not standalone design objects, same shape as every
-# other brand's material-sample exclusion already in
-# _looks_like_a_maintenance_item.
-EILERSEN_CATEGORY_MAP = {
-    "Sofa": "Sofa", "Chair": "Chair", "Table": "Table",
-    "Footstool": "Ottoman", "Shelf": "Shelving", "Cushion": "Cushion",
-    "Outdoor": "Outdoor",
+# Eilersen rebuilt eilersen.eu on WordPress (seen 2026-11-08: every old /media/ image 404, /products/ URLs 301 to
+# /collection/eilersen/). Each listing page server-renders its pieces as gb-loop-item blocks (image, name link, "Design: X").
+# /collection/eilersen/table-tops/ is deliberately left out - its "products" are material swatches for a table's top
+# surface ("Glass", "Marble Brown"), not standalone design objects - and so are the dog basket under /accessories/ and
+# the cushion line, which the new site no longer lists.
+EILERSEN_LISTINGS = {
+    "eilersen/sofas": "Sofa", "eilersen/chairs": "Chair", "eilersen/tables": "Table",
+    "eilersen/footstools": "Ottoman", "eilersen/shelves": "Shelving",
+    "eilersen-outdoor/sofas": "Outdoor", "eilersen-outdoor/footstools": "Outdoor",
 }
-EILERSEN_CATEGORIES = ["sofas", "chairs", "tables", "footstools", "shelves", "cushions", "outdoor"]
 
 
 def extract_eilersen(brand):
     """
     eilersen.dk redirects to eilersen.com, a near-empty landing page -
     the real, live storefront is eilersen.eu (user-provided 2026-09-29).
-    No product API (old TYPO3-flavored custom site), but each of the 7
-    real category pages (EILERSEN_CATEGORIES) server-renders its full
-    product grid in one page - confirmed live: real content sits in the
-    initial HTML despite href values being root-relative ("/products/
-    sofas/amon/"), which an absolute-URL-only regex would miss entirely.
-    Each card gives name (.fname h2), category (data-gtm), image (inline
-    background-image style), and url together in one clean block.
+    No product API, but each listing in EILERSEN_LISTINGS server-renders
+    its full grid in one page, so no per-product visit is needed.
     """
     base = brand["url"].rstrip("/")
     products = []
     seen_urls = set()
 
-    for category_slug in EILERSEN_CATEGORIES:
-        url = f"{base}/products/{category_slug}/"
+    for listing, category in EILERSEN_LISTINGS.items():
+        url = f"{base}/collection/{listing}/"
         try:
             resp = requests.get(url, headers=HEADERS, timeout=20)
             resp.raise_for_status()
@@ -1364,28 +1355,24 @@ def extract_eilersen(brand):
             print(f"  Could not fetch {url}: {e}")
             continue
 
-        cards = re.findall(
-            r'<a href="(/products/[a-z0-9-]+/[a-z0-9-]+/)" class="item_product [a-zA-Z]+" '
-            r'data-gtm="([^"]+)" id="[a-z_0-9-]+">\s*'
-            r'<div class="fimage" style="background-image: url\(\'([^\']+)\'\);"></div>\s*'
-            r'<div class="fname"><h2>([^<]+)</h2></div>',
-            resp.text,
-        )
-        for product_url, raw_type, image_path, name in cards:
-            full_url = urllib.parse.urljoin(base, product_url)
-            if full_url in seen_urls:
+        for block in re.findall(r'<div class="gb-loop-item[^"]*"[^>]*>(.*?)</h2>', resp.text, re.S):
+            link = re.search(r'<h4[^>]*><a href="([^"]+)">([^<]+)</a>', block)
+            image = re.search(r'<img[^>]*?\ssrc="([^"]+)"', block)
+            if not link or not image or link.group(1) in seen_urls:
                 continue
-            seen_urls.add(full_url)
+            seen_urls.add(link.group(1))
+            designer = re.search(r"Design:\s*([^<]+)", block)
             products.append({
                 "brand": brand["name"],
                 "brand_url": brand["url"],
-                "product_name": html.unescape(name).strip(),
-                "product_url": full_url,
-                "category": EILERSEN_CATEGORY_MAP.get(raw_type, ""),
+                "product_name": html.unescape(link.group(2)).strip(),
+                "product_url": link.group(1),
+                "category": category,
                 "material_options": [],
                 "dimensions": "",
                 "notes": "",
-                "image_url": urllib.parse.urljoin(base, image_path),
+                "image_url": image.group(1),
+                "designer": html.unescape(designer.group(1)).strip() if designer else "",
             })
         time.sleep(1)  # be polite - don't hammer the site
 
@@ -8692,11 +8679,16 @@ def _extract_squarespace_json_shop(brand, shop_path, type_words, dedupe_titles=F
         seen.add(title.lower())
         lower = title.lower()
         category = next((cat for word, cat in type_words.items() if word in lower), "")
+        image_url = item["assetUrl"]
+        if "/static/" in image_url and not re.search(r"\.(jpe?g|png|webp)", image_url, re.I):
+            # a bare /static/<ids>/<timestamp>/ assetUrl serves Squarespace's grey "no image" placeholder (84 of Gadsby's 94
+            # pieces on 2026-11-08); the product's own first photo sits in its items list
+            image_url = next((i["assetUrl"] for i in item.get("items") or [] if i.get("assetUrl")), image_url)
         products.append({
             "brand": brand["name"], "brand_url": brand["url"], "product_name": title,
             "product_url": base + item["fullUrl"] if item["fullUrl"].startswith("/") else item["fullUrl"],
             "category": category, "material_options": [], "dimensions": "", "notes": "",
-            "image_url": item["assetUrl"], "designer": "", "price": price if price > 0 else None,
+            "image_url": image_url, "designer": "", "price": price if price > 0 else None,
             "currency": (money or {}).get("currency") if price > 0 else None,
         })
     return products
