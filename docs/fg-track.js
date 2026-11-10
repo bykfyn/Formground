@@ -4,7 +4,7 @@
  * via CARD_CLICK_TRACKING_JS; index/work/marketplace/for-creators load it
  * directly). What is logged and why: backend/analytics.py.
  *
- * Privacy: no cookie, no user id. What is kept in sessionStorage (per browser
+ * Privacy: no cookie, no user id. (With data-storage="none" on the script tag, nothing at all is stored on the device.) What is kept in sessionStorage (per browser
  * TAB, cleared when it closes) is the campaign UTM values, the path of the
  * first page of the visit (both identical for everyone who arrives the same
  * way) and a random visit id that only groups the pages of this one tab visit
@@ -22,6 +22,10 @@
   // No attributes = Formground, exactly as before.
   var tag = document.currentScript;
   var SITE = (tag && tag.getAttribute("data-site")) || null;
+  // data-storage="none": write NOTHING to the visitor's device (no sessionStorage: visit id, landing page, campaign).
+  // Every page is then reported on its own: landing_page is the page itself, the campaign is whatever is in this
+  // page's URL, visit_id is null. Use it on sites that run without a consent banner. Default keeps the tab storage.
+  var NO_STORAGE = !!(tag && tag.getAttribute("data-storage") === "none");
   var API_BASE = (tag && tag.getAttribute("data-endpoint")) || window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
   var host = window.location.hostname;
   // Our own visits: open any page once with ?fg_internal=1 and this browser stops
@@ -39,9 +43,11 @@
   var enabled = !internal && (window.FG_TRACK_FORCE || !(host === "" || host === "localhost" || host === "127.0.0.1" || host === "[::1]" || /\.localhost$/.test(host)));
 
   function load(key) {
+    if (NO_STORAGE) return null;
     try { return window.sessionStorage.getItem(key); } catch (e) { return null; }
   }
   function store(key, value) {
+    if (NO_STORAGE) return;
     try { window.sessionStorage.setItem(key, value); } catch (e) { /* storage blocked: fall back to this page only */ }
   }
 
@@ -69,7 +75,7 @@
   }
   // Random id for THIS tab visit only (see the privacy note above).
   var visit = load("fg_visit");
-  if (!visit) {
+  if (!visit && !NO_STORAGE) {
     try {
       var bytes = new Uint8Array(8);
       window.crypto.getRandomValues(bytes);
