@@ -30,7 +30,7 @@ from urllib.parse import urlsplit
 from fastapi import Body, FastAPI, Query, Request
 from fastapi.middleware.cors import CORSMiddleware
 
-from analytics import log_event
+from analytics import DEFAULT_SITE, log_event
 from query_engine import (
     BRAND_COUNTRIES, BRAND_TIERS, brand_status, discover, search, search_full, search_more, shape_agent_product,
 )
@@ -182,6 +182,24 @@ def _clean_path(value):
 
 _VISIT_ID = re.compile(r"^[0-9a-f]{8,32}$")
 _RATINGS = {"not_wanted", "close", "spot_on"}
+
+
+# Sites that report to this collector. The site is decided here, from the browser's Origin header, so a page
+# on one site cannot log as another. A site whose domain is not settled yet (or a local preview) may name
+# itself with a "site" field, accepted only if it is listed in KNOWN_SITES. Anything else is Formground.
+SITE_HOSTS = {
+    "formground.com": "formground",
+    "www.formground.com": "formground",
+}
+KNOWN_SITES = {"formground", "tradgardsatlas"}
+
+
+def _site_for(request: Request, claimed=None):
+    host = urlsplit(request.headers.get("origin", "")).hostname or ""
+    if host in SITE_HOSTS:
+        return SITE_HOSTS[host]
+    claimed = str(claimed or "").lower()
+    return claimed if claimed in KNOWN_SITES else DEFAULT_SITE
 
 
 def _is_internal(value):
@@ -371,6 +389,7 @@ def track_event(request: Request, payload: dict = Body(...)):
         target_url = f"{parts.scheme}://{parts.netloc}{parts.path}"  # never the query string
     log_event(
         event_type,
+        site=_site_for(request, payload.get("site")),
         query=payload.get("query"),
         brand=brand,
         product_name=payload.get("product_name"),
@@ -387,6 +406,7 @@ def track_event(request: Request, payload: dict = Body(...)):
         rating=(payload.get("rating") if event_type == "feedback" and payload.get("rating") in _RATINGS else None),
         surface=payload.get("surface"),
         position=payload.get("position"),
+        sponsored=(1 if str(payload.get("sponsored")) in ("1", "true", "True") else None),
         result_brands=result_brands,
         result_count=payload.get("result_count"),
         target_url=target_url,

@@ -61,6 +61,7 @@ from google.cloud import bigquery
 
 logger = logging.getLogger("formground.analytics")
 
+DEFAULT_SITE = "formground"
 DATASET_ID = "formground_analytics"
 TABLE_ID = "events"
 
@@ -98,6 +99,11 @@ SCHEMA = [
     bigquery.SchemaField("visit_id", "STRING", mode="NULLABLE"),   # random per-tab-visit id (groups one visit's events)
     bigquery.SchemaField("utm_content", "STRING", mode="NULLABLE"),  # ad creative, added 2026-10-05
     bigquery.SchemaField("rating", "STRING", mode="NULLABLE"),     # "feedback" events: not_wanted / close / spot_on
+    # --- added 2026-11-10 ---
+    # Which site the event came from. Set server-side (main._site_for), never trusted from the client.
+    # Rows from before this column read back null and mean "formground".
+    bigquery.SchemaField("site", "STRING", mode="NULLABLE"),
+    bigquery.SchemaField("sponsored", "INTEGER", mode="NULLABLE"),  # 1 = a paid ("sponsrat") placement was clicked
 ]
 
 _SCHEMA_TYPES = {f.name: f.field_type for f in SCHEMA}
@@ -194,7 +200,7 @@ def build_row(event_type, fields, allowed=None, now=None):
 
 
 def log_event(event_type, query=None, brand=None, product_name=None,
-              utm_source=None, utm_medium=None, utm_campaign=None, **extra):
+              utm_source=None, utm_medium=None, utm_campaign=None, site=DEFAULT_SITE, **extra):
     """Insert one event row. Never raises - a logging failure should
     never break a search or a click-through. `extra` carries the 2026-10-02
     dimensions (see SCHEMA); anything that is not a schema column is
@@ -206,6 +212,7 @@ def log_event(event_type, query=None, brand=None, product_name=None,
         fields = {
             "query": query, "brand": brand, "product_name": product_name,
             "utm_source": utm_source, "utm_medium": utm_medium, "utm_campaign": utm_campaign,
+            "site": site,
             **extra,
         }
         row = build_row(event_type, fields, allowed=_live_fields)

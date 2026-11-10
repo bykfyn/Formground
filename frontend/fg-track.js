@@ -17,7 +17,12 @@
  */
 (function () {
   "use strict";
-  var API_BASE = window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
+  // Per-site settings come from the script tag, so the same file serves every site:
+  //   <script src="/fg-track.js" data-site="tradgardsatlas" data-endpoint="https://..."></script>
+  // No attributes = Formground, exactly as before.
+  var tag = document.currentScript;
+  var SITE = (tag && tag.getAttribute("data-site")) || null;
+  var API_BASE = (tag && tag.getAttribute("data-endpoint")) || window.FORMGROUND_API_BASE || "https://formground-git-182928637479.europe-west1.run.app";
   var host = window.location.hostname;
   // Our own visits: open any page once with ?fg_internal=1 and this browser stops
   // reporting (?fg_internal=0 turns it back on). The marker lives only in that browser
@@ -99,7 +104,8 @@
   }
 
   function send(type, fields) {
-    post(Object.assign({ event_type: type }, extra(), ctx.utm, fields || {}));
+    // "site" is only a hint for sites without a settled domain: the server decides from the Origin header.
+    post(Object.assign({ event_type: type }, SITE ? { site: SITE } : {}, extra(), ctx.utm, fields || {}));
   }
 
   window.FGTrack = { ctx: ctx, extra: extra, send: send, post: post, internal: internal };
@@ -125,6 +131,11 @@
       var b = textOf(el);
       if (b && brands.indexOf(b) === -1) brands.push(b);
     });
+    // Generic markup (any site): items shown on the page carry data-track-item.
+    document.querySelectorAll("[data-track-item]").forEach(function (el) {
+      var b = el.getAttribute("data-track-item");
+      if (b && brands.indexOf(b) === -1) brands.push(b);
+    });
     var fields = { referrer_host: referrerHost() };
     if (pageBrand) fields.brand = pageBrand;          // a maker's own page
     if (brands.length) fields.result_brands = brands.slice(0, 150);  // makers shown here
@@ -138,6 +149,22 @@
   function bindClicks() {
     if (document.querySelector('script[src*="search.js"]')) return;
     document.addEventListener("click", function (ev) {
+      // Generic markup: <a href data-track-item="Name" data-track-group="..." data-track-sponsored="1">.
+      // Any outbound link carrying data-track-item is reported; position is its rank among the page's tracked items.
+      var tagged = ev.target.closest && ev.target.closest("a[data-track-item]");
+      if (tagged) {
+        if (!tagged.hostname || tagged.hostname === window.location.hostname) return;
+        var tf = {
+          brand: tagged.getAttribute("data-track-item"),
+          product_name: tagged.getAttribute("data-track-group"),
+          target_url: tagged.href,
+        };
+        if (tagged.getAttribute("data-track-sponsored") === "1") tf.sponsored = 1;
+        var ti = Array.prototype.indexOf.call(document.querySelectorAll("a[data-track-item]"), tagged);
+        if (ti !== -1) tf.position = ti + 1;
+        send("click", tf);
+        return;
+      }
       var el = ev.target.closest && ev.target.closest(".maker-card, .card, .look-tile, .recent-card, .brand-site-link");
       if (!el) return;
       if (!el.hostname || el.hostname === window.location.hostname) return;

@@ -43,6 +43,10 @@ class BuildRowTests(unittest.TestCase):
         self.assertIn("brand", row)
         self.assertNotIn("page_path", row)
 
+    def test_site_defaults_to_formground_for_search_events(self):
+        import inspect
+        self.assertEqual(inspect.signature(analytics.log_event).parameters["site"].default, "formground")
+
     def test_empty_values_dropped_and_strings_truncated(self):
         row = analytics.build_row("search", {"query": "", "category": None, "material": "x" * 9000})
         self.assertNotIn("query", row)
@@ -116,6 +120,24 @@ class EventEndpointTests(unittest.TestCase):
         self.assertEqual(kw["target_type"], "maker")
         self.assertEqual(kw["brand_tier"], "established")
         self.assertEqual(kw["search_id"], "abc123")
+
+    def test_site_comes_from_the_origin_not_the_payload(self):
+        self.post({"event_type": "pageview", "site": "tradgardsatlas"}, headers={**BROWSER, "origin": "https://formground.com"})
+        self.assertEqual(self.logged[-1][1]["site"], "formground")
+
+    def test_unsettled_domain_may_name_a_known_site(self):
+        self.post({"event_type": "pageview", "site": "tradgardsatlas"}, headers={**BROWSER, "origin": "https://preview.example"})
+        self.assertEqual(self.logged[-1][1]["site"], "tradgardsatlas")
+
+    def test_unknown_site_claim_falls_back_to_formground(self):
+        self.post({"event_type": "pageview", "site": "evil"})
+        self.assertEqual(self.logged[-1][1]["site"], "formground")
+
+    def test_sponsored_flag_is_kept_only_when_set(self):
+        self.post({"event_type": "click", "brand": "X", "sponsored": 1})
+        self.assertEqual(self.logged[-1][1]["sponsored"], 1)
+        self.post({"event_type": "click", "brand": "X", "sponsored": 0})
+        self.assertIsNone(self.logged[-1][1]["sponsored"])
 
     def test_client_cannot_set_the_maker_tier(self):
         self.post({"event_type": "click", "brand": "Cozmo", "brand_tier": "established"})
