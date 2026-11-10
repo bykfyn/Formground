@@ -4069,6 +4069,7 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Pinch", "Nim Copper"): "Coffee Table",
     ("Pinch", "Nim Dune"): "Coffee Table",
     ("Pinch", "Mercier press"): "Cabinet",
+    ("Snyder DePass", "Temple Stool"): "Stool",      # Shopify product type says Bench; the tags and name say stool (2026-11-10)
     # A solid cube, no object-type word in the name or anywhere in
     # Mater's own product data - confirmed by checking its real product
     # photo (materdesign.com): a simple stool-height block sized/shaped
@@ -8722,6 +8723,96 @@ def extract_rut_fjagesund(brand):
         "kjøkkenreiskap": "Objects"}, dedupe_titles=True)
 
 
+def extract_sawkille(brand):
+    """
+    Sawkille Co. (Hudson Valley furniture maker): every product is a Squarespace store item inside a page collection whose
+    own address ends with a dash (/seating-, /tables-, ...), read through ?format=json. The 0.00 price means made to order.
+    The order of type_words matters: the first word found in a title wins.
+    """
+    type_words = {
+        "counter stool": "Bar Stool", "stool": "Stool", "bench": "Bench", "pench": "Bench", "arm chair": "Armchair", "bedside": "Cabinet",
+        "chair": "Chair", "coffee table": "Coffee Table", "side table": "Side Table", "drink stand": "Side Table",
+        "console": "Console", "table": "Dining Table", "desk": "Desk", "bed": "Bed", "credenza": "Sideboard",
+        "dresser": "Cabinet", "cabinet": "Cabinet", "hutch": "Cabinet", "chandelier": "Chandelier",
+        "sconce": "Wall Lamp", "table lamp": "Table Lamp", "lamp": "Floor Lamp", "valet": "Objects"}
+    products = []
+    for path in ("seating-", "tables-", "casegoods-", "lighting-", "beds-", "desks-"):
+        products.extend(_extract_squarespace_json_shop(brand, path, type_words, allow_unpriced=True,
+                                                        skip_titles=("custom art case",)))
+    return products
+
+
+def extract_akiko_ken_made(brand):
+    # the /webshop only; /works lists 44 designs, many produced by manufacturers, and is not scraped
+    products = _extract_squarespace_json_shop(brand, "webshop", {
+        "breadbasket": "Basket", "tray": "Tray", "traybox": "Tray", "bowl": "Bowl", "plate": "Plate", "table": "Objects",
+        "salt": "Objects", "hotel": "Objects", "shaving": "Objects", "brooch": "Objects",
+        # read from each item's description on the site: jewellery boxes, a coat hook, a serving tray, a plate, a picture frame
+        "carousel": "Box", "in sight": "Box", "ribbon": "Objects", "sawn": "Tray", "solo": "Plate", "30 degree": "Objects"},
+        allow_unpriced=True)
+    for product in products:
+        product["product_name"] = html.unescape(product["product_name"])
+    return products
+
+
+# Emeco: ~470 finish-variant pages, so a hand-picked set of the ten icons, one page each (2026-11-10)
+EMECO_PICKS = [
+    ("chairs/1006-navy-chair-hand-brushed", "Chair"),
+    ("chairs/111-navy-chair-charcoal", "Chair"),
+    ("chairs/hudson-chair-hand-polished", "Chair"),
+    ("chairs/broom-stacking-chair-dark-grey", "Chair"),
+    ("chairs/alfi-chair-dark-brown-natural-ash", "Chair"),
+    ("chairs/kito-chair-walnut", "Chair"),
+    ("chairs/1-inch-all-aluminum-chair-hand-brushed", "Chair"),
+    ("benches-and-daybeds/zaza-48-hand-brushed", "Bench"),
+    ("benches-and-daybeds/run-bench-aluminum", "Bench"),
+    ("sofas-and-lounge-chairs/navy-lounge-armchair-hand-brushed-kvadrat-hero-heather-233", "Armchair"),
+]
+
+
+# the page titles carry the designer ("... by Philippe Starck") and the finish; the pieces are shown by name
+EMECO_NAMES = {
+    "chairs/hudson-chair-hand-polished": "Hudson Chair",
+    "chairs/broom-stacking-chair-dark-grey": "Broom Stacking Chair",
+    "chairs/alfi-chair-dark-brown-natural-ash": "Alfi Chair",
+    "chairs/kito-chair-walnut": "Kito Chair",
+    "chairs/1-inch-all-aluminum-chair-hand-brushed": "1 Inch Chair",
+    "benches-and-daybeds/zaza-48-hand-brushed": "ZaZa Bench",
+    "benches-and-daybeds/run-bench-aluminum": "Run Bench",
+    "sofas-and-lounge-chairs/navy-lounge-armchair-hand-brushed-kvadrat-hero-heather-233": "Navy Lounge Armchair",
+}
+
+
+def extract_emeco(brand):
+    base = brand["url"].rstrip("/")
+    products = []
+    for path, category in EMECO_PICKS:
+        url = f"{base}/products/{path}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=20)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        title = re.search(r'<h1 class="css-[^"]*">([^<]+)', resp.text)
+        image = re.search(r'<img[^>]*loading="eager"[^>]*src="(https://cdn\.shopify\.com[^"]+)"', resp.text)
+        if not title or not image:
+            print(f"  No title/photo on {url}")
+            continue
+        products.append({
+            "brand": brand["name"],
+            "brand_url": brand["url"],
+            "product_name": EMECO_NAMES.get(path, html.unescape(title.group(1).strip())),
+            "product_url": url,
+            "category": category,
+            "material_options": [],
+            "dimensions": "",
+            "notes": "",
+            "image_url": image.group(1),
+        })
+    return products
+
+
 def extract_squarespace_commerce(brand):
     base = brand["url"].rstrip("/")
     items = _extract_squarespace_commerce_page(f"{base}/shop")
@@ -13176,6 +13267,7 @@ EXTRACTORS = {
     "Giulio Zizzari": extract_portfolio_designer,
     "Salem Charabi": extract_portfolio_designer,
     "Thom Fougere": extract_portfolio_designer,
+    "Hervé Langlais": extract_portfolio_designer,    # 2026-11-10
     "Feldspar": extract_shopify,
     "Faye Toogood": extract_faye_toogood,
     "B-TD": extract_btd,
@@ -13349,6 +13441,10 @@ EXTRACTORS = {
     "Florian Gadsby": extract_florian_gadsby,        # 2026-11-06
     "Rut Fjågesund": extract_rut_fjagesund,          # 2026-11-06
     "Zacarias 1925": extract_zacarias_1925,          # 2026-11-06
+    "Sawkille Co.": extract_sawkille,                # 2026-11-10
+    "Akiko Ken Made": extract_akiko_ken_made,
+    "Emeco": extract_emeco,        # 2026-11-10
+    "Snyder DePass": extract_shopify,                # 2026-11-10
     # 2026-09-24/25 furniture/objects triage - small/independent makers
     # with clean Shopify/WooCommerce catalogs, built first per user
     # request (established houses triaged in the same pass are held for
