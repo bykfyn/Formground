@@ -190,6 +190,8 @@ _RATINGS = {"not_wanted", "close", "spot_on"}
 SITE_HOSTS = {
     "formground.com": "formground",
     "www.formground.com": "formground",
+    "tradgardsatlas.se": "tradgardsatlas",
+    "www.tradgardsatlas.se": "tradgardsatlas",
 }
 KNOWN_SITES = {"formground", "tradgardsatlas"}
 

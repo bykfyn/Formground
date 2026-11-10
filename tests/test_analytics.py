@@ -125,6 +125,11 @@ class EventEndpointTests(unittest.TestCase):
         self.post({"event_type": "pageview", "site": "tradgardsatlas"}, headers={**BROWSER, "origin": "https://formground.com"})
         self.assertEqual(self.logged[-1][1]["site"], "formground")
 
+    def test_tradgardsatlas_domain_maps_to_its_site(self):
+        for origin in ("https://tradgardsatlas.se", "https://www.tradgardsatlas.se"):
+            self.post({"event_type": "pageview"}, headers={**BROWSER, "origin": origin})
+            self.assertEqual(self.logged[-1][1]["site"], "tradgardsatlas")
+
     def test_unsettled_domain_may_name_a_known_site(self):
         self.post({"event_type": "pageview", "site": "tradgardsatlas"}, headers={**BROWSER, "origin": "https://preview.example"})
         self.assertEqual(self.logged[-1][1]["site"], "tradgardsatlas")
