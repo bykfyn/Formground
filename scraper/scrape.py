@@ -4065,6 +4065,66 @@ ENGLISH_OBJECT_TYPE_KEYWORDS = (
 # uncapturable names are found, per-product, only after checking the
 # real thing.
 MANUAL_CATEGORY_OVERRIDES = {
+    ("Mondays", "Twist Teacup"): "Cup",
+    ("Mondays", "Tripods"): "Vessel",
+    ("Mondays", "Pilar Mixed 09 Column"): "Lamp",
+    ("Mondays", "Pilar Mixed 12 Column"): "Lamp",
+    ("Mondays", "Pilar Mixed 05 Column Cone"): "Lamp",
+    ("Mondays", "Pilar Mixed 05 Column Round"): "Lamp",
+    ("Mondays", "Pilar Mixed 06 Column Round"): "Lamp",
+    ("Mondays", "Pilar Cylinder Wallmount"): "Wall Lamp",
+    ("Brdr. Krüger", "Mokuba"): "Objects",
+    ("Brdr. Krüger", "Monkey"): "Objects",
+    ("Ravenhill Studio", "Pearl Amber"): "Sconce",
+    ("Ravenhill Studio", "Pearl Reeded"): "Sconce",
+    ("Ravenhill Studio", "Pearl Seamless"): "Sconce",
+    ("Ravenhill Studio", "Peek Spot Square"): "Ceiling Light",
+    ("Ravenhill Studio", "Peek Spot Circle"): "Ceiling Light",
+    ("Ravenhill Studio", "Peek Can"): "Ceiling Light",
+    ("Nathalee Paolinelli", "Small Orb"): "Objects",
+    ("Nathalee Paolinelli", "Large Orb"): "Objects",
+    ("Nathalee Paolinelli", "Coral Orb"): "Objects",
+    ("Nathalee Paolinelli", "Coral Crown"): "Objects",
+    ("Nathalee Paolinelli", "Trinket Dish"): "Bowl",
+    ("Aakjaer", "Arcus Hanger"): "Coat Rack",
+    ("Aakjaer", "No. 55"): "Coffee Table",
+    ("Aakjaer", "No. 100"): "Coffee Table",
+    ("Aakjaer", "No. 25"): "Coffee Table",
+    ("Bowen Liu", "Saddle Board"): "Objects",
+    ("Bowen Liu", "U3 Bar Cart"): "Bar Cart",
+    ("Origin Made", "Daiza Pedestals"): "Objects",
+    ("Origin Made", "Brut"): "Objects",
+    ("Origin Made", "The Coliseu Collection"): "Objects",
+    ("Origin Made", "Adão Coat Pegs"): "Coat Hook",
+    ("Stem", "Ra Coat Hanger"): "Coat Hook",
+    ("Sophie Lou Jacobsen", "The Porter Toast Rack"): "Objects",
+    ("Sophie Lou Jacobsen", "Fritter x Justine Clenquet Set"): "Objects",
+    ("Sophie Lou Jacobsen", "Firenze x Justine Clenquet Set"): "Objects",
+    ("Sophie Lou Jacobsen", "La Donna Cigarette Holder"): "Objects",
+    ("Devon Liedtke", "Small Dish"): "Bowl",
+    ("Devon Liedtke", "Ceramic Orchid Pot"): "Planter",
+    ("Devon Liedtke", "Burnt Wood Object"): "Objects",
+    ("Devon Liedtke", "Porcelain Pinch Pot"): "Bowl",
+    ("Devon Liedtke", "Ceramic Pinch Pot Stand"): "Objects",
+    ("Linde Freya Tangelder", "Glass Sculpture Light"): "Lamp",
+    ("Linde Freya Tangelder", "Windows of Bo Bardi"): "Side Table",
+    ("Linde Freya Tangelder", "Foil"): "Mirror",
+    ("Stillmade", "Painted Hutch"): "Cabinet",
+    ("Stillmade", "Harvest Hutch"): "Cabinet",
+    ("Stillmade", "Luca Hutch"): "Cabinet",
+    ("Stillmade", "Dune Corner Sectional"): "Sofa",
+    ("Stillmade", "Kana Lounge"): "Armchair",
+    ("Stillmade", "Clifton Lounge"): "Armchair",
+    ("Stillmade", "Rita Lounge"): "Armchair",
+    ("Stillmade", "Dune Lounge"): "Armchair",
+    ("Stillmade", "Charlotte Lounge"): "Armchair",
+    ("Stillmade", "Profile Drawer – Gilded"): "Cabinet",
+    ("Stillmade", "Profile Drawer"): "Cabinet",
+    ("BZIPPY", "DOUBLE TIER HEX ST"): "Side Table",
+    ("BZIPPY", "TOOTH TRIVET"): "Objects",
+    ("BZIPPY", "SM TOOTH TRIVET"): "Objects",
+    ("BZIPPY", "WAVE TRIVET"): "Objects",
+    ("BZIPPY", "PEN HOLDER 1"): "Objects",
     ("Sizar Alexis", "Ode Chair"): "side chair, Chair",     # was tagged this before the 2026-10-12 re-scrape; kept
     ("Pinch", "Nim Copper"): "Coffee Table",
     ("Pinch", "Nim Dune"): "Coffee Table",
@@ -6185,6 +6245,29 @@ def _page_answers(url):
         return False
 
 
+def _title_has(p, *words):
+    return any(w in p["title"].lower() for w in words)
+
+
+# Wave 1 makers added 2026-11-17 (user list): what to keep from each own shop; everything else (hardware, samples, bulbs, gift
+# cards, fragrance, other brands sold alongside) is not a design piece. Confirmed live on each store's /products.json.
+WAVE1_SHOPIFY_KEEP = {
+    "Studio Henry Wilson": lambda p: p.get("vendor") == "Studio Henry Wilson" and not _title_has(
+        p, "handle", " pull", "hook", "push plate", "bracket", "incense", "oil ", "oil burner", "fragrance", "sample card",
+        "speaker", "bottle opener", "coaster", "desk mat", "tissue box", "card holder", "stationery", "stationary", "billet"),
+    "Coil + Drift": lambda p: p.get("vendor") == "Coil + Drift" and (p.get("product_type") or "") not in ("Sample", "Bulb", "")
+        and not _title_has(p, "incense"),
+    "Ravenhill Studio": lambda p: (p.get("product_type") or "") != "Material Token"
+        and not _title_has(p, "bulb", "lifestyle", "video", "tote", "swag hook"),
+    "Rye": lambda p: (p.get("product_type") or "") not in ("Material Samples", "Pillow", "Topper", "Mattress"),
+    "Sophie Lou Jacobsen": lambda p: (p.get("product_type") or "") != "Gift Box" and not _title_has(p, "gift", "la pluie"),
+    "Mondays": lambda p: not _title_has(p, "gift card", "gift wrapping", "strand no", "mushrooms", "beaded ornament"),
+    "Devon Liedtke": lambda p: not _title_has(p, "gift card", "napkin"),
+    "Origin Made": lambda p: not _title_has(p, "gift card"),
+    "Simon James": lambda p: p.get("vendor") == "Simon James",
+}
+
+
 def extract_shopify(brand):
     """
     Generic extractor for any brand running a standard Shopify store.
@@ -6221,6 +6304,8 @@ def extract_shopify(brand):
 
     raw_products = [p for p in raw_products if not _looks_like_a_class_listing(p["title"])]
     raw_products = [p for p in raw_products if not _looks_like_a_maintenance_item(p["title"])]
+    if brand["name"] in WAVE1_SHOPIFY_KEEP:
+        raw_products = [p for p in raw_products if WAVE1_SHOPIFY_KEEP[brand["name"]](p)]
     if brand["name"] == "Master & Master":
         # confirmed live 2026-10-09: "M&M Signature Socks" is branded merchandise, not a design object
         raw_products = [p for p in raw_products if "socks" not in p["title"].lower()]
@@ -6332,6 +6417,14 @@ def extract_shopify(brand):
         raw_products = [p for p in raw_products
                         if (p.get("product_type") or "").lower() not in ("individual sample", "set sample", "muestra individual", "mws_apo_generated", "formula")
                         and not re.search(r"configur|sample|swatch|carbon offset", p.get("title") or "", re.I)]
+    if brand["name"] == "Heather Rosenman":
+        # confirmed live 2026-11-10: a ceramics shop with no product types on most listings; the pieces are vessels, so a
+        # blank type becomes a vessel unless the title names something else
+        for p in raw_products:
+            if not (p.get("product_type") or "").strip():
+                t = p["title"].lower()
+                p["product_type"] = ("Ashtray" if "ashtray" in t else "Lamp" if "lamp" in t else
+                                     "Serving Dish" if "platter" in t else "Vase" if "vase" in t else "Vessel")
     if brand["name"] == "Gustaf Westman":
         # the Disney collaboration listings are tagged "ej-klickbar" (not clickable), carry graphic artwork instead of
         # product photos and several have no price; two other listings (Ice Bucket, Pipe Office Chair) have no photo at all
@@ -6873,6 +6966,30 @@ def extract_woocommerce(brand):
         if not any(c["name"].strip().lower() in EXCLUDED_CATEGORIES for c in p.get("categories", []))
     ]
     raw_products = [p for p in raw_products if not _looks_like_a_maintenance_item(p["name"])]
+    if brand["name"] == "Estudio Persona":
+        # confirmed live 2026-11-17: four listings are collaborations with other houses ("Pierre Frey x Estudio Persona", "BAINA X ...",
+        # "Rest Table x Movimento Gallery"), not the studio's own range
+        raw_products = [p for p in raw_products if " x " not in p["name"].lower()]
+    if brand["name"] == "Brdr. Krüger":
+        # confirmed live 2026-11-17: material samples, cushions/wheels (accessories) and the outlet ("Factory Sale", "Final Pieces") are
+        # not pieces of the range
+        raw_products = [p for p in raw_products if not any(
+            w in p["name"].lower() for w in ("factory sale", "final pieces", "sample", "cushion", "wheels", "laminate set"))
+            and not any(c["name"].strip().lower() in ("samples", "final pieces") for c in p.get("categories", []))]
+        for p in raw_products:
+            p["categories"] = [c for c in p.get("categories", []) if c["name"].strip().lower() != "all products"]
+    if brand["name"] == "Linde Freya Tangelder":
+        # confirmed live 2026-11-17: the Destroyers/Builders shop also sells glass sculptures, wood sculptures, prints and the
+        # "Connections" publication; the furniture, lighting and mirrors are the pieces
+        raw_products = [p for p in raw_products if any(
+            w in p["name"].lower() for w in ("bronze miniature", "windows of bo bardi", "foil, small mirror", "glass sculpture light"))]
+        raw_products = [p for p in raw_products if p.get("images")]
+        for p in raw_products:
+            p["name"] = re.sub(r"\s+(S|L)\s+(Green|Burgundy|Amber|Yellow)$", "", p["name"])
+    if brand["name"] == "BZIPPY":
+        # confirmed live 2026-11-10: 141 of 215 listings are one-off factory seconds and samples ("(SECOND)", "(SAMPLE)") and
+        # the rest includes test pieces and numbered prototypes; only the finished models are pieces
+        raw_products = [p for p in raw_products if not re.search(r"second|sample|\btest\b|prototype", p["name"], re.I)]
 
     # Grouped on name alone, not (categories, name) - the same real design
     # can carry inconsistent category tags across its own listed variants
@@ -6940,7 +7057,19 @@ def extract_woocommerce(brand):
             # blank here so it does - real English product names (PONTI
             # Coffee Table, FAT LEG 65 Dining Table) resolve cleanly.
             joined_category = ""
-        joined_category = _infer_category_from_name(base_name, joined_category, brand_name=brand["name"])
+        if brand["name"] == "BZIPPY":
+            # confirmed live 2026-11-10: its WooCommerce categories are collections and shop sections ("Groove Collection",
+            # "Ready to Ship, Sale"), not types; blank so the name-based inference runs
+            joined_category = ""
+        if brand["name"] == "Taller Posible":
+            # Spanish product names and categories (Argentine workshop): the English type from the name's first words
+            lowered = base_name.lower()
+            joined_category = next((cat for word, cat in (
+                ("mesa de luz", "Side Table"), ("mesa", "Table"), ("banqueta", "Stool"), ("banco", "Bench"), ("silla", "Chair"),
+                ("sillón", "Armchair"), ("poltrona", "Armchair"), ("biblioteca", "Bookcase"), ("lámpara", "Lamp"),
+                ("cama", "Bed"), ("perchero", "Coat Rack"), ("bandeja", "Tray"), ("barra", "Bar Table")) if lowered.startswith(word)), "")
+        else:
+            joined_category = _infer_category_from_name(base_name, joined_category, brand_name=brand["name"])
 
         products.append({
             "brand": brand["name"],
@@ -8652,22 +8781,75 @@ def extract_danny_kaplan_studio(brand):
     return products
 
 
+def _squarespace_html_items(url):
+    """
+    The pieces listed on one Squarespace shop or portfolio page, read from the page's own HTML (never the ?format=json
+    view, which these sites' robots.txt disallows for every crawler). Returns dicts shaped like the JSON feed's items
+    (title, fullUrl, assetUrl, structuredContent.variants[0].priceMoney) so one reader serves all three markups:
+    a ProductList data-context block (Squarespace 7.1 shops), ProductList-item blocks (the 7.0 store) and portfolio grid items.
+    """
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=20)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return []
+    text = resp.text
+    match = re.search(r'data-controller="ProductList"\s+data-context="([^"]+)"', text)
+    if match:
+        try:
+            ctx_items = json.loads(html.unescape(match.group(1))).get("items", [])
+        except (json.JSONDecodeError, ValueError):
+            ctx_items = []
+        out = []
+        for it in ctx_items:
+            money = it.get("price") if isinstance(it.get("price"), dict) else None
+            out.append({"title": it.get("title"), "fullUrl": it.get("fullUrl"),
+                        "assetUrl": (it.get("mainImage") or {}).get("assetUrl")
+                                    or next((i.get("assetUrl") for i in it.get("images") or [] if i.get("assetUrl")), None),
+                        "structuredContent": {"variants": [{"priceMoney": money, "onSale": False}]},
+                        "items": [{"assetUrl": i.get("assetUrl")} for i in it.get("images") or []]})
+        if out:
+            return out
+    out = []
+    for block in text.split('class="ProductList-item ')[1:]:
+        href = re.search(r'<a href="([^"]+)" class="ProductList-item-link"', block)
+        title = re.search(r'<h1 class="ProductList-title">([^<]+)</h1>', block)
+        image = re.search(r'data-image="(https://[^"]+)"', block)
+        price = re.search(r'class="product-price">\s*(?:<[^>]+>\s*)*([^<\s][^<]*?)\s*<', block)
+        if not (href and title and image):
+            continue
+        value = None
+        if price:
+            digits = re.search(r"[\d][\d.,]*", price.group(1))
+            if digits:
+                value = digits.group(0).replace(",", "")
+        money = {"value": value, "currency": "USD" if price and "$" in price.group(1) else None} if value else None
+        out.append({"title": html.unescape(title.group(1).strip()), "fullUrl": href.group(1), "assetUrl": image.group(1),
+                    "structuredContent": {"variants": [{"priceMoney": money, "onSale": False}]}, "items": []})
+    if out:
+        return out
+    for block in text.split('<a class="grid-item"')[1:]:
+        href = re.search(r'href="([^"]+)"', block)
+        title = re.search(r'\balt="([^"]+)"', block)
+        image = re.search(r'data-image="(https://[^"]+)"', block)
+        if href and title and image:
+            out.append({"title": html.unescape(title.group(1).strip()), "fullUrl": href.group(1), "assetUrl": image.group(1),
+                        "structuredContent": {"variants": [{"priceMoney": None, "onSale": False}]}, "items": []})
+    return out
+
+
 def _extract_squarespace_json_shop(brand, shop_path, type_words, dedupe_titles=False, allow_unpriced=False, skip_titles=()):
     """
-    Squarespace 7.1 shops list every product in the page's own ?format=json feed (the ProductList markup above is the older
-    7.0 template). Used by Florian Gadsby (/shop) and Rut Fjågesund (/nettbutikk), added 2026-11-06; both robots.txt files are
-    the Squarespace default, which does not cover ?format=json. type_words maps a lower-case word in the title to a category;
-    items without a price (a book listing, an info page) are skipped, and a trailing "(15)" piece number is stripped.
-    dedupe_titles keeps the first listing of each identical title (Fjågesund lists 37 one-off bowls under one name).
+    Squarespace shops (7.1 ProductList data-context, the 7.0 store grid, or portfolio grid items), read from the page HTML -
+    these sites' robots.txt disallows the ?format=json view for every crawler, so it is never requested. Used by Florian
+    Gadsby (/shop), Rut Fjågesund (/nettbutikk), Zacarias 1925, Sawkille and Akiko Ken Made. type_words maps a lower-case
+    word in the title to a category; items without a price (a book listing, an info page) are skipped unless allow_unpriced,
+    and a trailing "(15)" piece number is stripped. dedupe_titles keeps the first listing of each identical title
+    (Fjågesund lists 37 one-off bowls under one name).
     """
     base = brand["url"].rstrip("/")
-    try:
-        resp = requests.get(f"{base}/{shop_path}?format=json", headers=HEADERS, timeout=20)
-        resp.raise_for_status()
-        items = resp.json().get("items", [])
-    except (requests.RequestException, ValueError) as e:
-        print(f"  Could not fetch {base}/{shop_path}?format=json: {e}")
-        return []
+    items = _squarespace_html_items(f"{base}/{shop_path}")
     products, seen = [], set()
     for item in items:
         title = re.sub(r"[\s,]*\(\d+\)\s*$", "", (item.get("title") or "").strip())
@@ -8726,7 +8908,7 @@ def extract_rut_fjagesund(brand):
 def extract_sawkille(brand):
     """
     Sawkille Co. (Hudson Valley furniture maker): every product is a Squarespace store item inside a page collection whose
-    own address ends with a dash (/seating-, /tables-, ...), read through ?format=json. The 0.00 price means made to order.
+    own address ends with a dash (/seating-, /tables-, ...), read from the page HTML. The 0.00 price means made to order.
     The order of type_words matters: the first word found in a title wins.
     """
     type_words = {
@@ -8808,6 +8990,77 @@ def extract_emeco(brand):
             "material_options": [],
             "dimensions": "",
             "notes": "",
+            "image_url": image.group(1),
+        })
+    return products
+
+
+def extract_devin_wilde(brand):
+    """
+    devinwilde.com (Squarespace, confirmed live 2026-11-10): three portfolio-grid pages - /furniture, /lighting, /vessels -
+    whose grid items are the pieces (a title, a page and a photo each), with no prices (made to order). Read from the
+    page HTML: the site's robots.txt disallows the ?format=json view.
+    """
+    base = brand["url"].rstrip("/")
+    products = []
+    for section, category in (("furniture", "Table"), ("lighting", "Lamp"), ("vessels", "Vase")):
+        try:
+            resp = requests.get(f"{base}/{section}", headers=HEADERS, timeout=15)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {base}/{section}: {e}")
+            continue
+        for block in resp.text.split('<a class="grid-item"')[1:]:
+            href = re.search(r'href="([^"]+)"', block)
+            title = re.search(r'\balt="([^"]+)"', block)
+            image = re.search(r'data-image="(https://[^"]+)"', block)
+            if not (href and title and image):
+                continue
+            name = html.unescape(title.group(1).strip())
+            lower = name.lower()
+            if section == "lighting":
+                cat = "Chandelier" if "chandelier" in lower else "Wall Lamp" if "sconce" in lower else "Pendant" if "pendant" in lower else "Lamp"
+            elif section == "furniture":
+                cat = "Coffee Table" if "cocktail" in lower else "Side Table" if "side" in lower else "Table"
+            else:
+                cat = category
+            products.append({
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+                "product_url": base + href.group(1), "category": cat, "material_options": [], "dimensions": "",
+                "notes": "", "image_url": image.group(1),
+            })
+        time.sleep(1)
+    return products
+
+
+def extract_stillmade(brand):
+    """
+    stillmade.com (WordPress, confirmed live 2026-11-10): the /browse/ page lists every piece in one grid (title, page,
+    photo, and the designer's name under it), so one request covers the catalogue - robots.txt asks for a 10-second
+    delay, which one request respects. Sold made to order, no prices shown.
+    """
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/browse/", headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}/browse/: {e}")
+        return []
+    start = resp.text.find('<div class="grid-flexbox product-grid')
+    if start == -1:
+        return []
+    products = []
+    seen = set()
+    for cell in resp.text[start:].split('<div class="cell">')[1:]:
+        link = re.search(r'<a href="(https://stillmade\.com/products/[^"]+)"', cell)
+        title = re.search(r'<h3 class="text-product-title">([^<]+)</h3>', cell)
+        image = re.search(r'data-srcset="(https://[^\s"]+)', cell)
+        if not (link and title and image) or link.group(1) in seen:
+            continue
+        seen.add(link.group(1))
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": html.unescape(title.group(1).strip()),
+            "product_url": link.group(1), "category": "", "material_options": [], "dimensions": "", "notes": "",
             "image_url": image.group(1),
         })
     return products
@@ -13444,6 +13697,27 @@ EXTRACTORS = {
     "Sawkille Co.": extract_sawkille,                # 2026-11-10
     "Akiko Ken Made": extract_akiko_ken_made,
     "Emeco": extract_emeco,        # 2026-11-10
+    "Studio Henry Wilson": extract_shopify,
+    "Coil + Drift": extract_shopify,
+    "Ravenhill Studio": extract_shopify,
+    "Nathalee Paolinelli": extract_shopify,
+    "Estudio Persona": extract_woocommerce,
+    "Aakjaer": extract_shopify,
+    "Bowen Liu": extract_shopify,
+    "Rye": extract_shopify,
+    "Origin Made": extract_shopify,
+    "Stem": extract_shopify,
+    "Brdr. Krüger": extract_woocommerce,
+    "Taller Posible": extract_woocommerce,
+    "Linde Freya Tangelder": extract_woocommerce,
+    "Sophie Lou Jacobsen": extract_shopify,
+    "Mondays": extract_shopify,
+    "Devon Liedtke": extract_shopify,
+    "Simon James": extract_shopify,
+    "BZIPPY": extract_woocommerce,
+    "Stillmade": extract_stillmade,
+    "Devin Wilde": extract_devin_wilde,
+    "Heather Rosenman": extract_shopify,
     "Snyder DePass": extract_shopify,                # 2026-11-10
     # 2026-09-24/25 furniture/objects triage - small/independent makers
     # with clean Shopify/WooCommerce catalogs, built first per user

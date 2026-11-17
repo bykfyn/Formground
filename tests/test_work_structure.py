@@ -232,7 +232,7 @@ class StructureTests(unittest.TestCase):
         import glob as _g
         text = (DOCS / "brands" / "gubi.html").read_text()
         self.assertIn('<button class="share-btn"', text)
-        self.assertIn('data-product="62 Desk" data-brand="Gubi"', text)
+        self.assertRegex(text, r'data-product="[^"]+" data-brand="Gubi"')    # any Gubi piece: the scraped range changes
         self.assertIn("/share.js?v=", text)
         self.assertIn(".share-btn.copied::after", text)                 # the shared button styles are embedded
         for f in _g.glob(str(DOCS / "brands" / "*.html")):

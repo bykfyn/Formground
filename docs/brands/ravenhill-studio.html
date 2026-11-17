@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ravenhill Studio: lighting and objects — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Ravenhill Studio&#x27;s work on Formground - 68 pieces (page 1 of 2), linked straight to their own site.">
+<link rel="canonical" href="https://formground.com/brands/ravenhill-studio.html">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Ravenhill Studio: lighting and objects — Formground">
+<meta property="og:description" content="Ravenhill Studio&#x27;s work on Formground - 68 pieces (page 1 of 2), linked straight to their own site.">
+<meta property="og:url" content="https://formground.com/brands/ravenhill-studio.html">
+<meta property="og:image" content="https://formground.com/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://formground.com/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Ravenhill Studio: lighting and objects — Formground">
+<meta name="twitter:description" content="Ravenhill Studio&#x27;s work on Formground - 68 pieces (page 1 of 2), linked straight to their own site.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Ravenhill Studio", "item": "https://formground.com/brands/ravenhill-studio.html"}]}</script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/icons.css?v=86479f05">
+<style>
+  .curated-note { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; }
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  /* "New from X" sits at the TOP of a maker page, above the full range (and only exists when there is something new) */
+  .brand-section--top { margin: 0 0 44px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent; /* same box as .tag so the two small labels are one height */
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  /* two to a row on a phone (a single 190px-minimum column left the directories one long list) */
+  @media (max-width: 640px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px 0 0; line-height: 1.6; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px; height: 47px; box-sizing: border-box;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+/* SHARE-BTN:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .share-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 1;
+    width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(250, 249, 247, 0.85); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+  }
+  .share-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+  .share-btn i { font-size: 14px; }
+  .share-btn.copied::after {
+    content: "Copied"; position: absolute; bottom: 32px; right: 0;
+    background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  /* LOAD-MORE:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .load-more-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 40px 0 8px; text-align: center;
+  }
+  .load-more-btn {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: none; border: none; padding: 6px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .load-more-btn:hover { color: var(--text-primary); }
+  .load-more-btn:disabled { opacity: 0.6; cursor: default; text-decoration: none; }
+  .load-more-progress { font-size: 11.5px; color: var(--text-muted); }
+  
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 28px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
+  .has-load-more .pager { display: none; }
+  .earlier-results { display: none; margin: 0 0 14px; font-size: 13px; }
+  .has-load-more .earlier-results { display: block; }
+  .earlier-results a { color: var(--text-muted); text-decoration: none; }
+  .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
+
+  .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
+  .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
+</style>
+
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/edits.html">Edits</a>
+</nav>
+</header>
+<main data-brand="Ravenhill Studio">
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Ravenhill Studio</h1>
+    <div class="tags"><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">United States</span></div>
+    <a class="brand-site-link" href="https://ravenhillstudio.com/" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+
+  <section class="brand-section brand-section--top">
+    <p class="brand-section-title">New from Ravenhill Studio</p>
+    <div class="grid">
+      <a class="card" href="https://ravenhillstudio.com/products/peek-colorblock-sconce-switch" target="_blank" rel="noopener noreferrer" data-product="Peek Sconce Switch Colorblock" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/PeekSconceCircle_ColorBlock_2_2_RavenhillStudio.jpg?v=1790883486&amp;width=500" alt="Peek Sconce Switch Colorblock by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peek Sconce Switch Colorblock</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/pearl-sconce-plug-in" target="_blank" rel="noopener noreferrer" data-product="Pearl Sconce Plug-In" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Pearl4Plug-In_Canvas_RavenhillStudio_4.jpg?v=1791228018&amp;width=500" alt="Pearl Sconce Plug-In by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pearl Sconce Plug-In</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/peek-sconce-switch-plug-in" target="_blank" rel="noopener noreferrer" data-product="Peek Sconce Switch Plug-In" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/PeekSconceSwitchCirclePlug-In_Black_1_RavenhillStudio.jpg?v=1791243349&amp;width=500" alt="Peek Sconce Switch Plug-In by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peek Sconce Switch Plug-In</p>
+          
+        </div>
+      </a></div>
+  </section>  <p class="brand-section-title">All of Ravenhill Studio</p>
+  
+  <div class="grid" data-listing-grid>
+      <a class="card" href="https://ravenhillstudio.com/products/ada-corten" target="_blank" rel="noopener noreferrer" data-product="Ada Corten Sconce" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/AdaCortenSconce17_Ravenhill-Studio_3.jpg?v=1757019225&amp;width=500" alt="Ada Corten Sconce by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ada Corten Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/ada-oak" target="_blank" rel="noopener noreferrer" data-product="Ada Oak Sconce" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Ada-Sconce-10_Oak_6_Product_Ravenhill-Studio.jpg?v=1757019227&amp;width=500" alt="Ada Oak Sconce by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ada Oak Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/ada-sconce-17" target="_blank" rel="noopener noreferrer" data-product="Ada Sconce 17" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Ada-Sconce-17_Black_5_Product_Ravenhill-Studio.jpg?v=1776280859&amp;width=500" alt="Ada Sconce 17 by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ada Sconce 17</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/ada-sconce-25" target="_blank" rel="noopener noreferrer" data-product="Ada Sconce 25" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Ada-Sconce-25_Black-Brass_9_Product_Ravenhill-Studio.jpg?v=1757019211&amp;width=500" alt="Ada Sconce 25 by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ada Sconce 25</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/ada-sconce" target="_blank" rel="noopener noreferrer" data-product="Ada Sconce 9" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Ada-Sconce-9-Agave-Product_1_Ravenhill-Studio.jpg?v=1779903652&amp;width=500" alt="Ada Sconce 9 by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ada Sconce 9</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/ada-sconce-in-black" target="_blank" rel="noopener noreferrer" data-product="Ada Sconce in Black" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Ada-Sconce-9_Black_04_Product_Ravenhill-Studio_2.jpg?v=1776362828&amp;width=500" alt="Ada Sconce in Black by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ada Sconce in Black</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/ada-waxed-brass-sconce" target="_blank" rel="noopener noreferrer" data-product="Ada Waxed Brass Sconce" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Ada-Sconce-9_Waxed-Brass-1_Ravenhill-Studio.jpg?v=1776292897&amp;width=500" alt="Ada Waxed Brass Sconce by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ada Waxed Brass Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/candle-sconce" target="_blank" rel="noopener noreferrer" data-product="Candle Sconce" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Candle-Sconce_Black-Brass_Product_14_Ravenhill-Studio.jpg?v=1757019161&amp;width=500" alt="Candle Sconce by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Candle Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/church-3-arm-pendant" target="_blank" rel="noopener noreferrer" data-product="Church 3 Arm Pendant" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Church3Arm_Black_2_Product_RavenhillStudio.jpg?v=1772558617&amp;width=500" alt="Church 3 Arm Pendant by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Church 3 Arm Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/church-4-arm-pendant" target="_blank" rel="noopener noreferrer" data-product="Church 4 Arm Pendant" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Church4Arm_Black_3_Product_RavenhillStudio_ab1dded4-2860-43ac-90db-03dd75ffc9b9.jpg?v=1772561645&amp;width=500" alt="Church 4 Arm Pendant by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Church 4 Arm Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/church-chandelier" target="_blank" rel="noopener noreferrer" data-product="Church Chandelier" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/ChurchChandelier_Black_3_Product_RavenhillStudio.jpg?v=1757019264&amp;width=500" alt="Church Chandelier by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Church Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/cord-chandelier" target="_blank" rel="noopener noreferrer" data-product="Cord Chandelier" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/RavenhillStudio_Cord_Chandelier_Black-Brass.jpg?v=1757019249&amp;width=500" alt="Cord Chandelier by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Cord Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/cord-pendant" target="_blank" rel="noopener noreferrer" data-product="Cord Pendant" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/RavenhillStudio_Cord-Pendant_Black_Angle.jpg?v=1757019247&amp;width=500" alt="Cord Pendant by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Cord Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/cord-sconce" target="_blank" rel="noopener noreferrer" data-product="Cord Sconce" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/CordSconce24_Black_1_Product_RavenhillStudio_1d527458-8253-4fdc-93b5-7c7b8eeb1485.jpg?v=1757019245&amp;width=500" alt="Cord Sconce by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Cord Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/cord-sconce-plug-in" target="_blank" rel="noopener noreferrer" data-product="Cord Sconce Plug-In" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/CordLamp24_Black_1_Product_RavenhillStudio.jpg?v=1757019104&amp;width=500" alt="Cord Sconce Plug-In by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Cord Sconce Plug-In</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/double-church-chandelier" target="_blank" rel="noopener noreferrer" data-product="Double Church Chandelier" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/ChurchDoubleChandelier_White_1_Product_RavenhillStudio_1.jpg?v=1772658278&amp;width=500" alt="Double Church Chandelier by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Double Church Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/double-cord-chandelier" target="_blank" rel="noopener noreferrer" data-product="Double Cord Chandelier" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/RavenhillStudio_Cord_Double-Chandelier_White.jpg?v=1757019254&amp;width=500" alt="Double Cord Chandelier by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Double Cord Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/double-pivot-chandelier" target="_blank" rel="noopener noreferrer" data-product="Double Pivot Chandelier" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/RavenhillStudio_Pivot-Double_Black.jpg?v=1757019243&amp;width=500" alt="Double Pivot Chandelier by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Double Pivot Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/echo-lamp" target="_blank" rel="noopener noreferrer" data-product="Echo Lamp" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/RavenhillStudio_EchoLamp_Medium-3.jpg?v=1757019079&amp;width=500" alt="Echo Lamp by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Echo Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/float-pendant" target="_blank" rel="noopener noreferrer" data-product="Float Pendant" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/RavenhillStudio_Float_Pendant_01.jpg?v=1757019164&amp;width=500" alt="Float Pendant by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Float Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/float-clusters" target="_blank" rel="noopener noreferrer" data-product="Float Pendant Clusters" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/RavenhillStudio_Float-Pendant_05.jpg?v=1774286798&amp;width=500" alt="Float Pendant Clusters by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Float Pendant Clusters</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/grain-barrel-1" target="_blank" rel="noopener noreferrer" data-product="Grain Barrel Pendant" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/GrainBarrel9_White-Aluminum_2_Product_RavenhillStudio.jpg?v=1757019166&amp;width=500" alt="Grain Barrel Pendant by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grain Barrel Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/grain-barrel-sconce" target="_blank" rel="noopener noreferrer" data-product="Grain Barrel Sconce" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/GrainSconce18Barrel9_Black-Brass_2_Product_RavenhillStudio.jpg?v=1757019230&amp;width=500" alt="Grain Barrel Sconce by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grain Barrel Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/grain-drum" target="_blank" rel="noopener noreferrer" data-product="Grain Drum 14 Pendant" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/GrainDrum14_White-Brass_2_Product_RavenhillStudio_3aa978d8-622e-49fc-a522-53c1860b9ffb.jpg?v=1757019295&amp;width=500" alt="Grain Drum 14 Pendant by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grain Drum 14 Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/grain-drum-25" target="_blank" rel="noopener noreferrer" data-product="Grain Drum 25 Pendant" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/GrainDrum25_Black-Brass_2_Product_RavenhillStudio_809844a4-2b1d-436a-b8fc-7a72342260a4.jpg?v=1757019176&amp;width=500" alt="Grain Drum 25 Pendant by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grain Drum 25 Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/grain-drum-33" target="_blank" rel="noopener noreferrer" data-product="Grain Drum 33 Pendant" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/GrainDrum33_White-Brass_2_Product_RavenhillStudio_a2b2e4ba-c9f5-4838-aa24-8fd1892fe7a2.jpg?v=1757019174&amp;width=500" alt="Grain Drum 33 Pendant by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grain Drum 33 Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/grain-drum-sconce" target="_blank" rel="noopener noreferrer" data-product="Grain Drum Sconce" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Grain-Drum-Sconce-18_Black-Brass_2_Product_RavenhillStudio.jpg?v=1757019232&amp;width=500" alt="Grain Drum Sconce by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grain Drum Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/grain-pendant-13" target="_blank" rel="noopener noreferrer" data-product="Grain Pendant 13" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/GrainPendant13_Black-Brass_3_Product_RavenhillStudio.jpg?v=1757019172&amp;width=500" alt="Grain Pendant 13 by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grain Pendant 13</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/grain-pendant-16" target="_blank" rel="noopener noreferrer" data-product="Grain Pendant 16" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/GrainPendant16_Black-Brass_3_Product_RavenhillStudio.jpg?v=1757019170&amp;width=500" alt="Grain Pendant 16 by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grain Pendant 16</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/grain-pendant-18" target="_blank" rel="noopener noreferrer" data-product="Grain Pendant 18" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/GrainPendant18_White-Brass_4_Product_RavenhillStudio.jpg?v=1757019168&amp;width=500" alt="Grain Pendant 18 by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grain Pendant 18</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/grain-sconce" target="_blank" rel="noopener noreferrer" data-product="Grain Pendant Sconce" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/GrainSconce18Pendant13_Black-Brass_2_Product_RavenhillStudio.jpg?v=1757019297&amp;width=500" alt="Grain Pendant Sconce by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Grain Pendant Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/hood-chandelier" target="_blank" rel="noopener noreferrer" data-product="Hood Chandelier" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/RavenhillStudio_Hood_Chandelier_Oak.jpg?v=1757019183&amp;width=500" alt="Hood Chandelier by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Hood Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/hood-pendant" target="_blank" rel="noopener noreferrer" data-product="Hood Pendant" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/HoodPendant_Oak_5_Product_RavenhillStudio.jpg?v=1757019181&amp;width=500" alt="Hood Pendant by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Hood Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/hood-sconce" target="_blank" rel="noopener noreferrer" data-product="Hood Sconce" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/HoodScone_Oak-Brass_9_Product_RavenhillStudio.jpg?v=1757019178&amp;width=500" alt="Hood Sconce by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Hood Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/hood-sconce-plug-in" target="_blank" rel="noopener noreferrer" data-product="Hood Sconce Plug-In" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/HoodSconcePlug-in_WhiteOak_1_Product_RavenhillStudio.jpg?v=1770070509&amp;width=500" alt="Hood Sconce Plug-In by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Hood Sconce Plug-In</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/hood-sconce-pull-chain" target="_blank" rel="noopener noreferrer" data-product="Hood Sconce Pull Chain" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/HoodSconce_Oak-White_4_Product_RavenhillStudio.jpg?v=1770425701&amp;width=500" alt="Hood Sconce Pull Chain by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Hood Sconce Pull Chain</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/long-church-chandelier" target="_blank" rel="noopener noreferrer" data-product="Long Church Chandelier" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/ChurchLongChandelier_White-Brass_3_Product_RavenhillStudio.jpg?v=1757019261&amp;width=500" alt="Long Church Chandelier by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Long Church Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/long-cord-chandelier" target="_blank" rel="noopener noreferrer" data-product="Long Cord Chandelier" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/RavenhillStudio_Cord_Long-Chandelier_Black-Brass.jpg?v=1757019252&amp;width=500" alt="Long Cord Chandelier by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Long Cord Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/long-hood-chandelier" target="_blank" rel="noopener noreferrer" data-product="Long Hood Chandelier" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/RavenhillStudio_Hood_Long-Chandelier_Oak.jpg?v=1757019185&amp;width=500" alt="Long Hood Chandelier by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Long Hood Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/long-pivot-chandelier" target="_blank" rel="noopener noreferrer" data-product="Long Pivot Chandelier" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/LongPivotChandelier_Black_01_Product_RavenhillStudio.jpg?v=1757019240&amp;width=500" alt="Long Pivot Chandelier by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Long Pivot Chandelier</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/oak-beam" target="_blank" rel="noopener noreferrer" data-product="Oak Beam Pendant" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Beam46_Oak_5_Product_RavenhillStudio.jpg?v=1757019209&amp;width=500" alt="Oak Beam Pendant by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Oak Beam Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/opal-beam" target="_blank" rel="noopener noreferrer" data-product="Opal Beam Pendant" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Beam84_Opal_3_Product_RavenhillStudio.jpg?v=1757019206&amp;width=500" alt="Opal Beam Pendant by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Opal Beam Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/pearl-amber" target="_blank" rel="noopener noreferrer" data-product="Pearl Amber" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Pearl-4_Amber_Small-Canopy_Dark_4_Ravenhill-Studio_73be02c4-9c4f-4c2c-b86f-cc8cde3505be.jpg?v=1775835738&amp;width=500" alt="Pearl Amber by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pearl Amber</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/pearl-flush-mount" target="_blank" rel="noopener noreferrer" data-product="Pearl Flush Mount" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Pearl6_ADA_FlushMount_SmallCanopy_Brass_4_RavenhillStudio.jpg?v=1757614860&amp;width=500" alt="Pearl Flush Mount by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pearl Flush Mount</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/pearl-pull-chain" target="_blank" rel="noopener noreferrer" data-product="Pearl Pull Chain" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Pearl4_Pullchain_Brass_2_RavenhillStudio.jpg?v=1757019070&amp;width=500" alt="Pearl Pull Chain by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pearl Pull Chain</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/pearl-reeded" target="_blank" rel="noopener noreferrer" data-product="Pearl Reeded" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Pearl4_Reeded_SmallCanopy_Brass_4_RavenhillStudio_cbc19a2b-cdfa-4b99-8595-2ebdcd50010e.jpg?v=1757019021&amp;width=500" alt="Pearl Reeded by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pearl Reeded</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/pearl-sconce" target="_blank" rel="noopener noreferrer" data-product="Pearl Sconce" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Pearl4_SmallCanopy_White_1_RavenhillStudio.jpg?v=1757019054&amp;width=500" alt="Pearl Sconce by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pearl Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/pearl-sconce-plug-in" target="_blank" rel="noopener noreferrer" data-product="Pearl Sconce Plug-In" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Pearl4Plug-In_Canvas_RavenhillStudio_4.jpg?v=1791228018&amp;width=500" alt="Pearl Sconce Plug-In by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pearl Sconce Plug-In</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/pearl-seamless" target="_blank" rel="noopener noreferrer" data-product="Pearl Seamless" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Pearl4_Reeded_Seamless_3_Ravenhill-Studio.jpg?v=1757019068&amp;width=500" alt="Pearl Seamless by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pearl Seamless</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/peek-arm-sconce-circle" target="_blank" rel="noopener noreferrer" data-product="Peek Arm Sconce Circle" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Peek-Sconce-Circle_Arm-12_Black_35-Canopy_1_Ravenhill-Studio.jpg?v=1781638441&amp;width=500" alt="Peek Arm Sconce Circle by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peek Arm Sconce Circle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/peek-sconce-arm-square" target="_blank" rel="noopener noreferrer" data-product="Peek Arm Sconce Square" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/PeekSconceSquare_Arm3_Nickel_35Canopy_2_RavenhillStudio_67bc2053-ace9-459a-9c88-2c9d079411f0.jpg?v=1781797540&amp;width=500" alt="Peek Arm Sconce Square by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peek Arm Sconce Square</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/peek-can" target="_blank" rel="noopener noreferrer" data-product="Peek Can" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/PeekCanCircle_Brick_35Canopy_2_RavenhillStudio_491f6cf2-cc2c-4aed-ad0d-dd31ad1043d5.jpg?v=1779917121&amp;width=500" alt="Peek Can by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peek Can</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/peek-pendant" target="_blank" rel="noopener noreferrer" data-product="Peek Pendant" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/PeekPendantCircle_Canvas_35Canopy_2_RavenhillStudio_46124616-e173-4388-b638-9fd1c1d4ce57.jpg?v=1763147603&amp;width=500" alt="Peek Pendant by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peek Pendant</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/peek-sconce" target="_blank" rel="noopener noreferrer" data-product="Peek Sconce" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/PeekSconceCircle_Agave_35Canopy_1_RavenhillStudio.jpg?v=1779983193&amp;width=500" alt="Peek Sconce by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peek Sconce</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/peek-sconce-switch" target="_blank" rel="noopener noreferrer" data-product="Peek Sconce Switch" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/Peek-Sconce-Switch-Circle_Nickel_1_Ravenhill-Studio.jpg?v=1763067921&amp;width=500" alt="Peek Sconce Switch by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peek Sconce Switch</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/peek-colorblock-sconce-switch" target="_blank" rel="noopener noreferrer" data-product="Peek Sconce Switch Colorblock" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/PeekSconceCircle_ColorBlock_2_2_RavenhillStudio.jpg?v=1790883486&amp;width=500" alt="Peek Sconce Switch Colorblock by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peek Sconce Switch Colorblock</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/peek-sconce-switch-plug-in" target="_blank" rel="noopener noreferrer" data-product="Peek Sconce Switch Plug-In" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/PeekSconceSwitchCirclePlug-In_Black_1_RavenhillStudio.jpg?v=1791243349&amp;width=500" alt="Peek Sconce Switch Plug-In by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peek Sconce Switch Plug-In</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/peek-spot-circle" target="_blank" rel="noopener noreferrer" data-product="Peek Spot Circle" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/PeekSpotCircle_Black_35_2_RavenhillStudio.jpg?v=1776279480&amp;width=500" alt="Peek Spot Circle by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peek Spot Circle</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/peek-spot-square" target="_blank" rel="noopener noreferrer" data-product="Peek Spot Square" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/PeekSpotSquare_BB_35Canopy_2_RavenhillStudio_142017a9-08a7-4855-a283-f537dfcc0c60.jpg?v=1762495881&amp;width=500" alt="Peek Spot Square by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peek Spot Square</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://ravenhillstudio.com/products/pivot-chandelier" target="_blank" rel="noopener noreferrer" data-product="Pivot Chandelier" data-brand="Ravenhill Studio">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0758/9121/2601/files/RavenhillStudio_Pivot-Chandelier_Black-Brass.jpg?v=1757019238&amp;width=500" alt="Pivot Chandelier by Ravenhill Studio" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pivot Chandelier</p>
+          
+        </div>
+      </a></div>
+  <div class="load-more-row"><a class="load-more-btn" id="see-more" data-total="68" data-start="0" href="/brands/ravenhill-studio-2.html">See more pieces</a><span class="load-more-progress" id="see-more-progress"></span></div>
+  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/brands/ravenhill-studio-2.html">2</a><a href="/brands/ravenhill-studio-2.html" rel="next">Next &rarr;</a></nav>
+
+  <section class="brand-section">
+    <p class="brand-section-title">Makers like Ravenhill Studio</p>
+    <p class="like-note">Other makers on Formground whose work overlaps with theirs.</p>
+    <div class="like-grid">
+      <a class="maker-card" href="/brands/david-pompa.html"><div class="maker-card-hero"><img src="https://www.davidpompa.com/products/_thumbs/can-barronegro-lamp-davidpompa.png" alt="David Pompa" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">David Pompa</span><span class="maker-country">Mexico</span><span class="maker-categories">Pendant Lamps · Ceiling Lamps</span></div></a>
+      <a class="maker-card" href="/brands/parachilna.html"><div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/SERIE-C-MEDIUM-PACKSHOT-2.jpg?v=1763638371&amp;width=500" alt="Parachilna" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Parachilna</span><span class="maker-country">&nbsp;</span><span class="maker-categories">Pendant Lamps</span></div></a>
+      <a class="maker-card" href="/brands/motarasu.html"><div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0780/0058/7083/files/Motarasu_Sekiun_50_raw_3DD_normarchitects.jpg?v=1789480417&amp;width=500" alt="Motarasu" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Motarasu</span><span class="maker-country">&nbsp;</span><span class="maker-categories">Pendant Lamps</span></div></a>
+      <a class="maker-card" href="/brands/kalmar-werkstatten.html"><div class="maker-card-hero"><img src="https://www.kalmarlighting.com/wp-content/uploads/2021/05/Kalmar-W-Zylinderzug-Adjustable-Pendant-300x400.jpg" alt="Kalmar Werkstätten" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Kalmar Werkstätten</span><span class="maker-country">Austria</span><span class="maker-categories">Pendant Lamps</span></div></a>
+      <a class="maker-card" href="/brands/b-td.html"><div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/53eb63a5e4b0a66dcbef5691/1659060084743-WFD6JXAGNYDBQHWT3DVD/Linear+resizing+3.jpg?format=500w" alt="B-TD" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">B-TD</span><span class="maker-country">Australia</span><span class="maker-categories">Pendant Lamps · Chandeliers</span></div></a>
+      <a class="maker-card" href="/brands/bocci.html"><div class="maker-card-hero"><img src="https://assets.bocci.com/site/photography/Products/series-14/Random/_2160x2879_crop_center-center_82_line/14.1-Random-Clear-Off.jpg" alt="Bocci" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Bocci</span><span class="maker-country">Canada</span><span class="maker-categories">Pendant Lamps</span></div></a>
+    </div>
+  </section>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    // The tracking itself (page views, click-throughs, landing-page and
+    // campaign carry-over) lives in ONE shared file, /fg-track.js, instead
+    // of being pasted into hundreds of generated pages - see that file and
+    // backend/analytics.py for what is logged.
+    var s = document.createElement("script");
+    s.src = "/fg-track.js";
+    s.async = true;
+    document.head.appendChild(s);
+  })();
+</script>
+<script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=b09d5657" defer></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
