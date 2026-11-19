@@ -4097,6 +4097,16 @@ MANUAL_CATEGORY_OVERRIDES = {
     ("Origin Made", "The Coliseu Collection"): "Objects",
     ("Origin Made", "Adão Coat Pegs"): "Coat Hook",
     ("Stem", "Ra Coat Hanger"): "Coat Hook",
+    ("Daniel Orozco Estudio", "Ring Ashtray"): "Ashtray",
+    ("Daniel Orozco Estudio", "Paperweight"): "Objects",
+    ("Daniel Orozco Estudio", "FOS Jungle Lounger"): "Lounge Chair",
+    ("Cuff Studio", "Puddling Cascade"): "Chandelier",
+    ("Cuff Studio", "Elliptical Rope Wrapped Cluster"): "Chandelier",
+    ("Cuff Studio", "Focal Point Rope Wrapped Cluster"): "Chandelier",
+    ("Cuff Studio", "Great Room Rope Wrapped Cluster"): "Chandelier",
+    ("Cuff Studio", "Stairway Sprawl Rope Wrapped Cluster"): "Chandelier",
+    ("Cuff Studio", "Quad Rope Wrapped Cluster"): "Chandelier",
+    ("Cuff Studio", "Cascading Rope Wrapped Cluster"): "Chandelier",
     ("Sophie Lou Jacobsen", "The Porter Toast Rack"): "Objects",
     ("Sophie Lou Jacobsen", "Fritter x Justine Clenquet Set"): "Objects",
     ("Sophie Lou Jacobsen", "Firenze x Justine Clenquet Set"): "Objects",
@@ -6265,6 +6275,17 @@ WAVE1_SHOPIFY_KEEP = {
     "Devon Liedtke": lambda p: not _title_has(p, "gift card", "napkin"),
     "Origin Made": lambda p: not _title_has(p, "gift card"),
     "Simon James": lambda p: p.get("vendor") == "Simon James",
+    # Cara Woodhouse batch 2026-11-19. Maha Alavi: knobs, pulls, hooks, towel bars, bookmarks, rings and incense are hardware or
+    # stationery; the chairs, vases, bowls, tray, bookends and candleholder are the pieces
+    "Maha Alavi": lambda p: not _title_has(p, "knob", " pull", "hook", "towel bar", "roll holder", "bookmark", " ring", "incense"),
+    # Cuff Studio: the shop also sells its material library (wood, metal, fabric, rope, parchment, tile, wallpaper, lambskin) as
+    # swatches, plus a pet bed and a "Custom Product" placeholder
+    "Cuff Studio": lambda p: (p.get("product_type") or "") in ("Seating", "Tables", "Lighting", "Screens", "Storage")
+        and not p["title"].lower().startswith("custom product"),
+    # Daniel Orozco Estudio: "HOF" is a hospitality tableware line (check presenters, shakers, napkin holders) and the shop also
+    # sells cookware, a cooler, collars/chains/hangers
+    "Daniel Orozco Estudio": lambda p: not _title_has(
+        p, "check presenter", "shaker", "napkin holder", "cookware", "cooler", "collar", "chain", "hanger", "coat & purse", "fos slabon"),
 }
 
 
@@ -6306,6 +6327,31 @@ def extract_shopify(brand):
     raw_products = [p for p in raw_products if not _looks_like_a_maintenance_item(p["title"])]
     if brand["name"] in WAVE1_SHOPIFY_KEEP:
         raw_products = [p for p in raw_products if WAVE1_SHOPIFY_KEEP[brand["name"]](p)]
+    if brand["name"] == "Daniel Orozco Estudio":
+        # product_type is Spanish or a collection word ("Totem" holds 94 mixed pieces: the totems are sculptures, but "FOS Ground
+        # Table", "FOS Ember Stool" and "Flor Vase" sit there too): sculptures and sets named, everything else left to the name
+        for p in raw_products:
+            t = p["title"].lower()
+            tags = " ".join(p.get("tags") or []).lower() if isinstance(p.get("tags"), list) else (p.get("tags") or "").lower()
+            p["product_type"] = "Sculpture" if ("totem" in t or t.endswith(" set") or "esculturas" in tags) else ""
+    if brand["name"] == "Cuff Studio":
+        # the same piece is listed again as "<name> - Expedited", "<name>, Available Now" or "(QTY 1)" (stock units), and a few
+        # listings carry the upholstery in the title; one entry per design
+        seen = set()
+        kept = []
+        for p in raw_products:
+            clean = re.sub(r"\s*(-\s*Expedited|,?\s*Available Now\.?|\(QTY \d+\))", "", p["title"], flags=re.I)
+            clean = re.sub(r",\s*(Sand Oak|in vegan).*$", "", clean).strip(" ,.")
+            if clean.lower() in seen:
+                continue
+            seen.add(clean.lower())
+            p["title"] = clean
+            kept.append(p)
+        raw_products = kept
+        # the site's generic types ("Tables", "Lighting", "Storage", "Screens") say less than the piece names do
+        for p in raw_products:
+            if p["product_type"] in ("Tables", "Lighting", "Storage", "Screens"):
+                p["product_type"] = ""
     if brand["name"] == "Master & Master":
         # confirmed live 2026-10-09: "M&M Signature Socks" is branded merchandise, not a design object
         raw_products = [p for p in raw_products if "socks" not in p["title"].lower()]
@@ -6986,6 +7032,27 @@ def extract_woocommerce(brand):
         raw_products = [p for p in raw_products if p.get("images")]
         for p in raw_products:
             p["name"] = re.sub(r"\s+(S|L)\s+(Green|Burgundy|Amber|Yellow)$", "", p["name"])
+    if brand["name"] == "SKLO":
+        # confirmed live 2026-11-19: the store's own categories are Light, Object, Tabletop, Furniture plus "Resources" (logo signs,
+        # colour and finish swatches, lookbook) and "Canopy Options" (fixture accessories); the piece names are single words
+        # ("Wrap", "Stem 3X"), so the category is read from the product address and the opening of the description
+        raw_products = [p for p in raw_products if any(
+            c["name"] in ("Light", "Object", "Tabletop", "Furniture") for c in p.get("categories", []))]
+        for p in raw_products:
+            kind = p["categories"][0]["name"]
+            text = ((p.get("permalink") or "").rstrip("/").rsplit("/", 1)[-1] + " " +
+                    re.sub(r"<[^>]+>", "", p.get("short_description") or p.get("description") or "")[:140]).lower()
+            if kind == "Light":
+                cat = ("Chandelier" if "chandelier" in text else "Wall Lamp" if "sconce" in text
+                       else "Pendant" if "pendant" in text else "Lighting")
+            elif kind == "Object":
+                cat = ("Bowl" if "bowl" in text else "Vase" if re.search(r"vessel|vase|bottle", text)
+                       else "Sculpture" if re.search(r"sculpt|wallpiece|tower|twist|twisting", text) else "Objects")
+            elif kind == "Tabletop":
+                cat = "Glass"
+            else:
+                cat = "Table"
+            p["categories"] = [{"name": cat}]
     if brand["name"] == "BZIPPY":
         # confirmed live 2026-11-10: 141 of 215 listings are one-off factory seconds and samples ("(SECOND)", "(SAMPLE)") and
         # the rest includes test pieces and numbered prototypes; only the finished models are pieces
@@ -13707,6 +13774,10 @@ EXTRACTORS = {
     "Rye": extract_shopify,
     "Origin Made": extract_shopify,
     "Stem": extract_shopify,
+    "Maha Alavi": extract_shopify,
+    "Cuff Studio": extract_shopify,
+    "Daniel Orozco Estudio": extract_shopify,
+    "SKLO": extract_woocommerce,
     "Brdr. Krüger": extract_woocommerce,
     "Taller Posible": extract_woocommerce,
     "Linde Freya Tangelder": extract_woocommerce,
