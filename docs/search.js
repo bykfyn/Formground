@@ -367,6 +367,7 @@ function trimTrailingPartialRow(renderedItems) {
 
 function renderResults(results, metaText, emptyText, trimToFullRows, totalOverride, shuffleLink) {
   gridEl.innerHTML = "";
+  document.querySelectorAll(".shuffle-bottom-row").forEach((el) => el.remove());
   statusEl.style.display = "none";
   hideLoadMore();
 
@@ -414,6 +415,14 @@ function renderResults(results, metaText, emptyText, trimToFullRows, totalOverri
     wrap.className = "meta-shuffle-wrap";
     wrap.append(" \u00b7 ", shuffle);
     metaEl.append(wrap);
+
+    // The same action again under the last card: after scrolling through the whole selection the results line is
+    // far above, and a phone user would otherwise scroll back up to shuffle again. Phones only, like the link above.
+    const bottom = document.createElement("div");
+    bottom.className = "shuffle-bottom-row";
+    bottom.innerHTML = '<button type="button" class="work-menu-act"><i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Shuffle</span></button>';
+    bottom.querySelector("button").addEventListener("click", () => submitQuery(input.value.trim()));
+    gridEl.after(bottom);
   }
   metaEl.style.display = "block";
 }
