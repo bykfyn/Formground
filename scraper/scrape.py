@@ -15007,6 +15007,78 @@ def extract_pat_kim(brand):
     return products
 
 
+# kawabi.com (Kawabi, Brooklyn paper-lamp studio, confirmed live 2026-11-20): a standard Shopify store whose /products.json
+# holds the whole catalogue in one request (34 listings). 12 are "..., via Assembly Line" trade-listing duplicates with no photo,
+# one is a sconce "Customization" add-on and three are light bulbs; none is a piece, so only listings with photos and none of
+# those words are kept. The four Legume pendant configurations (single/double/triple/quartet) are one piece. The Amica pieces
+# (Alma, Yama, Lula, Leo) are co-designs with Christopher Merchant, sold on Kawabi's own site under Kawabi's name.
+KAWABI_CATEGORY = {
+    "standing legume lamp": "Floor Lamp", "tea screen lamp": "Floor Lamp", "relic i lamp": "Floor Lamp",
+}
+
+
+def _kawabi_category(name):
+    n = name.lower()
+    if n in KAWABI_CATEGORY:
+        return KAWABI_CATEGORY[n]
+    if "pendant" in n:
+        return "Pendant Lamp"
+    if "sconce" in n:
+        return "Wall Lamp"
+    if "floor" in n:
+        return "Floor Lamp"
+    return "Table Lamp"
+
+
+def extract_kawabi(brand):
+    base = brand["url"].rstrip("/")
+    data = _fetch_json(f"{base}/products.json?limit=250")
+    if not data:
+        return []
+    groups = {}
+    for p in data.get("products", []):
+        title = p["title"].strip()
+        low = title.lower()
+        if "via assembly line" in p["handle"] or "via assembly line" in low or "customization" in low or "lightbulb" in low:
+            continue
+        if not p.get("images"):
+            continue
+        name = "Legume Pendant" if low.startswith("legume pendant") else title
+        groups.setdefault(name, []).append(p)
+    products = []
+    for name, group in groups.items():
+        first = group[0]
+        if len(group) > 1:
+            group.sort(key=lambda p: (p["handle"] != "legume-pendant-single", p["handle"]))
+            first = group[0]
+        body = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", first.get("body_html") or "")))
+        materials = []
+        for opt in first.get("options", []):
+            if opt.get("name", "").lower() in ("finish", "glaze", "material", "color", "colour"):
+                for v in opt.get("values", []):
+                    if v not in materials:
+                        materials.append(v)
+        tags = [t.lower() for t in (first.get("tags") or [])]
+        price = None
+        if "inquire" not in tags:
+            prices = [float(v["price"]) for p in group for v in p.get("variants", []) if v.get("price") not in (None, "")]
+            prices = [x for x in prices if x > 0]
+            price = min(prices) if prices else None
+        collab = "collaboration with ceramicist Christopher Merchant" in body
+        notes = "Single, double, triple and quartet configurations" if name == "Legume Pendant" else ""
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+            "product_url": f"{base}/products/{first['handle']}",
+            "category": _kawabi_category(name),
+            "material_options": materials, "dimensions": "", "notes": notes,
+            "image_url": first["images"][0]["src"],
+            "designer": "Kawabi, Christopher Merchant" if collab else "",
+            "price": price, "currency": "USD" if price else None,
+            "released_at": _earliest_date(d for p in group for d in (p.get("created_at"), p.get("published_at"))),
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -15384,6 +15456,7 @@ EXTRACTORS = {
     "Armadillo": extract_armadillo,
     "Josh Greene Design": extract_josh_greene_design,
     "Pat Kim": extract_pat_kim,
+    "Kawabi": extract_kawabi,
 }
 
 
