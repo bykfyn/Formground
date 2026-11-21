@@ -15079,6 +15079,164 @@ def extract_kawabi(brand):
     return products
 
 
+# s-cab.it (S•CAB, Coccaglio, Brescia, Italy): WordPress site that exposes its catalogue through the public REST API
+# (/en/wp-json/wp/v2/prodotti, 276 product pages in 3 requests of 100) plus the designer taxonomy. robots.txt is empty.
+# The pages are one per model *version* (armchair, barstool, sledge frame, castors, heights ...), so they are grouped into
+# one piece per model line (SCAB_GROUPS below). Table tops and cushions are components and are left out. No prices on the site.
+# The server only speaks TLS 1.3, which the macOS system Python (LibreSSL 2.8) cannot do, so scab_get falls back to curl.
+import subprocess as _scab_subprocess
+
+SCAB_BASE = "https://www.s-cab.it/en/wp-json/wp/v2"
+
+# Taxonomy (tipo_prodtax) ids that decide the category when a family has no explicit entry in SCAB_CATEGORY.
+SCAB_TIPO = {1446: "Chair", 2660: "Bar Stool", 2680: "Sofa", 2673: "Daybed", 2679: "Chair", 2659: "Table", 2668: "Coffee Table"}
+SCAB_CATEGORY = {
+    "Brezza": "Lounge Chair", "Brezza Relax": "Sofa", "Brezza Sofa": "Sofa", "Brezza Low Table": "Coffee Table",
+    "Lisa Lounge": "Lounge Chair", "Ginevra Lounge": "Lounge Chair", "Lisa Sofa": "Sofa", "Lisa Swing": "Chair",
+    "Coccolona Sofa": "Sofa", "Flap": "Sofa", "Flap Occasional Table": "Side Table", "Flap Suspended Side Tables": "Side Table",
+    "Lisa Lounge Side Table": "Side Table", "Vela Side Table": "Side Table", "Alice Bench": "Bench",
+    "Mimosa Vases": "Vase", "Mimosa Plant Holders": "Planter", "Marisco": "Rug", "Pranzo": "Dining Table",
+    "Hyppo": "Coffee Table", "Argo": "Coffee Table", "DRESS_CODE Coffee Table": "Coffee Table",
+}
+# lower-cased page title (after unescaping) -> display name, for pages whose title does not collapse into its family by itself
+SCAB_TITLE_FAMILY = {
+    "brezza lounge armchair": "Brezza", "brezza - low table": "Brezza Low Table", "brezza sofa": "Brezza Sofa",
+    "bench alice fire retardant": "Alice Bench", "bench alice (with fire retardant seats)": "Alice Bench",
+    "divano coccolona": "Coccolona Sofa", "domino easy alignment base": "Domino", "domino fixed base": "Domino",
+    "domino fixed base h.50": "Domino", "extendible table pranzo 120/160/200": "Pranzo", "extendible table pranzo 160/210": "Pranzo",
+    "flap - occasional table": "Flap Occasional Table", "flap - suspended side tables": "Flap Suspended Side Tables",
+    "metropolis l": "Metropolis", "metropolis xl": "Metropolis", "mimosa - plant holder - wall mounted": "Mimosa Plant Holders",
+    "mimosa - plant holder - floor": "Mimosa Plant Holders", "mimosa - vases": "Mimosa Vases",
+    "lisa lounge club": "Lisa Lounge", "lisa lounge filò": "Lisa Lounge", "pouf lisa lounge": "Lisa Lounge",
+    "lisa sofa club": "Lisa Sofa", "lisa sofa filò": "Lisa Sofa", "lisa swing self-supporting structure": "Lisa Swing",
+    "side table lisa lounge": "Lisa Lounge Side Table", "side table vela": "Vela Side Table",
+    "squid m": "Squid", "squid of": "Squid", "dress_code - coffee table": "DRESS_CODE Coffee Table",
+    "maxi nemo easy alignment base h.73": "Maxi Nemo", "maxi nemo fixed bases h.73": "Maxi Nemo",
+    "tripé easy alignment": "Tripé", "tripé - fixed and easy alignment": "Tripé", "tripé h.109 - fixed and easy alignment": "Tripé",
+    "tiffany": "Tiffany", "natural tiffany": "Tiffany", "brezza relax chaise longue": "Brezza Relax", "brezza relax pouf": "Brezza Relax",
+    "brezza relax pouf indoor": "Brezza Relax", "brezza relax indoor": "Brezza Relax",
+}
+# not pieces in their own right: table tops, cushions (also photo-less)
+SCAB_SKIP_SLUGS = {"piani-tecnopolimero", "piani-stratificato-fenix-ntm", "piani-stratificato-compact-hpl-full-colour",
+                   "piano-in-stratificato-compact-3", "piano-in-stratificato-compact-2", "zinc-and-powder-coated-steel",
+                   "compact-laminate-2", "compact-laminate-3", "compact-laminate-4", "tiffany-laminate-brass-abs-top",
+                   "cuscini", "cuscino-poggiareni"}
+
+
+def scab_get(url):
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=40)
+        r.raise_for_status()
+        return r.text
+    except requests.exceptions.SSLError:
+        out = _scab_subprocess.run(["curl", "-sS", "-m", "40", "-A", HEADERS["User-Agent"], url], capture_output=True, text=True)
+        if out.returncode != 0:
+            raise requests.RequestException(out.stderr.strip())
+        return out.stdout
+
+
+def _scab_family(title, slug):
+    t = html.unescape(title).replace("\xa0", " ").replace("–", "-").strip()
+    low = t.lower()
+    if low in SCAB_TITLE_FAMILY:
+        return SCAB_TITLE_FAMILY[low]
+    if low.startswith("lisa outdoor"):
+        return "Lisa Outdoor"
+    if low.startswith("lisa technopolymer"):
+        return "Lisa Technopolymer"
+    if low.startswith("tiffany") and not any(w in low for w in ("xl", "rectangular", "two column")):
+        return "Tiffany"
+    for stem in ("nemo", "double nemo", "domino", "rhino xl", "rhino", "tripé double", "tripé", "atomo", "nolo"):
+        if low.startswith(stem + " ") or low == stem or low.startswith("natural " + stem):
+            if stem == "nemo" and low.startswith("double"):
+                continue
+            return re.sub(r"\bXl\b", "XL", stem.title())
+    low = re.sub(r"^natural ", "", low)
+    low = re.sub(r"\bh\.\s?\d+(\s*/\s*h\.\s?\d+)?", "", low)
+    low = re.sub(r"\s*-\s*(low back|high-back|3 legs|4 legs|indoor|outdoor|armchair|chaise longue [ab]|pouf|left element|central element|right element)\b", "", low)
+    low = re.sub(r"\b(armchair|sledge frame|with castors|with wheels|revolving on trestle base|on trestle base|4-leg frame|4 legs|"
+                 r"with writing tablet|with antipanic writing tablet|go green|chair|barstool|coated frame|with armchair|"
+                 r"tubular coated steel|chromed frame|indoor|outdoor|open? ?)\b", "", low) if not low.startswith("koala open") else low
+    low = re.sub(r"\s+", " ", low).strip(" -")
+    fam = low.title().replace("Si-Si", "Si-Si").replace("Dress_Code", "DRESS_CODE").replace("Hug ", "HUG ")
+    return re.sub(r"\bXl\b", "XL", fam)
+
+
+def _scab_variants(titles):
+    joined = " | ".join(html.unescape(t).lower() for t in titles)
+    out = []
+    for label, pat in [("armchair", r"armchair"), ("barstool", r"h\.\s?\d+/h\.|barstool"), ("sledge frame", r"sledge"),
+                       ("castors", r"castors|wheels"), ("swivel base", r"trestle"), ("four-leg frame", r"4[ -]leg"),
+                       ("writing tablet", r"writing tablet"), ("Go Green recycled-plastic version", r"go green")]:
+        if re.search(pat, joined):
+            out.append(label)
+    return out
+
+
+def extract_scab(brand):
+    designers = {}
+    try:
+        for t in json.loads(scab_get(f"{SCAB_BASE}/designer_prodtax?per_page=100")):
+            designers[t["id"]] = html.unescape(t["name"])
+    except (requests.RequestException, ValueError) as e:
+        print(f"  Could not fetch S-CAB designers: {e}")
+    pages = []
+    page_no = 1
+    while True:
+        time.sleep(1)
+        try:
+            batch = json.loads(scab_get(f"{SCAB_BASE}/prodotti?per_page=100&page={page_no}&_embed=wp:featuredmedia"))
+        except (requests.RequestException, ValueError) as e:
+            print(f"  Could not fetch S-CAB catalogue page {page_no}: {e}")
+            break
+        if not isinstance(batch, list) or not batch:
+            break
+        pages.extend(batch)
+        if len(batch) < 100:
+            break
+        page_no += 1
+    groups = {}
+    for x in pages:
+        if x.get("status") != "publish" or x["slug"] in SCAB_SKIP_SLUGS:
+            continue
+        title = html.unescape(x["title"]["rendered"]).replace("\xa0", " ").strip()
+        media = ((x.get("_embedded") or {}).get("wp:featuredmedia") or [{}])[0]
+        image = media.get("source_url") or ""
+        groups.setdefault(_scab_family(title, x["slug"]), []).append({
+            "title": title, "link": x["link"], "image": image, "tipo": x.get("tipo_prodtax") or [],
+            "designer": next((designers[d] for d in x.get("designer_prodtax") or [] if d in designers), ""),
+        })
+    products = []
+    for fam, members in sorted(groups.items()):
+        with_photo = [m for m in members if m["image"]]
+        if not with_photo:
+            continue
+        exact = [m for m in with_photo if m["title"].lower() == fam.lower()]
+        rep = exact[0] if exact else min(with_photo, key=lambda m: (len(m["title"]), "armchair" in m["title"].lower()))
+        tipos = {i for m in members for i in m["tipo"]}
+        category = SCAB_CATEGORY.get(fam)
+        if not category:
+            category = next((SCAB_TIPO[i] for i in (1446, 2680, 2673, 2679, 2659, 2668, 2660) if i in tipos), "Chair")
+        joined = " ".join(m["title"].lower() for m in members) + " " + fam.lower()
+        materials = []
+        if "wood" in joined:
+            materials.append("Wood")
+        if "technopolymer" in joined:
+            materials.append("Technopolymer")
+        if "go green" in joined:
+            materials.append("Recycled plastic")
+        variants = _scab_variants([m["title"] for m in members])
+        notes = ("Versions on the site: " + ", ".join(variants) + ".") if len(members) > 1 and variants and category not in ("Table", "Coffee Table", "Side Table") else ""
+        if category == "Table" and fam not in ("Pranzo", "Squid", "Metropolis", "Eco Fixed Table", "Eco Folding Table", "Extendable Squid", "Mirto", "Ercole", "Timo", "Leo"):
+            notes = (notes + " Table base; the top is chosen separately.").strip()
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": fam, "product_url": rep["link"],
+            "category": category, "material_options": materials, "dimensions": "", "notes": notes,
+            "image_url": rep["image"], "designer": rep["designer"], "price": None, "currency": None,
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -15457,6 +15615,7 @@ EXTRACTORS = {
     "Josh Greene Design": extract_josh_greene_design,
     "Pat Kim": extract_pat_kim,
     "Kawabi": extract_kawabi,
+    "S-CAB": extract_scab,
 }
 
 
