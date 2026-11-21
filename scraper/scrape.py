@@ -15124,15 +15124,25 @@ SCAB_SKIP_SLUGS = {"piani-tecnopolimero", "piani-stratificato-fenix-ntm", "piani
 
 
 def scab_get(url):
-    try:
-        r = requests.get(url, headers=HEADERS, timeout=40)
-        r.raise_for_status()
-        return r.text
-    except requests.exceptions.SSLError:
-        out = _scab_subprocess.run(["curl", "-sS", "-m", "40", "-A", HEADERS["User-Agent"], url], capture_output=True, text=True)
-        if out.returncode != 0:
-            raise requests.RequestException(out.stderr.strip())
-        return out.stdout
+    # s-cab.it is TLS 1.3 only (system python on macOS cannot connect with requests) and curl over HTTP/2 now and then
+    # drops a stream mid-response, so the curl fallback speaks HTTP/1.1 and each fetch is tried up to 3 times.
+    last = None
+    for attempt in range(3):
+        if attempt:
+            time.sleep(2 * attempt)
+        try:
+            r = requests.get(url, headers=HEADERS, timeout=40)
+            r.raise_for_status()
+            return r.text
+        except requests.exceptions.SSLError:
+            out = _scab_subprocess.run(["curl", "-sS", "--http1.1", "-m", "40", "-A", HEADERS["User-Agent"], url],
+                                       capture_output=True, text=True)
+            if out.returncode == 0:
+                return out.stdout
+            last = requests.RequestException(out.stderr.strip())
+        except requests.RequestException as e:
+            last = e
+    raise last
 
 
 def _scab_family(title, slug):
