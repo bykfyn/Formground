@@ -816,6 +816,32 @@ class DiscoverHousesTests(unittest.TestCase):
             self.assertGreaterEqual(len(products), qe.DISCOVER_TOTAL_CAP - qe.DISCOVER_HOUSES_MAX)
 
 
+class DiscoverOnePerMakerTests(unittest.TestCase):
+    """2026-11-21: a maker appears once per "Surprise me" page; a second piece per maker only fills the page when there
+    are too few makers (a tier chip), never more than DISCOVER_PER_BRAND."""
+
+    def setUp(self):
+        hidden = qe.HOUSES_HIDDEN
+        qe.HOUSES_HIDDEN = True
+        self.addCleanup(setattr, qe, "HOUSES_HIDDEN", hidden)
+
+    def test_no_maker_repeats_on_an_unfiltered_page(self):
+        for _ in range(40):
+            results = qe.discover()
+            makers = [r["brand"] for r in results]
+            self.assertEqual(len(makers), len(set(makers)))
+            self.assertEqual(len(results), qe.DISCOVER_TOTAL_CAP)
+
+    def test_few_makers_fall_back_to_a_second_piece_each_and_no_more(self):
+        results = qe.discover(total_cap=2000)           # more places than makers: everyone's second piece fills in
+        per_maker = {}
+        for r in results:
+            per_maker[r["brand"]] = per_maker.get(r["brand"], 0) + 1
+        self.assertLessEqual(max(per_maker.values()), qe.DISCOVER_PER_BRAND)
+        self.assertGreater(sum(1 for n in per_maker.values() if n == 2), 0)
+        self.assertEqual(sum(1 for r in qe.discover(total_cap=2000)), len(results))
+
+
 class UnrecognisedQueryTests(unittest.TestCase):
     """2026-10-05: a query that set no filter returned the WHOLE catalog
     ("28,026 results for 'HAY'"). Brand names are now recognised, a query

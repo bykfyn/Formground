@@ -566,11 +566,11 @@ LLM_CALLERS = {
 # to retune from here once there's real usage to test against.
 MAX_RESULTS_PER_BRAND = 6
 
-# Random discovery (see discover() below) uses a higher per-brand cap than
-# a real search - there's no relevance signal being diluted here, just an
-# even browse across brands, so it's fine to show more per brand while
-# still giving every brand a genuinely equal shot at appearing.
-DISCOVER_PER_BRAND = 6
+# Random discovery (see discover() below): a maker appears ONCE per page (2026-11-21, the user's call). Every maker gets one
+# equal-weight entry, however large its catalogue, so a small maker is as likely to turn up as a big one. Only when there are
+# too few makers to fill the page (a tier chip leaves a handful) does a second piece per maker fill the remaining places,
+# and DISCOVER_PER_BRAND is that fallback ceiling.
+DISCOVER_PER_BRAND = 2
 
 # A per-brand cap alone no longer bounds the page length now that there are
 # ~50+ scrapable brands - up to 300+ results forced an endless scroll for
@@ -1410,8 +1410,10 @@ def filter_houses_by_firm(raw_query: str, houses=None) -> list:
 def discover(per_brand: int = DISCOVER_PER_BRAND, total_cap: int = DISCOVER_TOTAL_CAP, tier=None) -> list:
     """
     Random browse across the whole catalog, no query/filtering involved -
-    for "surprise me" / typing "random" instead of a real search. Samples
-    up to per_brand items from *every* brand rather than taking a uniform
+    for "surprise me" / typing "random" instead of a real search. Picks one
+    piece from each of total_cap different makers (a second piece per maker
+    only when there are too few makers to fill the page: see
+    DISCOVER_PER_BRAND), rather than taking a uniform
     random sample of all products, which would be dominated by the
     largest catalogs (In Common With alone is a third of all valid
     records) and would rarely surface a brand with only a handful of
@@ -1446,13 +1448,20 @@ def discover(per_brand: int = DISCOVER_PER_BRAND, total_cap: int = DISCOVER_TOTA
         product["thin"] = bool(product["thin"])
         by_brand.setdefault(product["brand"], []).append(product)
 
-    sampled = []
-    for brand_products in by_brand.values():
-        sampled.extend(random.sample(brand_products, min(per_brand, len(brand_products))))
-
-    random.shuffle(sampled)
     houses = [] if tier else _discover_houses()
-    results = sampled[:total_cap - len(houses)]
+    slots = total_cap - len(houses)
+    # One random piece per maker, makers in random order; if that leaves places free, a second round adds another piece
+    # per maker (up to per_brand), so a page never repeats a maker while there are enough makers to avoid it.
+    picks = {brand: random.sample(items, min(per_brand, len(items))) for brand, items in by_brand.items()}
+    order = list(picks)
+    random.shuffle(order)
+    sampled = []
+    for round_no in range(per_brand):
+        sampled.extend(picks[brand][round_no] for brand in order if len(picks[brand]) > round_no)
+        if len(sampled) >= slots:
+            break
+    results = sampled[:slots]
+    random.shuffle(results)
     for house in houses:                       # scattered at random positions, not bunched at one end
         results.insert(random.randint(0, len(results)), house)
     return results
