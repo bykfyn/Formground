@@ -402,22 +402,10 @@ function renderResults(results, metaText, emptyText, trimToFullRows, totalOverri
   // /search's total_matches) - falls back to the rendered count itself
   // for Discover, which has no such hidden total to report.
   metaEl.textContent = metaText(totalOverride ?? results.length);
-  // A random selection says what it is and offers the way to change it right here. The "Surprise me" chip does the
-  // same, but on a phone the chip row scrolls sideways and the chip is off-screen on first visit.
+  // A random selection offers the way to change it under the last card. The "Surprise me" chip does the same, but on
+  // a phone the chip row scrolls sideways and the chip is off-screen on first visit.
   if (shuffleLink) {
-    const shuffle = document.createElement("button");
-    shuffle.type = "button";
-    shuffle.className = "meta-shuffle";
-    shuffle.innerHTML = '<i class="ti ti-arrows-shuffle" aria-hidden="true"></i> Shuffle';
-    shuffle.addEventListener("click", () => submitQuery(input.value.trim()));
     // Phones only (work-results.css hides it above 640px, where the whole chip row is visible)
-    const wrap = document.createElement("span");
-    wrap.className = "meta-shuffle-wrap";
-    wrap.append(" \u00b7 ", shuffle);
-    metaEl.append(wrap);
-
-    // The same action again under the last card: after scrolling through the whole selection the results line is
-    // far above, and a phone user would otherwise scroll back up to shuffle again. Phones only, like the link above.
     const bottom = document.createElement("div");
     bottom.className = "shuffle-bottom-row";
     bottom.innerHTML = '<button type="button" class="work-menu-act"><i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Shuffle</span></button>';
