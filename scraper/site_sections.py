@@ -20,9 +20,8 @@ HIDDEN_SECTIONS = {
     # Promotions on the Marketplace (and the brand-page "has a live promotion" callouts that link to it): 10 entries,
     # not yet representative. The Marketplace page itself (the stockists) stays live, linked from the footer.
     "promotions": "10 entries; not yet representative",
-    # "Where to buy" on maker pages: only 24 of 199 pages have one (we list few stockists), so it is mostly absent.
-    # The stockists stay in full on the Marketplace page.
-    "maker_stockists": "on 24 of 199 maker pages only; the Marketplace page lists them in full",
+    # ("Where to buy" on maker pages was hidden here from 2026-10-04 and brought back 2026-11-21: it now shows from two
+    # stockists up, see MIN_STOCKISTS_SHOWN in generate_brand_pages.py.)
 }
 
 

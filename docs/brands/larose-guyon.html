@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Larose Guyon: lighting — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Larose Guyon is a lighting and object design studio in Verchères, Quebec, Canada, founded in 2015 by Audrée L. Larose and Félix Guyon.">
+<link rel="canonical" href="https://formground.com/brands/larose-guyon.html">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Larose Guyon: lighting — Formground">
+<meta property="og:description" content="Larose Guyon is a lighting and object design studio in Verchères, Quebec, Canada, founded in 2015 by Audrée L. Larose and Félix Guyon.">
+<meta property="og:url" content="https://formground.com/brands/larose-guyon.html">
+<meta property="og:image" content="https://formground.com/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://formground.com/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Larose Guyon: lighting — Formground">
+<meta name="twitter:description" content="Larose Guyon is a lighting and object design studio in Verchères, Quebec, Canada, founded in 2015 by Audrée L. Larose and Félix Guyon.">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Makers", "item": "https://formground.com/makers.html"}, {"@type": "ListItem", "position": 3, "name": "Larose Guyon", "item": "https://formground.com/brands/larose-guyon.html"}]}</script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/icons.css?v=86479f05">
+<style>
+  .curated-note { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; }
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  /* "New from X" sits at the TOP of a maker page, above the full range (and only exists when there is something new) */
+  .brand-section--top { margin: 0 0 44px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent; /* same box as .tag so the two small labels are one height */
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  /* two to a row on a phone (a single 190px-minimum column left the directories one long list) */
+  @media (max-width: 640px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px auto 0; line-height: 1.6; text-align: center; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px; height: 47px; box-sizing: border-box;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+/* SHARE-BTN:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .share-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 1;
+    width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(250, 249, 247, 0.85); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+  }
+  .share-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+  .share-btn i { font-size: 14px; }
+  .share-btn.copied::after {
+    content: "Copied"; position: absolute; bottom: 32px; right: 0;
+    background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  /* LOAD-MORE:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .load-more-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 40px 0 8px; text-align: center;
+  }
+  .load-more-btn {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: none; border: none; padding: 6px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .load-more-btn:hover { color: var(--text-primary); }
+  .load-more-btn:disabled { opacity: 0.6; cursor: default; text-decoration: none; }
+  .load-more-progress { font-size: 11.5px; color: var(--text-muted); }
+  
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 28px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
+  .has-load-more .pager { display: none; }
+  .earlier-results { display: none; margin: 0 0 14px; font-size: 13px; }
+  .has-load-more .earlier-results { display: block; }
+  .earlier-results a { color: var(--text-muted); text-decoration: none; }
+  .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
+
+  .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
+  .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
+</style>
+<style>
+  .creator-text { max-width: 640px; margin: 0 auto 36px; }
+  .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
+  .creator-facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 18px; margin: 18px 0 14px;
+    padding: 14px 0; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .creator-facts dt { color: var(--text-muted); }
+  .creator-facts dd { margin: 0; color: var(--text-primary); }
+  .creator-text p.creator-more { font-size: 13px; margin: 0 0 4px; }   /* beats .creator-text p (15px): the link is small, like "Visit site" */
+  .creator-more a { color: var(--text-accent); text-decoration: none; }
+  .creator-more a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/edits.html">Edits</a>
+</nav>
+</header>
+<main data-brand="Larose Guyon">
+  <div class="maker-header">
+    <p class="eyebrow">Maker</p>
+    <h1 class="maker-name">Larose Guyon</h1>
+    <div class="tags"><span class="tag">Lighting</span><span class="tag">Canada</span></div>
+    <a class="brand-site-link" href="https://www.laroseguyon.com/" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+
+  <section class="creator-text">
+    <p>Larose Guyon is a lighting and object design studio in Verchères, Quebec, Canada, founded in 2015 by Audrée L. Larose and Félix Guyon. It makes chandeliers and pendants in brass, copper, bronze or nickel, many with hand-blown glass globes, in named collections such as Rosette, Abysse, Saule and Perle.</p><p>Fixtures are assembled by hand in the Verchères workshop with the help of local artisans. Orders are made to order against a 50% deposit, with production taking 6 to 20 weeks depending on the model. On Formground it is shown through 30 pieces, each linked to its own page.</p>
+    <dl class="creator-facts"><dt>Country</dt><dd>Canada</dd><dt>City</dt><dd>Verchères, Quebec</dd><dt>Type</dt><dd>Maker</dd><dt>Products</dt><dd>Chandeliers, pendants</dd><dt>Founded</dt><dd>2015</dd><dt>Made to order</dt><dd>Yes (stated on their site)</dd><dt>Website</dt><dd>laroseguyon.com</dd></dl>
+  </section>  
+  <div class="grid" data-listing-grid>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/abysse-01-lxccd" target="_blank" rel="noopener noreferrer" data-product="Abysse 01" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718568-HDVC55RLRBTPQZL5MSH2/abysse-3.jpg?format=500w" alt="Abysse 01 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Abysse 01</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/abysse-03-l-yjz2g" target="_blank" rel="noopener noreferrer" data-product="Abysse 03" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1a8035a7-07bb-4c10-a612-bf5b54717eb0/LaroseGuyon_Abysse_03L_004_site.jpg?format=500w" alt="Abysse 03 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Abysse 03</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/abysse-05-l-gpsgr" target="_blank" rel="noopener noreferrer" data-product="Abysse 05" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/b54a678c-ccda-44b2-a448-645eb01ce5f6/LaroseGuyon_Abysse-05-L_site.jpg?format=500w" alt="Abysse 05 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Abysse 05</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/abysse-08-l-p6tf5" target="_blank" rel="noopener noreferrer" data-product="Abysse 08" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/0aac16bb-4998-402b-a91d-0142718852a1/LaroseGuyon_Abysse-08-L_site.jpg?format=500w" alt="Abysse 08 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Abysse 08</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/abysse-10-l-n9n3g" target="_blank" rel="noopener noreferrer" data-product="Abysse 10" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/c11c360d-4523-4626-a3e5-fbdbfc39eecc/LaroseGuyon_Abysse_10L_003_l_site.jpg?format=500w" alt="Abysse 10 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Abysse 10</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/coco-01-btf5a" target="_blank" rel="noopener noreferrer" data-product="Coco 01" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718441-EF2Z58XE09K9WWR832C3/Coco_Configuration01_Brass_Fond+noir.jpg?format=500w" alt="Coco 01 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Coco 01</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/coco-02-6c6n4" target="_blank" rel="noopener noreferrer" data-product="Coco 02" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718262-AFIMJMDHHPZQG4NQ57LH/Coco_Configuration02_LaroseGuyon_Brass.jpg?format=500w" alt="Coco 02 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Coco 02</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/coco-03-m8snt" target="_blank" rel="noopener noreferrer" data-product="Coco 03" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718283-ZMRRGUEX59DMDBPBS5MO/Coco_Configuration03_LaroseGuyon_Brass.jpg?format=500w" alt="Coco 03 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Coco 03</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/coco-04-gs96m" target="_blank" rel="noopener noreferrer" data-product="Coco 04" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718288-MCQFXAPVYIS9PYK9I0EZ/Coco_Configuration04_LaroseGuyon_Brass.jpg?format=500w" alt="Coco 04 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Coco 04</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/coco-xs-01-behwm" target="_blank" rel="noopener noreferrer" data-product="Coco XS 01" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718578-YATJE40U1MCSJX1G6BY5/Coco-XS-01_AgedBrass_LaroseGuyon_01.jpg?format=500w" alt="Coco XS 01 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Coco XS 01</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/coco-xs-02-9stys" target="_blank" rel="noopener noreferrer" data-product="Coco XS 02" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/44946740-aa98-413c-8c58-16375e3e7a12/Otero_noir_carre.jpg?format=500w" alt="Coco XS 02 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Coco XS 02</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/coco-de-mer-kpjs2" target="_blank" rel="noopener noreferrer" data-product="Coco de Mer" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718632-WTZ83H31GNBKAUXW0UND/LaroseGuyon_Coco-de-Mer_01.jpg?format=500w" alt="Coco de Mer by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Coco de Mer</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/celeste-large-eh3ab" target="_blank" rel="noopener noreferrer" data-product="Céleste" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718485-PLOFRR1KGVYZFVBCL7X5/LaroseGuyon_CelestSmall_Acryl_Brass_01.jpg?format=500w" alt="Céleste by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Céleste</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/celeste-d-automne-rnjwy" target="_blank" rel="noopener noreferrer" data-product="Céleste d&#x27;Automne" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718706-D05M4JMHVB11WRTI2G0K/LaroseGuyon_Celeste+d%27Automne+%281%29.jpg?format=500w" alt="Céleste d&#x27;Automne by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Céleste d&#x27;Automne</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/liane-743tw" target="_blank" rel="noopener noreferrer" data-product="Liane" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718309-HGV8105JFKEGNIJR4IVG/LaroseGuyon_Liane_Lighting_Design_Copper_01_02.jpg?format=500w" alt="Liane by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Liane</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/otero-small-gtmpn" target="_blank" rel="noopener noreferrer" data-product="Otéro" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718273-Z8AHY3OKOCFQ8T7WCRML/LaroseGuyon_OteroSmall_Lighting_Design_Copper_01.jpg?format=500w" alt="Otéro by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Otéro</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/otero-xs-01-5a5aj" target="_blank" rel="noopener noreferrer" data-product="Otéro XS 01" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/834fe7bb-64e1-45d9-843f-bc72e17c2d4d/LaroseGuyon_Otero-XS-01_Brass_01.jpg?format=500w" alt="Otéro XS 01 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Otéro XS 01</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/otero-xs-02-gelew" target="_blank" rel="noopener noreferrer" data-product="Otéro XS 02" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/830062f9-6a7b-43ab-9667-0503968f8e2c/LaroseGuyon_Otero-XS-02_Brass_01.jpg?format=500w" alt="Otéro XS 02 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Otéro XS 02</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/perle-1-axkyh" target="_blank" rel="noopener noreferrer" data-product="Perle 1" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718187-CQ1KIXNLM1WGW7YFVLYV/LaroseGuyon_Perle1_Brass_Lighting_06.jpg?format=500w" alt="Perle 1 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Perle 1</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/perle-1-d-7rey2" target="_blank" rel="noopener noreferrer" data-product="Perle 1 Diamond" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556724529-CVXVMUIUJJW4IQN2B2GR/LaroseGuyon_Perle1_Brass_Lighting_14.jpg?format=500w" alt="Perle 1 Diamond by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Perle 1 Diamond</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/perle-1-trio-zt9sf" target="_blank" rel="noopener noreferrer" data-product="Perle 1 Trio" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718247-92IHM1BFZHCCAZJPOGHH/LaroseGuyon_Perle1_Brass_Lighting_Trio.jpg?format=500w" alt="Perle 1 Trio by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Perle 1 Trio</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/perle-2-wpr32" target="_blank" rel="noopener noreferrer" data-product="Perle 2" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718410-YG8KERJ3EPV4J0BAZYPA/LaroseGuyon_Perle2_Brass_Lighting_01_03.jpg?format=500w" alt="Perle 2 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Perle 2</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/perle-3-zl4kb" target="_blank" rel="noopener noreferrer" data-product="Perle 3" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718325-Z6YFZRIDWJIOGSQWBFP8/LaroseGuyon_Perle3_Brass_Lighting_13_Alabaster_Square.jpg?format=500w" alt="Perle 3 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Perle 3</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/rosette-05-s-ke9wm-rb875" target="_blank" rel="noopener noreferrer" data-product="Rosette 05" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/5f907cc6-11c6-4908-9b69-bdae3c361795/LaroseGuyon_Rosette_05-L_site.jpg?format=500w" alt="Rosette 05 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Rosette 05</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/rosette-05-s-tj46t" target="_blank" rel="noopener noreferrer" data-product="Rosette 08" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/244369de-ad86-429e-8d86-94101213369c/LaroseGuyon_Rosette-08-L_site.jpg?format=500w" alt="Rosette 08 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Rosette 08</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/rosette-05-s-z5ezg" target="_blank" rel="noopener noreferrer" data-product="Rosette 12" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/a2f85e08-3fed-4256-91d0-8b5413bd3755/LaroseGuyon_Rosette_12-L_site.jpg?format=500w" alt="Rosette 12 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Rosette 12</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/saule-s-01-558m7" target="_blank" rel="noopener noreferrer" data-product="Saule 01" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718675-PTR1QDFIPRS9TFS5IDXB/LaroseGuyon_Saule-S-01+%282%29.jpg?format=500w" alt="Saule 01 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Saule 01</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/saule-s-03-9xdag" target="_blank" rel="noopener noreferrer" data-product="Saule 03" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718695-4CP0WNLLTKSDQCEBPPQ4/LaroseGuyon_Saule-S-03+%281%29.jpg?format=500w" alt="Saule 03 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Saule 03</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/saule-s-05-fc9p5" target="_blank" rel="noopener noreferrer" data-product="Saule 05" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/1791556718690-9WYYWQS7WY0LWS18H9UF/LaroseGuyon_Saule-S-05+%281%29.jpg?format=500w" alt="Saule 05 by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Saule 05</p>
+          
+        </div>
+      </a>
+      <a class="card" href="https://www.laroseguyon.com/shop/p/valse-au-crpuscule-23adt" target="_blank" rel="noopener noreferrer" data-product="Valse au Crépuscule" data-brand="Larose Guyon">
+        <div class="card-image"><img src="https://images.squarespace-cdn.com/content/v1/6ac8fc56ef724a36eede5881/7c20d7b0-797c-4bf9-8cd3-2454904e29ed/LaroseGuyon_Automne_ValseAuCrepuscule_KarelChladek_10.jpg?format=500w" alt="Valse au Crépuscule by Larose Guyon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Valse au Crépuscule</p>
+          
+        </div>
+      </a></div>
+  
+  
+
+  <section class="brand-section">
+    <p class="brand-section-title">Makers like Larose Guyon</p>
+    <p class="like-note">Other makers on Formground whose work overlaps with theirs.</p>
+    <div class="like-grid">
+      <a class="maker-card" href="/brands/parachilna.html"><div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0389/4411/2685/files/SERIE-C-MEDIUM-PACKSHOT-2.jpg?v=1763638371&amp;width=500" alt="Parachilna" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Parachilna</span><span class="maker-country">Spain</span><span class="maker-categories">Pendant Lamps</span></div></a>
+      <a class="maker-card" href="/brands/pholc.html"><div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0874/4294/8443/files/Pholc_Concave_10_566110_Product_image_Lighton_1.png?v=1780572210&amp;width=500" alt="Pholc" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Pholc</span><span class="maker-country">Sweden</span><span class="maker-categories">Pendant Lamps</span></div></a>
+      <a class="maker-card" href="/brands/lee-broom.html"><div class="maker-card-hero"><img src="https://leebroom.com/wp-content/uploads/2025/07/croppedimage680825-Mythos-Single-Blackened-Brass-3-piece-chandelier-1.jpg" alt="Lee Broom" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Lee Broom</span><span class="maker-country">United Kingdom</span><span class="maker-categories">Chandeliers · Pendant Lamps</span></div></a>
+      <a class="maker-card" href="/brands/workstead.html"><div class="maker-card-hero"><img src="https://m-workstead.imgix.net/assets/galleries/404/650_Pendant_Natural_Ace_Basin_Daytime.jpg?fit=crop&amp;w=640&amp;h=640&amp;q=60&amp;auto=format,compress" alt="Workstead" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Workstead</span><span class="maker-country">United States</span><span class="maker-categories">Pendant Lamps · Chandeliers</span></div></a>
+      <a class="maker-card" href="/brands/astraeus-clarke.html"><div class="maker-card-hero"><img src="https://images.ctfassets.net/2v01giim6g33/1V2v7LmHt4LCoKKwc2tZFK/8be5c176d692ac206d7b92a5a0f6e56b/AstraeusClarke_DevinWilde_Staccato_AtShowroom18.jpg?w=500&amp;fm=webp&amp;q=80" alt="Astraeus Clarke" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Astraeus Clarke</span><span class="maker-country">United States</span><span class="maker-categories">Pendant Lamps · Chandeliers</span></div></a>
+      <a class="maker-card" href="/brands/gabriel-scott.html"><div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0377/8120/9220/files/rockwell_central_bronze_glass_black.jpg?v=1718126065&amp;width=500" alt="Gabriel Scott" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Gabriel Scott</span><span class="maker-country">Canada</span><span class="maker-categories">Chandeliers · Pendant Lamps</span></div></a>
+    </div>
+  </section>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
+  </p>
+</main>
+<script>
+  // Same fix as render_makers_index's own script (added there first,
+  // confirmed on Magis's "Déjà-vu" - see project memory), but never
+  // carried over to this per-brand page's own product grid, which
+  // uses the exact same .card-image aspect-ratio: 1/1 + object-fit:
+  // cover treatment: a tall/narrow product photo (confirmed live on
+  // several of Magis's own WordPress thumbnails, natively ~172x300)
+  // loses most of its content to the crop instead of just being
+  // letterboxed. Switches to "contain" once the real aspect ratio is
+  // known to be this extreme.
+  document.querySelectorAll(".card-image img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    // The tracking itself (page views, click-throughs, landing-page and
+    // campaign carry-over) lives in ONE shared file, /fg-track.js, instead
+    // of being pasted into hundreds of generated pages - see that file and
+    // backend/analytics.py for what is logged.
+    var s = document.createElement("script");
+    s.src = "/fg-track.js";
+    s.async = true;
+    document.head.appendChild(s);
+  })();
+</script>
+<script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=b09d5657" defer></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

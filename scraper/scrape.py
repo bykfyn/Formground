@@ -15247,6 +15247,2349 @@ def extract_scab(brand):
     return products
 
 
+# --- Wave 3 (2026-11-21) ---
+
+# kassandrathatcher.com (Kassandra Thatcher, ceramic lighting and sculpture, LA/NY; added 2026-11-21, Wave 3): a custom Next.js site
+# whose five collection pages (/collection/<slug>) embed every piece, with title, price, dimensions, material and photos, in the
+# server-rendered __NEXT_DATA__ JSON (Sanity CMS). No sitemap and no per-piece pages, so each piece links to its collection page
+# (a "#<title>" fragment keeps product_url unique). Photos are the studio's own Sanity CDN images. Buy buttons go to its Shopify
+# checkout; prices are shown as text ("2,050.00 USD"). robots.txt is absent (404).
+KASSANDRA_THATCHER_COLLECTIONS = ("sconces", "core", "table", "floor", "sculpture")
+KASSANDRA_THATCHER_SANITY = "https://cdn.sanity.io/images/tvhj7grd/production/"
+
+
+def _kassandra_thatcher_text(blocks):
+    return " ".join(
+        span.get("text", "") for block in (blocks or []) for span in (block.get("children") or [])
+    ).strip()
+
+
+def _kassandra_thatcher_image(slideshow):
+    for slide in slideshow or []:
+        ref = (((slide.get("mainImage") or {}).get("asset")) or {}).get("_ref", "")
+        match = re.match(r"image-([0-9a-f]+-\d+x\d+)-(\w+)$", ref)
+        if match:
+            return f"{KASSANDRA_THATCHER_SANITY}{match.group(1)}.{match.group(2)}?w=1200&auto=format"
+    return None
+
+
+def extract_kassandra_thatcher(brand):
+    base = brand["url"].rstrip("/")
+    products, seen = [], set()
+    for i, slug in enumerate(KASSANDRA_THATCHER_COLLECTIONS):
+        if i:
+            time.sleep(1)
+        url = f"{base}/collection/{slug}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+            data = json.loads(re.search(r'<script id="__NEXT_DATA__"[^>]*>(.*?)</script>', resp.text, re.S).group(1))
+            works = data["props"]["pageProps"].get("selectedWorks") or []
+        except (requests.RequestException, AttributeError, KeyError, ValueError) as e:
+            print(f"  Could not read Kassandra Thatcher {slug}: {e}")
+            continue
+        for work in works:
+            title = (work.get("title") or "").strip()
+            image = _kassandra_thatcher_image(work.get("slideshow"))
+            if not title or not image or title.lower() in seen:
+                continue
+            seen.add(title.lower())
+            lowered = title.lower()
+            if slug == "sculpture":
+                category = "Sculpture"
+            elif "candlestick" in lowered:
+                category = "Candle Holder"
+            elif slug == "sconces":
+                category = "Sconce"
+            elif slug == "floor" or "floor" in lowered:
+                category = "Floor Lamp"
+            elif slug in ("table", "core") or "lamp" in lowered:
+                category = "Table Lamp"
+            else:
+                category = "Lamp"
+            material_text = _kassandra_thatcher_text(work.get("material"))
+            materials = [m for m in ("Stoneware", "Porcelain", "Brass", "Steel", "Aluminum", "Bronze")
+                         if m.lower() in material_text.lower()]
+            price_text = _kassandra_thatcher_text(work.get("price"))
+            amount = re.search(r"\$?\s*(\d[\d,]*(?:\.\d+)?)", price_text)
+            price = float(amount.group(1).replace(",", "")) if amount else None
+            products.append({
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": title,
+                "product_url": f"{url}#{re.sub(r'[^a-z0-9]+', '-', lowered).strip('-')}",
+                "category": category, "material_options": materials,
+                "dimensions": _kassandra_thatcher_text(work.get("dimensions")), "notes": "",
+                "image_url": image, "designer": "Kassandra Thatcher",
+                "price": price if price and price > 0 else None, "currency": "USD" if price else None,
+            })
+    return products
+
+
+# marquelwilliams.com (Marquel Rashaad Williams, Los Angeles designer; added 2026-11-21, Wave 3): a Cargo site. The home page lists the
+# works (the "Beams" edition pieces plus Paper, Door and Void Tray: 11 at the time; Door, a one-off performance apparatus, is left out); each page's text carries price ("$3,400", or
+# "Sold Out"), edition size, materials and dimensions, and the sitemap lists each page's images (the first one or two are shared
+# site thumbnails, so the first image that is not one of those is the piece's own photo). Sold-out pieces stay listed on the site and are
+# kept. Archive pages (archived garment hanger, trays, ashtray, chair concept) and exhibition/curation pages are not shop pieces.
+MARQUEL_WILLIAMS_GENERIC_IMAGES = ("Caliper---Marquel-Williams3213", "Caliper---Marquel-Williams3280", "TRAY_GRADIENT_2")
+MARQUEL_WILLIAMS_CATEGORIES = (
+    ("chaise", "Lounge Chair"), ("lounge chair", "Lounge Chair"), ("chair", "Chair"), ("desk", "Desk"), ("table lamp", "Table Lamp"),
+    ("floor lamp", "Floor Lamp"), ("vase", "Vase"), ("tray", "Tray"), ("paper", "Objects"),
+)
+
+
+def extract_marquel_williams(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        home = requests.get(base, headers=HEADERS, timeout=30)
+        home.raise_for_status()
+        sitemap = requests.get(f"{base}/sitemap.xml", headers=HEADERS, timeout=30)
+        sitemap.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch Marquel Williams' home page or sitemap: {e}")
+        return []
+    images = {}
+    for entry in re.findall(r"<url>(.*?)</url>", sitemap.text, re.S):
+        loc = re.search(r"<loc>([^<]+)</loc>", entry)
+        if loc:
+            images[loc.group(1).rstrip("/")] = re.findall(r"<image:loc>([^<]+)</image:loc>", entry)
+    paths = []
+    for href in re.findall(r'href="([^"#]+)"', home.text):
+        if re.match(r"^[a-z0-9-]+$", href) and href not in ("about", "curation", "contact-form") and href not in paths:
+            paths.append(href)
+    products = []
+    for path in paths:
+        url = f"{base}/{path}"
+        photos = [u for u in images.get(url, []) if not any(g in u for g in MARQUEL_WILLIAMS_GENERIC_IMAGES)]
+        if not photos or path.startswith("door"):
+            continue  # "Door" is a one-off performance apparatus (edition of 1), an artwork rather than a piece of furniture
+        time.sleep(1)
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        body = re.sub(r"<(script|style)[^>]*>.*?</\1>", " ", resp.text, flags=re.S | re.I)
+        text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", body))).strip()
+        header = re.search(r"Design Curation Marquel Rashaad Williams About Contact (.+?) (20\d\d) ", text)
+        if not header:
+            continue
+        name = header.group(1).strip()
+        price = re.search(r"\$\s*([\d,]+)", text[header.end():header.end() + 40])
+        dims = re.search(r"\b(W\d+(?: x)? ?D\d+(?: x)? ?H\d+(?: \(mm\))?|L\d+ W\d+ H\d+ \(mm\))", text)
+        material = re.search(r"((?:Waxed|Polished) aluminum[^.]*\.?|Aluminum[^.]*)\s*(?:Edition|W\d|L\d)", text)
+        lowered = name.lower()
+        category = next((label for word, label in MARQUEL_WILLIAMS_CATEGORIES if word in lowered), "Objects")
+        image = re.sub(r"/t/original/", "/w/1200/", photos[0])
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": ["Aluminum"] if "alumin" in text.lower() else [],
+            "dimensions": dims.group(1) if dims else "", "notes": "", "image_url": image,
+            "designer": "Marquel Williams", "price": float(price.group(1).replace(",", "")) if price else None,
+            "currency": "USD" if price else None,
+        })
+    return products
+
+
+# paulcoenen.nl (Paul Coenen, design studio, Eindhoven; added 2026-11-21, Wave 3): the single /shop page server-renders every shop piece
+# (li.item: title, photo, dimensions, material tags, price; 10 at the time), so one request covers the catalogue. Colour/material
+# options ("tension bowl", "camber stool", "tension side table") are one piece each, priced "FROM". The /projects and /commissions
+# pages (one-off and client work) are left out. robots.txt allows everything except /panel.
+PAUL_COENEN_CATEGORIES = (
+    ("bar stool", "Bar Stool"), ("coffee table", "Coffee Table"), ("side table", "Side Table"), ("table lamp", "Table Lamp"),
+    ("stool", "Stool"), ("bench", "Bench"), ("chair", "Chair"), ("bowl", "Bowl"), ("mirror", "Mirror"),
+)
+
+
+def extract_paul_coenen(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/shop", headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch Paul Coenen's shop: {e}")
+        return []
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products = []
+    for li in soup.select("li.item"):
+        link = li.find("a", href=True)
+        img = li.select_one("img.thumbnail") or li.find("img")
+        title = li.select_one(".filter-data .title")
+        if not link or not img or not title or not img.get("src"):
+            continue
+        name = re.sub(r"\s+", " ", title.get_text()).strip()
+        name = " ".join(w if w.isupper() and len(w) <= 3 else w[:1].upper() + w[1:].lower() if w.isupper() or w.islower() else w for w in name.split())
+        name = re.sub(r"\bSst\b", "SST", name)
+        lowered = name.lower()
+        category = next((label for word, label in PAUL_COENEN_CATEGORIES if word in lowered), "")
+        dims = li.select_one(".dimensions")
+        price_text = li.select_one(".price")
+        amount = re.search(r"€\s*([\d.,]+)", price_text.get_text() if price_text else "")
+        price = float(amount.group(1).replace(",", "")) if amount else None
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": link["href"],
+            "category": category, "material_options": [t.get_text(strip=True).title() for t in li.select(".material .tag")],
+            "dimensions": re.sub(r"\s+", " ", dims.get_text()).strip() if dims else "", "notes": "",
+            "image_url": img["src"], "designer": "Paul Coenen", "price": price, "currency": "EUR" if price else None,
+        })
+    return products
+
+
+# phantomhands.in (Phantom Hands, Bangalore teak and cane furniture maker; added 2026-11-21, Wave 3): a Craft CMS site. The /products listing
+# loads 16 pieces at a time through the site's own "load more" component (a GET to its sprig render endpoint with the offset), which
+# returns each piece's name, link and photo; 114 listings in 7 requests, no product pages needed. Finish, upholstery, size and
+# seat variants are separate listings ("Saddle Chair (Black)", "Upholstered Easy Armchair / KeSa Sand", "Niwar Sofa (3 Seater)"), so
+# listings that share a base name (the part before " / " or " (") are grouped into one piece shown on the first listing's page and
+# photo. Pieces are enquiry-only (no prices). robots.txt only disallows /cpresources/, /vendor/ and /.env.
+PHANTOM_HANDS_CATEGORIES = (
+    ("magazine rack", "Shelving"),
+    ("bar stool", "Bar Stool"), ("counter stool", "Bar Stool"), ("coffee table", "Coffee Table"), ("centre table", "Coffee Table"),
+    ("side tables?", "Side Table"), ("dining table", "Dining Table"), ("trestle table", "Table"), ("study table", "Table"),
+    ("floor lamp", "Floor Lamp"), ("table lamp", "Table Lamp"), ("uplighter", "Floor Lamp"), ("lamp", "Lamp"),
+    ("day bed", "Day Bed"), ("ottoman", "Ottoman"), ("stool", "Stool"), ("bench", "Bench"), ("sofa", "Sofa"),
+    ("lounge chair", "Lounge Chair"), ("armchair", "Armchair"), ("easy chair", "Armchair"), ("seat", "Chair"), ("chair", "Chair"),
+    ("desk", "Desk"), ("table", "Table"), ("bookshelf", "Shelving"), ("magazine rack", "Shelving"), ("cabinet", "Cabinet"),
+    ("divider", "Room Divider"), ("screen", "Room Divider"), ("ashtray", "Objects"), ("laundry basket", "Objects"),
+)
+
+
+def _phantom_hands_base(name):
+    return re.sub(r"\s+", " ", re.split(r" / | \(|, ", name)[0]).strip()
+
+
+def extract_phantom_hands(brand):
+    base_url = brand["url"].rstrip("/")
+    try:
+        page = requests.get(f"{base_url}/products", headers=HEADERS, timeout=30)
+        page.raise_for_status()
+        vals = json.loads(html.unescape(re.search(r'id="component-[a-z0-9]+"[^>]*data-hx-vals="([^"]+)"', page.text).group(1)))
+    except (requests.RequestException, AttributeError, ValueError) as e:
+        print(f"  Could not read Phantom Hands' product list: {e}")
+        return []
+    total = re.search(r"(\d+) / (\d+) products", page.text)
+    expected = int(total.group(2)) if total else 0
+
+    def parse(fragment):
+        rows = []
+        for card in re.findall(r'<div class="item .*?</a>\s*</div>', fragment, re.S):
+            href = re.search(r'href="([^"]+)"', card)
+            src = re.search(r'data-src="([^"]+)"', card)
+            name = re.search(r'<span class="dib mt3[^>]*>([^<]+)', card)
+            if href and src and name:
+                rows.append((html.unescape(name.group(1)).strip(), urllib.parse.quote(href.group(1), safe=":/%"),
+                             urllib.parse.quote(urljoin(base_url + "/", src.group(1)), safe=":/?=&%")))
+        return rows
+
+    rows = parse(page.text)
+    offset = len(rows)
+    while offset < (expected or 400) and offset < 400:
+        time.sleep(1)
+        try:
+            resp = requests.get(
+                f"{base_url}/index.php/actions/sprig-core/components/render",
+                params={**vals, "type": "", "designer": "", "collection": "", "offset": str(offset)},
+                headers={**HEADERS, "HX-Request": "true"}, timeout=30,
+            )
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not load more Phantom Hands products at offset {offset}: {e}")
+            break
+        more = parse(resp.text)
+        if not more:
+            break
+        rows += more
+        offset += len(more)
+    products, seen = [], set()
+    for name, url, image in rows:
+        base = _phantom_hands_base(name)
+        if base.lower() in seen:
+            continue
+        seen.add(base.lower())
+        lowered = base.lower()
+        category = next((label for word, label in PHANTOM_HANDS_CATEGORIES if re.search(r"\b" + word + r"\b", lowered)), "")
+        materials = [m for w, m in (("cane", "Cane"), ("teak", "Teak"), ("upholster", "Upholstery")) if w in name.lower()]
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": base, "product_url": url,
+            "category": category, "material_options": materials, "dimensions": "", "notes": "", "image_url": image,
+            "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
+# singchandesign.com (SINGCHAN DESIGN, Guangzhou studio; added 2026-11-21, Wave 3; NOT singchan.com): a custom CMS with no cart (pieces are
+# shown to enquire about). The two category pages /products/furniture and /products/lighting server-render every product card (series
+# name such as "Thewall#14", type, year, clean cover photo; 33 + 9 at the time), so two requests cover the catalogue. Material/colour
+# editions of one series and type (for example Thewall#14 coffee table in two materials) are grouped into one piece, shown on the first
+# edition's page. The three fireplaces (Thegate#05-07) are architectural and left out. Names are series codes, so the type is appended.
+SING_CHAN_TYPES = {
+    "side table": "Side Table", "coffee table": "Coffee Table", "table": "Table", "sofa": "Sofa", "armchairs": "Armchair",
+    "display cabinets": "Cabinet", "clothes stand": "Clothes Stand", "pendant lamps": "Pendant Lamp", "floor lamps": "Floor Lamp",
+    "desk lamps": "Table Lamp", "wall lamps": "Wall Lamp", "ceiling lamps": "Ceiling Lamp",
+}
+SING_CHAN_MATERIALS = (("stainless steel", "Stainless Steel"), ("brass", "Brass"), ("teak", "Teak"))
+
+
+def extract_sing_chan(brand):
+    base = "https://www.singchandesign.com"
+    entries = []
+    for i, section in enumerate(("furniture", "lighting")):
+        if i:
+            time.sleep(1)
+        try:
+            resp = requests.get(f"{base}/products/{section}", headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch Sing Chan {section}: {e}")
+            continue
+        for card in BeautifulSoup(resp.text, "html.parser").select("div.productItem"):
+            link = card.find("a", href=True)
+            title = card.select_one(".productListMainTitle")
+            img = card.select_one("img.card-img-cover")
+            hidden = [t.get_text(strip=True) for t in card.select(".productListHiddenTitle")]
+            if not link or not title or not img or not img.get("src"):
+                continue
+            series = re.sub(r"\s+", " ", title.get_text()).strip()
+            letters = re.match(r"[A-Za-z]+", series)
+            if not letters or len(letters.group()) > 3:
+                series = series[:1].upper() + series[1:].lower()  # "THEWALL#15" -> "Thewall#15"; short codes such as "UT" stay
+            else:
+                series = series.upper()
+            entries.append({
+                "series": series, "type": hidden[0].strip().lower() if hidden and hidden[0].strip() else "",
+                "url": link["href"], "image": img["src"], "classes": " ".join(card.get("class", [])).lower(),
+            })
+    type_of_series = {}
+    for e in entries:
+        if e["type"]:
+            type_of_series.setdefault(e["series"].lower(), e["type"])
+    products, seen = [], set()
+    for e in entries:
+        kind = e["type"] or type_of_series.get(e["series"].lower(), "")
+        if kind not in SING_CHAN_TYPES:
+            continue  # fireplaces and anything untyped
+        key = (e["series"].lower(), kind)
+        if key in seen:
+            continue
+        seen.add(key)
+        materials = [label for word, label in SING_CHAN_MATERIALS if word in e["classes"]]
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": f"{e['series']} {SING_CHAN_TYPES[kind]}",
+            "product_url": e["url"], "category": SING_CHAN_TYPES[kind], "material_options": materials,
+            "dimensions": "", "notes": "", "image_url": e["image"], "designer": "Sing Chan", "price": None, "currency": None,
+        })
+    return products
+
+
+# corpus.studio (Corpus Studio, Paris architecture, interiors and collectible-design office, added 2026-11-21): a WordPress site
+# that publishes its interiors projects and its furniture on the same kind of post page, with no shop and no product feed.
+# The eight furniture, lighting and object pieces are listed by hand (the interiors projects, villas, apartments and the
+# Twins scenography are left out); each page's own og:image is the photo. Pieces are collectible editions shown without prices.
+CORPUS_STUDIO_PIECES = (
+    ("apollo-coffee-table", "Apollo Coffee Table", "Coffee Table", ["Glazed lava stone"]),
+    ("apollo-side-table", "Apollo Side Table", "Side Table", ["Glazed lava stone"]),
+    ("bb-chair", "BB Chair", "Chair", ["Sand-cast aluminium"]),
+    ("bb-coffee-table", "BB Coffee Table", "Coffee Table", ["Sand-cast aluminium", "Brass", "Copper", "Bronze"]),
+    ("bb-pendant", "BB Pendant", "Pendant", ["Sand-cast aluminium", "Cast glass"]),
+    ("platane-collection", "Platane Collection", "Furniture", ["Plane tree wood"]),
+    ("rhomy-bench", "Rhomy Bench", "Bench", ["Cowhide", "Metallic-coated MDF"]),
+    ("volup", "Volup Bookends", "Objects", ["Polished cast metal"]),
+)
+
+
+def extract_corpus_studio(brand):
+    base = brand["url"].rstrip("/")
+    products = []
+    for slug, name, category, materials in CORPUS_STUDIO_PIECES:
+        url = f"{base}/{slug}/"
+        time.sleep(1)
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        match = (re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)', page.text, re.I)
+                 or re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image["\']', page.text, re.I))
+        image = html.unescape(match.group(1)) if match else ""
+        if not image:
+            print(f"  Corpus Studio: no photo on {url} - skipped")
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": materials, "dimensions": "", "notes": "",
+            "image_url": image, "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
+# coseincorso.com (COSEINCORSO, design studio founded by Marzia Cerio and Marwann Frikach, added 2026-11-21): a Squarespace
+# Commerce shop. robots.txt disallows ?format=json, so the three non-print shop sections (ceramics, mirrors-furnitures, objects)
+# are read from their HTML through _squarespace_html_items. The twelve "Memory Series" photographic prints (/shop/prints) and the
+# reflective wall artwork "The Truth" are left out; size variants listed as their own products (the Mirror of Simple Souls in
+# medium and large, the black Megaron shelves) are folded into the base piece. Prices are shown in EUR.
+COSEINCORSO_SECTIONS = ("shop/ceramics", "shop/mirrors-furnitures", "shop/objects")
+COSEINCORSO_SKIP_SLUGS = ("the-truth", "the-mirror-of-simple-souls-medium", "the-mirror-of-simple-souls-large",
+                          "megaron-s-ndm92", "megaron-l-bdtek")
+COSEINCORSO_TYPES = (
+    ("bowl", "Bowl"), ("drago", "Vase"), ("fiasca", "Vase"), ("albarello", "Vase"), ("mirror", "Mirror"),
+    ("table", "Table"), ("stool", "Stool"), ("pillar", "Side Table"), ("bench", "Bench"), ("witness", "Bench"),
+    ("threshold", "Room Divider"), ("front", "Shelf"), ("megaron", "Shelf"), ("lamp", "Wall Lamp"),
+    ("tray", "Candle Holder"), ("bottom of the lake", "Objects"), ("altar", "Objects"),
+)
+
+
+def extract_coseincorso(brand):
+    base = brand["url"].rstrip("/")
+    products, seen = [], set()
+    for section in COSEINCORSO_SECTIONS:
+        time.sleep(1)
+        for item in _squarespace_html_items(f"{base}/{section}"):
+            path = item.get("fullUrl") or ""
+            slug = path.rstrip("/").rsplit("/", 1)[-1]
+            name = re.sub(r"\s+", " ", html.unescape(item.get("title") or "")).strip()
+            image = item.get("assetUrl") or ""
+            if not name or not image or slug in COSEINCORSO_SKIP_SLUGS or slug in seen:
+                continue
+            seen.add(slug)
+            low = name.lower()
+            category = next((label for word, label in COSEINCORSO_TYPES if word in low), "")
+            if not category:
+                continue
+            money = ((item.get("structuredContent") or {}).get("variants") or [{}])[0].get("priceMoney") or {}
+            try:
+                price = float(money.get("value")) if money.get("value") else None
+            except (TypeError, ValueError):
+                price = None
+            products.append({
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": re.sub(r"(?<=\w) (Of|The|In)\b", lambda m: m.group(0).lower(), name.title()),
+                "product_url": base + path if path.startswith("/") else path, "category": category,
+                "material_options": [], "dimensions": "", "notes": "", "image_url": image, "designer": "",
+                "price": price, "currency": money.get("currency") if price else None,
+            })
+    return products
+
+
+# epochestudio.com (Epoche Studio, Los Angeles-area collectible furniture and objects studio founded 2025, added 2026-11-21):
+# a Squarespace site with no shop for the furniture ("Inquire" only; prices on request) and a small /objects shop. The sitemap
+# lists the four Eocene Collection pieces (side table, vessel, console, lounge chair; a duplicate side-table page and the
+# collection page are skipped) and two objects. The console and lounge pages carry the side table's page title, so the names are
+# set here. Furniture pages have no og:image, so the photo is picked by position among the page's gallery images (the first is a close-up or a room scene).
+# robots.txt is Squarespace's standard one (?format=json is never used). The objects are priced in USD on their own pages.
+EPOCHE_STUDIO_PIECES = (
+    ("eocene-side-table", "Eocene Side Table", "Side Table", ["Sand-cast aluminium", "Fish fossil"], 1),
+    ("eocene-vessel", "Eocene Vessel", "Vase", ["Sand-cast aluminium", "Fish fossil"], 0),
+    ("eocene-console", "Eocene Console", "Console", ["Stained plywood", "Fish fossil"], 2),
+    ("eocene-lounge", "Eocene Lounge Chair", "Lounge Chair", ["Stained plywood", "Fish fossil"], 2),
+    ("objects/p/timeline-candle-vessel", "Timeline Candle Vessel", "Candle", ["Wax"], None),
+    ("objects/p/still-life-01", "Still Life 01", "Objects", ["Jesmonite", "Wax"], None),
+)
+
+
+def extract_epoche_studio(brand):
+    base = brand["url"].rstrip("/")
+    products = []
+    for slug, name, category, materials, photo in EPOCHE_STUDIO_PIECES:
+        url = f"{base}/{slug}"
+        time.sleep(1)
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        if photo is None:
+            image = _page_image(page.text, name, base)
+        else:
+            gallery = list(dict.fromkeys(re.findall(r'(?:data-src|data-image|src)="(https://images\.squarespace-cdn\.com/[^"]+)"', page.text)))
+            image = gallery[photo] if len(gallery) > photo else ""
+        if not image:
+            print(f"  Epoche Studio: no photo on {url} - skipped")
+            continue
+        price = None
+        match = re.search(r"\$\s?([\d,]+(?:\.\d\d)?)", re.sub(r"<[^>]+>", " ", page.text))
+        if match and slug.startswith("objects/"):
+            price = float(match.group(1).replace(",", ""))
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": materials, "dimensions": "", "notes": "",
+            "image_url": image, "designer": "", "price": price, "currency": "USD" if price else None,
+        })
+    return products
+
+
+# monolith.nyc (Monolith, New York design studio and gallery; stone, wood and cast-glass furniture and objects made in Mexico,
+# added 2026-11-21): a Next.js front end whose sitemap lists every piece (26 product pages) and whose pages each carry a
+# schema.org Product block (name, photo, material list, dimensions). Pieces are priced for the trade only, so no prices.
+# The M_025 speakers are left out (audio equipment). The photo is the block's own image URL on cdn.sanity.io, without the crop query.
+MONOLITH_SKIP = ("speakers",)
+MONOLITH_TYPES = (
+    ("counter stool", "Counter Stool"), ("bar stool", "Bar Stool"), ("stool", "Stool"), ("lounge chair", "Lounge Chair"),
+    ("dining chair", "Dining Chair"), ("chair", "Chair"), ("throne", "Chair"), ("bench", "Bench"), ("side table", "Side Table"),
+    ("coffee table", "Coffee Table"), ("dining table", "Dining Table"), ("console", "Console"), ("desk", "Desk"),
+    ("sconce", "Sconce"), ("lamp", "Lamp"), ("tray", "Tray"),
+)
+
+
+def extract_monolith(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        sitemap = requests.get(f"{base}/sitemap.xml", headers=HEADERS, timeout=25)
+        sitemap.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch the Monolith sitemap: {e}")
+        return []
+    products = []
+    for url in re.findall(r"<loc>([^<]+/products/[^<?]+)</loc>", sitemap.text):
+        time.sleep(1)
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        data = None
+        for block in re.findall(r'ld\+json[^>]*>(.*?)</script>', page.text, re.S):
+            try:
+                candidate = json.loads(block)
+            except json.JSONDecodeError:
+                continue
+            for node in (candidate.get("@graph") or [candidate]) if isinstance(candidate, dict) else []:
+                if isinstance(node, dict) and node.get("@type") == "Product":
+                    data = node
+                    break
+            if data:
+                break
+        if not data:
+            continue
+        name = re.sub(r"\s+", " ", html.unescape(data.get("name", ""))).strip()
+        image = data.get("image")
+        if isinstance(image, list):
+            image = image[0] if image else None
+        if isinstance(image, dict):
+            image = image.get("url")
+        if not name or not image or any(w in name.lower() for w in MONOLITH_SKIP):
+            continue
+        low = name.lower()
+        category = next((label for word, label in MONOLITH_TYPES if word in low), "")
+        materials = data.get("material") or []
+        if isinstance(materials, str):
+            materials = [materials]
+        dimensions = ""
+        for prop in data.get("additionalProperty") or []:
+            if isinstance(prop, dict) and prop.get("name") == "Dimensions":
+                dimensions = str(prop.get("value") or "")
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": [m for m in materials if isinstance(m, str)], "dimensions": dimensions,
+            "notes": "", "image_url": image.split("?")[0], "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
+# phillipjividen.com (Phillip Jividen, Ohio furniture and object designer, added 2026-11-21): a Squarespace site whose
+# /collection page is a gallery and whose eight pieces each have a plain page (name, text, materials, gallery); the ordering
+# route is "Inquire" by email, so no prices. The pages have no og:image, so the photo is the n-th gallery image on the page
+# (the Instagram logo is skipped); the Slit Mirror's first photo is a room scene, so its second is used.
+PHILLIP_JIVIDEN_PIECES = (
+    ("triad-vase", "Triad Vase", "Vase", ["Black Kenya marble"], 0),
+    ("gradient-mirror", "Gradient Mirror", "Mirror", ["Glass", "Aluminium"], 0),
+    ("ballast-table", "Ballast Table", "Side Table", ["Marble", "Patinated steel"], 0),
+    ("slant-table-1", "Slant Table", "Side Table", ["White oak"], 0),
+    ("meta-table", "Meta Table", "Dining Table", ["Nero Marquina", "Red onyx"], 0),
+    ("pierce-table", "Pierce Table", "Coffee Table", ["Arabescato marble", "Soapstone"], 0),
+    ("verge-table", "Verge Table", "Dining Table", ["Portuguese Rosa", "Pele de Tigre", "Calcutta marble"], 0),
+    ("slit-mirror", "Slit Mirror", "Mirror", ["Brass", "Stainless steel"], 1),
+)
+
+
+def extract_phillip_jividen(brand):
+    base = brand["url"].rstrip("/")
+    products = []
+    for slug, name, category, materials, photo in PHILLIP_JIVIDEN_PIECES:
+        url = f"{base}/{slug}"
+        time.sleep(1)
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        gallery = [u for u in dict.fromkeys(re.findall(r'(?:data-src|data-image|src)="(https://images\.squarespace-cdn\.com/[^"]+)"', page.text))
+                   if not re.search(r"logo|icon", u, re.I)]
+        if len(gallery) <= photo:
+            print(f"  Phillip Jividen: no photo on {url} - skipped")
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": materials, "dimensions": "", "notes": "",
+            "image_url": gallery[photo], "designer": "Phillip Jividen", "price": None, "currency": None,
+        })
+    return products
+
+
+# Wave 3 (c) extractors: Clair Catillaz (CLAM LAB), Nancy Pearce, Jordan McDonald, Sasha Court, Malfatti Glass.
+# Paste this whole block into scrape.py just before `EXTRACTORS = {`, then register:
+#     "Clair Catillaz": extract_wave3c_clam_lab,
+#     "Nancy Pearce": extract_wave3c_nancy_pearce,
+#     "Jordan McDonald": extract_wave3c_jordan_mcdonald,
+#     "Sasha Court": extract_wave3c_sasha_court,
+#     "Malfatti Glass": extract_wave3c_malfatti,
+# Every site is read from its server-rendered HTML (never Squarespace ?format=json); one request per listing page, ~1 s apart.
+
+def _wave3c_get(url):
+    time.sleep(1)
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=25)
+        resp.raise_for_status()
+        return resp.text
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return None
+
+
+def _wave3c_price(fragment):
+    """First dollar amount in a price fragment ('from $575.00', 'Sale Price: $400.00 Original Price: $950.00' -> the sale price)."""
+    m = re.search(r"\$\s*([\d][\d,]*(?:\.\d+)?)", html.unescape(fragment or ""))
+    if not m:
+        return None
+    value = float(m.group(1).replace(",", ""))
+    return value if value > 0 else None
+
+
+def _wave3c_product(brand, name, url, category, image, price=None, currency="USD", materials=None, dimensions="", notes="", designer=""):
+    return {
+        "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+        "category": category, "material_options": materials or [], "dimensions": dimensions, "notes": notes,
+        "image_url": image, "designer": designer, "price": price, "currency": currency if price else None,
+    }
+
+
+def _wave3c_productlist_items(text):
+    """Squarespace 7.0 'ProductList-item' grid blocks -> dicts (href, title, image, cats, sold, price)."""
+    out = []
+    for block in text.split('class="ProductList-item ')[1:]:
+        classes = block.split('"', 1)[0]
+        href = re.search(r'<a href="([^"]+)" class="ProductList-item-link"', block)
+        title = re.search(r'class="ProductList-title">([^<]+)<', block)
+        image = re.search(r'data-image="(https://[^"]+)"', block)
+        price = re.search(r'product-price">(.*?)</div>', block, re.S)
+        if not (href and title and image):
+            continue
+        out.append({
+            "href": href.group(1), "title": re.sub(r"\s+", " ", html.unescape(title.group(1))).strip(), "image": image.group(1),
+            "cats": [c[9:] for c in classes.split() if c.startswith("category-")],
+            "sold": "sold-out" in block, "price": _wave3c_price(price.group(1)) if price else None,
+        })
+    return out
+
+
+# --- Clair Catillaz / CLAM LAB (clamlab.com, Catskill NY). Squarespace store grid (`a.product`), 78 pieces on /shop plus two
+# available vessels on /custom. Titles read "TYPE // FINISH NN"; they are rewritten as "Finish NN Type". The shop lists its sold-out
+# pieces in place (the "Archive" menu is only a set of gallery pages), so they are kept, as the brief says. "CUSTOM for <name>"
+# commission listings are skipped.
+WAVE3C_CLAM_TYPES = {
+    "vase": ("Vase", "Vase"), "bud vase": ("Bud Vase", "Vase"), "vessel": ("Vessel", "Vessel"), "pitcher": ("Pitcher", "Pitcher"),
+    "jug": ("Jug", "Jug"), "teapot": ("Teapot", "Teapot"), "bowl": ("Bowl", "Bowl"), "mug": ("Mug", "Cup"),
+    "treasure dish": ("Treasure Dish", "Dish"), "soap": ("Soap Dish", "Dish"),
+}
+
+
+def extract_wave3c_clam_lab(brand):
+    base = brand["url"].rstrip("/")
+    products, seen = [], set()
+    for path in ("/shop", "/custom"):
+        text = _wave3c_get(base + path)
+        if not text:
+            continue
+        for block in re.split(r'(?=<a href="/(?:shop|custom)/[^"]+" class="product )', text)[1:]:
+            href = re.match(r'<a href="([^"]+)" class="([^"]*)"', block)
+            title = re.search(r'class="product-title">([^<]+)<', block)
+            image = re.search(r'data-image="(https://[^"]+)"', block)
+            price = re.search(r'class="product-price">(.*?)</div>', block, re.S)
+            if not (href and title and image) or href.group(1) in seen:
+                continue
+            raw = html.unescape(title.group(1)).strip()
+            if "//" not in raw:
+                continue  # "CUSTOM for Jamie" commissions
+            kind, _, rest = raw.partition("//")
+            kind_key = kind.strip().lower()
+            if kind_key not in WAVE3C_CLAM_TYPES:
+                print(f"  CLAM LAB: unknown type {raw!r} - skipped")
+                continue
+            type_name, category = WAVE3C_CLAM_TYPES[kind_key]
+            rest = " ".join(w if w.upper() == "VT" else w.capitalize() for w in rest.strip().split())
+            seen.add(href.group(1))
+            products.append(_wave3c_product(
+                brand, f"{rest} {type_name}".strip(), base + href.group(1), category, image.group(1),
+                price=_wave3c_price(price.group(1)) if price else None, materials=["Ceramic"],
+                notes="Sold out" if "sold-out" in href.group(2) else ""))
+    return products
+
+
+# --- Nancy Pearce (nancypearce.com, "Pearce Bronze", Los Angeles). Squarespace store with 99 hand-cast bronze replicas of everyday
+# things (condoms, floppy disks, ketchup bottles ...). Only the object categories are taken: bowls, candle holders and trays
+# (the site's own category tags); the food, bathroom, technology, medication, dog-treat and domestic casts are sculpture.
+WAVE3C_PEARCE_CATEGORIES = (("candle-holders", "Candle Holder"), ("trays", "Tray"), ("bowls", "Bowl"))
+
+
+def extract_wave3c_nancy_pearce(brand):
+    base = brand["url"].rstrip("/")
+    text = _wave3c_get(base + "/shop-1")
+    if not text:
+        return []
+    products, seen = [], set()
+    for item in _wave3c_productlist_items(text):
+        category = next((label for tag, label in WAVE3C_PEARCE_CATEGORIES if tag in item["cats"]), None)
+        if not category or item["href"] in seen:
+            continue
+        seen.add(item["href"])
+        name = item["title"].replace('"', "")
+        products.append(_wave3c_product(
+            brand, name[:1].upper() + name[1:], base + item["href"], category, item["image"], price=item["price"],
+            materials=["Bronze"], notes="Sold out" if item["sold"] else ""))
+    return products
+
+
+# --- Jordan McDonald (jordanmcdonaldstudio.com, Philadelphia ceramicist; his Squarespace store pages New Works, Functional Objects,
+# Architectural, One-off Vessels and Tableware). About 110 of the 146 listings are sold-out one-offs from 2018-2022 (numbered
+# duplicates like "Cup (3)", "Fish Cup 4", charity sales), so only pieces currently in stock are taken; hardware (door pulls, hooks,
+# shelves, soap dishes, toilet-paper holder), gift card, custom tile and the "100% for Ukraine" sales are skipped. Set
+# WAVE3C_JORDAN_INCLUDE_SOLD_OUT = True to take every furniture/lighting/vessel listing instead.
+WAVE3C_JORDAN_INCLUDE_SOLD_OUT = False
+WAVE3C_JORDAN_PAGES = ("/store", "/products", "/new-products-1", "/new-products-2", "/tableware")
+WAVE3C_JORDAN_SKIP = ("pull", "hook", "shelf", "soap dish", "toilet paper", "gift card", "custom tile", "ukraine", "coat hanger",
+                      "goose figurine")
+
+
+def _wave3c_jordan_category(title):
+    t = title.lower()
+    if "sconce" in t:
+        return "Wall Lamp"
+    if "pendant" in t:
+        return "Pendant"
+    if "lamp base" in t:
+        return "Table Lamp"
+    if t.strip() == "table":
+        return "Table"
+    if "mirror" in t:
+        return "Mirror"
+    if "stool" in t:
+        return "Stool"
+    if "plate" in t or "platter" in t:
+        return "Plate"
+    if "cup" in t or "mug" in t or "coffee can" in t:
+        return "Cup"
+    if "bowl" in t:
+        return "Bowl"
+    if "dish" in t:
+        return "Dish"
+    if "vase" in t or "bottle" in t or "container" in t or "vessel" in t:
+        return "Vase"
+    if "light" in t:
+        return "Lighting"
+    return ""
+
+
+def extract_wave3c_jordan_mcdonald(brand):
+    base = brand["url"].rstrip("/")
+    products, seen = [], set()
+    for path in WAVE3C_JORDAN_PAGES:
+        text = _wave3c_get(base + path)
+        if not text:
+            continue
+        for item in _wave3c_productlist_items(text):
+            title = item["title"]
+            if item["href"] in seen or any(w in title.lower() for w in WAVE3C_JORDAN_SKIP):
+                continue
+            if item["sold"] and not WAVE3C_JORDAN_INCLUDE_SOLD_OUT:
+                continue
+            if item["image"].lower().endswith(".gif"):
+                continue  # the two "Cylinder Hanging Flower Container" cards use a 20 MB animated GIF as their only photo
+            category = _wave3c_jordan_category(title)
+            if not category:
+                print(f"  Jordan McDonald: {title!r} has no category - skipped")
+                continue
+            seen.add(item["href"])
+            lighting = category in ("Wall Lamp", "Pendant", "Table Lamp", "Lighting")
+            products.append(_wave3c_product(
+                brand, title, base + item["href"], category, item["image"], price=item["price"],
+                materials=[] if lighting or category == "Table" else ["Ceramic"],
+                notes="Sold out" if item["sold"] else ""))
+    return products
+
+
+# --- Sasha Court (sashacourt.com, Halifax NS). Squarespace 7.1 store (ProductList data-context, one request) of 42 listings: the
+# stoneware vessels and plates are taken; the acrylic paintings on canvas/burlap/paper and the one figurative sculpture are not.
+# Prices are CAD. Pieces are one-offs with poetic titles; sold-out ones stay listed on the site and are kept.
+def extract_wave3c_sasha_court(brand):
+    base = brand["url"].rstrip("/")
+    text = _wave3c_get(base + "/store")
+    match = re.search(r'data-controller="ProductList"\s+data-context="([^"]+)"', text or "")
+    if not match:
+        return []
+    try:
+        items = json.loads(html.unescape(match.group(1))).get("items", [])
+    except (json.JSONDecodeError, ValueError):
+        return []
+    products = []
+    for item in items:
+        description = html.unescape(re.sub(r"<[^>]+>", " ", item.get("description") or ""))
+        description = re.sub(r"\s+", " ", description).strip()
+        title = (item.get("title") or "").strip()
+        if "stoneware" not in description.lower() or "sculpture" in title.lower():
+            continue
+        images = [i.get("assetUrl") for i in item.get("images") or [] if i.get("assetUrl")]
+        if not (title and item.get("fullUrl") and images):
+            continue
+        money = item.get("price") if isinstance(item.get("price"), dict) else {}
+        try:
+            price = float(money.get("value"))
+        except (TypeError, ValueError):
+            price = None
+        size = re.split(r"(?i)\s*stoneware", description)[0].strip()
+        products.append(_wave3c_product(
+            brand, title[:1].upper() + title[1:], base + item["fullUrl"], "Plate" if "plate" in title.lower() else "Vase",
+            images[0], price=price, currency=money.get("currency") or "CAD", materials=["Stoneware"], dimensions=size,
+            notes="Sold out" if item.get("soldOut") else ""))
+    return products
+
+
+# --- Malfatti Glass (malfattiglass.com, Big Cartel, Beacon NY; flame-worked borosilicate glassware by Ten Willow Studio). Five
+# listing pages give all 39 products (name, price, photo). The "Perlina" (beaded surface) twin of each shape is folded into the
+# plain piece, and the three multi-piece collections (Cocktail Collection, Beverage Set, Wine Service) are skipped as bundles.
+# Glasses are sold as pairs, so the price is per pair.
+WAVE3C_MALFATTI_PERLINA = {"martini", "prosecco", "vinorosso", "vino-bianco", "small", "medium", "large", "rocks", "highball",
+                           "decanter", "pitcher", "cup-and-carafe", "small-vase", "large-vase"}
+WAVE3C_MALFATTI_PIECES = {
+    "martini": ("Martini Glasses", "Glass"), "prosecco": ("Prosecco Glasses", "Glass"), "vinorosso": ("Vino Rosso Glasses", "Glass"),
+    "vino-bianco": ("Vino Bianco Glasses", "Glass"), "small": ("Small Glasses", "Glass"), "medium": ("Medium Glasses", "Glass"),
+    "large": ("Large Glasses", "Glass"), "rocks": ("Rocks Glasses", "Glass"), "highball": ("Highball Glasses", "Glass"),
+    "coppa": ("Coppa Glasses", "Glass"), "grappa": ("Grappa Glasses", "Glass"), "campana": ("Campana Glasses", "Glass"),
+    "tazza": ("Tazza", "Cup"), "espresso": ("Espresso Cups", "Cup"), "set-of-four-tiny-cups": ("Tiny Cups", "Cup"),
+    "coppetta": ("Coppetta Bowls", "Bowl"), "decanter": ("Decanter", "Carafe"), "carafe": ("Carafe", "Carafe"),
+    "pitcher": ("Pitcher", "Pitcher"), "cup-and-carafe": ("Cup and Carafe", "Carafe"), "sake-set": ("Sake Set", "Carafe"),
+    "small-vase": ("Small Vase", "Vase"), "large-vase": ("Large Vase", "Vase"),
+}
+
+
+def extract_wave3c_malfatti(brand):
+    base = brand["url"].rstrip("/")
+    found = {}
+    for page in range(1, 7):
+        text = _wave3c_get(f"{base}/products?page={page}")
+        if not text:
+            break
+        anchors = re.findall(r'<a class="product-list-item[^"]*" href="/product/([a-z0-9-]+)"[^>]*>(.*?)</a>', text, re.S)
+        if not anchors:
+            break
+        for slug, inner in anchors:
+            image = re.search(r'<img[^>]+src="(https://assets\.bigcartel\.com/product_images/[^"?]+)', inner)
+            amount = re.search(r'data-currency-amount="([\d.]+)"', inner)
+            found.setdefault(slug, {"image": image.group(1) if image else None,
+                                    "price": float(amount.group(1)) if amount and float(amount.group(1)) > 0 else None})
+        if f"/products?page={page + 1}" not in text:
+            break
+    products = []
+    for slug, (name, category) in WAVE3C_MALFATTI_PIECES.items():
+        info = found.get(slug)
+        if not info or not info["image"]:
+            print(f"  Malfatti Glass: {slug} not found - skipped")
+            continue
+        products.append(_wave3c_product(
+            brand, name, f"{base}/product/{slug}", category, info["image"] + "?auto=format&fit=max&h=1000&w=1000",
+            price=info["price"], materials=["Borosilicate glass"],
+            notes=(("Price is per pair. " if category == "Glass" or slug in ("coppetta", "espresso") else "")
+                   + ("Also in the Perlina finish." if slug in WAVE3C_MALFATTI_PERLINA else "")).strip()))
+    return products
+
+
+# catalinfilip.com (Catalin Filip, UK; confirmed live 2026-11-21). A Cargo 3 site: the page HTML is an empty shell, but every
+# page carries the whole site as `window.__PRELOADED_STATE__={...}` JSON. One request for /shop returns the shop grid (12 listings,
+# name + type + GBP price + the thumbnail's media hash) and the per-piece "D: Description" partial pages (dimensions, maker's text).
+# Cover photos are freight.cargo.site/t/original/i/<hash>/<file> (the CDN wants the declared bot UA, which HEADERS carries).
+# robots.txt allows everything (named SEO bots only are blocked). The black and white Melo sconce and the black and white Melo
+# lamp listings are colourways, grouped into one piece each. Prices are shown in GBP.
+CATALIN_FILIP_TYPES = (("mirror", "Mirror"), ("wall light", "Sconce"), ("desk light", "Desk Lamp"), ("stool", "Stool"),
+                       ("floor light", "Floor Lamp"), ("candle holder", "Candle Holder"), ("pendant", "Pendant"), ("light", "Lamp"),
+                       ("lamp", "Lamp"))
+
+
+def extract_catalin_filip(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(base + "/shop", headers=HEADERS, timeout=40)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}/shop: {e}")
+        return []
+    marker = "window.__PRELOADED_STATE__="
+    start = resp.text.find(marker)
+    if start < 0:
+        print("  Catalin Filip: page data block not found")
+        return []
+    try:
+        state, _ = json.JSONDecoder().raw_decode(resp.text[start + len(marker):])
+    except ValueError:
+        print("  Catalin Filip: page data block unreadable")
+        return []
+    pages = state.get("pages", {}).get("byId", {})
+    names = {}
+    for page in pages.values():
+        for media in (page.get("media") if isinstance(page.get("media"), list) else []):
+            names[media.get("hash")] = media.get("name")
+    clean = lambda s: re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", s))).strip()
+    # dimensions and material line per listing, from the description partials ("W25 x D17 x H10 cm / 1.5 kg")
+    dims_by_caption = {}
+    for page in pages.values():
+        if (page.get("purl") or "").startswith("d-description"):
+            c = page.get("content") or ""
+            head = re.search(r'<span class="header-">(.*?)</span><span class="caption">(.*?)</span>', c, re.S)
+            dims = re.search(r"W(\d+)\s*x\s*D(\d+)\s*x\s*H(\d+)\s*cm", c)
+            mat = re.search(r"<span style=\"color: rgb\(0, 0, 0\);\">\s*([^<]+?)\s*</span>", c)
+            if head:
+                dims_by_caption[(clean(head.group(1)).lower(), clean(head.group(2)).lower())] = (
+                    f"Width {dims.group(1)} x depth {dims.group(2)} x height {dims.group(3)} cm" if dims else "",
+                    [clean(mat.group(1))] if mat else [])
+    listing = (pages.get("W2024379584") or next((p for p in pages.values() if p.get("purl") == "shop-3"), {})).get("content", "")
+    products, seen = [], set()
+    listing_items = re.findall(r'<media-item class="linked" hash="([^"]+)" href="#([^"]+)"[^>]*><figcaption[^>]*>(.*?)</figcaption>', listing, re.S)
+    for h, href, caption in listing_items:
+        head = clean(re.search(r'<span class="header-">(.*?)</span>', caption, re.S).group(1)) if '<span class="header-">' in caption else ""
+        rest = clean(re.sub(r'<span class="header-">.*?</span>', "", caption, flags=re.S))
+        price_m = re.search(r"£\s*([\d,]+)", rest)
+        kind = re.sub(r"\s*£.*$", "", rest).strip()
+        # "Black Ceramic Wall Light" / "White Ceramic Pendant Lamp" are colourways of one design
+        generic = re.sub(r"^(black|white)\s+", "", kind, flags=re.I)
+        name = head.title()
+        if re.match(r"^(black|white)\s", kind, re.I):
+            if (name.lower(), generic.lower()) in seen:
+                continue
+        seen.add((name.lower(), generic.lower()))
+        kinds = {re.sub(r"^(black|white)\s+", "", clean(re.sub(r'<span class="header-">.*?</span>', "", cp, flags=re.S)).split("£")[0].strip(), flags=re.I).lower()
+                 for _, _, cp in listing_items if head.lower() in clean(cp).lower()[:len(head) + 1]}
+        if len(kinds) > 1:
+            name = f"{head.title()} {generic.replace('Ceramic ', '').title()}"  # "Rakis Mirror" / "Rakis Floor Light"
+        category = next((c for w, c in CATALIN_FILIP_TYPES if w in generic.lower()), "")
+        dims, materials = dims_by_caption.get((head.lower(), kind.lower()), ("", []))
+        if not dims:  # the listing says "Ceramic Wall Light", the description "White Ceramic Wall Light"
+            dims, materials = next((v for (h2, k2), v in dims_by_caption.items() if (h2 == head.lower() or h2.startswith(head.lower() + " ")) and k2.endswith(generic.lower())), ("", []))
+        media_name = names.get(h)
+        if not media_name or not category:
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": f"{base}/{href}",
+            "category": category, "material_options": materials, "dimensions": dims, "notes": "",
+            "image_url": f"https://freight.cargo.site/t/original/i/{h}/{media_name}", "designer": "Catalin Filip",
+            "price": float(price_m.group(1).replace(",", "")) if price_m else None, "currency": "GBP" if price_m else None,
+        })
+    return products
+
+
+# gabriel-scott.com (Gabriel Scott, Montreal lighting; confirmed live 2026-11-21). The site is a single-page app whose whole
+# catalogue (99 product entries) is inlined in the page's own JavaScript as `const PRODUCTS = [...]` (plus `SIZE_DATA`, in cm),
+# so ONE request to the home page returns everything; each piece has its own /product/<id> address (served by the same page).
+# robots.txt allows everything. Cover photos are on the maker's Shopify CDN. Size variants of the same design are grouped:
+# the Welles steel and glass long chandeliers (6 to 30 modules, 13 addresses each) become one piece each, and the Luna Kaleido
+# bead options A-E become one piece per fixture. Prices are "From $N"; the maker's own launch text quotes the A-Series in USD.
+GABRIEL_SCOTT_SUB_CATEGORY = {"Pendants": "Pendant", "Chandeliers": "Chandelier", "Sconces": "Sconce"}
+
+
+def _gabriel_scott_dims(size_block, pid):
+    m = re.search(r'"%s":\[([\d.]+),([\d.]+),([\d.]+)\]' % re.escape(pid), size_block)
+    if not m:
+        return ""
+    w, d, h = (float(x) for x in m.groups())
+    fmt = lambda v: ("%g" % round(v, 1))
+    if abs(w - d) < 3:
+        return "Diameter %s x height %s cm" % (fmt(w), fmt(h))
+    return "Width %s x depth %s x height %s cm" % (fmt(w), fmt(d), fmt(h))
+
+
+def extract_gabriel_scott(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(base + "/", headers=HEADERS, timeout=60)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}: {e}")
+        return []
+    text = resp.text
+    start = text.find("const PRODUCTS = [")
+    end = text.find("const LIFESTYLE_CREDITS", start)
+    if start < 0 or end < 0:
+        print("  Gabriel Scott: product data block not found")
+        return []
+    block = text[start:end]
+    size_start = text.find("const SIZE_DATA = ")
+    size_block = text[size_start:text.find("\n", size_start)] if size_start >= 0 else ""
+    pieces = {}
+    for chunk in block.split('{ id:"')[1:]:
+        m = re.match(r'([^"]+)", cat:"([^"]*)", sub:"([^"]*)", name:"([^"]*)", price:"([^"]*)", material:"([^"]*)", image:"([^"]*)"', chunk)
+        if not m:
+            continue
+        pid, cat, sub, name, price_text, material, image = m.groups()
+        if cat != "Lighting" or not image.startswith("http"):
+            continue
+        name = html.unescape(name).strip()
+        name = re.sub(r"\s+(Option\s+)?[A-E]$", "", name)  # Luna Kaleido bead options A-E are one fixture
+        price_match = re.search(r"([\d,]+)", price_text)
+        price = float(price_match.group(1).replace(",", "")) if price_match else None
+        key = name.lower()
+        collab = re.search(r"\sby\s+(.+)$", name)  # "Welles ... by David Rockwell": a collaboration with a named designer
+        if key in pieces:
+            if price and (not pieces[key]["price"] or price < pieces[key]["price"]):
+                pieces[key]["price"] = price
+            continue
+        category = GABRIEL_SCOTT_SUB_CATEGORY.get(sub) or _infer_category_from_name(name, "", brand["name"]) or "Lamp"
+        pieces[key] = {
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+            "product_url": f"{base}/product/{pid}", "category": category,
+            "material_options": [html.unescape(material)] if material else [],
+            "dimensions": _gabriel_scott_dims(size_block, pid), "notes": "", "image_url": image,
+            "designer": collab.group(1) if collab else "", "price": price, "currency": "USD" if price else None,
+        }
+    return list(pieces.values())
+
+
+# laroseguyon.com (Larose Guyon, Verchères, Quebec; confirmed live 2026-11-21). Squarespace 7.1 Commerce: the /shop grid is read
+# from the page HTML (ProductList data-context, never ?format=json) and lists 42 product pages, which are size/length variants of
+# 30 fixtures: Rosette-05-S/-L, Abysse-03-L/-S, SAULE-S-01/L-01 and Céleste/Otéro Small/Large are grouped into one piece
+# each (the first listed page is the piece's address). Each fixture's own page gives the dimensions (inches; the type is
+# inferred from the width). robots.txt is the standard Squarespace one (AI-crawler boilerplate group, no dedicated ClaudeBot record).
+
+
+def _larose_guyon_group(title):
+    """Display name and group key of a listing title ("Rosette-12-L" -> "Rosette 12", "SAULE-S-01" -> "Saule 01")."""
+    t = re.sub(r"\s*\(in stock\)\s*", " ", html.unescape(title), flags=re.I)
+    t = re.sub(r"\s*[-–]\s*", " ", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    t = re.sub(r"\s+[SL]$", "", t, flags=re.I)               # Rosette 12 L / Abysse 03 s
+    t = re.sub(r"^(Saule)\s+[SL]\s+(\d+)$", r"\1 \2", t, flags=re.I)  # SAULE S 01 / SAULE L 01 -> Saule 01
+    t = re.sub(r"^(Céleste|Otéro)\s+(Small|Large)$", r"\1", t)  # size variants of one fixture
+    t = " ".join(w.capitalize() if w.isupper() and len(w) > 2 else w for w in t.split())
+    return t
+
+
+def extract_larose_guyon(brand):
+    base = brand["url"].rstrip("/")
+    items = _squarespace_html_items(f"{base}/shop")
+    groups = {}
+    for item in items:
+        if not item.get("fullUrl") or not item.get("assetUrl"):
+            continue
+        name = _larose_guyon_group(item.get("title") or "")
+        money = ((item.get("structuredContent") or {}).get("variants") or [{}])[0].get("priceMoney") or {}
+        try:
+            price = float(money.get("value"))
+        except (TypeError, ValueError):
+            price = None
+        g = groups.setdefault(name.lower(), {"name": name, "url": item["fullUrl"], "image": item["assetUrl"], "prices": []})
+        if price:
+            g["prices"].append(price)
+    products = []
+    for g in groups.values():
+        time.sleep(1)
+        url = base + g["url"] if g["url"].startswith("/") else g["url"]
+        description, dimensions = "", ""
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+            text = html.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " | ", re.sub(r"<(script|style)[^>]*>.*?</\1>", "", resp.text, flags=re.S | re.I))))
+            m = re.search(r"US\$[\d,.]+\s*(?:\|\s*)+(.+?)(?:\|\s*)+REQUEST OUR CAD", text)
+            description = m.group(1).strip() if m else ""
+            d = re.search(r"Dimensions\s*(?:\|\s*)+([^|]+?)\s*\|", text)
+            dimensions = d.group(1).strip() if d else ""
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+        # the pages carry no type word (the descriptions are generic), so by size: a fixture 40 inches or more wide carries
+        # several globes (a chandelier), the rest hang singly (a pendant)
+        width = re.match(r"(\d+)", dimensions)
+        category = "Chandelier" if width and int(width.group(1)) >= 40 else "Pendant"
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": g["name"], "product_url": url,
+            "category": category, "material_options": ["Brass", "Glass"], "dimensions": dimensions, "notes": "",
+            "image_url": g["image"], "designer": "", "price": min(g["prices"]) if g["prices"] else None,
+            "currency": "USD" if g["prices"] else None,
+        })
+    return products
+
+
+# panijurek.pl (Pani Jurek, ceramics studio, Grójec, Poland; confirmed live 2026-11-21). A Wix Stores site: the product sitemap
+# (/store-products-sitemap.xml, one request) lists the 112 product pages with their photos, and the page names are consistent
+# enough to read the design from the address. The product pages weigh over 2 MB each, so none is fetched. robots.txt allows
+# everything but lightbox URLs. Listings are variants of far fewer designs: the TRN pendants appear once as a plain and once as
+# a "silver finish" listing per model, the ELO mirror in a dozen sizes, FAT OP / SLIM OP standing lamps in two to four pieces,
+# BARVA vases under several numbers. They are grouped into one piece per design (~41). Left out: the POLA tile compositions,
+# OP Kilim and OP Wall (the studio files them under "Art"), and a "copy-of" / "test" listing.
+PANI_JUREK_RULES = (
+    # (regex on the product slug, key/name template, category); first match wins; groups feed the template
+    (r"^(?:copy-of-|pola-|op-kilim|op-wall)|-test$", None, None),
+    (r"^trn-.*ceiling-light-(e\d)", "TRN Ceiling Light {0}", "Ceiling Light"),
+    (r"^trn-.*pendant.*?-light.*?(?<![a-z])([a-f]\d)(?!\d)|^trn-.*-pendant-light-(?:model-)?([a-f]\d)", "TRN Pendant Light {0}", "Pendant"),
+    (r"^trn-model-([a-f]\d)-ceramic-pendant", "TRN Pendant Light {0}", "Pendant"),
+    (r"^trn-.*wall-lamp", "TRN Wall Lamp Z1", "Wall Lamp"),
+    (r"^trn-.*mirror.*triple", "TRN Ash Wood Triple Mirror", "Mirror"),
+    (r"^trn-.*mirror", "TRN Ash Wood Mirror", "Mirror"),
+    (r"^trn-side-table-(?:in-)?(?:solid-)?(?:ash-wood-)?(?:model-)?(\d)", "TRN Side Table {0}", "Side Table"),
+    (r"^trn-.*table-?(?:model-)?(\d)", "TRN Table {0}", "Table"),
+    (r"^elo-mirror", "ELO Mirror", "Mirror"),
+    (r"^fat-op-0*(\d+)", "FAT OP #{0:0>3}", "Floor Lamp"),
+    (r"^slim-op-disc-002", "SLIM OP Disc 002", "Floor Lamp"),
+    (r"^slim-op-disc", "SLIM OP Disc", "Floor Lamp"),
+    (r"^slim-op", "SLIM OP", "Floor Lamp"),
+    (r"^barva-(?:model-)?(\d)", "BARVA Vase {0}", "Vase"),
+)
+
+
+def extract_pani_jurek(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(base + "/store-products-sitemap.xml", headers=HEADERS, timeout=40)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch the product sitemap: {e}")
+        return []
+    pieces = {}
+    for block in re.findall(r"<url>(.*?)</url>", resp.text, re.S):
+        loc = re.search(r"<loc>https?://[^/<]+/product-page/([^<]+)</loc>", block)
+        image = re.search(r"<image:loc>([^<]+)</image:loc>", block)
+        if not loc or not image:
+            continue
+        slug = loc.group(1)
+        for pattern, template, category in PANI_JUREK_RULES:
+            m = re.search(pattern, slug)
+            if not m:
+                continue
+            if template is None:
+                break
+            parts = [g.upper() if g and not g.isdigit() else g for g in m.groups() if g]
+            name = template.format(*parts) if parts else template
+            if "{0:0>3}" in template:
+                name = template.format(parts[0])
+            key = name.lower()
+            piece = pieces.get(key)
+            # prefer the plain listing over its "silver finish" twin for the photo and address
+            if piece and not ("silver" in piece["slug"] and "silver" not in slug):
+                break
+            img = re.sub(r"/v1/fit/w_\d+,h_\d+", "/v1/fit/w_1600,h_1600", html.unescape(image.group(1)))
+            pieces[key] = {"slug": slug, "product": {
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+                "product_url": f"{base}/product-page/{slug}", "category": category, "material_options": ["Ash wood"] if "ash" in slug else ([] if category == "Table" else ["Ceramic"]),
+                "dimensions": "", "notes": "", "image_url": img, "designer": "", "price": None, "currency": None}}
+            break
+    return [p["product"] for p in pieces.values()]
+
+
+# aoao.nl (Studio AOAO, Amsterdam; confirmed live 2026-11-21). A Next.js site that renders on the server, robots.txt open (only
+# /dashboard, /login, /auth, /checkout, /api disallowed). The sitemap lists 34 /artworks/<slug> pages and any section page
+# (/suspended-sculptures ...) shows the whole catalogue grouped under the nine section headings, which gives each piece's type.
+# No prices (every page ends in "Inquire"); editions of 3-20 or open editions, made to order. Photos are the studio's own
+# (public product-media bucket the site itself serves). Sections map to Formground categories below.
+STUDIO_AOAO_SECTIONS = {
+    "Suspended Sculptures": "Pendant", "Wall Lamps": "Wall Lamp", "Side Tables": "Side Table", "Floor Lamps": "Floor Lamp",
+    "Wall Sculptures": "Sculpture", "Chairs": "Chair", "Sculptures": "Sculpture", "Coffee Tables": "Coffee Table", "Vases": "Vase",
+}
+
+
+def extract_studio_aoao(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        listing = requests.get(base + "/suspended-sculptures", headers=HEADERS, timeout=30)
+        listing.raise_for_status()
+        sitemap = requests.get(base + "/sitemap.xml", headers=HEADERS, timeout=30)
+        sitemap.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}: {e}")
+        return []
+    # name -> section, from the listing's text: "<Section> | <name> | <year> · <edition> | <dims> ..." repeated per piece
+    body = re.sub(r"<(script|style)[^>]*>.*?</\1>", "", listing.text, flags=re.S | re.I)
+    tokens = [html.unescape(t).strip() for t in re.split(r"\s*<[^>]+>\s*", body) if t.strip()]
+    start = next((i for i, t in enumerate(tokens) if t == "Suspended Sculptures" and i + 1 < len(tokens) and not tokens[i + 1].isdigit()
+                  and tokens[i + 1] != "—"), None)
+    section_of, section, dims_of = {}, None, {}
+    for i, tok in enumerate(tokens[start or 0:], start or 0):
+        if tok in STUDIO_AOAO_SECTIONS and i + 1 < len(tokens) and not re.match(r"^\d+$", tokens[i + 1]):
+            section = tok
+        elif section and i + 1 < len(tokens) and re.match(r"^\d{4} · ", tokens[i + 1]):
+            section_of[tok.lower()] = section
+            m = re.match(r"^(\d+(?:\.\d+)?) × (\d+(?:\.\d+)?) × (\d+(?:\.\d+)?) \(cm\)", tokens[i + 2]) if i + 2 < len(tokens) else None
+            if m:
+                dims_of[tok.lower()] = f"Width {m.group(1)} x depth {m.group(2)} x height {m.group(3)} cm"
+    slugs = re.findall(r"<loc>https?://[^/<]+/artworks/([a-z0-9-]+)</loc>", sitemap.text)
+    products = []
+    for slug in slugs:
+        time.sleep(1)
+        url = f"{base}/artworks/{slug}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        title = re.search(r'<meta property="og:title" content="([^"]+)"', resp.text)
+        image = re.search(r'<meta property="og:image" content="([^"]+)"', resp.text)
+        if not title or not image:
+            continue
+        name = re.sub(r"\s+[—-]\s+Studio AOAO$", "", html.unescape(title.group(1))).strip()
+        category = STUDIO_AOAO_SECTIONS.get(section_of.get(name.lower(), ""))
+        if not category:
+            print(f"  Studio AOAO: no section found for {name} - skipped")
+            continue
+        mat = re.search(r"<dt[^>]*>Materials</dt><dd[^>]*>([^<]+)</dd>", resp.text)
+        materials = [m.strip().title() for m in re.split(r"\s*[,/]\s*|\s+and\s+", html.unescape(mat.group(1))) if m.strip()] if mat else []
+        if re.search(r"\s-\s", name) and name.split(" - ")[0].lower() in {p["product_name"].lower() for p in products}:
+            continue  # "Vase No_10 - Creme" is a colourway of Vase No_10, not a separate piece
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": materials, "dimensions": dims_of.get(name.lower(), ""), "notes": "",
+            "image_url": html.unescape(image.group(1)), "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
+# austinfields.net (Austin Fields, El Segundo / Los Angeles, confirmed live 2026-11-21): a Squarespace shop of hand-blown, mirrored
+# glass vessels, read from the /shop page HTML (never ?format=json). The 14 listings are colourways of the Touch Series (single
+# vessels and paired "duo" sets) plus Undulation, so they are grouped into three pieces; the first listing of each group supplies
+# the photo and link. /studiosale (studio-sale leftovers at no price) is left out.
+AUSTIN_FIELDS_GROUPS = ((r"duo", "Touch Series Duo"), (r"touch series", "Touch Series"), (r"undulation", "Undulation"))
+def extract_austin_fields(brand):
+    products, seen = [], set()
+    for p in _extract_squarespace_json_shop(brand, "shop", {}):
+        group = next((name for pattern, name in AUSTIN_FIELDS_GROUPS if re.search(pattern, p["product_name"], re.I)), None)
+        if not group or group in seen:
+            continue
+        seen.add(group)
+        p["product_name"] = group
+        p["category"] = "Vase"
+        p["material_options"] = ["Glass"]
+        products.append(p)
+    return products
+
+
+# camdesignco.com (CAM Design Co., Christopher Miano, NYC, confirmed live 2026-11-21): a Squarespace 7.0 store whose /shop page is a
+# server-rendered `a.product` grid (title, price, image, `category-*` class), read from the page HTML (never ?format=json). The
+# listing carries one entry per wood or size, so entries are grouped by the name before the first " | " ("Squiggle Mirror | Moss
+# Mini" and "Squiggle Mirror | Walnut" are one piece). Apparel, socks, hats, the bottle opener and the paperweight are left out.
+CAM_SKIP_WORDS = ("hat", "hoodie", "shirt", "socks", "bottle opener", "paperweight")
+CAM_TYPE_WORDS = (
+    ("chandelier", "Chandelier"), ("pendant", "Pendant Lamp"), ("table light", "Table Lamp"), ("light", "Lamp"),
+    ("mirror", "Mirror"), ("daybed", "Daybed"), ("bed", "Bed"), ("rocker", "Rocking Chair"), ("chair", "Chair"), ("stool", "Stool"),
+    ("bench", "Bench"), ("coffee table", "Coffee Table"), ("dining table", "Dining Table"), ("console", "Console Table"),
+    ("nightstand", "Bedside Table"), ("end table", "Side Table"), ("side table", "Side Table"), ("bookshelf", "Shelving"),
+    ("bowl", "Bowl"),
+)
+def extract_cam_design_co(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/shop", headers=HEADERS, timeout=25)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}/shop: {e}")
+        return []
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products, seen = [], set()
+    for a in soup.select("a.product"):
+        href = a.get("href", "")
+        title_el = a.select_one(".product-title")
+        img = a.select_one("img")
+        if not href.startswith("/shop/") or not title_el or not img:
+            continue
+        name = title_el.get_text(strip=True).split("|")[0].strip()
+        name = re.sub(r"[^\x00-ɏ\s]", "", name).strip()
+        name = re.sub(r"^The\s+", "", name, flags=re.I)
+        name = re.sub(r"Table-Light", "Table Light", name, flags=re.I)
+        name = re.sub(r"(?i)\bmacaroni table light\b", "Macaroni Table Light", name)
+        name = re.sub(r"(?i)\bcoffee table\b", "Coffee Table", name)
+        if name.isupper():
+            name = name.title()
+        lowered = name.lower()
+        if not name or any(w in lowered for w in CAM_SKIP_WORDS) or lowered in seen:
+            continue
+        image = img.get("data-image") or img.get("data-src") or ""
+        category = next((label for word, label in CAM_TYPE_WORDS if word in lowered), "")
+        if not image or not category:
+            continue
+        seen.add(lowered)
+        price_el = a.select_one(".product-price")
+        digits = re.search(r"[\d][\d.,]*", price_el.get_text()) if price_el else None
+        price = float(digits.group(0).replace(",", "")) if digits else None
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": base + href,
+            "category": category, "material_options": [], "dimensions": "", "notes": "", "image_url": image,
+            "designer": "Christopher Miano", "price": price, "currency": "USD" if price else None,
+        })
+    return products
+
+
+# charlesdeppierraz.com (Charles-Emmanuel Deppierraz, confirmed live 2026-11-21): a Laravel/Alpine site with a sitemap listing every
+# design page (/en/designs/<type>/<slug>, 24 pages) and server-rendered og:title / og:image / description / dimensions on each.
+# No prices ("Request an offer"). Colour versions of the same lamp (Curves, Little Ghost) are grouped into one piece; the lead
+# page of the group supplies the photo.
+DEPPIERRAZ_TYPES = {"armchairs": "Armchair", "couch": "Sofa", "chair": "Chair", "consoles": "Console Table",
+                    "coffee-tables": "Coffee Table", "side-tables": "Side Table", "mirrors": "Mirror"}
+def extract_charles_deppierraz(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        sitemap = requests.get(f"{base}/sitemap.xml", headers=HEADERS, timeout=25)
+        sitemap.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch the Deppierraz sitemap: {e}")
+        return []
+    products, seen = [], set()
+    for url, kind in re.findall(r"<loc>([^<]+/en/designs/([^/<]+)/[^/<]+)</loc>", sitemap.text):
+        time.sleep(1)
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        title = re.search(r'og:title" content="([^"]+)"', page.text)
+        image = re.search(r'og:image" content="([^"]+)"', page.text)
+        if not title or not image:
+            continue
+        name = html.unescape(title.group(1)).split(" — ")[0].strip()
+        name = re.sub(r"\s+(absolute black|pure white|chrome black|chrome blue|white)$", "", name, flags=re.I)
+        name = name if re.search(r"\d", name) else name.title()
+        if name.lower() in seen:
+            continue
+        seen.add(name.lower())
+        desc = html.unescape((re.search(r'name="description" content="([^"]*)"', page.text) or [None, ""])[1]).replace("\n", " ")
+        text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[^>]*>.*?</\1>", "", page.text, flags=re.S)))
+        dims = re.search(r"Dimensions\s*:\s*(.+?)\s*(?:Delivery|Custom|$)", text)
+        category = DEPPIERRAZ_TYPES.get(kind, "")
+        if kind == "light":
+            category = "Floor Lamp" if "floor lamp" in desc.lower() else "Table Lamp"
+        elif kind == "tables":
+            category = "Dining Table" if "dining" in desc.lower() else "Table"
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": [], "dimensions": dims.group(1).strip().rstrip(". ") if dims else "", "notes": "",
+            "image_url": image.group(1), "designer": "Charles-Emmanuel Deppierraz", "price": None, "currency": None,
+        })
+    return products
+
+
+# deknudtmirrors.com (Deknudt Mirrors, Belgium, confirmed live 2026-11-21): a custom CMS whose /products/ grid is filled by
+# JavaScript, but the sitemap lists every product page (about 280 in English, each a size/colour/finish variant of one of roughly
+# a hundred designs) and each page carries a schema.org Product block (name, photo, designer in "brand", price). Variants share
+# the first word of their slug ("lucka_black_rect", "lucka_gold_small_rect"), so one page per design is fetched and the design
+# name is that first word. Category pages, the hanging-kit accessory and the "other-*" filter pages are skipped.
+DEKNUDT_SKIP_KEYS = {"products", "suspension"}
+DEKNUDT_KEY_MERGES = (("b.ambi", "B.Ambi"), ("b.light", "B.Light"), ("arbo", "Arbo"), ("eclipse", "Eclipse"))
+def _deknudt_family(slug):
+    for prefix, name in DEKNUDT_KEY_MERGES:
+        if slug.startswith(prefix):
+            return prefix, name
+    if slug.startswith(("mirror-shape", "other-")):
+        return None, None
+    key = re.split(r"[_]", slug)[0]
+    if key in DEKNUDT_SKIP_KEYS:
+        return None, None
+    return key, key.replace("-", " ").title()
+def extract_deknudt_mirrors(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        sitemap = requests.get(f"{base}/sitemap.xml", headers=HEADERS, timeout=30)
+        sitemap.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch the Deknudt Mirrors sitemap: {e}")
+        return []
+    families = {}
+    for loc in re.findall(r"<loc>([^<]+)</loc>", sitemap.text):
+        match = re.match(re.escape(base) + r"/products/([^/]+)/$", loc)
+        if not match:
+            continue
+        key, name = _deknudt_family(match.group(1))
+        if key:
+            families.setdefault(key, (name, loc))
+    products = []
+    for key, (name, url) in families.items():
+        time.sleep(1)
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        data = None
+        for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', page.text, re.S):
+            try:
+                candidate = json.loads(block)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(candidate, dict) and candidate.get("@type") == "Product":
+                data = candidate
+                break
+        if not data:
+            continue
+        image = data.get("image")
+        if isinstance(image, list):
+            image = image[0] if image else None
+        if not image:
+            continue
+        title = (re.search(r'og:title" content="([^"]+)"', page.text) or [None, ""])[1].lower()
+        category = "Mirror"
+        if "console" in title:
+            category = "Console Table"
+        elif "side table" in title:
+            category = "Side Table"
+        designer = html.unescape(re.sub(r"\s*-\s*Deknudt Mirrors\s*$", "", ((data.get("brand") or {}).get("name") or ""), flags=re.I)).strip()
+        if designer.lower() == "deknudt mirrors":
+            designer = ""
+        offer = data.get("offers") or {}
+        try:
+            price = float(offer.get("price")) if offer.get("price") else None
+        except (TypeError, ValueError):
+            price = None
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": [], "dimensions": "", "notes": "",
+            "image_url": image, "designer": designer, "price": price, "currency": offer.get("priceCurrency") if price else None,
+        })
+    return products
+
+
+# mmairo.com (MMairo - Marble & Design, confirmed live 2026-11-21): a Joomla/SP Page Builder catalogue. The nine product-category
+# pages under /en/products/ are server-rendered card grids (name, designer, link, thumbnail) and every article page carries the full
+# photo gallery, so the cards give the piece list and one page per piece gives the photo and size. Size variants of the same piece
+# (Altana S/M/L, Lyris L/S, Nysa S/M/L, Nova Table L/S, Nissa Table M/S, Tivoli Table L/S, Inside Out Large Dining Table) are
+# grouped under one name. The site's gallery photos are used rather than the 300 px category thumbnails; the Inside Out Tray page
+# reuses the serving plate's gallery, so its own photo is named explicitly.
+MMAIRO_SECTIONS = {
+    "tableware/dishes": "Plate", "tableware/trays": "Tray", "tableware/centerpieces": "Centerpiece", "tableware/other": "Tableware",
+    "complements/vases": "Vase", "complements/candle-holders": "Candle Holder", "complements/other-complements": "Decorative Object",
+    "lamps": "Table Lamp", "tables": "Table",
+}
+# Pieces the section alone mislabels, from each piece's own description: Gae and Memory are bowls, Pyxis a set of lidded
+# containers, Domenico a soap dish, Luna a pair-of-pieces coffee table; the two lamps without a stated height are plain lamps.
+MMAIRO_NAME_CATEGORY = {"Gae": "Bowl", "Memory": "Bowl", "Pyxis": "Box", "Domenico": "Dish", "Luna": "Coffee Table",
+                        "Armonia Lamp": "Lamp", "The Reef Light": "Lamp", "Myron": "Tableware"}
+MMAIRO_PHOTO_OVERRIDE = {"inside-out-tray": "https://www.mmairo.com/images/articoli/Inside_Out_Tray/Karen_tray_red.jpg"}
+def _mmairo_group_name(name):
+    name = html.unescape(name).strip()
+    name = re.sub(r"\b(Large|Small)\b\s*", "", name)
+    name = re.sub(r"\b(Table|Side Table|Coffee Table)?\s*\b[LMS]\b(?=\s|$)", lambda m: " " + (m.group(1) or ""), name)
+    name = re.sub(r"(?<=\w)\s+\b[LMS]\b(?=\s|$)", "", name)
+    name = re.sub(r"^(Altana|Lyris|Nysa|Nova|Nissa|Tivoli)\s+[LMS]\b", r"\1", name)
+    return re.sub(r"\s+", " ", name).strip()
+def extract_mmairo_design(brand):
+    base = brand["url"].rstrip("/")
+    cards = {}
+    for section, category in MMAIRO_SECTIONS.items():
+        time.sleep(1)
+        try:
+            page = requests.get(f"{base}/en/products/{section}", headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch MMairo {section}: {e}")
+            continue
+        for href, name, designer in re.findall(r'<h3><a href="(/en/articles/[^"]+)"[^>]*>([^<]+)</a></h3><div class="sppb-article-introtext">([^<]*)</div>', page.text):
+            card = cards.setdefault(href, {"name": html.unescape(name).strip(), "designer": html.unescape(designer).strip(), "category": category})
+            if card["category"] in ("Tableware", "Decorative Object") and category not in ("Tableware", "Decorative Object"):
+                card["category"] = category
+    groups = {}
+    for href, card in cards.items():
+        groups.setdefault(_mmairo_group_name(card["name"]).lower(), []).append((href, card))
+    products = []
+    for key, members in groups.items():
+        href, card = members[0]
+        name = _mmairo_group_name(card["name"])
+        url = base + href
+        time.sleep(1)
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        image = MMAIRO_PHOTO_OVERRIDE.get(href.rsplit("/", 1)[1])
+        if not image:
+            for u in re.findall(r'(?:src|data-src|href)="([^"]*/images/articoli/[^"]*/images/[^"]*\.(?:jpg|jpeg|png|webp))"', page.text):
+                image = u if u.startswith("http") else base + u
+                break
+        if not image:
+            continue
+        text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[^>]*>.*?</\1>", "", page.text, flags=re.S)))
+        dims = re.search(r"Dimensions\s+(Ø?\s*[\d.,]+ x [^A-Za-z]*?cm)", text)
+        marbles = re.search(r"Marbles\s+(.+?)\s+Dimensions", text)
+        materials = ["Marble"]
+        category = card["category"]
+        lowered = name.lower()
+        if category == "Table":
+            for word, label in (("coffee", "Coffee Table"), ("side table", "Side Table"), ("dining", "Dining Table"),
+                                ("console", "Console Table"), ("stool", "Stool")):
+                if word in lowered:
+                    category = label
+                    break
+        category = MMAIRO_NAME_CATEGORY.get(name, category)
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": materials, "dimensions": dims.group(1).strip() if dims else "",
+            "notes": "", "image_url": image, "designer": card["designer"], "price": None, "currency": None,
+        })
+    return products
+
+
+# soft-geometry.com (Soft Geometry, Los Angeles, confirmed live 2026-11-21): a Squarespace shop whose /collection page lists every
+# piece with its price, read from the page HTML (never ?format=json). Colourways and sizes of one design are grouped (Donut coffee
+# table x4, Long Haired Sconces x2, Elio lamp x3, Molecule 222/422, the SW side and coffee tables with and without cane); the
+# four-piece Mirrors for Aliens set is a bundle of the same mirror and the Gola candle is a candle, so both are left out. The
+# /sample-sale page (one-off prototypes at no price) is not read.
+SOFT_GEOMETRY_GROUPS = (
+    (r"long haired sconce", "Long Haired Sconces", "Wall Lamp"), (r"mirrors for aliens", "Mirrors for Aliens", "Mirror"),
+    (r"elio lamp", "Elio Lamp", "Table Lamp"), (r"molecule coffee table", "Molecule Coffee Table", "Coffee Table"),
+    (r"molecule", "Molecule", "Sculptural Object"), (r"vessel", "Vessel", "Vase"),
+    (r"donut coffee table", "Donut Coffee Table", "Coffee Table"), (r"sw fluffy chair", "SW Fluffy Chair", "Chair"),
+    (r"sw velvet chair", "SW Velvet Chair", "Chair"), (r"sw side table", "SW Side Table", "Side Table"),
+    (r"sw (?:cane )?coffee table", "SW Coffee Table", "Coffee Table"),
+)
+def extract_soft_geometry(brand):
+    base = brand["url"].rstrip("/")
+    products, seen = [], set()
+    for item in _squarespace_html_items(f"{base}/collection"):
+        title = (item.get("title") or "").strip()
+        if not title or not item.get("fullUrl") or not item.get("assetUrl") or re.search(r"set of \d|candle", title, re.I):
+            continue
+        group = next(((n, c) for pattern, n, c in SOFT_GEOMETRY_GROUPS if re.search(pattern, title, re.I)), None)
+        if not group or group[0] in seen:
+            continue
+        seen.add(group[0])
+        money = ((item.get("structuredContent") or {}).get("variants") or [{}])[0].get("priceMoney") or {}
+        try:
+            price = float(money.get("value"))
+        except (TypeError, ValueError):
+            price = None
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": group[0],
+            "product_url": base + item["fullUrl"] if item["fullUrl"].startswith("/") else item["fullUrl"],
+            "category": group[1], "material_options": [], "dimensions": "", "notes": "", "image_url": item["assetUrl"],
+            "designer": "", "price": price if price and price > 0 else None, "currency": money.get("currency") if price else None,
+        })
+    return products
+
+
+# d-haene.com (D-Haene Studio, Jane Yang-D'Haene, Brooklyn ceramic and design studio, added 2026-11-21): a Cargo site. Each
+# series has a listing page (gallery of linked photos + captions) and a series page whose embedded __PRELOADED_STATE__ carries
+# every piece's own page text (dimensions, "Made To Order"). The photo URL is built from the media hash and file name Cargo
+# embeds as JSON. No prices on the site (made to order, 8 week lead time). robots.txt blocks only SEO bots. About 7 requests.
+DHAENE_LISTINGS = [
+    ("shop-vessels-moon", "Vase", "dune-series"),   # Moon pieces have no description in any series state; dims stay empty
+    ("shop-vessels-untitled", "Vase", "untitled-series"),
+    ("shop-vessels-terrain", "Vase", "terrain-series"),
+    ("shop-vessels-dune", "Vase", "dune-series"),
+    ("shop-bowls", "Bowl", "bowls"),
+    ("shop-furniture", "", "furniture"),
+    ("shop-lighting", "Table Lamp", "lighting"),
+]
+
+
+def _dhaene_state(url):
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=25)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return "", {}
+    resp.encoding = "utf-8"
+    i = resp.text.find("window.__PRELOADED_STATE__=")
+    if i < 0:
+        return resp.text, {}
+    try:
+        state, _ = json.JSONDecoder().raw_decode(resp.text[i + len("window.__PRELOADED_STATE__="):])
+    except ValueError:
+        return resp.text, {}
+    return resp.text, state
+
+
+def extract_dhaene_studio(brand):
+    base = "https://d-haene.com"
+    products, seen, descriptions = [], set(), {}
+    for series_page in sorted({s for _, _, s in DHAENE_LISTINGS}):
+        _, state = _dhaene_state(f"{base}/{series_page}")
+        time.sleep(1)
+        for page in (state.get("pages") or {}).get("byId", {}).values():
+            if page.get("purl", "").startswith("shop-"):
+                descriptions[page["purl"]] = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", page.get("content", "")))).strip()
+    for listing, category, _ in DHAENE_LISTINGS:
+        text, state = _dhaene_state(f"{base}/{listing}")
+        time.sleep(1)
+        names_by_hash = {h: n for n, h in re.findall(r'"name":"([^"]+)","hash":"([^"]+)"', text)}
+        soup = BeautifulSoup(text.split("window.__PRELOADED_STATE__=")[0], "html.parser")
+        for item in soup.select("media-item[href]"):
+            href = item["href"]
+            caption = item.select_one("figcaption")
+            file_name = names_by_hash.get(item.get("hash", ""))
+            name = re.sub(r"\s+", " ", caption.get_text()).strip() if caption else ""
+            if not href.startswith("shop-") or href in seen or not name or not file_name:
+                continue
+            seen.add(href)
+            desc = descriptions.get(href, "")
+            dims = re.search(r"(\d[^A-Za-z]*(?:DIA|[WLDH])\b.*?)(?:\s+Made [Tt]o|\s+6w|\s+Clean|\s+\*|$)", desc)
+            cat = category
+            if not cat:
+                cat = "Coffee Table" if "coffee" in href else ("Side Table" if "side" in href else "Table")
+            if "jogakbo" in href and "coffee" not in href:
+                name, cat = "Jogakbo Table", "Table"
+            elif "coffee" in href:
+                name = "Jogakbo Coffee Table"
+            products.append({
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+                "product_url": f"{base}/{href}", "category": cat, "material_options": ["Stoneware"] if cat not in ("Table", "Coffee Table") else ["Oak", "Ceramic"],
+                "dimensions": dims.group(1).strip() if dims else "", "notes": "Made to order", "image_url": f"https://freight.cargo.site/w/1400/i/{item['hash']}/{file_name}",
+                "designer": "", "price": None, "currency": None,
+            })
+    return products
+
+
+# dina-no.com (Dina No, Portland, Oregon ceramicist, added 2026-11-21): a Squarespace 7.1 shop at /shop, read from the page HTML
+# (never ?format=json). 15 functional pieces (mugs, bowls, plates, jar, candlestick holder). Every piece currently reads "sold out"
+# (first-generation designs sold as a sample sale) but the site lists them as normal products, not an archive, so they are kept.
+# The price read is the regular price; sale prices are not stored.
+def extract_dina_no(brand):
+    return _extract_squarespace_json_shop(brand, "shop", {
+        "mug": "Cup", "cup": "Cup", "bowl": "Bowl", "dish": "Bowl", "ramekin": "Bowl", "plate": "Plate", "jar": "Jar",
+        "candlestick": "Candle Holder", "pour-over": "Objects"})
+
+
+# slush-club.com (Slush Club, Tacoma, Washington nerikomi ceramics studio, added 2026-11-21): a Squarespace 7.1 shop at /shop,
+# read from the page HTML (never ?format=json). The shop lists a small, changing selection of one-off pieces (27 on 2026-11-21:
+# mugs, cups, bowls, plates, platters); the rest of the studio's work goes through stockists. Each piece is numbered ("No. 16").
+def extract_slush_club(brand):
+    return _extract_squarespace_json_shop(brand, "shop", {
+        "mug": "Cup", "cup": "Cup", "bowl": "Bowl", "platter": "Plate", "plate": "Plate"})
+
+
+# ---------------------------------------------------------------------------------------------------------------------------
+# Wave 3 group g (2026-11-21): Mother of God, Rafi Ajl, Campagna, Jeff Martin Joinery. Paste just before `EXTRACTORS = {`.
+# EXTRACTORS entries:
+#     "Mother of God": extract_mother_of_god,
+#     "Rafi Ajl": extract_rafi_ajl,
+#     "Campagna": extract_campagna,
+#     "Jeff Martin Joinery": extract_jeff_martin_joinery,
+# ---------------------------------------------------------------------------------------------------------------------------
+
+def _wave3g_cargo_image(url):
+    """A Cargo media URL at a web-sized width (the sitemap lists /t/original/ files, the pages use /w/1200/)."""
+    return re.sub(r"freight\.cargo\.site/(?:t/original|w/\d+)/i/", "freight.cargo.site/w/1400/i/", url)
+
+
+def _wave3g_cargo_page(url):
+    """(og:title, og:image, visible text) of one Cargo page, or None."""
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=25)
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return None
+    if resp.status_code != 200:
+        return None
+    meta = lambda key: html.unescape((re.search(r'<meta property="og:%s" content="([^"]*)"' % key, resp.text) or [None, ""])[1])
+    text = re.sub(r"<script.*?</script>|<style.*?</style>", "", resp.text, flags=re.S)
+    text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", text)))
+    return meta("title"), meta("image"), text
+
+
+# motherofgodstudio.com (Mother of God, Austin TX; confirmed live 2026-11-21): a Squarespace 7.1 shop, read from the /shop page
+# HTML (15 listings, never ?format=json). The MoG Candle is a candle, not a candleholder, and is left out. The two Pedestal
+# side tables are one-of-a-kind; the lamps, pendants and tableware carry USD prices on the site.
+MOTHEROFGOD_TYPES = {
+    "table lamp": "Table Lamp", "floor lamp": "Floor Lamp", "pendant": "Pendant", "lamp": "Table Lamp", "bowl": "Bowl",
+    "tray": "Tray", "cup": "Cup", "candlestick": "Candle Holder", "pedestal": "Side Table",
+}
+
+
+def extract_mother_of_god(brand):
+    products = _extract_squarespace_json_shop(brand, "shop", MOTHEROFGOD_TYPES, allow_unpriced=True, skip_titles=("mog candle",))
+    for product in products:
+        product["product_name"] = html.unescape(product["product_name"]).replace("Pedestal No.14", "Pedestal No. 14")
+    return products
+
+
+# rafiajl.com (Rafi Ajl Studio, Berkeley CA; confirmed live 2026-11-21): a Cargo site. The sitemap lists every page; the piece pages
+# sit between the "object-pages" and "custom-1" markers (the "-1" pages are category headers). Each page has an og:title
+# ("Name -- Rafi Ajl Studio"), a cover photo and a Dimensions block. A few covers are a photo of another piece (all six glassware
+# pages and Compression XL borrow Stomper/Chucker): an og:image that is the first image of several pages and does not carry the
+# page's own name is replaced by that page's first own photo (preferring a "Full" shot). Pieces are made to order, no prices shown.
+RAFIAJL_TYPES = (
+    ("nightstand", "Cabinet"), ("credenza", "Sideboard"), ("dresser", "Cabinet"), ("desk", "Desk"), ("coffee table", "Coffee Table"),
+    ("side table", "Side Table"), ("compression", "Dining Table"), ("table", "Table"), ("chucker", "Table"), ("chair", "Chair"),
+    ("vessel", "Vase"), ("pendant", "Pendant"), ("chandelier", "Chandelier"), ("sconce", "Wall Lamp"), ("mirror", "Mirror"),
+    ("pitcher", "Carafe"), ("tumbler", "Glass"), ("manhattan", "Glass"), ("water", "Glass"), ("sipper", "Glass"), ("mixer", "Glass"),
+)
+RAFIAJL_RENAMES = {"Manhattan": "Manhattan Glass", "Water": "Water Glass", "Sipper": "Sipper Glass", "Mixer": "Mixer Glass"}
+
+
+def extract_rafi_ajl(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/sitemap.xml", headers=HEADERS, timeout=25)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch Rafi Ajl's sitemap: {e}")
+        return []
+    images = {}
+    for loc, block in re.findall(r"<loc>([^<]+)</loc>(.*?)</url>", resp.text, re.S):
+        images[loc.replace(base, "")] = re.findall(r"<image:loc>([^<]+)</image:loc>", block)
+    paths = list(images)
+    if "/object-pages" not in paths or "/custom-1" not in paths:
+        print("  Rafi Ajl: sitemap markers moved - skipped")
+        return []
+    pieces = [p for p in paths[paths.index("/object-pages") + 1:paths.index("/custom-1")]
+              if not re.fullmatch(r"/(storage|tables|seating|vessels|lighting|mirrors|glassware)-1", p)]
+    first_use = {}
+    for p in pieces:
+        if images[p]:
+            first_use.setdefault(images[p][0].split("/")[-1], []).append(p)
+    products = []
+    for p in pieces:
+        time.sleep(1)
+        page = _wave3g_cargo_page(base + p)
+        if not page:
+            continue
+        title, cover, text = page
+        name = re.sub(r"\s+[—–-]+\s+Rafi Ajl Studio$", "", title).strip()
+        if not name:
+            continue
+        first_token = re.sub(r"[^a-z]", "", p.strip("/").split("-")[0])
+        own = [i for i in images[p] if not (len(first_use.get(i.split("/")[-1], [])) > 1 and first_token not in i.lower())]
+        image = cover if cover and cover.split("/")[-1] in [i.split("/")[-1] for i in own] else None
+        if own and (not image or "detail" in image.lower()):
+            # a cover that is a close-up ("Detail") gives way to the page's own "Full" shot when it has one
+            image = next((i for i in own if "full" in i.lower() and "detail" not in i.lower()), image or own[0])
+        if not image:
+            continue
+        category = next((cat for word, cat in RAFIAJL_TYPES if word in name.lower()), "")
+        match = re.search(r"Dimensions ▾\s*(.*?)\s*(?:Materials ▾|Notes ▾|Your configurations|$)", text)
+        dimensions = match.group(1).strip()[:120] if match else ""
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": RAFIAJL_RENAMES.get(name, name),
+            "product_url": base + p, "category": category, "material_options": [], "dimensions": dimensions, "notes": "",
+            "image_url": _wave3g_cargo_image(image), "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
+# campagna.cc (Campagna, Portland OR, Cody Campanie; confirmed live 2026-11-21): a Cargo site, robots.txt Crawl-delay 2. The sitemap lists
+# the collection pages (one per piece) next to a few text/landing pages; a page counts as a piece when it has a Dimensions block and
+# its own og:image. Sold to the trade through Roll & Hill and Design Within Reach as well, the studio takes orders by email. Only
+# "Set - Table" shows a price (from $1,350).
+CAMPAGNA_RENAMES = {"|) Set - Table": "Set Table", "Symbol - DWR": "Symbol Table", "Sit, Set - Chair": "Sit, Set Chair"}
+
+
+def extract_campagna(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/sitemap.xml", headers=HEADERS, timeout=25)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch Campagna's sitemap: {e}")
+        return []
+    products = []
+    for url in re.findall(r"<loc>([^<]+)</loc>", resp.text):
+        path = url.replace(base, "")
+        if not path or re.search(r"Landing|Text$|FAQ|Untitled", path):
+            continue
+        time.sleep(2)
+        page = _wave3g_cargo_page(url)
+        if not page:
+            continue
+        title, image, text = page
+        if "DIMENSIONS" not in text or not image:
+            continue
+        name = re.sub(r"\s+[—–-]+\s+Campagna$", "", title).strip()
+        name = CAMPAGNA_RENAMES.get(name, name)
+        lower = name.lower()
+        category = next((cat for word, cat in (
+            ("coffee table", "Coffee Table"), ("dining table", "Dining Table"), ("credenza", "Sideboard"), ("chair", "Chair"),
+            ("coat rack", "Objects"), ("symbol", "Side Table"), ("table", "Table")) if word in lower), "")
+        dims = re.search(r"DIMENSIONS (.*?)(?: Custom sizes| MATERIALS| TEAR SHEET| ORDER| Mark|$)", text)
+        mats = re.search(r"MATERIALS(?: &amp;| &)?(?: PRICING)? (.*?)(?: Custom wood| Custom sizes| TEAR SHEET| ORDER|$)", text)
+        price = re.search(r"\$\s?([\d,]{3,6})", text)
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url, "category": category,
+            "material_options": [], "dimensions": dims.group(1).strip()[:90] if dims else "", "notes": "",
+            "image_url": _wave3g_cargo_image(image), "designer": "", "price": float(price.group(1).replace(",", "")) if price else None,
+            "currency": "USD" if price else None,
+        })
+    return products
+
+
+# jeffmartinjoinery.ca (Jeff Martin Joinery, Vancouver; confirmed live 2026-11-21): a Cargo site, robots.txt Crawl-delay 2 and the
+# sitemap (one request) lists every page with its images, so the whole catalogue is read from it: names from the page slugs, the
+# first sitemap image as the photo (it matches the page's og:image on the pages checked). Left out: pages marked SOLD / SALE (archive
+# one-offs, the numbered Hallucination wall pieces), other makers' work the studio resells (Kuwata, Sachs, Lamb, Herman), the House of
+# Spirit audio line, shoes, hardware (pulls, hooks), tile and painted architectural panels and index pages. Finish variants of one
+# design (Bronze/Aluminum/Stone/Wood/Resin..., Suede/Upholstered); the Painted line stays its own pieces. The Sarcophagus Shelves page is the audio line collapse into one piece.
+JEFFMARTIN_SKIP = re.compile(
+    r"SOLD|SALE|^Hallucination-\d|TAKURO|TOM-SACHS|MAX-LAMB|ROGER-HERMAN|HOUSE-OF-SPIRIT|ANIMA|ONSEN|QUARTERWAVE|SHOES|PULLS|HOOKS|"
+    r"ARCHITECT|^HALLUCINATIONS$|DRY-CRACKED|SAND-MOLDED|^SARCOPHAGUS-SHELVES$", re.I)
+JEFFMARTIN_FINISH = re.compile(
+    r"^(?:(?:BRONZE|ALUMINUM|STONE|WOOD|RESIN|PIGMENTED|PEBBLE-DASH|EXPOSED-AGGREGATE|SILVER-TRAVERTINE|ROSA-PERALBA|SUEDE|UPHOLSTERED)-)+",
+    re.I)
+JEFFMARTIN_NAMES = {
+    "olas-cabinet-by-moretti-martin": "Olas Cabinet", "sarcophagus-small": "Sarcophagus Small Wall Cabinet",
+    "sarcophagus-medium": "Sarcophagus Medium Wall Cabinet", "sarcophagus-large": "Sarcophagus Large Wall Cabinet",
+    "sarcophagus-long": "Sarcophagus Long Wall Credenza", "triple-shaker": "Triple Shaker Table",
+    "double-pedestal-neolith": "Double Pedestal Neolith Table", "mesa-oval": "Mesa Oval Table", "mesa-round": "Mesa Round Table",
+    "hallucination-sconce": "Hallucination Sconce",
+}
+JEFFMARTIN_TYPES = (
+    ("sconce", "Wall Lamp"), ("chandelier", "Chandelier"), ("vessel", "Vase"), ("mirror", "Mirror"), ("candle", "Candle Holder"),
+    ("sarcophagus long", "Sideboard"), ("coffee table", "Coffee Table"), ("side table", "Side Table"), ("bedside", "Side Table"),
+    ("dining table", "Dining Table"), ("console", "Console"), ("bench", "Bench"), ("stool", "Stool"), ("couch", "Sofa"), ("chair", "Chair"), ("trono", "Chair"),
+    ("bed", "Bed"), ("desk", "Desk"), ("credenza", "Sideboard"), ("bureau", "Cabinet"), ("wardrobe", "Cabinet"), ("armoire", "Cabinet"),
+    ("hutch", "Cabinet"), ("cabinet", "Cabinet"), ("bar", "Cabinet"), ("trunk", "Cabinet"),
+    ("table", "Table"), ("mesa", "Table"), ("shaker", "Table"), ("sarcophagus", "Cabinet"), ("phone jail", "Objects"),
+)
+
+
+def extract_jeff_martin_joinery(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/sitemap.xml", headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch Jeff Martin Joinery's sitemap: {e}")
+        return []
+    entries = []
+    for loc, block in re.findall(r"<loc>([^<]+)</loc>(.*?)</url>", resp.text, re.S):
+        slug = loc.replace(base, "").strip("/")
+        images = re.findall(r"<image:loc>([^<]+)</image:loc>", block)
+        if not slug or "/" in slug or JEFFMARTIN_SKIP.search(slug) or not images:
+            continue
+        key = JEFFMARTIN_FINISH.sub("", slug)
+        key = re.sub(r"(?<=-TABLE)S$|(?<=-STOOL)S$", "", key, flags=re.I)
+        key = re.sub(r"-0?\d$", "", key)
+        entries.append((key.lower(), slug, images[0]))
+    entries.sort(key=lambda e: e[1].lower() != e[0])  # the plain-named page of a design leads its finish variants
+    products, seen = [], set()
+    for key, slug, image in entries:
+        if key in seen:
+            continue
+        seen.add(key)
+        name = " ".join(w.capitalize() for w in key.split("-"))
+        name = JEFFMARTIN_NAMES.get(key, name)
+        lower = name.lower()
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": f"{base}/{slug}",
+            "category": next((cat for word, cat in JEFFMARTIN_TYPES if word in lower), ""), "material_options": [],
+            "dimensions": "", "notes": "", "image_url": _wave3g_cargo_image(image),
+            "designer": "Moretti Martin" if "olas" in lower else "", "price": None, "currency": None,
+        })
+    return products
+
+
+# Ariela Nomi Kuh (ANK Studios / ANK Ceramics, Camden, Maine): Squarespace shop read from page HTML (never ?format=json).
+ARIELA_NOMI_KUH_PAGES = ("vases", "ariela-nomi-kuh/vessels", "ariela-nomi-kuh/platters", "mugs", "pitchers", "objects", "menorahs")
+ARIELA_NOMI_KUH_TYPES = {
+    "weather vase": "Vase", "vase": "Vase", "vessel": "Vessel", "torso": "Vessel", "guitar": "Vessel", "platter": "Serving Dish",
+    "bowl": "Bowl", "mug": "Cup", "pitcher": "Jug", "menorah": "Candle Holder", "sculpture": "Sculpture",
+    "carved object": "Sculpture", "slab pair": "Sculpture", "solo dancer": "Sculpture", "charcoal": "Vase",
+}
+
+
+def extract_ariela_nomi_kuh(brand):
+    """
+    The studio sells hand-built one-offs and slip-cast tableware as separate Squarespace store items, so a page of "Pitcher",
+    "Menorah" or "Wave Platter" lists the same title many times (14 pitchers, 24 menorahs). One piece per title per page
+    (dedupe_titles), so the 100-odd live items read as about 30 designs. Sold archive pages (/selected-archive-*, /one-of-a-kind-
+    archive-*, /archive-*), "Menorah Seconds" and the gift page are left out; the bare "Charcoal" vase listings are named for what
+    they are.
+    """
+    products = []
+    seen = set()
+    for page in ARIELA_NOMI_KUH_PAGES:
+        found = _extract_squarespace_json_shop(brand, page, ARIELA_NOMI_KUH_TYPES, dedupe_titles=True)
+        for p in found:
+            if p["product_name"].strip().lower() == "charcoal":
+                p["product_name"] = "Charcoal Vase"
+            key = p["product_name"].lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            products.append(p)
+        time.sleep(1)
+    return products
+
+
+# Wentz Design (WENTZ, Brazil): Shopify store with Portuguese titles and product types. One products.json request.
+WENTZ_DESIGN_TYPES = {
+    "poltrona": "Armchair", "sofá": "Sofa", "couch": "Sofa", "cadeira": "Chair", "pufe": "Pouf", "banco": "Bench",
+    "banqueta": "Stool", "mesa": "Table", "mesa de centro": "Coffee Table", "mesa lateral": "Side Table",
+    "mesa de apoio": "Side Table", "mesa de cabeceira": "Bedside Table", "aparador": "Sideboard", "armário": "Cabinet",
+    "cama": "Bed", "escrivaninha": "Desk", "totem": "Objects", "luminária pendente": "Pendant", "luminária arandela": "Wall Lamp",
+    "luminária de piso": "Floor Lamp", "luminária de mesa": "Table Lamp", "luminária portátil": "Table Lamp",
+}
+
+
+def _wentz_design_category(title, product_type):
+    t = title.lower()
+    if "vaso" in t:
+        return "Vase"
+    if "bandeja" in t:
+        return "Tray"
+    if "castiçal" in t:
+        return "Candle Holder"
+    if "lamparina" in t:
+        return "Table Lamp"
+    if "manta" in t:
+        return "Blanket"
+    if "galho objeto" in t:
+        return "Sculpture"
+    if "cabideiro" in t:
+        return "Objects"
+    if "console" in t:
+        return "Console"
+    if "porta-incenso" in t:
+        return "Objects"
+    return WENTZ_DESIGN_TYPES.get((product_type or "").strip().lower(), "")
+
+
+def extract_wentz_design(brand):
+    """
+    WENTZ (Guilherme Wentz's furniture, lighting and objects brand; studio in Caxias do Sul, gallery in Sao Paulo): the whole
+    catalogue is on /products.json (103 listings, one request). Left out: the room-fragrance listing and one item tagged as a
+    test product. A fabric variant listed as its own product ("Cadeira Tubo [Lã]") is folded into the base piece; a price of 0.00
+    means made to order / quote, so no price. Prices on the store are BRL. Titles stay in Portuguese as the maker writes them.
+    """
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/products.json?limit=250", headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+        raw = resp.json().get("products", [])
+    except (requests.RequestException, ValueError) as e:
+        print(f"  Could not fetch Wentz catalogue: {e}")
+        return []
+    groups = {}
+    for p in raw:
+        tags = [t.lower() for t in (p.get("tags") or [])]
+        title = (p.get("title") or "").strip()
+        if "produtos-de-teste" in tags or "perfume" in title.lower() or not p.get("images"):
+            continue
+        name = re.sub(r"\s*\[[^\]]+\]\s*$", "", title).strip()
+        groups.setdefault(name, []).append((title, p))
+    products = []
+    for name, group in groups.items():
+        title0, p = group[0]
+        # the plain listing leads; its first photo is the card photo
+        group.sort(key=lambda g: "[" in g[0])
+        title0, p = group[0]
+        materials = []
+        for _, q in group:
+            variant_label = re.search(r"\[([^\]]+)\]\s*$", q["title"])
+            if variant_label:
+                materials.append(variant_label.group(1))
+            for opt in q.get("options") or []:
+                if opt["name"] in ("Cor", "Color", "Material"):
+                    materials += [v for v in opt["values"] if v not in ("Customizável", "Default Title")]
+        materials = list(dict.fromkeys(materials))[:8]
+        try:
+            price = float(p["variants"][0]["price"])
+        except (KeyError, IndexError, TypeError, ValueError):
+            price = 0.0
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+            "product_url": f"{base}/products/{p['handle']}",
+            "category": _wentz_design_category(name, p.get("product_type")),
+            "material_options": materials, "dimensions": "", "notes": "",
+            "image_url": p["images"][0]["src"], "designer": "Guilherme Wentz",
+            "price": price if price > 0 else None, "currency": "BRL" if price > 0 else None,
+        })
+    return products
+
+
+# gillescaffier.com (Gilles Caffier, handmade ceramic, stone and leather lamps, vases, candle holders and side tables made by
+# OROK'S Co., Ltd. in Nakhon Pathom, Thailand; added 2026-11-21, Wave 3): a WooCommerce store whose 311 listings are titled only
+# by SKU code (LI = lamp, VA = vase, CH = candle holder, FT = furniture, BW = bowl ...), every one "Enquiry" with no price. That
+# is far too many to show, so this is a hand-picked selection of 13 pieces: the brand's own listing photo (images[0], the site's
+# card image) must show the whole piece. The Store API is read in four requests (100 per page) and only the codes below kept.
+# Names are "<type> <code>" because the code is the only name the site gives; materials are stated only where the site's own
+# category says so (Stone Lamps, Ceramic Lamps, Ceramic Vases, Leather Lamps).
+GILLES_CAFFIER_PIECES = {
+    # code: (type used in the name, category, materials)
+    "LI459GY": ("Stone Lamp", "Table Lamp", ["Stone"]), "LI343GY": ("Stone Lamp", "Table Lamp", ["Stone"]),
+    "LI438BA": ("Ceramic Lamp", "Table Lamp", ["Ceramic"]), "LI281BW": ("Leather Lamp", "Table Lamp", ["Leather"]),
+    "VA311FW": ("Ceramic Vase", "Vase", ["Ceramic"]), "VA313DK": ("Ceramic Vase", "Vase", ["Ceramic"]),
+    "VA298BA": ("Ceramic Vase", "Vase", ["Ceramic"]), "VA941BA": ("Ceramic Vase", "Vase", ["Ceramic"]),
+    "VA996BW": ("Ceramic Vase", "Vase", ["Ceramic"]),
+    "CH850GY": ("Candle Holder", "Candle Holder", []), "CH288FW": ("Candle Holder", "Candle Holder", []),
+    "FT133LG": ("Side Table", "Side Table", []), "FT252OR": ("Side Table", "Side Table", []),
+}
+def extract_gilles_caffier(brand):
+    base = brand["url"].rstrip("/")
+    listed = {}
+    for page in range(1, 5):
+        try:
+            resp = requests.get(f"{base}/wp-json/wc/store/v1/products?per_page=100&page={page}", headers=HEADERS, timeout=40)
+            resp.raise_for_status()
+            batch = resp.json()
+        except (requests.RequestException, ValueError) as e:
+            print(f"  Could not fetch Gilles Caffier products page {page}: {e}")
+            break
+        if not batch:
+            break
+        for p in batch:
+            if p.get("name") in GILLES_CAFFIER_PIECES:
+                listed[p["name"]] = p
+        time.sleep(1)
+    products = []
+    for code, (kind, category, materials) in GILLES_CAFFIER_PIECES.items():
+        p = listed.get(code)
+        if not p or not p.get("images"):
+            print(f"  Gilles Caffier: {code} not found or without a photo - skipped")
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": f"{kind} {code}",
+            "product_url": p["permalink"], "category": category, "material_options": materials, "dimensions": "",
+            "notes": "", "image_url": p["images"][0]["src"], "designer": "Gilles Caffier", "price": None, "currency": None,
+        })
+    return products
+
+
+# layeredinterior.com (Layered, Stockholm rugs, added 2026-11-21, Wave 3): a standard Shopify store whose 432 listings are mostly
+# colourways of the same rug designs (each its own product), plus about 170 fabric/rug samples, sofas, blankets and cushions.
+# Far too many to show, so this is a hand-picked selection of 13 pieces: one colourway each of twelve rug designs from different
+# collections and collaborators (all current, none tagged as phased out or archive) and the one non-rug piece with a proper
+# photo, the Thorn coffee table by Axel Wannberg. The extractor reads the public /products.json (two requests) and keeps only
+# these handles. Prices are SEK as shown on the Swedish storefront (the lowest size's price); the rug's size options go in
+# dimensions. The sofas' only photos are cut-outs on transparent backgrounds, so they are left out.
+LAYERED_PIECES = {
+    # handle: (name, category, designer, materials)
+    "morrisstudio-ryg-dandelion": ("Morrisstudio Ryg Dandelion", "Rug", "Tom Morris", ["Wool", "Cotton"]),
+    "collina-strada-plaid-haze": ("Collina Strada Plaid Haze", "Rug", "Collina Strada", ["Wool"]),
+    "erik-bratsberg-lozza-teal": ("Erik Bratsberg Lozza Teal", "Rug", "Erik Bratsberg", ["Wool"]),
+    "heather-chontos-collage": ("Heather Chontos Collage", "Rug", "Heather Chontos", ["Wool"]),
+    "teklan-labyrinth-coral-pink": ("Teklan Labyrinth Coral Pink", "Rug", "Tekla Evelina Severin (Teklan)", ["Wool"]),
+    "evelina-kroon-shaggy-pergola": ("Evelina Kroon Shaggy Pergola", "Rug", "Evelina Kroon", ["Wool"]),
+    "rollakan-hilma-primrose": ("Röllakan Hilma Primrose", "Rug", "", ["Wool", "Cotton"]),
+    "residue-sage": ("Residue Sage", "Rug", "", ["Wool"]),
+    "scallop-jute-brown": ("Scallop Jute Brown", "Rug", "", ["Jute", "Cotton"]),
+    "massproductions-cord-black-white": ("Massproductions Cord Black White", "Rug", "Massproductions", ["Wool"]),
+    "poppy-kalas-flower-field": ("Poppykalas Flower Field", "Rug", "Poppykalas", ["Wool", "Tencel"]),
+    "shaggy-edge-rose": ("Shaggy Edge Rose", "Rug", "", ["Wool"]),
+    "axel-wannberg-wood-table-thorn": ("Axel Wannberg Thorn Coffee Table", "Coffee Table", "Axel Wannberg", ["Solid wood"]),
+}
+def extract_layered(brand):
+    base = brand["url"].rstrip("/")
+    listed = {}
+    for page in (1, 2):
+        try:
+            resp = requests.get(f"{base}/products.json?limit=250&page={page}", headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+            batch = resp.json().get("products", [])
+        except (requests.RequestException, ValueError) as e:
+            print(f"  Could not fetch Layered products page {page}: {e}")
+            break
+        if not batch:
+            break
+        for p in batch:
+            if p.get("handle") in LAYERED_PIECES:
+                listed[p["handle"]] = p
+        time.sleep(1)
+    products = []
+    for handle, (name, category, designer, materials) in LAYERED_PIECES.items():
+        p = listed.get(handle)
+        if not p or not p.get("images"):
+            print(f"  Layered: {handle} not found or without a photo - skipped")
+            continue
+        prices = []
+        for v in p.get("variants") or []:
+            try:
+                if float(v.get("price")) > 0:
+                    prices.append(float(v["price"]))
+            except (TypeError, ValueError):
+                pass
+        sizes = []
+        for o in p.get("options") or []:
+            if o.get("name") in ("Storlek", "Size"):
+                sizes = [s for s in o.get("values") or [] if re.fullmatch(r"\d+ x \d+ cm", s)]
+        dimensions = " / ".join(sizes) if sizes else ("120 x 70 x 41 cm" if handle.startswith("axel-wannberg") else "")
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+            "product_url": f"{base}/products/{handle}", "category": category, "material_options": materials,
+            "dimensions": dimensions, "notes": "", "image_url": p["images"][0]["src"], "designer": designer,
+            "price": min(prices) if prices else None, "currency": "SEK" if prices else None,
+        })
+    return products
+
+
+# taracea.com (Taracea, Mexican furniture house with a US storefront, added 2026-11-21, Wave 3): a standard Shopify store with
+# 269 listings (tables, consoles, buffets, seating, beds, plus one-of-a-kind and in-stock editions), far more than should be shown
+# here, so this is a hand-picked selection of 13 pieces across the range. The extractor reads the public /products.json (two
+# requests) and keeps only the handles listed below. Prices are in USD as shown on the US storefront; the "Finish" option
+# (wood/metal/upholstery names) goes in material_options and the "Size" option (inches) in dimensions.
+TARACEA_PIECES = {
+    "tars-cabinet": "Cabinet", "maria-floor-mirror": "Mirror", "amal-buffet": "Sideboard", "umbral-console": "Console",
+    "abu-dining-table": "Dining Table", "ferro-round-coffee-table": "Coffee Table", "tula-side-table": "Side Table",
+    "aurum-brass-round-coffee-table": "Coffee Table", "marco-sofa": "Sofa", "beri-lounge-chair": "Lounge Chair",
+    "vanna-armchair": "Armchair", "mara-king-size-bed": "Bed", "teo-executive-desk": "Desk",
+}
+def extract_taracea(brand):
+    base = brand["url"].rstrip("/")
+    listed = {}
+    for page in (1, 2):
+        try:
+            resp = requests.get(f"{base}/products.json?limit=250&page={page}", headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+            batch = resp.json().get("products", [])
+        except (requests.RequestException, ValueError) as e:
+            print(f"  Could not fetch Taracea products page {page}: {e}")
+            break
+        if not batch:
+            break
+        for p in batch:
+            if p.get("handle") in TARACEA_PIECES:
+                listed[p["handle"]] = p
+        time.sleep(1)
+    products = []
+    for handle, category in TARACEA_PIECES.items():
+        p = listed.get(handle)
+        if not p or not p.get("images"):
+            print(f"  Taracea: {handle} not found or without a photo - skipped")
+            continue
+        variant = (p.get("variants") or [{}])[0]
+        options = {o.get("name"): o.get("values") or [] for o in p.get("options") or []}
+        finishes = []
+        for value in options.get("Finish", []):
+            for part in value.split(";"):
+                part = part.strip()
+                if part and part not in finishes:
+                    finishes.append(part)
+        try:
+            price = float(variant.get("price")) or None
+        except (TypeError, ValueError):
+            price = None
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": html.unescape(p["title"]).strip(),
+            "product_url": f"{base}/products/{handle}", "category": category, "material_options": finishes,
+            "dimensions": (options.get("Size") or [""])[0].replace("''", '"'), "notes": "",
+            "image_url": p["images"][0]["src"], "designer": "", "price": price, "currency": "USD" if price else None,
+        })
+    return products
+
+
+# nicoline.it (Nicoline, Altamura Italy, added 2026-11-21, Wave 3): upholstered sofas, armchairs, beds, tables and poufs, about 71
+# pieces on the English listing pages. A small hand-picked selection of 12 is shown (user rule for large makers): the sofa, armchair
+# and bed families that carry the brand, each with a clean studio cut-out photo. The three English category listings
+# (/en/sofas/, /en/armchairs/, /en/beds/) are server-rendered WordPress pages with title, link and photo for every piece, so the
+# selection is fetched live from those three pages. No prices on the site. robots.txt allows everything.
+NICOLINE_PIECES = {
+    "sofas": {"amalfi": ("Amalfi Sofa", "Sofa"), "crumble": ("Crumble Sofa", "Sofa"), "wing": ("Wing Sofa", "Sofa"),
+              "treasure": ("Treasure Sofa", "Sofa"), "break": ("Break Sofa", "Sofa"), "gary": ("Gary Sofa", "Sofa")},
+    "armchairs": {"nest": ("Nest Armchair", "Armchair"), "souffle": ("Soufflé Armchair", "Armchair"),
+                  "julie": ("Julie Armchair", "Armchair"), "iseo": ("Iseo Armchair", "Armchair")},
+    "beds": {"rubicon": ("Rubicon Bed", "Bed"), "dafne": ("Dafne Bed", "Bed")},
+}
+def extract_nicoline(brand):
+    base = "https://nicoline.it"
+    products = []
+    for collection, wanted in NICOLINE_PIECES.items():
+        try:
+            resp = requests.get(f"{base}/en/{collection}/", headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch Nicoline {collection}: {e}")
+            continue
+        found = {}
+        for article in BeautifulSoup(resp.text, "html.parser").find_all("article"):
+            link = article.find("a", href=re.compile(r"/en/product/"))
+            img = article.find("img")
+            if not link or not img or not img.get("src"):
+                continue
+            slug = link["href"].rstrip("/").rsplit("/", 1)[-1]
+            found[slug] = (link["href"], img["src"])
+        for slug, (name, category) in wanted.items():
+            if slug not in found:
+                print(f"  Nicoline: {name} not found on /en/{collection}/ - skipped")
+                continue
+            url, image = found[slug]
+            products.append({
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+                "category": category, "material_options": [], "dimensions": "", "notes": "",
+                "image_url": image, "designer": "", "price": None, "currency": None,
+            })
+        time.sleep(1)
+    return products
+
+
+# salamhello.com (Salam Hello, Morocco, added 2026-11-21, Wave 3): handwoven Moroccan rugs, poufs and pillows on Shopify, about
+# 400 listings (311 rugs, 53 colour/pile samples, 15 poufs, 14 pillows, 10 untyped rugs). A small hand-picked selection of 12 is shown
+# (user rule for large makers): the named design lines the brand is built around (Izra, Tira, Atlas Form, Neutral Ground, Siroua
+# Shades, the Artisan Originals made to order) plus a pouf and a pillow, each with a clean cut-out photo. Selected by Shopify handle;
+# prices are the lowest variant (smallest size) in USD. robots.txt allows /products.json.
+SALAM_HELLO_PIECES = {
+    "izra-indigo": ("Izra Rug, Indigo", "Rug"),
+    "kin-jade": ("Kin Rug, Jade (Tira)", "Rug"),
+    "root-taupe": ("Root Rug, Taupe (Tira)", "Rug"),
+    "atlas-form-ridge": ("Ridge Rug (Atlas Form)", "Rug"),
+    "atlas-form-fold": ("Fold Rug (Atlas Form)", "Rug"),
+    "neutral-ground-echo": ("Echo Rug (Neutral Ground)", "Rug"),
+    "neutral-ground-atlas-terrain": ("Atlas Terrain Rug (Neutral Ground)", "Rug"),
+    "anzal-s-indigo-diamond-zanafi": ("Anzal's Indigo Diamond Zanafi Rug", "Rug"),
+    "customize-mbarka-khadija-s-intricate-hanbel": ("Mbarka & Khadija's Intricate Hanbel Rug", "Rug"),
+    "siroua-shades-amudou": ("Siroua Shades Amudou Rug", "Rug"),
+    "siroua-shades-terracotta-pouf": ("Siroua Shades Terracotta Pouf", "Pouf"),
+    "ain-leuh-vintage-pillow-forest-and-garnet": ("Ain Leuh Vintage Pillow, Forest and Garnet", "Pillow"),
+}
+def extract_salam_hello(brand):
+    base = brand["url"].rstrip("/")
+    raw = {}
+    for page in (1, 2):
+        data = _fetch_json(f"{base}/products.json?limit=250&page={page}")
+        if not data or not data.get("products"):
+            break
+        for p in data["products"]:
+            raw[p["handle"]] = p
+        time.sleep(1)
+    products = []
+    for handle, (name, category) in SALAM_HELLO_PIECES.items():
+        p = raw.get(handle)
+        if not p or not p.get("images"):
+            print(f"  Salam Hello: {name} not found or without photo - skipped")
+            continue
+        prices = [float(v["price"]) for v in p.get("variants", []) if v.get("price")]
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": f"{base}/products/{handle}",
+            "category": category, "material_options": ["Wool"], "dimensions": "", "notes": "",
+            "image_url": p["images"][0]["src"].split("?")[0], "designer": "",
+            "price": min(prices) if prices else None, "currency": "USD" if prices else None,
+        })
+    return products
+
+
+# --- Wave 3 (2026-11-21) ---
+
+# alliedmaker.com (Allied Maker, Long Island NY lighting, added 2026-11-21, Wave 3): a NetSuite SuiteCommerce site with an empty
+# sitemap and JS-rendered pages, but its own /api/items endpoint returns the catalogue as JSON (524 records = about 290 fixtures
+# in 76 collections, plus bulbs, finish samples, LED modules and collection placeholders). robots.txt allows everything but asks
+# for a 20 s crawl delay, so the extractor makes ONE request, asking for the curated selection by internal id. Each size is its
+# own item on the site; one size per design is shown. Product pages live at /<urlcomponent>.
+ALLIED_MAKER_API = "https://www.alliedmaker.com/api/items"
+# internal id -> (piece name, category, materials, notes)
+ALLIED_MAKER_PIECES = {
+    84491: ("Quadra Pendant", "Pendant Lamp", ["Glass", "Walnut", "Brass"], "Slumped square glass in a machined brass plate."),
+    84213: ("Drift Pendant", "Pendant Lamp", ["Glass", "Aluminium", "Wood veneer"], 'Shown in the 15" size; also 30".'),
+    82484: ("Winnow Flush Mount", "Ceiling Lamp", ["Fabric", "Wood"], "Rolled fabric shade in an external wooden frame; four shade colours."),
+    21108: ("Aria Pendant", "Pendant Lamp", ["Brass", "Glass"], 'Shown in the 12" size; other sizes on the site.'),
+    21116: ("Monoscope Pendant", "Pendant Lamp", ["Wood veneer", "Glass", "Brass"], 'Shown in the 10" size; also 18".'),
+    20679: ("Dome Pendant", "Pendant Lamp", ["Metal", "Glass"], 'Shown in the 14" size; other sizes on the site.'),
+    69726: ("Buoy Pendant", "Pendant Lamp", ["Glass", "Brass", "Rope"], 'Shown in the 12" size; also 9" and 20".'),
+    21110: ("Crux Pendant", "Pendant Lamp", ["Glass", "Bronze"], 'Shown in the 12" size; also 6".'),
+    73275: ("Bloom 5 Chandelier", "Chandelier", ["Glass", "Bronze"], ""),
+    61647: ("Bola 6 Chandelier", "Chandelier", ["Walnut", "Metal"], ""),
+    23237: ("Alabaster Totem 3 Table Lamp", "Table Lamp", ["Alabaster"], ""),
+    35820: ("Sail Floor Lamp", "Floor Lamp", ["Brass"], "A concealed spotlight bounces light off an adjustable brass disc."),
+    51797: ("Gesso Sconce", "Wall Lamp", ["Brass", "Glass"], 'Shown in the 23" size; also 13" and 33".'),
+    71467: ("Alabaster Hemisphere Sconce", "Wall Lamp", ["Alabaster"], 'Shown in the 7.5" size; other sizes on the site.'),
+}
+
+
+def extract_allied_maker(brand):
+    ids = ",".join(str(i) for i in ALLIED_MAKER_PIECES)
+    try:
+        resp = requests.get(f"{ALLIED_MAKER_API}?id={ids}&fieldset=search&language=en&country=US&currency=USD",
+                            headers=HEADERS, timeout=40)
+        resp.raise_for_status()
+        items = resp.json().get("items", [])
+    except (requests.RequestException, ValueError) as e:
+        print(f"  Could not fetch the Allied Maker items: {e}")
+        return []
+    by_id = {i.get("internalid"): i for i in items}
+    base = brand["url"].rstrip("/")
+    products = []
+    for internal_id, (name, category, materials, notes) in ALLIED_MAKER_PIECES.items():
+        item = by_id.get(internal_id)
+        if not item:
+            print(f"  Allied Maker: {name} not returned by the API - skipped")
+            continue
+        photos = (item.get("itemimages_detail") or {}).get("urls") or []
+        image = photos[0].get("url", "").replace(" ", "%20") if photos else ""
+        slug = item.get("urlcomponent")
+        if not image or not slug:
+            print(f"  Allied Maker: {name} has no photo or page - skipped")
+            continue
+        price = item.get("onlinecustomerprice")
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": f"{base}/{slug}",
+            "category": category, "material_options": materials, "dimensions": "", "notes": notes,
+            "image_url": image, "designer": "", "price": price if isinstance(price, (int, float)) else None,
+            "currency": "USD" if isinstance(price, (int, float)) else None,
+        })
+    return products
+
+
+# pernbaan.com (Pern Baan, confirmed live 2026-11-21): standard Shopify store, /products.json lists 74 colourway listings that
+# are about 23 designs. Each listing is one colour/finish of a design, so listings are grouped into one piece per design (the
+# first listing's photo and link). All 74 listings are on-brief (sconces, pendants, lamps, mirrors, chairs, side tables); there
+# are no samples, gift cards or hardware in the feed. Prices are shown on the site, in USD (cart.js currency).
+# (title regex, piece name, category, designer, materials, dimensions); the first match wins.
+PERN_BAAN_MODELS = [
+    (r"^waii sconce #1", "Waii Sconce #1", "Wall Lamp", "Office of Tangible Space", ["Rattan"], '8.5"W x 16"H x 4"D'),
+    (r"^waii sconce #2", "Waii Sconce #2", "Wall Lamp", "Office of Tangible Space", ["Rattan"], '13"H x 12.5"W x 3"D'),
+    (r"^waii mirror - full length", "Waii Mirror, Full Length", "Mirror", "Office of Tangible Space", ["Rattan", "Metal"], '32"W x 67"H x 4.5"D'),
+    (r"^waii mirror", "Waii Mirror", "Mirror", "Office of Tangible Space", ["Rattan", "Metal"], '32"W x 43.5"H x 4.5"D'),
+    (r"^waii lounge chair", "Waii Lounge Chair", "Lounge Chair", "Office of Tangible Space", ["Stainless steel", "Rattan"], '23"W x 29.5"D x 29"H'),
+    (r"^waii dining chair", "Waii Dining Chair", "Dining Chair", "Office of Tangible Space", ["Stainless steel", "Rattan"], '18"W x 22.5"D x 34.5"H'),
+    (r"^ban pa ao mini sconce", "Ban Pa Ao Mini Sconce", "Wall Lamp", "Robert Sukrachand", ["Brass"], '5" diameter x 5" deep'),
+    (r"^ban pa ao concave sconce|^concave sconce", "Ban Pa Ao Concave Sconce", "Wall Lamp", "Robert Sukrachand", ["Brass"], '10" diameter x 5.5" deep'),
+    (r"^convex sconce", "Ban Pa Ao Convex Sconce", "Wall Lamp", "Robert Sukrachand", ["Brass"], '10" diameter x 5.5" deep'),
+    (r"^pendant - coiled", "Ban Pa Ao Coiled Pendant", "Pendant Lamp", "Robert Sukrachand", ["Brass"], '10" diameter'),
+    (r"^double bubble lamp", "Double Bubble Lamp", "Table Lamp", "Pat Kim", ["Brass"], '12" high x 5" diameter'),
+    (r"^din side table", "DIN Side Table", "Side Table", "Christopher Merchant", ["Ceramic"], '13" diameter x 18"H'),
+    (r"^din pendant", "DIN Pendant", "Pendant Lamp", "Christopher Merchant", ["Ceramic"], '3.75" diameter x 8.5"H'),
+    (r"^din sconce", "DIN Sconce", "Wall Lamp", "Christopher Merchant", ["Ceramic"], '7"W x 8"H x 3.75"D'),
+    (r"^suthep mirror", "Suthep Mirror", "Mirror", "Bowen Liu", ["Cast brass"], '25"W x 37.5"H x 1.25"D'),
+    (r"^stk beaded sconce", "STK Beaded Sconce", "Wall Lamp", "", ["Terracotta", "Steel"], '8"W x 9.5"H x 5.5"D'),
+    (r"^checker side table", "Checker Side Table", "Side Table", "Art Resources", ["Parchment", "Wood"], '16" x 16" x 16"'),
+    (r"^40 side table", "40 Side Table", "Side Table", "Art Resources", ["Parchment", "Wood"], '16" x 16" x 16"'),
+    (r"^mirazzo", "Mirazzo Mirror", "Mirror", "Robert Sukrachand", ["Stone aggregate"], '24" diameter x 1.2" thick'),
+    (r"^blob sconce #1", "Blob Sconce #1", "Wall Lamp", "Hannah Bigeleisen", ["Marble"], '8.25" x 12"'),
+    (r"^blob sconce #2", "Blob Sconce #2", "Wall Lamp", "Hannah Bigeleisen", ["Marble"], '11.25" x 12.75"'),
+    (r"^kraas sconce", "Kraas Sconce", "Wall Lamp", "Kin & Company", ["Brass"], '11" x 14.5" x 2" deep'),
+    (r"^fluted pendant", "Fluted Pendant", "Pendant Lamp", "Hannah Bigeleisen", ["Marble"], '5" diameter x 9.25"H'),
+]
+
+
+def extract_pern_baan(brand):
+    base = brand["url"].rstrip("/")
+    listings = []
+    page = 1
+    while page <= 4:
+        data = _fetch_json(f"{base}/products.json?limit=250&page={page}")
+        batch = (data or {}).get("products", [])
+        if not batch:
+            break
+        listings.extend(batch)
+        if len(batch) < 250:
+            break
+        page += 1
+        time.sleep(1)
+    pieces = {}
+    for p in listings:
+        title = p["title"].strip()
+        low = re.sub(r"\s+", " ", title.lower())
+        hit = next((m for m in PERN_BAAN_MODELS if re.search(m[0], low)), None)
+        if hit:
+            _, name, category, designer, materials, dims = hit
+        else:
+            # a design added after this list was written: one piece per title stem, category from the shop's own type
+            name = re.sub(r"\s+", " ", title.split(" - ")[0]).strip().title()
+            category = {"Sconces": "Wall Lamp", "Pendants": "Pendant Lamp", "Mirrors": "Mirror"}.get(p.get("product_type") or "", "")
+            designer, materials, dims = "", [], ""
+        if name in pieces:
+            continue
+        images = p.get("images") or []
+        if not images:
+            continue
+        prices = [float(v["price"]) for v in p.get("variants", []) if v.get("price")]
+        pieces[name] = {
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+            "product_url": f"{base}/products/{p['handle']}", "category": category, "material_options": materials,
+            "dimensions": dims, "notes": "", "image_url": images[0]["src"], "designer": designer,
+            "price": min(prices) if prices else None, "currency": "USD" if prices else None,
+        }
+    return list(pieces.values())
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -15626,6 +17969,48 @@ EXTRACTORS = {
     "Pat Kim": extract_pat_kim,
     "Kawabi": extract_kawabi,
     "S-CAB": extract_scab,
+    "Kassandra Thatcher": extract_kassandra_thatcher,
+    "Marquel Williams": extract_marquel_williams,
+    "Paul Coenen": extract_paul_coenen,
+    "Phantom Hands": extract_phantom_hands,
+    "Sing Chan": extract_sing_chan,
+    "Corpus Studio": extract_corpus_studio,
+    "COSEINCORSO": extract_coseincorso,
+    "Epoche Studio": extract_epoche_studio,
+    "Monolith": extract_monolith,
+    "Phillip Jividen": extract_phillip_jividen,
+    "Clair Catillaz": extract_wave3c_clam_lab,
+    "Jordan McDonald": extract_wave3c_jordan_mcdonald,
+    "Malfatti Glass": extract_wave3c_malfatti,
+    "Nancy Pearce": extract_wave3c_nancy_pearce,
+    "Sasha Court": extract_wave3c_sasha_court,
+    "Catalin Filip": extract_catalin_filip,
+    "Gabriel Scott": extract_gabriel_scott,
+    "Larose Guyon": extract_larose_guyon,
+    "Pani Jurek": extract_pani_jurek,
+    "Studio AOAO": extract_studio_aoao,
+    "Austin Fields": extract_austin_fields,
+    "CAM Design Co.": extract_cam_design_co,
+    "Charles Deppierraz": extract_charles_deppierraz,
+    "Deknudt Mirrors": extract_deknudt_mirrors,
+    "MMairo Design": extract_mmairo_design,
+    "Soft Geometry": extract_soft_geometry,
+    "Dina No": extract_dina_no,
+    "Slush Club": extract_slush_club,
+    "Campagna": extract_campagna,
+    "Jeff Martin Joinery": extract_jeff_martin_joinery,
+    "Mother of God": extract_mother_of_god,
+    "Rafi Ajl": extract_rafi_ajl,
+    "Ariela Nomi Kuh": extract_ariela_nomi_kuh,
+    "Wentz Design": extract_wentz_design,
+    "Gilles Caffier": extract_gilles_caffier,
+    "Layered": extract_layered,
+    "Taracea": extract_taracea,
+    "Nicoline": extract_nicoline,
+    "Salam Hello": extract_salam_hello,
+    "D-Haene Studio": extract_dhaene_studio,
+    "Allied Maker": extract_allied_maker,
+    "Pern Baan": extract_pern_baan,
 }
 
 

@@ -1170,6 +1170,12 @@ def _brand_stockist_item(name, locations):
       </a>"""
 
 
+# "Where to buy" only shows once a maker has at least this many stockists (2026-11-21, the user's call): a single pill reads as
+# sparse and one retailer's claim is the likeliest to go stale. Lower it as the retailer lists grow. `python3 scraper/stockist_coverage.py`
+# shows how many maker pages each setting would cover.
+MIN_STOCKISTS_SHOWN = 2
+
+
 def render_stockist_section(brand, stockist_groups):
     """
     "Where to buy" - a real, free fact (which real stockists carry this
@@ -1178,7 +1184,7 @@ def render_stockist_section(brand, stockist_groups):
     free/paid organizing principle. Returns "" when there's nothing to
     show, so callers can include it unconditionally.
     """
-    if not stockist_groups:
+    if not stockist_groups or len(stockist_groups) < MIN_STOCKISTS_SHOWN:
         return ""
     items = "\n".join(_brand_stockist_item(name, locations) for name, locations in stockist_groups)
     return f"""
@@ -1452,7 +1458,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     all_work_title = f'  <p class="brand-section-title">All of {html.escape(brand)}</p>\n' if news_section else ""
     designers_section = render_designers_section(brand, designers) if page == 1 else ""
     similar_section = render_similar_section(brand, similar) if page == 1 else ""
-    stockist_section = "" if site_sections.is_hidden("maker_stockists") else render_stockist_section(brand, stockists)
+    stockist_section = render_stockist_section(brand, stockists) if page == 1 else ""
     page_url = f"{SITE_URL}/brands/{brand_page_slug(slug, page)}.html"
     page_note = f" (page {page} of {pages})" if pages > 1 else ""
     pg = f", page {page}" if page > 1 else ""

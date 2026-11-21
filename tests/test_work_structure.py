@@ -228,17 +228,24 @@ class StructureTests(unittest.TestCase):
         self.assertNotIn("New from Gubi", body)
         self.assertNotIn("All of Gubi", body)                  # no empty space, no extra heading, just the range
 
-    def test_maker_pages_have_the_share_button_and_no_stockist_section(self):
+    def test_maker_pages_have_the_share_button_and_where_to_buy_only_from_two_stockists(self):
         import glob as _g
         text = (DOCS / "brands" / "gubi.html").read_text()
         self.assertIn('<button class="share-btn"', text)
         self.assertRegex(text, r'data-product="[^"]+" data-brand="Gubi"')    # any Gubi piece: the scraped range changes
         self.assertIn("/share.js?v=", text)
         self.assertIn(".share-btn.copied::after", text)                 # the shared button styles are embedded
+        with_section = 0
         for f in _g.glob(str(DOCS / "brands" / "*.html")):
             page = Path(f).read_text()
-            self.assertNotIn('class="stockist-item"', page, f)
-            self.assertNotIn('<p class="brand-section-title">Where to buy', page, f)
+            n = page.count('class="stockist-item"')
+            if '<p class="brand-section-title">Where to buy' in page:
+                with_section += 1
+                self.assertGreaterEqual(n, 2, f)                        # MIN_STOCKISTS_SHOWN (2026-11-21)
+                self.assertNotRegex(Path(f).name, r"-\d+\.html$")         # first pages only, not continuation pages
+            else:
+                self.assertEqual(n, 0, f)
+        self.assertGreater(with_section, 0)
 
     def test_maker_pages_are_paged_at_60_cards_with_see_more(self):
         import glob as _g
