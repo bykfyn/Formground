@@ -18002,6 +18002,46 @@ def extract_victoria_morris(brand):
     return products
 
 
+# --- Wave 3 (2026-11-21) ---
+
+# hahastudio.se (HAHA studio, Stockholm lighting brand, added 2026-11-21, Wave 3): a standard Shopify store whose /products.json is
+# complete (14 listings = the 14 URLs in the product sitemap, all vendor "HAHA studio"). The shop shows nine current pieces; the
+# three listings tagged "archives" (two Spin prototype colourways, GH-V1.0 "Ghost" limited) are left out, and the three Alia
+# candleholder packs (A, B, C: the same set in different compositions) are grouped into one piece shown on Pack A's page.
+# Category per piece is the site's own wording (pendant / table / wall lamp, candleholder).
+HAHA_STUDIO_PIECES = {
+    "spin": "Pendant", "spin-wall": "Wall Lamp", "splash": "Pendant", "donut": "Table Lamp", "donut-pendant": "Pendant",
+    "solen-pendant-lamp": "Pendant", "grid": "Table Lamp", "disc": "Pendant", "alia-candleholder-c": "Candle Holder",
+}
+HAHA_STUDIO_NAMES = {"alia-candleholder-c": "Alia candleholder"}
+def extract_haha_studio(brand):
+    base = brand["url"].rstrip("/")
+    data = _fetch_json(f"{base}/products.json?limit=250")
+    if not data:
+        print("  Could not fetch the HAHA studio products.json")
+        return []
+    by_handle = {p["handle"]: p for p in data.get("products", [])}
+    products = []
+    for handle, category in HAHA_STUDIO_PIECES.items():
+        p = by_handle.get(handle)
+        if not p or not p.get("images"):
+            print(f"  HAHA studio: {handle} not found or without photo - skipped")
+            continue
+        text = html.unescape(re.sub(r"<[^>]+>", " ", p.get("body_html") or ""))
+        size = re.search(r"Dimensions:\s*([\d.,]+\s*x\s*[\d.,]+(?:\s*x\s*[\d.,]+)?\s*cm)", text)
+        price, _ = _shopify_price_info([p])
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"],
+            "product_name": HAHA_STUDIO_NAMES.get(handle, p["title"].strip()),
+            "product_url": f"{base}/products/{handle}", "category": category,
+            "material_options": [] if handle.startswith("alia") else ["Aluminium"],
+            "dimensions": size.group(1) if size else "", "notes": "",
+            "image_url": p["images"][0]["src"].split("?")[0], "designer": "",
+            "price": price, "currency": "SEK" if price is not None else None,
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -18430,6 +18470,7 @@ EXTRACTORS = {
     "Patty Studios": extract_patty_studios,
     "Victoria Morris": extract_victoria_morris,
     "Roll & Hill": extract_roll_and_hill,
+    "HAHA studio": extract_haha_studio,
 }
 
 
