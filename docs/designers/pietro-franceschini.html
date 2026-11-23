@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pietro Franceschini: designs and projects — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Pietro Franceschini - 69 works. Each linked to its own page.">
+<link rel="canonical" href="https://formground.com/designers/pietro-franceschini.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pietro Franceschini: designs and projects — Formground">
+<meta property="og:description" content="Pietro Franceschini - 69 works. Each linked to its own page.">
+<meta property="og:url" content="https://formground.com/designers/pietro-franceschini.html">
+<meta property="og:image" content="https://formground.com/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://formground.com/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Designers", "item": "https://formground.com/designers.html"}, {"@type": "ListItem", "position": 3, "name": "Pietro Franceschini", "item": "https://formground.com/designers/pietro-franceschini.html"}]}</script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/icons.css?v=86479f05">
+<style>
+  .curated-note { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; }
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  /* "New from X" sits at the TOP of a maker page, above the full range (and only exists when there is something new) */
+  .brand-section--top { margin: 0 0 44px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent; /* same box as .tag so the two small labels are one height */
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  /* two to a row on a phone (a single 190px-minimum column left the directories one long list) */
+  @media (max-width: 640px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px auto 0; line-height: 1.6; text-align: center; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px; height: 47px; box-sizing: border-box;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+/* SHARE-BTN:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .share-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 1;
+    width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(250, 249, 247, 0.85); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+  }
+  .share-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+  .share-btn i { font-size: 14px; }
+  .share-btn.copied::after {
+    content: "Copied"; position: absolute; bottom: 32px; right: 0;
+    background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  /* LOAD-MORE:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .load-more-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 40px 0 8px; text-align: center;
+  }
+  .load-more-btn {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: none; border: none; padding: 6px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .load-more-btn:hover { color: var(--text-primary); }
+  .load-more-btn:disabled { opacity: 0.6; cursor: default; text-decoration: none; }
+  .load-more-progress { font-size: 11.5px; color: var(--text-muted); }
+  
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 28px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
+  .has-load-more .pager { display: none; }
+  .earlier-results { display: none; margin: 0 0 14px; font-size: 13px; }
+  .has-load-more .earlier-results { display: block; }
+  .earlier-results a { color: var(--text-muted); text-decoration: none; }
+  .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
+</style>
+<style>
+  .creator-text { max-width: 640px; margin: 0 auto 36px; }
+  .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
+  .creator-facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 18px; margin: 18px 0 14px;
+    padding: 14px 0; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .creator-facts dt { color: var(--text-muted); }
+  .creator-facts dd { margin: 0; color: var(--text-primary); }
+  .creator-text p.creator-more { font-size: 13px; margin: 0 0 4px; }   /* beats .creator-text p (15px): the link is small, like "Visit site" */
+  .creator-more a { color: var(--text-accent); text-decoration: none; }
+  .creator-more a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/edits.html">Edits</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Designer</p>
+    <h1 class="maker-name">Pietro Franceschini</h1>
+    <a class="brand-site-link" href="https://pietro-franceschini.com/" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  
+  <section class="creator-text">
+    <p>Pietro Franceschini is an Italian architect and designer, born in Florence in 1988, who runs PF Studio in Milan, founded in 2020. The studio makes collectible furniture and objects: the Arch benches, consoles and stools in brass, aluminium, steel, plaster and nabuk, Bellissimo tables in travertine, and the Slice Me Up coffee tables.</p><p>Upholstered seating includes the Bling Bling, Tomyris and Les Incroyables series. The work is shown through galleries such as Galerie Philia and Movimento, and by enquiry to the studio. On Formground his work is shown through 69 works, each linked to his own website.</p>
+    <dl class="creator-facts"><dt>Country</dt><dd>Italy</dd><dt>City</dt><dd>Milan</dd><dt>Type</dt><dd>Designer</dd><dt>Products</dt><dd>Collectible furniture and objects</dd><dt>Founded</dt><dd>2020</dd><dt>Website</dt><dd>pietro-franceschini.com</dd></dl>
+  </section>
+  <div class="maker-grid">
+      <a class="maker-card" href="https://pietro-franceschini.com/works/ricciolo/" target="_blank" rel="noopener noreferrer" data-product="Ricciolo Dining Chair" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalog-items/dccbe8e3-0ab6-42d2-aa13-18fe45d100f5.jpg" alt="Ricciolo Dining Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ricciolo Dining Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/riccioloo/" target="_blank" rel="noopener noreferrer" data-product="Ricciolo Dining Armchair" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalog-items/2ad66716-ddf5-4517-8c69-ea2f56422021.jpg" alt="Ricciolo Dining Armchair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Ricciolo Dining Armchair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/gold-arch-bench/" target="_blank" rel="noopener noreferrer" data-product="Gold Arch Bench" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/4a203eb6-25f7-4df4-8165-c6ff9602e960.jpg" alt="Gold Arch Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Gold Arch Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/gold-arch-console/" target="_blank" rel="noopener noreferrer" data-product="Gold Arch Console" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/6f5f9a92-3065-4253-9e98-c6a8945b097d.jpg" alt="Gold Arch Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Gold Arch Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/gold-arch-stool/" target="_blank" rel="noopener noreferrer" data-product="Gold Arch Stool" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/0450a401-3fe9-45de-ac48-fc084d89fd2e.jpg" alt="Gold Arch Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Gold Arch Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/silver-arch-console/" target="_blank" rel="noopener noreferrer" data-product="Silver Arch Console" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalog-items/ad68b135-865c-4edb-8eaa-f5ddbe2b2323.jpg" alt="Silver Arch Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Silver Arch Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/silver-arch-bench/" target="_blank" rel="noopener noreferrer" data-product="Silver Arch Bench" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalog-items/9034fe8a-430d-4c5b-b631-78beb616d35f.jpg" alt="Silver Arch Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Silver Arch Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/silver-arch-stool/" target="_blank" rel="noopener noreferrer" data-product="Silver Arch Stool" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/ae237b4f-6e2e-45a6-bb14-fcb012b1274a.jpg" alt="Silver Arch Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Silver Arch Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/bellissimo-round-table/" target="_blank" rel="noopener noreferrer" data-product="Bellissimo Round Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalog-items/10d2d37b-cc68-4444-ab6e-6ac6a20f03e6.jpg" alt="Bellissimo Round Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bellissimo Round Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/bellissimo-oval-table/" target="_blank" rel="noopener noreferrer" data-product="Bellissimo Oval Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/028673f4-d5fa-4aa0-8493-b526d9588bd4.jpg" alt="Bellissimo Oval Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bellissimo Oval Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/bellissimo-console/" target="_blank" rel="noopener noreferrer" data-product="Bellissimo Console" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/4d55aa71-f051-400c-9b99-e82354bb58d2.jpg" alt="Bellissimo Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bellissimo Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/bellissimo-stool/" target="_blank" rel="noopener noreferrer" data-product="Bellissimo Stool" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/9f8f1905-8c66-4994-b63c-b164d4ba47b8.jpg" alt="Bellissimo Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bellissimo Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/bellissimo-floor-lamp/" target="_blank" rel="noopener noreferrer" data-product="Bellissimo Floor Lamp" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/5ccf3ce9-ab68-4964-a0f8-bb7ab9ab6e0c.jpg" alt="Bellissimo Floor Lamp" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bellissimo Floor Lamp</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/slice-me-up-coffee-table-4/" target="_blank" rel="noopener noreferrer" data-product="Slice Me Up Coffee Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/91d286e0-a994-404b-8a36-a011b01bae2f.jpg" alt="Slice Me Up Coffee Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Slice Me Up Coffee Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/lv01-chair/" target="_blank" rel="noopener noreferrer" data-product="LV01 Chair" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/9d017b90-bdd3-446b-8e40-df6fc1e2ac85.jpg" alt="LV01 Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LV01 Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/lv02-stool/" target="_blank" rel="noopener noreferrer" data-product="LV02 Stool" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/7b8dc3f1-4f33-4467-bd2a-de391f23f7cf.jpg" alt="LV02 Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LV02 Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/lv03-lounge/" target="_blank" rel="noopener noreferrer" data-product="LV03 Lounge" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/9a7528e2-f1b2-41cf-a688-d33ebc0a2ff2.jpg" alt="LV03 Lounge" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LV03 Lounge</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/lv04-ottoman/" target="_blank" rel="noopener noreferrer" data-product="LV04 Ottoman" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/35fce60a-1d5f-4d1d-af1c-88ee39dd0d39.jpg" alt="LV04 Ottoman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LV04 Ottoman</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/lv05-bench/" target="_blank" rel="noopener noreferrer" data-product="LV05 Bench" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/4f31482c-34af-4e3d-851d-c85f792b233c.jpg" alt="LV05 Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LV05 Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/lv-coffee-table/" target="_blank" rel="noopener noreferrer" data-product="LV Coffee Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/ded0a1dd-f601-4c41-bde0-8d2dcb5d622d.jpg" alt="LV Coffee Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LV Coffee Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/tomyris-chair/" target="_blank" rel="noopener noreferrer" data-product="Tomyris Chair" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/157f7a17-55a4-4913-97b4-2fa5e0b254f6.jpg" alt="Tomyris Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tomyris Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/athena-ottoman/" target="_blank" rel="noopener noreferrer" data-product="Athena Ottoman" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/4b7d6c5f-7c39-4231-aad3-e2c40ea44cb9.jpg" alt="Athena Ottoman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Athena Ottoman</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/atlas-ball/" target="_blank" rel="noopener noreferrer" data-product="Atlas Ball" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/8159b0f5-c85b-4bc0-9f51-2a76685188f1.jpg" alt="Atlas Ball" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Atlas Ball</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/lv-sconce/" target="_blank" rel="noopener noreferrer" data-product="LV Sconce" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/16c44f32-6b9e-46e4-a1e8-3111d7b07a5b.jpg" alt="LV Sconce" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LV Sconce</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/maresa-table/" target="_blank" rel="noopener noreferrer" data-product="Maresa Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/d1083df0-e252-467a-b754-6923a5300712.jpg" alt="Maresa Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Maresa Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/together-forever-coffee-table/" target="_blank" rel="noopener noreferrer" data-product="Together Forever Coffee Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/d3716272-f4a5-4792-9aa9-254341b7f97e.jpg" alt="Together Forever Coffee Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Together Forever Coffee Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/collide-coctkail-table/" target="_blank" rel="noopener noreferrer" data-product="Collide Cocktail Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalog-items/f3c879c1-d525-4971-b053-7ac63a022995.jpg" alt="Collide Cocktail Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Collide Cocktail Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/00-s-sconce/" target="_blank" rel="noopener noreferrer" data-product="00 [S] Sconce" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/9c955a4f-a452-4665-b466-48b127ff1b08.jpg" alt="00 [S] Sconce" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">00 [S] Sconce</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/00-xl-sconce/" target="_blank" rel="noopener noreferrer" data-product="00 [XL] Sconce" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/5090561a-4200-4bed-b025-c6c4541c1abb.jpg" alt="00 [XL] Sconce" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">00 [XL] Sconce</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/george-sconce/" target="_blank" rel="noopener noreferrer" data-product="George Sconce" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/006607c7-a9f7-45ae-ba7b-21a327d6897d.jpg" alt="George Sconce" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">George Sconce</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/gamma-stool-01/" target="_blank" rel="noopener noreferrer" data-product="Gamma Stool" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/7415a16c-dd86-4dde-ac3b-797ab6787a86.jpg" alt="Gamma Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Gamma Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/low-twins-coffee-table/" target="_blank" rel="noopener noreferrer" data-product="Low Twins Coffee Table (Pair)" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/e7b4927d-a625-4a5f-a5b3-6b910c3b91fa.jpg" alt="Low Twins Coffee Table (Pair)" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Low Twins Coffee Table (Pair)</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/automa-coffee-table-01/" target="_blank" rel="noopener noreferrer" data-product="Automa Coffee Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/952b7540-b9d0-4dfc-9bba-34ceb292fdcb.jpg" alt="Automa Coffee Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Automa Coffee Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/black-arch-bench/" target="_blank" rel="noopener noreferrer" data-product="Black Arch Bench" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/5bdc48bd-3bfe-40bd-ac43-98b41520e829.jpg" alt="Black Arch Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Black Arch Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/black-arch-console/" target="_blank" rel="noopener noreferrer" data-product="Black Arch Console" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/7032eeac-a835-4d7f-86b2-8aac3c544c4d.jpg" alt="Black Arch Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Black Arch Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/black-arch-stool/" target="_blank" rel="noopener noreferrer" data-product="Black Arch Stool" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/b9053664-3930-470e-8f06-e89d0776460f.jpg" alt="Black Arch Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Black Arch Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/white-arch-bench/" target="_blank" rel="noopener noreferrer" data-product="White Arch Bench" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalog-items/2654edf2-7db9-45cb-a2e6-7b7e76bc15df.jpg" alt="White Arch Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">White Arch Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/white-arch-console/" target="_blank" rel="noopener noreferrer" data-product="White Arch Console" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/91581222-c19a-491c-826d-8f3a94511c43.jpg" alt="White Arch Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">White Arch Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/white-arch-stool/" target="_blank" rel="noopener noreferrer" data-product="White Arch Stool" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/e2c12d17-fc6c-438f-9502-25a9e6a9d001.jpg" alt="White Arch Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">White Arch Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/cha-cha-cha-side-table/" target="_blank" rel="noopener noreferrer" data-product="Cha Cha Cha Side Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/1bd23726-b7fe-40b0-9703-fb20dcdde6ee.jpg" alt="Cha Cha Cha Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Cha Cha Cha Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/un-beso-en-el-mar-stool/" target="_blank" rel="noopener noreferrer" data-product="Un Beso En El Mar Stool" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/d97c52d3-a627-4d11-8b57-c1846c4bc616.jpg" alt="Un Beso En El Mar Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Un Beso En El Mar Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/los-tres-deseos-stool/" target="_blank" rel="noopener noreferrer" data-product="Los Tres Deseos Stool" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/0f9754b8-6a34-480f-8e57-377090102e61.jpg" alt="Los Tres Deseos Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Los Tres Deseos Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/sugar-daddy-chair/" target="_blank" rel="noopener noreferrer" data-product="Sugar Daddy Chair" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/c38a4cdb-0512-4d3e-9162-7bf3cada7883.jpg" alt="Sugar Daddy Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Sugar Daddy Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/tomyris-m-chair/" target="_blank" rel="noopener noreferrer" data-product="Tomyris Mohair Chair" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/0976cd0e-9372-461f-ad46-70c6791c1e28.jpg" alt="Tomyris Mohair Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tomyris Mohair Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/cuddle-coffee-table/" target="_blank" rel="noopener noreferrer" data-product="Cuddle Coffee Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/cb913345-9840-49b9-bc43-ef430cb35508.jpg" alt="Cuddle Coffee Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Cuddle Coffee Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/dune-coffee-table/" target="_blank" rel="noopener noreferrer" data-product="Dune Coffee Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalog-items/e9376825-2698-4ca1-85de-18814c1a2504.jpg" alt="Dune Coffee Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Dune Coffee Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/les-incroyables-chair/" target="_blank" rel="noopener noreferrer" data-product="Les Incroyables Chair" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/92e25048-088f-4417-a8fc-cd8eb54f1d87.jpg" alt="Les Incroyables Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Les Incroyables Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/les-incroyables-ottoman/" target="_blank" rel="noopener noreferrer" data-product="Les Incroyables Ottoman" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/a57e1a33-650c-4db7-9ff9-1f0a87a6c9a6.jpg" alt="Les Incroyables Ottoman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Les Incroyables Ottoman</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/atlas-fur-ball/" target="_blank" rel="noopener noreferrer" data-product="Atlas [FUR] Ball" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/d1d4b9a4-0db2-44a4-8d53-a10d5be23ef1.jpg" alt="Atlas [FUR] Ball" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Atlas [FUR] Ball</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/bling-bling-a-ottoman/" target="_blank" rel="noopener noreferrer" data-product="Bling Bling Bobcat Ottoman" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalog-items/39522232-66d0-45cf-8843-1bccdfa5691d.jpg" alt="Bling Bling Bobcat Ottoman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bling Bling Bobcat Ottoman</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/tivoli-collection/" target="_blank" rel="noopener noreferrer" data-product="Tivoli Bench" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/02a3f544-4c7d-4237-9fae-e2ef6c65b5ce.jpg" alt="Tivoli Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tivoli Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/bling-bling-chair/" target="_blank" rel="noopener noreferrer" data-product="Bling Bling Chair" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/302d2fce-dc6c-44f3-8477-af88d7d43465.jpg" alt="Bling Bling Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bling Bling Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/bling-bling-ottoman/" target="_blank" rel="noopener noreferrer" data-product="Bling Bling Ottoman" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/b7a1b350-07a6-4460-8adf-bba6917a793c.jpg" alt="Bling Bling Ottoman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bling Bling Ottoman</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/siamese-sofa/" target="_blank" rel="noopener noreferrer" data-product="Siamese Sofa" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/f539fead-c764-4246-bca3-b52a8e7fd0bb.jpg" alt="Siamese Sofa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Siamese Sofa</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/bling-bling-table/" target="_blank" rel="noopener noreferrer" data-product="Bling Bling Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/68c541ae-7c92-45d0-a8a8-4d24809fc2e8.jpg" alt="Bling Bling Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Bling Bling Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/taurus-stool/" target="_blank" rel="noopener noreferrer" data-product="Taurus Stool" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/c02bba01-6246-40ff-a762-1d6dd44e9995.jpg" alt="Taurus Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Taurus Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/les-incroyables-chair-02/" target="_blank" rel="noopener noreferrer" data-product="Les Incroyables Mohair Chair" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/18e4d324-64ab-4d8f-be5f-5bae75cedad2.jpg" alt="Les Incroyables Mohair Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Les Incroyables Mohair Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/urania-chair/" target="_blank" rel="noopener noreferrer" data-product="Urania Chair" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/0845383a-f3d5-4f88-a6cf-c374078d184c.jpg" alt="Urania Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Urania Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/six-variations-on-stainless-steel-ss01-chair/" target="_blank" rel="noopener noreferrer" data-product="Six Variations Chair" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/c722d933-c4cc-4cfb-a229-ae4b0a0950c8.jpg" alt="Six Variations Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Six Variations Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/nabuk-arch-bench/" target="_blank" rel="noopener noreferrer" data-product="Nabuk Arch Bench" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/802484cf-91c2-4acd-992d-710c4502a062.jpg" alt="Nabuk Arch Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nabuk Arch Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/nabuk-arch-console/" target="_blank" rel="noopener noreferrer" data-product="Nabuk Arch Console" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/7f079f71-d428-4fec-872c-30e9de000708.jpg" alt="Nabuk Arch Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nabuk Arch Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/nabuk-arch-stool/" target="_blank" rel="noopener noreferrer" data-product="Nabuk Arch Stool" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/f5677bfc-cb86-4768-8d4a-91c8d477dea6.jpg" alt="Nabuk Arch Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Nabuk Arch Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/licitra-chair/" target="_blank" rel="noopener noreferrer" data-product="Licitra Chair" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/10bace87-05d7-451a-af3c-d96b198aa99d.jpg" alt="Licitra Chair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Licitra Chair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/medusa-pouf/" target="_blank" rel="noopener noreferrer" data-product="Medusa Pouf" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/b1e294ad-dd2d-4929-919a-f8b732fad09b.jpg" alt="Medusa Pouf" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Medusa Pouf</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/khelone-ottoman/" target="_blank" rel="noopener noreferrer" data-product="Khelone Ottoman" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalog-items/cdef3ad3-a2dc-461c-9da9-f918ee2ebc43.jpg" alt="Khelone Ottoman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Khelone Ottoman</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/rotella-coffee-table/" target="_blank" rel="noopener noreferrer" data-product="Rotella Coffee Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/aabcd4af-efa0-463f-82ec-96862a0214eb.jpg" alt="Rotella Coffee Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rotella Coffee Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/rotella-side-table/" target="_blank" rel="noopener noreferrer" data-product="Rotella Side Table" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/bb71b74f-2d1f-421a-b069-7899260be5d7.jpg" alt="Rotella Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rotella Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/rotella-bench/" target="_blank" rel="noopener noreferrer" data-product="Rotella Bench" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/3ad4d4c2-de13-4669-a8ee-9e5691da16c2.jpg" alt="Rotella Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Rotella Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://pietro-franceschini.com/works/stack-console/" target="_blank" rel="noopener noreferrer" data-product="Stack Console" data-brand="Pietro Franceschini">
+        <div class="maker-card-hero"><img src="https://cdn.pietro-franceschini.com/cdn-cgi/image/format=auto,quality=80,width=900/api-pietro-franceschini-com/catalogitems/e1412ab9-4d8f-4c7e-8a83-ce46e20ba540.jpg" alt="Stack Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Stack Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+  </div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    // The tracking itself (page views, click-throughs, landing-page and
+    // campaign carry-over) lives in ONE shared file, /fg-track.js, instead
+    // of being pasted into hundreds of generated pages - see that file and
+    // backend/analytics.py for what is logged.
+    var s = document.createElement("script");
+    s.src = "/fg-track.js";
+    s.async = true;
+    document.head.appendChild(s);
+  })();
+</script>
+<script src="/share.js?v=3dc65514" defer></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

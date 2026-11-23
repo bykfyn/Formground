@@ -16,7 +16,7 @@
     var img = e.target;
     if (img.tagName !== "IMG" || !img.closest || !img.closest(".card-image")) return;
     var ratio = img.naturalWidth / img.naturalHeight;
-    if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    if (!img.style.objectPosition && (ratio < 0.55 || ratio > 1.8)) img.classList.add("contain-fit");
   }, true);
 
   if (grid) document.documentElement.classList.add("has-load-more");

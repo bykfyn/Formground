@@ -226,7 +226,7 @@ function renderCard(r) {
     // never hit this and keep filling the box edge-to-edge as before.
     img.onload = () => {
       const ratio = img.naturalWidth / img.naturalHeight;
-      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+      if (!img.style.objectPosition && (ratio < 0.55 || ratio > 1.8)) img.classList.add("contain-fit");
     };
     imageDiv.appendChild(img);
   } else {

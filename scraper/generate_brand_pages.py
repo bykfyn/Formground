@@ -1552,7 +1552,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
   document.querySelectorAll(".card-image img").forEach(function (img) {{
     img.addEventListener("load", function () {{
       var ratio = img.naturalWidth / img.naturalHeight;
-      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+      if (!img.style.objectPosition && (ratio < 0.55 || ratio > 1.8)) img.classList.add("contain-fit");
     }});
   }});
 </script>
@@ -1643,7 +1643,7 @@ def render_makers_index(brands_data):
   document.querySelectorAll(".maker-card-hero img").forEach(function (img) {{
     img.addEventListener("load", function () {{
       var ratio = img.naturalWidth / img.naturalHeight;
-      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+      if (!img.style.objectPosition && (ratio < 0.55 || ratio > 1.8)) img.classList.add("contain-fit");
     }});
   }});
 {DIRECTORY_FILTER_JS}</script>
@@ -1772,7 +1772,7 @@ def render_new_page(products):
   document.querySelectorAll(".card-image img").forEach(function (img) {{
     img.addEventListener("load", function () {{
       var ratio = img.naturalWidth / img.naturalHeight;
-      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+      if (!img.style.objectPosition && (ratio < 0.55 || ratio > 1.8)) img.classList.add("contain-fit");
     }});
   }});
 </script>

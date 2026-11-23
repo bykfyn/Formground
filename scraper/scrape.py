@@ -3819,6 +3819,10 @@ EXCLUDED_CATEGORIES = {
     # tags exactly this kind of accessory (mounting brackets, a
     # replacement bulb), not standalone lamps.
     "extras",
+    # User-reported 2026-11-23 on Santa & Cole: "Tramas arquitectónicas de Barcelona" is a book. Its WooCommerce categories "Books"
+    # (57 titles: monographs, essays, management books) and "Recambios" (89 spare parts: LED capsules, canopies, spare
+    # lampshades) are not design objects. Its "Arte" (Neoseries artworks) is a separate question, left in for now.
+    "books", "recambios",
 }
 
 # Utilitario Mexicano's product_type is blank across its entire ~490-
@@ -18420,6 +18424,7 @@ EXTRACTORS = {
     "Giulio Zizzari": extract_portfolio_designer,
     "Salem Charabi": extract_portfolio_designer,
     "Thom Fougere": extract_portfolio_designer,
+    "Pietro Franceschini": extract_portfolio_designer,
     "Hervé Langlais": extract_portfolio_designer,    # 2026-11-10
     "Feldspar": extract_shopify,
     "Faye Toogood": extract_faye_toogood,

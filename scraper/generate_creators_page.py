@@ -17,6 +17,7 @@ Run after generate_brand_pages / generate_designers_pages / generate_architects_
 
 import datetime
 import html
+import json
 import random
 import re
 import sys
@@ -118,6 +119,12 @@ def render(text, today=None):
         pattern = re.compile(rf"<!--PROFILES:{group}-->.*?<!--/PROFILES:{group}-->", re.S)
         block = f"<!--PROFILES:{group}-->{column_html(group, cards, today, len(cards))}<!--/PROFILES:{group}-->"
         text = pattern.sub(lambda m: block, text, count=1)
+    # what the search box routes on: the text each directory card shows (name, place, categories), lower case, for makers and designers
+    index = {group: [html.unescape(f'{c["name"]} {c["sub"]} {c["extra"]}').lower() for c in read_cards(group)] for group in ("makers", "designers")}
+    payload = json.dumps(index, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    text = re.sub(r"<!--SEARCH-INDEX-->.*?<!--/SEARCH-INDEX-->",
+                  lambda m: f'<!--SEARCH-INDEX--><script id="creator-index" type="application/json">{payload}</script><!--/SEARCH-INDEX-->',
+                  text, count=1, flags=re.S)
     return text
 
 
