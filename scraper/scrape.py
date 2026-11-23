@@ -18042,6 +18042,331 @@ def extract_haha_studio(brand):
     return products
 
 
+# trenat.com (Trenat Editions, Spain; added 2026-11-04, built 2026-11-23): Shopify, /products.json (29 listings, one request). Left out: the
+# leather protectors for the Cerca trays and the Trenat poster. Size and colour variants listed separately ("Bell - Grande", "hOOp - Rojo",
+# "Cerca - Bandeja rectangular grande") are one piece on the first listing's photo. Titles are Spanish; English card names are in
+# data/name_overrides.json. The only designer the site names on a piece is Miguel Mila (Blanes). Prices are EUR.
+TRENAT_CATEGORIES = (
+    ("galán de noche", "Valet Stand"), ("banqueta", "Bench"), ("taburete", "Stool"), ("hoop", "Stool"), ("bandeja", "Tray"),
+    ("carrito", "Trolley"), ("wilson", "Mirror"), ("munda", "Armchair"), ("bell", "Lamp"), ("balón", "Lamp"), ("fosca", "Lamp"),
+    ("marta", "Chair"), ("blanes", "Chair"), ("ïa", "Chair"), ("campos", "Chair"),
+)
+
+
+def extract_trenat(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/products.json?limit=250", headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+        raw = resp.json().get("products", [])
+    except (requests.RequestException, ValueError) as e:
+        print(f"  Could not fetch Trenat catalogue: {e}")
+        return []
+    groups = {}
+    for p in raw:
+        title = (p.get("title") or "").strip()
+        if title.lower().startswith(("protector de cuero", "trenat print")) or not p.get("images"):
+            continue
+        name = re.sub(r"\s+-\s+(Grande|Mediano|Pequeño|Pequeno|Rojo|Blanco|Verde)\s*$", "", title, flags=re.I)
+        name = re.sub(r"\s+(grande|pequeña)$", "", name, flags=re.I)
+        groups.setdefault(name, []).append(p)
+    products = []
+    for name, group in groups.items():
+        p = group[0]
+        lowered = name.lower()
+        category = next((label for word, label in TRENAT_CATEGORIES if word in lowered), "")
+        body = re.sub(r"<[^>]+>", " ", p.get("body_html") or "").lower()
+        materials = [label for word, label in (("ratán", "Rattan"), ("junco", "Rush"), ("enea", "Cattail"), ("chopo", "Poplar"), ("pino", "Pine")) if word in body]
+        try:
+            price = float(p["variants"][0]["price"])
+        except (KeyError, IndexError, TypeError, ValueError):
+            price = None
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": f"{base}/products/{p['handle']}",
+            "category": category, "material_options": materials, "dimensions": "", "notes": "",
+            "image_url": p["images"][0]["src"], "designer": "Miguel Milá" if lowered == "blanes" else "",
+            "price": price if price else None, "currency": "EUR" if price else None,
+        })
+    return products
+
+
+# morineau.studio (Morineau Studio, Paris; architecture and design practice of Thomas Morineau Barthelemy; added 2026-11-23): a Cargo site whose
+# gallery is script-rendered, so the only photo in the page is the cover image (og:image) of each piece's project page. Four numbered
+# editions with a cover image of their own (MOB001.A, MOB001.B, MOB002.A, MOB002.B); MOD001 Iki has none of its own (its cover is the La Taulo
+# photo) and is left out, as are the renovation and staging projects. Names, types and sizes are from the pages (sizes H x W x D in mm).
+MORINEAU_PIECES = (
+    ("mob001-project", "La Taulo", "Coffee Table", ["Stoneware", "Ash", "Larch"], "H480 x W1700 x D1100 mm"),
+    ("mob002-project", "La Cabeç", "Side Table", ["Stoneware", "Ash", "Larch"], "H480 x W480 x D480 mm"),
+    ("mob001-b-project", "Kasagi", "Dining Table", ["Ash", "Birch"], "Box 1: H150 x W1900 x D1300 mm; box 2: H790 x W980 x D420 mm"),
+    ("mob002-b-project", "Hashira", "Side Table", ["Ash", "Birch"], "H400 x W610 x D570 mm"),
+)
+
+
+def extract_morineau_studio(brand):
+    base = brand["url"].rstrip("/")
+    products = []
+    for slug, name, category, materials, dims in MORINEAU_PIECES:
+        url = f"{base}/{slug}"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch Morineau page {slug}: {e}")
+            continue
+        image = re.search(r'<meta property="og:image" content="([^"]+)"', resp.text)
+        if not image:
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": materials, "dimensions": dims, "notes": "",
+            "image_url": image.group(1), "designer": "Thomas Morineau Barthelemy",
+        })
+        time.sleep(1)
+    return products
+
+
+# vincentmazenauer.com (Vincent Mazenauer, Lausanne; collectible furniture in limited editions; added 2026-11-23): WordPress, the
+# /portfolio/ ("Creations") page lists every piece with its name, group, link and photo; there is no shop and no REST route for the pieces.
+# robots.txt asks for a 10 second crawl delay, so only this one page is read. Listings that repeat a name (a second colourway or view) are
+# one piece. Names are upper case on the site and are set in title case.
+MAZENAUER_CATEGORIES = (
+    ("chandelier", "Chandelier"), ("floor lamp", "Floor Lamp"), ("bar-cabinet", "Cabinet"), ("cabinet", "Cabinet"),
+    ("console", "Console Table"), ("coffee table", "Coffee Table"), ("side table", "Side Table"), ("dining table", "Dining Table"),
+    ("angle sofa", "Sofa"), ("curved sofa", "Sofa"), ("sofa", "Sofa"), ("armchair", "Armchair"), ("pouf", "Pouf"),
+    ("chair", "Chair"), ("bed", "Bed"),
+)
+
+
+def _mazenauer_title(raw):
+    words = []
+    for w in raw.replace("-", " ").split():
+        words.append(w if (w in ("II", "V", "CAP", "\u2013") or any(c.isdigit() for c in w)) else w.capitalize())
+    return " ".join(words)
+
+
+def extract_vincent_mazenauer(brand):
+    url = brand["url"].rstrip("/") + "/portfolio/"
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch Mazenauer's creations page: {e}")
+        return []
+    soup = BeautifulSoup(resp.text, "html.parser")
+    products, seen = [], set()
+    for art in soup.select("article.portfolio-item"):
+        title = art.select_one(".edgtf-pli-title")
+        link = art.select_one("a.edgtf-pli-link")
+        img = art.find("img")
+        if not title or not link or not img:
+            continue
+        name = _mazenauer_title(re.sub(r"\s+", " ", title.get_text()).strip())
+        if name.lower() in seen:
+            continue
+        seen.add(name.lower())
+        candidates = [(int(m.group(2)), m.group(1)) for m in re.finditer(r"(\S+)\s+(\d+)w", img.get("srcset") or "")]
+        usable = [c for c in candidates if c[0] <= 1100]
+        image = max(usable)[1] if usable else img.get("src", "")
+        lowered = name.lower()
+        category = next((label for word, label in MAZENAUER_CATEGORIES if word in lowered), "")
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": link["href"],
+            "category": category, "material_options": [], "dimensions": "", "notes": "",
+            "image_url": image, "designer": "Vincent Mazenauer",
+        })
+    return products
+
+
+# balle-studio.com (Ballé Studio, Portugal; added 2026-11-23): WordPress/Elementor. The /collection/ archive lists three pieces a page (the
+# paths use the site's own spelling "colection"); a page past the last one repeats the last pieces, so paging stops when a page brings no new
+# link. Each piece page gives the name (page title), the cover photo (og:image), the description and a Materials / Dimensions block.
+# robots.txt allows everything. Titles are partly upper case ("MAJESTIC Console") and are set in title case.
+BALLE_CATEGORIES = (
+    ("dressing table", "Dressing Table"), ("round dining table", "Dining Table"), ("dining table", "Dining Table"),
+    ("side table", "Side Table"), ("nightstand", "Bedside Table"), ("console", "Console Table"), ("sideboard", "Sideboard"),
+    ("cabinet", "Cabinet"), ("bar chair", "Bar Stool"), ("dining chair", "Chair"), ("armchair", "Armchair"),
+    ("chaise", "Chaise Longue"), ("stool", "Stool"), ("twin seat", "Sofa"), ("bed", "Bed"), ("suspension", "Pendant Lamp"),
+    ("duo", "Armchair"), ("flin", "Sofa"),
+)
+
+
+def extract_balle_studio(brand):
+    base = brand["url"].rstrip("/")
+    links = []
+    for n in range(1, 40):
+        url = f"{base}/collection/" if n == 1 else f"{base}/collection/page/{n}/"
+        try:
+            resp = requests.get(url, headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch Ballé collection page {n}: {e}")
+            break
+        found = [l for l in dict.fromkeys(re.findall(r'href="(https://balle-studio\.com/colection/[^"]+)"', resp.text)) if l not in links]
+        if not found:
+            break
+        links += found
+        time.sleep(1)
+    products = []
+    for link in links:
+        try:
+            resp = requests.get(link, headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch Ballé piece {link}: {e}")
+            continue
+        time.sleep(1)
+        title = re.search(r"<title>(.*?)</title>", resp.text, re.S)
+        image = re.search(r'property="og:image" content="([^"]+)"', resp.text)
+        if not title or not image:
+            continue
+        raw = html.unescape(title.group(1)).replace(" - Ballé Studio", "").strip()
+        name = " ".join(w if any(c.isdigit() for c in w) else w.capitalize() for w in raw.split())
+        text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[^>]*>.*?</\1>", "", resp.text, flags=re.S))))
+        dims = re.search(r"Dimensions\s*(.{0,140})", text)
+        materials = re.search(r"Materials\s*(.{0,200}?)\s+Dimensions", text)
+        lowered = (raw + " " + link).lower()
+        category = next((label for word, label in BALLE_CATEGORIES if word in lowered), "")
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": link,
+            "category": category, "material_options": [], "dimensions": re.split(r"\s+(?:request|Customization|Share|Related|LET|Follow|Get)\b", dims.group(1))[0].strip() if dims else "",
+            "notes": "", "image_url": image.group(1), "designer": "",
+        })
+    return products
+
+
+# hasik.design (hasik design studio, Szczecin, Poland; added 2026-11-23): WooCommerce, the Store API lists the 15 pieces in one request. Polish
+# category names ("Oświetlenie" = lighting) are not used; the type comes from the name (the English product pages say tray, lamp, candle
+# holder, vanity mirror). Names are upper case on the site and are set in title case; English card names for the one Polish title are in
+# data/name_overrides.json. Prices are left out: the Store API gives PLN minor units and the English pages show a different currency.
+HASIK_CATEGORIES = (
+    ("wall lamp", "Wall Lamp"), ("alice", "Wall Lamp"), ("candleholder", "Candle Holder"), ("titanos", "Candle Holder"), ("vase", "Vase"),
+    ("azzurro", "Tray"), ("u-ap", "Mirror"),
+)
+
+
+def extract_hasik_design(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        resp = requests.get(f"{base}/wp-json/wc/store/v1/products?per_page=100", headers=HEADERS, timeout=30)
+        resp.raise_for_status()
+        raw = resp.json()
+    except (requests.RequestException, ValueError) as e:
+        print(f"  Could not fetch Hasik catalogue: {e}")
+        return []
+    products = []
+    for p in raw:
+        if not p.get("images"):
+            continue
+        name = html.unescape(p["name"]).strip()
+        name = " ".join(w if (len(w) <= 2 or w in ("XL", "III", "II") or "-" in w and len(w) <= 4) else w.capitalize() for w in name.split())
+        lowered = name.lower()
+        category = next((label for word, label in HASIK_CATEGORIES if word in lowered), "Lamp")
+        slug = p["permalink"].rstrip("/").rsplit("/", 1)[-1]
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": f"{base}/en/product/{slug}/",
+            "category": category, "material_options": ["Aluminium"] if "aurora" in lowered or "alice" in lowered else [],
+            "dimensions": "", "notes": "", "image_url": p["images"][0]["src"], "designer": "",
+        })
+    return products
+
+
+# dovainstudio.com (DOVAIN Studio, northern Portugal; founders Tiago Lima and Sergio Prieto; added 2026-11-23): Squarespace 7.1 shop, read from the
+# page HTML (never ?format=json). The /shop page lists 49 listings; the sample-request listing is left out. Types come from the name. Prices are EUR.
+DOVAIN_CATEGORIES = (
+    ("bar stool", "Bar Stool"), ("sideboard", "Sideboard"), ("sofa", "Sofa"), ("armchair", "Armchair"), ("chair", "Chair"),
+    ("console", "Console Table"), ("mirror", "Mirror"), ("ceiling lamp", "Ceiling Lamp"), ("ceiling special", "Ceiling Lamp"),
+    ("floor lamp", "Floor Lamp"), ("la peregrina floor", "Floor Lamp"), ("table lamp", "Table Lamp"), ("wall lamp", "Wall Lamp"),
+    ("space wall", "Wall Lamp"), ("side table", "Side Table"), ("center table", "Coffee Table"), ("table", "Dining Table"),
+)
+
+
+def extract_dovain_studio(brand):
+    products = []
+    for item in _squarespace_html_items(brand["url"].rstrip("/") + "/shop"):
+        name = re.sub(r"\s+", " ", item.get("title") or "").strip()
+        if not name or "sample request" in name.lower() or not item.get("assetUrl"):
+            continue
+        lowered = name.lower()
+        category = next((label for word, label in DOVAIN_CATEGORIES if word in lowered), "")
+        money = item["structuredContent"]["variants"][0].get("priceMoney") or {}
+        try:
+            price = float(money.get("value"))
+        except (TypeError, ValueError):
+            price = None
+        image = item["assetUrl"] if "?" in item["assetUrl"] else item["assetUrl"] + "?format=1500w"
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": "https://www.dovainstudio.com" + item["fullUrl"],
+            "category": category, "material_options": [], "dimensions": "", "notes": "", "image_url": image, "designer": "",
+            "price": price, "currency": "EUR" if price else None,
+        })
+    return products
+
+
+# ayresmx.com (Ayres, Mexico City; added 2026-11-23, user link; ayres.com is a parked domain): Squarespace. The three /collections/ pages
+# (furniture, lighting, objects) carry each piece as a photo block followed by a text block ("NAME | materials", then sizes), read from the
+# page HTML in document order, plus the three pieces in the /tienda shop (with MXN prices). Pieces are priced on request ("send me a quotation").
+# robots.txt is the generic Squarespace AI-bot template. Types come from the name.
+AYRES_CATEGORIES = (
+    ("totem", "Objects"), ("console", "Console Table"), ("dining table", "Dining Table"), ("side table", "Side Table"),
+    ("nib table", "Side Table"), ("stool", "Stool"), ("floor lamp", "Floor Lamp"), ("table lamp", "Table Lamp"), ("lamp wall", "Wall Lamp"),
+    ("lamp", "Table Lamp"), ("vase", "Vase"), ("high vessel", "Vase"), ("vessel", "Bowl"), ("akumal", "Plate"), ("mortar", "Objects"),
+    ("burner", "Objects"), ("container", "Objects"),
+)
+
+
+def extract_ayres(brand):
+    base = "https://www.ayresmx.com"
+    products, seen = [], set()
+    clean = lambda x: re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", x or ""))).strip()
+    for part in ("furniture", "lighting", "objects"):
+        try:
+            resp = requests.get(f"{base}/collections/{part}", headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch Ayres {part}: {e}")
+            continue
+        image = None
+        for m in re.finditer(r'data-image="([^"]+)"|<p[^>]*><strong>(.*?)</strong>(.*?)</p>\s*(?:<p[^>]*>(.*?)</p>)?', resp.text, re.S):
+            if m.group(1):
+                image = m.group(1)
+                continue
+            name = clean(m.group(2))
+            if not name or name.endswith(":") or not image:
+                continue
+            materials = [x.strip().title() for x in re.split(r"\s+-\s+|\s*-\s*(?=[A-Z])", clean(m.group(3)).lstrip("| ").strip()) if x.strip()]
+            display = re.sub(r"\s+", " ", name).title()
+            display = re.sub(r"\b(Dbs|Nib|Exp)\b", lambda m: m.group(1).upper(), display)
+            if display.lower() in seen:
+                continue
+            seen.add(display.lower())
+            lowered = name.lower()
+            category = next((label for word, label in AYRES_CATEGORIES if word in lowered), "")
+            products.append({
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": display, "product_url": f"{base}/collections/{part}",
+                "category": category, "material_options": materials[:4], "dimensions": clean(m.group(4)).replace(" X ", " x ").split(" | ")[0][:160],
+                "notes": "", "image_url": image + "?format=1500w", "designer": "",
+            })
+            image = None
+    for item in _squarespace_html_items(f"{base}/tienda"):
+        name = re.sub(r"\s+", " ", item.get("title") or "").strip()
+        if not name or not item.get("assetUrl") or name.lower() in seen:
+            continue
+        lowered = name.lower()
+        category = next((label for word, label in AYRES_CATEGORIES if word in lowered), "")
+        money = item["structuredContent"]["variants"][0].get("priceMoney") or {}
+        try:
+            price = float(money.get("value"))
+        except (TypeError, ValueError):
+            price = None
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": base + item["fullUrl"],
+            "category": category, "material_options": [], "dimensions": "", "notes": "",
+            "image_url": item["assetUrl"] if "?" in item["assetUrl"] else item["assetUrl"] + "?format=1500w", "designer": "",
+            "price": price, "currency": "MXN" if price else None,
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -18455,6 +18780,13 @@ EXTRACTORS = {
     "Rafi Ajl": extract_rafi_ajl,
     "Ariela Nomi Kuh": extract_ariela_nomi_kuh,
     "Wentz Design": extract_wentz_design,
+    "Trenat": extract_trenat,
+    "Ayres": extract_ayres,
+    "Hasik Design": extract_hasik_design,
+    "Dovain Studio": extract_dovain_studio,
+    "Ballé Studio": extract_balle_studio,
+    "Morineau Studio": extract_morineau_studio,
+    "Vincent Mazenauer": extract_vincent_mazenauer,
     "Gilles Caffier": extract_gilles_caffier,
     "Layered": extract_layered,
     "Taracea": extract_taracea,
