@@ -52,6 +52,7 @@ import os
 from pathlib import Path
 import csv
 
+from google.api_core.exceptions import BadRequest
 from google.cloud import bigquery
 
 DATASET, TABLE = "formground_analytics", "events"
@@ -298,6 +299,19 @@ GROUP BY 1
 ORDER BY times DESC
 LIMIT 25
 """, []),
+
+    # via is set server-side from 2026-11-24; the column exists once the first tagged event is logged.
+    ("14. Shuffles and searches by what started them (chip / bottom = Shuffle button, phones / form / load)", """
+SELECT
+  event_type,
+  COALESCE(via, '(before tagging)') AS via,
+  COUNT(*) AS events,
+  COUNT(DISTINCT visit_id) AS visits
+FROM ev
+WHERE (event_type = 'discover' OR (event_type = 'search' AND surface = 'work'))
+GROUP BY 1, 2
+ORDER BY event_type, events DESC
+""", []),
 ]
 
 
@@ -429,7 +443,14 @@ def main():
         # the window CTE ends before the first SELECT; report 3 adds its own CTEs with a leading comma
         body = WINDOW.format(t=table) + sql
         print(f"\n{title}")
-        print_table([dict(r) for r in client.query(body, job_config=config).result()], ratios)
+        try:
+            rows = [dict(r) for r in client.query(body, job_config=config).result()]
+        except BadRequest as err:
+            if "Unrecognized name: via" not in str(err):
+                raise
+            print("  (no data yet: the via column appears once the first tagged event is logged)")
+            continue
+        print_table(rows, ratios)
     if args.spend:
         paid_test(client, table, config, args.spend)
 

@@ -104,6 +104,9 @@ SCHEMA = [
     # Rows from before this column read back null and mean "formground".
     bigquery.SchemaField("site", "STRING", mode="NULLABLE"),
     bigquery.SchemaField("sponsored", "INTEGER", mode="NULLABLE"),  # 1 = a paid ("sponsrat") placement was clicked
+    # --- added 2026-11-24 ---
+    # What started a search/discover: chip / bottom (Shuffle button, phones) / form / load. Set from main._clean_via.
+    bigquery.SchemaField("via", "STRING", mode="NULLABLE"),
 ]
 
 _SCHEMA_TYPES = {f.name: f.field_type for f in SCHEMA}

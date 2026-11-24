@@ -121,6 +121,18 @@ class EventEndpointTests(unittest.TestCase):
         self.assertEqual(kw["brand_tier"], "established")
         self.assertEqual(kw["search_id"], "abc123")
 
+    def test_discover_logs_what_started_it(self):
+        orig = main.discover
+        main.discover = lambda tier=None: []
+        try:
+            for sent, expected in (("chip", "chip"), ("bottom", "bottom"), ("form", "form"), (None, "load"), ("junk", "load")):
+                self.logged.clear()
+                params = {"via": sent} if sent else {}
+                self.client.get("/discover", params=params, headers=BROWSER)
+                self.assertEqual(self.logged[-1][1]["via"], expected)
+        finally:
+            main.discover = orig
+
     def test_site_comes_from_the_origin_not_the_payload(self):
         self.post({"event_type": "pageview", "site": "tradgardsatlas"}, headers={**BROWSER, "origin": "https://formground.com"})
         self.assertEqual(self.logged[-1][1]["site"], "formground")

@@ -180,6 +180,15 @@ def _clean_path(value):
     return urlsplit(str(value)).path[:300] or None
 
 
+# What started a search/discover page view: the Surprise me chip, the Shuffle button under a random selection
+# (phones only), the search box - or "load" when none of those did (a link, a reload, the homepage).
+_VIAS = {"chip", "bottom", "form"}
+
+
+def _clean_via(value):
+    return value if value in _VIAS else "load"
+
+
 _VISIT_ID = re.compile(r"^[0-9a-f]{8,32}$")
 _RATINGS = {"not_wanted", "close", "spot_on"}
 
@@ -237,6 +246,7 @@ def human_search(
     page_path: Optional[str] = None,
     visit_id: Optional[str] = None,
     internal: Optional[str] = None,
+    via: Optional[str] = None,
     request: Request = None,
 ):
     """Human-facing search. Returns the fair, per-brand-capped list of
@@ -256,7 +266,7 @@ def human_search(
             "search", query=q, utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign, utm_content=utm_content,
             surface="work", search_id=search_id, landing_page=_clean_path(landing_page),
             page_path=_clean_path(page_path), visit_id=_clean_visit(visit_id), total_matches=data["total_matches"],
-            total_brands=data["total_brands"], result_count=len(data["results"]),
+            total_brands=data["total_brands"], result_count=len(data["results"]), via=_clean_via(via),
             result_brands=_result_brands_json(data["results"]), **_intent_fields(data["intent"]),
         )
     return {
@@ -341,6 +351,7 @@ def discover_random(
     page_path: Optional[str] = None,
     visit_id: Optional[str] = None,
     internal: Optional[str] = None,
+    via: Optional[str] = None,
     request: Request = None,
 ):
     """Random browse across the whole catalog - no LLM call, no query,
@@ -353,7 +364,7 @@ def discover_random(
             "discover", utm_source=utm_source, utm_medium=utm_medium, utm_campaign=utm_campaign, utm_content=utm_content,
             surface="discover", search_id=search_id, landing_page=_clean_path(landing_page),
             page_path=_clean_path(page_path), visit_id=_clean_visit(visit_id), tier_filter=tier, result_count=len(results),
-            result_brands=_result_brands_json(results),
+            result_brands=_result_brands_json(results), via=_clean_via(via),
         )
     return {"search_id": search_id, "results": results}
 

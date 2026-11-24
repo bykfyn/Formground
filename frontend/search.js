@@ -116,6 +116,17 @@ function sizedImage(url, width) {
 // through separately from _resolve_intent).
 const TIER = urlParams.get("tier");
 
+// What started this page view: "chip" (the Surprise me chip), "bottom" (the Shuffle button under a random
+// selection, phones only), "form" (the search box) - set by submitQuery below. Absent means the page was
+// opened some other way (a link, a reload, the homepage). Logged on the search/discover event, then removed
+// from the address bar so a shared link is not counted as a shuffle.
+const VIA = urlParams.get("via");
+if (VIA) {
+  urlParams.delete("via");
+  const rest = urlParams.toString();
+  try { window.history.replaceState(null, "", window.location.pathname + (rest ? `?${rest}` : "") + window.location.hash); } catch (e) { /* cosmetic only */ }
+}
+
 // Re-navigates to the same q/discover state currently on screen, with
 // the tier param toggled - clicking the already-active chip clears it
 // back to both tiers. A full navigation, not an in-place re-fetch,
@@ -409,7 +420,7 @@ function renderResults(results, metaText, emptyText, trimToFullRows, totalOverri
     const bottom = document.createElement("div");
     bottom.className = "shuffle-bottom-row";
     bottom.innerHTML = '<button type="button" class="work-menu-act"><i class="ti ti-arrows-shuffle" aria-hidden="true"></i><span>Shuffle</span></button>';
-    bottom.querySelector("button").addEventListener("click", () => submitQuery(input.value.trim()));
+    bottom.querySelector("button").addEventListener("click", () => submitQuery(input.value.trim(), "bottom"));
     gridEl.after(bottom);
   }
   metaEl.style.display = "block";
@@ -566,6 +577,11 @@ function visitParam(sep) {
   return (id ? `${sep}visit_id=${encodeURIComponent(id)}` : "") + (INTERNAL ? `${sep}internal=1` : "");
 }
 
+// The start of this page view (see VIA) as a query-string piece for /search and /discover.
+function viaParam(sep) {
+  return VIA ? `${sep}via=${encodeURIComponent(VIA)}` : "";
+}
+
 // "How were these results?" - three answers, tied to this search's id. Anonymous;
 // shown under a real search's results (not Surprise me, not an empty result).
 const feedbackEl = document.getElementById("results-feedback");
@@ -629,7 +645,7 @@ async function runSearch(query) {
     const utmSuffix = utmQueryString();
     const tierSuffix = TIER ? `&tier=${encodeURIComponent(TIER)}` : "";
     const where = `&page_path=${encodeURIComponent(window.location.pathname)}` +
-      (TRACK ? `&landing_page=${encodeURIComponent(TRACK.ctx.landing_page)}` : "") + visitParam("&");
+      (TRACK ? `&landing_page=${encodeURIComponent(TRACK.ctx.landing_page)}` : "") + visitParam("&") + viaParam("&");
     const resp = await fetch(`${API_BASE}/search?q=${encodeURIComponent(query)}${utmSuffix ? `&${utmSuffix}` : ""}${tierSuffix}${where}`);
     if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
     const data = await resp.json();
@@ -684,7 +700,7 @@ async function runDiscover() {
     const utmSuffix = utmQueryString();
     const tierSuffix = TIER ? `tier=${encodeURIComponent(TIER)}` : "";
     const where = `page_path=${encodeURIComponent(window.location.pathname)}` +
-      (TRACK ? `&landing_page=${encodeURIComponent(TRACK.ctx.landing_page)}` : "") + visitParam("&");
+      (TRACK ? `&landing_page=${encodeURIComponent(TRACK.ctx.landing_page)}` : "") + visitParam("&") + viaParam("&");
     const discoverQuery = [utmSuffix, tierSuffix, where].filter(Boolean).join("&");
     const resp = await fetch(`${API_BASE}/discover${discoverQuery ? `?${discoverQuery}` : ""}`);
     if (!resp.ok) throw new Error(`Server returned ${resp.status}`);
@@ -717,7 +733,7 @@ async function runDiscover() {
 // the real browsing/results surface, so it took over this URL rather
 // than staying a separate, more limited chip-browsing page - see
 // project memory.)
-function submitQuery(q) {
+function submitQuery(q, via) {
   const trimmed = (q || "").trim();
   const params = new URLSearchParams();
   if (trimmed && trimmed.toLowerCase() !== "random") {
@@ -725,13 +741,14 @@ function submitQuery(q) {
   } else {
     params.set("discover", "1");
   }
+  if (via) params.set("via", via);
   window.location.href = `/work.html?${params.toString()}`;
 }
 
 if (form) {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
-    submitQuery(input.value.trim());
+    submitQuery(input.value.trim(), "form");
   });
 
   // Explicit fallback: don't rely solely on native "Enter submits the
@@ -740,7 +757,7 @@ if (form) {
   input.addEventListener("keydown", (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      submitQuery(input.value.trim());
+      submitQuery(input.value.trim(), "form");
     }
   });
 }
@@ -752,7 +769,7 @@ if (form) {
 const discoverChip = document.getElementById("discover-chip");
 if (discoverChip) {
   discoverChip.addEventListener("click", () => {
-    submitQuery(input.value.trim());
+    submitQuery(input.value.trim(), "chip");
   });
 }
 
