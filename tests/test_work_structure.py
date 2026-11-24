@@ -20,6 +20,7 @@ sys.path.insert(0, str(ROOT / "scraper"))
 sys.path.insert(0, str(ROOT / "backend"))
 
 import site_sections  # noqa: E402
+import generate_brand_pages  # noqa: E402
 
 # While Houses and the architect pages are hidden (scraper/site_sections.py) their pages do not exist and their tests are skipped;
 # HiddenHousesTests below checks that they really are gone.
@@ -953,7 +954,7 @@ class PortfolioDesignerTests(unittest.TestCase):
         index = (DOCS / "designers.html").read_text()
         sitemap = (DOCS / "sitemap.xml").read_text()
         for d in self.designers:
-            slug = re.sub(r"[^a-z0-9]+", "-", d["name"].lower().replace("é", "e")).strip("-")
+            slug = generate_brand_pages.slugify(d["name"])               # the same slug the pages use (accents and ø handled as on the live site)
             self.assertTrue((DOCS / "designers" / f"{slug}.html").exists(), d["name"])
             self.assertIn(f'href="/designers/{slug}.html"', index, d["name"])
             self.assertIn(f"/designers/{slug}.html", sitemap, d["name"])
@@ -965,7 +966,8 @@ class PortfolioDesignerTests(unittest.TestCase):
             for w in d["works"]:
                 self.assertTrue(w["name"].strip(), d["name"])
                 self.assertTrue(w["image"].startswith("https://"), (d["name"], w["name"]))
-                self.assertIn(host, w["url"], (d["name"], w["name"]))
+                # the designer's own site, or the gallery page that shows the piece when the designer has no usable site of their own
+                self.assertTrue(host in w["url"] or "studiotwentyseven.com" in w["url"], (d["name"], w["name"]))
 
     def test_creators_page_counts_them(self):
         n = len(re.findall(r'<a class="maker-card" href="/designers/', (DOCS / "designers.html").read_text()))

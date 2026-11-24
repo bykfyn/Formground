@@ -18371,6 +18371,336 @@ def extract_ayres(brand):
     return products
 
 
+# brentwarr.com (Brent Warr Studios, Bainbridge GA; Wix site, no products.json): the pieces are one page each with
+# size / materials / "Contact for Pricing | MADE TO ORDER". The /furniture and /lighting listing pages carry the slug,
+# photo and title of every piece in one request each, so the catalogue is a curated slug table (name, type, materials,
+# size read from each piece page on 2026-11-24) plus two listing fetches. Breakout Vase large/medium/small is one piece.
+# Left out on purpose: The Court Fireplace and Zig Zag Fireplace (architectural), Tarsis and Wood and Plaster Sculpture
+# (art), the limited-edition Christmas ornaments (store items, not furniture/lighting/objects).
+BRENTWARR_PIECES = {
+    'nestingmirror': ('Nesting Mirror', 'Mirror', ['Patinaed steel', 'Mirror'], 'H: 118 in W: 42 in D: 6 in'),
+    'collinetriochandelier': ('Colline Trio Chandelier', 'Chandelier', ['Brass'], 'H: 36 in (adjustable) x W: 38 in x D: 28 in'),
+    'breakoutvase': ('Breakout Vase', 'Vase', ['Wood', 'Steel mesh'], 'Large H: 24 in W: 20 in D: 17 in; Medium H: 18 in W: 16 in D: 15 in; Small H: 14 in W: 14 in D: 11 in'),
+    'colline5chandelier': ('Colline 5 Chandelier', 'Chandelier', ['Brass'], 'H: 36 in (adjustable) x W: 48 in x D: 32 in'),
+    'tunnel-candelabra': ('Tunnel Candelabra', 'Candle Holder', ['Wood'], 'H: 16 in (40.64 cm) W: 13 in (33.02 cm) D: 16 in (40.64 cm)'),
+    'oyster-pendant-perforated': ('Oyster Pendant - Perforated', 'Pendant', ['Steel mesh', 'Brass'], 'Height: 8 in (12.7 cm) W: 28 in (71.12 cm) D: 28 in (71.12 cm)'),
+    'caquetoire-lord-chair': ('Caquetoire Lord Chair', 'Armchair', ['Wood'], 'H: 55 in (139.7 cm) W: 22 in (55.88 cm) D: 22 in (55.88 cm)'),
+    'shellloungechair-lowarm': ('Shell Lounge Chair - Low Arm', 'Lounge Chair', ['Wood', 'Boucle upholstery'], 'H: 41 in (104.14 cm) W: 29 in (73.66 cm) D: 34 in (86.36 cm)'),
+    'glenn-thinking-stool': ('Glenn Thinking Stool', 'Stool', ['Wood'], '19 x 13 x 19in.'),
+    'wave-bench': ('Wave Bench', 'Bench', ['Wood', 'Upholstery'], 'H: 40 in (101.6 cm) W: 64 in (162.56 cm) D: 25.5 in (64.77 cm)'),
+    'rift-lamp': ('Rift Lamp', 'Floor Lamp', ['Steel'], 'H 94in. x W 42in. x D 22in.'),
+    'donutvessel': ('Donut Vessel', 'Vessel', ['Metal mesh', 'Wood'], 'H: 12 in (30.48 cm) W: 6 in (15.24 cm) D: 6 in (15.24 cm)'),
+    'lecygnelamp': ('Le Cygne Lamp', 'Table Lamp', ['Wood', 'Capiz shade'], '18″ W x 9″ D x 27″ H'),
+    'collinsinglependant': ('Colline Single Pendant', 'Pendant', ['Brass'], 'H: 36 in (adjustable) x W: 12 in x D: 12 in'),
+    'saucerdiningchair': ('Saucer Dining Chair', 'Dining Chair', ['Wood', 'Rush seat'], 'H: 40 in (101.6 cm) W: 18 in (45.72 cm) D: 14 in (35.56 cm)'),
+    'collinedoublependant': ('Colline Double Pendant', 'Pendant', ['Brass'], 'H: 36 in (adjustable) x W: 18.75 in x D: 14 in'),
+    'le-stud-mirror': ('Le Stud Mirror', 'Mirror', ['Wood', 'Glass'], ''),
+    'rachel-floor-lamp': ('Rachel Floor Lamp', 'Floor Lamp', ['Steel'], 'H: 72 in (182.88 cm) W: 16 in (40.64 cm) D: 16 in (40.64 cm)'),
+    'shell-sofa': ('Shell Sofa', 'Sofa', ['Wood', 'Upholstery'], 'H: 42 in x W: 60 in D: 32 in'),
+    'nestleloungechair': ('Nestle Lounge Chair', 'Lounge Chair', ['Wood', 'Mohair upholstery'], 'H: 39 in (99.06 cm) W: 27 in (68.58 cm) D: 28 in (71.12 cm)'),
+    'x-candle-holder': ('X Candle Holder', 'Candle Holder', ['Wood'], 'H: 6 in (15.24 cm) W: 4 in (10.16 cm) D: 10 in (25.4 cm)'),
+    'sonorafloorlamp': ('Sonora Floor Lamp', 'Floor Lamp', ['Steel'], 'H 94in. x W 40in. x D 20in.'),
+    'saucerdiningtable': ('Saucer Dining Table', 'Dining Table', ['Wood'], 'H: 30 in (76.2 cm) W: 48 in (121.92 cm) D: 48 in (121.92 cm)'),
+    'doodlelamp': ('Doodle Lamp', 'Table Lamp', ['Wood', 'Upholstery'], 'H: 25 in (63.5 cm) W: 16 in (40.64 cm ) D: 10 in (25.4 cm)'),
+    'colline9chandelier': ('Colline 9 Chandelier', 'Chandelier', ['Brass'], 'H: 36 in (adjustable) x W: 72 in x D: 32 in'),
+    'oyster-pendant': ('Oyster Pendant', 'Pendant', ['Steel mesh', 'Brass'], 'H: 8 in (12.7 cm) W: 28 in (71.12 cm) D: 28 in (71.12 cm)'),
+    'pearl-bench': ('Pearl Bench', 'Bench', ['Wood', 'Upholstery'], 'H: 42 in x W: 54 in D: 30 in'),
+    'shellupholsteredloungechair': ('Shell Lounge Chair', 'Lounge Chair', ['Wood', 'Boucle upholstery'], 'H: 41 in (104.14 cm) W: 29 in (73.66 cm) D: 34 in (86.36 cm)'),
+    'bridgetteloungechair': ('Bridgette Lounge Chair', 'Lounge Chair', ['Red oak'], ''),
+    'maze-candelabra': ('Maze Candelabra', 'Candle Holder', ['Wood'], 'H: 10 in (25.4 cm) W: 34 in (86.36 cm) D: 4 in (10.16 cm)'),
+    'caquetoire-dining-chair': ('Caquetoire Dining Chair', 'Dining Chair', ['Wood'], 'H: 42 in (106.68 cm) W: 20 in (50.8 cm) Depth: 22 in (55.88 cm)'),
+    'lucille-floor-mirror': ('Lucille Floor Mirror', 'Mirror', ['Wood', 'Glass'], 'H: 70 in (177.8 cm) W: 40 in (101.6 cm) D: 7 in (17.78 cm)'),
+    'margaret-side-table': ('Margaret Side Table', 'Side Table', ['Wood'], '24 H × 20 W ×20 D in. / 61 H x 48 W x 48 D cm'),
+    'wendon-console': ('Wendon Console', 'Console Table', ['Wood'], 'H: 30 in (76.2 cm) W: 62 in (157.48 cm) D: 16 in (40.64 cm)'),
+    'shell-chaise': ('Shell Chaise', 'Chaise Longue', ['Wood', 'Mohair upholstery'], 'H: 32 in (81.28 cm) W: 34 in (86.36 cm) D: 59 in (149.86 cm)'),
+    'wishbonefloorlamp': ('Wishbone Floor Lamp', 'Floor Lamp', ['Steel', 'Wood'], 'H 94in. x W 44in. x D 20in.'),
+    'nimbus-wall-mirror': ('Nimbus Wall Mirror', 'Mirror', ['Wood', 'Mirror', 'Brass'], 'H: 54 in (137.16 cm) W: 36 in (91.44 cm) D: 7 in (17.78 cm)'),
+    'katie-table-lamp': ('Katie Table Lamp', 'Table Lamp', ['Steel'], 'H: 14 in (35.56 cm) W: 7.5 in (19.05 cm) D: 7.5 in (19.05 cm)'),
+    'y-candle-holder': ('Y Candle Holder', 'Candle Holder', ['Wood'], 'Height: 10 in (25.4 cm) W: 4 in (10.16 cm) D: 5 in (12.7 cm)'),
+    'nestlefootstool': ('Nestle Foot Stool', 'Footstool', ['Wood', 'Mohair upholstery'], 'H: 10 in (25.4 cm) W: 11.5 in (29.21 cm) D: 18.5 in (46.99 cm)'),
+    'cirque4swaggedchandelier': ('Cirque 4 Swagged Chandelier', 'Chandelier', ['Steel', 'Blown glass'], ''),
+    'bonaomilightsculpture': ('Bona Omi Light Sculpture', 'Lighting', ['Wood', 'Glass', 'Red oak'], 'H: 70 in (177.8 cm) W: 28 in (71.12 cm) D: 18 in (45.72 cm)'),
+    'saturnfruitbowl': ('Saturn Fruit Bowl', 'Bowl', [], 'H: 6.5 in (16.51 cm) W: 14 in (35.56 cm) D: 14 in (35.56 cm)'),
+    'glenndiningtable96in': ('Glenn Dining Table', 'Dining Table', ['Wood', 'Steel'], 'H: 30 in (76.2 cm) W: 42 in (106.68 cm) L: 96 in (243.84 cm)'),
+    'cirquedoublechandelier10inrings': ('Cirque Double Chandelier', 'Chandelier', ['Steel', 'Epoxy resin', 'Blown glass'], 'H: 96 in (243.84 cm) W: 16 in (40.64 cm) D: 48 in (121.92 cm)'),
+    'lyman-settee': ('Lyman Settee', 'Sofa', ['Wood', 'Steel', 'Velvet'], '72″ W x 32″ D x 36″ H'),
+    'z-candle-holder': ('Z Candle Holder', 'Candle Holder', ['Wood'], 'H: 7 in (17.78 cm) W: 3 in (7.62 cm) D: 12 in (30.48 cm)'),
+    'linda-coffee-table': ('Linda Coffee Table', 'Coffee Table', ['Wood'], 'H: 16 in (40.64 cm) W: 48 in (121.92 cm) D: 48 in (121.92 cm)'),
+    'barnacletablelamp': ('Barnacle Table Lamp', 'Table Lamp', ['Brass'], '16 x 16 x 16in.'),
+    'bee-boo-bop-chair': ('Bee Boo Bop Chair', 'Chair', ['Wood'], 'H: 22 in (55.88 cm) W: 26 in (66.04 cm) D: 40 in (101.6 cm)'),
+    'lighting/clypea-sconce': ('Clypea Sconce', 'Wall Lamp', ['Hand-blown glass'], ''),
+}
+
+# The /lighting listing shows a Colline pendant under the Wishbone Floor Lamp link; the piece page's own photo is used.
+BRENTWARR_IMAGE_OVERRIDE = {"wishbonefloorlamp": "3fd0b8_2d5a30e6549646968d66bd0141276337~mv2.jpg"}
+BRENTWARR_SKIP = {"breakoutvase-small", "breakoutvase-medium", "the-court-fireplace-surround", "tarsissculpture",
+                  "zigzagfireplace", "woodandplastersculpture"}
+
+
+def _brentwarr_listing_images(base):
+    """slug -> first photo uri (wixstatic media id) from the /furniture and /lighting listing pages."""
+    found = {}
+    for path in ("furniture", "lighting"):
+        try:
+            resp = requests.get(f"{base}/{path}", headers=HEADERS, timeout=40)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch Brent Warr /{path}: {e}")
+            continue
+        body = resp.text[resp.text.find("<body"):]
+        for m in re.finditer(r'<a [^>]*href="https://www\.brentwarr\.com/([^"#?]+)"[^>]*>(.{0,3000}?)</a>', body, flags=re.S):
+            im = re.search(r'data-image-info="([^"]+)"', m.group(2))
+            if not im:
+                continue
+            try:
+                uri = json.loads(html.unescape(im.group(1))).get("imageData", {}).get("uri")
+            except ValueError:
+                continue
+            if uri:
+                found.setdefault(m.group(1), uri)
+        time.sleep(1)
+    return found
+
+
+def _brentwarr_image_url(uri):
+    return f"https://static.wixstatic.com/media/{uri}/v1/fit/w_1000,h_1000,q_85/{uri}"
+
+
+def extract_brentwarr(brand):
+    base = brand["url"].rstrip("/")
+    images = _brentwarr_listing_images(base)
+    products = []
+    for slug, (name, category, materials, dimensions) in BRENTWARR_PIECES.items():
+        page = f"{base}/{slug}"
+        uri = BRENTWARR_IMAGE_OVERRIDE.get(slug) or images.get(slug)
+        if not uri:
+            time.sleep(1)
+            try:
+                resp = requests.get(page, headers=HEADERS, timeout=30)
+                resp.raise_for_status()
+            except requests.RequestException as e:
+                print(f"  Could not fetch {page}: {e}")
+                continue
+            og = re.search(r'og:image" content="https://static\.wixstatic\.com/media/([^/"]+)', resp.text)
+            uri = og.group(1) if og else None
+        if not uri:
+            print(f"  Brent Warr: no photo for {name} - skipped")
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": page,
+            "category": category, "material_options": list(materials), "dimensions": dimensions,
+            "notes": "Made to order", "image_url": _brentwarr_image_url(uri), "designer": "Brent Warr",
+            "price": None, "currency": None,
+        })
+    try:
+        sm = requests.get(f"{base}/pages-sitemap.xml", headers=HEADERS, timeout=30).text
+        known = set(BRENTWARR_PIECES) | BRENTWARR_SKIP
+        extra = [u for u in re.findall(r"<loc>https://www\.brentwarr\.com/([^<]+)</loc>", sm)
+                 if u not in known and u in images]
+        if extra:
+            print(f"  Brent Warr: new pages on the listings not in BRENTWARR_PIECES: {extra}")
+    except requests.RequestException:
+        pass
+    return products
+
+
+# klovestudio.com (Klove Studio, New Delhi; founders Prateek Jain and Gautam Seth; added 2026-11-24 from Studiotwentyseven):
+# a WordPress/Elementor site where every collection or type page is a set of lightbox carousels, one carousel per piece, with
+# the piece's name as the lightbox title ("Goa Pendant", "Goa Pendant Text" = the spec card, "(1)"/"2" = further photos,
+# "Details"/"Installation" = detail and project shots). There are no per-piece pages and no prices (the e-shop at
+# kloveindia.com is behind a Shopify password page), so cards link to the page that shows the piece. The first photo of each
+# named carousel is used; the table is a hand-picked list of the studio's pieces that have a clear photo (about 75 named
+# pieces on the site; jewellery, wall murals and installation-only shots left out).
+KLOVE_STUDIO_PIECES = (
+    ('Chinar', 'Floor Lamp', 'chinar-tree/', 'Chinar'),
+    ('Enchanted Mirror', 'Mirror', 'collections/enchanted-forest-lighting/', 'Enchanted Mirror'),
+    ('Organic', 'Chandelier', 'collections/nordic-chandelier/', 'Organic'),
+    ('Freyja', 'Chandelier', 'collections/nordic-chandelier/', 'Freyja'),
+    ('Aegir', 'Chandelier', 'collections/nordic-chandelier/', 'Aegir'),
+    ('Asteroids', 'Chandelier', 'collections/nordic-chandelier/', 'Asteroids'),
+    ('Artichoke', 'Chandelier', 'collections/mid-century-modern-chandelier/', 'Artichoke 2025'),
+    ('Bird Chandelier', 'Chandelier', 'collections/mid-century-modern-chandelier/', 'Bird Chandelier'),
+    ('Boulders', 'Chandelier', 'collections/mid-century-modern-chandelier/', 'Boulders'),
+    ('Iceberg', 'Chandelier', 'collections/mid-century-modern-chandelier/', 'Iceberg'),
+    ('Stag', 'Chandelier', 'collections/mid-century-modern-chandelier/', 'Stag'),
+    ('Grasshopper', 'Chandelier', 'collections/mid-century-modern-chandelier/', 'Grasshopper'),
+    ('Geodesic', 'Chandelier', 'collections/mid-century-modern-chandelier/', 'Geodesic'),
+    ('Wishing Tree', 'Chandelier', 'collections/bespoke-botanical-glass-lighting/', 'Wishing Tree'),
+    ('Sakura', 'Chandelier', 'collections/bespoke-botanical-glass-lighting/', 'Sakura'),
+    ('Aqua Mirror', 'Mirror', 'collections/bespoke-botanical-glass-lighting/', 'Aqua Mirror'),
+    ('Heliconia', 'Chandelier', 'collections/bespoke-botanical-glass-lighting/', 'Heliconia'),
+    ('Monstera', 'Chandelier', 'collections/the-goa-collection-chandelier/', 'Monsterra'),
+    ('Tropical', 'Chandelier', 'collections/the-goa-collection-chandelier/', 'Tropical'),
+    ('Fern Chandelier', 'Chandelier', 'collections/the-goa-collection-chandelier/', 'Fern Chandelier'),
+    ('Abundance Totem', 'Wall Lamp', 'collections/totems-over-time/', 'Abundance Totem'),
+    ('Beauty Totem', 'Wall Lamp', 'collections/totems-over-time/', 'Beauty Totem'),
+    ('Protection Totem', 'Wall Lamp', 'collections/totems-over-time/', 'Protection Totem'),
+    ('Vision Totem', 'Wall Lamp', 'collections/totems-over-time/', 'Vision Totem'),
+    ('Dive', 'Chandelier', 'collections/dive-ocean-inspired-chandelier/', 'Dive'),
+    ('Sensu', 'Chandelier', 'collections/sensu-chandelier/', 'Sensu'),
+    ('Sensu Pendants', 'Pendant', 'collections/sensu-chandelier/', 'Sensu Pendants'),
+    ('Oyster', 'Chandelier', 'collections/oyster-chandelier/', 'Oyster'),
+    ('Aqua', 'Chandelier', 'collections/aqua-chandelier/', 'Aqua'),
+    ('Opulent', 'Chandelier', 'collections/opulent-chandelier/', 'Opulent Big'),
+    ('Opulent Mirror', 'Mirror', 'collections/opulent-chandelier/', 'Opulent Mirror'),
+    ('Lily', 'Chandelier', 'collections/lily-chandelier/', 'Lily'),
+    ('Fresh Blossom', 'Chandelier', 'collections/fresh-blossom-chandelier/', 'Fresh Blossom'),
+    ('Straight Totem', 'Floor Lamp', 'shamanic-soul/', 'Straight Totem'),
+    ('Art Nouveau', 'Chandelier', 'shamanic-soul/', 'Art Nouveau'),
+    ('Eagle Floor Lamp', 'Floor Lamp', 'shamanic-soul/', 'Eagle Floor Lamp'),
+    ('Struck By Cupid', 'Chandelier', 'shamanic-soul/', 'Struck By Cupid'),
+    ('Champa Mirror', 'Mirror', 'shamanic-soul/', 'Champa Mirror'),
+    ('Cherub Mirror', 'Mirror', 'shamanic-soul/', 'Cherub Mirror'),
+    ('Peacock Floor Lamp', 'Floor Lamp', 'shamanic-soul/', 'Peacock Floor Lamp'),
+    ('Art Deco Floor Lamp', 'Floor Lamp', 'art-deco/', 'Art Deco Lamp'),
+    ('Art Deco Mirror', 'Mirror', 'art-deco/', 'Art Deco Mirror'),
+    ('Art Deco Chandelier', 'Chandelier', 'art-deco/', 'Art Deco'),
+    ('KTL Table Lamp', 'Table Lamp', 'table-lamps/', 'KTL'),
+    ('Black Handblown Glass Table Lamp (Tall)', 'Table Lamp', 'table-lamps/', 'Black Handblown Glass Table Lamp (Tall)'),
+    ('Black Handblown Glass Table Lamp (Wide)', 'Table Lamp', 'table-lamps/', 'Black Handblown Glass Table Lamp (Wide)'),
+    ('Freyja Table Lamp', 'Table Lamp', 'table-lamps/', 'Freyja Table Lamp'),
+    ('Karthiki Table Lamp', 'Table Lamp', 'table-lamps/', 'Karthiki Table Lamp'),
+    ('Chess Piece Floor Lamps', 'Floor Lamp', 'floor-lamps/', 'Chess Piece Floor Lamps'),
+    ('Pillar Pendant Floor Lamp', 'Floor Lamp', 'floor-lamps/', 'Pillar Pendant Floor Lamp'),
+    ('Karthiki Floor Lamp', 'Floor Lamp', 'floor-lamps/', 'Karthiki Floor Lamp'),
+    ('Disc Floor Lamp', 'Floor Lamp', 'floor-lamps/', 'Disc Floor Lamp'),
+    ('Lamp Post', 'Floor Lamp', 'floor-lamps/', 'Lamp Post'),
+    ('Lotus Floor Lamps', 'Floor Lamp', 'floor-lamps/', 'Lotus Floor Lamps'),
+    ('Royal Mashaal', 'Wall Lamp', 'wall-lights/', 'Royal Mashaal'),
+    ('Curve Mashaal', 'Wall Lamp', 'wall-lights/', 'Curve Mashaal'),
+    ('Avi Mashaal', 'Wall Lamp', 'wall-lights/', 'Avi Mashaal'),
+    ('Fish Mashaal', 'Wall Lamp', 'wall-lights/', 'Fish Mashaal'),
+    ('Double Rosebud Wall Light', 'Wall Lamp', 'wall-lights/', 'Double Rosebud Wall Light'),
+    ('Wall Torch', 'Wall Lamp', 'wall-lights/', 'Wall Torch'),
+    ('Bulb Wall Light', 'Wall Lamp', 'wall-lights/', 'Bulb Wall Light'),
+    ('Organic Ring Wall Light', 'Wall Lamp', 'wall-lights/', 'Organic Ring Wall Light'),
+    ('Organic Orbs Wall Light', 'Wall Lamp', 'wall-lights/', 'Organic Orbs Wall Light'),
+    ('Capsule Pendant', 'Pendant', 'pendants-lights-2/', 'Capsule Pendant'),
+    ('Moroccan Vase', 'Pendant', 'pendants-lights-2/', 'Moroccan Vase'),
+    ('Pillar Pendant', 'Pendant', 'pendants-lights-2/', 'Pillar Pendant'),
+    ('Bird Pendant', 'Pendant', 'pendants-lights-2/', 'Bird Pendant'),
+    ('Aurum', 'Pendant', 'pendants-lights-2/', 'Aurum'),
+    ('Dhwani', 'Pendant', 'pendants-lights-2/', 'Dhwani'),
+    ('Pallavi', 'Pendant', 'pendants-lights-2/', 'Pallavi'),
+    ('Bulb Pendants', 'Pendant', 'pendants-lights-2/', 'Bulb Pendants'),
+    ('Goblet Pendants', 'Pendant', 'pendants-lights-2/', 'Goblet Pendants'),
+    ('Cone & Globe', 'Pendant', 'pendants-lights-2/', 'Cone&Globe'),
+)
+
+
+def _klove_base_name(title):
+    title = re.sub(r"\s*\(\d+\)$", "", title)
+    return re.sub(r"\s+\d+$", "", title).strip().lower()
+
+
+def _klove_page_photos(url):
+    """base name -> sized photo URL of the first carousel slide for that name on one Klove page."""
+    resp = requests.get(url, headers=HEADERS, timeout=40)
+    resp.raise_for_status()
+    photos = {}
+    for m in re.finditer(r'data-elementor-lightbox-title="([^"]*)"[^>]*><div class="elementor-carousel-image"[^>]*'
+                         r"style=\"background-image: url\(&#039;([^&]+)&#039;\)", resp.text):
+        title = html.unescape(m.group(1))
+        if re.search(r"\bText\b|Details?\b|Installation|Corner|Ceiling", title, re.I):
+            continue
+        photos.setdefault(_klove_base_name(title), m.group(2))
+    return photos
+
+
+def extract_klove_studio(brand):
+    base = brand["url"].rstrip("/")
+    pages = {}
+    products = []
+    for name, category, path, key in KLOVE_STUDIO_PIECES:
+        page = f"{base}/{path}"
+        if path not in pages:
+            time.sleep(1)
+            try:
+                pages[path] = _klove_page_photos(page)
+            except requests.RequestException as e:
+                print(f"  Could not fetch {page}: {e}")
+                pages[path] = {}
+        image = pages[path].get(key.lower())
+        if not image:
+            print(f"  Klove Studio: no photo for {name} - skipped")
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": page,
+            "category": category, "material_options": ["Glass"],
+            "dimensions": "", "notes": "Handblown glass", "image_url": image,
+            "designer": "Prateek Jain & Gautam Seth", "price": None, "currency": None,
+        })
+    return products
+
+
+# sofieoesterby.com (Sofie Østerby Atelier, Copenhagen), confirmed live 2026-11-24. A WordPress (Semplice) portfolio-shop with
+# no cart: every piece page ends in an "INQUIRE" button, so there are no prices. The home page grid lists the 11 projects with
+# a clean studio tile each (T_*_beige.jpg); each /project/<slug> page carries MATERIAL and SIZE lines and a short text.
+# robots.txt only blocks /wp-admin/. The page types are not stated, so they are set here from the page text and photo.
+# Slugs: "archetype-table-duplicate-2" is the KOYA floor lamp (an old copy of the table page); its home tile is a
+# poster-like crop, so its first page photo is used instead (the 3daysofdesign exhibition shot).
+SOFIE_OSTERBY_PIECES = {
+    "oso-bowl": ("OSO Bowl", "Bowl", "tile"),
+    "archetype-table": ("Archetype Table", "Coffee Table", "tile"),
+    "soma": ("Soma Tray", "Tray", "tile"),
+    "slope": ("Slope Table", "Table", "tile"),
+    "hydro": ("Hydro Vase", "Vase", "tile"),
+    "locus": ("Locus Bowl", "Bowl", "tile"),
+    "archetype-chairs": ("Archetype Chairs", "Chair", "tile"),
+    "civil-light": ("Civil Light", "Floor Lamp", "tile"),
+    "sacra": ("Sacra Vessels", "Vase", "tile"),
+    "archetype-bench": ("Archetype Bench", "Bench", "tile"),
+    "archetype-table-duplicate-2": ("Koya", "Floor Lamp", "page"),
+}
+
+
+def extract_sofie_osterby(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        home = requests.get(base + "/", headers=HEADERS, timeout=25)
+        home.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {base}: {e}")
+        return []
+    tiles = {}
+    for slug, inner in re.findall(r'<a [^>]*href="[^"]*/project/([a-z0-9-]+)"[^>]*>([\s\S]*?)</a>', home.text):
+        m = re.search(r'(?:data-src|src)="([^"]+/wp-content/uploads/[^"]+\.jpe?g)"', inner)
+        if m:
+            tiles.setdefault(slug, html.unescape(m.group(1)))
+    products = []
+    for slug, (name, category, photo_from) in SOFIE_OSTERBY_PIECES.items():
+        time.sleep(1)
+        page = f"{base}/project/{slug}"
+        try:
+            resp = requests.get(page, headers=HEADERS, timeout=25)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {page}: {e}")
+            continue
+        text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", re.sub(r"<(script|style)[\s\S]*?</\1>", "", resp.text))))
+        material = re.search(r"MATERIAL\s+(.+?)\s+SIZE\b", text)
+        size = re.search(r"SIZE\s+(.+?)\s+WEIGHT\b", text)
+        image = tiles.get(slug) if photo_from == "tile" else None
+        if not image:
+            m = re.search(r'(?:data-src|src)="(https://sofieoesterby\.com/wp-content/uploads/[^"]+\.jpe?g)"', resp.text)
+            image = html.unescape(m.group(1)) if m else None
+        if not image:
+            print(f"  Sofie Østerby: no photo for {slug} - skipped")
+            continue
+        materials = []
+        if material:
+            materials = [w.strip().capitalize() for w in re.split(r",| AND | WITH |\+", material.group(1).upper()) if w.strip()]
+            materials = ["Aluminium" if w == "Alu" else w for w in materials if w not in ("Wax", "Waxed")]
+        dimensions = re.sub(r" CM\b", " cm", re.sub(r" X ", " x ", re.sub(r"\s+", " ", size.group(1)).strip())) if size else ""
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": page,
+            "category": category, "material_options": materials,
+            "dimensions": dimensions,
+            "notes": "", "image_url": image, "designer": "Sofie Østerby", "price": None, "currency": None,
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -18425,6 +18755,22 @@ EXTRACTORS = {
     "Salem Charabi": extract_portfolio_designer,
     "Thom Fougere": extract_portfolio_designer,
     "Pietro Franceschini": extract_portfolio_designer,
+    "Clive Lonstein": extract_portfolio_designer,
+    "Francesco Balzano": extract_portfolio_designer,
+    "Frédéric Saulou": extract_portfolio_designer,
+    "Marek Cwiek": extract_portfolio_designer,
+    "Nicolò Spinelli": extract_portfolio_designer,
+    "Niko Koronis": extract_portfolio_designer,
+    "Abel Cárcamo": extract_portfolio_designer,
+    "Martin Massé": extract_portfolio_designer,
+    "Olga Engel": extract_portfolio_designer,
+    "Luna Paiva": extract_portfolio_designer,
+    "Paddy Pike": extract_portfolio_designer,
+    "Rasmus B. Fex": extract_portfolio_designer,
+    "Jakob Jørgensen": extract_portfolio_designer,
+    "Brent Warr": extract_brentwarr,
+    "Klove Studio": extract_klove_studio,
+    "Sofie Østerby": extract_sofie_osterby,
     "Hervé Langlais": extract_portfolio_designer,    # 2026-11-10
     "Feldspar": extract_shopify,
     "Faye Toogood": extract_faye_toogood,

@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Niko Koronis: designs and projects — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Niko Koronis - 84 works. Each linked to its own page.">
+<link rel="canonical" href="https://formground.com/designers/niko-koronis.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Niko Koronis: designs and projects — Formground">
+<meta property="og:description" content="Niko Koronis - 84 works. Each linked to its own page.">
+<meta property="og:url" content="https://formground.com/designers/niko-koronis.html">
+<meta property="og:image" content="https://formground.com/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://formground.com/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Designers", "item": "https://formground.com/designers.html"}, {"@type": "ListItem", "position": 3, "name": "Niko Koronis", "item": "https://formground.com/designers/niko-koronis.html"}]}</script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/icons.css?v=86479f05">
+<style>
+  .curated-note { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; }
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  /* "New from X" sits at the TOP of a maker page, above the full range (and only exists when there is something new) */
+  .brand-section--top { margin: 0 0 44px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent; /* same box as .tag so the two small labels are one height */
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  /* two to a row on a phone (a single 190px-minimum column left the directories one long list) */
+  @media (max-width: 640px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px auto 0; line-height: 1.6; text-align: center; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px; height: 47px; box-sizing: border-box;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+/* SHARE-BTN:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .share-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 1;
+    width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(250, 249, 247, 0.85); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+  }
+  .share-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+  .share-btn i { font-size: 14px; }
+  .share-btn.copied::after {
+    content: "Copied"; position: absolute; bottom: 32px; right: 0;
+    background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  /* LOAD-MORE:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .load-more-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 40px 0 8px; text-align: center;
+  }
+  .load-more-btn {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: none; border: none; padding: 6px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .load-more-btn:hover { color: var(--text-primary); }
+  .load-more-btn:disabled { opacity: 0.6; cursor: default; text-decoration: none; }
+  .load-more-progress { font-size: 11.5px; color: var(--text-muted); }
+  
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 28px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
+  .has-load-more .pager { display: none; }
+  .earlier-results { display: none; margin: 0 0 14px; font-size: 13px; }
+  .has-load-more .earlier-results { display: block; }
+  .earlier-results a { color: var(--text-muted); text-decoration: none; }
+  .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
+</style>
+<style>
+  .creator-text { max-width: 640px; margin: 0 auto 36px; }
+  .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
+  .creator-facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 18px; margin: 18px 0 14px;
+    padding: 14px 0; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .creator-facts dt { color: var(--text-muted); }
+  .creator-facts dd { margin: 0; color: var(--text-primary); }
+  .creator-text p.creator-more { font-size: 13px; margin: 0 0 4px; }   /* beats .creator-text p (15px): the link is small, like "Visit site" */
+  .creator-more a { color: var(--text-accent); text-decoration: none; }
+  .creator-more a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/edits.html">Edits</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Designer</p>
+    <h1 class="maker-name">Niko Koronis</h1>
+    <a class="brand-site-link" href="https://www.nikokoronis.com/" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  
+  <section class="creator-text">
+    <p>Studio Niko Koronis is a multidisciplinary design studio in Milan, Italy, working on collectible furniture and larger interior environments. Its practice rests on material experimentation: tables, consoles and benches are carved from single blocks of marble and travertine, cast in resin, made in hand-painted glass, or built in lacquered wood and brass, with a few lamps and an armchair in the mix.</p><p>Works are produced as numbered or limited editions, and select works are shown through Carpenters Workshop Gallery, Studiotwentyseven and The Collectional, alongside commissions handled by the studio. On Formground the studio is shown through 84 works, each linked to its own website.</p>
+    <dl class="creator-facts"><dt>Country</dt><dd>Italy</dd><dt>City</dt><dd>Milan</dd><dt>Type</dt><dd>Designer</dd><dt>Products</dt><dd>Collectible furniture and lighting</dd><dt>Website</dt><dd>nikokoronis.com</dd></dl>
+  </section>
+  <div class="maker-grid">
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/nsa" target="_blank" rel="noopener noreferrer" data-product="NSA Bench/Stool" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/2e060482-3f61-4273-9e01-78a9b8784bed/NSA+A00.jpg?format=1000w" alt="NSA Bench/Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">NSA Bench/Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/srp" target="_blank" rel="noopener noreferrer" data-product="SRP Side Table and Bench" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/a89a2746-3afe-491c-b4b0-7ebd2e6e3bb8/A2.jpg?format=1000w" alt="SRP Side Table and Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SRP Side Table and Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/cm1-cm2-cm4" target="_blank" rel="noopener noreferrer" data-product="cM1, cM2 and cM4 Side Tables and Bench" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/df2f9b81-b2e7-4d4b-9b66-eba5a0a0dbb2/cm4_2.jpg?format=1000w" alt="cM1, cM2 and cM4 Side Tables and Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">cM1, cM2 and cM4 Side Tables and Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/gbc" target="_blank" rel="noopener noreferrer" data-product="GBC Bench" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/0f7302f0-3ca7-4e6a-ab30-20d7d1352ffe/1.jpg?format=1000w" alt="GBC Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">GBC Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/nrb" target="_blank" rel="noopener noreferrer" data-product="NRB Bench" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/cc34bff7-5f41-479f-adf8-16f7d9bf7210/NikoRanya3988.jpg?format=1000w" alt="NRB Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">NRB Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/asb" target="_blank" rel="noopener noreferrer" data-product="ASB Bench" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/f3ea93c4-08df-4c36-86c9-2e734e09c21f/ASC+_Bench_Side.jpg?format=1000w" alt="ASB Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">ASB Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/bkp" target="_blank" rel="noopener noreferrer" data-product="BKP Bench" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/cf825e88-7762-4e6c-b78a-e500e7102cb6/3.jpg?format=1000w" alt="BKP Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">BKP Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/lvb" target="_blank" rel="noopener noreferrer" data-product="LVB Bench" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/82638430-cb11-4629-acfd-56e0a0fe1d29/BENCH%2B0Pers.jpg?format=1000w" alt="LVB Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LVB Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/gsd" target="_blank" rel="noopener noreferrer" data-product="GSD Console" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/c4def632-8542-4cb8-8e4b-30f1f318d09e/GSD_05_web.jpg?format=1000w" alt="GSD Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">GSD Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/tbc" target="_blank" rel="noopener noreferrer" data-product="TBC Console" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/b0df1c1a-f747-4838-a450-c8a7a2b6d2fe/TBC_RossoLevanto_Thassos_1.jpg?format=1000w" alt="TBC Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">TBC Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/rdl" target="_blank" rel="noopener noreferrer" data-product="RDL Console" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/960a3f85-6a5e-4ca8-85ca-503c4872c85b/RDL_1.jpg?format=1000w" alt="RDL Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RDL Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/cm7-cm8" target="_blank" rel="noopener noreferrer" data-product="cM7 and cM8 Consoles" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/74c37ec1-b014-41b9-96ab-9661ba21674e/00_format_portrait_pic_0000_Livello-1.jpg?format=1000w" alt="cM7 and cM8 Consoles" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">cM7 and cM8 Consoles</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/lvc" target="_blank" rel="noopener noreferrer" data-product="LVC Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/beaf8eb8-f9fb-448b-87d2-b30ed734390d/IMG_4404.jpg?format=1000w" alt="LVC Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LVC Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/gsv" target="_blank" rel="noopener noreferrer" data-product="GSV Freestanding Console" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/ff30c857-d940-4a56-a2a5-178a4528dda5/1089%2BNikoKoronis_ReBenchAndLowTable_71932-1.jpg?format=1000w" alt="GSV Freestanding Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">GSV Freestanding Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/gsc" target="_blank" rel="noopener noreferrer" data-product="GSC Console" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/83d44158-08c9-41dd-903a-6684c200f927/NikoKoronis_GSC_0001_Livello-2.jpg?format=1000w" alt="GSC Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">GSC Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/mdn" target="_blank" rel="noopener noreferrer" data-product="MDN Console" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/7fb65d63-f10f-4bd9-a985-658acc9ec120/KORONIS%2BNiko%2B-%2BMDN%2B-%2BConsole02.jpg?format=1000w" alt="MDN Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">MDN Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/sfc" target="_blank" rel="noopener noreferrer" data-product="SFC Console" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/7b22d664-6500-4c1b-93d7-674e9b2adfb8/2.jpg?format=1000w" alt="SFC Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SFC Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/csq" target="_blank" rel="noopener noreferrer" data-product="CSQ Console" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/19c47b61-369b-4263-af9d-9d24e621e4e6/Image+05-01-23+at+19.39.jpg?format=1000w" alt="CSQ Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">CSQ Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/grc" target="_blank" rel="noopener noreferrer" data-product="GRC Console" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/d1f7ee90-b472-424b-82da-ded95fb574a1/format_landscape_pic_0001__mg_7945.jpg?format=1000w" alt="GRC Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">GRC Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/asc" target="_blank" rel="noopener noreferrer" data-product="ASC Console" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/9a6b05ee-674d-439e-9d76-83ccaab46141/1136%2BNikoKoronis_CurvedConsoleAndTable_84708.jpg?format=1000w" alt="ASC Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">ASC Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/2fcjn1mnaviqbiysz6ybfq1jfw1mso" target="_blank" rel="noopener noreferrer" data-product="RGT Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/c984fed1-9898-412e-bf45-c4c8c6ef78dc/A3A.jpg?format=1000w" alt="RGT Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RGT Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/rgd" target="_blank" rel="noopener noreferrer" data-product="RGD Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/72ec3474-76b5-48a6-bf9f-20cb8e8ad404/3A.jpg?format=1000w" alt="RGD Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RGD Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/bkt" target="_blank" rel="noopener noreferrer" data-product="BKT Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/dad53ac6-f39f-4656-8be9-e17bb0b7f069/84839.jpg?format=1000w" alt="BKT Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">BKT Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/asd" target="_blank" rel="noopener noreferrer" data-product="ASD Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/d3364e8a-3a2c-42c4-b4c8-a101deffa64d/E.jpg?format=1000w" alt="ASD Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">ASD Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/pit" target="_blank" rel="noopener noreferrer" data-product="PIT Desk/Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/b6ed83de-1971-46af-b8b2-418aed739c79/C6E90533-FB5F-4C57-BFBA-D95EF017C7E6.jpg?format=1000w" alt="PIT Desk/Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">PIT Desk/Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/cm3" target="_blank" rel="noopener noreferrer" data-product="cM3 Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/0eb14016-5311-4df0-94cd-073dbff81bd4/00_format_landscape_pic_0016_cM-3-%EF%BF%BD-dining-table-_maggio_20224178.jpg?format=1000w" alt="cM3 Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">cM3 Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/gtp" target="_blank" rel="noopener noreferrer" data-product="GTP Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/1b7dd849-d140-4533-9a9f-1191a3515c79/4.jpg?format=1000w" alt="GTP Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">GTP Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/lvd" target="_blank" rel="noopener noreferrer" data-product="LVD Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/4ea75de5-efc6-4151-9bdc-5d592981783b/DINING+2.jpg?format=1000w" alt="LVD Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LVD Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/rgl" target="_blank" rel="noopener noreferrer" data-product="RGL Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/01ce62dd-c6d6-4b40-ac93-161fc6cc387a/RGT_Dining+table_4200x1300+H730_2.jpg?format=1000w" alt="RGL Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RGL Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/krt" target="_blank" rel="noopener noreferrer" data-product="KRT Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/d046ccb5-6380-47c3-81b1-d9dc436b51df/1.jpg?format=1000w" alt="KRT Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">KRT Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/rpt" target="_blank" rel="noopener noreferrer" data-product="RPT Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/adf8dbef-6814-4fa9-b451-828b1f21c6db/RPT_PERSONA.jpg?format=1000w" alt="RPT Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RPT Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/tbd" target="_blank" rel="noopener noreferrer" data-product="TBD Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/b8457e8d-5215-4766-970e-6a3d043440f0/TBD_VerdeAlpi_Thassos_1.jpg?format=1000w" alt="TBD Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">TBD Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/rdt" target="_blank" rel="noopener noreferrer" data-product="RDT Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/6b30f5e4-6095-422d-b933-e541a7d2bc1c/5.webp?format=1000w" alt="RDT Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RDT Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/bkd" target="_blank" rel="noopener noreferrer" data-product="BKD Dining Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/ddf43db9-3302-463d-b191-a5712fe36106/2071+NikoKoronis_BKD_Round_122512-1.jpg?format=1000w" alt="BKD Dining Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">BKD Dining Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/grl" target="_blank" rel="noopener noreferrer" data-product="GRL Floor and Table LED Lamp" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/1555cfbe-f621-4233-9989-aef0f614e10a/format_landscape_pic_0005_IMG_1828.png?format=1000w" alt="GRL Floor and Table LED Lamp" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">GRL Floor and Table LED Lamp</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/bruchi" target="_blank" rel="noopener noreferrer" data-product="BRUCHI Table Lamp" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/1c58529e-e2f1-4772-937b-c1b183cf000a/format_portrait_pic_0003_2019.02.17_MMairo_Bruchi_2.png?format=1000w" alt="BRUCHI Table Lamp" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">BRUCHI Table Lamp</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/blk" target="_blank" rel="noopener noreferrer" data-product="BLK Floor Lamp" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/5785a8df-6bea-47b6-a8af-3215eed02ae5/8.jpg?format=1000w" alt="BLK Floor Lamp" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">BLK Floor Lamp</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/flu" target="_blank" rel="noopener noreferrer" data-product="FLU Floor Lamp" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/66d7e90b-8c75-4ab0-aec5-eda972038bdc/5.jpg?format=1000w" alt="FLU Floor Lamp" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">FLU Floor Lamp</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/llk" target="_blank" rel="noopener noreferrer" data-product="LLK Floor Lamp" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/46d834d2-a685-4d1d-8978-897fb59bfbf3/1.jpg?format=1000w" alt="LLK Floor Lamp" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LLK Floor Lamp</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/rgc" target="_blank" rel="noopener noreferrer" data-product="RGC Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/3c4fa9c8-fce9-4e91-a1fb-f1345fb87a41/DA2EA008-5BAC-41CA-BDFB-D723CC6C0F4D.jpeg?format=1000w" alt="RGC Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RGC Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/scr-o" target="_blank" rel="noopener noreferrer" data-product="SCR-O Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/ad7a96df-1add-49fd-9d59-bd1017c38d45/1089+NikoKoronis_ReBenchAndLowTable_72212-3.jpg?format=1000w" alt="SCR-O Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SCR-O Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/lvo" target="_blank" rel="noopener noreferrer" data-product="LVO Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/94130dc2-030b-45cb-bb17-2216155fd761/B.jpg?format=1000w" alt="LVO Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LVO Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/bkl" target="_blank" rel="noopener noreferrer" data-product="BKL Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/ed86e14e-6c63-481f-bcbb-1686f4c99636/2.jpg?format=1000w" alt="BKL Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">BKL Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/scr-s" target="_blank" rel="noopener noreferrer" data-product="SCR-S Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/0135f909-65f8-4200-8395-d408bff40b01/1167%2BNikoKoronis_CilindersAndOtherWorks_91792.jpg?format=1000w" alt="SCR-S Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SCR-S Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/rct-o" target="_blank" rel="noopener noreferrer" data-product="RCT-O Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/8e898f5d-6f56-4283-90d7-77b61145c1cc/RCT+O_3.jpg?format=1000w" alt="RCT-O Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RCT-O Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/rct-r" target="_blank" rel="noopener noreferrer" data-product="RCT-R Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/1fe39e09-3984-4aeb-be5f-8bc78d7b1836/RCT+R_1.jpg?format=1000w" alt="RCT-R Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RCT-R Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/plt" target="_blank" rel="noopener noreferrer" data-product="PLT Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/96665fa7-b350-45fa-a6bb-2c83ea9ecf32/PLT_4.jpg?format=1000w" alt="PLT Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">PLT Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/sct" target="_blank" rel="noopener noreferrer" data-product="SCT Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/75589649-cb58-4cb5-a4f3-80c5e69d507c/SCR-A_Travertino_04.jpg?format=1000w" alt="SCT Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SCT Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/slt" target="_blank" rel="noopener noreferrer" data-product="SLT Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/58305896-6dbd-411c-8eaf-9017cb99462d/gct_140_05.jpg?format=1000w" alt="SLT Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SLT Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/tbl" target="_blank" rel="noopener noreferrer" data-product="TBL Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/ecb6fb8b-0094-451a-97e7-594ebc681a6a/TBL_1.jpg?format=1000w" alt="TBL Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">TBL Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/tdc" target="_blank" rel="noopener noreferrer" data-product="TDC Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/26243427-4a92-4451-8c3c-027aaed4116d/TDC_02.png?format=1000w" alt="TDC Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">TDC Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/grt" target="_blank" rel="noopener noreferrer" data-product="GRT Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/1ef3fea4-a42b-481a-b415-24066fe4c862/2069+NikoKoronis_GRT_LowBlueTable_10781-1.jpg?format=1000w" alt="GRT Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">GRT Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/sca" target="_blank" rel="noopener noreferrer" data-product="SCA Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/ba5a82b8-7416-49f3-a494-7b2b01756812/IMG_3435.jpeg?format=1000w" alt="SCA Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SCA Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/tvl" target="_blank" rel="noopener noreferrer" data-product="TVL Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/758e4544-3d92-4ef4-b52f-d43d38d44c75/TVK_COFFE+TABLE_RED_5.jpg?format=1000w" alt="TVL Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">TVL Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/tsl" target="_blank" rel="noopener noreferrer" data-product="TSL Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/f7eda081-b97d-4d15-baa8-c425c3cc34af/8.jpg?format=1000w" alt="TSL Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">TSL Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/pct" target="_blank" rel="noopener noreferrer" data-product="PCT Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/1bda0455-c711-431c-83a2-7f37b34baacf/6.jpg?format=1000w" alt="PCT Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">PCT Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/asl" target="_blank" rel="noopener noreferrer" data-product="ASL Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/fac8b7a7-feea-44d4-b390-b1a36225935f/COFFE+B4.jpg?format=1000w" alt="ASL Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">ASL Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/sfl" target="_blank" rel="noopener noreferrer" data-product="SFL Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/9234f463-3423-42e4-a9a4-3f2b75f63905/2.jpg?format=1000w" alt="SFL Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SFL Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/the-ember-vessel-b35el" target="_blank" rel="noopener noreferrer" data-product="LSM Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/564210d2-7869-4d94-b2e5-36a3a441c609/1167%252BNikoKoronis_CilindersAndOtherWorks_91507.jpg?format=1000w" alt="LSM Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LSM Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/lvl" target="_blank" rel="noopener noreferrer" data-product="LVL Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/436f6db4-bd23-4f51-a920-c3421047cfc2/0626_Niko_Koronis_Tavolo0131.jpg?format=1000w" alt="LVL Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LVL Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/grb" target="_blank" rel="noopener noreferrer" data-product="GRB Bookcase" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/4d894786-94b7-4ba2-9900-835b4deb2656/IMG_1809.jpg?format=1000w" alt="GRB Bookcase" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">GRB Bookcase</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/nrd" target="_blank" rel="noopener noreferrer" data-product="NRD Daybed" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/4e412509-f4b7-4f50-be87-fba8b103773f/NikoRanya4079.jpg?format=1000w" alt="NRD Daybed" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">NRD Daybed</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/ets" target="_blank" rel="noopener noreferrer" data-product="ETS Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/9aac2db3-ceca-4e9d-9bab-a56c0c7f8c28/IMG_3996.jpg?format=1000w" alt="ETS Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">ETS Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/suku-rst" target="_blank" rel="noopener noreferrer" data-product="SUKU Round Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/9a8e57b9-adb1-4e10-bd8e-093cc5dace6c/NK-NK00016-PROTO-CWG-2023-08.jpg?format=1000w" alt="SUKU Round Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SUKU Round Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/suku-sst" target="_blank" rel="noopener noreferrer" data-product="SUKU Square Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/b211d99f-9062-4100-a86a-7af08bffbb5f/001AE9CD-B143-448E-8689-541FB87DC28D.jpg?format=1000w" alt="SUKU Square Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SUKU Square Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/bks" target="_blank" rel="noopener noreferrer" data-product="BKS Side Table/Stool" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/3d38ce33-184b-46cf-9b1f-bb07a6d5f96b/B3.jpg?format=1000w" alt="BKS Side Table/Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">BKS Side Table/Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/qcv" target="_blank" rel="noopener noreferrer" data-product="QCV Side Table/Stool" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/1459e9ed-4ab2-4355-96ef-228304e47190/97.jpg?format=1000w" alt="QCV Side Table/Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">QCV Side Table/Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/rcu" target="_blank" rel="noopener noreferrer" data-product="RCU Armchair" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/cc759c87-0812-4c72-acd2-d18fb374bd94/Niko_Koronis_01.jpg?format=1000w" alt="RCU Armchair" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RCU Armchair</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/krs" target="_blank" rel="noopener noreferrer" data-product="KRS Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/4a35edbf-b014-4550-96b7-df64554f7870/KRZ_Side+table1.jpg?format=1000w" alt="KRS Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">KRS Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/lvs" target="_blank" rel="noopener noreferrer" data-product="LVS Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/012c6b5e-0b88-4588-915a-efcfe30084ea/SIDE+3A.jpg?format=1000w" alt="LVS Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LVS Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/rst" target="_blank" rel="noopener noreferrer" data-product="RST Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/53e4c7e7-a669-4d41-8c33-cc629a78a188/NikoKoronis_RST_pair_0002_DSCF5086.png?format=1000w" alt="RST Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RST Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/nrs" target="_blank" rel="noopener noreferrer" data-product="NRS Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/eccff553-6a5d-4806-96c8-f3a62c88ed87/013.jpg?format=1000w" alt="NRS Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">NRS Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/nrt-i" target="_blank" rel="noopener noreferrer" data-product="NRT I Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/f89c72cb-e4d0-4d83-8ba2-b56e15f3a5f3/3.jpg?format=1000w" alt="NRT I Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">NRT I Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/nrt-ii" target="_blank" rel="noopener noreferrer" data-product="NRT II Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/6a381718-2703-4348-88cb-9e88281068dd/5.jpg?format=1000w" alt="NRT II Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">NRT II Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/tsm" target="_blank" rel="noopener noreferrer" data-product="TSM Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/0f8f7eaa-d18a-45d9-b6c9-06e86778bb19/2005+NikoKoronis_TSM_75872.jpg?format=1000w" alt="TSM Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">TSM Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/lkm" target="_blank" rel="noopener noreferrer" data-product="LKM Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/effd31fe-13cc-49fa-be9b-0adb8a2fed69/4.jpg?format=1000w" alt="LKM Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LKM Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/gsu" target="_blank" rel="noopener noreferrer" data-product="GSU Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/f908d6d2-ae1e-4227-81e2-2e3e711f8ec3/1.jpg?format=1000w" alt="GSU Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">GSU Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/gst" target="_blank" rel="noopener noreferrer" data-product="GST Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/fa7bcb4d-f322-4b1c-8b73-68dcc06c0f0d/1.jpg?format=1000w" alt="GST Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">GST Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/heygio" target="_blank" rel="noopener noreferrer" data-product="HEY GIO! Side Table/Stool" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/24765320-8115-4df7-b65c-25aabefc9948/HeyGio_insitu.jpg?format=1000w" alt="HEY GIO! Side Table/Stool" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">HEY GIO! Side Table/Stool</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/tvk" target="_blank" rel="noopener noreferrer" data-product="TVK Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/68aeab7c-0529-4163-951f-aac3f32056a4/1186%2BNikoKoronis_ShiftedCilinder_95640.jpg?format=1000w" alt="TVK Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">TVK Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/cch" target="_blank" rel="noopener noreferrer" data-product="CCH Low Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/61b07566-a908-4461-aeee-859fae89afe2/KORONIS_CCH2022_SideTable-08_SCALE%2BGM%2B2.jpg?format=1000w" alt="CCH Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">CCH Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/sfs" target="_blank" rel="noopener noreferrer" data-product="SFS Side Table" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/2b9e61dc-07bc-42ca-a0fa-7b12a9afd344/NikoKoronis_SFST_03.webp?format=1000w" alt="SFS Side Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SFS Side Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/lvf" target="_blank" rel="noopener noreferrer" data-product="LVF Freestanding Console" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/fb568458-f2e4-418d-b9fe-aa62d543587d/2.jpg?format=1000w" alt="LVF Freestanding Console" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LVF Freestanding Console</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.nikokoronis.com/works/p/cm5-cm6" target="_blank" rel="noopener noreferrer" data-product="cM5 and cM6 Low Tables" data-brand="Niko Koronis">
+        <div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/5b1a83ccfcf7fdf17481f2f6/89141db7-704c-4519-9c89-77337de044e3/00_format_landscape_pic_0012_cM-5-%EF%BF%BD-coffee-table-_maggio_20224430.jpg?format=1000w" alt="cM5 and cM6 Low Tables" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">cM5 and cM6 Low Tables</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+  </div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    // The tracking itself (page views, click-throughs, landing-page and
+    // campaign carry-over) lives in ONE shared file, /fg-track.js, instead
+    // of being pasted into hundreds of generated pages - see that file and
+    // backend/analytics.py for what is logged.
+    var s = document.createElement("script");
+    s.src = "/fg-track.js";
+    s.async = true;
+    document.head.appendChild(s);
+  })();
+</script>
+<script src="/share.js?v=3dc65514" defer></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

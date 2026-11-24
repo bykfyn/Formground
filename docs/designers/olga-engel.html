@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Olga Engel: designs and projects — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Olga Engel - 48 works. Each linked to its own page.">
+<link rel="canonical" href="https://formground.com/designers/olga-engel.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Olga Engel: designs and projects — Formground">
+<meta property="og:description" content="Olga Engel - 48 works. Each linked to its own page.">
+<meta property="og:url" content="https://formground.com/designers/olga-engel.html">
+<meta property="og:image" content="https://formground.com/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://formground.com/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Designers", "item": "https://formground.com/designers.html"}, {"@type": "ListItem", "position": 3, "name": "Olga Engel", "item": "https://formground.com/designers/olga-engel.html"}]}</script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/icons.css?v=86479f05">
+<style>
+  .curated-note { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; }
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  /* "New from X" sits at the TOP of a maker page, above the full range (and only exists when there is something new) */
+  .brand-section--top { margin: 0 0 44px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent; /* same box as .tag so the two small labels are one height */
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  /* two to a row on a phone (a single 190px-minimum column left the directories one long list) */
+  @media (max-width: 640px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px auto 0; line-height: 1.6; text-align: center; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px; height: 47px; box-sizing: border-box;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+/* SHARE-BTN:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .share-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 1;
+    width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(250, 249, 247, 0.85); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+  }
+  .share-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+  .share-btn i { font-size: 14px; }
+  .share-btn.copied::after {
+    content: "Copied"; position: absolute; bottom: 32px; right: 0;
+    background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  /* LOAD-MORE:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .load-more-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 40px 0 8px; text-align: center;
+  }
+  .load-more-btn {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: none; border: none; padding: 6px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .load-more-btn:hover { color: var(--text-primary); }
+  .load-more-btn:disabled { opacity: 0.6; cursor: default; text-decoration: none; }
+  .load-more-progress { font-size: 11.5px; color: var(--text-muted); }
+  
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 28px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
+  .has-load-more .pager { display: none; }
+  .earlier-results { display: none; margin: 0 0 14px; font-size: 13px; }
+  .has-load-more .earlier-results { display: block; }
+  .earlier-results a { color: var(--text-muted); text-decoration: none; }
+  .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
+</style>
+<style>
+  .creator-text { max-width: 640px; margin: 0 auto 36px; }
+  .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
+  .creator-facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 18px; margin: 18px 0 14px;
+    padding: 14px 0; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .creator-facts dt { color: var(--text-muted); }
+  .creator-facts dd { margin: 0; color: var(--text-primary); }
+  .creator-text p.creator-more { font-size: 13px; margin: 0 0 4px; }   /* beats .creator-text p (15px): the link is small, like "Visit site" */
+  .creator-more a { color: var(--text-accent); text-decoration: none; }
+  .creator-more a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/edits.html">Edits</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Designer</p>
+    <h1 class="maker-name">Olga Engel</h1>
+    <a class="brand-site-link" href="https://www.engelolgadesign.com/" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  
+  <section class="creator-text">
+    <p>Olga Engel is a product and interior designer who makes limited-edition furniture and lighting. Her lighting includes the Zephyr ceiling lights and mirrors, built from hundreds of biscuit porcelain pendants, and the Moonpapier lights made from porcelain petals on stainless steel.</p><p>Her seating runs from the upholstered Pompon, Boxes and Who Are You armchairs to the oak Babushka armchairs and the Lamb bench. Each work is shown as a limited edition with an enquiry option on her site. On Formground her work is shown through 48 works, each linked to her own website.</p>
+    <dl class="creator-facts"><dt>Type</dt><dd>Designer</dd><dt>Products</dt><dd>Limited-edition furniture and lighting</dd><dt>Website</dt><dd>engelolgadesign.com</dd></dl>
+  </section>
+  <div class="maker-grid">
+      <a class="maker-card" href="https://www.engelolgadesign.com/zephyrbasel" target="_blank" rel="noopener noreferrer" data-product="Zephyr Basel" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_12a723228cdf42a48d7e10221a6f5524~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_12a723228cdf42a48d7e10221a6f5524~mv2.jpg" alt="Zephyr Basel" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Zephyr Basel</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/zephyrgala" target="_blank" rel="noopener noreferrer" data-product="Zephyr Gala" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_c36127ca874a44019d9c9486de1ce922~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_c36127ca874a44019d9c9486de1ce922~mv2.jpg" alt="Zephyr Gala" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Zephyr Gala</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/zephyrgreece" target="_blank" rel="noopener noreferrer" data-product="Zephyr Greece" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_48904ea4c2f140a7be7b9c6d24f2e488~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_48904ea4c2f140a7be7b9c6d24f2e488~mv2.jpg" alt="Zephyr Greece" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Zephyr Greece</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/zephyrnewyork" target="_blank" rel="noopener noreferrer" data-product="Zephyr New York" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_d20cf244edb64aebb0810b2e7a7beacc~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_d20cf244edb64aebb0810b2e7a7beacc~mv2.jpg" alt="Zephyr New York" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Zephyr New York</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/zephyrsainttropez" target="_blank" rel="noopener noreferrer" data-product="Zephyr Saint Tropez" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_2047658f6b634ce096007fca6ac9268a~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_2047658f6b634ce096007fca6ac9268a~mv2.jpg" alt="Zephyr Saint Tropez" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Zephyr Saint Tropez</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/zephyrsaintmoritz" target="_blank" rel="noopener noreferrer" data-product="Zephyr Saint Moritz" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_ab08aa87f5f04a1597d35c25951f0897~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_ab08aa87f5f04a1597d35c25951f0897~mv2.jpg" alt="Zephyr Saint Moritz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Zephyr Saint Moritz</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/zephyrmegeve" target="_blank" rel="noopener noreferrer" data-product="Zephyr Megeve" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_fea33d60d51246f1999d22f363fdfcc5~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_fea33d60d51246f1999d22f363fdfcc5~mv2.jpg" alt="Zephyr Megeve" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Zephyr Megeve</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/zephyr-1-mirror" target="_blank" rel="noopener noreferrer" data-product="Zephyr Mirror #1" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_2928c568cee24ad38e6399e44035199a~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_2928c568cee24ad38e6399e44035199a~mv2.jpg" alt="Zephyr Mirror #1" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Zephyr Mirror #1</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/zephyr-2-mirror" target="_blank" rel="noopener noreferrer" data-product="Zephyr Mirror #2" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_48521453f7a94e1981145411f48c3365~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_48521453f7a94e1981145411f48c3365~mv2.jpg" alt="Zephyr Mirror #2" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Zephyr Mirror #2</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/yeti" target="_blank" rel="noopener noreferrer" data-product="Yeti" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_faa8dbbd2a3b4e96aa6d2ae95ab2ee03~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_faa8dbbd2a3b4e96aa6d2ae95ab2ee03~mv2.jpg" alt="Yeti" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Yeti</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/boxes1" target="_blank" rel="noopener noreferrer" data-product="Boxes 1" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_7ff241d500964157931544e3c767aae9~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_7ff241d500964157931544e3c767aae9~mv2.jpg" alt="Boxes 1" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Boxes 1</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/boxes3" target="_blank" rel="noopener noreferrer" data-product="Boxes 3" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_1e24273f19c44d1fb521351475ef97bd~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_1e24273f19c44d1fb521351475ef97bd~mv2.jpg" alt="Boxes 3" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Boxes 3</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/boxes4" target="_blank" rel="noopener noreferrer" data-product="Boxes 4" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_a7e9530c22d5483ba4faeb3708b3a938~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_a7e9530c22d5483ba4faeb3708b3a938~mv2.jpg" alt="Boxes 4" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Boxes 4</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/boxessofa" target="_blank" rel="noopener noreferrer" data-product="Boxes Sofa" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_e7ce330d79d84977bd4e41735077365c~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_e7ce330d79d84977bd4e41735077365c~mv2.jpg" alt="Boxes Sofa" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Boxes Sofa</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/matryoshka" target="_blank" rel="noopener noreferrer" data-product="Matryoshka" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_bd3c9ddac4624a89b048fcc66eaa5928~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_bd3c9ddac4624a89b048fcc66eaa5928~mv2.jpg" alt="Matryoshka" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Matryoshka</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/marshmallow" target="_blank" rel="noopener noreferrer" data-product="Marshmallow" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_065427cd0f7b4d0aaa1d564cf91182cc~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_065427cd0f7b4d0aaa1d564cf91182cc~mv2.jpg" alt="Marshmallow" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Marshmallow</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/lamb" target="_blank" rel="noopener noreferrer" data-product="Lamb" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_e7fa2190563c4e9db2b139a4ceb643bc~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_e7fa2190563c4e9db2b139a4ceb643bc~mv2.jpg" alt="Lamb" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Lamb</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/who-are-you-1" target="_blank" rel="noopener noreferrer" data-product="Who Are You #1" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_6c857366660c45c2a66c6b384059dc9e~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_6c857366660c45c2a66c6b384059dc9e~mv2.jpg" alt="Who Are You #1" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Who Are You #1</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/who-are-you-2" target="_blank" rel="noopener noreferrer" data-product="Who Are You #2" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_730fd55e4e834da987c0a2f376f41bef~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_730fd55e4e834da987c0a2f376f41bef~mv2.jpg" alt="Who Are You #2" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Who Are You #2</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/who-are-you-3" target="_blank" rel="noopener noreferrer" data-product="Who Are You #3" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_4fb8c3cf864a42b4b09ae35dc8ddef5a~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_4fb8c3cf864a42b4b09ae35dc8ddef5a~mv2.jpg" alt="Who Are You #3" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Who Are You #3</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/who-are-you-fur-1" target="_blank" rel="noopener noreferrer" data-product="Who Are You Fur #1" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_5e2d84ff7c864b688a72261513eaacb9~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_5e2d84ff7c864b688a72261513eaacb9~mv2.jpg" alt="Who Are You Fur #1" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Who Are You Fur #1</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/who-are-you-fur-2" target="_blank" rel="noopener noreferrer" data-product="Who Are You Fur #2" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_be41e9321b2446d0b9502d378630f7ac~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_be41e9321b2446d0b9502d378630f7ac~mv2.jpg" alt="Who Are You Fur #2" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Who Are You Fur #2</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/who-are-you-fur-3" target="_blank" rel="noopener noreferrer" data-product="Who Are You Fur #3" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_da1631b76fbc4887919db4c24e6a4d69~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_da1631b76fbc4887919db4c24e6a4d69~mv2.jpg" alt="Who Are You Fur #3" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Who Are You Fur #3</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/babushka-4" target="_blank" rel="noopener noreferrer" data-product="Babushka #4" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_870f22dd51c54f67808aea82511595da~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_870f22dd51c54f67808aea82511595da~mv2.jpg" alt="Babushka #4" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Babushka #4</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/babushka-5" target="_blank" rel="noopener noreferrer" data-product="Babushka #5" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_3e597f0c237e4a7aa4c24b06d4b3dd26~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_3e597f0c237e4a7aa4c24b06d4b3dd26~mv2.jpg" alt="Babushka #5" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Babushka #5</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/babushka-5-light" target="_blank" rel="noopener noreferrer" data-product="Babushka #5 Light" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_ee495668714d40b1ac26bf240e380add~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_ee495668714d40b1ac26bf240e380add~mv2.jpg" alt="Babushka #5 Light" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Babushka #5 Light</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/babushka-6" target="_blank" rel="noopener noreferrer" data-product="Babushka #6" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_154ad26b7ced45a0b4d219a39b4d740c~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_154ad26b7ced45a0b4d219a39b4d740c~mv2.jpg" alt="Babushka #6" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Babushka #6</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/babushka-7" target="_blank" rel="noopener noreferrer" data-product="Babushka #7" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_3c0f9ecca131452f94c51ec1809b9fc5~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_3c0f9ecca131452f94c51ec1809b9fc5~mv2.jpg" alt="Babushka #7" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Babushka #7</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/muguet-floor" target="_blank" rel="noopener noreferrer" data-product="Muguet Floor Lamp" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_d20dffaa62bb41ceb97ee0c2a965f28d~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_d20dffaa62bb41ceb97ee0c2a965f28d~mv2.jpg" alt="Muguet Floor Lamp" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Muguet Floor Lamp</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/muguet-wall" target="_blank" rel="noopener noreferrer" data-product="Muguet Wall Light" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_9cc6b648b55640609201ec648ea116f9~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_9cc6b648b55640609201ec648ea116f9~mv2.jpg" alt="Muguet Wall Light" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Muguet Wall Light</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/loveceilinglight" target="_blank" rel="noopener noreferrer" data-product="Love Ceiling Light" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_b6d99baeb1d44e03b98662ba7d16bcfe~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_b6d99baeb1d44e03b98662ba7d16bcfe~mv2.jpg" alt="Love Ceiling Light" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Love Ceiling Light</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/flowers" target="_blank" rel="noopener noreferrer" data-product="Flowers" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_11d69631ffc4437aae7481d8fa20090b~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_11d69631ffc4437aae7481d8fa20090b~mv2.jpg" alt="Flowers" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Flowers</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/emotions-wall" target="_blank" rel="noopener noreferrer" data-product="Emotions Wall Light" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_ed7218a2b43f4e43a7123a5599bafc14~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_ed7218a2b43f4e43a7123a5599bafc14~mv2.jpg" alt="Emotions Wall Light" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Emotions Wall Light</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/memories" target="_blank" rel="noopener noreferrer" data-product="Memories" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_eadd990297aa4338ba85a3ed6853518a~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_eadd990297aa4338ba85a3ed6853518a~mv2.jpg" alt="Memories" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Memories</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/obi" target="_blank" rel="noopener noreferrer" data-product="Obi" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_cea5938937454f6a892f8f4caec88265~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_cea5938937454f6a892f8f4caec88265~mv2.jpg" alt="Obi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Obi</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/obikioto" target="_blank" rel="noopener noreferrer" data-product="Obi Kioto" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_8d5c6af6599246b29b199a2c8ed8f448~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_8d5c6af6599246b29b199a2c8ed8f448~mv2.jpg" alt="Obi Kioto" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Obi Kioto</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/moonpapier-small-ball" target="_blank" rel="noopener noreferrer" data-product="Moonpapier Small Ball" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_8c7ed61d5291499684ee795d1a8dbd65~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_8c7ed61d5291499684ee795d1a8dbd65~mv2.jpg" alt="Moonpapier Small Ball" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Moonpapier Small Ball</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/moonpapier-mirror" target="_blank" rel="noopener noreferrer" data-product="Moonpapier Mirror" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_2a8f8d1cfab748b5af4201e3999c7942~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_2a8f8d1cfab748b5af4201e3999c7942~mv2.jpg" alt="Moonpapier Mirror" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Moonpapier Mirror</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/moonpapier-london" target="_blank" rel="noopener noreferrer" data-product="Moonpapier London" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_632b9a941aae4f3fb86920323c3894e1~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_632b9a941aae4f3fb86920323c3894e1~mv2.jpg" alt="Moonpapier London" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Moonpapier London</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/moonpapier-new-york" target="_blank" rel="noopener noreferrer" data-product="Moonpapier New York" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_7f8deec4f8534dc3b44d896ad67dd94b~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_7f8deec4f8534dc3b44d896ad67dd94b~mv2.jpg" alt="Moonpapier New York" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Moonpapier New York</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/moonpapier-saint-honore" target="_blank" rel="noopener noreferrer" data-product="Moonpapier Saint Honore" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_f54386db947146e5946051482cf2afc5~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_f54386db947146e5946051482cf2afc5~mv2.jpg" alt="Moonpapier Saint Honore" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Moonpapier Saint Honore</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/moonpapier-cannes" target="_blank" rel="noopener noreferrer" data-product="Moonpapier Cannes" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_4ef9bbdb2d3e4e8c8dce963df6379aa6~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_4ef9bbdb2d3e4e8c8dce963df6379aa6~mv2.jpg" alt="Moonpapier Cannes" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Moonpapier Cannes</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/moonpapier-pad-paris" target="_blank" rel="noopener noreferrer" data-product="Moonpapier PAD Paris" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_6f5e34255ac749858d175d981910e587~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_6f5e34255ac749858d175d981910e587~mv2.jpg" alt="Moonpapier PAD Paris" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Moonpapier PAD Paris</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/charlotte" target="_blank" rel="noopener noreferrer" data-product="Charlotte" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_3a0a0f7bd0e047cdbea547bcc849c3f1~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_3a0a0f7bd0e047cdbea547bcc849c3f1~mv2.jpg" alt="Charlotte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Charlotte</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/fenetre" target="_blank" rel="noopener noreferrer" data-product="Fenêtre" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_6a9f7b1066b34c68a642c94c4aa886b2~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_6a9f7b1066b34c68a642c94c4aa886b2~mv2.jpg" alt="Fenêtre" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Fenêtre</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/tours" target="_blank" rel="noopener noreferrer" data-product="Tours" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_ab0eba15a06946d2a08b3e75f3942c3c~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_ab0eba15a06946d2a08b3e75f3942c3c~mv2.jpg" alt="Tours" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Tours</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/who-i-am" target="_blank" rel="noopener noreferrer" data-product="Who I Am" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_1ffde011f6294ea4bb5dc4b8db8eed90~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_1ffde011f6294ea4bb5dc4b8db8eed90~mv2.jpg" alt="Who I Am" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Who I Am</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://www.engelolgadesign.com/pompon" target="_blank" rel="noopener noreferrer" data-product="Pompon" data-brand="Olga Engel">
+        <div class="maker-card-hero"><img src="https://static.wixstatic.com/media/429847_3ef9ff713f9442928341e395bd3452ee~mv2.jpg/v1/fit/w_1000,h_1000,q_85/429847_3ef9ff713f9442928341e395bd3452ee~mv2.jpg" alt="Pompon" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Pompon</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+  </div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    // The tracking itself (page views, click-throughs, landing-page and
+    // campaign carry-over) lives in ONE shared file, /fg-track.js, instead
+    // of being pasted into hundreds of generated pages - see that file and
+    // backend/analytics.py for what is logged.
+    var s = document.createElement("script");
+    s.src = "/fg-track.js";
+    s.async = true;
+    document.head.appendChild(s);
+  })();
+</script>
+<script src="/share.js?v=3dc65514" defer></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
