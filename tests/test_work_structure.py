@@ -223,10 +223,18 @@ class StructureTests(unittest.TestCase):
         body = with_new[with_new.index('<main data-brand='):]
         self.assertLess(body.index("New from Ferm Living"), body.index("All of Ferm Living"))
         self.assertLess(body.index("All of Ferm Living"), body.index('<div class="grid" data-listing-grid>', body.index("All of Ferm Living")))
-        without = (DOCS / "brands" / "gubi.html").read_text()
-        body = without[without.index('<main data-brand='):]
-        self.assertNotIn("New from Gubi", body)
-        self.assertNotIn("All of Gubi", body)                  # no empty space, no extra heading, just the range
+        # any maker page with nothing new (the scraped range changes weekly, so no brand is named here)
+        import glob as _g
+        for f in sorted(_g.glob(str(DOCS / "brands" / "*.html"))):
+            page = Path(f).read_text()
+            if '<main data-brand=' not in page:
+                continue
+            body = page[page.index('<main data-brand='):]
+            if "New from " not in body:
+                self.assertNotIn("All of ", body)          # no empty space, no extra heading, just the range
+                break
+        else:
+            self.fail("every maker page has a New section, so the quiet case is untested")
 
     def test_maker_pages_have_the_share_button_and_where_to_buy_only_from_two_stockists(self):
         import glob as _g
