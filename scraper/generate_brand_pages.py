@@ -1320,6 +1320,11 @@ def render_similar_section(brand, similar):
 DESIGNERS_SHOWN = 12   # the rest sit behind "and N more" (Alessi has 77, Galerie Kreo 68)
 
 
+def _portfolio_names():
+    path = DATA_DIR / "portfolio_designers.json"
+    return {d["name"] for d in json.loads(path.read_text())} if path.exists() else set()
+
+
 def designers_for_brand(brand, products, designer_info):
     """[(name, href, pieces)] for the designers credited on this brand's pieces who have a page on Formground, most
     pieces first. A designer without a page (fewer than two credited pieces anywhere) is not listed: no dead links.
@@ -1333,7 +1338,8 @@ def designers_for_brand(brand, products, designer_info):
     out = []
     for name, c in counts.items():
         slug, n_brands = designer_info[name]
-        href = f"/designers/{slug}.html" + (f"?brand={slugify(brand)}" if n_brands >= 2 else "")
+        # a designer shown by their own work (portfolio page) has no brand chips to filter
+        href = f"/designers/{slug}.html" + (f"?brand={slugify(brand)}" if n_brands >= 2 and name not in _portfolio_names() else "")
         out.append((name, href, c))
     return sorted(out, key=lambda t: (-t[2], t[0].lower()))
 

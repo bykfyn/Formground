@@ -366,7 +366,7 @@ def portfolio_card_html(d, slug):
       </a>"""
 
 
-def render_portfolio_designer_page(d, slug):
+def render_portfolio_designer_page(d, slug, credited=()):
     """A designer shown by their own work: each work links to its page on the designer's own site (as an architect's houses do)."""
     from generate_architects_pages import house_card_html
     name, works = d["name"], d["works"]
@@ -376,6 +376,13 @@ def render_portfolio_designer_page(d, slug):
                    f"{f', {html.escape(place)}' if place else ''}. Each linked to its own page.")
     seo_title = fit_title(f"{name}: designs and projects", name)
     cards = "".join(house_card_html({**w, "firm": name}) for w in works)
+    norm = lambda t: re.sub(r"[^a-z0-9]", "", (t or "").lower())
+    own = {norm(w["name"]) for w in works}
+    credited = [p for p in credited if norm(p["product_name"]) not in own]
+    credited_html = ""
+    if credited:
+        credited_html = (f'\n  <p class="brand-section-title" style="margin-top:44px;text-align:center">Also at makers on Formground</p>'
+                         f'\n  <div class="grid">{"".join(product_card_html(p, show_brand=True, share=True) for p in sorted(credited, key=lambda p: (p["brand"], p["product_name"])))}</div>')
     country = creator_texts.country_of("designers", slug)
     tags_div = f'<div class="tags">{tags_html([country], country)}</div>' if country else ""
     site_link = (f'<a class="brand-site-link" href="{html.escape(d["url"])}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>'
@@ -425,7 +432,7 @@ def render_portfolio_designer_page(d, slug):
   </div>
   {creator_texts.text_block_html("designers", slug, len(works), facts_block=False)}
   <div class="maker-grid">{cards}
-  </div>
+  </div>{credited_html}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
@@ -554,8 +561,11 @@ def generate():
     designers_with_slugs = []
     designers_with_slugs_portfolio = []
     extra_page_slugs = []
+    portfolio_names = {d["name"] for d in portfolio_designers()}
     for designer_name, products in sorted(products_by_designer.items(), key=lambda kv: kv[0]):
         if len(products) < MIN_PRODUCTS:
+            continue
+        if designer_name in portfolio_names:      # shown by their own work: the portfolio page below also lists these products
             continue
         slug = unique_slug(slugify(designer_name), designer_name, slugs_seen)
         slugs_seen[slug] = designer_name
@@ -572,12 +582,9 @@ def generate():
     # designers shown by their own work (no maker's products): one page each, like an architect's houses
     portfolio_cards = []
     for d in sorted(portfolio_designers(), key=lambda d: d["name"].lower()):
-        if d["name"] in products_by_designer and len(products_by_designer[d["name"]]) >= MIN_PRODUCTS:
-            print(f"Skipping portfolio designer {d['name']}: already has a page from makers' products.")
-            continue
         slug = unique_slug(slugify(d["name"]), d["name"], slugs_seen)
         slugs_seen[slug] = d["name"]
-        (DESIGNERS_DIR / f"{slug}.html").write_text(render_portfolio_designer_page(d, slug))
+        (DESIGNERS_DIR / f"{slug}.html").write_text(render_portfolio_designer_page(d, slug, products_by_designer.get(d["name"], [])))
         portfolio_cards.append(portfolio_card_html(d, slug))
         designers_with_slugs_portfolio.append(slug)
 

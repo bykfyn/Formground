@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Johan Viladrich: designs and projects — Formground</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/favicon-32x32.png" type="image/png" sizes="32x32">
+<link rel="icon" href="/favicon-16x16.png" type="image/png" sizes="16x16">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="description" content="Johan Viladrich - 34 works, Montpellier. Each linked to its own page.">
+<link rel="canonical" href="https://formground.com/designers/johan-viladrich.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Johan Viladrich: designs and projects — Formground">
+<meta property="og:description" content="Johan Viladrich - 34 works, Montpellier. Each linked to its own page.">
+<meta property="og:url" content="https://formground.com/designers/johan-viladrich.html">
+<meta property="og:image" content="https://formground.com/og-default.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://formground.com/og-default.png">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Formground", "item": "https://formground.com/"}, {"@type": "ListItem", "position": 2, "name": "Designers", "item": "https://formground.com/designers.html"}, {"@type": "ListItem", "position": 3, "name": "Johan Viladrich", "item": "https://formground.com/designers/johan-viladrich.html"}]}</script>
+<link rel="stylesheet" href="/site.css">
+<link rel="stylesheet" href="/icons.css?v=86479f05">
+<style>
+  .curated-note { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; }
+  main { max-width: 1160px; margin: 0 auto; padding: 48px 20px 60px; }
+  .maker-header { text-align: center; margin-bottom: 32px; }
+  .eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 6px; }
+  .maker-name { font-size: 18px; font-weight: 500; color: var(--text-secondary); margin: 0 0 12px; }
+  .brand-site-link { font-size: 13px; color: var(--text-accent); text-decoration: none; }
+  .brand-site-link:hover { text-decoration: underline; }
+  /* Real cross-link to Marketplace's Promotions tab (2026-09-28) - only
+     rendered when this brand genuinely has a live promotion right now
+     (see load_promotions_by_brand/render_brand_page). Quiet pill, not
+     a shouty banner - it's a real fact worth surfacing, not an ad. */
+  .promo-callout {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 14px;
+    font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 16px; text-decoration: none;
+  }
+  .promo-callout:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .promo-callout i { font-size: 14px; }
+  /* "Where to buy" / "New from X" sections (2026-09-28) - real, free
+     facts about a brand (which stockists carry it, what's recently
+     added), not the paid richness tier - see project memory,
+     enhanced_brand_profile_paid_tier_concept's free/paid split. */
+  .brand-section { margin-top: 48px; }
+  /* "New from X" sits at the TOP of a maker page, above the full range (and only exists when there is something new) */
+  .brand-section--top { margin: 0 0 44px; }
+  .brand-section-title {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.06em; color: var(--text-muted); margin: 0 0 16px;
+  }
+  .stockist-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .stockist-item {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: 999px; padding: 8px 14px 8px 10px;
+    text-decoration: none; color: inherit; font-size: 13px;
+  }
+  .stockist-item:hover { background: var(--surface-2); border-color: var(--border-strong); }
+  .stockist-item img { width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; }
+  .stockist-name { font-weight: 500; }
+  .stockist-location { color: var(--text-muted); font-size: 12px; }
+  .tags { margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  /* Photo + plain caption, not an enclosing card box - the site-wide
+     standard confirmed 2026-09-20 (see project memory): border/
+     background/sharp corners live on the photo alone, caption text
+     sits as plain content below it, matching Creators/the homepage's
+     category tiles and work.html's result cards. */
+  .card { display: block; text-decoration: none; color: inherit; }
+  .card-image {
+    aspect-ratio: 1/1; background: var(--surface-1); overflow: hidden;
+    border: 0.5px solid var(--border); margin: 0 0 10px; position: relative;
+  }
+  /* Marks a card as standing in for several same-size color/finish
+     variants (see product_card_html's variant_count param) - positioned
+     like work.html's own share-btn corner treatment. */
+  .variant-badge {
+    position: absolute; bottom: 6px; left: 6px; z-index: 1;
+    background: rgba(250, 249, 247, 0.9); color: var(--text-secondary);
+    font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 10px;
+    border: 0.5px solid transparent; /* same box as .tag so the two small labels are one height */
+  }
+  .card-image img { width: 100%; height: 100%; object-fit: cover; }
+  .card-image img.contain-fit { object-fit: contain; }
+  /* Tecta's own product photography (confirmed live 2026-09-30, user:
+     "see if we can crop tecta's images better") consistently frames the
+     piece flush against the TOP of a portrait (4:5-ish) canvas with
+     empty space left below it (e.g. a chair's backrest starts within a
+     few px of y=0, legs/casters end well before the bottom edge) - a
+     shape the existing ratio<0.55/>1.8 "contain-fit" safety net doesn't
+     catch (these run ~0.7-0.8, not extreme enough), so the default
+     center-crop into a square card clips the top of the backrest to
+     "gain" cropping empty space at the bottom instead. Scoped to this
+     one brand's own page via the [data-brand] attribute on <main> (see
+     render_brand_page) rather than changed as this file's own sitewide
+     default, since other brands' photography isn't confirmed to share
+     this same top-heavy framing. */
+  main[data-brand="Tecta"] .card-image img { object-position: top; }
+  .card-body { padding: 0; }
+  /* Reserves a full 2 lines' height so .card-brand always starts at the
+     same row across every card in a grid, regardless of whether a given
+     product name wraps to 1 or 2 lines - ported from work.html's own
+     fix (2026-09-29), which this shared card markup had never received,
+     so every page built from product_card_html() (new.html, brand
+     pages, the theme landing pages, makers index) had brand names
+     landing at different heights row to row. */
+  .card-title-wrap { min-height: 2.6em; display: flex; align-items: flex-start; }
+  .card-title {
+    font-size: 13px; font-weight: 500; margin: 0; line-height: 1.3;
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  }
+  .card-brand {
+    font-size: 12px; color: var(--text-secondary); margin: 2px 0 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .maker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 16px; align-items: start; }
+  /* two to a row on a phone (a single 190px-minimum column left the directories one long list) */
+  @media (max-width: 640px) { .maker-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+
+  .maker-card { display: block; text-decoration: none; color: inherit; }
+  .maker-card-hero {
+    position: relative; aspect-ratio: 4/3; background: var(--surface-1);
+    border: 0.5px solid var(--border); margin: 0 0 10px;
+  }
+  .maker-card-hero img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .maker-card-hero img.contain-fit { object-fit: contain; }
+  .maker-card-body { padding: 0; text-align: center; }
+  .maker-card .maker-name { display: block; font-size: 15px; font-weight: 500;
+    color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-card:hover .maker-name { text-decoration: underline; }
+  .maker-country { display: block; font-size: 11px; color: var(--text-secondary); margin: 0 0 3px; }
+  .maker-categories { display: block; font-size: 11px; color: var(--text-muted); letter-spacing: 0.01em; }
+
+  /* font-weight explicit since this class is also used on an <h1> in
+     render_makers_index (the homepage's own header carries the same
+     rule) - browsers bold headings by default, and this needs to look
+     identical to the plain <p> version used everywhere else. */
+  .page-tagline { font-size: 13px; font-weight: normal; color: var(--text-secondary); margin: 0 0 32px; }
+  .category-intro { font-size: 14px; color: var(--text-secondary); max-width: 640px; margin: 0 0 28px; line-height: 1.6; }
+  /* Real body text for crawlers/AI agents, same reasoning as
+     Marketplace's own footer-description (2026-09-25, see project
+     memory) - makers.html/architects.html/designers.html otherwise go
+     straight from an invisible sr-only <h1> into the grid, with no
+     visible text on the page at all past the meta description. */
+  .footer-description { font-size: 12px; color: var(--text-muted); max-width: 640px; margin: 24px auto 0; line-height: 1.6; text-align: center; }
+  .empty-state { font-size: 14px; color: var(--text-muted); text-align: center; padding: 60px 20px; }
+
+  /* --- directory filter (makers.html, architects.html) --- */
+  /* Same ask-box look, width (900px via .search-wide) and hero position
+     as work.html/the homepage/creators.html, for a search box that
+     lands in the identical spot on every page (2026-09-20, see project
+     memory) - but this one filters the grid already rendered on the
+     page client-side (name/city/category, substring match) rather than
+     calling the backend. These pages are "browse who's here," not
+     "search what they make," so it isn't wired to search.js's work.html
+     redirect at all. */
+  .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
+  .ask-box {
+    display: flex; align-items: center; gap: 10px; height: 47px; box-sizing: border-box;
+    background: var(--surface-1); border: 0.5px solid var(--border);
+    border-radius: var(--radius); padding: 0 16px;
+  }
+  .ask-box i.ti-search { font-size: 18px; color: var(--text-muted); }
+  .ask-box input {
+    border: none; background: none; outline: none; flex: 1;
+    font-size: 15px; color: var(--text-primary); font-family: inherit;
+  }
+  .ask-box input::placeholder { color: var(--text-muted); }
+
+  /* Breadcrumb - which of the three Creator groups you're browsing,
+     always shown, never editable. Landing here directly (a category
+     card, or a fresh URL) shows this with an empty input; arriving from
+     Creators' own search box ("architects stockholm") shows it next to
+     the pre-filled, already-applied "stockholm" filter (added
+     2026-09-20, see project memory). Kept out of the <input>'s own
+     value on purpose - no card's text literally contains the word
+     "architect"/"maker", so baking the category word into the filter
+     value itself would silently break every match. */
+  /* padding: 7px vertical, not 4px - matches the "Surprise me" chip's
+     own vertical padding on the homepage/work.html exactly, so the
+     ask-box itself comes out the same overall height everywhere
+     (measured live 2026-09-20: both 57px - see project memory). */
+  .ask-box-context {
+    flex-shrink: 0; font-size: 13px; font-weight: 500; color: var(--text-secondary);
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 10px; border-radius: 999px;
+  }
+
+  /* Tier filter (makers.html only) - two independent toggle chips, not
+     a 3-way tab set with an explicit "All" - clicking an active chip
+     again clears it back to showing everyone, which is simpler than a
+     bare "All" pill sitting oddly alongside the other two. Same pill
+     shape/size as .ask-box-context above for visual consistency with
+     the rest of this filter row. */
+  .tier-filters { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin: 0 0 28px; }
+  .filter-chip {
+    font-size: 13px; font-weight: 500; color: var(--text-secondary); font-family: inherit;
+    background: var(--surface-2); border: 0.5px solid var(--border-strong);
+    padding: 7px 14px; margin: 0; cursor: pointer; border-radius: 999px; white-space: nowrap;
+  }
+  .filter-chip:hover { border-color: var(--text-muted); }
+  .filter-chip.active {
+    background: var(--text-primary); color: var(--surface-1); border-color: var(--text-primary);
+  }
+
+  /* Explicit, not relying on the browser's default [hidden] styling -
+     .maker-card's own `display: block` below has the same specificity
+     and comes later in source order, so it would otherwise win and
+     leave a "hidden" card visible. */
+  [hidden] { display: none !important; }
+/* SHARE-BTN:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .share-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 1;
+    width: 26px; height: 26px; border-radius: 50%; border: none;
+    background: rgba(250, 249, 247, 0.85); color: var(--text-secondary);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; padding: 0;
+  }
+  .share-btn:hover { background: var(--surface-2); color: var(--text-primary); }
+  .share-btn i { font-size: 14px; }
+  .share-btn.copied::after {
+    content: "Copied"; position: absolute; bottom: 32px; right: 0;
+    background: var(--text-primary); color: var(--surface-2);
+    font-size: 11px; padding: 3px 8px; border-radius: 6px; white-space: nowrap;
+  }
+  /* LOAD-MORE:START (also embedded in PAGE_CSS for the maker pages - edit it here only) */
+  .load-more-row {
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    margin: 40px 0 8px; text-align: center;
+  }
+  .load-more-btn {
+    font: inherit; font-size: 13px; font-weight: 500; color: var(--text-accent);
+    background: none; border: none; padding: 6px 4px; cursor: pointer;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .load-more-btn:hover { color: var(--text-primary); }
+  .load-more-btn:disabled { opacity: 0.6; cursor: default; text-decoration: none; }
+  .load-more-progress { font-size: 11.5px; color: var(--text-muted); }
+  
+  .pager { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 28px 0 8px; }
+  .pager a, .pager span {
+    min-width: 38px; padding: 8px 12px; text-align: center; font-size: 14px;
+    border: 0.5px solid var(--border); border-radius: 8px; text-decoration: none; color: var(--text-secondary);
+  }
+  .pager a:hover { color: var(--text-primary); border-color: var(--text-muted); }
+  .pager span.current { color: var(--text-primary); border-color: var(--text-secondary); font-weight: 600; }
+  .pager .gap { border: 0; min-width: 0; padding: 8px 2px; color: var(--text-muted); }
+  .has-load-more .pager { display: none; }
+  .earlier-results { display: none; margin: 0 0 14px; font-size: 13px; }
+  .has-load-more .earlier-results { display: block; }
+  .earlier-results a { color: var(--text-muted); text-decoration: none; }
+  .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
+
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+</style>
+<style>
+  .creator-text { max-width: 640px; margin: 0 auto 36px; }
+  .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
+  .creator-facts { display: grid; grid-template-columns: max-content 1fr; gap: 4px 18px; margin: 18px 0 14px;
+    padding: 14px 0; border-top: 0.5px solid var(--border); border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .creator-facts dt { color: var(--text-muted); }
+  .creator-facts dd { margin: 0; color: var(--text-primary); }
+  .creator-text p.creator-more { font-size: 13px; margin: 0 0 4px; }   /* beats .creator-text p (15px): the link is small, like "Visit site" */
+  .creator-more a { color: var(--text-accent); text-decoration: none; }
+  .creator-more a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<header class="site-header">
+  <a class="home-link" href="/"><img src="/logo/formground_logotype_RGB.png" alt="Formground"></a>
+<nav class="top-nav">
+  <a href="/work.html">Work</a>
+  <a href="/creators.html" class="current">Creators</a>
+  <a href="/edits.html">Edits</a>
+</nav>
+</header>
+<main>
+  <div class="maker-header">
+    <p class="eyebrow">Designer</p>
+    <h1 class="maker-name">Johan Viladrich</h1>
+    <div class="tags"><a class="tag tag-link" href="/work.html?q=from+France">France</a></div>
+    <p class="meta-line">Montpellier</p>
+    <a class="brand-site-link" href="https://johanviladrich.com/" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
+  </div>
+  
+  <section class="creator-text">
+    <p>Johan Viladrich is a French designer, born in Paris in 1991 and based in Montpellier, who works on furniture and spatial structures. His pieces are built from standard industrial profiles, plates and tubes in aluminium, bronze, copper and steel, joined with visible bolts or rubber bands and finished by brushing and wax, so that little trace of the maker&#x27;s hand remains.</p><p>Benches, consoles, shelves and tables are made in numbered editions, some developed with Lauriane Heim as Heim+Viladrich, and the Paris gallery Kolkhoze offers several of them on request. On Formground his work is shown through 34 works, each linked to his own website.</p>
+  </section>
+  <div class="maker-grid">
+      <a class="maker-card" href="https://johanviladrich.com/Aluminium-Desk" target="_blank" rel="noopener noreferrer" data-product="Aluminium Desk" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/e463b37187a2aac4d13a7805271ad8188ef28637676e798cc43773537bba01a3/AL_Desk_004.jpg" alt="Aluminium Desk" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Aluminium Desk</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Night-Stand" target="_blank" rel="noopener noreferrer" data-product="Night Stand" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/e5418519b208c3c64826ab5f29866b201d65b47180095d708bad0a39a00390d3/NightStand_001.jpg" alt="Night Stand" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Night Stand</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Float" target="_blank" rel="noopener noreferrer" data-product="Float" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/b752636700dd71d95a51126406b9e3813d4df230c07448d5ac741432a8fd7d72/Float_004.jpg" alt="Float" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Float</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/MaxiTray" target="_blank" rel="noopener noreferrer" data-product="MaxiTray" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/06367b4b983230a613d5eca59ee3cca6b882284fdabf60799d3309e3ae097267/MaxiTray_06_web.jpg" alt="MaxiTray" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">MaxiTray</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/BC01" target="_blank" rel="noopener noreferrer" data-product="BC01" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/ee02b27c843f26267074ebe172298667b9eb32b2768cec620f141928744f2c68/Console_001.jpg" alt="BC01" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">BC01</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Locker-23" target="_blank" rel="noopener noreferrer" data-product="Locker 23" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/7ea68e32dbef977c4bed5eec321f28b4fcf3ce69019464a2e01fc0bd0f01a77f/Locker23_001.jpg" alt="Locker 23" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Locker 23</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Angle-Shelf" target="_blank" rel="noopener noreferrer" data-product="Angle Shelf" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/3b742c5ded6df6a208429773ad5197f65024b26800575659561b3c2cea265023/L_Shelf_000_Studio_Johan_Viladrich.jpg" alt="Angle Shelf" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Angle Shelf</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Picnic-Table" target="_blank" rel="noopener noreferrer" data-product="Picnic Table" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/9e43cfd64abd6b76d496a9955f6b7e3052243150ca2a33bc4489f4e46b428605/Table_005.jpg" alt="Picnic Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Picnic Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/ST02" target="_blank" rel="noopener noreferrer" data-product="ST02" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/b08b5aeb03e6ad723e2df8e1925ba0985ccd4e915b1fbb95ee76e1379fad444d/ST02_004.jpg" alt="ST02" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">ST02</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/LAC" target="_blank" rel="noopener noreferrer" data-product="LAC" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/c32058366590eceba94446779ea16b14956ad2089757d9cdb142a7685575cc60/LAC_000_low.jpg" alt="LAC" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">LAC</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Open-Dressing" target="_blank" rel="noopener noreferrer" data-product="Open Dressing" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/d2e0bc3d072a516622a8049944a0b5fa6409f60457702ca7174befb5834e3bae/Open_Dressing_002.jpg" alt="Open Dressing" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Open Dressing</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/FG-Bench" target="_blank" rel="noopener noreferrer" data-product="FG Bench" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/9d78c304d9cd91b637b700533ade1628b70ad93c93b9d76921f7e740bfc1942f/FGB_001.jpg" alt="FG Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">FG Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/FirePlace" target="_blank" rel="noopener noreferrer" data-product="FirePlace" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/a0afa6b9c3833c0306f27e7012163f6e04fe77f860c2bec70ced4189de63a67c/FirePlace_002.jpg" alt="FirePlace" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">FirePlace</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Credenza" target="_blank" rel="noopener noreferrer" data-product="Credenza" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/e28eeec96b5c59ad57777bffee37d9f13d33e422936a9ec0de18eb610d5ede26/Cabinet_002B.jpg" alt="Credenza" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Credenza</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/RW_Bench" target="_blank" rel="noopener noreferrer" data-product="RW Bench" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/afffad9dec79eb5fc1b814dc13285f7450ca70d19f1613ce26536d17e351fff2/RWB_005.jpg" alt="RW Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RW Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Low-Table" target="_blank" rel="noopener noreferrer" data-product="Low Table" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/4f57ac0d050312fafd48884f9f62ff4b1d56abeb8c9366b64de33ddb095ef7f0/LT_002.jpg" alt="Low Table" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Low Table</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Seating-Element" target="_blank" rel="noopener noreferrer" data-product="SE01" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/6977da8bf8bae26fa7b4a78b7dc77e3462746a8847bf2f8452a919f820fedccf/SE01_002.jpg" alt="SE01" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">SE01</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Cabinets" target="_blank" rel="noopener noreferrer" data-product="Cabinets for Dries Van Noten" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/23d3d6e45ff01544bb75c264138dbfd94fd580207e65a955eb5a68dd46bb4112/Nylon_Cabinet_Johan_Viladrich_002.jpg" alt="Cabinets for Dries Van Noten" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Cabinets for Dries Van Noten</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Polyamide-Desk" target="_blank" rel="noopener noreferrer" data-product="Polyamide Desk" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/6d9f28871ac0ca4141a23396f77db3666782613119c4c7bcf98ecea446c66283/PA_D_001.jpg" alt="Polyamide Desk" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Polyamide Desk</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Stack-Shelf" target="_blank" rel="noopener noreferrer" data-product="Stack Shelf" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/451c135076f74836f6eadfd31e1bc27aafa3f4068fdeda3066c44b182e13615c/Stack_Shelf_Johan_Viladrich_2020_011.jpg" alt="Stack Shelf" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Stack Shelf</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Air-Bench" target="_blank" rel="noopener noreferrer" data-product="Air Bench" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/c8f4f7fd84636c5d6a43670039103b71c8b3124192563358b2f24910386faf80/Johan_Viladrich_Air_Bench_2020_002.jpg" alt="Air Bench" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Air Bench</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/RC03" target="_blank" rel="noopener noreferrer" data-product="RC03" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/27d8f5ff07200dd59343952107d5f6517b4f8eb52fd2fae1f8c4da8d2ac833e7/RC03_002.jpg" alt="RC03" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RC03</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Reflective-Surface" target="_blank" rel="noopener noreferrer" data-product="Reflective Surface" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/2fe2e98d4c05ec76d65517ed8fe01e7672878c185545d9dbad93e68c48b045c5/Reflective_Surface_Johan_Viladrich_003.jpg" alt="Reflective Surface" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Reflective Surface</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/CC03" target="_blank" rel="noopener noreferrer" data-product="CC03" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/9a858811e34c7e3ba87553fdc00dd57a448ab60d091d0e678153ae84efcd8d66/02032019_Nilufar_JohanViladrich_010.jpg" alt="CC03" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">CC03</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/RB03" target="_blank" rel="noopener noreferrer" data-product="RB03" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/008e381e289e45441c2a10daf2350afa1b1f11de209d63bd3e2ed94338ef513e/RB03_Johan_Viladrich_05_B.jpg" alt="RB03" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RB03</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/AS01" target="_blank" rel="noopener noreferrer" data-product="AS01" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/b2fd83714c2af00bd8c58b8241258fdc336338765d5db58a7880667e07d16b5b/AS01_09_Johan_Viladrich.jpg" alt="AS01" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">AS01</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/CB01" target="_blank" rel="noopener noreferrer" data-product="CB01" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/b7647c5bec50cd8a115551382a2157f00d8d78405a2c60aaa899bdbddbb3387f/CB01_004.jpg" alt="CB01" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">CB01</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/RT_Black" target="_blank" rel="noopener noreferrer" data-product="RT Black" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/83ec6f9d61054842e6a73a96a05ce2669194b7d82be1f80f232f073bcfb4c9d7/RTB_05_B.jpg" alt="RT Black" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RT Black</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/RB_Bronze" target="_blank" rel="noopener noreferrer" data-product="RB Bronze" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/5251f08397115e7b49a1d3929d63cbd60d0c0e1f74775d69e7a31b3cdf215258/RB-Bronze_ToolsGalerie_2018_Johan_Viladrich_01.jpg" alt="RB Bronze" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RB Bronze</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Arke-Double" target="_blank" rel="noopener noreferrer" data-product="Arke Double" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/2401494bff037f04ec7664395ec241ba3f190b0d8439472cf1d0f46dca0897c9/Johan_Viladrich_Arke_Double_08.jpg" alt="Arke Double" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Arke Double</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/RB02" target="_blank" rel="noopener noreferrer" data-product="RB02" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/fe0da741bb924b5940693f2a83b7cf711029c3847855e4e5515d70332124d16f/RB02_01_Johan_Viladrich.jpg" alt="RB02" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RB02</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/RT01" target="_blank" rel="noopener noreferrer" data-product="RT01" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/a529425414237ea456d824ff3c44ec64a8d7f7516ed83f8d273ba55fcb06fa41/RT01_01_Johan_Viladrich.jpg" alt="RT01" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">RT01</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Elder" target="_blank" rel="noopener noreferrer" data-product="Elder" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/8747b7cc2a4b4644ea3f14eca2cc65d6fbdb8e369989d0519693454d0e9cac4c/Elder_1.jpg" alt="Elder" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Elder</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+      <a class="maker-card" href="https://johanviladrich.com/Walker" target="_blank" rel="noopener noreferrer" data-product="Walker" data-brand="Johan Viladrich">
+        <div class="maker-card-hero"><img src="https://freight.cargo.site/t/original/i/d1d0677e1213a07a1fd1a6bf043dacc8ece0ecab5920fa7892bb7c9987ef9065/Walker_Full_HR_2.jpg" alt="Walker" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="maker-card-body">
+          <span class="maker-name">Walker</span>
+          <span class="maker-country">&nbsp;</span>
+        </div>
+      </a>
+  </div>
+  <p class="foot-note">
+    &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
+  </p>
+</main>
+<script>
+  document.querySelectorAll(".maker-card-hero img").forEach(function (img) {
+    img.addEventListener("load", function () {
+      var ratio = img.naturalWidth / img.naturalHeight;
+      if (ratio < 0.55 || ratio > 1.8) img.classList.add("contain-fit");
+    });
+  });
+</script>
+<script>
+  (function () {
+    // The tracking itself (page views, click-throughs, landing-page and
+    // campaign carry-over) lives in ONE shared file, /fg-track.js, instead
+    // of being pasted into hundreds of generated pages - see that file and
+    // backend/analytics.py for what is logged.
+    var s = document.createElement("script");
+    s.src = "/fg-track.js";
+    s.async = true;
+    document.head.appendChild(s);
+  })();
+</script>
+<script src="/share.js?v=3dc65514" defer></script>
+<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

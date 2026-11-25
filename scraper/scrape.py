@@ -18701,6 +18701,570 @@ def extract_sofie_osterby(brand):
     return products
 
 
+# --- SCP, Ishinomaki Laboratory, LK Hjelle (2026-11-25: makers behind pieces of the portfolio designers Jonah Takagi and Krystian Kowalski) ---
+
+# scp.co.uk (SCP, London; Shopify): a 4,000-listing store that mostly resells other brands (HAY, Vitra, Flos...). Its own range is
+# product_type "SCP" (about 200 listings with the designer as vendor, plus ex-display and clearance repeats), so only a hand-picked
+# selection of 14 is built, one design from each part of the range, each read from its own /products/<handle>.json (14 requests).
+# The designer is the listing's vendor. Prices are GBP as listed.
+SCP_PICKS = [
+    ("cove-side-table", "Side Table"), ("sofa-03", "Sofa"), ("josiah-pendant-light", "Pendant Lamp"),
+    ("archer-cantilever-chair", "Chair"), ("parallel-shelving-unit-90", "Shelving"), ("flipper-coffee-table", "Coffee Table"),
+    ("slatted-bar-stool", "Bar Stool"), ("element-modular-sofa", "Sofa"), ("flw-lounge-chair-walnut", "Lounge Chair"),
+    ("daybed", "Daybed"), ("bobbin-dining-table", "Dining Table"), ("agnes-mirror", "Mirror"),
+    ("terracotta-pitcher", "Pitcher"), ("alphabet-mugs", "Mug"),
+]
+
+
+def extract_scp(brand):
+    base = brand["url"].rstrip("/")
+    products = []
+    for handle, category in SCP_PICKS:
+        data = _fetch_json(f"{base}/products/{handle}.json")
+        time.sleep(1)
+        p = (data or {}).get("product")
+        if not p or not p.get("images"):
+            print(f"  SCP: {handle} not found - skipped")
+            continue
+        price = p["variants"][0].get("price") if p.get("variants") else None
+        vendor = (p.get("vendor") or "").strip()
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": re.sub(r"\s+", " ", p["title"]).strip(),
+            "product_url": f"{base}/products/{handle}", "category": category, "material_options": [], "dimensions": "", "notes": "",
+            "image_url": p["images"][0]["src"].split("?")[0], "designer": "" if vendor in ("", "--none--", "SCP") else vendor,
+            "price": float(price) if price else None, "currency": "GBP" if price else None,
+        })
+    return products
+
+
+# ishinomaki-lab.org (Ishinomaki Laboratory, Ishinomaki, Japan; Shopify, one /products.json page of 54 listings). The shop lists each
+# design twice, ready made ("the Originals", plus the "Kobo Lounge Series") and as a self-assembly "Maker Pack" kit: only the ready
+# made pieces are built (the kits, the four animal toy kits and the Maker Packs are left out). The site's own type field is empty,
+# so the type of each piece comes from its name and the Japanese descriptions (Flamingo is a stool, Endai a bench-stand, Drop an
+# umbrella stand). Prices are yen and are not stored.
+ISHINOMAKI_CATEGORIES = {
+    "flamingo": "Stool", "carry stool": "Stool", "kid stool": "Stool", "kobo high stool": "Stool", "tripodal stool": "Stool",
+    "ishinomaki stool": "Stool", "aa stool": "Stool", "aa low stool": "Stool", "aa high stool": "Bar Stool",
+    "center table half": "Coffee Table", "center table": "Coffee Table", "corner table": "Side Table", "kobo table": "Table",
+    "sofa 1.5p one arm": "Sofa", "sofa 3p": "Sofa", "105° lounge chair": "Lounge Chair", "stave planter": "Planter",
+    "90° bench": "Bench", "ishinomaki bench": "Bench", "ishinomaki stacking bench": "Bench", "kobo bench": "Bench",
+    "endai": "Bench", "rin desk": "Desk", "kobo st-desk": "Desk", "cafe chair": "Chair", "hiroi chair": "Chair",
+    "ise magazine rack": "Magazine Rack", "iks bookstand": "Bookstand", "drop": "Umbrella Stand", "drop mini": "Umbrella Stand",
+}
+
+
+def extract_ishinomaki(brand):
+    base = brand["url"].rstrip("/")
+    data = _fetch_json(f"{base}/products.json?limit=250")
+    if not data:
+        print("  Could not fetch the Ishinomaki Laboratory products.json")
+        return []
+    products, seen = [], set()
+    for p in data.get("products", []):
+        title = re.sub(r"\s+", " ", p["title"]).strip()
+        m = re.match(r"(.+?) - (the Originals|Kobo Lounge Series|Lounge Series|Maker Pack)$", title)
+        if not m or m.group(2) == "Maker Pack" or "KIT" in m.group(1) or not p.get("images"):
+            continue
+        key = m.group(1).lower()
+        category = ISHINOMAKI_CATEGORIES.get(key)
+        if not category or key in seen:
+            continue
+        seen.add(key)
+        name = m.group(1).title().replace("Aa ", "AA ").replace("Iks ", "IKS ").replace("St-Desk", "ST-Desk").replace("1.5P", "1.5P").replace("3P", "3P")
+        if m.group(2) != "the Originals":
+            name += " (Lounge Series)"
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+            "product_url": f"{base}/products/{p['handle']}", "category": category, "material_options": [], "dimensions": "", "notes": "",
+            "image_url": p["images"][0]["src"].split("?")[0], "designer": "Jonah Takagi" if name == "Stave Planter" else "",
+            "price": None, "currency": None,
+        })
+    return products
+
+
+# lkhjelle.no (LK Hjelle, Norwegian upholstery and furniture maker since 1920s; WordPress). The REST API is locked and robots.txt asks for a
+# 60 second crawl delay, so the range is read from two requests: the /products/ page (name, product type and address of each
+# of the about 25 designs) and the product sitemap (one photo per design). The two English-site spellings differ from the
+# Norwegian ones, so addresses with /no/ are ignored. Ami is listed twice (sofas and lounge chairs): one piece.
+LKHJELLE_CATEGORIES = {"Sofas": "Sofa", "Lounge chairs": "Lounge Chair", "Chairs": "Chair", "Tables": "Table", "Accessories": "Pouf"}
+
+
+def extract_lk_hjelle(brand):
+    base = brand["url"].rstrip("/")
+    try:
+        page = requests.get(f"{base}/products/", headers=HEADERS, timeout=30)
+        page.raise_for_status()
+        time.sleep(2)
+        sitemap = requests.get(f"{base}/product-sitemap.xml", headers=HEADERS, timeout=30)
+        sitemap.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch the LK Hjelle pages: {e}")
+        return []
+    photos = {}
+    for loc, block in re.findall(r"<url>\s*<loc>(.*?)</loc>(.*?)</url>", sitemap.text, re.S):
+        image = re.search(r"<image:loc>(.*?)</image:loc>", block)
+        if image:
+            photos[loc] = html.unescape(image.group(1))
+    products, seen = [], set()
+    for cat in re.finditer(r'<div class="cat-wrap[^>]*><h2><a title="See all ([^"]*)"[^>]*>.*?</h2><ul class="products">(.*?)</ul>', page.text, re.S):
+        category = LKHJELLE_CATEGORIES.get(html.unescape(cat.group(1)))
+        for url, name in re.findall(r'href="([^"]+/product/[^"]+)">([^<]+)</a>', cat.group(2)):
+            name = html.unescape(name).strip()
+            if url in seen or not category:
+                continue
+            seen.add(url)
+            image = photos.get(url) or photos.get(url.replace("/product/", "/no/product/"))
+            if name == "Day":
+                image = photos.get(url.replace("/product/", "/no/product/")) or image    # the English entry's photo is a sofa
+            if not image:
+                print(f"  LK Hjelle: no photo for {name} - skipped")
+                continue
+            products.append({
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": name.replace("Modell 711", "Model 711"),
+                "product_url": url, "category": "Pouf" if name.lower() in ("boy", "pal") else ("Cushion" if "cushion" in name.lower() else category),
+                "material_options": [], "dimensions": "", "notes": "", "image_url": image,
+                "designer": "Jonah Takagi" if name in ("Ami", "Mio") else "", "price": None, "currency": None,
+            })
+    return products
+
+
+# --- Russo Betak, Sarah Sherman Samuel (SSS Atelier), POJ Studio (2026-11-25) ---
+
+# russobetak.com (Copenhagen, Shopify, 15 listings): six lamp designs, each listed once per biomaterial (Scallop, Mussel, Oyster),
+# so the material is dropped from the name and each design is one piece, shown with the first listing's photo. Pelikan, Snegl and
+# Shell S are table lamps, Shell L a floor lamp, Nippon S and L pendants (the site's type field is empty for Nippon S). A price of 0
+# is a placeholder (made to order), so it is not stored. Prices are DKK.
+RUSSOBETAK_CATEGORIES = {"pelikan": "Table Lamp", "snegl": "Table Lamp", "shell s": "Table Lamp", "shell l": "Floor Lamp",
+                         "nippon s": "Pendant Lamp", "nippon l": "Pendant Lamp"}
+
+
+def extract_russo_betak(brand):
+    base = brand["url"].rstrip("/")
+    data = _fetch_json(f"{base}/products.json?limit=250")
+    if not data:
+        print("  Could not fetch the Russo Betak products.json")
+        return []
+    designs = {}
+    for p in data.get("products", []):
+        name = re.sub(r"\s+(Scallop|Mussel|Oyster)$", "", re.sub(r"\s+", " ", p["title"]).strip(), flags=re.I)
+        if name.lower() in RUSSOBETAK_CATEGORIES and p.get("images"):
+            designs.setdefault(name.lower(), []).append(p)
+    products = []
+    for key, group in designs.items():
+        first = group[0]
+        price = next((float(v["price"]) for q in group for v in q["variants"][:1] if float(v["price"]) > 0), None)
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": key.title().replace(" S", " S").replace(" L", " L"),
+            "product_url": f"{base}/products/{first['handle']}", "category": RUSSOBETAK_CATEGORIES[key],
+            "material_options": sorted({m for q in group for m in re.findall(r"(Scallop|Mussel|Oyster)$", q["title"], re.I)}),
+            "dimensions": "", "notes": "", "image_url": first["images"][0]["src"].split("?")[0], "designer": "",
+            "price": price, "currency": "DKK" if price else None,
+        })
+    return products
+
+
+# sarahshermansamuel.com (Shopify, 112 listings): her own furniture line is vendor "SSS Atelier". The rest is her collection sold
+# by Lulu & Georgia, the gallery's artworks and books, material swatches and four tables under the name Duca. Many pieces are
+# listed twice (one "in stock" finish and the made-to-order listing), so the finish after " - " is dropped and each design is one
+# piece; "in the seams" is an art object. Prices USD (0 = made to order, not stored).
+SSS_CATEGORIES = {"skimming stone 01": "Table", "skimming stone 02": "Table", "skimming stone 03": "Table",
+                  "stone pop pop tall": "Table", "kamp counter stool": "Counter Stool"}
+
+
+def extract_sarah_sherman_samuel(brand):
+    base = brand["url"].rstrip("/")
+    data = _fetch_json(f"{base}/products.json?limit=250")
+    if not data:
+        print("  Could not fetch the Sarah Sherman Samuel products.json")
+        return []
+    designs = {}
+    for p in data.get("products", []):
+        if (p.get("vendor") or "").strip() != "SSS Atelier" or (p.get("product_type") or "") in ("swatch", "object", "artwork", "book") or not p.get("images"):
+            continue
+        name = re.sub(r"\s+", " ", p["title"].split(" - ")[0]).strip()
+        designs.setdefault(name.lower(), []).append(p)
+    products = []
+    for group in designs.values():
+        first = next((q for q in group if " - " not in q["title"]), group[0])
+        price = next((float(v["price"]) for q in group for v in q["variants"][:1] if float(v["price"]) > 0), None)
+        name = re.sub(r"\s+", " ", first["title"].split(" - ")[0]).strip()
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": f"{base}/products/{first['handle']}",
+            "category": SSS_CATEGORIES.get(name.lower()) or _infer_category_from_name(name, first.get("product_type") or "", brand["name"]),
+            "material_options": [],
+            "dimensions": "", "notes": "", "image_url": first["images"][0]["src"].split("?")[0], "designer": "",
+            "price": price, "currency": "USD" if price else None,
+        })
+    return products
+
+
+# pojstudio.com (POJ Studio, Kyoto; Shopify, 296 listings). Mostly other makers' craft (a retailer: data/retailers.json); the maker
+# part is the Joinery Collection, designed with Norm Architects and made by the Yoshida workshop in sashimono joinery (bench and
+# stool, each in natural and black). Prices are yen and are not stored.
+POJSTUDIO_PIECES = {"norm-bench-natural": ("Joinery Bench", "Bench"), "joinery-stool": ("Joinery Stool", "Stool")}
+
+
+def extract_poj_studio(brand):
+    base = brand["url"].rstrip("/")
+    products = []
+    for handle, (name, category) in POJSTUDIO_PIECES.items():
+        data = _fetch_json(f"{base}/products/{handle}.json")
+        time.sleep(1)
+        p = (data or {}).get("product")
+        if not p or not p.get("images"):
+            print(f"  POJ Studio: {handle} not found - skipped")
+            continue
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": f"{base}/products/{handle}",
+            "category": category, "material_options": ["Natural", "Black"], "dimensions": "", "notes": "",
+            "image_url": p["images"][0]["src"].split("?")[0], "designer": "Norm Architects", "price": None, "currency": None,
+        })
+    return products
+
+
+# --- SEM Milano (2026-11-25) ---
+
+# sem-milano.com (SEM, Milan; custom site, no feed): each collection page (/en/collection/<slug>) lists its pieces in static HTML
+# (title "CODE | Name", details with size and material, a gallery caption with the designer, the photo), with no page per piece, so
+# every card links to its collection page. Eight collections are live (Gomito and Check are in the sitemap but empty). A piece
+# named "CORE DT 1 | Dining Table 1" is shown as "Core Dining Table 1". No prices.
+# The site's titles carry the finish ("Arche Chocolate", "Nenet Chair black stained ash...") or are long descriptions, so each piece gets a
+# short name and a type here; None = another finish of a piece already listed. "Collage" is a family (trolley, bar cabinet, console, tables).
+SEM_PIECES = {
+    "Arche Light Wood": ("Arche", "Chair"), "Arche Chocolate": None, "Arche Deep Indigo": None, "Arche Buttery Yellow": None,
+    "Arche Black Wood": None, "Arche Vibrant Orange": None,
+    "Core Bas Relief 1": ("Core Bas Relief 1", "Wall Relief"), "Core Bas Relief 2": ("Core Bas Relief 2", "Wall Relief"),
+    "Core Pouf / Side Table": ("Core Pouf", "Pouf"),
+    "Magico Rug in Black White and Pink": ("Magico Rug", "Rug"), "Duale Table in Panda marble and light green laminated MDF": ("Duale Table", "Table"),
+    "Slice": ("Slice", "Table"), "Collage": ("Collage", "Table"), "Murano Colonna": ("Murano Colonna", "Floor Lamp"),
+    "Dogon Natural Ash": ("Dogon Desk", "Desk"), "Himba cabinet in Black stained ash and Natural paper cord": ("Himba Cabinet", "Cabinet"),
+    "Nenet Chair black stained ash and black paper cord": ("Nenet Chair", "Chair"), "Nenet Chair Natural ash and Natural paper cord": None,
+    "Chimbu Stool Black stained Ash and Natural paper cord": ("Chimbu Stool", "Stool"), "Huli Table": ("Huli Table", "Table"),
+    "Alea dining chair Mahogany stained ash": ("Alea Dining Chair", "Dining Chair"), "Butterfly console red concrete porcelain": ("Butterfly Console", "Console"),
+    "Nuvola sofa upholstery in Torrilana Fabric": ("Nuvola Sofa", "Sofa"), "Butterfly table walnut": ("Butterfly Table", "Dining Table"),
+    "Butterfly round coffee table": ("Butterfly Coffee Table", "Coffee Table"), "Muir sofa": ("Muir Sofa", "Sofa"),
+    "Nuvola armchair": ("Nuvola Armchair", "Armchair"), "Butterfly Table red lacquered": None, "Butterfly console mat gray concrete": None,
+    "Butterfly console mat lacquered": None, "Petali lamp": ("Petali Lamp", "Table Lamp"), "Iro Rug": ("Iro Rug", "Rug"),
+    "Angular Console in elm with pivoting doors in surface in antique brass with green patinas": ("Pivot Angular Console", "Console"),
+    "Desk in elm with pivoting doors in surface in antique brass with red patinas": ("Pivot Desk", "Desk"),
+    "Sideboard in elm with pivoting doors in surface in antique brass with green patinas": ("Pivot Sideboard", "Sideboard"),
+    "Simultaneo Vase in Rosa and Verde carnico marble": ("Simultaneo Vase", "Vase"), "Bolide Vase in Botticino marble": ("Bolide Vase", "Vase"),
+    "Vortice in sodalite marble": ("Vortice", "Vase"), "Bolide Tray in Arabescato marble": ("Bolide Tray", "Tray"), "Magnetico in Bardiglio marble": ("Magnetico", "Vase"),
+}
+SEM_COLLECTIONS = ["core", "arche-", "futuraforma", "in-sync", "neolithique-", "paesaggio", "pivot", "simultanea"]
+
+
+def extract_sem_milano(brand):
+    base = brand["url"].rstrip("/")
+    products = []
+    for slug in SEM_COLLECTIONS:
+        try:
+            resp = requests.get(f"{base}/en/collection/{slug}", headers=HEADERS, timeout=30)
+            resp.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  SEM: could not fetch {slug}: {e}")
+            continue
+        time.sleep(1)
+        page = resp.text
+        collection = html.unescape(re.sub(r"<[^>]+>", "", re.search(r'<h1 class="medium-text">(.*?)</h1>', page, re.S).group(1))).strip()
+        for block in page.split('<div class="collection collection-')[1:]:
+            title = re.search(r'<div class="title"><span>(.*?)</span>', block, re.S)
+            image = re.search(r'data-src-medium="([^"]+)"', block) or re.search(r'data-src="([^"]+)"', block)
+            if not title or not image:
+                continue
+            title = re.sub(r"\s+", " ", html.unescape(title.group(1))).strip()
+            name = title.split("|", 1)[1].strip() if "|" in title else title
+            if "|" in title and not name.lower().startswith(collection.lower()):
+                name = f"{collection} {name}"
+            category = _infer_category_from_name(name, "", brand["name"])
+            if name in SEM_PIECES:
+                if SEM_PIECES[name] is None:
+                    continue
+                name, category = SEM_PIECES[name]
+            details = re.search(r'<div class="details"><span>(.*?)</span>', block, re.S)
+            designer = re.search(r'<div class="label">Designer:</div>\s*<div>(.*?)</div>', block, re.S)
+            products.append({
+                "brand": brand["name"], "brand_url": brand["url"], "product_name": name,
+                "product_url": f"{base}/en/collection/{slug}", "category": category,
+                "material_options": [], "dimensions": re.sub(r"\s+", " ", html.unescape(details.group(1))).strip() if details else "",
+                "notes": "", "image_url": "https:" + image.group(1) if image.group(1).startswith("//") else image.group(1),
+                "designer": re.sub(r"\s+", " ", html.unescape(designer.group(1))).strip() if designer else "", "price": None, "currency": None,
+            })
+    return products
+
+
+# --- Kolkhoze designer list batch (2026-11-25) ---
+
+# robinson-edition.co (Robinson Ferreux, Paris lighting designer; added 2026-11-25, user pick from the Kolkhoze designer list).
+# A Cargo (cargo.site) site: seven pages, one per lamp design. The pages render in the browser from a JSON block embedded in the
+# HTML, which lists the page's media (name + hash); each page's own photos are the ones not shared by all seven pages (logo, header
+# art, home-page videos). Photos are freight.cargo.site/w/1400/i/<hash>/<name>. The text block gives "France <year> / materials /
+# W x D x H cm"; the dimensions are read from it live, the materials and category are fixed here (the site's wording / the gallery
+# listing: Delta 100 is a wall lamp, Yoko a ceiling lamp). Photo per piece is picked by file name (clean studio shot, no person, no
+# room scene), falling back to the first own photo. No prices on the pages (T 55 has cart buttons; the cart is not opened).
+ROBINSON_FERREUX_PIECES = (
+    # slug, name, category, materials, preferred photo (substring of the media file name)
+    ("delta-207", "Delta 207", "Floor Lamp", ["Steel", "Cotton"], "V5887c"),
+    ("delta-117", "Delta 117", "Floor Lamp", ["Brass", "Cotton"], "6836_02"),
+    ("delta-100", "Delta 100", "Wall Lamp", ["Cotton", "Brass", "Bioplastic"], "02_GC_NILUFAR"),
+    ("transatlantique", "Transatlantique", "Table Lamp", ["Brass", "Porcelain"], "OFF.jpg"),
+    ("transatlantique-grande", "Transatlantique Grande", "Floor Lamp", ["Brass", "Porcelain"], "Kolkhoze-2-ter-1.jpeg"),
+    ("yoko", "Yoko", "Pendant Lamp", ["Resin", "Brass"], "A0147_06"),
+    ("t-55", "T 55", "Table Lamp", ["Cotton", "Steel"], "AF9I0952"),
+)
+
+
+def _robinson_ferreux_page(url):
+    time.sleep(1)
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=25)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return None
+    media = {}
+    for m in re.finditer(r'"name":"([^"]+)","hash":"(\w+)","width":\d+,"height":\d+,"file_size":\d+,"file_size_human":"[^"]*","file_type":"(\w+)"[^}]*?"in_use":true', resp.text):
+        if m.group(3).lower() in ("jpg", "jpeg", "png"):
+            media.setdefault(m.group(2), m.group(1))
+    body = re.sub(r"<script.*?</script>|<style.*?</style>", " ", resp.text, flags=re.S)
+    text = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", body)))
+    return media, text
+
+
+def _robinson_ferreux_dimensions(text):
+    m = re.search(r"(W [\d,.]+ x D [\d,.]+) cm H ([\d,.]+) ", text)  # Delta 100 writes "W 60 x D 22 cm H 100"
+    if m:
+        return f"{m.group(1)} x H {m.group(2)} cm".replace(",", ".")
+    m = re.search(r"((?:W|Diam|H) [\d,.]+ x [^/]*?\d(?: / max [\d,.]+)?) cm ", text)
+    if m:
+        return (m.group(1) + " cm").replace(",", ".")
+    m = re.search(r"h x ([\d,.]+) x ([\d,.]+) cm h ([\d,.]+) x", text)  # T 55: the cm height is blank on the page, inches are given
+    if m:
+        return f"H {round(float(m.group(3).replace(',', '.')) * 2.54):d} x {m.group(1)} x {m.group(2)} cm (height converted from inches)".replace(",", ".")
+    return ""
+
+
+def extract_robinson_ferreux(brand):
+    base = brand["url"].rstrip("/")
+    pages = {}
+    for slug, *_ in ROBINSON_FERREUX_PIECES:
+        got = _robinson_ferreux_page(f"{base}/{slug}")
+        if got:
+            pages[slug] = got
+    if not pages:
+        return []
+    shared = set.intersection(*[set(media) for media, _ in pages.values()]) if len(pages) > 1 else set()
+    products = []
+    for slug, name, category, materials, prefer in ROBINSON_FERREUX_PIECES:
+        if slug not in pages:
+            continue
+        media, text = pages[slug]
+        own = [(h, n) for h, n in media.items() if h not in shared and not n.lower().startswith(("fleche", "etoile", "fichier", "relief"))]
+        if not own:
+            print(f"  Robinson Ferreux: no photo on {slug} - skipped")
+            continue
+        chosen = next((hn for hn in own if prefer in hn[1]), own[0])
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": f"{base}/{slug}",
+            "category": category, "material_options": materials, "dimensions": _robinson_ferreux_dimensions(text), "notes": "",
+            "image_url": f"https://freight.cargo.site/w/1400/i/{chosen[0]}/{chosen[1]}", "designer": "Robinson Ferreux",
+            "price": None, "currency": None,
+        })
+    return products
+
+
+# lukascober.com (Lukas Cober, Maastricht NL; added 2026-11-25): a Squarespace site with one plain page per piece and five collections
+# (New Wave, Kuro, Liquid, Pillar, Vortex). No prices, no checkout (orders by email), so every piece is on request. Everything is read from
+# the page HTML (never the ?format=json view, which the site's robots.txt disallows): the piece pages are found in /sitemap.xml (the
+# collection pages are the fallback), then each page is fetched once, one request per second. A piece page carries a spec block
+# ("composition", "original dimensions", "object" ...) and a gallery whose first image is the clean studio product shot (the later
+# ones are in-situ, editorial and behind-the-scenes photos, and are never used). A colour variant of one piece on its own page
+# ("liquid-stool-peach") is the same piece as "liquid-stool" and is left out; the cast-aluminium Liquid Stool is a different material and
+# a limited edition, so it stays as its own piece.
+LUKAS_COBER_COLLECTIONS = ("newwave", "kuro", "liquid", "vortex", "pillar")
+LUKAS_COBER_COLOUR_SUFFIXES = ("-peach",)
+LUKAS_COBER_NAME_FIXES = (("chainse", "chaise"), ("coffeetable", "coffee table"))
+# the first matching word in the page title decides the category (stool before side table: "Kuro stool / side table" is a stool)
+LUKAS_COBER_CATEGORIES = (
+    ("chaise", "Chaise Longue"), ("wallpiece light", "Wall Lamp"), ("wallpiece shelf", "Wall Shelf"), ("bookshelf", "Bookcase"),
+    ("console", "Console"), ("desk", "Desk"), ("armchair", "Armchair"), ("bench", "Bench"), ("pedestal", "Pedestal"),
+    ("coffee table", "Coffee Table"), ("dining", "Dining Table"), ("stool", "Stool"), ("side table", "Side Table"),
+    ("pillar", "Dining Table"), ("table", "Dining Table"),
+)
+LUKAS_COBER_MATERIALS = (
+    ("walnut", "Walnut"), ("oak", "Charred oak"), ("leather", "Leather"), ("brass", "Brass"), ("fibreglass", "Fibreglass"),
+    ("resin", "Resin"), ("aluminum", "Cast aluminium"), ("aluminium", "Cast aluminium"), ("bronze", "Bronze"), ("steel", "Steel"),
+    ("wood", "Wood"),
+)
+
+
+def _lukas_cober_get(url):
+    time.sleep(1)
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=25)
+        resp.raise_for_status()
+        return resp.text
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return None
+
+
+def extract_lukas_cober(brand):
+    base = brand["url"].rstrip("/")
+    slugs = []
+    sitemap = _lukas_cober_get(f"{base}/sitemap.xml")
+    if sitemap:
+        slugs = [s for s in re.findall(r"<loc>[^<]*?/([^/<]+)</loc>", sitemap)]
+    if not slugs:  # fall back on the five collection pages' own links
+        for collection in LUKAS_COBER_COLLECTIONS:
+            page = _lukas_cober_get(f"{base}/{collection}")
+            slugs += re.findall(r'href="/([a-z0-9-]+)"', page or "")
+    slugs = [s for s in dict.fromkeys(slugs)
+             if s.split("-")[0] in LUKAS_COBER_COLLECTIONS and "-" in s]  # "kuro", "pillar" ... alone are the collection pages
+    slugs = [s for s in slugs if not (s.endswith(LUKAS_COBER_COLOUR_SUFFIXES)
+                                      and next(s[:-len(x)] for x in LUKAS_COBER_COLOUR_SUFFIXES if s.endswith(x)) in slugs)]
+    products = []
+    for slug in slugs:
+        url = f"{base}/{slug}"
+        page = _lukas_cober_get(url)
+        if not page:
+            continue
+        title = re.search(r"<title>([^<]*)", page)
+        title = html.unescape(title.group(1)).split("—")[0].strip() if title else ""
+        body = re.sub(r"<script.*?</script>|<style.*?</style>", "", page, flags=re.S)
+        text = html.unescape(re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", body)))
+        comp = re.search(r"composition(?: options)?:\s*(.*?)\s+original dimensions:", text)
+        size = re.search(r"original dimensions:\s*([WDH]\d[\w.]*(?:x[WDH]?\d[\w.]*)*(?:cm)?)", text)
+        edition = re.search(r"editions:\s*(.*?)\s+collection title:", text)
+        gallery = [u for u in dict.fromkeys(re.findall(r'(?:data-src|data-image)="(https://images\.squarespace-cdn\.com/[^"]+)"', page))
+                   if not re.search(r"logo|icon", u, re.I)]
+        shots = [u for u in gallery if "productshot" in u.lower()]
+        if not (title and comp and gallery):
+            print(f"  Lukas Cober: {url} has no spec block or photo - skipped (not a piece page)")
+            continue
+        lowered = re.sub(r"\s*/\s*side[ -]?table", "", title.lower())  # "stool / side table" is the stool
+        for wrong, right in LUKAS_COBER_NAME_FIXES:
+            lowered = lowered.replace(wrong, right)
+        codes = {w.lower(): w for w in title.split() if w.isupper() and len(w) > 1}  # keep the page's own capitals for WS / FS
+        name = " ".join(codes.get(w, w.capitalize()) for w in lowered.split())
+        category = next((cat for word, cat in LUKAS_COBER_CATEGORIES if word in lowered), "")
+        materials = []
+        for word, label in LUKAS_COBER_MATERIALS:
+            if word in comp.group(1).lower() and label not in materials:
+                materials.append(label)
+        if "walnut" in comp.group(1).lower() and "oak" not in comp.group(1).lower() and "Charred oak" in materials:
+            materials.remove("Charred oak")
+        dimensions = ""
+        if size:
+            dimensions = re.sub(r"(?<=\d)x(?=[WDH])", " x ", size.group(1)).replace("cm", " cm").replace("  ", " ").strip()
+        notes = ""
+        if edition:
+            notes = ("Limited edition of 8 + 2 artist's proofs" if "limited" in edition.group(1).lower()
+                     else "Open edition, numbered and signed")
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": materials, "dimensions": dimensions,
+            "notes": notes,
+            "image_url": (shots or gallery)[0].split("?")[0], "designer": "Lukas Cober", "price": None, "currency": None,
+        })
+    return products
+
+
+# jeremymaxwellwintrebert.com (Jeremy Maxwell Wintrebert, Paris; added 2026-11-25): Squarespace, read from each piece's own server-rendered
+# HTML page (never ?format=json, which the site's robots.txt disallows), one request per second. The site is a freehand-blown glass studio:
+# lighting, a few tables and a mirror are listed here, one product per design (colour and size variants are the same piece). The page paths
+# come from the site's own sitemap.xml; the same design sometimes has a pendant page and a horizontal-chandelier or wall-light page, and those
+# are separate pieces with their own names ("Sonde" / "Sonde H"). Left out: the sculpture and installation pages (/present, /chapitre-1-adle,
+# /sculpture-installations, /prologue-the-beginning, /lighting-installations, /staircase, /totem), Night Capsule (a one-off pendant
+# installation, no specification) and the empty /boutique page. Availability is by email only, so no prices.
+WINTREBERT_PIECES = (
+    # (page path, product name, category, gallery photo index, materials)
+    ("pendant/autumn-light", "Autumn Light", "Pendant Lamp", 3, ["Glass"]),
+    ("pendant/bella-figura", "Bella Figura", "Pendant Lamp", 2, ["Glass"]),
+    ("pendant/cive-plie", "Cive Pliée", "Pendant Lamp", 0, ["Glass"]),
+    ("pendant/cloud-pencil", "Cloud", "Pendant Lamp", 1, ["Glass"]),
+    ("pendant/dna", "D.N.A", "Pendant Lamp", 1, ["Glass"]),
+    ("pendant/fog", "Fog", "Pendant Lamp", 2, ["Glass"]),
+    ("pendant/galet-v60", "Galet V60", "Pendant Lamp", 3, ["Glass"]),
+    ("pendant/gattaca", "Gattaca", "Pendant Lamp", 3, ["Glass", "Brass"]),
+    ("pendant/gravity-ripples-v40", "Gravity Ripples V40", "Pendant Lamp", 0, ["Glass"]),
+    ("pendant/lamberts", "Lamberts", "Pendant Lamp", 1, ["Glass"]),
+    ("pendant/light-capsule", "Light Capsule", "Pendant Lamp", 1, ["Glass"]),
+    ("pendant/nouvel-lment-de-portfolio", "Céleste", "Pendant Lamp", 1, ["Glass"]),
+    ("pendant/pilule-feu", "Pilule", "Pendant Lamp", 2, ["Glass"]),
+    ("pendant/sonde", "Sonde", "Pendant Lamp", 2, ["Glass"]),
+    ("pendant/winter-light", "Winter Light", "Pendant Lamp", 2, ["Glass"]),
+    ("portfoliogridoverlaych/branche", "Branche", "Chandelier", 2, ["Glass", "Brass"]),
+    ("portfoliogridoverlaych/cive-plie", "Cive Pliée Chandelier", "Chandelier", 0, ["Glass"]),
+    ("portfoliogridoverlaych/cleste", "Céleste H", "Chandelier", 2, ["Glass"]),
+    ("portfoliogridoverlaych/galet-h", "Galet H", "Chandelier", 0, ["Glass"]),
+    ("portfoliogridoverlaych/gravity-metal", "Gravity Ripples", "Chandelier", 1, ["Glass"]),
+    ("portfoliogridoverlaych/marie-antoinette", "Marie-Antoinette", "Chandelier", 0, ["Glass", "Brass"]),
+    ("portfoliogridoverlaych/project-one-f5w4d-3be93", "Nucleus", "Chandelier", 0, ["Glass", "Brass"]),
+    ("portfoliogridoverlaych/sonde", "Sonde H", "Chandelier", 0, ["Glass"]),
+    ("wall-ceiling-light/abysse", "Abysse", "Wall Lamp", 0, ["Glass"]),
+    ("wall-ceiling-light/cive", "Cive", "Wall Lamp", 0, ["Glass"]),
+    ("wall-ceiling-light/galet", "Galet 10", "Wall Lamp", 0, ["Glass"]),
+    ("wall-ceiling-light/gamma-white-on-white", "Gamma Wall Light", "Wall Lamp", 0, ["Glass"]),
+    ("wall-ceiling-light/gravity-ripples-v40", "Gravity Ripples 60", "Wall Lamp", 0, ["Glass"]),
+    ("wall-ceiling-light/new-portfolio-item", "Mini Bella", "Wall Lamp", 1, ["Glass"]),
+    ("table-lamp/project-one-ephnc-afkze", "Gamma Table Lamp", "Table Lamp", 2, ["Glass", "Aluminium"]),
+    ("portfolio-2/project-two-llrgk-hd5zy-haelf", "Bubble Table", "Coffee Table", 0, ["Glass", "Stone"]),
+    ("portfolio-2-3/gomtrie-liquide", "Géométrie Liquide", "Side Table", 1, ["Glass"]),
+    ("portfolio-2-3/project-one-ephnc-443tw", "Space Nugget", "Side Table", 1, ["Glass"]),
+    ("mirror", "Mirror", "Mirror", 3, ["Glass"]),
+)
+WINTREBERT_SIZE = re.compile(r"^(?:[HWLD]\s*\d|Ø|⌀|Dia\b|\d)[^\n]*?(?:cm|mm)\b", re.I)
+WINTREBERT_FRAME_SIZE = re.compile(r"^(?:Short|Tall) Frame\s*:\s*[HWL]\s*\d[^\n]*?(?:cm|mm)\b", re.I)  # Gattaca lists two frame sizes
+
+
+def extract_jeremy_maxwell_wintrebert(brand):
+    base = brand["url"].rstrip("/")
+    products = []
+    for path, name, category, photo, materials in WINTREBERT_PIECES:
+        url = f"{base}/{path}"
+        time.sleep(1)
+        try:
+            page = requests.get(url, headers=HEADERS, timeout=25)
+            page.raise_for_status()
+        except requests.RequestException as e:
+            print(f"  Could not fetch {url}: {e}")
+            continue
+        text = page.text
+        gallery = [u for u in dict.fromkeys(re.findall(r'data-image="(https://images\.squarespace-cdn\.com/[^"]+)"', text))
+                   if not re.search(r"logo|icon", u, re.I)]
+        if len(gallery) > photo:
+            image = gallery[photo]
+        else:
+            og = re.search(r'property="og:image" content="(https://[^"]+)"', text)
+            image = og.group(1) if og else None
+        if not image:
+            print(f"  Jeremy Maxwell Wintrebert: no photo on {url} - skipped")
+            continue
+        main = re.search(r"<main.*?</main>", text, re.S)
+        body = re.sub(r"<(?:script|style|noscript)[^>]*>.*?</(?:script|style|noscript)>", "", main.group(0) if main else text, flags=re.S)
+        body = re.sub(r"<(?:br|/p|/h\d|/div|/li)[^>]*>", "\n", body)
+        lines = [re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", "", l))).strip() for l in body.split("\n")]
+        dimensions = ""
+        for line in lines:
+            match = WINTREBERT_SIZE.match(line)
+            if match and not line.upper().startswith("LED"):
+                dimensions = match.group(0).replace("*", "").strip()
+                break
+        if not dimensions:
+            for line in lines:
+                match = WINTREBERT_FRAME_SIZE.match(line)
+                if match:
+                    dimensions = re.sub(r"\s*:\s*", ": ", match.group(0).replace("*", "").strip(), count=1)
+                    break
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": url,
+            "category": category, "material_options": materials, "dimensions": dimensions, "notes": "",
+            "image_url": image, "designer": "Jeremy Maxwell Wintrebert", "price": None, "currency": None,
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -18772,6 +19336,7 @@ EXTRACTORS = {
     "Klove Studio": extract_klove_studio,
     "Sofie Østerby": extract_sofie_osterby,
     "Hervé Langlais": extract_portfolio_designer,    # 2026-11-10
+    "Kunsik": extract_portfolio_designer,            # 2026-11-25
     "Feldspar": extract_shopify,
     "Faye Toogood": extract_faye_toogood,
     "B-TD": extract_btd,
@@ -19152,6 +19717,18 @@ EXTRACTORS = {
     "Material": extract_material,
     "Patty Studios": extract_patty_studios,
     "Victoria Morris": extract_victoria_morris,
+    "SCP": extract_scp,
+    "Ishinomaki Laboratory": extract_ishinomaki,
+    "LK Hjelle": extract_lk_hjelle,
+    "Russo Betak": extract_russo_betak,
+    "Sarah Sherman Samuel": extract_sarah_sherman_samuel,
+    "POJ Studio": extract_poj_studio,
+    "SEM": extract_sem_milano,
+    "Robinson Ferreux": extract_robinson_ferreux,
+    "Lukas Cober": extract_lukas_cober,
+    "Jeremy Maxwell Wintrebert": extract_jeremy_maxwell_wintrebert,
+    "Johan Viladrich": extract_portfolio_designer,
+    "Ben McCarthy": extract_portfolio_designer,
     "Roll & Hill": extract_roll_and_hill,
     "HAHA studio": extract_haha_studio,
 }
