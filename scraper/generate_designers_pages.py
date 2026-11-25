@@ -53,6 +53,8 @@ from generate_brand_pages import (
     EXPLORE_JS,
     SELECTION_SIZE,
     explore_layout,
+    tags_html,
+    umbrella_categories_for,
     FAVICON_TAGS,
     HERO_SEARCH_POSITION_CSS,
     PAGE_CSS,
@@ -259,7 +261,9 @@ def render_designer_page(designer_name, slug, products, page=1):
     card_html = lambda p: product_card_html(p, show_brand=True, share=True).replace(
         'data-brand="', f'data-slug="{slugify(p["brand"])}" data-brand="', 1)
     text_html = creator_texts.text_block_html("designers", slug, len(products), facts_block=False) if page == 1 else ""
-    meta_line = creator_texts.meta_line_html("designers", slug, with_country=True) if page == 1 else ""
+    country = creator_texts.country_of("designers", slug)
+    meta_line = creator_texts.meta_line_html("designers", slug, with_country=not country) if page == 1 else ""
+    tags = tags_html(umbrella_categories_for(products) + ([country] if country else []), country)
     intro_html = (f'''<p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;"><span id="shown-count">{len(products)}</span> <span id="shown-noun">product{'' if len(products) == 1 else 's'}</span> credited to {html.escape(designer_name)}, each linked straight to its maker's own page.</p>{brand_chips}''')
     listing_html = f"{earlier_html}\n  <div class=\"grid\" data-listing-grid>{products_html}\n  </div>\n  {see_more_html}\n  {pager_html}"
     use_explore = page == 1 and len(products) > SELECTION_SIZE
@@ -312,7 +316,8 @@ def render_designer_page(designer_name, slug, products, page=1):
 <main>
   <div class="maker-header">
     <p class="eyebrow">Designer</p>
-    <h1 class="maker-name">{html.escape(designer_name)}</h1>{meta_line}{designer_links_html(designer_name)}
+    <h1 class="maker-name">{html.escape(designer_name)}</h1>
+    {f'<div class="tags">{tags}</div>' if tags else ''}{meta_line}{designer_links_html(designer_name)}
   </div>
   {text_html}
   {listing_html}{piece_section_html(designer_name, designer_pieces(designer_name, products)) if page == 1 else ""}
@@ -371,6 +376,8 @@ def render_portfolio_designer_page(d, slug):
                    f"{f', {html.escape(place)}' if place else ''}. Each linked to its own page.")
     seo_title = fit_title(f"{name}: designs and projects", name)
     cards = "".join(house_card_html({**w, "firm": name}) for w in works)
+    country = creator_texts.country_of("designers", slug)
+    tags_div = f'<div class="tags">{tags_html([country], country)}</div>' if country else ""
     site_link = (f'<a class="brand-site-link" href="{html.escape(d["url"])}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>'
                  if d.get("url") else "")
     breadcrumb_json = json.dumps({
@@ -412,7 +419,8 @@ def render_portfolio_designer_page(d, slug):
 <main>
   <div class="maker-header">
     <p class="eyebrow">Designer</p>
-    <h1 class="maker-name">{html.escape(name)}</h1>{creator_texts.meta_line_html("designers", slug, with_country=True)}
+    <h1 class="maker-name">{html.escape(name)}</h1>
+    {tags_div}{creator_texts.meta_line_html("designers", slug, with_country=not country)}
     {site_link}
   </div>
   {creator_texts.text_block_html("designers", slug, len(works), facts_block=False)}
@@ -528,7 +536,7 @@ def generate():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     rows = conn.execute("""
-        SELECT designer, brand, brand_url, product_name, product_url, image_url, link_dead
+        SELECT designer, brand, brand_url, product_name, product_url, image_url, link_dead, category, thin
         FROM products
         WHERE designer IS NOT NULL AND TRIM(designer) != '' AND image_url != ''
     """).fetchall()

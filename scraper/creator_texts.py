@@ -121,6 +121,15 @@ def text_block_html(group, page_slug, count, on_profile_edit=False, facts_block=
 _TYPE_REPEATS_EYEBROW = {"maker", "publisher", "designer"}
 
 
+def country_of(group, page_slug):
+    """The one country a creator's text names, for the country tag on designer pages: "Italy (Spanish designer)" is Italy.
+    "" when there is none, or the text names several ("Italy and Sweden"): the meta line then shows the whole fact."""
+    entry = get(group, page_slug)
+    raw = next((v.strip() for k, v in entry["facts"] if k == "Country" and v and v.strip().lower() != "unknown"), "") if entry else ""
+    country = re.sub(r"\s*\(.*$", "", raw).strip()
+    return "" if re.search(r"\band\b|/|,", country) else country
+
+
 def meta_line_html(group, page_slug, with_country=False):
     """The facts block as one line under the name: City, Type (when it adds something), Founded, Made to order.
     Country is a tag on maker pages, so only the designer pages (no tags) pass with_country=True. Website repeats the

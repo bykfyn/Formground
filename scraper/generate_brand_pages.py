@@ -1488,6 +1488,11 @@ def tag_href(tag, country):
     return "/work.html?q=" + query.replace(" ", "+")
 
 
+def tags_html(tags, country):
+    """The linked tag chips under a maker's or designer's name."""
+    return "".join(f'<a class="tag tag-link" href="{html.escape(tag_href(t, country))}">{html.escape(t)}</a>' for t in tags)
+
+
 def explore_layout(products, card_html, text_html, rest_html, total):
     """(text_html, block_html) for a page that uses the selection layout. card_html(p) renders one card;
     rest_html is the full list's own markup (heading, controls, grid, See more, pager) and total how many pieces
@@ -1541,7 +1546,7 @@ def link_pieces_in_text(text_html, block_html):
 
 def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None, stockists=None, new_products=None, page=1, designers=None, similar=None):
     tag_list = list(umbrellas) + ([country] if country else [])
-    tags = "".join(f'<a class="tag tag-link" href="{html.escape(tag_href(t, country))}">{html.escape(t)}</a>' for t in tag_list)
+    tags = tags_html(tag_list, country)
     # Real, live cross-link to Marketplace's Promotions tab (2026-09-28,
     # see load_promotions_by_brand) - only rendered when this brand
     # genuinely has 1+ live promotion right now, using the same

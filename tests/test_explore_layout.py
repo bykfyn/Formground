@@ -45,6 +45,17 @@ class MetaLine(unittest.TestCase):
     def test_type_that_adds_something_stays(self):
         self.assertIn("Italy · Design studio", creator_texts.meta_line_html("designers", "c", with_country=True))
 
+    def test_country_tag_takes_the_one_country_and_skips_several(self):
+        creator_texts.load_all = lambda: {
+            "designers:a": {"group": "designers", "facts": [["Country", "Italy (Spanish designer)"]]},
+            "designers:b": {"group": "designers", "facts": [["Country", "Italy and Sweden (Italian designer)"]]},
+            "designers:c": {"group": "designers", "facts": [["Type", "Designer"]]},
+        }
+        self.assertEqual(creator_texts.country_of("designers", "a"), "Italy")
+        self.assertEqual(creator_texts.country_of("designers", "b"), "")
+        self.assertEqual(creator_texts.country_of("designers", "c"), "")
+        self.assertEqual(creator_texts.country_of("designers", "nobody"), "")
+
     def test_no_entry_no_line(self):
         self.assertEqual(creator_texts.meta_line_html("makers", "nobody"), "")
 
