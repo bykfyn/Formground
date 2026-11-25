@@ -16,6 +16,7 @@ from urllib.parse import urlparse
 
 ROOT = Path(__file__).parent.parent
 DOCS = ROOT / "docs"
+CARD_RE = r'<a class="card(?: card-extra-m| in-selection)?"'   # a card, whether or not it is also in "A selection"
 sys.path.insert(0, str(ROOT / "scraper"))
 sys.path.insert(0, str(ROOT / "backend"))
 
@@ -222,8 +223,9 @@ class StructureTests(unittest.TestCase):
     def test_new_from_sits_at_the_top_of_a_maker_page_and_only_when_there_is_something(self):
         with_new = (DOCS / "brands" / "ferm-living.html").read_text()
         body = with_new[with_new.index('<main data-brand='):]
-        self.assertLess(body.index("New from Ferm Living"), body.index("All of Ferm Living"))
-        self.assertLess(body.index("All of Ferm Living"), body.index('<div class="grid" data-listing-grid>', body.index("All of Ferm Living")))
+        # New from X, then "A selection", then the full list behind its button
+        self.assertLess(body.index("New from Ferm Living"), body.index("A selection"))
+        self.assertLess(body.index("A selection"), body.index('<div class="grid" data-listing-grid>'))
         # any maker page with nothing new (the scraped range changes weekly, so no brand is named here)
         import glob as _g
         for f in sorted(_g.glob(str(DOCS / "brands" / "*.html"))):
@@ -232,7 +234,7 @@ class StructureTests(unittest.TestCase):
                 continue
             body = page[page.index('<main data-brand='):]
             if "New from " not in body:
-                self.assertNotIn("All of ", body)          # no empty space, no extra heading, just the range
+                self.assertNotIn("New from", body)         # no empty space, no extra heading
                 break
         else:
             self.fail("every maker page has a New section, so the quiet case is untested")
@@ -261,7 +263,7 @@ class StructureTests(unittest.TestCase):
         first = (DOCS / "brands" / "serax.html").read_text()
         grid = first[first.index('<div class="grid" data-listing-grid>'):]
         grid = grid[:grid.index('<div class="load-more-row">')]
-        self.assertEqual(len(re.findall(r'<a class="card"', grid)), 60)
+        self.assertEqual(len(re.findall(CARD_RE, grid)), 60)
         self.assertIn('id="see-more"', first)
         self.assertIn('href="/brands/serax-2.html"', first)
         self.assertIn('<nav class="pager"', first)                      # kept in the HTML for crawlers
@@ -310,7 +312,7 @@ class StructureTests(unittest.TestCase):
         self.assertNotIn('id="brand-filters"', first)
         grid = first[first.index('<div class="grid" data-listing-grid>'):]
         grid = grid[:grid.index('<div class="load-more-row">')]
-        self.assertEqual(len(re.findall(r'<a class="card"', grid)), 60)
+        self.assertEqual(len(re.findall(CARD_RE, grid)), 60)
         self.assertIn('href="/designers/hella-jongerius-2.html"', first)
         second = (DOCS / "designers" / "hella-jongerius-2.html").read_text()
         self.assertIn('<p class="earlier-results"><a href="/designers/hella-jongerius.html" rel="prev">', second)
@@ -747,7 +749,7 @@ class DesignerBrandFilterTests(unittest.TestCase):
         for p in self._multi_brand_pages():
             text = Path(p).read_text()
             chip_slugs = set(re.findall(r'class="filter-chip[^"]*" data-slug="([^"]+)"', text))
-            card_slugs = re.findall(r'<a class="card"[^>]*data-slug="([^"]*)"', text)
+            card_slugs = re.findall(r'<a class="card[^"]*"[^>]*data-slug="([^"]*)"', text)
             self.assertGreaterEqual(len(chip_slugs), 2, os.path.basename(p))
             self.assertEqual(set(card_slugs), chip_slugs, os.path.basename(p))
 

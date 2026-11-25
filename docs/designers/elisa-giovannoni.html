@@ -267,8 +267,26 @@
   .has-load-more .earlier-results { display: block; }
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
+
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
 </style>
-<style>
+<script>document.documentElement.classList.add("explore-js");</script><style>
   .tier-filters { margin-top: 4px; }
   .filter-chip .chip-count { color: var(--text-muted); margin-left: 4px; font-variant-numeric: tabular-nums; }
   .filter-chip.active .chip-count { color: inherit; opacity: 0.7; }
@@ -298,101 +316,189 @@
   <div class="maker-header">
     <p class="eyebrow">Designer</p>
     <h1 class="maker-name">Elisa Giovannoni</h1>
+    <p class="meta-line">Milan, Italy</p>
   </div>
   
   <section class="creator-text">
     <p>Elisa Giovannoni, also listed as Elisa Gargan, is an industrial and interior designer born in Pordenone in 1960 and listed in Milan, Italy. She specialised in industrial design at the Scuola Politecnica di Design and worked with Michele De Lucchi from 1986 to 1991. She is a founding member of Giovannoni Design with her partner Stefano, and designs for brands including Alessi, Magis, Slamp and Bisazza. She teaches at the Domus Academy and the Polytechnic School of Design.</p><p>On Formground she is credited on 13 pieces shown through Ghidini 1961 and Alessi, among them lounge chairs, armchairs, ottomans, cabinets and dining tables.</p>
-    <dl class="creator-facts"><dt>Country</dt><dd>Italy</dd><dt>City</dt><dd>Milan</dd><dt>Type</dt><dd>Designer</dd><dt>Products</dt><dd>Lounge chairs, armchairs, ottomans, cabinets, dining tables (as shown on Formground)</dd><dt>Website</dt><dd>stylepark.com</dd></dl>
   </section>
-  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;"><span id="shown-count">13</span> <span id="shown-noun">products</span> credited to Elisa Giovannoni, each linked straight to its maker's own page.</p>
-  <div class="tier-filters" id="brand-filters"><button type="button" class="filter-chip active" data-slug="">All <span class="chip-count">13</span></button><button type="button" class="filter-chip" data-slug="ghidini-1961">Ghidini 1961 <span class="chip-count">11</span></button><button type="button" class="filter-chip" data-slug="alessi">Alessi <span class="chip-count">2</span></button></div>
   
-  <div class="grid" data-listing-grid>
-      <a class="card" href="https://www.alessi.com/products/domenica-kitchen-tongs" target="_blank" rel="noopener noreferrer" data-product="Domenica" data-slug="alessi" data-brand="Alessi">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_EG01-58.jpg?v=1711463653&amp;width=500" alt="Domenica by Alessi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Domenica</p></div>
-          <p class="card-brand">Alessi</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.alessi.com/products/sg68-toaster-with-bun-warmer-1" target="_blank" rel="noopener noreferrer" data-product="SG68" data-slug="alessi" data-brand="Alessi">
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://www.alessi.com/products/sg68-toaster-with-bun-warmer-1" target="_blank" rel="noopener noreferrer" data-product="SG68" data-slug="alessi" data-brand="Alessi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/SG68-01.jpg?v=1725886539&amp;width=500" alt="SG68 by Alessi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <div class="card-title-wrap"><p class="card-title">SG68</p></div>
           <p class="card-brand">Alessi</p>
         </div>
       </a>
-      <a class="card" href="https://www.ghidini1961.com/brass-chairs/bold-armchair" target="_blank" rel="noopener noreferrer" data-product="Bold Armchair" data-slug="ghidini-1961" data-brand="Ghidini 1961">
-        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/150/Bold_Armchair_1100x550_new.jpg" alt="Bold Armchair by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+      <a class="card" id="piece-2" href="https://www.alessi.com/products/domenica-kitchen-tongs" target="_blank" rel="noopener noreferrer" data-product="Domenica" data-slug="alessi" data-brand="Alessi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_EG01-58.jpg?v=1711463653&amp;width=500" alt="Domenica by Alessi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Bold Armchair</p></div>
-          <p class="card-brand">Ghidini 1961</p>
+          <div class="card-title-wrap"><p class="card-title">Domenica</p></div>
+          <p class="card-brand">Alessi</p>
         </div>
       </a>
-      <a class="card" href="https://www.ghidini1961.com/cabinets-and-bookshelves/bold-dining-cabinet" target="_blank" rel="noopener noreferrer" data-product="Bold Dining Cabinet" data-slug="ghidini-1961" data-brand="Ghidini 1961">
-        <div class="card-image" style="background:#fafafa"><img class="contain-fit" src="https://www.ghidini1961.com/uploads/prodotti/156/bold_dining_cabinet_1100x550.jpg" alt="Bold Dining Cabinet by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Bold Dining Cabinet</p></div>
-          <p class="card-brand">Ghidini 1961</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.ghidini1961.com/brass-tables/bold-dining-table" target="_blank" rel="noopener noreferrer" data-product="Bold Dining Table" data-slug="ghidini-1961" data-brand="Ghidini 1961">
-        <div class="card-image" style="background:#fefefe"><img class="contain-fit" src="https://www.ghidini1961.com/uploads/prodotti/154/bold_dining_table_1100x550_new.jpg" alt="Bold Dining Table by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Bold Dining Table</p></div>
-          <p class="card-brand">Ghidini 1961</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.ghidini1961.com/cabinets-and-bookshelves/bold-living-cabinet" target="_blank" rel="noopener noreferrer" data-product="Bold Living Cabinet" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+      <a class="card" id="piece-3" href="https://www.ghidini1961.com/cabinets-and-bookshelves/bold-living-cabinet" target="_blank" rel="noopener noreferrer" data-product="Bold Living Cabinet" data-slug="ghidini-1961" data-brand="Ghidini 1961">
         <div class="card-image" style="background:#fcfcfc"><img class="contain-fit" src="https://www.ghidini1961.com/uploads/prodotti/157/bold_living_cabinet_1100x550.jpg" alt="Bold Living Cabinet by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <div class="card-title-wrap"><p class="card-title">Bold Living Cabinet</p></div>
           <p class="card-brand">Ghidini 1961</p>
         </div>
       </a>
-      <a class="card" href="https://www.ghidini1961.com/armchairs/bold-lounge-chair" target="_blank" rel="noopener noreferrer" data-product="Bold Lounge Chair" data-slug="ghidini-1961" data-brand="Ghidini 1961">
-        <div class="card-image"><img style="object-position:51.1% 50%" src="https://www.ghidini1961.com/uploads/prodotti/148/Bold_Lounge_Chair_1100x550.jpg" alt="Bold Lounge Chair by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Bold Lounge Chair</p></div>
-          <p class="card-brand">Ghidini 1961</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.ghidini1961.com/brass-chairs/bold-ottoman" target="_blank" rel="noopener noreferrer" data-product="Bold Ottoman" data-slug="ghidini-1961" data-brand="Ghidini 1961">
-        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/149/bold_ottoman_1100x550.jpg" alt="Bold Ottoman by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Bold Ottoman</p></div>
-          <p class="card-brand">Ghidini 1961</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.ghidini1961.com/sofas/bold-sofa" target="_blank" rel="noopener noreferrer" data-product="Bold Sofa" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+      <a class="card" id="piece-4" href="https://www.ghidini1961.com/sofas/bold-sofa" target="_blank" rel="noopener noreferrer" data-product="Bold Sofa" data-slug="ghidini-1961" data-brand="Ghidini 1961">
         <div class="card-image" style="background:#fefefe"><img class="contain-fit" src="https://www.ghidini1961.com/uploads/prodotti/147/Bold_Sofa_1100x550_new_2.jpg" alt="Bold Sofa by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <div class="card-title-wrap"><p class="card-title">Bold Sofa</p></div>
           <p class="card-brand">Ghidini 1961</p>
         </div>
       </a>
-      <a class="card" href="https://www.ghidini1961.com/armchairs/bucket-bergere" target="_blank" rel="noopener noreferrer" data-product="Bucket Bergere" data-slug="ghidini-1961" data-brand="Ghidini 1961">
-        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/171/Bucket_Bergere_1100x550_new.jpg" alt="Bucket Bergere by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Bucket Bergere</p></div>
-          <p class="card-brand">Ghidini 1961</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.ghidini1961.com/armchairs/bucket-lounge-chair" target="_blank" rel="noopener noreferrer" data-product="Bucket Lounge Chair" data-slug="ghidini-1961" data-brand="Ghidini 1961">
-        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/170/Bucket_Lounge_Chair_1100x550_new.jpg" alt="Bucket Lounge Chair by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Bucket Lounge Chair</p></div>
-          <p class="card-brand">Ghidini 1961</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.ghidini1961.com/armchairs/sweet-lounge-chair" target="_blank" rel="noopener noreferrer" data-product="Sweet Lounge Chair" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+      <a class="card" id="piece-5" href="https://www.ghidini1961.com/armchairs/sweet-lounge-chair" target="_blank" rel="noopener noreferrer" data-product="Sweet Lounge Chair" data-slug="ghidini-1961" data-brand="Ghidini 1961">
         <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/172/Sweet_Lounge_Chair_1100x55011.jpg" alt="Sweet Lounge Chair by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <div class="card-title-wrap"><p class="card-title">Sweet Lounge Chair</p></div>
           <p class="card-brand">Ghidini 1961</p>
         </div>
       </a>
-      <a class="card" href="https://www.ghidini1961.com/brass-chairs/sweet-ottoman" target="_blank" rel="noopener noreferrer" data-product="Sweet Ottoman" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+      <a class="card" id="piece-6" href="https://www.ghidini1961.com/armchairs/bold-lounge-chair" target="_blank" rel="noopener noreferrer" data-product="Bold Lounge Chair" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image"><img style="object-position:51.1% 50%" src="https://www.ghidini1961.com/uploads/prodotti/148/Bold_Lounge_Chair_1100x550.jpg" alt="Bold Lounge Chair by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Lounge Chair</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-7" href="https://www.ghidini1961.com/brass-chairs/bold-ottoman" target="_blank" rel="noopener noreferrer" data-product="Bold Ottoman" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/149/bold_ottoman_1100x550.jpg" alt="Bold Ottoman by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Ottoman</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-8" href="https://www.ghidini1961.com/brass-chairs/sweet-ottoman" target="_blank" rel="noopener noreferrer" data-product="Sweet Ottoman" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/217/sweet_ottoman_1100x5501.jpg" alt="Sweet Ottoman by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sweet Ottoman</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://www.ghidini1961.com/armchairs/bucket-lounge-chair" target="_blank" rel="noopener noreferrer" data-product="Bucket Lounge Chair" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/170/Bucket_Lounge_Chair_1100x550_new.jpg" alt="Bucket Lounge Chair by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bucket Lounge Chair</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-10" href="https://www.ghidini1961.com/armchairs/bucket-bergere" target="_blank" rel="noopener noreferrer" data-product="Bucket Bergere" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/171/Bucket_Bergere_1100x550_new.jpg" alt="Bucket Bergere by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bucket Bergere</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://www.ghidini1961.com/cabinets-and-bookshelves/bold-dining-cabinet" target="_blank" rel="noopener noreferrer" data-product="Bold Dining Cabinet" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image" style="background:#fafafa"><img class="contain-fit" src="https://www.ghidini1961.com/uploads/prodotti/156/bold_dining_cabinet_1100x550.jpg" alt="Bold Dining Cabinet by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Dining Cabinet</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-12" href="https://www.ghidini1961.com/brass-tables/bold-dining-table" target="_blank" rel="noopener noreferrer" data-product="Bold Dining Table" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image" style="background:#fefefe"><img class="contain-fit" src="https://www.ghidini1961.com/uploads/prodotti/154/bold_dining_table_1100x550_new.jpg" alt="Bold Dining Table by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Dining Table</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show all 13 pieces</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p><p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;"><span id="shown-count">13</span> <span id="shown-noun">products</span> credited to Elisa Giovannoni, each linked straight to its maker's own page.</p>
+  <div class="tier-filters" id="brand-filters"><button type="button" class="filter-chip active" data-slug="">All <span class="chip-count">13</span></button><button type="button" class="filter-chip" data-slug="ghidini-1961">Ghidini 1961 <span class="chip-count">11</span></button><button type="button" class="filter-chip" data-slug="alessi">Alessi <span class="chip-count">2</span></button></div>
+  
+  <div class="grid" data-listing-grid>
+      <a class="card in-selection" href="https://www.alessi.com/products/domenica-kitchen-tongs" target="_blank" rel="noopener noreferrer" data-product="Domenica" data-slug="alessi" data-brand="Alessi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/01_EG01-58.jpg?v=1711463653&amp;width=500" alt="Domenica by Alessi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Domenica</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.alessi.com/products/sg68-toaster-with-bun-warmer-1" target="_blank" rel="noopener noreferrer" data-product="SG68" data-slug="alessi" data-brand="Alessi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0337/3603/2392/files/SG68-01.jpg?v=1725886539&amp;width=500" alt="SG68 by Alessi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">SG68</p></div>
+          <p class="card-brand">Alessi</p>
+        </div>
+      </a>
+      <a class="card" id="piece-13" href="https://www.ghidini1961.com/brass-chairs/bold-armchair" target="_blank" rel="noopener noreferrer" data-product="Bold Armchair" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/150/Bold_Armchair_1100x550_new.jpg" alt="Bold Armchair by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Armchair</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.ghidini1961.com/cabinets-and-bookshelves/bold-dining-cabinet" target="_blank" rel="noopener noreferrer" data-product="Bold Dining Cabinet" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image" style="background:#fafafa"><img class="contain-fit" src="https://www.ghidini1961.com/uploads/prodotti/156/bold_dining_cabinet_1100x550.jpg" alt="Bold Dining Cabinet by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Dining Cabinet</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.ghidini1961.com/brass-tables/bold-dining-table" target="_blank" rel="noopener noreferrer" data-product="Bold Dining Table" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image" style="background:#fefefe"><img class="contain-fit" src="https://www.ghidini1961.com/uploads/prodotti/154/bold_dining_table_1100x550_new.jpg" alt="Bold Dining Table by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Dining Table</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.ghidini1961.com/cabinets-and-bookshelves/bold-living-cabinet" target="_blank" rel="noopener noreferrer" data-product="Bold Living Cabinet" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image" style="background:#fcfcfc"><img class="contain-fit" src="https://www.ghidini1961.com/uploads/prodotti/157/bold_living_cabinet_1100x550.jpg" alt="Bold Living Cabinet by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Living Cabinet</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.ghidini1961.com/armchairs/bold-lounge-chair" target="_blank" rel="noopener noreferrer" data-product="Bold Lounge Chair" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image"><img style="object-position:51.1% 50%" src="https://www.ghidini1961.com/uploads/prodotti/148/Bold_Lounge_Chair_1100x550.jpg" alt="Bold Lounge Chair by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Lounge Chair</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.ghidini1961.com/brass-chairs/bold-ottoman" target="_blank" rel="noopener noreferrer" data-product="Bold Ottoman" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/149/bold_ottoman_1100x550.jpg" alt="Bold Ottoman by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Ottoman</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.ghidini1961.com/sofas/bold-sofa" target="_blank" rel="noopener noreferrer" data-product="Bold Sofa" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image" style="background:#fefefe"><img class="contain-fit" src="https://www.ghidini1961.com/uploads/prodotti/147/Bold_Sofa_1100x550_new_2.jpg" alt="Bold Sofa by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bold Sofa</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.ghidini1961.com/armchairs/bucket-bergere" target="_blank" rel="noopener noreferrer" data-product="Bucket Bergere" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/171/Bucket_Bergere_1100x550_new.jpg" alt="Bucket Bergere by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bucket Bergere</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.ghidini1961.com/armchairs/bucket-lounge-chair" target="_blank" rel="noopener noreferrer" data-product="Bucket Lounge Chair" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/170/Bucket_Lounge_Chair_1100x550_new.jpg" alt="Bucket Lounge Chair by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Bucket Lounge Chair</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.ghidini1961.com/armchairs/sweet-lounge-chair" target="_blank" rel="noopener noreferrer" data-product="Sweet Lounge Chair" data-slug="ghidini-1961" data-brand="Ghidini 1961">
+        <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/172/Sweet_Lounge_Chair_1100x55011.jpg" alt="Sweet Lounge Chair by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Sweet Lounge Chair</p></div>
+          <p class="card-brand">Ghidini 1961</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.ghidini1961.com/brass-chairs/sweet-ottoman" target="_blank" rel="noopener noreferrer" data-product="Sweet Ottoman" data-slug="ghidini-1961" data-brand="Ghidini 1961">
         <div class="card-image"><img style="object-position:50.0% 50%" src="https://www.ghidini1961.com/uploads/prodotti/217/sweet_ottoman_1100x5501.jpg" alt="Sweet Ottoman by Ghidini 1961" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <div class="card-title-wrap"><p class="card-title">Sweet Ottoman</p></div>
@@ -401,7 +507,7 @@
       </a>
   </div>
   
-  
+  </div>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
   </p>
@@ -426,8 +532,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 <script>
 (function () {
   var bar = document.getElementById("brand-filters");

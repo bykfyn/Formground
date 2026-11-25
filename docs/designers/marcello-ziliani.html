@@ -267,8 +267,26 @@
   .has-load-more .earlier-results { display: block; }
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
-</style>
 
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+</style>
+<script>document.documentElement.classList.add("explore-js");</script>
 
 </head>
 <body>
@@ -286,94 +304,182 @@
     <h1 class="maker-name">Marcello Ziliani</h1>
   </div>
   
-  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;"><span id="shown-count">13</span> <span id="shown-noun">products</span> credited to Marcello Ziliani, each linked straight to its maker's own page.</p>
   
-  <div class="grid" data-listing-grid>
-      <a class="card" href="https://www.s-cab.it/en/products/finn/" target="_blank" rel="noopener noreferrer" data-product="Finn" data-slug="s-cab" data-brand="S-CAB">
-        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2893-scab-finn_01.jpg" alt="Finn by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Finn</p></div>
-          <p class="card-brand">S-CAB</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.s-cab.it/en/products/finn-metal-wood/" target="_blank" rel="noopener noreferrer" data-product="Finn Metal Wood" data-slug="s-cab" data-brand="S-CAB">
-        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2897-scab-finn-metal-wood_01.jpg" alt="Finn Metal Wood by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Finn Metal Wood</p></div>
-          <p class="card-brand">S-CAB</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.s-cab.it/en/products/lisa/" target="_blank" rel="noopener noreferrer" data-product="Lisa" data-slug="s-cab" data-brand="S-CAB">
-        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2853-scab-lisa_01.jpg" alt="Lisa by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Lisa</p></div>
-          <p class="card-brand">S-CAB</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.s-cab.it/en/products/lisa-club/" target="_blank" rel="noopener noreferrer" data-product="Lisa Club" data-slug="s-cab" data-brand="S-CAB">
-        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2874-scab-lisa-club_01.jpg" alt="Lisa Club by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Lisa Club</p></div>
-          <p class="card-brand">S-CAB</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.s-cab.it/en/products/lisa-filo/" target="_blank" rel="noopener noreferrer" data-product="Lisa Filò" data-slug="s-cab" data-brand="S-CAB">
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://www.s-cab.it/en/products/lisa-filo/" target="_blank" rel="noopener noreferrer" data-product="Lisa Filò" data-slug="s-cab" data-brand="S-CAB">
         <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2870-scab-lisa-filo_01.jpg" alt="Lisa Filò by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <div class="card-title-wrap"><p class="card-title">Lisa Filò</p></div>
           <p class="card-brand">S-CAB</p>
         </div>
       </a>
-      <a class="card" href="https://www.s-cab.it/en/products/lisa-filo-nest/" target="_blank" rel="noopener noreferrer" data-product="Lisa Filò Nest" data-slug="s-cab" data-brand="S-CAB">
-        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2899-scab-lisa-filo-nest_01.jpg" alt="Lisa Filò Nest by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Lisa Filò Nest</p></div>
-          <p class="card-brand">S-CAB</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.s-cab.it/en/products/lisa-lounge/" target="_blank" rel="noopener noreferrer" data-product="Lisa Lounge" data-slug="s-cab" data-brand="S-CAB">
+      <a class="card" id="piece-2" href="https://www.s-cab.it/en/products/lisa-lounge/" target="_blank" rel="noopener noreferrer" data-product="Lisa Lounge" data-slug="s-cab" data-brand="S-CAB">
         <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/11/2858-scab-lisa-lounge_00.jpg" alt="Lisa Lounge by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <div class="card-title-wrap"><p class="card-title">Lisa Lounge</p></div>
           <p class="card-brand">S-CAB</p>
         </div>
       </a>
-      <a class="card" href="https://www.s-cab.it/en/products/side-table-lisa-lounge/" target="_blank" rel="noopener noreferrer" data-product="Lisa Lounge Side Table" data-slug="s-cab" data-brand="S-CAB">
-        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2879-scab-side-table-lisa-lounge-01.jpg" alt="Lisa Lounge Side Table by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+      <a class="card" id="piece-3" href="https://www.s-cab.it/en/products/finn-metal-wood/" target="_blank" rel="noopener noreferrer" data-product="Finn Metal Wood" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2897-scab-finn-metal-wood_01.jpg" alt="Finn Metal Wood by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Lisa Lounge Side Table</p></div>
+          <div class="card-title-wrap"><p class="card-title">Finn Metal Wood</p></div>
           <p class="card-brand">S-CAB</p>
         </div>
       </a>
-      <a class="card" href="https://www.s-cab.it/en/products/lisa-waterproof/" target="_blank" rel="noopener noreferrer" data-product="Lisa Outdoor" data-slug="s-cab" data-brand="S-CAB">
-        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2861-scab-lisa-waterproof_01.jpg" alt="Lisa Outdoor by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+      <a class="card" id="piece-4" href="https://www.s-cab.it/en/products/finn/" target="_blank" rel="noopener noreferrer" data-product="Finn" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2893-scab-finn_01.jpg" alt="Finn by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Lisa Outdoor</p></div>
+          <div class="card-title-wrap"><p class="card-title">Finn</p></div>
           <p class="card-brand">S-CAB</p>
         </div>
       </a>
-      <a class="card" href="https://www.s-cab.it/en/products/lisa-sofa-filo/" target="_blank" rel="noopener noreferrer" data-product="Lisa Sofa" data-slug="s-cab" data-brand="S-CAB">
-        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2884-scab-lisa-sofa-filo-01.jpg" alt="Lisa Sofa by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+      <a class="card" id="piece-5" href="https://www.s-cab.it/en/products/lisa-wood/" target="_blank" rel="noopener noreferrer" data-product="Lisa Wood" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2852-scab-lisa-wood_01.jpg" alt="Lisa Wood by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Lisa Sofa</p></div>
+          <div class="card-title-wrap"><p class="card-title">Lisa Wood</p></div>
           <p class="card-brand">S-CAB</p>
         </div>
       </a>
-      <a class="card" href="https://www.s-cab.it/en/products/lisa-swing/" target="_blank" rel="noopener noreferrer" data-product="Lisa Swing" data-slug="s-cab" data-brand="S-CAB">
-        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2020/10/2883-scab-lisa-swing-00.jpg" alt="Lisa Swing by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <div class="card-title-wrap"><p class="card-title">Lisa Swing</p></div>
-          <p class="card-brand">S-CAB</p>
-        </div>
-      </a>
-      <a class="card" href="https://www.s-cab.it/en/products/lisa-technopolymer/" target="_blank" rel="noopener noreferrer" data-product="Lisa Technopolymer" data-slug="s-cab" data-brand="S-CAB">
+      <a class="card" id="piece-6" href="https://www.s-cab.it/en/products/lisa-technopolymer/" target="_blank" rel="noopener noreferrer" data-product="Lisa Technopolymer" data-slug="s-cab" data-brand="S-CAB">
         <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2865-scab-lisa-tecnopolimero_01-1.jpg" alt="Lisa Technopolymer by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <div class="card-title-wrap"><p class="card-title">Lisa Technopolymer</p></div>
           <p class="card-brand">S-CAB</p>
         </div>
       </a>
-      <a class="card" href="https://www.s-cab.it/en/products/lisa-wood/" target="_blank" rel="noopener noreferrer" data-product="Lisa Wood" data-slug="s-cab" data-brand="S-CAB">
+      <a class="card card-extra-m" id="piece-7" href="https://www.s-cab.it/en/products/side-table-lisa-lounge/" target="_blank" rel="noopener noreferrer" data-product="Lisa Lounge Side Table" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2879-scab-side-table-lisa-lounge-01.jpg" alt="Lisa Lounge Side Table by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Lounge Side Table</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-8" href="https://www.s-cab.it/en/products/lisa-waterproof/" target="_blank" rel="noopener noreferrer" data-product="Lisa Outdoor" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2861-scab-lisa-waterproof_01.jpg" alt="Lisa Outdoor by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Outdoor</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://www.s-cab.it/en/products/lisa-swing/" target="_blank" rel="noopener noreferrer" data-product="Lisa Swing" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2020/10/2883-scab-lisa-swing-00.jpg" alt="Lisa Swing by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Swing</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-10" href="https://www.s-cab.it/en/products/lisa-sofa-filo/" target="_blank" rel="noopener noreferrer" data-product="Lisa Sofa" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2884-scab-lisa-sofa-filo-01.jpg" alt="Lisa Sofa by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Sofa</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://www.s-cab.it/en/products/lisa-club/" target="_blank" rel="noopener noreferrer" data-product="Lisa Club" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2874-scab-lisa-club_01.jpg" alt="Lisa Club by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Club</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-12" href="https://www.s-cab.it/en/products/lisa/" target="_blank" rel="noopener noreferrer" data-product="Lisa" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2853-scab-lisa_01.jpg" alt="Lisa by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show all 13 pieces</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p><p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;"><span id="shown-count">13</span> <span id="shown-noun">products</span> credited to Marcello Ziliani, each linked straight to its maker's own page.</p>
+  
+  <div class="grid" data-listing-grid>
+      <a class="card in-selection" href="https://www.s-cab.it/en/products/finn/" target="_blank" rel="noopener noreferrer" data-product="Finn" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2893-scab-finn_01.jpg" alt="Finn by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Finn</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.s-cab.it/en/products/finn-metal-wood/" target="_blank" rel="noopener noreferrer" data-product="Finn Metal Wood" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2897-scab-finn-metal-wood_01.jpg" alt="Finn Metal Wood by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Finn Metal Wood</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.s-cab.it/en/products/lisa/" target="_blank" rel="noopener noreferrer" data-product="Lisa" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2853-scab-lisa_01.jpg" alt="Lisa by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.s-cab.it/en/products/lisa-club/" target="_blank" rel="noopener noreferrer" data-product="Lisa Club" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2874-scab-lisa-club_01.jpg" alt="Lisa Club by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Club</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.s-cab.it/en/products/lisa-filo/" target="_blank" rel="noopener noreferrer" data-product="Lisa Filò" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2870-scab-lisa-filo_01.jpg" alt="Lisa Filò by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Filò</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card" id="piece-13" href="https://www.s-cab.it/en/products/lisa-filo-nest/" target="_blank" rel="noopener noreferrer" data-product="Lisa Filò Nest" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2899-scab-lisa-filo-nest_01.jpg" alt="Lisa Filò Nest by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Filò Nest</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.s-cab.it/en/products/lisa-lounge/" target="_blank" rel="noopener noreferrer" data-product="Lisa Lounge" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/11/2858-scab-lisa-lounge_00.jpg" alt="Lisa Lounge by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Lounge</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.s-cab.it/en/products/side-table-lisa-lounge/" target="_blank" rel="noopener noreferrer" data-product="Lisa Lounge Side Table" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2879-scab-side-table-lisa-lounge-01.jpg" alt="Lisa Lounge Side Table by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Lounge Side Table</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.s-cab.it/en/products/lisa-waterproof/" target="_blank" rel="noopener noreferrer" data-product="Lisa Outdoor" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2861-scab-lisa-waterproof_01.jpg" alt="Lisa Outdoor by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Outdoor</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.s-cab.it/en/products/lisa-sofa-filo/" target="_blank" rel="noopener noreferrer" data-product="Lisa Sofa" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2884-scab-lisa-sofa-filo-01.jpg" alt="Lisa Sofa by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Sofa</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.s-cab.it/en/products/lisa-swing/" target="_blank" rel="noopener noreferrer" data-product="Lisa Swing" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2020/10/2883-scab-lisa-swing-00.jpg" alt="Lisa Swing by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Swing</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.s-cab.it/en/products/lisa-technopolymer/" target="_blank" rel="noopener noreferrer" data-product="Lisa Technopolymer" data-slug="s-cab" data-brand="S-CAB">
+        <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2865-scab-lisa-tecnopolimero_01-1.jpg" alt="Lisa Technopolymer by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <div class="card-title-wrap"><p class="card-title">Lisa Technopolymer</p></div>
+          <p class="card-brand">S-CAB</p>
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.s-cab.it/en/products/lisa-wood/" target="_blank" rel="noopener noreferrer" data-product="Lisa Wood" data-slug="s-cab" data-brand="S-CAB">
         <div class="card-image"><img src="https://www.s-cab.it/wp-content/uploads/2024/10/2852-scab-lisa-wood_01.jpg" alt="Lisa Wood by S-CAB" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <div class="card-title-wrap"><p class="card-title">Lisa Wood</p></div>
@@ -382,7 +488,7 @@
       </a>
   </div>
   
-  
+  </div>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
   </p>
@@ -407,8 +513,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>

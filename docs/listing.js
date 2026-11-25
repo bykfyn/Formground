@@ -23,6 +23,8 @@
   if (!more || !grid) return;
   var total = parseInt(more.getAttribute("data-total"), 10) || 0;
   var start = parseInt(more.getAttribute("data-start"), 10) || 0;   // cards before this page (page 3 starts at 120)
+  var picked = {};
+  document.querySelectorAll(".selection .card").forEach(function (c) { picked[c.getAttribute("data-product")] = true; });
   var progress = document.getElementById("see-more-progress");
   var label = more.textContent;
 
@@ -47,7 +49,10 @@
     }).then(function (html) {
       var doc = new DOMParser().parseFromString(html, "text/html");
       doc.querySelectorAll("[data-listing-grid] .card, .results-grid .card").forEach(function (c) {
-        grid.appendChild(document.importNode(c, true));
+        var card = document.importNode(c, true);
+        // "A selection" on a maker page already shows this piece: it stays out of the list below it
+        if (picked[card.getAttribute("data-product")]) card.classList.add("in-selection");
+        grid.appendChild(card);
       });
       try { window.history.replaceState(null, "", url); } catch (e) { /* the address just stays put */ }
       var next = doc.getElementById("see-more");

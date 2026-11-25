@@ -262,6 +262,24 @@
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+
   .designer-row { display: flex; flex-wrap: wrap; gap: 10px; }
   .designer-chip {
     display: inline-flex; align-items: baseline; gap: 8px;
@@ -281,6 +299,7 @@
   @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
   .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
 </style>
+<script>document.documentElement.classList.add("explore-js");</script>
 <style>
   .creator-text { max-width: 640px; margin: 0 auto 36px; }
   .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
@@ -306,149 +325,236 @@
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">Charles Deppierraz</h1>
-    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">Switzerland</span></div>
+    <div class="tags"><a class="tag tag-link" href="/work/furniture.html">Furniture</a><a class="tag tag-link" href="/work/lighting.html">Lighting</a><a class="tag tag-link" href="/work/objects.html">Objects</a><a class="tag tag-link" href="/work.html?q=from+Switzerland">Switzerland</a></div>
     <a class="brand-site-link" href="https://charlesdeppierraz.com/" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
 
   <section class="creator-text">
     <p>Charles-Emmanuel Deppierraz is a Swiss-born, self-taught designer who creates furniture and lighting as signed, numbered pieces and limited editions. Each design is produced with specialist workshops, among them Ateliers Saint-Jacques, Maison Pouenat and Serafini, in oak, marble, brass, blown glass and straw marquetry.</p><p>The collection runs from armchairs, a sofa and a chair to dining, coffee and side tables, consoles, mirrors and table and floor lamps, with custom finishes on request. Pieces are shown without prices; each page invites an offer request. On Formground it is shown through 20 pieces, each linked to its own page.</p>
-    <dl class="creator-facts"><dt>Country</dt><dd>Switzerland</dd><dt>Type</dt><dd>Maker</dd><dt>Products</dt><dd>Armchairs, sofa, chair, tables, consoles, mirrors, lamps</dd><dt>Website</dt><dd>charlesdeppierraz.com</dd></dl>
-  </section>  
-  <div class="grid" data-listing-grid>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/consoles/alexandra" target="_blank" rel="noopener noreferrer" data-product="Alexandra" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/446/12_Alexandra_Charles_Emmanuel_Deppierraz_Yvan_Moreau_HD_large3.jpg" alt="Alexandra by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Alexandra</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/couch/alexis" target="_blank" rel="noopener noreferrer" data-product="Alexis" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/276/Alexis-1.png" alt="Alexis by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Alexis</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/consoles/arche" target="_blank" rel="noopener noreferrer" data-product="Arche" data-brand="Charles Deppierraz">
+  </section>
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://charlesdeppierraz.com/en/designs/consoles/arche" target="_blank" rel="noopener noreferrer" data-product="Arche" data-brand="Charles Deppierraz">
         <div class="card-image"><img src="https://charlesdeppierraz.com/storage/125/Arche-Ombra-del-Caravaggio-2.png" alt="Arche by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Arche</p>
           
         </div>
       </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/chair/basic" target="_blank" rel="noopener noreferrer" data-product="Basic" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/102/4_Basic_Charles_Emmanuel_Deppierraz_web-scaled.jpg" alt="Basic by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Basic</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/side-tables/bubbles" target="_blank" rel="noopener noreferrer" data-product="Bubbles" data-brand="Charles Deppierraz">
+      <a class="card" id="piece-2" href="https://charlesdeppierraz.com/en/designs/side-tables/bubbles" target="_blank" rel="noopener noreferrer" data-product="Bubbles" data-brand="Charles Deppierraz">
         <div class="card-image"><img src="https://charlesdeppierraz.com/storage/193/Bubbles-blue-green-1.png" alt="Bubbles by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Bubbles</p>
           
         </div>
       </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/light/curves-absolute-black" target="_blank" rel="noopener noreferrer" data-product="Curves" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/36/1_web_Curves_Absolute_Black_CharlesDeppierraz_LVM-scaled.jpg" alt="Curves by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Curves</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/coffee-tables/emilie" target="_blank" rel="noopener noreferrer" data-product="Emilie" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/259/2_Emilie_Charles_Emmanuel_Deppierraz.png" alt="Emilie by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Emilie</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/tables/enlacee" target="_blank" rel="noopener noreferrer" data-product="Enlacee" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/461/12_Enlace%CC%81e_Charles_Emmanuel_Deppierraz_Yvan_Moreau_HD_large2.jpg" alt="Enlacee by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Enlacee</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/consoles/epure" target="_blank" rel="noopener noreferrer" data-product="Epure" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/124/Epure-1-scaled.jpg" alt="Epure by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Epure</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/side-tables/laurence" target="_blank" rel="noopener noreferrer" data-product="Laurence" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/174/1_Laurence_verde_note_Charles_Emmanuel_Deppierraz-scaled.jpg" alt="Laurence by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Laurence</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/light/little-ghost-white" target="_blank" rel="noopener noreferrer" data-product="Little Ghost" data-brand="Charles Deppierraz">
+      <a class="card" id="piece-3" href="https://charlesdeppierraz.com/en/designs/light/little-ghost-white" target="_blank" rel="noopener noreferrer" data-product="Little Ghost" data-brand="Charles Deppierraz">
         <div class="card-image"><img src="https://charlesdeppierraz.com/storage/66/Little-ghost-white-1.png" alt="Little Ghost by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Little Ghost</p>
           
         </div>
       </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/light/lucia" target="_blank" rel="noopener noreferrer" data-product="Lucia" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/449/4_Lucia_Charles_Emmanuel_Deppierraz_Pascal_Zahner_HD.jpg" alt="Lucia by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Lucia</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/light/luna-absolute-black" target="_blank" rel="noopener noreferrer" data-product="Luna" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/47/1_Luna_absolute_black_Charles_Emmanuel_Deppierraz_web-scaled.jpg" alt="Luna by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Luna</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/mirrors/ny2" target="_blank" rel="noopener noreferrer" data-product="NY2" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/201/1_NY2_Charles_Emmanuel_Deppierraz-scaled.jpg" alt="NY2 by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">NY2</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/armchairs/rae" target="_blank" rel="noopener noreferrer" data-product="Rae" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/77/Rae-1.png" alt="Rae by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Rae</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/side-tables/snail" target="_blank" rel="noopener noreferrer" data-product="Snail" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/179/Snail_port_st_Laurent_3-scaled.jpg" alt="Snail by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Snail</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/armchairs/sebastien" target="_blank" rel="noopener noreferrer" data-product="Sébastien" data-brand="Charles Deppierraz">
+      <a class="card" id="piece-4" href="https://charlesdeppierraz.com/en/designs/armchairs/sebastien" target="_blank" rel="noopener noreferrer" data-product="Sébastien" data-brand="Charles Deppierraz">
         <div class="card-image"><img src="https://charlesdeppierraz.com/storage/85/Sebastien-3.jpg" alt="Sébastien by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Sébastien</p>
           
         </div>
       </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/tables/victoria" target="_blank" rel="noopener noreferrer" data-product="Victoria" data-brand="Charles Deppierraz">
-        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/131/Souvenir-serie-1-1-2.png" alt="Victoria by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Victoria</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/coffee-tables/volt" target="_blank" rel="noopener noreferrer" data-product="Volt" data-brand="Charles Deppierraz">
+      <a class="card" id="piece-5" href="https://charlesdeppierraz.com/en/designs/coffee-tables/volt" target="_blank" rel="noopener noreferrer" data-product="Volt" data-brand="Charles Deppierraz">
         <div class="card-image"><img src="https://charlesdeppierraz.com/storage/154/Volt-Rosso-Levanto-1.png" alt="Volt by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Volt</p>
           
         </div>
       </a>
-      <a class="card" href="https://charlesdeppierraz.com/en/designs/consoles/voluptes" target="_blank" rel="noopener noreferrer" data-product="Voluptes" data-brand="Charles Deppierraz">
+      <a class="card" id="piece-6" href="https://charlesdeppierraz.com/en/designs/chair/basic" target="_blank" rel="noopener noreferrer" data-product="Basic" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/102/4_Basic_Charles_Emmanuel_Deppierraz_web-scaled.jpg" alt="Basic by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Basic</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-7" href="https://charlesdeppierraz.com/en/designs/tables/victoria" target="_blank" rel="noopener noreferrer" data-product="Victoria" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/131/Souvenir-serie-1-1-2.png" alt="Victoria by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Victoria</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-8" href="https://charlesdeppierraz.com/en/designs/light/luna-absolute-black" target="_blank" rel="noopener noreferrer" data-product="Luna" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/47/1_Luna_absolute_black_Charles_Emmanuel_Deppierraz_web-scaled.jpg" alt="Luna by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Luna</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://charlesdeppierraz.com/en/designs/mirrors/ny2" target="_blank" rel="noopener noreferrer" data-product="NY2" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/201/1_NY2_Charles_Emmanuel_Deppierraz-scaled.jpg" alt="NY2 by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">NY2</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-10" href="https://charlesdeppierraz.com/en/designs/couch/alexis" target="_blank" rel="noopener noreferrer" data-product="Alexis" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/276/Alexis-1.png" alt="Alexis by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Alexis</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://charlesdeppierraz.com/en/designs/tables/enlacee" target="_blank" rel="noopener noreferrer" data-product="Enlacee" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/461/12_Enlace%CC%81e_Charles_Emmanuel_Deppierraz_Yvan_Moreau_HD_large2.jpg" alt="Enlacee by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Enlacee</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-12" href="https://charlesdeppierraz.com/en/designs/consoles/alexandra" target="_blank" rel="noopener noreferrer" data-product="Alexandra" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/446/12_Alexandra_Charles_Emmanuel_Deppierraz_Yvan_Moreau_HD_large3.jpg" alt="Alexandra by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Alexandra</p>
+          
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show all 20 pieces</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p>
+  <div class="grid" data-listing-grid>
+      <a class="card in-selection" href="https://charlesdeppierraz.com/en/designs/consoles/alexandra" target="_blank" rel="noopener noreferrer" data-product="Alexandra" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/446/12_Alexandra_Charles_Emmanuel_Deppierraz_Yvan_Moreau_HD_large3.jpg" alt="Alexandra by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Alexandra</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://charlesdeppierraz.com/en/designs/couch/alexis" target="_blank" rel="noopener noreferrer" data-product="Alexis" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/276/Alexis-1.png" alt="Alexis by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Alexis</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://charlesdeppierraz.com/en/designs/consoles/arche" target="_blank" rel="noopener noreferrer" data-product="Arche" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/125/Arche-Ombra-del-Caravaggio-2.png" alt="Arche by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Arche</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://charlesdeppierraz.com/en/designs/chair/basic" target="_blank" rel="noopener noreferrer" data-product="Basic" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/102/4_Basic_Charles_Emmanuel_Deppierraz_web-scaled.jpg" alt="Basic by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Basic</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://charlesdeppierraz.com/en/designs/side-tables/bubbles" target="_blank" rel="noopener noreferrer" data-product="Bubbles" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/193/Bubbles-blue-green-1.png" alt="Bubbles by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bubbles</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-13" href="https://charlesdeppierraz.com/en/designs/light/curves-absolute-black" target="_blank" rel="noopener noreferrer" data-product="Curves" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/36/1_web_Curves_Absolute_Black_CharlesDeppierraz_LVM-scaled.jpg" alt="Curves by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curves</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-14" href="https://charlesdeppierraz.com/en/designs/coffee-tables/emilie" target="_blank" rel="noopener noreferrer" data-product="Emilie" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/259/2_Emilie_Charles_Emmanuel_Deppierraz.png" alt="Emilie by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Emilie</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://charlesdeppierraz.com/en/designs/tables/enlacee" target="_blank" rel="noopener noreferrer" data-product="Enlacee" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/461/12_Enlace%CC%81e_Charles_Emmanuel_Deppierraz_Yvan_Moreau_HD_large2.jpg" alt="Enlacee by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Enlacee</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-15" href="https://charlesdeppierraz.com/en/designs/consoles/epure" target="_blank" rel="noopener noreferrer" data-product="Epure" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/124/Epure-1-scaled.jpg" alt="Epure by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Epure</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-16" href="https://charlesdeppierraz.com/en/designs/side-tables/laurence" target="_blank" rel="noopener noreferrer" data-product="Laurence" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/174/1_Laurence_verde_note_Charles_Emmanuel_Deppierraz-scaled.jpg" alt="Laurence by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Laurence</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://charlesdeppierraz.com/en/designs/light/little-ghost-white" target="_blank" rel="noopener noreferrer" data-product="Little Ghost" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/66/Little-ghost-white-1.png" alt="Little Ghost by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Little Ghost</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-17" href="https://charlesdeppierraz.com/en/designs/light/lucia" target="_blank" rel="noopener noreferrer" data-product="Lucia" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/449/4_Lucia_Charles_Emmanuel_Deppierraz_Pascal_Zahner_HD.jpg" alt="Lucia by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lucia</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://charlesdeppierraz.com/en/designs/light/luna-absolute-black" target="_blank" rel="noopener noreferrer" data-product="Luna" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/47/1_Luna_absolute_black_Charles_Emmanuel_Deppierraz_web-scaled.jpg" alt="Luna by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Luna</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://charlesdeppierraz.com/en/designs/mirrors/ny2" target="_blank" rel="noopener noreferrer" data-product="NY2" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/201/1_NY2_Charles_Emmanuel_Deppierraz-scaled.jpg" alt="NY2 by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">NY2</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-18" href="https://charlesdeppierraz.com/en/designs/armchairs/rae" target="_blank" rel="noopener noreferrer" data-product="Rae" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/77/Rae-1.png" alt="Rae by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Rae</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-19" href="https://charlesdeppierraz.com/en/designs/side-tables/snail" target="_blank" rel="noopener noreferrer" data-product="Snail" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/179/Snail_port_st_Laurent_3-scaled.jpg" alt="Snail by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Snail</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://charlesdeppierraz.com/en/designs/armchairs/sebastien" target="_blank" rel="noopener noreferrer" data-product="Sébastien" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/85/Sebastien-3.jpg" alt="Sébastien by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Sébastien</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://charlesdeppierraz.com/en/designs/tables/victoria" target="_blank" rel="noopener noreferrer" data-product="Victoria" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/131/Souvenir-serie-1-1-2.png" alt="Victoria by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Victoria</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://charlesdeppierraz.com/en/designs/coffee-tables/volt" target="_blank" rel="noopener noreferrer" data-product="Volt" data-brand="Charles Deppierraz">
+        <div class="card-image"><img src="https://charlesdeppierraz.com/storage/154/Volt-Rosso-Levanto-1.png" alt="Volt by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Volt</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-20" href="https://charlesdeppierraz.com/en/designs/consoles/voluptes" target="_blank" rel="noopener noreferrer" data-product="Voluptes" data-brand="Charles Deppierraz">
         <div class="card-image"><img src="https://charlesdeppierraz.com/storage/116/Voluptes-1.png" alt="Voluptes by Charles Deppierraz" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Voluptes</p>
@@ -456,7 +562,7 @@
         </div>
       </a></div>
   
-  
+  </div>
 
   <section class="brand-section">
     <p class="brand-section-title">Makers like Charles Deppierraz</p>
@@ -507,8 +613,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

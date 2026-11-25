@@ -262,11 +262,30 @@
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
   .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
 </style>
+<script>document.documentElement.classList.add("explore-js");</script>
 <style>
   .creator-text { max-width: 640px; margin: 0 auto 36px; }
   .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
@@ -292,429 +311,517 @@
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">Gustaf Westman</h1>
-    <div class="tags"><span class="tag">Furniture</span><span class="tag">Ceramics</span><span class="tag">Objects</span><span class="tag">Sweden</span></div>
+    <div class="tags"><a class="tag tag-link" href="/work/furniture.html">Furniture</a><a class="tag tag-link" href="/work.html?q=ceramics">Ceramics</a><a class="tag tag-link" href="/work/objects.html">Objects</a><a class="tag tag-link" href="/work.html?q=from+Sweden">Sweden</a></div>
+    <p class="meta-line">Stockholm · Founded 2020 · Made to order</p>
     <a class="brand-site-link" href="https://gustafwestman.com/" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
 
   <section class="creator-text">
-    <p>Gustaf Westman is a Stockholm design studio founded in 2020 by Gustaf Westman, who trained as an architect. It makes made-to-order furniture, ceramics and glassware in bold colours, from the Chunky tables, stools and tableware to the Curvy mirrors and sideboards, the Blob sofa and the Pipe chairs.</p><p>Furniture is made by hand by woodworkers in Sweden, ceramics in Portugal and glassware is hand-blown in the Czech Republic. Most pieces come in many colours, so here each model is shown once, in its calmest colourway, with the others listed. On Formground it is shown through 62 pieces, each linked to its own page.</p>
-    <dl class="creator-facts"><dt>Country</dt><dd>Sweden</dd><dt>City</dt><dd>Stockholm</dd><dt>Type</dt><dd>Maker</dd><dt>Products</dt><dd>Furniture, ceramics and glassware</dd><dt>Founded</dt><dd>2020</dd><dt>Made to order</dt><dd>Yes, all furniture</dd><dt>Website</dt><dd>gustafwestman.com</dd></dl>
-  </section>  
-  <div class="grid" data-listing-grid>
-      <a class="card" href="https://gustafwestman.com/products/blob-sofa-light-blue" target="_blank" rel="noopener noreferrer" data-product="Blob Sofa" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Blob_Sofa_Cobelt_Blue_0481100-503_PS_7166d06b-6686-4e88-8d46-5c2af6b80823.jpg?v=1782918919&amp;width=500" alt="Blob Sofa by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Blob Sofa</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/blob-sofa-tartan-yellow" target="_blank" rel="noopener noreferrer" data-product="Blob Sofa Tartan" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Blob_Sofa_Tartan_Yellow_04104003-202_PS.jpg?v=1783072281&amp;width=500" alt="Blob Sofa Tartan by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Blob Sofa Tartan</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/blob-table-cream" target="_blank" rel="noopener noreferrer" data-product="Blob Table" data-brand="Gustaf Westman">
+    <p>Gustaf Westman is a Stockholm design studio founded in 2020 by Gustaf Westman, who trained as an architect. It makes made-to-order furniture, ceramics and glassware in bold colours, from the Chunky tables, stools and tableware to the Curvy mirrors and sideboards, the <a class="piece-link" href="#piece-10">Blob sofa</a> and the Pipe chairs.</p><p>Furniture is made by hand by woodworkers in Sweden, ceramics in Portugal and glassware is hand-blown in the Czech Republic. Most pieces come in many colours, so here each model is shown once, in its calmest colourway, with the others listed. On Formground it is shown through 62 pieces, each linked to its own page.</p>
+  </section>
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://gustafwestman.com/products/blob-table-cream" target="_blank" rel="noopener noreferrer" data-product="Blob Table" data-brand="Gustaf Westman">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Blob_Table_Cream_0450100-102.jpg?v=1793720316&amp;width=500" alt="Blob Table by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Blob Table</p>
           
         </div>
       </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-beer-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Beer Glass" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Beer_Glass_Transparent_0218017-902_50fb7103-3357-4464-aaa4-f35c217adc43.jpg?v=1793616564&amp;width=500" alt="Chunky Beer Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Beer Glass</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-beer-tray-pink" target="_blank" rel="noopener noreferrer" data-product="Chunky Beer Tray" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Beer_Plate_Pink_0257003-301.jpg?v=1793805847&amp;width=500" alt="Chunky Beer Tray by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Beer Tray</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-bowl-xl-pink" target="_blank" rel="noopener noreferrer" data-product="Chunky Bowl XL" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/ChunkyBowl_XL_Pink_0283050-301.jpg?v=1789574896&amp;width=500" alt="Chunky Bowl XL by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Bowl XL</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-candle-holder-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Candle Holder" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Candle_Holder_S_Cream_0210009-102.jpg?v=1793720587&amp;width=500" alt="Chunky Candle Holder by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Candle Holder</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-cat-tree-light-blue" target="_blank" rel="noopener noreferrer" data-product="Chunky Cat Tree" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Cat_Tree_Light_Blue_0278003-502_PS_46d0041f-8589-44dd-9f54-1d4f04eea0bd.jpg?v=1781617614&amp;width=500" alt="Chunky Cat Tree by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Cat Tree</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-champagne-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Champagne Glass" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Champagne_Glass_Transparent_0218019-902.jpg?v=1793616724&amp;width=500" alt="Chunky Champagne Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Champagne Glass</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-coffee-maker-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Coffee Maker" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/ChunkyCoffeeMaker_Cream_0241003-102_PS_8d1bc4d3-4ed3-47d9-8baf-c90480115364.jpg?v=1780929134&amp;width=500" alt="Chunky Coffee Maker by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Coffee Maker</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-cup-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Cup" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Cup_Cream_0281003-102_1.jpg?v=1793615517&amp;width=500" alt="Chunky Cup by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Cup</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-cup-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Cup Mini" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Cup_Mini_Cream_0281002-102.jpg?v=1793805269&amp;width=500" alt="Chunky Cup Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Cup Mini</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-desk-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Desk" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Desk_L1600_Black_0203160-601_PS_b3134a6d-dee2-4b1c-96e5-8963b9f94caa.jpg?v=1781618671&amp;width=500" alt="Chunky Desk by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Desk</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-desk-ii-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Desk II" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Desk_II_Cream_0213200-102_5494a374-7a2b-4b0b-b756-255e901f26c7.jpg?v=1793707876&amp;width=500" alt="Chunky Desk II by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Desk II</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-flower-pot-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Flower Pot" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Flower_Pot_Cream_0284030-102_PS_b8938119-4238-4a1a-88a0-003121db877a.jpg?v=1780928977&amp;width=500" alt="Chunky Flower Pot by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Flower Pot</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-hot-dog-plate-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Hot Dog Plate" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Hot_Dog_Plate_Cream_1421003-102.jpg?v=1793615789&amp;width=500" alt="Chunky Hot Dog Plate by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Hot Dog Plate</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-jug-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Jug" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Jug_Cream_0289003-102_2.jpg?v=1793629488&amp;width=500" alt="Chunky Jug by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Jug</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-mirror-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Mirror" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Mirror_Cream_0201003-102_PS_91d083b0-8e6b-48e9-912f-2d0842ac5c3c.jpg?v=1781617644&amp;width=500" alt="Chunky Mirror by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Mirror</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-mirror-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Mirror Mini" data-brand="Gustaf Westman">
+      <a class="card" id="piece-2" href="https://gustafwestman.com/products/chunky-mirror-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Mirror Mini" data-brand="Gustaf Westman">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Mirror_Mini_Cream_0201002-102_jpg_PS_18_7eecbd87-7e11-4511-a547-35bff9a1e7d8.jpg?v=1781617645&amp;width=500" alt="Chunky Mirror Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Chunky Mirror Mini</p>
           
         </div>
       </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-plate-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Plate" data-brand="Gustaf Westman">
+      <a class="card" id="piece-3" href="https://gustafwestman.com/products/chunky-beer-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Beer Glass" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Beer_Glass_Transparent_0218017-902_50fb7103-3357-4464-aaa4-f35c217adc43.jpg?v=1793616564&amp;width=500" alt="Chunky Beer Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Beer Glass</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-4" href="https://gustafwestman.com/products/chunky-plate-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Plate" data-brand="Gustaf Westman">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Plate_Cream_0282026-102.jpg?v=1793708170&amp;width=500" alt="Chunky Plate by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Chunky Plate</p>
           
         </div>
       </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-round-table-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Round Table" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Round_Table_1100_Cream_0251110-102.jpg?v=1793806205&amp;width=500" alt="Chunky Round Table by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Round Table</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-serving-plate-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Serving Plate" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Serving_Plate_0282035-102.jpg?v=1789572616&amp;width=500" alt="Chunky Serving Plate by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Serving Plate</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-shot-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Shot Glass" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Shot_Glass_Transparent_0218106-902.jpg?v=1793616850&amp;width=500" alt="Chunky Shot Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Shot Glass</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-snack-stadium" target="_blank" rel="noopener noreferrer" data-product="Chunky Snack Stadium" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Snack_Stadium_Pink_0256003-301.jpg?v=1793800735&amp;width=500" alt="Chunky Snack Stadium by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Snack Stadium</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-star-plate" target="_blank" rel="noopener noreferrer" data-product="Chunky Star Plate" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/GeneratedImageAugust18_2026-12_07PM_614c26ca-0b96-4654-be4b-5e6d713384e0.jpg?v=1787056632&amp;width=500" alt="Chunky Star Plate by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Star Plate</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-stool-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Stool" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Stool_Cream_0207003-102.jpg?v=1793630014&amp;width=500" alt="Chunky Stool by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Stool</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-stool-stained-pink" target="_blank" rel="noopener noreferrer" data-product="Chunky Stool Stained" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Stool_Pink_Pine_0207003-833.jpg?v=1793630014&amp;width=500" alt="Chunky Stool Stained by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Stool Stained</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-swoosh-plate" target="_blank" rel="noopener noreferrer" data-product="Chunky Swoosh Plate" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Swoosh_Plate_Pink_3682003-301.jpg?v=1793800695&amp;width=500" alt="Chunky Swoosh Plate by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Swoosh Plate</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-table-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Table" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_table_2430_Cream_0250243-102_png_PS_a5b69f0f-05c4-46f5-a070-3533762c6fcb.jpg?v=1781618524&amp;width=500" alt="Chunky Table by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Table</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-table-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Table Mini" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Table_Mini_Cream_0250002-102_PS_cb6ed7f3-98b7-4053-9baf-98e3edc6dadc.jpg?v=1781618426&amp;width=500" alt="Chunky Table Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Table Mini</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/tea-strainer-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Tea Strainer" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Tea_Strainer_Cream_0242003-102_PS.jpg?v=1780928186&amp;width=500" alt="Chunky Tea Strainer by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Tea Strainer</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-tumbler-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Tumbler" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Tumbler_Cream_0219003-102_PS_52968ef9-4d9e-43ca-b515-d2436cde9cfd.jpg?v=1780929015&amp;width=500" alt="Chunky Tumbler by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Tumbler</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-tumbler-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Tumbler Glass" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Tumbler_Glass_Transparent_0219003-902.jpg?v=1793800984&amp;width=500" alt="Chunky Tumbler Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Tumbler Glass</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-vase-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Vase" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Vase_Transparent_0285023-902_3.jpg?v=1793804922&amp;width=500" alt="Chunky Vase by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Vase</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-vase-mini-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Vase Mini" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Vase_Mini_Transparent_0285002-902.jpg?v=1793804849&amp;width=500" alt="Chunky Vase Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Vase Mini</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-water-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Water Glass" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Water_Glass_Transparent_0218104-902_916d25e4-bb0a-41f6-bbc3-9dcff6f6603c.jpg?v=1793628369&amp;width=500" alt="Chunky Water Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Water Glass</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-wine-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Wine Glass" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Wine_Glass_Transparent_0218014-902_12b9dc1f-9271-4d75-a964-23617564c2ba.jpg?v=1793628509&amp;width=500" alt="Chunky Wine Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Wine Glass</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-wing-mirror" target="_blank" rel="noopener noreferrer" data-product="Chunky Wing Mirror" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Mercedesspegel.png?v=1787063688&amp;width=500" alt="Chunky Wing Mirror by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Wing Mirror</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-wood-bowl-pine" target="_blank" rel="noopener noreferrer" data-product="Chunky Wood Bowl" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Wood_Bowl_Pine_0287026-803.jpg?v=1793629628&amp;width=500" alt="Chunky Wood Bowl by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Wood Bowl</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/chunky-wood-bowl-stained-pink" target="_blank" rel="noopener noreferrer" data-product="Chunky Wood Bowl Stained" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Wood_Bowl_Pink_Pine_0287026-833_2e03216a-4f9a-4b85-8173-6bcde8eb5d40.jpg?v=1793629627&amp;width=500" alt="Chunky Wood Bowl Stained by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chunky Wood Bowl Stained</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/curvy-bench-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Bench" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Bench_Cream_0102149-102_PS_b0575a20-c7d5-4443-b781-714f46ccf51c.jpg?v=1781617786&amp;width=500" alt="Curvy Bench by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Curvy Bench</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/curvy-mirror-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Mirror" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Mirror_Standard_Cream_0101003-102.jpg?v=1793630385&amp;width=500" alt="Curvy Mirror by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Curvy Mirror</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/curvy-mirror-micro-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Mirror Micro" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Mirror_Micro_Cream_0101001-102_PS_29f57a08-9139-4dbe-af46-cda6dae5d905.jpg?v=1780929074&amp;width=500" alt="Curvy Mirror Micro by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Curvy Mirror Micro</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/curvy-mirror-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Mirror Mini" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Mirror_Mini_Cream_0101002-102_PS.jpg?v=1782920373&amp;width=500" alt="Curvy Mirror Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Curvy Mirror Mini</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/curvy-room-divider-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Room Divider" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Room_Divider_Cream_0105204-102_PS_0697edaf-bc76-4df1-a503-75ea05612e64.jpg?v=1781617592&amp;width=500" alt="Curvy Room Divider by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Curvy Room Divider</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/curvy-room-divider-wood" target="_blank" rel="noopener noreferrer" data-product="Curvy Room Divider Wood" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Room_Divider_Wood_0105204-804_PS_2243672b-105c-4694-92a8-856ed363a106.jpg?v=1781617824&amp;width=500" alt="Curvy Room Divider Wood by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Curvy Room Divider Wood</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/curvy-sideboard-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Sideboard" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Sideboard_Cream_0104203-102_PS_84f05bd3-1416-45f6-9b81-3559c4d9717d.jpg?v=1781618173&amp;width=500" alt="Curvy Sideboard by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Curvy Sideboard</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/curvy-sideboard-singular-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Sideboard Singular" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Sideboard_Singular_Cream_0104042-102_PS_24b0b9c0-8361-4d11-997a-459756fef730.jpg?v=1781617613&amp;width=500" alt="Curvy Sideboard Singular by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Curvy Sideboard Singular</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/curvy-table-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Table Mini" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Table_Mini_Cream_0150002-102_PS_e80d0175-97cb-40e9-b8ed-1ee6400ae29a.jpg?v=1781617961&amp;width=500" alt="Curvy Table Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Curvy Table Mini</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/flower-mirror-cream" target="_blank" rel="noopener noreferrer" data-product="Flower Mirror" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Flower_mirror_standard_Cream_0701003-102_PS_7cb74b0a-9df4-4e96-80aa-4a0df1f97abf.jpg?v=1781617843&amp;width=500" alt="Flower Mirror by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Flower Mirror</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/flower-mirror-micro-cream" target="_blank" rel="noopener noreferrer" data-product="Flower Mirror Micro" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Flower_Mirror_Micro_Cream_0701001-102_PS.jpg?v=1782920132&amp;width=500" alt="Flower Mirror Micro by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Flower Mirror Micro</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/flower-mirror-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Flower Mirror Mini" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Flower_Mirror_Mini_Cream_0701002-102_PS_8ca86b97-4311-4fbf-86be-8080c79dcefa.jpg?v=1781617906&amp;width=500" alt="Flower Mirror Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Flower Mirror Mini</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/pipe-chair-ash" target="_blank" rel="noopener noreferrer" data-product="Pipe Chair" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Pipe_chair_standard_ash_0808003-801_PS_de0bf49d-a628-403e-a6b7-136120d8b558.jpg?v=1781617906&amp;width=500" alt="Pipe Chair by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Pipe Chair</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/pipe-shelf-chrome-chrome" target="_blank" rel="noopener noreferrer" data-product="Pipe Shelf" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Pipe_Shelf_Chrome_0849003-903_1.jpg?v=1781323930&amp;width=500" alt="Pipe Shelf by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Pipe Shelf</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/round-table-cream" target="_blank" rel="noopener noreferrer" data-product="Round Table" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Round_Table_1400_Cream_0350140-102_2b1563b8-c5c2-40e1-9948-c4f001dcac61.jpg?v=1793630562&amp;width=500" alt="Round Table by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Round Table</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/round-table-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Round Table Mini" data-brand="Gustaf Westman">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Round_Table_Mini_Cream_0350002-102_PS_6d76f706-bede-4ad4-acc7-fd86a7e2cd8a.jpg?v=1781617963&amp;width=500" alt="Round Table Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Round Table Mini</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://gustafwestman.com/products/spiky-cup-pink" target="_blank" rel="noopener noreferrer" data-product="Spiky Cup" data-brand="Gustaf Westman">
+      <a class="card" id="piece-5" href="https://gustafwestman.com/products/spiky-cup-pink" target="_blank" rel="noopener noreferrer" data-product="Spiky Cup" data-brand="Gustaf Westman">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/SpikyCup_Pink_2181003-301_PS_91f50eab-eede-48e8-b15a-bc02a8f3bc42.jpg?v=1780929096&amp;width=500" alt="Spiky Cup by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Spiky Cup</p>
           
         </div>
       </a>
-      <a class="card" href="https://gustafwestman.com/products/spiral-stand-cream" target="_blank" rel="noopener noreferrer" data-product="Spiral Stand" data-brand="Gustaf Westman">
+      <a class="card" id="piece-6" href="https://gustafwestman.com/products/chunky-bowl-xl-pink" target="_blank" rel="noopener noreferrer" data-product="Chunky Bowl XL" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/ChunkyBowl_XL_Pink_0283050-301.jpg?v=1789574896&amp;width=500" alt="Chunky Bowl XL by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Bowl XL</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-7" href="https://gustafwestman.com/products/chunky-desk-ii-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Desk II" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Desk_II_Cream_0213200-102_5494a374-7a2b-4b0b-b756-255e901f26c7.jpg?v=1793707876&amp;width=500" alt="Chunky Desk II by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Desk II</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-8" href="https://gustafwestman.com/products/curvy-room-divider-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Room Divider" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Room_Divider_Cream_0105204-102_PS_0697edaf-bc76-4df1-a503-75ea05612e64.jpg?v=1781617592&amp;width=500" alt="Curvy Room Divider by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curvy Room Divider</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://gustafwestman.com/products/curvy-sideboard-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Sideboard" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Sideboard_Cream_0104203-102_PS_84f05bd3-1416-45f6-9b81-3559c4d9717d.jpg?v=1781618173&amp;width=500" alt="Curvy Sideboard by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curvy Sideboard</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-10" href="https://gustafwestman.com/products/blob-sofa-light-blue" target="_blank" rel="noopener noreferrer" data-product="Blob Sofa" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Blob_Sofa_Cobelt_Blue_0481100-503_PS_7166d06b-6686-4e88-8d46-5c2af6b80823.jpg?v=1782918919&amp;width=500" alt="Blob Sofa by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Blob Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://gustafwestman.com/products/chunky-vase-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Vase" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Vase_Transparent_0285023-902_3.jpg?v=1793804922&amp;width=500" alt="Chunky Vase by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Vase</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-12" href="https://gustafwestman.com/products/curvy-bench-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Bench" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Bench_Cream_0102149-102_PS_b0575a20-c7d5-4443-b781-714f46ccf51c.jpg?v=1781617786&amp;width=500" alt="Curvy Bench by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curvy Bench</p>
+          
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show more pieces (62 in all)</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p>
+  <div class="grid" data-listing-grid>
+      <a class="card in-selection" href="https://gustafwestman.com/products/blob-sofa-light-blue" target="_blank" rel="noopener noreferrer" data-product="Blob Sofa" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Blob_Sofa_Cobelt_Blue_0481100-503_PS_7166d06b-6686-4e88-8d46-5c2af6b80823.jpg?v=1782918919&amp;width=500" alt="Blob Sofa by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Blob Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-13" href="https://gustafwestman.com/products/blob-sofa-tartan-yellow" target="_blank" rel="noopener noreferrer" data-product="Blob Sofa Tartan" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Blob_Sofa_Tartan_Yellow_04104003-202_PS.jpg?v=1783072281&amp;width=500" alt="Blob Sofa Tartan by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Blob Sofa Tartan</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://gustafwestman.com/products/blob-table-cream" target="_blank" rel="noopener noreferrer" data-product="Blob Table" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Blob_Table_Cream_0450100-102.jpg?v=1793720316&amp;width=500" alt="Blob Table by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Blob Table</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://gustafwestman.com/products/chunky-beer-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Beer Glass" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Beer_Glass_Transparent_0218017-902_50fb7103-3357-4464-aaa4-f35c217adc43.jpg?v=1793616564&amp;width=500" alt="Chunky Beer Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Beer Glass</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-14" href="https://gustafwestman.com/products/chunky-beer-tray-pink" target="_blank" rel="noopener noreferrer" data-product="Chunky Beer Tray" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Beer_Plate_Pink_0257003-301.jpg?v=1793805847&amp;width=500" alt="Chunky Beer Tray by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Beer Tray</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://gustafwestman.com/products/chunky-bowl-xl-pink" target="_blank" rel="noopener noreferrer" data-product="Chunky Bowl XL" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/ChunkyBowl_XL_Pink_0283050-301.jpg?v=1789574896&amp;width=500" alt="Chunky Bowl XL by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Bowl XL</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-15" href="https://gustafwestman.com/products/chunky-candle-holder-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Candle Holder" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Candle_Holder_S_Cream_0210009-102.jpg?v=1793720587&amp;width=500" alt="Chunky Candle Holder by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Candle Holder</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-16" href="https://gustafwestman.com/products/chunky-cat-tree-light-blue" target="_blank" rel="noopener noreferrer" data-product="Chunky Cat Tree" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Cat_Tree_Light_Blue_0278003-502_PS_46d0041f-8589-44dd-9f54-1d4f04eea0bd.jpg?v=1781617614&amp;width=500" alt="Chunky Cat Tree by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Cat Tree</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-17" href="https://gustafwestman.com/products/chunky-champagne-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Champagne Glass" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Champagne_Glass_Transparent_0218019-902.jpg?v=1793616724&amp;width=500" alt="Chunky Champagne Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Champagne Glass</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-18" href="https://gustafwestman.com/products/chunky-coffee-maker-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Coffee Maker" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/ChunkyCoffeeMaker_Cream_0241003-102_PS_8d1bc4d3-4ed3-47d9-8baf-c90480115364.jpg?v=1780929134&amp;width=500" alt="Chunky Coffee Maker by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Coffee Maker</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-19" href="https://gustafwestman.com/products/chunky-cup-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Cup" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Cup_Cream_0281003-102_1.jpg?v=1793615517&amp;width=500" alt="Chunky Cup by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Cup</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-20" href="https://gustafwestman.com/products/chunky-cup-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Cup Mini" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Cup_Mini_Cream_0281002-102.jpg?v=1793805269&amp;width=500" alt="Chunky Cup Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Cup Mini</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-21" href="https://gustafwestman.com/products/chunky-desk-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Desk" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Desk_L1600_Black_0203160-601_PS_b3134a6d-dee2-4b1c-96e5-8963b9f94caa.jpg?v=1781618671&amp;width=500" alt="Chunky Desk by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Desk</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://gustafwestman.com/products/chunky-desk-ii-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Desk II" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Desk_II_Cream_0213200-102_5494a374-7a2b-4b0b-b756-255e901f26c7.jpg?v=1793707876&amp;width=500" alt="Chunky Desk II by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Desk II</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-22" href="https://gustafwestman.com/products/chunky-flower-pot-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Flower Pot" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Flower_Pot_Cream_0284030-102_PS_b8938119-4238-4a1a-88a0-003121db877a.jpg?v=1780928977&amp;width=500" alt="Chunky Flower Pot by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Flower Pot</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-23" href="https://gustafwestman.com/products/chunky-hot-dog-plate-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Hot Dog Plate" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Hot_Dog_Plate_Cream_1421003-102.jpg?v=1793615789&amp;width=500" alt="Chunky Hot Dog Plate by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Hot Dog Plate</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-24" href="https://gustafwestman.com/products/chunky-jug-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Jug" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Jug_Cream_0289003-102_2.jpg?v=1793629488&amp;width=500" alt="Chunky Jug by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Jug</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-25" href="https://gustafwestman.com/products/chunky-mirror-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Mirror" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Mirror_Cream_0201003-102_PS_91d083b0-8e6b-48e9-912f-2d0842ac5c3c.jpg?v=1781617644&amp;width=500" alt="Chunky Mirror by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Mirror</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://gustafwestman.com/products/chunky-mirror-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Mirror Mini" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Mirror_Mini_Cream_0201002-102_jpg_PS_18_7eecbd87-7e11-4511-a547-35bff9a1e7d8.jpg?v=1781617645&amp;width=500" alt="Chunky Mirror Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Mirror Mini</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://gustafwestman.com/products/chunky-plate-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Plate" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Plate_Cream_0282026-102.jpg?v=1793708170&amp;width=500" alt="Chunky Plate by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Plate</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-26" href="https://gustafwestman.com/products/chunky-round-table-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Round Table" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Round_Table_1100_Cream_0251110-102.jpg?v=1793806205&amp;width=500" alt="Chunky Round Table by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Round Table</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-27" href="https://gustafwestman.com/products/chunky-serving-plate-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Serving Plate" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Serving_Plate_0282035-102.jpg?v=1789572616&amp;width=500" alt="Chunky Serving Plate by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Serving Plate</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-28" href="https://gustafwestman.com/products/chunky-shot-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Shot Glass" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Shot_Glass_Transparent_0218106-902.jpg?v=1793616850&amp;width=500" alt="Chunky Shot Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Shot Glass</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-29" href="https://gustafwestman.com/products/chunky-snack-stadium" target="_blank" rel="noopener noreferrer" data-product="Chunky Snack Stadium" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Snack_Stadium_Pink_0256003-301.jpg?v=1793800735&amp;width=500" alt="Chunky Snack Stadium by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Snack Stadium</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-30" href="https://gustafwestman.com/products/chunky-star-plate" target="_blank" rel="noopener noreferrer" data-product="Chunky Star Plate" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/GeneratedImageAugust18_2026-12_07PM_614c26ca-0b96-4654-be4b-5e6d713384e0.jpg?v=1787056632&amp;width=500" alt="Chunky Star Plate by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Star Plate</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-31" href="https://gustafwestman.com/products/chunky-stool-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Stool" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Stool_Cream_0207003-102.jpg?v=1793630014&amp;width=500" alt="Chunky Stool by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Stool</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-32" href="https://gustafwestman.com/products/chunky-stool-stained-pink" target="_blank" rel="noopener noreferrer" data-product="Chunky Stool Stained" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Stool_Pink_Pine_0207003-833.jpg?v=1793630014&amp;width=500" alt="Chunky Stool Stained by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Stool Stained</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-33" href="https://gustafwestman.com/products/chunky-swoosh-plate" target="_blank" rel="noopener noreferrer" data-product="Chunky Swoosh Plate" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Swoosh_Plate_Pink_3682003-301.jpg?v=1793800695&amp;width=500" alt="Chunky Swoosh Plate by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Swoosh Plate</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-34" href="https://gustafwestman.com/products/chunky-table-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Table" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_table_2430_Cream_0250243-102_png_PS_a5b69f0f-05c4-46f5-a070-3533762c6fcb.jpg?v=1781618524&amp;width=500" alt="Chunky Table by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Table</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-35" href="https://gustafwestman.com/products/chunky-table-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Table Mini" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Table_Mini_Cream_0250002-102_PS_cb6ed7f3-98b7-4053-9baf-98e3edc6dadc.jpg?v=1781618426&amp;width=500" alt="Chunky Table Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Table Mini</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-36" href="https://gustafwestman.com/products/tea-strainer-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Tea Strainer" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Tea_Strainer_Cream_0242003-102_PS.jpg?v=1780928186&amp;width=500" alt="Chunky Tea Strainer by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Tea Strainer</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-37" href="https://gustafwestman.com/products/chunky-tumbler-cream" target="_blank" rel="noopener noreferrer" data-product="Chunky Tumbler" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Tumbler_Cream_0219003-102_PS_52968ef9-4d9e-43ca-b515-d2436cde9cfd.jpg?v=1780929015&amp;width=500" alt="Chunky Tumbler by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Tumbler</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-38" href="https://gustafwestman.com/products/chunky-tumbler-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Tumbler Glass" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Tumbler_Glass_Transparent_0219003-902.jpg?v=1793800984&amp;width=500" alt="Chunky Tumbler Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Tumbler Glass</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://gustafwestman.com/products/chunky-vase-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Vase" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Vase_Transparent_0285023-902_3.jpg?v=1793804922&amp;width=500" alt="Chunky Vase by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Vase</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-39" href="https://gustafwestman.com/products/chunky-vase-mini-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Vase Mini" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Vase_Mini_Transparent_0285002-902.jpg?v=1793804849&amp;width=500" alt="Chunky Vase Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Vase Mini</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-40" href="https://gustafwestman.com/products/chunky-water-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Water Glass" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Water_Glass_Transparent_0218104-902_916d25e4-bb0a-41f6-bbc3-9dcff6f6603c.jpg?v=1793628369&amp;width=500" alt="Chunky Water Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Water Glass</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-41" href="https://gustafwestman.com/products/chunky-wine-glass-transparent" target="_blank" rel="noopener noreferrer" data-product="Chunky Wine Glass" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Wine_Glass_Transparent_0218014-902_12b9dc1f-9271-4d75-a964-23617564c2ba.jpg?v=1793628509&amp;width=500" alt="Chunky Wine Glass by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Wine Glass</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-42" href="https://gustafwestman.com/products/chunky-wing-mirror" target="_blank" rel="noopener noreferrer" data-product="Chunky Wing Mirror" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Mercedesspegel.png?v=1787063688&amp;width=500" alt="Chunky Wing Mirror by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Wing Mirror</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-43" href="https://gustafwestman.com/products/chunky-wood-bowl-pine" target="_blank" rel="noopener noreferrer" data-product="Chunky Wood Bowl" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Wood_Bowl_Pine_0287026-803.jpg?v=1793629628&amp;width=500" alt="Chunky Wood Bowl by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Wood Bowl</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-44" href="https://gustafwestman.com/products/chunky-wood-bowl-stained-pink" target="_blank" rel="noopener noreferrer" data-product="Chunky Wood Bowl Stained" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Chunky_Wood_Bowl_Pink_Pine_0287026-833_2e03216a-4f9a-4b85-8173-6bcde8eb5d40.jpg?v=1793629627&amp;width=500" alt="Chunky Wood Bowl Stained by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chunky Wood Bowl Stained</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://gustafwestman.com/products/curvy-bench-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Bench" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Bench_Cream_0102149-102_PS_b0575a20-c7d5-4443-b781-714f46ccf51c.jpg?v=1781617786&amp;width=500" alt="Curvy Bench by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curvy Bench</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-45" href="https://gustafwestman.com/products/curvy-mirror-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Mirror" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Mirror_Standard_Cream_0101003-102.jpg?v=1793630385&amp;width=500" alt="Curvy Mirror by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curvy Mirror</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-46" href="https://gustafwestman.com/products/curvy-mirror-micro-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Mirror Micro" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Mirror_Micro_Cream_0101001-102_PS_29f57a08-9139-4dbe-af46-cda6dae5d905.jpg?v=1780929074&amp;width=500" alt="Curvy Mirror Micro by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curvy Mirror Micro</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-47" href="https://gustafwestman.com/products/curvy-mirror-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Mirror Mini" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Mirror_Mini_Cream_0101002-102_PS.jpg?v=1782920373&amp;width=500" alt="Curvy Mirror Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curvy Mirror Mini</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://gustafwestman.com/products/curvy-room-divider-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Room Divider" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Room_Divider_Cream_0105204-102_PS_0697edaf-bc76-4df1-a503-75ea05612e64.jpg?v=1781617592&amp;width=500" alt="Curvy Room Divider by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curvy Room Divider</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-48" href="https://gustafwestman.com/products/curvy-room-divider-wood" target="_blank" rel="noopener noreferrer" data-product="Curvy Room Divider Wood" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Room_Divider_Wood_0105204-804_PS_2243672b-105c-4694-92a8-856ed363a106.jpg?v=1781617824&amp;width=500" alt="Curvy Room Divider Wood by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curvy Room Divider Wood</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://gustafwestman.com/products/curvy-sideboard-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Sideboard" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Sideboard_Cream_0104203-102_PS_84f05bd3-1416-45f6-9b81-3559c4d9717d.jpg?v=1781618173&amp;width=500" alt="Curvy Sideboard by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curvy Sideboard</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-49" href="https://gustafwestman.com/products/curvy-sideboard-singular-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Sideboard Singular" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Sideboard_Singular_Cream_0104042-102_PS_24b0b9c0-8361-4d11-997a-459756fef730.jpg?v=1781617613&amp;width=500" alt="Curvy Sideboard Singular by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curvy Sideboard Singular</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-50" href="https://gustafwestman.com/products/curvy-table-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Curvy Table Mini" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Curvy_Table_Mini_Cream_0150002-102_PS_e80d0175-97cb-40e9-b8ed-1ee6400ae29a.jpg?v=1781617961&amp;width=500" alt="Curvy Table Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Curvy Table Mini</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-51" href="https://gustafwestman.com/products/flower-mirror-cream" target="_blank" rel="noopener noreferrer" data-product="Flower Mirror" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Flower_mirror_standard_Cream_0701003-102_PS_7cb74b0a-9df4-4e96-80aa-4a0df1f97abf.jpg?v=1781617843&amp;width=500" alt="Flower Mirror by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Flower Mirror</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-52" href="https://gustafwestman.com/products/flower-mirror-micro-cream" target="_blank" rel="noopener noreferrer" data-product="Flower Mirror Micro" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Flower_Mirror_Micro_Cream_0701001-102_PS.jpg?v=1782920132&amp;width=500" alt="Flower Mirror Micro by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Flower Mirror Micro</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-53" href="https://gustafwestman.com/products/flower-mirror-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Flower Mirror Mini" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Flower_Mirror_Mini_Cream_0701002-102_PS_8ca86b97-4311-4fbf-86be-8080c79dcefa.jpg?v=1781617906&amp;width=500" alt="Flower Mirror Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Flower Mirror Mini</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-54" href="https://gustafwestman.com/products/pipe-chair-ash" target="_blank" rel="noopener noreferrer" data-product="Pipe Chair" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Pipe_chair_standard_ash_0808003-801_PS_de0bf49d-a628-403e-a6b7-136120d8b558.jpg?v=1781617906&amp;width=500" alt="Pipe Chair by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pipe Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-55" href="https://gustafwestman.com/products/pipe-shelf-chrome-chrome" target="_blank" rel="noopener noreferrer" data-product="Pipe Shelf" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Pipe_Shelf_Chrome_0849003-903_1.jpg?v=1781323930&amp;width=500" alt="Pipe Shelf by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pipe Shelf</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-56" href="https://gustafwestman.com/products/round-table-cream" target="_blank" rel="noopener noreferrer" data-product="Round Table" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Round_Table_1400_Cream_0350140-102_2b1563b8-c5c2-40e1-9948-c4f001dcac61.jpg?v=1793630562&amp;width=500" alt="Round Table by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Round Table</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-57" href="https://gustafwestman.com/products/round-table-mini-cream" target="_blank" rel="noopener noreferrer" data-product="Round Table Mini" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Round_Table_Mini_Cream_0350002-102_PS_6d76f706-bede-4ad4-acc7-fd86a7e2cd8a.jpg?v=1781617963&amp;width=500" alt="Round Table Mini by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Round Table Mini</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://gustafwestman.com/products/spiky-cup-pink" target="_blank" rel="noopener noreferrer" data-product="Spiky Cup" data-brand="Gustaf Westman">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/SpikyCup_Pink_2181003-301_PS_91f50eab-eede-48e8-b15a-bc02a8f3bc42.jpg?v=1780929096&amp;width=500" alt="Spiky Cup by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Spiky Cup</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-58" href="https://gustafwestman.com/products/spiral-stand-cream" target="_blank" rel="noopener noreferrer" data-product="Spiral Stand" data-brand="Gustaf Westman">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Spiral_Stand_Cream_1009003-102.jpg?v=1793629826&amp;width=500" alt="Spiral Stand by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Spiral Stand</p>
           
         </div>
       </a>
-      <a class="card" href="https://gustafwestman.com/products/swedish-stockings-coffee-table" target="_blank" rel="noopener noreferrer" data-product="Swedish Stockings Coffee Table" data-brand="Gustaf Westman">
+      <a class="card" id="piece-59" href="https://gustafwestman.com/products/swedish-stockings-coffee-table" target="_blank" rel="noopener noreferrer" data-product="Swedish Stockings Coffee Table" data-brand="Gustaf Westman">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Swedish_Stockings_Coffee_Table_GlassFiber_0552110-901_PS_d456d81e-681b-4ea1-84b8-3fce974cb043.jpg?v=1781617931&amp;width=500" alt="Swedish Stockings Coffee Table by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Swedish Stockings Coffee Table</p>
           
         </div>
       </a>
-      <a class="card" href="https://gustafwestman.com/products/swedish-stockings-table" target="_blank" rel="noopener noreferrer" data-product="Swedish Stockings Table" data-brand="Gustaf Westman">
+      <a class="card" id="piece-60" href="https://gustafwestman.com/products/swedish-stockings-table" target="_blank" rel="noopener noreferrer" data-product="Swedish Stockings Table" data-brand="Gustaf Westman">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0949/6313/8935/files/Swedish_Stockings_Table_GlassFiber_0550110-901_PS_51b61ff7-1706-4b7a-8f5d-4f4c03841315.jpg?v=1781617932&amp;width=500" alt="Swedish Stockings Table by Gustaf Westman" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Swedish Stockings Table</p>
@@ -722,7 +829,7 @@
         </div>
       </a></div>
   <div class="load-more-row"><a class="load-more-btn" id="see-more" data-total="62" data-start="0" href="/brands/gustaf-westman-2.html">See more pieces</a><span class="load-more-progress" id="see-more-progress"></span></div>
-  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/brands/gustaf-westman-2.html">2</a><a href="/brands/gustaf-westman-2.html" rel="next">Next &rarr;</a></nav>
+  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/brands/gustaf-westman-2.html">2</a><a href="/brands/gustaf-westman-2.html" rel="next">Next &rarr;</a></nav></div>
 
   <section class="brand-section">
     <p class="brand-section-title">Makers like Gustaf Westman</p>
@@ -769,8 +876,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

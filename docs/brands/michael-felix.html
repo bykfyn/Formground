@@ -262,11 +262,30 @@
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
   .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
 </style>
+<script>document.documentElement.classList.add("explore-js");</script>
 <style>
   .creator-text { max-width: 640px; margin: 0 auto 36px; }
   .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
@@ -292,135 +311,223 @@
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">Michael Felix</h1>
-    <div class="tags"><span class="tag">Furniture</span><span class="tag">United States</span></div>
+    <div class="tags"><a class="tag tag-link" href="/work/furniture.html">Furniture</a><a class="tag tag-link" href="/work.html?q=from+United+States">United States</a></div>
+    <p class="meta-line">Los Angeles · Made to order</p>
     <a class="brand-site-link" href="https://www.michaelfelix.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
 
   <section class="creator-text">
-    <p>Michael Felix is a furniture company that designs and produces upholstered pieces in Southern California, with a studio in Los Angeles. Michael is a third-generation upholstery designer who began as a sample-maker&#x27;s assistant in the furniture factory his grandfather founded in 1959.</p><p>Each piece is made to order by hand in California, with a choice of fabrics and finishes, and the studio also designs custom furniture for commercial and residential projects. The collection includes the Piazza and Ricard chairs, the Madda sectional and the Pascal modular sofa. On Formground it is shown through 18 pieces, each linked to its own page.</p>
-    <dl class="creator-facts"><dt>Country</dt><dd>United States</dd><dt>City</dt><dd>Los Angeles</dd><dt>Type</dt><dd>Maker</dd><dt>Products</dt><dd>Upholstered furniture</dd><dt>Made to order</dt><dd>Yes, by hand in California</dd><dt>Website</dt><dd>michaelfelix.com</dd></dl>
-  </section>  
-  <div class="grid" data-listing-grid>
-      <a class="card" href="https://www.michaelfelix.com/products/celeste" target="_blank" rel="noopener noreferrer" data-product="Celeste Loveseat" data-brand="Michael Felix">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/Celeste-Sofa-Front_22684bfb-93ee-4dfb-9030-2286c694b5ed.webp?v=1683603725&amp;width=500" alt="Celeste Loveseat by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Celeste Loveseat</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.michaelfelix.com/products/flora-sofa" target="_blank" rel="noopener noreferrer" data-product="Flora Sofa" data-brand="Michael Felix">
+    <p>Michael Felix is a furniture company that designs and produces upholstered pieces in Southern California, with a studio in Los Angeles. Michael is a third-generation upholstery designer who began as a sample-maker&#x27;s assistant in the furniture factory his grandfather founded in 1959.</p><p>Each piece is made to order by hand in California, with a choice of fabrics and finishes, and the studio also designs custom furniture for commercial and residential projects. The collection includes the Piazza and Ricard chairs, the <a class="piece-link" href="#piece-6">Madda sectional</a> and the <a class="piece-link" href="#piece-17">Pascal modular sofa</a>. On Formground it is shown through 18 pieces, each linked to its own page.</p>
+  </section>
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://www.michaelfelix.com/products/flora-sofa" target="_blank" rel="noopener noreferrer" data-product="Flora Sofa" data-brand="Michael Felix">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-flora-thumb_1000x_91851e3b-29c1-4bd5-bd76-9370536a468a.webp?v=1683869210&amp;width=500" alt="Flora Sofa by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Flora Sofa</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.michaelfelix.com/products/flora-sofa-with-metal-base" target="_blank" rel="noopener noreferrer" data-product="Flora Sofa with Metal Base" data-brand="Michael Felix">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/Michael_Felix_Flora_Sofa_with_matal_base.png?v=1762124589&amp;width=500" alt="Flora Sofa with Metal Base by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Flora Sofa with Metal Base</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.michaelfelix.com/products/gaspar-table" target="_blank" rel="noopener noreferrer" data-product="Gaspar Table" data-brand="Michael Felix">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/gaspar-thumb_599f2921-9473-4c77-919a-7bda7f2c4c8a.webp?v=1683868332&amp;width=500" alt="Gaspar Table by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Gaspar Table</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.michaelfelix.com/products/gaspar-table-wood" target="_blank" rel="noopener noreferrer" data-product="Gaspar Table in Wood" data-brand="Michael Felix">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael_felix_gaspar_wood_2_thumb_60643b6d-fd25-47ee-93d1-088c2a5b30ea.webp?v=1683868491&amp;width=500" alt="Gaspar Table in Wood by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Gaspar Table in Wood</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.michaelfelix.com/products/goddard-bench" target="_blank" rel="noopener noreferrer" data-product="Goddard Bench" data-brand="Michael Felix">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-goddard-thumb.webp?v=1683868815&amp;width=500" alt="Goddard Bench by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Goddard Bench</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.michaelfelix.com/products/jep-table" target="_blank" rel="noopener noreferrer" data-product="Jep Table" data-brand="Michael Felix">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/Jep_table_product_img_02663845-4445-4cd7-adc5-c657eb89c6be.webp?v=1683674823&amp;width=500" alt="Jep Table by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Jep Table</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.michaelfelix.com/products/madda-chair" target="_blank" rel="noopener noreferrer" data-product="Madda Chair" data-brand="Michael Felix">
-        <div class="card-image"><img style="object-position:50% 81.6%" src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/MichaelFelixMaddaAlpacaBoucle_45d6407e-ac0f-4be7-9170-3316019a2964.jpg?v=1784759699&amp;width=500" alt="Madda Chair by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Madda Chair</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.michaelfelix.com/products/madda-round-ottoman" target="_blank" rel="noopener noreferrer" data-product="Madda Ottoman" data-brand="Michael Felix">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michalel-felix-ottoman-thumb_1000x_93bc1b86-5f54-484c-a071-e9ada4caccbe.webp?v=1683674627&amp;width=500" alt="Madda Ottoman by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Madda Ottoman</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.michaelfelix.com/products/madda-ottoman" target="_blank" rel="noopener noreferrer" data-product="Madda Round Ottoman" data-brand="Michael Felix">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michalel-felix-ottoman-thumb.webp?v=1683675249&amp;width=500" alt="Madda Round Ottoman by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Madda Round Ottoman</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.michaelfelix.com/products/madda-sectional" target="_blank" rel="noopener noreferrer" data-product="Madda Sectional" data-brand="Michael Felix">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-madda-sectional-thumb.webp?v=1683675024&amp;width=500" alt="Madda Sectional by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Madda Sectional</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.michaelfelix.com/products/madda-sofa" target="_blank" rel="noopener noreferrer" data-product="Madda Sofa" data-brand="Michael Felix">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michalel-felix-madda-sofa-thumb-1.webp?v=1683611080&amp;width=500" alt="Madda Sofa by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Madda Sofa</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.michaelfelix.com/products/pascal-modular-sofa" target="_blank" rel="noopener noreferrer" data-product="Pascal Modular Sofa" data-brand="Michael Felix">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/pascal-main.webp?v=1683868054&amp;width=500" alt="Pascal Modular Sofa by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Pascal Modular Sofa</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.michaelfelix.com/products/piazza-chair" target="_blank" rel="noopener noreferrer" data-product="Piazza Chair" data-brand="Michael Felix">
+      <a class="card" id="piece-2" href="https://www.michaelfelix.com/products/piazza-chair" target="_blank" rel="noopener noreferrer" data-product="Piazza Chair" data-brand="Michael Felix">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-piazza_ac8b2c35-95e3-4e9a-8f05-870a76149264.jpg?v=1706314541&amp;width=500" alt="Piazza Chair by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Piazza Chair</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.michaelfelix.com/products/pouf" target="_blank" rel="noopener noreferrer" data-product="Pouf" data-brand="Michael Felix">
+      <a class="card" id="piece-3" href="https://www.michaelfelix.com/products/pouf" target="_blank" rel="noopener noreferrer" data-product="Pouf" data-brand="Michael Felix">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-pouf-thumb_1000x_ebdb1804-b7e0-4ccf-ac46-85bd9289a7d8.webp?v=1683869327&amp;width=500" alt="Pouf by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Pouf</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.michaelfelix.com/products/ricard-chair" target="_blank" rel="noopener noreferrer" data-product="Ricard Chair" data-brand="Michael Felix">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/ricard-chair-gallery.webp?v=1683602279&amp;width=500" alt="Ricard Chair by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+      <a class="card" id="piece-4" href="https://www.michaelfelix.com/products/gaspar-table" target="_blank" rel="noopener noreferrer" data-product="Gaspar Table" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/gaspar-thumb_599f2921-9473-4c77-919a-7bda7f2c4c8a.webp?v=1683868332&amp;width=500" alt="Gaspar Table by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <p class="card-title">Ricard Chair</p>
+          <p class="card-title">Gaspar Table</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.michaelfelix.com/products/standard-sofa" target="_blank" rel="noopener noreferrer" data-product="Standard Sofa" data-brand="Michael Felix">
+      <a class="card" id="piece-5" href="https://www.michaelfelix.com/products/goddard-bench" target="_blank" rel="noopener noreferrer" data-product="Goddard Bench" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-goddard-thumb.webp?v=1683868815&amp;width=500" alt="Goddard Bench by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Goddard Bench</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-6" href="https://www.michaelfelix.com/products/madda-sectional" target="_blank" rel="noopener noreferrer" data-product="Madda Sectional" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-madda-sectional-thumb.webp?v=1683675024&amp;width=500" alt="Madda Sectional by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Madda Sectional</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-7" href="https://www.michaelfelix.com/products/flora-sofa-with-metal-base" target="_blank" rel="noopener noreferrer" data-product="Flora Sofa with Metal Base" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/Michael_Felix_Flora_Sofa_with_matal_base.png?v=1762124589&amp;width=500" alt="Flora Sofa with Metal Base by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Flora Sofa with Metal Base</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-8" href="https://www.michaelfelix.com/products/madda-chair" target="_blank" rel="noopener noreferrer" data-product="Madda Chair" data-brand="Michael Felix">
+        <div class="card-image"><img style="object-position:50% 81.6%" src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/MichaelFelixMaddaAlpacaBoucle_45d6407e-ac0f-4be7-9170-3316019a2964.jpg?v=1784759699&amp;width=500" alt="Madda Chair by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Madda Chair</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://www.michaelfelix.com/products/madda-ottoman" target="_blank" rel="noopener noreferrer" data-product="Madda Round Ottoman" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michalel-felix-ottoman-thumb.webp?v=1683675249&amp;width=500" alt="Madda Round Ottoman by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Madda Round Ottoman</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-10" href="https://www.michaelfelix.com/products/jep-table" target="_blank" rel="noopener noreferrer" data-product="Jep Table" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/Jep_table_product_img_02663845-4445-4cd7-adc5-c657eb89c6be.webp?v=1683674823&amp;width=500" alt="Jep Table by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Jep Table</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://www.michaelfelix.com/products/standard-sofa" target="_blank" rel="noopener noreferrer" data-product="Standard Sofa" data-brand="Michael Felix">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-standard-1.webp?v=1683868863&amp;width=500" alt="Standard Sofa by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Standard Sofa</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.michaelfelix.com/products/standard-sofa-with-metal-base" target="_blank" rel="noopener noreferrer" data-product="Standard Sofa with Metal Base" data-brand="Michael Felix">
+      <a class="card card-extra-m" id="piece-12" href="https://www.michaelfelix.com/products/ricard-chair" target="_blank" rel="noopener noreferrer" data-product="Ricard Chair" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/ricard-chair-gallery.webp?v=1683602279&amp;width=500" alt="Ricard Chair by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ricard Chair</p>
+          
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show all 18 pieces</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p>
+  <div class="grid" data-listing-grid>
+      <a class="card" id="piece-13" href="https://www.michaelfelix.com/products/celeste" target="_blank" rel="noopener noreferrer" data-product="Celeste Loveseat" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/Celeste-Sofa-Front_22684bfb-93ee-4dfb-9030-2286c694b5ed.webp?v=1683603725&amp;width=500" alt="Celeste Loveseat by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Celeste Loveseat</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.michaelfelix.com/products/flora-sofa" target="_blank" rel="noopener noreferrer" data-product="Flora Sofa" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-flora-thumb_1000x_91851e3b-29c1-4bd5-bd76-9370536a468a.webp?v=1683869210&amp;width=500" alt="Flora Sofa by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Flora Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.michaelfelix.com/products/flora-sofa-with-metal-base" target="_blank" rel="noopener noreferrer" data-product="Flora Sofa with Metal Base" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/Michael_Felix_Flora_Sofa_with_matal_base.png?v=1762124589&amp;width=500" alt="Flora Sofa with Metal Base by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Flora Sofa with Metal Base</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.michaelfelix.com/products/gaspar-table" target="_blank" rel="noopener noreferrer" data-product="Gaspar Table" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/gaspar-thumb_599f2921-9473-4c77-919a-7bda7f2c4c8a.webp?v=1683868332&amp;width=500" alt="Gaspar Table by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Gaspar Table</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-14" href="https://www.michaelfelix.com/products/gaspar-table-wood" target="_blank" rel="noopener noreferrer" data-product="Gaspar Table in Wood" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael_felix_gaspar_wood_2_thumb_60643b6d-fd25-47ee-93d1-088c2a5b30ea.webp?v=1683868491&amp;width=500" alt="Gaspar Table in Wood by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Gaspar Table in Wood</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.michaelfelix.com/products/goddard-bench" target="_blank" rel="noopener noreferrer" data-product="Goddard Bench" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-goddard-thumb.webp?v=1683868815&amp;width=500" alt="Goddard Bench by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Goddard Bench</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.michaelfelix.com/products/jep-table" target="_blank" rel="noopener noreferrer" data-product="Jep Table" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/Jep_table_product_img_02663845-4445-4cd7-adc5-c657eb89c6be.webp?v=1683674823&amp;width=500" alt="Jep Table by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Jep Table</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.michaelfelix.com/products/madda-chair" target="_blank" rel="noopener noreferrer" data-product="Madda Chair" data-brand="Michael Felix">
+        <div class="card-image"><img style="object-position:50% 81.6%" src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/MichaelFelixMaddaAlpacaBoucle_45d6407e-ac0f-4be7-9170-3316019a2964.jpg?v=1784759699&amp;width=500" alt="Madda Chair by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Madda Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-15" href="https://www.michaelfelix.com/products/madda-round-ottoman" target="_blank" rel="noopener noreferrer" data-product="Madda Ottoman" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michalel-felix-ottoman-thumb_1000x_93bc1b86-5f54-484c-a071-e9ada4caccbe.webp?v=1683674627&amp;width=500" alt="Madda Ottoman by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Madda Ottoman</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.michaelfelix.com/products/madda-ottoman" target="_blank" rel="noopener noreferrer" data-product="Madda Round Ottoman" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michalel-felix-ottoman-thumb.webp?v=1683675249&amp;width=500" alt="Madda Round Ottoman by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Madda Round Ottoman</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.michaelfelix.com/products/madda-sectional" target="_blank" rel="noopener noreferrer" data-product="Madda Sectional" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-madda-sectional-thumb.webp?v=1683675024&amp;width=500" alt="Madda Sectional by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Madda Sectional</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-16" href="https://www.michaelfelix.com/products/madda-sofa" target="_blank" rel="noopener noreferrer" data-product="Madda Sofa" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michalel-felix-madda-sofa-thumb-1.webp?v=1683611080&amp;width=500" alt="Madda Sofa by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Madda Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-17" href="https://www.michaelfelix.com/products/pascal-modular-sofa" target="_blank" rel="noopener noreferrer" data-product="Pascal Modular Sofa" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/pascal-main.webp?v=1683868054&amp;width=500" alt="Pascal Modular Sofa by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pascal Modular Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.michaelfelix.com/products/piazza-chair" target="_blank" rel="noopener noreferrer" data-product="Piazza Chair" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-piazza_ac8b2c35-95e3-4e9a-8f05-870a76149264.jpg?v=1706314541&amp;width=500" alt="Piazza Chair by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Piazza Chair</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.michaelfelix.com/products/pouf" target="_blank" rel="noopener noreferrer" data-product="Pouf" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-pouf-thumb_1000x_ebdb1804-b7e0-4ccf-ac46-85bd9289a7d8.webp?v=1683869327&amp;width=500" alt="Pouf by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Pouf</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.michaelfelix.com/products/ricard-chair" target="_blank" rel="noopener noreferrer" data-product="Ricard Chair" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/ricard-chair-gallery.webp?v=1683602279&amp;width=500" alt="Ricard Chair by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ricard Chair</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.michaelfelix.com/products/standard-sofa" target="_blank" rel="noopener noreferrer" data-product="Standard Sofa" data-brand="Michael Felix">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-standard-1.webp?v=1683868863&amp;width=500" alt="Standard Sofa by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Standard Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-18" href="https://www.michaelfelix.com/products/standard-sofa-with-metal-base" target="_blank" rel="noopener noreferrer" data-product="Standard Sofa with Metal Base" data-brand="Michael Felix">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0022/6122/1476/files/michael-felix-standard-metal-thumb.webp?v=1683868956&amp;width=500" alt="Standard Sofa with Metal Base by Michael Felix" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Standard Sofa with Metal Base</p>
@@ -428,7 +535,7 @@
         </div>
       </a></div>
   
-  
+  </div>
 
   <section class="brand-section">
     <p class="brand-section-title">Makers like Michael Felix</p>
@@ -475,8 +582,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

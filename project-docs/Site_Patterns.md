@@ -75,6 +75,19 @@ visible way on with JavaScript, the numbered pager stays in the HTML, page 2+ ge
 the batches. "New from X" and its "All of X" heading are page 1 only. A maker with 60 or fewer pieces is one page.
 Before this the biggest maker page was 1.9 MB (Serax, 2,757 cards); now no page is over 100 KB.
 
+### Maker and designer pages: one line of facts, "A selection", the rest behind a button (2026-11-25)
+
+Under the name, the facts block is one line: City, Type (left out when it only repeats Maker / Publisher / Designer), Founded,
+Made to order; designers (no tags) also get the country. Website and Products are not repeated (Visit site and the text say
+it). Tags are links: Furniture / Lighting / Objects go to the type page, Ceramics to `/work.html?q=ceramics`, the country to
+`/work.html?q=from+<country>`. A page with more than 12 pieces shows, in this order: text, (curated note), "New from X"
+(when there is something new), "A selection" (12 on desktop, the first 6 on phones; `scraper/brand_selection.py`, one piece per
+category in turn), "Show all N pieces", then the full list (page 1's 60 cards, See more, pager), then "Makers like X" /
+Where to buy. The full list is in the HTML; CSS folds it only while `html.explore-js` is set. Pieces named in the profile text
+link to their card (scroll and highlight; unfolds the list when needed). Pages with 12 pieces or fewer show everything as before.
+Designer pages use the same layout; a `?brand=` link unfolds the list so the brand chips act on it. Code: `explore_layout()` in
+`generate_brand_pages.py`, `meta_line_html()` in `creator_texts.py`, "in-selection" handling in `listing.js`.
+
 ### Category pages (/work/furniture|lighting|objects.html)
 
 Same header block as a type page (nav with Work current, Work-style search box, the four chips with the
@@ -236,6 +249,7 @@ chips, and the "N finishes" badge was shorter than the brand tags.)
 | Photo pill | "Visit site" on tiles, the photo credit on the Edits masthead | 27px | 11px, weight 600 | full pill, glass background (light or dark to suit the photo) |
 | Small label | brand-page tags (Lighting, Objects, country), the "N finishes" badge | 23px | 11px | 10px corners; the tag is outlined, the badge filled (both carry a 0.5px border so the box is identical) |
 
+- Link chips: the Creators page's phone-only jump chips (Architects / Designers / Makers, 2026-10-17) reuse the Work menu's `work-menu-act` style, so they are the same Form chip (32px). Measured 2026-10-17: every visible form chip is 32px / 13px / 500 / pill. `.filter-chip` (tier filters, hidden everywhere now) is about 31px (padding only, no height): give it `height: 32px` the day it is shown again; not changed now because it sits in the shared page CSS and would rewrite every brand page for no visible change.
 - Search bars: 60px tall with a chip, 57px on the home page (no chip); 900px wide, centred,
   on every page including Edits (decided 2026-10-04: it stays 900px rather than matching the
   1160px banner/grid edges, so it is the same everywhere).

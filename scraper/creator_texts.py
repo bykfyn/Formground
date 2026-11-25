@@ -95,9 +95,10 @@ def _editorial_fact(value):
     return re.sub(r"\s*\((?:as |houses )?shown on Formground\)", "", value)
 
 
-def text_block_html(group, page_slug, count, on_profile_edit=False):
+def text_block_html(group, page_slug, count, on_profile_edit=False, facts_block=True):
     """The text, facts and sources for a creator page, or "" when there is no text for this creator. The profile Edit
-    itself passes on_profile_edit=True: it shows the same text, and must not link to itself."""
+    itself passes on_profile_edit=True: it shows the same text, and must not link to itself. The maker and designer pages
+    pass facts_block=False: their facts are one line under the name instead (meta_line_html)."""
     entry = get(group, page_slug)
     if not entry:
         return ""
@@ -109,11 +110,35 @@ def text_block_html(group, page_slug, count, on_profile_edit=False):
     edit_link = ""
     if not on_profile_edit and f"{group}:{page_slug}" in load():
         edit_link = f'\n    <p class="creator-more"><a href="/edits/{html.escape(entry["edit"]["slug"])}.html">Read the profile Edit &rarr;</a></p>'
+    facts_html = f'\n    <dl class="creator-facts">{facts}</dl>' if facts_block else ""
     return f"""
   <section class="creator-text">
-    {paras}{edit_link}
-    <dl class="creator-facts">{facts}</dl>
+    {paras}{edit_link}{facts_html}
   </section>"""
+
+
+# the page already says Maker / Designer above the name, so a Type that only repeats it is left out
+_TYPE_REPEATS_EYEBROW = {"maker", "publisher", "designer"}
+
+
+def meta_line_html(group, page_slug, with_country=False):
+    """The facts block as one line under the name: City, Type (when it adds something), Founded, Made to order.
+    Country is a tag on maker pages, so only the designer pages (no tags) pass with_country=True. Website repeats the
+    "Visit site" link and Products repeats the text, so neither is shown. "" when nothing is known."""
+    entry = get(group, page_slug)
+    if not entry:
+        return ""
+    facts = {k: v.strip() for k, v in entry["facts"] if v and v.strip() and v.strip().lower() != "unknown"}
+    where = ", ".join(x for x in (facts.get("City"), facts.get("Country") if with_country else None) if x)
+    parts = [where]
+    if facts.get("Type") and facts["Type"].lower() not in _TYPE_REPEATS_EYEBROW:
+        parts.append(facts["Type"])
+    if facts.get("Founded"):
+        parts.append(f'Founded {facts["Founded"]}')
+    if facts.get("Made to order", "").lower().startswith("yes"):
+        parts.append("Made to order")
+    parts = [x for x in parts if x]
+    return f'\n    <p class="meta-line">{html.escape(" · ".join(parts))}</p>' if parts else ""
 
 
 def style_tag(group, page_slug):

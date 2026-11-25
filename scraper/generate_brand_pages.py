@@ -1427,9 +1427,121 @@ def opening_sentences(text, limit=155):
     return out
 
 
+# --- Maker and designer pages that lead on to the rest of the site (2026-11-25, mockup approved) -----------------------
+# Page 1 of a maker or designer with more than SELECTION_SIZE pieces shows "A selection" (one piece per category in turn,
+# so it represents the whole range) and keeps the full list behind a "Show all N pieces" button. The whole list is
+# still in the HTML (crawlers, no-JavaScript visitors); CSS only hides it while html.explore-js is set and the
+# visitor has not asked for it. Phones show the first SELECTION_PHONE pieces (one card per row).
+SELECTION_SIZE = 12
+SELECTION_PHONE = 6
+EXPLORE_CSS = """
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+"""
+PAGE_CSS += EXPLORE_CSS
+EXPLORE_HEAD_JS = 'document.documentElement.classList.add("explore-js");'
+EXPLORE_JS = """
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+"""
+TYPE_PAGES = {"Furniture": "/work/furniture.html", "Lighting": "/work/lighting.html", "Objects": "/work/objects.html"}
+
+
+def tag_href(tag, country):
+    """Where a tag on a maker page leads: the type page for Furniture / Lighting / Objects, otherwise a search on
+    the Work page (Ceramics; a country is 'from <country>', which the search understands)."""
+    if tag in TYPE_PAGES:
+        return TYPE_PAGES[tag]
+    query = f"from {tag}" if tag == country else tag.lower()
+    return "/work.html?q=" + query.replace(" ", "+")
+
+
+def explore_layout(products, card_html, text_html, rest_html, total):
+    """(text_html, block_html) for a page that uses the selection layout. card_html(p) renders one card;
+    rest_html is the full list's own markup (heading, controls, grid, See more, pager) and total how many pieces
+    it stands for. Pieces named in the profile text link to their card; the cards of the selection are marked in
+    the full list so nothing shows twice."""
+    import brand_selection
+    picks = brand_selection.representative_selection(products, SELECTION_SIZE)
+    picked = {p["product_name"] for p in picks}
+    cards = [card_html(p).replace('<a class="card"', '<a class="card card-extra-m"' if i >= SELECTION_PHONE else '<a class="card"', 1)
+             for i, p in enumerate(picks)]
+    rest_html = re.sub(r'<a class="card"([^>]*data-product="([^"]*)")',
+                       lambda m: f'<a class="card{" in-selection" if html.unescape(m.group(2)) in picked else ""}"{m.group(1)}', rest_html)
+    label = f"Show all {total} pieces" if total <= BRAND_CARDS_PER_PAGE else f"Show more pieces ({total:,} in all)"
+    block = (f'\n  <section class="brand-section selection"><p class="brand-section-title">A selection</p>'
+             f'\n  <div class="grid">{"".join(cards)}</div></section>'
+             f'\n  <div class="show-all-row"><button type="button">{label}</button></div>'
+             f'\n  <div class="rest-block"><p class="brand-section-title">More pieces</p>{rest_html}</div>')
+    return link_pieces_in_text(text_html, block)
+
+
+def link_pieces_in_text(text_html, block_html):
+    """Gives the first card of each piece an id and turns the first mention of that piece's full name in the profile
+    text into a link to it (scroll, highlight; the list is unfolded when the card is in the folded part)."""
+    seen = {}
+
+    def give_id(m):
+        name = html.unescape(m.group(2))
+        if name in seen:
+            return m.group(0)
+        seen[name] = f"piece-{len(seen) + 1}"
+        return f'<a class="card{m.group(1)}" id="{seen[name]}"'
+    block_html = re.sub(r'<a class="card((?: [\w-]+)*)"(?=[^>]*data-product="([^"]*)")', give_id, block_html)
+    found_all = []
+
+    def link_paragraph(m):
+        body = m.group(2)
+        found = []
+        for name in sorted(seen, key=len, reverse=True):
+            if len(name) < 5:
+                continue
+            hit = re.search(r'(?<![\wÀ-ÿ])' + re.escape(html.escape(name, quote=False)) + r'(?![\wÀ-ÿ])', body, re.I)
+            if hit and not any(hit.start() < e and s0 < hit.end() for s0, e, _ in found):
+                found.append((hit.start(), hit.end(), seen[name]))
+        for s0, e, pid in sorted(found, reverse=True):
+            body = body[:s0] + f'<a class="piece-link" href="#{pid}">' + body[s0:e] + "</a>" + body[e:]
+        found_all.extend(found)
+        return m.group(1) + body + m.group(3)
+    text_html = re.sub(r"(<p>)(.*?)(</p>)", link_paragraph, text_html, flags=re.S)
+    return text_html, block_html
+
+
 def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None, promotions=None, stockists=None, new_products=None, page=1, designers=None, similar=None):
     tag_list = list(umbrellas) + ([country] if country else [])
-    tags = "".join(f'<span class="tag">{html.escape(t)}</span>' for t in tag_list)
+    tags = "".join(f'<a class="tag tag-link" href="{html.escape(tag_href(t, country))}">{html.escape(t)}</a>' for t in tag_list)
     # Real, live cross-link to Marketplace's Promotions tab (2026-09-28,
     # see load_promotions_by_brand) - only rendered when this brand
     # genuinely has 1+ live promotion right now, using the same
@@ -1456,6 +1568,15 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     cards = "".join(product_card_html(p, share=True) for p in page_products)
     news_section = render_news_section(brand, new_products) if page == 1 else ""
     all_work_title = f'  <p class="brand-section-title">All of {html.escape(brand)}</p>\n' if news_section else ""
+    text_html = creator_texts.text_block_html("makers", slug, len(products), facts_block=False) if page == 1 else ""
+    meta_line = creator_texts.meta_line_html("makers", slug) if page == 1 else ""
+    use_explore = page == 1 and len(products) > SELECTION_SIZE
+    if use_explore:
+        rest_html = f"{earlier_html}\n  <div class=\"grid\" data-listing-grid>{cards}</div>\n  {see_more_html}\n  {pager_html}"
+        text_html, listing_html = explore_layout(products, lambda p: product_card_html(p, share=True), text_html, rest_html, len(products))
+    else:
+        listing_html = (f'{all_work_title}  {earlier_html}\n  <div class="grid" data-listing-grid>{cards}</div>'
+                        f'\n  {see_more_html}\n  {pager_html}')
     designers_section = render_designers_section(brand, designers) if page == 1 else ""
     similar_section = render_similar_section(brand, similar) if page == 1 else ""
     stockist_section = render_stockist_section(brand, stockists) if page == 1 else ""
@@ -1516,6 +1637,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}{BRAND_DESIGNERS_CSS if designers_section else ''}{BRAND_SIMILAR_CSS if similar_section else ''}</style>
+{f"<script>{EXPLORE_HEAD_JS}</script>" if use_explore else ""}
 {creator_texts.style_tag("makers", slug) if page == 1 else ""}
 </head>
 <body>
@@ -1527,13 +1649,10 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">{html.escape(brand)}</h1>
-    <div class="tags">{tags}</div>
+    <div class="tags">{tags}</div>{meta_line}
     <a class="brand-site-link" href="{html.escape(brand_url)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>{promo_callout}
   </div>
-{creator_texts.text_block_html("makers", slug, len(products)) if page == 1 else ""}{curated_note_html(brand, len(products)) if page == 1 else ""}{news_section}{all_work_title}  {earlier_html}
-  <div class="grid" data-listing-grid>{cards}</div>
-  {see_more_html}
-  {pager_html}
+{text_html}{curated_note_html(brand, len(products)) if page == 1 else ""}{news_section}{listing_html}
 {similar_section}{designers_section}{stockist_section}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
@@ -1557,7 +1676,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
   }});
 </script>
 <script>{CARD_CLICK_TRACKING_JS}</script>
-<script src="{SHARE_JS}" defer></script>
+{f"<script>{EXPLORE_JS}</script>" if use_explore else ""}<script src="{SHARE_JS}" defer></script>
 <script src="{LISTING_JS}" defer></script>
 {CLOUDFLARE_ANALYTICS}
 </body>

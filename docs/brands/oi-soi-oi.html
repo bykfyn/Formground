@@ -262,11 +262,30 @@
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
   .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
 </style>
+<script>document.documentElement.classList.add("explore-js");</script>
 <style>
   .creator-text { max-width: 640px; margin: 0 auto 36px; }
   .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
@@ -292,13 +311,13 @@
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">Oi Soi Oi</h1>
-    <div class="tags"><span class="tag">Lighting</span><span class="tag">Ceramics</span><span class="tag">Objects</span><span class="tag">Denmark</span></div>
+    <div class="tags"><a class="tag tag-link" href="/work/lighting.html">Lighting</a><a class="tag tag-link" href="/work.html?q=ceramics">Ceramics</a><a class="tag tag-link" href="/work/objects.html">Objects</a><a class="tag tag-link" href="/work.html?q=from+Denmark">Denmark</a></div>
+    <p class="meta-line">Founded 2007</p>
     <a class="brand-site-link" href="https://oisoioi.dk" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
 
   <section class="creator-text">
     <p>Oi Soi Oi is a Danish company founded in 2007 by Britt Goodall and Christina Thorbøll, which designs and produces its own range for the home. Everything is handmade in Vietnam, where Britt Goodall has lived for more than twenty years and built the team that handles design and production.</p><p>The name is Vietnamese for &quot;wow&quot;. The company blends clean Scandinavian lines with colourful Asian influences, and works with small family-run workshops rather than a factory. On Formground it is shown through 309 pieces.</p>
-    <dl class="creator-facts"><dt>Country</dt><dd>Denmark</dd><dt>Type</dt><dd>Maker</dd><dt>Products</dt><dd>Home interiors, handmade in Vietnam</dd><dt>Founded</dt><dd>2007</dd><dt>Website</dt><dd>oisoioi.dk</dd></dl>
   </section>
   <section class="brand-section brand-section--top">
     <p class="brand-section-title">New from Oi Soi Oi</p>
@@ -317,45 +336,132 @@
           
         </div>
       </a></div>
-  </section>  <p class="brand-section-title">All of Oi Soi Oi</p>
-  
-  <div class="grid" data-listing-grid>
-      <a class="card" href="https://oisoioi.dk/products/chest-of-drawers-2-skin-b2b" target="_blank" rel="noopener noreferrer" data-product="Chest of drawers" data-brand="Oi Soi Oi">
+  </section>
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://oisoioi.dk/products/lacquer-box-b-sun" target="_blank" rel="noopener noreferrer" data-product="Lakskrin B Sun" data-brand="Oi Soi Oi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2608_0251835.jpg?v=1766398836&amp;width=500" alt="Lakskrin B Sun by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lakskrin B Sun</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-2" href="https://oisoioi.dk/products/lacquer-tray-40x40-powder" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Powder" data-brand="Oi Soi Oi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2650_0251910.jpg?v=1767033918&amp;width=500" alt="Lacquer Tray 40x40 Powder by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lacquer Tray 40x40 Powder</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-3" href="https://oisoioi.dk/products/lamp-shade-indochina-offwhite-ufo-s" target="_blank" rel="noopener noreferrer" data-product="Lampeskærm Indochina Offwhite UFO S" data-brand="Oi Soi Oi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/boaw2603a.jpg?v=1785851268&amp;width=500" alt="Lampeskærm Indochina Offwhite UFO S by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lampeskærm Indochina Offwhite UFO S</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-4" href="https://oisoioi.dk/products/lacquer-tray-32x16-orange-b2b" target="_blank" rel="noopener noreferrer" data-product="Lakbakke 32x16 Orange (B2B)" data-brand="Oi Soi Oi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/la4017_32x16_d7fa0905-ca08-48a9-b964-0f4f8cd7246b.jpg?v=1723036276&amp;width=500" alt="Lakbakke 32x16 Orange (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lakbakke 32x16 Orange (B2B)</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-5" href="https://oisoioi.dk/products/lamp-shade-raw-sand-ufo-b2b" target="_blank" rel="noopener noreferrer" data-product="Lampeskærm Indochina Raw Sand UFO (B2B)" data-brand="Oi Soi Oi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/0256259_bo4204_6bb17d84-2d20-49fb-81df-c5139ab8267d.jpg?v=1754914249&amp;width=500" alt="Lampeskærm Indochina Raw Sand UFO (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lampeskærm Indochina Raw Sand UFO (B2B)</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-6" href="https://oisoioi.dk/products/lacquer-box-xl-passion-b2b" target="_blank" rel="noopener noreferrer" data-product="Lakskrin XL Passion" data-brand="Oi Soi Oi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/la4006.jpg?v=1723031465&amp;width=500" alt="Lakskrin XL Passion by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lakskrin XL Passion</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-7" href="https://oisoioi.dk/products/ceiling-cup-black-b2b" target="_blank" rel="noopener noreferrer" data-product="Loftskop Sort" data-brand="Oi Soi Oi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/bo3153_web.jpg?v=1692957020&amp;width=500" alt="Loftskop Sort by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Loftskop Sort</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-8" href="https://oisoioi.dk/products/hexagon-lamp-base-beetroot" target="_blank" rel="noopener noreferrer" data-product="Hexagon lampefod" data-brand="Oi Soi Oi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/boaw2609.jpg?v=1785854762&amp;width=500" alt="Hexagon lampefod by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Hexagon lampefod</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://oisoioi.dk/products/lotus-lamp-sun" target="_blank" rel="noopener noreferrer" data-product="Lotus Bordlampe" data-brand="Oi Soi Oi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/boss2611_0251864.jpg?v=1766059401&amp;width=500" alt="Lotus Bordlampe by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Lotus Bordlampe</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-10" href="https://oisoioi.dk/products/ceiling-cup-white-b2b" target="_blank" rel="noopener noreferrer" data-product="Loftskop Hvid" data-brand="Oi Soi Oi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/bo3154_hvid_cc1d661f-4c7c-4d3d-8a86-bed5bdfb94ae.jpg?v=1754912782&amp;width=500" alt="Loftskop Hvid by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Loftskop Hvid</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://oisoioi.dk/products/chest-of-drawers-2-skin-b2b" target="_blank" rel="noopener noreferrer" data-product="Chest of drawers" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2628_0251852.jpg?v=1767034595&amp;width=500" alt="Chest of drawers by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Chest of drawers</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/cylinder-lampshade-sand-bordeaux-30x39" target="_blank" rel="noopener noreferrer" data-product="Cylinder lampeskærm sand/bordeaux 30x39" data-brand="Oi Soi Oi">
+      <a class="card card-extra-m" id="piece-12" href="https://oisoioi.dk/products/mushroom-lampshade-sand-sun-b2b" target="_blank" rel="noopener noreferrer" data-product="Mushroom lampeskærm sand/sun (B2B)" data-brand="Oi Soi Oi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/boss2606_0251885.jpg?v=1766061697&amp;width=500" alt="Mushroom lampeskærm sand/sun (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Mushroom lampeskærm sand/sun (B2B)</p>
+          
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show more pieces (309 in all)</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p>
+  <div class="grid" data-listing-grid>
+      <a class="card in-selection" href="https://oisoioi.dk/products/chest-of-drawers-2-skin-b2b" target="_blank" rel="noopener noreferrer" data-product="Chest of drawers" data-brand="Oi Soi Oi">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2628_0251852.jpg?v=1767034595&amp;width=500" alt="Chest of drawers by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chest of drawers</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-13" href="https://oisoioi.dk/products/cylinder-lampshade-sand-bordeaux-30x39" target="_blank" rel="noopener noreferrer" data-product="Cylinder lampeskærm sand/bordeaux 30x39" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/boaw2607_boaw2608.jpg?v=1785854087&amp;width=500" alt="Cylinder lampeskærm sand/bordeaux 30x39 by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Cylinder lampeskærm sand/bordeaux 30x39</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/cylinder-lampshade-sand-bordeaux-30x39-b2b" target="_blank" rel="noopener noreferrer" data-product="Cylinder lampeskærm sand/bordeaux 30x39 (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-14" href="https://oisoioi.dk/products/cylinder-lampshade-sand-bordeaux-30x39-b2b" target="_blank" rel="noopener noreferrer" data-product="Cylinder lampeskærm sand/bordeaux 30x39 (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/boaw2607_boaw2608.jpg?v=1785854087&amp;width=500" alt="Cylinder lampeskærm sand/bordeaux 30x39 (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Cylinder lampeskærm sand/bordeaux 30x39 (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/cylinder-lampshade-sand-coal-30x39" target="_blank" rel="noopener noreferrer" data-product="Cylinder lampeskærm sand/coal 30x39" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-15" href="https://oisoioi.dk/products/cylinder-lampshade-sand-coal-30x39" target="_blank" rel="noopener noreferrer" data-product="Cylinder lampeskærm sand/coal 30x39" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/boaw2606.jpg?v=1785853888&amp;width=500" alt="Cylinder lampeskærm sand/coal 30x39 by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Cylinder lampeskærm sand/coal 30x39</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/cylinder-lampshade-sand-coal-30x39-b2b" target="_blank" rel="noopener noreferrer" data-product="Cylinder lampeskærm sand/coal 30x39 (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-16" href="https://oisoioi.dk/products/cylinder-lampshade-sand-coal-30x39-b2b" target="_blank" rel="noopener noreferrer" data-product="Cylinder lampeskærm sand/coal 30x39 (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/boaw2606.jpg?v=1785853888&amp;width=500" alt="Cylinder lampeskærm sand/coal 30x39 (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Cylinder lampeskærm sand/coal 30x39 (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/drop-lamp-base-coal" target="_blank" rel="noopener noreferrer" data-product="Drop lampefod" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-17" href="https://oisoioi.dk/products/drop-lamp-base-coal" target="_blank" rel="noopener noreferrer" data-product="Drop lampefod" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/boaw2610.jpg?v=1785855173&amp;width=500" alt="Drop lampefod by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Drop lampefod</p>
@@ -369,98 +475,98 @@
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/copy-of-square-lacquer-w-handle-s-black" target="_blank" rel="noopener noreferrer" data-product="Firkantet Lakæske m håndtag S Grey" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-18" href="https://oisoioi.dk/products/copy-of-square-lacquer-w-handle-s-black" target="_blank" rel="noopener noreferrer" data-product="Firkantet Lakæske m håndtag S Grey" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/oiss24-0233387_LA3805.jpg?v=1702905894&amp;width=500" alt="Firkantet Lakæske m håndtag S Grey by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Firkantet Lakæske m håndtag S Grey</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/copy-of-square-lacquer-w-handle-s-grey-1" target="_blank" rel="noopener noreferrer" data-product="Firkantet lakskrin med håndtag S grey (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-19" href="https://oisoioi.dk/products/copy-of-square-lacquer-w-handle-s-grey-1" target="_blank" rel="noopener noreferrer" data-product="Firkantet lakskrin med håndtag S grey (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/oiss24-0233387_LA3805_d21b31a3-595a-493b-b3ee-3553b281456a.jpg?v=1702905929&amp;width=500" alt="Firkantet lakskrin med håndtag S grey (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Firkantet lakskrin med håndtag S grey (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/tealight-candle-holder-b" target="_blank" rel="noopener noreferrer" data-product="Fyrfadsstage B" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-20" href="https://oisoioi.dk/products/tealight-candle-holder-b" target="_blank" rel="noopener noreferrer" data-product="Fyrfadsstage B" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/di2122_web.jpg?v=1754656463&amp;width=500" alt="Fyrfadsstage B by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Fyrfadsstage B</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/tealight-candle-holder-b-b2b" target="_blank" rel="noopener noreferrer" data-product="Fyrfadsstage B (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-21" href="https://oisoioi.dk/products/tealight-candle-holder-b-b2b" target="_blank" rel="noopener noreferrer" data-product="Fyrfadsstage B (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/di2122_web.jpg?v=1754656463&amp;width=500" alt="Fyrfadsstage B (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Fyrfadsstage B (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/tealight-candle-holder-s" target="_blank" rel="noopener noreferrer" data-product="Fyrfadsstage S" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-22" href="https://oisoioi.dk/products/tealight-candle-holder-s" target="_blank" rel="noopener noreferrer" data-product="Fyrfadsstage S" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/di2123_web.jpg?v=1754655822&amp;width=500" alt="Fyrfadsstage S by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Fyrfadsstage S</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/tealight-candle-holder-s-b2b" target="_blank" rel="noopener noreferrer" data-product="Fyrfadsstage S (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-23" href="https://oisoioi.dk/products/tealight-candle-holder-s-b2b" target="_blank" rel="noopener noreferrer" data-product="Fyrfadsstage S (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/di2123_web.jpg?v=1754655822&amp;width=500" alt="Fyrfadsstage S (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Fyrfadsstage S (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/dragonfly" target="_blank" rel="noopener noreferrer" data-product="Guldsmed" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-24" href="https://oisoioi.dk/products/dragonfly" target="_blank" rel="noopener noreferrer" data-product="Guldsmed" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/dragonfly_0251956.jpg?v=1767887664&amp;width=500" alt="Guldsmed by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Guldsmed</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/hexagon-lamp-base-beetroot" target="_blank" rel="noopener noreferrer" data-product="Hexagon lampefod" data-brand="Oi Soi Oi">
+      <a class="card in-selection" href="https://oisoioi.dk/products/hexagon-lamp-base-beetroot" target="_blank" rel="noopener noreferrer" data-product="Hexagon lampefod" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/boaw2609.jpg?v=1785854762&amp;width=500" alt="Hexagon lampefod by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Hexagon lampefod</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/hexagon-lamp-base-bordeaux-b2b" target="_blank" rel="noopener noreferrer" data-product="Hexagon lampefod" data-brand="Oi Soi Oi">
+      <a class="card in-selection" href="https://oisoioi.dk/products/hexagon-lamp-base-bordeaux-b2b" target="_blank" rel="noopener noreferrer" data-product="Hexagon lampefod" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/boaw2609.jpg?v=1785854762&amp;width=500" alt="Hexagon lampefod by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Hexagon lampefod</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/cinnamon-house-b" target="_blank" rel="noopener noreferrer" data-product="Kanelhus B" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-25" href="https://oisoioi.dk/products/cinnamon-house-b" target="_blank" rel="noopener noreferrer" data-product="Kanelhus B" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/juaw2602_juaw2601.jpg?v=1785417826&amp;width=500" alt="Kanelhus B by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Kanelhus B</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/cinnamon-house-b-b2b" target="_blank" rel="noopener noreferrer" data-product="Kanelhus B (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-26" href="https://oisoioi.dk/products/cinnamon-house-b-b2b" target="_blank" rel="noopener noreferrer" data-product="Kanelhus B (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/juaw2602_juaw2601.jpg?v=1785417826&amp;width=500" alt="Kanelhus B (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Kanelhus B (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/cinnamon-house-s-1" target="_blank" rel="noopener noreferrer" data-product="Kanelhus S" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-27" href="https://oisoioi.dk/products/cinnamon-house-s-1" target="_blank" rel="noopener noreferrer" data-product="Kanelhus S" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/juaw2601_juaw2602.jpg?v=1785417651&amp;width=500" alt="Kanelhus S by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Kanelhus S</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/cinnamon-house-s" target="_blank" rel="noopener noreferrer" data-product="Kanelhus S (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-28" href="https://oisoioi.dk/products/cinnamon-house-s" target="_blank" rel="noopener noreferrer" data-product="Kanelhus S (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/juaw2601_juaw2602.jpg?v=1785417651&amp;width=500" alt="Kanelhus S (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Kanelhus S (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/square-box-passion" target="_blank" rel="noopener noreferrer" data-product="Kvadratisk boks" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-29" href="https://oisoioi.dk/products/square-box-passion" target="_blank" rel="noopener noreferrer" data-product="Kvadratisk boks" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/laaw2613a.jpg?v=1783070728&amp;width=500" alt="Kvadratisk boks by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Kvadratisk boks</p>
@@ -474,266 +580,266 @@
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-box-xxl-earth" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Earth" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-30" href="https://oisoioi.dk/products/lacquer-box-xxl-earth" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Earth" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2619_0251816.jpg?v=1766408412&amp;width=500" alt="Lacquer Box XXL Earth by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Box XXL Earth</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-box-xxl-earth-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Earth (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-31" href="https://oisoioi.dk/products/lacquer-box-xxl-earth-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Earth (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2619_0251816.jpg?v=1766408412&amp;width=500" alt="Lacquer Box XXL Earth (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Box XXL Earth (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-box-xxl-lavender-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Lavender (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-32" href="https://oisoioi.dk/products/lacquer-box-xxl-lavender-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Lavender (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2616_0251817.jpg?v=1766407198&amp;width=500" alt="Lacquer Box XXL Lavender (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Box XXL Lavender (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-box-xxl-powder" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Powder" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-33" href="https://oisoioi.dk/products/lacquer-box-xxl-powder" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Powder" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2620_0251809.jpg?v=1766408721&amp;width=500" alt="Lacquer Box XXL Powder by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Box XXL Powder</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-box-xxl-powder-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Powder (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-34" href="https://oisoioi.dk/products/lacquer-box-xxl-powder-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Powder (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2620_0251809.jpg?v=1766408721&amp;width=500" alt="Lacquer Box XXL Powder (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Box XXL Powder (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-box-xxl-skin" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Skin" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-35" href="https://oisoioi.dk/products/lacquer-box-xxl-skin" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Skin" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2617_0251805.jpg?v=1766407429&amp;width=500" alt="Lacquer Box XXL Skin by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Box XXL Skin</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-box-xxl-skin-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Skin (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-36" href="https://oisoioi.dk/products/lacquer-box-xxl-skin-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Skin (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2617_0251805.jpg?v=1766407429&amp;width=500" alt="Lacquer Box XXL Skin (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Box XXL Skin (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-box-xxl-sun" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Sun" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-37" href="https://oisoioi.dk/products/lacquer-box-xxl-sun" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Sun" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2618_0251810.jpg?v=1766407692&amp;width=500" alt="Lacquer Box XXL Sun by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Box XXL Sun</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-box-xxl-sun-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Sun (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-38" href="https://oisoioi.dk/products/lacquer-box-xxl-sun-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Box XXL Sun (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2618_0251810.jpg?v=1766407692&amp;width=500" alt="Lacquer Box XXL Sun (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Box XXL Sun (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-20x20-lavender" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 20x20 Lavender" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-39" href="https://oisoioi.dk/products/lacquer-tray-20x20-lavender" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 20x20 Lavender" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2633_0251935.jpg?v=1766475797&amp;width=500" alt="Lacquer Tray 20x20 Lavender by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 20x20 Lavender</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-20x20-lavender-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 20x20 Lavender (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-40" href="https://oisoioi.dk/products/lacquer-tray-20x20-lavender-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 20x20 Lavender (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2633_0251935.jpg?v=1766475797&amp;width=500" alt="Lacquer Tray 20x20 Lavender (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 20x20 Lavender (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-20x20-powder" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 20x20 Powder" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-41" href="https://oisoioi.dk/products/lacquer-tray-20x20-powder" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 20x20 Powder" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2634_0251936_bd5d85d5-be17-484f-adf0-e85d0ed02a87.jpg?v=1766478319&amp;width=500" alt="Lacquer Tray 20x20 Powder by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 20x20 Powder</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-20x20-powder-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 20x20 Powder (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-42" href="https://oisoioi.dk/products/lacquer-tray-20x20-powder-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 20x20 Powder (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2634_0251936_bd5d85d5-be17-484f-adf0-e85d0ed02a87.jpg?v=1766478319&amp;width=500" alt="Lacquer Tray 20x20 Powder (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 20x20 Powder (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-20x20-sun" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 20x20 Sun" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-43" href="https://oisoioi.dk/products/lacquer-tray-20x20-sun" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 20x20 Sun" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2632_0251937.jpg?v=1766477828&amp;width=500" alt="Lacquer Tray 20x20 Sun by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 20x20 Sun</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-20x20-sun-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 20x20 Sun (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-44" href="https://oisoioi.dk/products/lacquer-tray-20x20-sun-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 20x20 Sun (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2632_0251937.jpg?v=1766477828&amp;width=500" alt="Lacquer Tray 20x20 Sun (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 20x20 Sun (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-32x16-earth" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Earth" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-45" href="https://oisoioi.dk/products/lacquer-tray-32x16-earth" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Earth" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2635_0251929.jpg?v=1767015703&amp;width=500" alt="Lacquer Tray 32x16 Earth by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 32x16 Earth</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-32x16-earth-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Earth (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-46" href="https://oisoioi.dk/products/lacquer-tray-32x16-earth-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Earth (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2635_0251929.jpg?v=1767015703&amp;width=500" alt="Lacquer Tray 32x16 Earth (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 32x16 Earth (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-32x16-lavender" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Lavender" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-47" href="https://oisoioi.dk/products/lacquer-tray-32x16-lavender" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Lavender" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2638_0251931.jpg?v=1767016761&amp;width=500" alt="Lacquer Tray 32x16 Lavender by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 32x16 Lavender</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-32x16-lavender-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Lavender (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-48" href="https://oisoioi.dk/products/lacquer-tray-32x16-lavender-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Lavender (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2638_0251931.jpg?v=1767016761&amp;width=500" alt="Lacquer Tray 32x16 Lavender (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 32x16 Lavender (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-32x16-powder" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Powder" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-49" href="https://oisoioi.dk/products/lacquer-tray-32x16-powder" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Powder" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2639_0251932.jpg?v=1767017058&amp;width=500" alt="Lacquer Tray 32x16 Powder by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 32x16 Powder</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-32x16-powder-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Powder (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-50" href="https://oisoioi.dk/products/lacquer-tray-32x16-powder-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Powder (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2639_0251932.jpg?v=1767017058&amp;width=500" alt="Lacquer Tray 32x16 Powder (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 32x16 Powder (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-32x16-skin" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Skin" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-51" href="https://oisoioi.dk/products/lacquer-tray-32x16-skin" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Skin" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2636_0251930.jpg?v=1767016174&amp;width=500" alt="Lacquer Tray 32x16 Skin by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 32x16 Skin</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-32x16-skin-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Skin (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-52" href="https://oisoioi.dk/products/lacquer-tray-32x16-skin-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Skin (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2636_0251930.jpg?v=1767016174&amp;width=500" alt="Lacquer Tray 32x16 Skin (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 32x16 Skin (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-32x16-slate-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Slate (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-53" href="https://oisoioi.dk/products/lacquer-tray-32x16-slate-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Slate (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/la4132_0231398.jpg?v=1734611959&amp;width=500" alt="Lacquer Tray 32x16 Slate (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 32x16 Slate (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-32x16-turquoise-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Turquoise (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-54" href="https://oisoioi.dk/products/lacquer-tray-32x16-turquoise-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 32x16 Turquoise (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/la4131_0231393.jpg?v=1734611853&amp;width=500" alt="Lacquer Tray 32x16 Turquoise (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 32x16 Turquoise (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-40x40-earth" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Earth" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-55" href="https://oisoioi.dk/products/lacquer-tray-40x40-earth" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Earth" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2648_0251909.jpg?v=1767033573&amp;width=500" alt="Lacquer Tray 40x40 Earth by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 40x40 Earth</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-40x40-earth-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Earth (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-56" href="https://oisoioi.dk/products/lacquer-tray-40x40-earth-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Earth (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2648_0251909.jpg?v=1767033573&amp;width=500" alt="Lacquer Tray 40x40 Earth (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 40x40 Earth (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-40x40-powder" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Powder" data-brand="Oi Soi Oi">
+      <a class="card in-selection" href="https://oisoioi.dk/products/lacquer-tray-40x40-powder" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Powder" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2650_0251910.jpg?v=1767033918&amp;width=500" alt="Lacquer Tray 40x40 Powder by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 40x40 Powder</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-40x40-powder-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Powder (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-57" href="https://oisoioi.dk/products/lacquer-tray-40x40-powder-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Powder (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2650_0251910.jpg?v=1767033918&amp;width=500" alt="Lacquer Tray 40x40 Powder (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 40x40 Powder (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-40x40-sun" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Sun" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-58" href="https://oisoioi.dk/products/lacquer-tray-40x40-sun" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Sun" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2649_0251908.jpg?v=1767033758&amp;width=500" alt="Lacquer Tray 40x40 Sun by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 40x40 Sun</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-40x40-sun-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Sun (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-59" href="https://oisoioi.dk/products/lacquer-tray-40x40-sun-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray 40x40 Sun (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2649_0251908.jpg?v=1767033758&amp;width=500" alt="Lacquer Tray 40x40 Sun (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray 40x40 Sun (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-oval-b-earth-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray Oval B" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-60" href="https://oisoioi.dk/products/lacquer-tray-oval-b-earth-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray Oval B" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2644_0251918_84d1329a-c501-453e-8acb-12c7401a1ade.jpg?v=1767876977&amp;width=500" alt="Lacquer Tray Oval B by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray Oval B</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-oval-s-earth-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray Oval S" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-61" href="https://oisoioi.dk/products/lacquer-tray-oval-s-earth-b2b" target="_blank" rel="noopener noreferrer" data-product="Lacquer Tray Oval S" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/lass2640_0251921_7f27c9b2-0e2f-402f-87a5-ca2abeca0438.jpg?v=1767877166&amp;width=500" alt="Lacquer Tray Oval S by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lacquer Tray Oval S</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-20x20-beetroot" target="_blank" rel="noopener noreferrer" data-product="Lakbakke 20x20 Beetroot" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-62" href="https://oisoioi.dk/products/lacquer-tray-20x20-beetroot" target="_blank" rel="noopener noreferrer" data-product="Lakbakke 20x20 Beetroot" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/la4124_0231403.jpg?v=1734603879&amp;width=500" alt="Lakbakke 20x20 Beetroot by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lakbakke 20x20 Beetroot</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-20x20-beetroot-b2b" target="_blank" rel="noopener noreferrer" data-product="Lakbakke 20x20 Beetroot (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-63" href="https://oisoioi.dk/products/lacquer-tray-20x20-beetroot-b2b" target="_blank" rel="noopener noreferrer" data-product="Lakbakke 20x20 Beetroot (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/la4124_0231403.jpg?v=1734603879&amp;width=500" alt="Lakbakke 20x20 Beetroot (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lakbakke 20x20 Beetroot (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-20x20-black" target="_blank" rel="noopener noreferrer" data-product="Lakbakke 20x20 Black" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-64" href="https://oisoioi.dk/products/lacquer-tray-20x20-black" target="_blank" rel="noopener noreferrer" data-product="Lakbakke 20x20 Black" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/oiss24_20x20_black.jpg?v=1703158766&amp;width=500" alt="Lakbakke 20x20 Black by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lakbakke 20x20 Black</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-20x20-black-b2b" target="_blank" rel="noopener noreferrer" data-product="Lakbakke 20x20 Black (B2B)" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-65" href="https://oisoioi.dk/products/lacquer-tray-20x20-black-b2b" target="_blank" rel="noopener noreferrer" data-product="Lakbakke 20x20 Black (B2B)" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/oiss24_20x20_black_b2574074-f85d-4ff3-a585-a9332ba60695.jpg?v=1703158821&amp;width=500" alt="Lakbakke 20x20 Black (B2B) by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lakbakke 20x20 Black (B2B)</p>
           
         </div>
       </a>
-      <a class="card" href="https://oisoioi.dk/products/lacquer-tray-20x20-blue-ink" target="_blank" rel="noopener noreferrer" data-product="Lakbakke 20x20 Blue ink" data-brand="Oi Soi Oi">
+      <a class="card" id="piece-66" href="https://oisoioi.dk/products/lacquer-tray-20x20-blue-ink" target="_blank" rel="noopener noreferrer" data-product="Lakbakke 20x20 Blue ink" data-brand="Oi Soi Oi">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0718/7975/4018/files/la4128_0231407.jpg?v=1734610264&amp;width=500" alt="Lakbakke 20x20 Blue ink by Oi Soi Oi" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Lakbakke 20x20 Blue ink</p>
@@ -741,7 +847,7 @@
         </div>
       </a></div>
   <div class="load-more-row"><a class="load-more-btn" id="see-more" data-total="309" data-start="0" href="/brands/oi-soi-oi-2.html">See more pieces</a><span class="load-more-progress" id="see-more-progress"></span></div>
-  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/brands/oi-soi-oi-2.html">2</a><span class="gap" aria-hidden="true">&hellip;</span><a href="/brands/oi-soi-oi-6.html">6</a><a href="/brands/oi-soi-oi-2.html" rel="next">Next &rarr;</a></nav>
+  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/brands/oi-soi-oi-2.html">2</a><span class="gap" aria-hidden="true">&hellip;</span><a href="/brands/oi-soi-oi-6.html">6</a><a href="/brands/oi-soi-oi-2.html" rel="next">Next &rarr;</a></nav></div>
 
   <section class="brand-section">
     <p class="brand-section-title">Makers like Oi Soi Oi</p>
@@ -788,8 +894,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

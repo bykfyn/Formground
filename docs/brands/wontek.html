@@ -262,11 +262,30 @@
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
   .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
 </style>
+<script>document.documentElement.classList.add("explore-js");</script>
 <style>
   .creator-text { max-width: 640px; margin: 0 auto 36px; }
   .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
@@ -292,107 +311,195 @@
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">Wontek</h1>
-    <div class="tags"><span class="tag">Lighting</span><span class="tag">Ceramics</span><span class="tag">Objects</span><span class="tag">Poland</span></div>
+    <div class="tags"><a class="tag tag-link" href="/work/lighting.html">Lighting</a><a class="tag tag-link" href="/work.html?q=ceramics">Ceramics</a><a class="tag tag-link" href="/work/objects.html">Objects</a><a class="tag tag-link" href="/work.html?q=from+Poland">Poland</a></div>
+    <p class="meta-line">Warsaw</p>
     <a class="brand-site-link" href="https://wontek.pl" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
 
   <section class="creator-text">
-    <p>Wontek is a product design brand based in Warsaw, Poland. It designs and 3D-prints lamps, vases and decorative objects, treating 3D printing as a modern form of weaving, where each layer works like a thread that builds colour, pattern and texture.</p><p>Every piece is printed, finished and packed in the Warsaw studio, which allows a colour, a pattern or a whole form to be changed for a single order. The range includes the Mirage lamps, the Weave lamp and boxes, and the Afterloom vase. The name plays on the Polish word wątek, meaning thread or weft. On Formground it is shown through 14 pieces, each linked to its own page.</p>
-    <dl class="creator-facts"><dt>Country</dt><dd>Poland</dd><dt>City</dt><dd>Warsaw</dd><dt>Type</dt><dd>Maker</dd><dt>Products</dt><dd>3D-printed lamps, vases and objects</dd><dt>Website</dt><dd>wontek.pl</dd></dl>
-  </section>  
-  <div class="grid" data-listing-grid>
-      <a class="card" href="https://wontek.pl/products/afterloom-vase" target="_blank" rel="noopener noreferrer" data-product="afterloom vase" data-brand="Wontek">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/22-DSC_2249_3b2b37c2-c7b5-4d6f-acb9-9b2f9d436dc7.jpg?v=1788899787&amp;width=500" alt="afterloom vase by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">afterloom vase</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://wontek.pl/products/mirage-lamp-no-1" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.1" data-brand="Wontek">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/38-DSC_2322kopia.jpg?v=1788900335&amp;width=500" alt="mirage lamp no.1 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">mirage lamp no.1</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://wontek.pl/products/mirage-lamp-no-2" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.2" data-brand="Wontek">
+    <p>Wontek is a product design brand based in Warsaw, Poland. It designs and 3D-prints lamps, vases and decorative objects, treating 3D printing as a modern form of weaving, where each layer works like a thread that builds colour, pattern and texture.</p><p>Every piece is printed, finished and packed in the Warsaw studio, which allows a colour, a pattern or a whole form to be changed for a single order. The range includes the Mirage lamps, the <a class="piece-link" href="#piece-4">Weave lamp</a> and boxes, and the <a class="piece-link" href="#piece-8">Afterloom vase</a>. The name plays on the Polish word wątek, meaning thread or weft. On Formground it is shown through 14 pieces, each linked to its own page.</p>
+  </section>
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://wontek.pl/products/mirage-lamp-no-2" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.2" data-brand="Wontek">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/36-DSC_2327kopia.jpg?v=1788900334&amp;width=500" alt="mirage lamp no.2 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">mirage lamp no.2</p>
           
         </div>
       </a>
-      <a class="card" href="https://wontek.pl/products/mirage-lamp-no-3" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.3" data-brand="Wontek">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/28-DSC_2340kopia.jpg?v=1788900335&amp;width=500" alt="mirage lamp no.3 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">mirage lamp no.3</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://wontek.pl/products/mirage-lamp-no-4" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.4" data-brand="Wontek">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/16-DSC_2361kopia.jpg?v=1788900334&amp;width=500" alt="mirage lamp no.4 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">mirage lamp no.4</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://wontek.pl/products/mirage-lamp-no-5" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.5" data-brand="Wontek">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/12-DSC_2371kopia.jpg?v=1788900336&amp;width=500" alt="mirage lamp no.5 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">mirage lamp no.5</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://wontek.pl/products/mirage-lamp-no-6" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.6" data-brand="Wontek">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/20-DSC_2353kopia.jpg?v=1788900335&amp;width=500" alt="mirage lamp no.6 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">mirage lamp no.6</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://wontek.pl/products/alien-vase-no-1" target="_blank" rel="noopener noreferrer" data-product="vase no. 1" data-brand="Wontek">
+      <a class="card" id="piece-2" href="https://wontek.pl/products/alien-vase-no-1" target="_blank" rel="noopener noreferrer" data-product="vase no. 1" data-brand="Wontek">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/117-DSC_1442.jpg?v=1788897571&amp;width=500" alt="vase no. 1 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">vase no. 1</p>
           
         </div>
       </a>
-      <a class="card" href="https://wontek.pl/products/alien-vase-no-2" target="_blank" rel="noopener noreferrer" data-product="vase no. 2" data-brand="Wontek">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/113-asdasdasd.jpg?v=1788897562&amp;width=500" alt="vase no. 2 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">vase no. 2</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://wontek.pl/products/alien-vase-no-3" target="_blank" rel="noopener noreferrer" data-product="vase no. 3" data-brand="Wontek">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/vase_31.png?v=1765834087&amp;width=500" alt="vase no. 3 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">vase no. 3</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://wontek.pl/products/weave-box-l" target="_blank" rel="noopener noreferrer" data-product="weave box L" data-brand="Wontek">
+      <a class="card" id="piece-3" href="https://wontek.pl/products/weave-box-l" target="_blank" rel="noopener noreferrer" data-product="weave box L" data-brand="Wontek">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/66-DSC_1686.jpg?v=1788898593&amp;width=500" alt="weave box L by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">weave box L</p>
           
         </div>
       </a>
-      <a class="card" href="https://wontek.pl/products/weave-box-m" target="_blank" rel="noopener noreferrer" data-product="weave box M" data-brand="Wontek">
+      <a class="card" id="piece-4" href="https://wontek.pl/products/weave-lamp-basic" target="_blank" rel="noopener noreferrer" data-product="weave lamp" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/89-DSC_1563.jpg?v=1788899257&amp;width=500" alt="weave lamp by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">weave lamp</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-5" href="https://wontek.pl/products/alien-vase-no-2" target="_blank" rel="noopener noreferrer" data-product="vase no. 2" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/113-asdasdasd.jpg?v=1788897562&amp;width=500" alt="vase no. 2 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">vase no. 2</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-6" href="https://wontek.pl/products/weave-box-m" target="_blank" rel="noopener noreferrer" data-product="weave box M" data-brand="Wontek">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/56-DSC_1705.jpg?v=1788898594&amp;width=500" alt="weave box M by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">weave box M</p>
           
         </div>
       </a>
-      <a class="card" href="https://wontek.pl/products/weave-box-s" target="_blank" rel="noopener noreferrer" data-product="weave box S" data-brand="Wontek">
+      <a class="card card-extra-m" id="piece-7" href="https://wontek.pl/products/mirage-lamp-no-6" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.6" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/20-DSC_2353kopia.jpg?v=1788900335&amp;width=500" alt="mirage lamp no.6 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">mirage lamp no.6</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-8" href="https://wontek.pl/products/afterloom-vase" target="_blank" rel="noopener noreferrer" data-product="afterloom vase" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/22-DSC_2249_3b2b37c2-c7b5-4d6f-acb9-9b2f9d436dc7.jpg?v=1788899787&amp;width=500" alt="afterloom vase by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">afterloom vase</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://wontek.pl/products/weave-box-s" target="_blank" rel="noopener noreferrer" data-product="weave box S" data-brand="Wontek">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/44-DSC_1730.jpg?v=1788898593&amp;width=500" alt="weave box S by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">weave box S</p>
           
         </div>
       </a>
-      <a class="card" href="https://wontek.pl/products/weave-lamp-basic" target="_blank" rel="noopener noreferrer" data-product="weave lamp" data-brand="Wontek">
+      <a class="card card-extra-m" id="piece-10" href="https://wontek.pl/products/mirage-lamp-no-1" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.1" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/38-DSC_2322kopia.jpg?v=1788900335&amp;width=500" alt="mirage lamp no.1 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">mirage lamp no.1</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://wontek.pl/products/alien-vase-no-3" target="_blank" rel="noopener noreferrer" data-product="vase no. 3" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/vase_31.png?v=1765834087&amp;width=500" alt="vase no. 3 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">vase no. 3</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-12" href="https://wontek.pl/products/mirage-lamp-no-4" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.4" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/16-DSC_2361kopia.jpg?v=1788900334&amp;width=500" alt="mirage lamp no.4 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">mirage lamp no.4</p>
+          
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show all 14 pieces</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p>
+  <div class="grid" data-listing-grid>
+      <a class="card in-selection" href="https://wontek.pl/products/afterloom-vase" target="_blank" rel="noopener noreferrer" data-product="afterloom vase" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/22-DSC_2249_3b2b37c2-c7b5-4d6f-acb9-9b2f9d436dc7.jpg?v=1788899787&amp;width=500" alt="afterloom vase by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">afterloom vase</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://wontek.pl/products/mirage-lamp-no-1" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.1" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/38-DSC_2322kopia.jpg?v=1788900335&amp;width=500" alt="mirage lamp no.1 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">mirage lamp no.1</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://wontek.pl/products/mirage-lamp-no-2" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.2" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/36-DSC_2327kopia.jpg?v=1788900334&amp;width=500" alt="mirage lamp no.2 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">mirage lamp no.2</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-13" href="https://wontek.pl/products/mirage-lamp-no-3" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.3" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/28-DSC_2340kopia.jpg?v=1788900335&amp;width=500" alt="mirage lamp no.3 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">mirage lamp no.3</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://wontek.pl/products/mirage-lamp-no-4" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.4" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/16-DSC_2361kopia.jpg?v=1788900334&amp;width=500" alt="mirage lamp no.4 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">mirage lamp no.4</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-14" href="https://wontek.pl/products/mirage-lamp-no-5" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.5" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/12-DSC_2371kopia.jpg?v=1788900336&amp;width=500" alt="mirage lamp no.5 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">mirage lamp no.5</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://wontek.pl/products/mirage-lamp-no-6" target="_blank" rel="noopener noreferrer" data-product="mirage lamp no.6" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/20-DSC_2353kopia.jpg?v=1788900335&amp;width=500" alt="mirage lamp no.6 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">mirage lamp no.6</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://wontek.pl/products/alien-vase-no-1" target="_blank" rel="noopener noreferrer" data-product="vase no. 1" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/117-DSC_1442.jpg?v=1788897571&amp;width=500" alt="vase no. 1 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">vase no. 1</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://wontek.pl/products/alien-vase-no-2" target="_blank" rel="noopener noreferrer" data-product="vase no. 2" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/113-asdasdasd.jpg?v=1788897562&amp;width=500" alt="vase no. 2 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">vase no. 2</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://wontek.pl/products/alien-vase-no-3" target="_blank" rel="noopener noreferrer" data-product="vase no. 3" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/vase_31.png?v=1765834087&amp;width=500" alt="vase no. 3 by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">vase no. 3</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://wontek.pl/products/weave-box-l" target="_blank" rel="noopener noreferrer" data-product="weave box L" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/66-DSC_1686.jpg?v=1788898593&amp;width=500" alt="weave box L by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">weave box L</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://wontek.pl/products/weave-box-m" target="_blank" rel="noopener noreferrer" data-product="weave box M" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/56-DSC_1705.jpg?v=1788898594&amp;width=500" alt="weave box M by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">weave box M</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://wontek.pl/products/weave-box-s" target="_blank" rel="noopener noreferrer" data-product="weave box S" data-brand="Wontek">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/44-DSC_1730.jpg?v=1788898593&amp;width=500" alt="weave box S by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">weave box S</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://wontek.pl/products/weave-lamp-basic" target="_blank" rel="noopener noreferrer" data-product="weave lamp" data-brand="Wontek">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0965/2761/4287/files/89-DSC_1563.jpg?v=1788899257&amp;width=500" alt="weave lamp by Wontek" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">weave lamp</p>
@@ -400,7 +507,7 @@
         </div>
       </a></div>
   
-  
+  </div>
 
   <section class="brand-section">
     <p class="brand-section-title">Makers like Wontek</p>
@@ -447,8 +554,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

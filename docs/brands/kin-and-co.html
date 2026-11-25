@@ -262,11 +262,30 @@
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
   .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
 </style>
+<script>document.documentElement.classList.add("explore-js");</script>
 <style>
   .creator-text { max-width: 640px; margin: 0 auto 36px; }
   .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
@@ -292,247 +311,335 @@
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">Kin and Co</h1>
-    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">United States</span></div>
+    <div class="tags"><a class="tag tag-link" href="/work/furniture.html">Furniture</a><a class="tag tag-link" href="/work/lighting.html">Lighting</a><a class="tag tag-link" href="/work/objects.html">Objects</a><a class="tag tag-link" href="/work.html?q=from+United+States">United States</a></div>
+    <p class="meta-line">Brooklyn</p>
     <a class="brand-site-link" href="https://www.kinandcompany.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
 
   <section class="creator-text">
-    <p>Kin &amp; Company is a design practice in Brooklyn, New York, run by cousins Joseph Vidich, an architect, and Kira de Paola, an interior designer. It makes sculptural metal furniture and objects, among them the Thin Series and the Crescent Table, and its first collection was shown in 2017.</p><p>The studio works with steel and tests the limits of the material, including research into oxidation and patinas, where chemical catalysts speed up the metal&#x27;s natural oxidation to create surface patterns. On Formground it is shown through 34 pieces, each linked to its own page.</p>
-    <dl class="creator-facts"><dt>Country</dt><dd>United States</dd><dt>City</dt><dd>Brooklyn</dd><dt>Type</dt><dd>Designer</dd><dt>Products</dt><dd>Metal furniture and objects</dd><dt>Website</dt><dd>kinandcompany.com</dd></dl>
-  </section>  
-  <div class="grid" data-listing-grid>
-      <a class="card" href="https://www.kinandcompany.com/work/a-table" target="_blank" rel="noopener noreferrer" data-product="A-Table" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/14.a-table/1.atable.jpg" alt="A-Table by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">A-Table</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/bow_tie_table" target="_blank" rel="noopener noreferrer" data-product="Bow Tie Table" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/23.bow_tie_table/1.bowtietable.jpg" alt="Bow Tie Table by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Bow Tie Table</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/crescent-console" target="_blank" rel="noopener noreferrer" data-product="Crescent Console" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/12.crescent-console/1.crescentconsole.jpg" alt="Crescent Console by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Crescent Console</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/crescent-table" target="_blank" rel="noopener noreferrer" data-product="Crescent Table" data-brand="Kin and Co">
+    <p>Kin &amp; Company is a design practice in Brooklyn, New York, run by cousins Joseph Vidich, an architect, and Kira de Paola, an interior designer. It makes sculptural metal furniture and objects, among them the Thin Series and the <a class="piece-link" href="#piece-1">Crescent Table</a>, and its first collection was shown in 2017.</p><p>The studio works with steel and tests the limits of the material, including research into oxidation and patinas, where chemical catalysts speed up the metal&#x27;s natural oxidation to create surface patterns. On Formground it is shown through 34 pieces, each linked to its own page.</p>
+  </section>
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://www.kinandcompany.com/work/crescent-table" target="_blank" rel="noopener noreferrer" data-product="Crescent Table" data-brand="Kin and Co">
         <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/13.crescent-table/1.crescenttable.jpg" alt="Crescent Table by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Crescent Table</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.kinandcompany.com/work/drape-mirror-1" target="_blank" rel="noopener noreferrer" data-product="Drape Mirror 1" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/06.drape-mirror-1/Drape Series copy.jpg" alt="Drape Mirror 1 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Drape Mirror 1</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/drape-mirror-2" target="_blank" rel="noopener noreferrer" data-product="Drape Mirror 2" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/07.drape-mirror-2/Drape Mirror 2 image.2.jpg" alt="Drape Mirror 2 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Drape Mirror 2</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/drape-mirror-3" target="_blank" rel="noopener noreferrer" data-product="Drape Mirror 3" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/08.drape-mirror-3/Drape Mirror 3 image.1.jpg" alt="Drape Mirror 3 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Drape Mirror 3</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/eclipse-mirror" target="_blank" rel="noopener noreferrer" data-product="Eclipse Mirror" data-brand="Kin and Co">
+      <a class="card" id="piece-2" href="https://www.kinandcompany.com/work/eclipse-mirror" target="_blank" rel="noopener noreferrer" data-product="Eclipse Mirror" data-brand="Kin and Co">
         <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/29.eclipse-mirror/eclipsemirror2.jpg" alt="Eclipse Mirror by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Eclipse Mirror</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.kinandcompany.com/work/fragment-table-1" target="_blank" rel="noopener noreferrer" data-product="Fragment Table 1" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/03.fragment-table-1/Fragment Table 1 view.1.jpg" alt="Fragment Table 1 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Fragment Table 1</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/fragment-table-2" target="_blank" rel="noopener noreferrer" data-product="Fragment Table 2" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/04.fragment-table-2/Fragment Table 2 view.1.jpg" alt="Fragment Table 2 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Fragment Table 2</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/geo-table" target="_blank" rel="noopener noreferrer" data-product="Geo Table" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/18.geo-table/_MG_8376 copy.jpg" alt="Geo Table by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Geo Table</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/remains-light" target="_blank" rel="noopener noreferrer" data-product="Remains Light" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/34.remains-light/1.remainslight.jpg" alt="Remains Light by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Remains Light</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/remains-urn" target="_blank" rel="noopener noreferrer" data-product="Remains Urn" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/33.remains-urn/1.remainsurn.jpg" alt="Remains Urn by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Remains Urn</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/fragment-table" target="_blank" rel="noopener noreferrer" data-product="Ripple Series" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/01.fragment-table/ARowley_KinAndCompany_Spring2026_5018.jpg" alt="Ripple Series by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Ripple Series</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/slip-mirror-in-peach" target="_blank" rel="noopener noreferrer" data-product="Slip Mirror in Peach" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/11.slip-mirror-in-peach/2.Slip Mirror Peach.jpg" alt="Slip Mirror in Peach by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Slip Mirror in Peach</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/slip-mirror-in-rose-gradient" target="_blank" rel="noopener noreferrer" data-product="Slip Mirror in Rose Gradient" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/09.slip-mirror-in-rose-gradient/1.slipinrosegradient.jpg" alt="Slip Mirror in Rose Gradient by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Slip Mirror in Rose Gradient</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/slip-mirror" target="_blank" rel="noopener noreferrer" data-product="Slip Mirror in Verdigris" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/10.slip-mirror/IMG_6912 copy.jpg" alt="Slip Mirror in Verdigris by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Slip Mirror in Verdigris</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/square_table" target="_blank" rel="noopener noreferrer" data-product="Squares Table" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/20.square_table/1.squaretable.jpg" alt="Squares Table by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Squares Table</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/stepchair" target="_blank" rel="noopener noreferrer" data-product="Step Chair" data-brand="Kin and Co">
-        <div class="card-image" style="background:#a0d5ec"><img class="contain-fit" src="https://www.kinandcompany.com/user/pages/01.work/21.stepchair/1.Stepchair.jpg" alt="Step Chair by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Step Chair</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/step-stair" target="_blank" rel="noopener noreferrer" data-product="Step Stair" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/22.step-stair/1.StepStair.jpg" alt="Step Stair by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Step Stair</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/thin-bookends" target="_blank" rel="noopener noreferrer" data-product="Thin Bookends" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/28.thin-bookends/2.thinbookends.jpg" alt="Thin Bookends by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Thin Bookends</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/thin_chair" target="_blank" rel="noopener noreferrer" data-product="Thin Chair" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/15.thin_chair/1.thinchair.jpg" alt="Thin Chair by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Thin Chair</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/thin-check-double-chaise-and-table-set" target="_blank" rel="noopener noreferrer" data-product="Thin Check Double Chaise and Table Set" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/25.thin-check-double-chaise-and-table-set/1.thincheckchaise.jpg" alt="Thin Check Double Chaise and Table Set by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Thin Check Double Chaise and Table Set</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/thin-check-table" target="_blank" rel="noopener noreferrer" data-product="Thin Check Table" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/26.thin-check-table/3.thinchecktable.jpg" alt="Thin Check Table by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Thin Check Table</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/thin-shelf-double" target="_blank" rel="noopener noreferrer" data-product="Thin Shelf Double" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/31.thin-shelf-double/3.Thin Shelf Double.jpg" alt="Thin Shelf Double by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Thin Shelf Double</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/thin-shelf-single" target="_blank" rel="noopener noreferrer" data-product="Thin Shelf Single" data-brand="Kin and Co">
+      <a class="card" id="piece-3" href="https://www.kinandcompany.com/work/thin-shelf-single" target="_blank" rel="noopener noreferrer" data-product="Thin Shelf Single" data-brand="Kin and Co">
         <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/30.thin-shelf-single/1.Thin Shelf Single.jpg" alt="Thin Shelf Single by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Thin Shelf Single</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.kinandcompany.com/work/thin-shelf-single-2" target="_blank" rel="noopener noreferrer" data-product="Thin Shelf Single 2" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/32.thin-shelf-single-2/1.Thinshelf2single.jpg" alt="Thin Shelf Single 2 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Thin Shelf Single 2</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/thin-stools" target="_blank" rel="noopener noreferrer" data-product="Thin Stool" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/17.thin-stools/1.thinstool.jpg" alt="Thin Stool by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Thin Stool</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/thin_table_1" target="_blank" rel="noopener noreferrer" data-product="Thin Table 1" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/16.thin_table_1/1.thin1.jpg" alt="Thin Table 1 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Thin Table 1</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/thin_table_2" target="_blank" rel="noopener noreferrer" data-product="Thin Table 2" data-brand="Kin and Co">
-        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/27.thin_table_2/1.thin2.jpg" alt="Thin Table 2 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Thin Table 2</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.kinandcompany.com/work/thin-tete-a-tete" target="_blank" rel="noopener noreferrer" data-product="Thin Tete-a-Tete" data-brand="Kin and Co">
+      <a class="card" id="piece-4" href="https://www.kinandcompany.com/work/thin-tete-a-tete" target="_blank" rel="noopener noreferrer" data-product="Thin Tete-a-Tete" data-brand="Kin and Co">
         <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/24.thin-tete-a-tete/5.thintete.jpg" alt="Thin Tete-a-Tete by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Thin Tete-a-Tete</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.kinandcompany.com/work/fragment-table-3" target="_blank" rel="noopener noreferrer" data-product="Veil Series" data-brand="Kin and Co">
+      <a class="card" id="piece-5" href="https://www.kinandcompany.com/work/thin_chair" target="_blank" rel="noopener noreferrer" data-product="Thin Chair" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/15.thin_chair/1.thinchair.jpg" alt="Thin Chair by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-6" href="https://www.kinandcompany.com/work/thin-bookends" target="_blank" rel="noopener noreferrer" data-product="Thin Bookends" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/28.thin-bookends/2.thinbookends.jpg" alt="Thin Bookends by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Bookends</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-7" href="https://www.kinandcompany.com/work/thin-check-double-chaise-and-table-set" target="_blank" rel="noopener noreferrer" data-product="Thin Check Double Chaise and Table Set" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/25.thin-check-double-chaise-and-table-set/1.thincheckchaise.jpg" alt="Thin Check Double Chaise and Table Set by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Check Double Chaise and Table Set</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-8" href="https://www.kinandcompany.com/work/crescent-console" target="_blank" rel="noopener noreferrer" data-product="Crescent Console" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/12.crescent-console/1.crescentconsole.jpg" alt="Crescent Console by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Crescent Console</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://www.kinandcompany.com/work/remains-light" target="_blank" rel="noopener noreferrer" data-product="Remains Light" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/34.remains-light/1.remainslight.jpg" alt="Remains Light by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Remains Light</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-10" href="https://www.kinandcompany.com/work/thin-stools" target="_blank" rel="noopener noreferrer" data-product="Thin Stool" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/17.thin-stools/1.thinstool.jpg" alt="Thin Stool by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Stool</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://www.kinandcompany.com/work/remains-urn" target="_blank" rel="noopener noreferrer" data-product="Remains Urn" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/33.remains-urn/1.remainsurn.jpg" alt="Remains Urn by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Remains Urn</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-12" href="https://www.kinandcompany.com/work/wave-table-2" target="_blank" rel="noopener noreferrer" data-product="Wave Table 2" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/19.wave-table-2/1.wavetable2.jpg" alt="Wave Table 2 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Wave Table 2</p>
+          
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show all 34 pieces</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p>
+  <div class="grid" data-listing-grid>
+      <a class="card" id="piece-13" href="https://www.kinandcompany.com/work/a-table" target="_blank" rel="noopener noreferrer" data-product="A-Table" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/14.a-table/1.atable.jpg" alt="A-Table by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">A-Table</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-14" href="https://www.kinandcompany.com/work/bow_tie_table" target="_blank" rel="noopener noreferrer" data-product="Bow Tie Table" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/23.bow_tie_table/1.bowtietable.jpg" alt="Bow Tie Table by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bow Tie Table</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.kinandcompany.com/work/crescent-console" target="_blank" rel="noopener noreferrer" data-product="Crescent Console" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/12.crescent-console/1.crescentconsole.jpg" alt="Crescent Console by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Crescent Console</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.kinandcompany.com/work/crescent-table" target="_blank" rel="noopener noreferrer" data-product="Crescent Table" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/13.crescent-table/1.crescenttable.jpg" alt="Crescent Table by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Crescent Table</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-15" href="https://www.kinandcompany.com/work/drape-mirror-1" target="_blank" rel="noopener noreferrer" data-product="Drape Mirror 1" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/06.drape-mirror-1/Drape Series copy.jpg" alt="Drape Mirror 1 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Drape Mirror 1</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-16" href="https://www.kinandcompany.com/work/drape-mirror-2" target="_blank" rel="noopener noreferrer" data-product="Drape Mirror 2" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/07.drape-mirror-2/Drape Mirror 2 image.2.jpg" alt="Drape Mirror 2 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Drape Mirror 2</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-17" href="https://www.kinandcompany.com/work/drape-mirror-3" target="_blank" rel="noopener noreferrer" data-product="Drape Mirror 3" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/08.drape-mirror-3/Drape Mirror 3 image.1.jpg" alt="Drape Mirror 3 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Drape Mirror 3</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.kinandcompany.com/work/eclipse-mirror" target="_blank" rel="noopener noreferrer" data-product="Eclipse Mirror" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/29.eclipse-mirror/eclipsemirror2.jpg" alt="Eclipse Mirror by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Eclipse Mirror</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-18" href="https://www.kinandcompany.com/work/fragment-table-1" target="_blank" rel="noopener noreferrer" data-product="Fragment Table 1" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/03.fragment-table-1/Fragment Table 1 view.1.jpg" alt="Fragment Table 1 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Fragment Table 1</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-19" href="https://www.kinandcompany.com/work/fragment-table-2" target="_blank" rel="noopener noreferrer" data-product="Fragment Table 2" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/04.fragment-table-2/Fragment Table 2 view.1.jpg" alt="Fragment Table 2 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Fragment Table 2</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-20" href="https://www.kinandcompany.com/work/geo-table" target="_blank" rel="noopener noreferrer" data-product="Geo Table" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/18.geo-table/_MG_8376 copy.jpg" alt="Geo Table by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Geo Table</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.kinandcompany.com/work/remains-light" target="_blank" rel="noopener noreferrer" data-product="Remains Light" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/34.remains-light/1.remainslight.jpg" alt="Remains Light by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Remains Light</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.kinandcompany.com/work/remains-urn" target="_blank" rel="noopener noreferrer" data-product="Remains Urn" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/33.remains-urn/1.remainsurn.jpg" alt="Remains Urn by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Remains Urn</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-21" href="https://www.kinandcompany.com/work/fragment-table" target="_blank" rel="noopener noreferrer" data-product="Ripple Series" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/01.fragment-table/ARowley_KinAndCompany_Spring2026_5018.jpg" alt="Ripple Series by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Ripple Series</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-22" href="https://www.kinandcompany.com/work/slip-mirror-in-peach" target="_blank" rel="noopener noreferrer" data-product="Slip Mirror in Peach" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/11.slip-mirror-in-peach/2.Slip Mirror Peach.jpg" alt="Slip Mirror in Peach by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Slip Mirror in Peach</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-23" href="https://www.kinandcompany.com/work/slip-mirror-in-rose-gradient" target="_blank" rel="noopener noreferrer" data-product="Slip Mirror in Rose Gradient" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/09.slip-mirror-in-rose-gradient/1.slipinrosegradient.jpg" alt="Slip Mirror in Rose Gradient by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Slip Mirror in Rose Gradient</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-24" href="https://www.kinandcompany.com/work/slip-mirror" target="_blank" rel="noopener noreferrer" data-product="Slip Mirror in Verdigris" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/10.slip-mirror/IMG_6912 copy.jpg" alt="Slip Mirror in Verdigris by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Slip Mirror in Verdigris</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-25" href="https://www.kinandcompany.com/work/square_table" target="_blank" rel="noopener noreferrer" data-product="Squares Table" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/20.square_table/1.squaretable.jpg" alt="Squares Table by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Squares Table</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-26" href="https://www.kinandcompany.com/work/stepchair" target="_blank" rel="noopener noreferrer" data-product="Step Chair" data-brand="Kin and Co">
+        <div class="card-image" style="background:#a0d5ec"><img class="contain-fit" src="https://www.kinandcompany.com/user/pages/01.work/21.stepchair/1.Stepchair.jpg" alt="Step Chair by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Step Chair</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-27" href="https://www.kinandcompany.com/work/step-stair" target="_blank" rel="noopener noreferrer" data-product="Step Stair" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/22.step-stair/1.StepStair.jpg" alt="Step Stair by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Step Stair</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.kinandcompany.com/work/thin-bookends" target="_blank" rel="noopener noreferrer" data-product="Thin Bookends" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/28.thin-bookends/2.thinbookends.jpg" alt="Thin Bookends by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Bookends</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.kinandcompany.com/work/thin_chair" target="_blank" rel="noopener noreferrer" data-product="Thin Chair" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/15.thin_chair/1.thinchair.jpg" alt="Thin Chair by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Chair</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.kinandcompany.com/work/thin-check-double-chaise-and-table-set" target="_blank" rel="noopener noreferrer" data-product="Thin Check Double Chaise and Table Set" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/25.thin-check-double-chaise-and-table-set/1.thincheckchaise.jpg" alt="Thin Check Double Chaise and Table Set by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Check Double Chaise and Table Set</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-28" href="https://www.kinandcompany.com/work/thin-check-table" target="_blank" rel="noopener noreferrer" data-product="Thin Check Table" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/26.thin-check-table/3.thinchecktable.jpg" alt="Thin Check Table by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Check Table</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-29" href="https://www.kinandcompany.com/work/thin-shelf-double" target="_blank" rel="noopener noreferrer" data-product="Thin Shelf Double" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/31.thin-shelf-double/3.Thin Shelf Double.jpg" alt="Thin Shelf Double by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Shelf Double</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.kinandcompany.com/work/thin-shelf-single" target="_blank" rel="noopener noreferrer" data-product="Thin Shelf Single" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/30.thin-shelf-single/1.Thin Shelf Single.jpg" alt="Thin Shelf Single by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Shelf Single</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-30" href="https://www.kinandcompany.com/work/thin-shelf-single-2" target="_blank" rel="noopener noreferrer" data-product="Thin Shelf Single 2" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/32.thin-shelf-single-2/1.Thinshelf2single.jpg" alt="Thin Shelf Single 2 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Shelf Single 2</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.kinandcompany.com/work/thin-stools" target="_blank" rel="noopener noreferrer" data-product="Thin Stool" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/17.thin-stools/1.thinstool.jpg" alt="Thin Stool by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Stool</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-31" href="https://www.kinandcompany.com/work/thin_table_1" target="_blank" rel="noopener noreferrer" data-product="Thin Table 1" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/16.thin_table_1/1.thin1.jpg" alt="Thin Table 1 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Table 1</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-32" href="https://www.kinandcompany.com/work/thin_table_2" target="_blank" rel="noopener noreferrer" data-product="Thin Table 2" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/27.thin_table_2/1.thin2.jpg" alt="Thin Table 2 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Table 2</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.kinandcompany.com/work/thin-tete-a-tete" target="_blank" rel="noopener noreferrer" data-product="Thin Tete-a-Tete" data-brand="Kin and Co">
+        <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/24.thin-tete-a-tete/5.thintete.jpg" alt="Thin Tete-a-Tete by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Thin Tete-a-Tete</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-33" href="https://www.kinandcompany.com/work/fragment-table-3" target="_blank" rel="noopener noreferrer" data-product="Veil Series" data-brand="Kin and Co">
         <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/02.fragment-table-3/ARowley_KinAndCompany_Spring2026_4900small.jpg" alt="Veil Series by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Veil Series</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.kinandcompany.com/work/wave-table" target="_blank" rel="noopener noreferrer" data-product="Wave Table 1" data-brand="Kin and Co">
+      <a class="card" id="piece-34" href="https://www.kinandcompany.com/work/wave-table" target="_blank" rel="noopener noreferrer" data-product="Wave Table 1" data-brand="Kin and Co">
         <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/05.wave-table/1.Wave Table.jpg" alt="Wave Table 1 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Wave Table 1</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.kinandcompany.com/work/wave-table-2" target="_blank" rel="noopener noreferrer" data-product="Wave Table 2" data-brand="Kin and Co">
+      <a class="card in-selection" href="https://www.kinandcompany.com/work/wave-table-2" target="_blank" rel="noopener noreferrer" data-product="Wave Table 2" data-brand="Kin and Co">
         <div class="card-image"><img src="https://www.kinandcompany.com/user/pages/01.work/19.wave-table-2/1.wavetable2.jpg" alt="Wave Table 2 by Kin and Co" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Wave Table 2</p>
@@ -540,7 +647,7 @@
         </div>
       </a></div>
   
-  
+  </div>
 
   <section class="brand-section">
     <p class="brand-section-title">Makers like Kin and Co</p>
@@ -587,8 +694,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

@@ -262,11 +262,30 @@
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
   .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
 </style>
+<script>document.documentElement.classList.add("explore-js");</script>
 <style>
   .creator-text { max-width: 640px; margin: 0 auto 36px; }
   .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
@@ -292,13 +311,13 @@
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">Maruni</h1>
-    <div class="tags"><span class="tag">Furniture</span><span class="tag">Ceramics</span><span class="tag">Objects</span><span class="tag">Japan</span></div>
+    <div class="tags"><a class="tag tag-link" href="/work/furniture.html">Furniture</a><a class="tag tag-link" href="/work.html?q=ceramics">Ceramics</a><a class="tag tag-link" href="/work/objects.html">Objects</a><a class="tag tag-link" href="/work.html?q=from+Japan">Japan</a></div>
+    <p class="meta-line">Hiroshima · Founded 1928</p>
     <a class="brand-site-link" href="https://www.maruni.com" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
 
   <section class="creator-text">
     <p>Maruni is a wood furniture maker in Hiroshima, Japan, founded in 1928 as Showa Bentwood Factory and renamed Maruni Wood Industry in 1933. It makes chairs, sofas, stools and tables, including the Hiroshima series developed under art director Naoto Fukasawa, which has a natural wood finish with almost no paint or varnish.</p><p>Maruni works with outside designers: Fukasawa has been art director since 2010, Jasper Morrison joined in 2011 and Cecilie Manz in 2022. The factory is in Hiroshima prefecture and showrooms are in Tokyo, Osaka, Hiroshima, Hatsukaichi and Fukuoka. On Formground it is shown through 189 pieces, each linked to its own page.</p>
-    <dl class="creator-facts"><dt>Country</dt><dd>Japan</dd><dt>City</dt><dd>Hiroshima</dd><dt>Type</dt><dd>Maker</dd><dt>Products</dt><dd>Wood furniture</dd><dt>Founded</dt><dd>1928</dd><dt>Website</dt><dd>maruni.com</dd></dl>
   </section>
   <section class="brand-section brand-section--top">
     <p class="brand-section-title">New from Maruni</p>
@@ -345,24 +364,111 @@
           
         </div>
       </a></div>
-  </section>  <p class="brand-section-title">All of Maruni</p>
-  
+  </section>
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://www.maruni.com/en/product/hr_table160_rectangular/" target="_blank" rel="noopener noreferrer" data-product="TABLE 160 (rectangular) Low/High" data-brand="Maruni">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_table160_rectangular/Product/beech_NL0.jpg" alt="TABLE 160 (rectangular) Low/High by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">TABLE 160 (rectangular) Low/High</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-2" href="https://www.maruni.com/en/product/lw_stool_high_webbing_seat/" target="_blank" rel="noopener noreferrer" data-product="STOOL High (webbing seat)" data-brand="Maruni">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_stool_high_webbing_seat/Product/maple_C0.jpg" alt="STOOL High (webbing seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">STOOL High (webbing seat)</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-3" href="https://www.maruni.com/en/product/sn_armless_chair_mini/" target="_blank" rel="noopener noreferrer" data-product="ARMLESS CHAIR (Mini)" data-brand="Maruni">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sn_armless_chair_mini/Product/beech_NK1.jpg" alt="ARMLESS CHAIR (Mini) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">ARMLESS CHAIR (Mini)</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-4" href="https://www.maruni.com/en/product/to_t2_bar_stool_mid/" target="_blank" rel="noopener noreferrer" data-product="T2 BAR STOOL Mid" data-brand="Maruni">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/to_t2_bar_stool_mid/Product/maple_C0_bk.jpg" alt="T2 BAR STOOL Mid by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">T2 BAR STOOL Mid</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-5" href="https://www.maruni.com/en/product/to_coffeetable90/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 90  (veneered top / solid wood top)" data-brand="Maruni">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/to_coffeetable90/Product/maple_C0_bk.jpg" alt="COFFEE TABLE 90  (veneered top / solid wood top) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">COFFEE TABLE 90  (veneered top / solid wood top)</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-6" href="https://www.maruni.com/en/product/hr_armchair_cushioned/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (cushioned) Low/High" data-brand="Maruni">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_armchair_cushioned/Product/walnut_C0.jpg" alt="ARMCHAIR (cushioned) Low/High by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">ARMCHAIR (cushioned) Low/High</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-7" href="https://www.maruni.com/en/product/ab_bench240/" target="_blank" rel="noopener noreferrer" data-product="BENCH 240" data-brand="Maruni">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/ab_bench240/Product/oak_BMR1.jpg" alt="BENCH 240 by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">BENCH 240</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-8" href="https://www.maruni.com/en/product/sh_side_table_70_oval/" target="_blank" rel="noopener noreferrer" data-product="SIDE TABLE 70 (oval)" data-brand="Maruni">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sh_side_table_70_oval/Product/ash_NL0.jpg" alt="SIDE TABLE 70 (oval) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">SIDE TABLE 70 (oval)</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://www.maruni.com/en/product/br_three_seater_sofa/" target="_blank" rel="noopener noreferrer" data-product="THREE SEATER SOFA" data-brand="Maruni">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/br_three_seater_sofa/Product/ash_NL0.jpg" alt="THREE SEATER SOFA by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">THREE SEATER SOFA</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-10" href="https://www.maruni.com/en/product/to_round_bar_table63/" target="_blank" rel="noopener noreferrer" data-product="ROUND BAR TABLE 63  (veneered top)" data-brand="Maruni">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/to_round_bar_table63/Product/oak_NL0_bk.jpg" alt="ROUND BAR TABLE 63  (veneered top) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">ROUND BAR TABLE 63  (veneered top)</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://www.maruni.com/en/product/hr_open_shelf_180/" target="_blank" rel="noopener noreferrer" data-product="OPEN SHELF 180" data-brand="Maruni">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_open_shelf_180/Product/walnut_C0.jpg" alt="OPEN SHELF 180 by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">OPEN SHELF 180</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-12" href="https://www.maruni.com/en/product/fg_lounge_chair_armless/" target="_blank" rel="noopener noreferrer" data-product="LOUNGE CHAIR (armless)" data-brand="Maruni">
+        <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/fg_lounge_chair_armless/Product/oak_NL0.jpg" alt="LOUNGE CHAIR (armless) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">LOUNGE CHAIR (armless)</p>
+          
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show more pieces (189 in all)</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p>
   <div class="grid" data-listing-grid>
-      <a class="card" href="https://www.maruni.com/en/product/hr_angled_open_shelf_207_left/" target="_blank" rel="noopener noreferrer" data-product="ANGLED OPEN SHELF 207 Left" data-brand="Maruni">
+      <a class="card" id="piece-13" href="https://www.maruni.com/en/product/hr_angled_open_shelf_207_left/" target="_blank" rel="noopener noreferrer" data-product="ANGLED OPEN SHELF 207 Left" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_angled_open_shelf_207_left/Product/oak_BNK1.jpg" alt="ANGLED OPEN SHELF 207 Left by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ANGLED OPEN SHELF 207 Left</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/hr_angled_open_shelf_207_right/" target="_blank" rel="noopener noreferrer" data-product="ANGLED OPEN SHELF 207 Right" data-brand="Maruni">
+      <a class="card" id="piece-14" href="https://www.maruni.com/en/product/hr_angled_open_shelf_207_right/" target="_blank" rel="noopener noreferrer" data-product="ANGLED OPEN SHELF 207 Right" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_angled_open_shelf_207_right/Product/oak_BNK1.jpg" alt="ANGLED OPEN SHELF 207 Right by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ANGLED OPEN SHELF 207 Right</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/br_arm_sofa/" target="_blank" rel="noopener noreferrer" data-product="ARM SOFA" data-brand="Maruni">
+      <a class="card" id="piece-15" href="https://www.maruni.com/en/product/br_arm_sofa/" target="_blank" rel="noopener noreferrer" data-product="ARM SOFA" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/br_arm_sofa/Product/oak_C0.jpg" alt="ARM SOFA by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARM SOFA</p>
@@ -383,14 +489,14 @@
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/fg_armchair/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR" data-brand="Maruni">
+      <a class="card" id="piece-16" href="https://www.maruni.com/en/product/fg_armchair/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/fg_armchair/Product/ash_NL0.jpg" alt="ARMCHAIR by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMCHAIR</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_armchair_cushioned/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (cushioned)" data-brand="Maruni">
+      <a class="card" id="piece-17" href="https://www.maruni.com/en/product/lw_armchair_cushioned/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (cushioned)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_armchair_cushioned/Product/ash_NL0.jpg" alt="ARMCHAIR (cushioned) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMCHAIR (cushioned)</p>
@@ -411,35 +517,35 @@
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/hr_armchair_cushioned/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (cushioned) Low/High" data-brand="Maruni">
+      <a class="card in-selection" href="https://www.maruni.com/en/product/hr_armchair_cushioned/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (cushioned) Low/High" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_armchair_cushioned/Product/walnut_C0.jpg" alt="ARMCHAIR (cushioned) Low/High by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMCHAIR (cushioned) Low/High</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_armchair_mesh_seat/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (mesh seat)" data-brand="Maruni">
+      <a class="card" id="piece-18" href="https://www.maruni.com/en/product/lw_armchair_mesh_seat/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (mesh seat)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_armchair_mesh_seat/Product/maple_C0.jpg" alt="ARMCHAIR (mesh seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMCHAIR (mesh seat)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_armchair_paper_cord/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (paper cord)" data-brand="Maruni">
+      <a class="card" id="piece-19" href="https://www.maruni.com/en/product/lw_armchair_paper_cord/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (paper cord)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_armchair_paper_cord/Product/maple_C0.jpg" alt="ARMCHAIR (paper cord) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMCHAIR (paper cord)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_armchair_webbing_seat/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (webbing seat)" data-brand="Maruni">
+      <a class="card" id="piece-20" href="https://www.maruni.com/en/product/lw_armchair_webbing_seat/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (webbing seat)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_armchair_webbing_seat/Product/ash_NL0.jpg" alt="ARMCHAIR (webbing seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMCHAIR (webbing seat)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/rd_armchair_wooden_seat/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (wooden seat)" data-brand="Maruni">
+      <a class="card" id="piece-21" href="https://www.maruni.com/en/product/rd_armchair_wooden_seat/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (wooden seat)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/rd_armchair_wooden_seat/Product/beech_NL0.jpg" alt="ARMCHAIR (wooden seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMCHAIR (wooden seat)</p>
@@ -453,168 +559,168 @@
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/hr_armchair_wooden_seat/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (wooden seat) Low/High" data-brand="Maruni">
+      <a class="card" id="piece-22" href="https://www.maruni.com/en/product/hr_armchair_wooden_seat/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR (wooden seat) Low/High" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_armchair_wooden_seat/Product/beech_NL0.jpg" alt="ARMCHAIR (wooden seat) Low/High by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMCHAIR (wooden seat) Low/High</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/hr_armchair_stackable_cushioned/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR STACKABLE (cushioned)" data-brand="Maruni">
+      <a class="card" id="piece-23" href="https://www.maruni.com/en/product/hr_armchair_stackable_cushioned/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR STACKABLE (cushioned)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_armchair_stackable_cushioned/Product/beech_NL0_cr.jpg" alt="ARMCHAIR STACKABLE (cushioned) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMCHAIR STACKABLE (cushioned)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/hr_armchair_stackable_wooden_seat/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR STACKABLE (wooden seat)" data-brand="Maruni">
+      <a class="card" id="piece-24" href="https://www.maruni.com/en/product/hr_armchair_stackable_wooden_seat/" target="_blank" rel="noopener noreferrer" data-product="ARMCHAIR STACKABLE (wooden seat)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/hr_armchair_stackable_wooden_seat/Product/beech_NL0_cr.jpg" alt="ARMCHAIR STACKABLE (wooden seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMCHAIR STACKABLE (wooden seat)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/sn_armless_chair/" target="_blank" rel="noopener noreferrer" data-product="ARMLESS CHAIR" data-brand="Maruni">
+      <a class="card" id="piece-25" href="https://www.maruni.com/en/product/sn_armless_chair/" target="_blank" rel="noopener noreferrer" data-product="ARMLESS CHAIR" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sn_armless_chair/Product/beech_EI0.jpg" alt="ARMLESS CHAIR by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMLESS CHAIR</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/sn_armless_chair_mini/" target="_blank" rel="noopener noreferrer" data-product="ARMLESS CHAIR (Mini)" data-brand="Maruni">
+      <a class="card in-selection" href="https://www.maruni.com/en/product/sn_armless_chair_mini/" target="_blank" rel="noopener noreferrer" data-product="ARMLESS CHAIR (Mini)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sn_armless_chair_mini/Product/beech_NK1.jpg" alt="ARMLESS CHAIR (Mini) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMLESS CHAIR (Mini)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/sn_armless_chair_minimini/" target="_blank" rel="noopener noreferrer" data-product="ARMLESS CHAIR (Minimini)" data-brand="Maruni">
+      <a class="card" id="piece-26" href="https://www.maruni.com/en/product/sn_armless_chair_minimini/" target="_blank" rel="noopener noreferrer" data-product="ARMLESS CHAIR (Minimini)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sn_armless_chair_minimini/Product/beech_NK1.jpg" alt="ARMLESS CHAIR (Minimini) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ARMLESS CHAIR (Minimini)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_bar_stool_high_cushioned/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL High (cushioned)" data-brand="Maruni">
+      <a class="card" id="piece-27" href="https://www.maruni.com/en/product/lw_bar_stool_high_cushioned/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL High (cushioned)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_bar_stool_high_cushioned/Product/maple_C0.jpg" alt="BAR STOOL High (cushioned) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BAR STOOL High (cushioned)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_bar_stool_high_mesh_seat/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL High (mesh seat)" data-brand="Maruni">
+      <a class="card" id="piece-28" href="https://www.maruni.com/en/product/lw_bar_stool_high_mesh_seat/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL High (mesh seat)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_bar_stool_high_mesh_seat/Product/maple_C0.jpg" alt="BAR STOOL High (mesh seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BAR STOOL High (mesh seat)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_bar_stool_high_paper_cord/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL High (paper cord)" data-brand="Maruni">
+      <a class="card" id="piece-29" href="https://www.maruni.com/en/product/lw_bar_stool_high_paper_cord/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL High (paper cord)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_bar_stool_high_paper_cord/Product/maple_C0.jpg" alt="BAR STOOL High (paper cord) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BAR STOOL High (paper cord)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_bar_stool_high_webbing_seat/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL High (webbing seat)" data-brand="Maruni">
+      <a class="card" id="piece-30" href="https://www.maruni.com/en/product/lw_bar_stool_high_webbing_seat/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL High (webbing seat)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_bar_stool_high_webbing_seat/Product/maple_C0.jpg" alt="BAR STOOL High (webbing seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BAR STOOL High (webbing seat)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_bar_stool_mid_cushioned/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL Mid (cushioned)" data-brand="Maruni">
+      <a class="card" id="piece-31" href="https://www.maruni.com/en/product/lw_bar_stool_mid_cushioned/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL Mid (cushioned)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_bar_stool_mid_cushioned/Product/maple_C0.jpg" alt="BAR STOOL Mid (cushioned) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BAR STOOL Mid (cushioned)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_bar_stool_mid_mesh_seat/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL Mid (mesh seat)" data-brand="Maruni">
+      <a class="card" id="piece-32" href="https://www.maruni.com/en/product/lw_bar_stool_mid_mesh_seat/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL Mid (mesh seat)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_bar_stool_mid_mesh_seat/Product/maple_C0.jpg" alt="BAR STOOL Mid (mesh seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BAR STOOL Mid (mesh seat)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_bar_stool_mid_paper_cord/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL Mid (paper cord)" data-brand="Maruni">
+      <a class="card" id="piece-33" href="https://www.maruni.com/en/product/lw_bar_stool_mid_paper_cord/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL Mid (paper cord)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_bar_stool_mid_paper_cord/Product/maple_C0.jpg" alt="BAR STOOL Mid (paper cord) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BAR STOOL Mid (paper cord)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_bar_stool_mid_webbing_seat/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL Mid (webbing seat)" data-brand="Maruni">
+      <a class="card" id="piece-34" href="https://www.maruni.com/en/product/lw_bar_stool_mid_webbing_seat/" target="_blank" rel="noopener noreferrer" data-product="BAR STOOL Mid (webbing seat)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_bar_stool_mid_webbing_seat/Product/maple_C0.jpg" alt="BAR STOOL Mid (webbing seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BAR STOOL Mid (webbing seat)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/sh_bar_table_70_oval_high/" target="_blank" rel="noopener noreferrer" data-product="BAR TABLE 70 (oval) High" data-brand="Maruni">
+      <a class="card" id="piece-35" href="https://www.maruni.com/en/product/sh_bar_table_70_oval_high/" target="_blank" rel="noopener noreferrer" data-product="BAR TABLE 70 (oval) High" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sh_bar_table_70_oval_high/Product/ash_NL0.jpg" alt="BAR TABLE 70 (oval) High by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BAR TABLE 70 (oval) High</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/sh_bar_table_70_oval_mid/" target="_blank" rel="noopener noreferrer" data-product="BAR TABLE 70 (oval) Mid" data-brand="Maruni">
+      <a class="card" id="piece-36" href="https://www.maruni.com/en/product/sh_bar_table_70_oval_mid/" target="_blank" rel="noopener noreferrer" data-product="BAR TABLE 70 (oval) Mid" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sh_bar_table_70_oval_mid/Product/ash_NL0.jpg" alt="BAR TABLE 70 (oval) Mid by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BAR TABLE 70 (oval) Mid</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/sh_bar_table_76_oval_mid/" target="_blank" rel="noopener noreferrer" data-product="BAR TABLE 76 (oval) Mid" data-brand="Maruni">
+      <a class="card" id="piece-37" href="https://www.maruni.com/en/product/sh_bar_table_76_oval_mid/" target="_blank" rel="noopener noreferrer" data-product="BAR TABLE 76 (oval) Mid" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sh_bar_table_76_oval_mid/Product/ash_NL0.jpg" alt="BAR TABLE 76 (oval) Mid by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BAR TABLE 76 (oval) Mid</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/bt_bench122/" target="_blank" rel="noopener noreferrer" data-product="BENCH 122" data-brand="Maruni">
+      <a class="card" id="piece-38" href="https://www.maruni.com/en/product/bt_bench122/" target="_blank" rel="noopener noreferrer" data-product="BENCH 122" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/bt_bench122/Product/pine.jpg" alt="BENCH 122 by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BENCH 122</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/bt_bench122_basic/" target="_blank" rel="noopener noreferrer" data-product="BENCH 122 Basic" data-brand="Maruni">
+      <a class="card" id="piece-39" href="https://www.maruni.com/en/product/bt_bench122_basic/" target="_blank" rel="noopener noreferrer" data-product="BENCH 122 Basic" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/bt_bench122_basic/Product/pine.jpg" alt="BENCH 122 Basic by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BENCH 122 Basic</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/ab_bench165/" target="_blank" rel="noopener noreferrer" data-product="BENCH 165" data-brand="Maruni">
+      <a class="card" id="piece-40" href="https://www.maruni.com/en/product/ab_bench165/" target="_blank" rel="noopener noreferrer" data-product="BENCH 165" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/ab_bench165/Product/oak_C0.jpg" alt="BENCH 165 by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BENCH 165</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/bt_bench210/" target="_blank" rel="noopener noreferrer" data-product="BENCH 210" data-brand="Maruni">
+      <a class="card" id="piece-41" href="https://www.maruni.com/en/product/bt_bench210/" target="_blank" rel="noopener noreferrer" data-product="BENCH 210" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/bt_bench210/Product/oak_NL0.jpg" alt="BENCH 210 by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BENCH 210</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/bt_bench210_basic/" target="_blank" rel="noopener noreferrer" data-product="BENCH 210 Basic" data-brand="Maruni">
+      <a class="card" id="piece-42" href="https://www.maruni.com/en/product/bt_bench210_basic/" target="_blank" rel="noopener noreferrer" data-product="BENCH 210 Basic" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/bt_bench210_basic/Product/oak_NL0.jpg" alt="BENCH 210 Basic by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BENCH 210 Basic</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/ab_bench240/" target="_blank" rel="noopener noreferrer" data-product="BENCH 240" data-brand="Maruni">
+      <a class="card in-selection" href="https://www.maruni.com/en/product/ab_bench240/" target="_blank" rel="noopener noreferrer" data-product="BENCH 240" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/ab_bench240/Product/oak_BMR1.jpg" alt="BENCH 240 by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">BENCH 240</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/fg_chair/" target="_blank" rel="noopener noreferrer" data-product="CHAIR" data-brand="Maruni">
+      <a class="card" id="piece-43" href="https://www.maruni.com/en/product/fg_chair/" target="_blank" rel="noopener noreferrer" data-product="CHAIR" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/fg_chair/Product/oak_NL0.jpg" alt="CHAIR by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">CHAIR</p>
@@ -628,14 +734,14 @@
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/rd_chair_cushioned_seat/" target="_blank" rel="noopener noreferrer" data-product="CHAIR (cushioned seat)" data-brand="Maruni">
+      <a class="card" id="piece-44" href="https://www.maruni.com/en/product/rd_chair_cushioned_seat/" target="_blank" rel="noopener noreferrer" data-product="CHAIR (cushioned seat)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/rd_chair_cushioned_seat/Product/beech_NL0.jpg" alt="CHAIR (cushioned seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">CHAIR (cushioned seat)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/en_chair_cushioned/" target="_blank" rel="noopener noreferrer" data-product="CHAIR (cushioned)" data-brand="Maruni">
+      <a class="card" id="piece-45" href="https://www.maruni.com/en/product/en_chair_cushioned/" target="_blank" rel="noopener noreferrer" data-product="CHAIR (cushioned)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/en_chair_cushioned/Product/maple_C0.jpg" alt="CHAIR (cushioned) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">CHAIR (cushioned)</p>
@@ -656,28 +762,28 @@
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_chair_mesh_seat/" target="_blank" rel="noopener noreferrer" data-product="CHAIR (mesh seat)" data-brand="Maruni">
+      <a class="card" id="piece-46" href="https://www.maruni.com/en/product/lw_chair_mesh_seat/" target="_blank" rel="noopener noreferrer" data-product="CHAIR (mesh seat)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_chair_mesh_seat/Product/ash_NL0.jpg" alt="CHAIR (mesh seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">CHAIR (mesh seat)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_chair_paper_cord_seat/" target="_blank" rel="noopener noreferrer" data-product="CHAIR (paper cord)" data-brand="Maruni">
+      <a class="card" id="piece-47" href="https://www.maruni.com/en/product/lw_chair_paper_cord_seat/" target="_blank" rel="noopener noreferrer" data-product="CHAIR (paper cord)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_chair_paper_cord_seat/Product/oak_NL0.jpg" alt="CHAIR (paper cord) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">CHAIR (paper cord)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/lw_chair_webbing_seat/" target="_blank" rel="noopener noreferrer" data-product="CHAIR (webbing seat)" data-brand="Maruni">
+      <a class="card" id="piece-48" href="https://www.maruni.com/en/product/lw_chair_webbing_seat/" target="_blank" rel="noopener noreferrer" data-product="CHAIR (webbing seat)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/lw_chair_webbing_seat/Product/maple_C0.jpg" alt="CHAIR (webbing seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">CHAIR (webbing seat)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/en_chair_wooden_seat/" target="_blank" rel="noopener noreferrer" data-product="CHAIR (wooden seat)" data-brand="Maruni">
+      <a class="card" id="piece-49" href="https://www.maruni.com/en/product/en_chair_wooden_seat/" target="_blank" rel="noopener noreferrer" data-product="CHAIR (wooden seat)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/en_chair_wooden_seat/Product/maple_C0.jpg" alt="CHAIR (wooden seat) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">CHAIR (wooden seat)</p>
@@ -691,7 +797,7 @@
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/br_coffee_table100/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 100" data-brand="Maruni">
+      <a class="card" id="piece-50" href="https://www.maruni.com/en/product/br_coffee_table100/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 100" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/br_coffee_table100/Product/oak_NL0.jpg" alt="COFFEE TABLE 100 by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">COFFEE TABLE 100</p>
@@ -705,63 +811,63 @@
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/sh_coffee_table_105_oval/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 105 (oval)" data-brand="Maruni">
+      <a class="card" id="piece-51" href="https://www.maruni.com/en/product/sh_coffee_table_105_oval/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 105 (oval)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sh_coffee_table_105_oval/Product/maple_C0.jpg" alt="COFFEE TABLE 105 (oval) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">COFFEE TABLE 105 (oval)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/rd_coffee_table120/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 120" data-brand="Maruni">
+      <a class="card" id="piece-52" href="https://www.maruni.com/en/product/rd_coffee_table120/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 120" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/rd_coffee_table120/Product/beech_NL0.jpg" alt="COFFEE TABLE 120 by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">COFFEE TABLE 120</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/sh_coffee_table_120_oval/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 120 (oval)" data-brand="Maruni">
+      <a class="card" id="piece-53" href="https://www.maruni.com/en/product/sh_coffee_table_120_oval/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 120 (oval)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sh_coffee_table_120_oval/Product/ash_NL0.jpg" alt="COFFEE TABLE 120 (oval) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">COFFEE TABLE 120 (oval)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/sh_coffee_table_125_oval/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 125 (oval)" data-brand="Maruni">
+      <a class="card" id="piece-54" href="https://www.maruni.com/en/product/sh_coffee_table_125_oval/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 125 (oval)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sh_coffee_table_125_oval/Product/ash_NL0.jpg" alt="COFFEE TABLE 125 (oval) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">COFFEE TABLE 125 (oval)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/br_coffee_table135/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 135" data-brand="Maruni">
+      <a class="card" id="piece-55" href="https://www.maruni.com/en/product/br_coffee_table135/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 135" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/br_coffee_table135/Product/oak_C0.jpg" alt="COFFEE TABLE 135 by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">COFFEE TABLE 135</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/sh_coffee_table_140_rectangular/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 140 (rectangular)" data-brand="Maruni">
+      <a class="card" id="piece-56" href="https://www.maruni.com/en/product/sh_coffee_table_140_rectangular/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 140 (rectangular)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sh_coffee_table_140_rectangular/Product/maple_C0.jpg" alt="COFFEE TABLE 140 (rectangular) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">COFFEE TABLE 140 (rectangular)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/fg_coffee_table80/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 80" data-brand="Maruni">
+      <a class="card" id="piece-57" href="https://www.maruni.com/en/product/fg_coffee_table80/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 80" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/fg_coffee_table80/Product/oak_NL0.jpg" alt="COFFEE TABLE 80 by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">COFFEE TABLE 80</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/sh_coffee_table_85_rectangular/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 85 (rectangular)" data-brand="Maruni">
+      <a class="card" id="piece-58" href="https://www.maruni.com/en/product/sh_coffee_table_85_rectangular/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 85 (rectangular)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/sh_coffee_table_85_rectangular/Product/ash_NL0.jpg" alt="COFFEE TABLE 85 (rectangular) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">COFFEE TABLE 85 (rectangular)</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.maruni.com/en/product/to_coffeetable90/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 90  (veneered top / solid wood top)" data-brand="Maruni">
+      <a class="card in-selection" href="https://www.maruni.com/en/product/to_coffeetable90/" target="_blank" rel="noopener noreferrer" data-product="COFFEE TABLE 90  (veneered top / solid wood top)" data-brand="Maruni">
         <div class="card-image"><img src="https://www.maruni.com/en/img/pages/products/to_coffeetable90/Product/maple_C0_bk.jpg" alt="COFFEE TABLE 90  (veneered top / solid wood top) by Maruni" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">COFFEE TABLE 90  (veneered top / solid wood top)</p>
@@ -769,7 +875,7 @@
         </div>
       </a></div>
   <div class="load-more-row"><a class="load-more-btn" id="see-more" data-total="189" data-start="0" href="/brands/maruni-2.html">See more pieces</a><span class="load-more-progress" id="see-more-progress"></span></div>
-  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/brands/maruni-2.html">2</a><span class="gap" aria-hidden="true">&hellip;</span><a href="/brands/maruni-4.html">4</a><a href="/brands/maruni-2.html" rel="next">Next &rarr;</a></nav>
+  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/brands/maruni-2.html">2</a><span class="gap" aria-hidden="true">&hellip;</span><a href="/brands/maruni-4.html">4</a><a href="/brands/maruni-2.html" rel="next">Next &rarr;</a></nav></div>
 
   <section class="brand-section">
     <p class="brand-section-title">Makers like Maruni</p>
@@ -816,8 +922,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

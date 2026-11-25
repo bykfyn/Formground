@@ -49,6 +49,10 @@ from generate_brand_pages import (
     product_card_html,
     CLOUDFLARE_ANALYTICS,
     DIRECTORY_FILTER_JS,
+    EXPLORE_HEAD_JS,
+    EXPLORE_JS,
+    SELECTION_SIZE,
+    explore_layout,
     FAVICON_TAGS,
     HERO_SEARCH_POSITION_CSS,
     PAGE_CSS,
@@ -252,6 +256,17 @@ def render_designer_page(designer_name, slug, products, page=1):
             'data-brand="', f'data-slug="{slugify(p["brand"])}" data-brand="', 1)
         for p in products_sorted)
     brand_chips = brand_filter_html(products) if multi else ""
+    card_html = lambda p: product_card_html(p, show_brand=True, share=True).replace(
+        'data-brand="', f'data-slug="{slugify(p["brand"])}" data-brand="', 1)
+    text_html = creator_texts.text_block_html("designers", slug, len(products), facts_block=False) if page == 1 else ""
+    meta_line = creator_texts.meta_line_html("designers", slug, with_country=True) if page == 1 else ""
+    intro_html = (f'''<p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;"><span id="shown-count">{len(products)}</span> <span id="shown-noun">product{'' if len(products) == 1 else 's'}</span> credited to {html.escape(designer_name)}, each linked straight to its maker's own page.</p>{brand_chips}''')
+    listing_html = f"{earlier_html}\n  <div class=\"grid\" data-listing-grid>{products_html}\n  </div>\n  {see_more_html}\n  {pager_html}"
+    use_explore = page == 1 and len(products) > SELECTION_SIZE
+    if use_explore:
+        text_html, listing_html = explore_layout(products, card_html, text_html, f"{intro_html}\n  {listing_html}", len(products))
+    else:
+        listing_html = f"{intro_html}\n  {listing_html}"
 
     breadcrumb_json = f"""{{
       "@context": "https://schema.org",
@@ -286,7 +301,7 @@ def render_designer_page(designer_name, slug, products, page=1):
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
 <style>{PAGE_CSS}</style>
-{('<style>' + BRAND_CHIP_CSS + '</style>') if brand_chips else ''}
+{f"<script>{EXPLORE_HEAD_JS}</script>" if use_explore else ""}{('<style>' + BRAND_CHIP_CSS + '</style>') if brand_chips else ''}
 {creator_texts.style_tag("designers", slug)}
 </head>
 <body>
@@ -297,15 +312,10 @@ def render_designer_page(designer_name, slug, products, page=1):
 <main>
   <div class="maker-header">
     <p class="eyebrow">Designer</p>
-    <h1 class="maker-name">{html.escape(designer_name)}</h1>{designer_links_html(designer_name)}
+    <h1 class="maker-name">{html.escape(designer_name)}</h1>{meta_line}{designer_links_html(designer_name)}
   </div>
-  {creator_texts.text_block_html("designers", slug, len(products)) if page == 1 else ""}
-  <p class="category-intro" style="text-align:center;margin-left:auto;margin-right:auto;"><span id="shown-count">{len(products)}</span> <span id="shown-noun">product{'' if len(products) == 1 else 's'}</span> credited to {html.escape(designer_name)}, each linked straight to its maker's own page.</p>{brand_chips}
-  {earlier_html}
-  <div class="grid" data-listing-grid>{products_html}
-  </div>
-  {see_more_html}
-  {pager_html}{piece_section_html(designer_name, designer_pieces(designer_name, products)) if page == 1 else ""}
+  {text_html}
+  {listing_html}{piece_section_html(designer_name, designer_pieces(designer_name, products)) if page == 1 else ""}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
@@ -319,7 +329,7 @@ def render_designer_page(designer_name, slug, products, page=1):
   }});
 </script>
 <script>{CARD_CLICK_TRACKING_JS}</script>
-<script src="{SHARE_JS}" defer></script>
+{f"<script>{EXPLORE_JS}</script>" if use_explore else ""}<script src="{SHARE_JS}" defer></script>
 <script src="{LISTING_JS}" defer></script>
 {('<script>' + BRAND_FILTER_JS + '</script>') if brand_chips else ''}
 {CLOUDFLARE_ANALYTICS}
@@ -402,10 +412,10 @@ def render_portfolio_designer_page(d, slug):
 <main>
   <div class="maker-header">
     <p class="eyebrow">Designer</p>
-    <h1 class="maker-name">{html.escape(name)}</h1>
+    <h1 class="maker-name">{html.escape(name)}</h1>{creator_texts.meta_line_html("designers", slug, with_country=True)}
     {site_link}
   </div>
-  {creator_texts.text_block_html("designers", slug, len(works))}
+  {creator_texts.text_block_html("designers", slug, len(works), facts_block=False)}
   <div class="maker-grid">{cards}
   </div>
   <p class="foot-note">

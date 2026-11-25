@@ -262,11 +262,30 @@
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
   .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
 </style>
+<script>document.documentElement.classList.add("explore-js");</script>
 <style>
   .creator-text { max-width: 640px; margin: 0 auto 36px; }
   .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
@@ -292,13 +311,13 @@
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">Tiptoe</h1>
-    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Objects</span><span class="tag">France</span></div>
+    <div class="tags"><a class="tag tag-link" href="/work/furniture.html">Furniture</a><a class="tag tag-link" href="/work/lighting.html">Lighting</a><a class="tag tag-link" href="/work/objects.html">Objects</a><a class="tag tag-link" href="/work.html?q=from+France">France</a></div>
+    <p class="meta-line">Founded 2015</p>
     <a class="brand-site-link" href="https://www.tiptoe.fr" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
 
   <section class="creator-text">
     <p>Tiptoe is a French furniture design studio founded in 2015, with a showroom in Paris. It designs tables, wall shelves, chairs, sofas, lamps and outdoor furniture, including the UNIT storage system, which customers can configure online.</p><p>Production is in Europe with partners working in wood, metal and recycled plastic, including a family metalworking firm in Haute-Savoie. Tiptoe is a B Corp certified company and sells through its own shop and a network of resellers. On Formground it is shown through 134 pieces, each linked to its own page.</p>
-    <dl class="creator-facts"><dt>Country</dt><dd>France</dd><dt>Type</dt><dd>Designer</dd><dt>Products</dt><dd>Furniture, shelving and lighting</dd><dt>Founded</dt><dd>2015</dd><dt>Website</dt><dd>tiptoe.fr</dd></dl>
   </section>
   <section class="brand-section brand-section--top">
     <p class="brand-section-title">New from Tiptoe</p>
@@ -345,248 +364,335 @@
           
         </div>
       </a></div>
-  </section>  <p class="brand-section-title">All of Tiptoe</p>
-  
-  <div class="grid" data-listing-grid>
-      <a class="card" href="https://www.tiptoe.fr/products/accroche-murale-bracket-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Accroche murale BRACKET &quot;Les Imparfaits&quot;" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Tiptoe_Bracket_NoirGraphite_4c0ba812-0db4-4bd9-b4f3-78998d33c2ea.jpg?v=1777044152&amp;width=500" alt="Accroche murale BRACKET &quot;Les Imparfaits&quot; by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+  </section>
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://www.tiptoe.fr/products/table-de-jardin-acier-thermolaque-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Garden Table" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-midi-160x80-vertforet_ae55f968-1e6a-4ded-a6ee-3a2b9c5f6df3.jpg?v=1777060017&amp;width=500" alt="Garden Table by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <p class="card-title">Accroche murale BRACKET &quot;Les Imparfaits&quot;</p>
+          <p class="card-title">Garden Table</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/fauteuil-etude" target="_blank" rel="noopener noreferrer" data-product="Armchair ETUDE" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Chaise_ETUDE_LOUNGE_accoudoir_tissu_noir_noir_e7478673-5536-474d-bbb6-375317f237df.jpg?v=1777051556&amp;width=500" alt="Armchair ETUDE by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+      <a class="card" id="piece-2" href="https://www.tiptoe.fr/products/bloc-portes-et-tiroirs-unit" target="_blank" rel="noopener noreferrer" data-product="Door Block" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/UNIT_caisson_noir.jpg?v=1777046532&amp;width=500" alt="Door Block by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <p class="card-title">Armchair ETUDE</p>
+          <p class="card-title">Door Block</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/chaise-de-bar-ssd-bois-eco-certifie-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Bar Chair SSD" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/ssd-bar-65-chene-blanc_d58c5661-1c11-41be-8781-1c17a5eca5e8.jpg?v=1777044092&amp;width=500" alt="Bar Chair SSD by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+      <a class="card" id="piece-3" href="https://www.tiptoe.fr/products/table-basse-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Garden Coffee Table PANORAMA" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-basse-panorama-vert-foret.jpg?v=1777059127&amp;width=500" alt="Garden Coffee Table PANORAMA by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <p class="card-title">Bar Chair SSD</p>
+          <p class="card-title">Garden Coffee Table PANORAMA</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/chaise-de-bar-ssdr-plastique-recycle-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Bar Chair SSDr" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/ssd-bar-65-plastique-vert-romarin_1e890c32-c9cb-4213-a203-afae59f2c2ee.jpg?v=1777044022&amp;width=500" alt="Bar Chair SSDr by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+      <a class="card" id="piece-4" href="https://www.tiptoe.fr/products/bureau-enfant-ardoise-vice-versa" target="_blank" rel="noopener noreferrer" data-product="Kids Desk TIPTOE 70x50cm" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/bureau-kids-ardoise-vert.jpg?v=1777037689&amp;width=500" alt="Kids Desk TIPTOE 70x50cm by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <p class="card-title">Bar Chair SSDr</p>
+          <p class="card-title">Kids Desk TIPTOE 70x50cm</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/tabouret-de-bar-lou-chene-massif-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Bar Stool LOU" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/tabouret-bar-lou-66cm-chene-massif-noirgraphite_bba13401-4ec1-46b9-8e07-cb3816c3cca1.jpg?v=1777059417&amp;width=500" alt="Bar Stool LOU by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Bar Stool LOU</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/tabouret-de-bar-ssd-bois-eco-certifie" target="_blank" rel="noopener noreferrer" data-product="Bar Stool SSD" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/tabouret-bar-SSD-66-griseucalytpus.jpg?v=1773825067&amp;width=500" alt="Bar Stool SSD by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Bar Stool SSD</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/tabouret-bar-ssd-full-wood-bois-eco-certifie" target="_blank" rel="noopener noreferrer" data-product="Bar Stool SSD Full Wood" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/tabouret-bar-SSD-chene-65.jpg?v=1777052539&amp;width=500" alt="Bar Stool SSD Full Wood by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Bar Stool SSD Full Wood</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/pied-de-table-bar-110cm-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Bar Table Leg" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/pied-de-table-seul-110-noirgraphite_0ed1081b-1c44-4328-92c6-8a0f144199ed.jpg?v=1777040538&amp;width=500" alt="Bar Table Leg by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Bar Table Leg</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/pied-110cm-et-accroche-murale-bracket" target="_blank" rel="noopener noreferrer" data-product="Bar Table Leg 110cm and Wall Hook BRACKET" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/pack-pied-110-bracket-noirgraphite.jpg?v=1777032370&amp;width=500" alt="Bar Table Leg 110cm and Wall Hook BRACKET by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Bar Table Leg 110cm and Wall Hook BRACKET</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/banc-lou-bois-eco-certifie" target="_blank" rel="noopener noreferrer" data-product="Bench LOU" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Banc-LOU-140x30-chene-naturel-noir.jpg?v=1777052038&amp;width=500" alt="Bench LOU by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Bench LOU</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/table-bistrot-moka-plastique-recycle" target="_blank" rel="noopener noreferrer" data-product="Bistro Table MOKA" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/MOKA_H75_Round70_RP.jpg?v=1777050999&amp;width=500" alt="Bistro Table MOKA by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Bistro Table MOKA</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/vide-poche-brick" target="_blank" rel="noopener noreferrer" data-product="Catchall Tray BRICK" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/BRICK-plateau-S-rouge-tangerine.jpg?v=1788861394&amp;width=500" alt="Catchall Tray BRICK by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Catchall Tray BRICK</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/chaise-etude-tissu-recycle" target="_blank" rel="noopener noreferrer" data-product="Chair ETUDE" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Chaise_ETUDE_tissu_bleumarine_noir_v2_30e9463d-865a-49f6-bbbb-84b2176568ac.jpg?v=1779442842&amp;width=500" alt="Chair ETUDE by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chair ETUDE</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/chaise-etude-accoudoirs-tissu-recycle" target="_blank" rel="noopener noreferrer" data-product="Chair ETUDE with Armrests" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Chaise_ETUDE_accoudoir_tissu_bleumarine_noir_v2.jpg?v=1777051456&amp;width=500" alt="Chair ETUDE with Armrests by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chair ETUDE with Armrests</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/chaise-ssd-bois-eco-certifie-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Chair SSD" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/SSD_CHAIR_oakwood_rosemarygreen_front_883b293a-bbc2-4603-bc6d-5b33a1d3f1ad.jpg?v=1777039924&amp;width=500" alt="Chair SSD by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chair SSD</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/chaise-ssd-full-wood-bois-eco-certifie-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Chair SSD Full Wood" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/SSD_Wood_R1_Black-copy_1e07d5e4-dc56-4a45-93a6-e79eb3bf955a.jpg?v=1777051729&amp;width=500" alt="Chair SSD Full Wood by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chair SSD Full Wood</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/chaise-ssd-soft-2-tissu-recycle" target="_blank" rel="noopener noreferrer" data-product="Chair SSD Soft.2" data-brand="Tiptoe">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/chaise-ssd-soft-v2-blanc-front.jpg?v=1777053081&amp;width=500" alt="Chair SSD Soft.2 by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chair SSD Soft.2</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.tiptoe.fr/products/chaise-ssdr-plastique-recycle-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Chair SSDr" data-brand="Tiptoe">
+      <a class="card" id="piece-5" href="https://www.tiptoe.fr/products/chaise-ssdr-plastique-recycle-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Chair SSDr" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/ssdr-plastique-griseuca_dbaa67ba-5097-46cc-a764-bf448823c418.jpg?v=1777040212&amp;width=500" alt="Chair SSDr by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Chair SSDr</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/chaise-ssd-soft-tissu-recycle-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Chaise SSD Soft" data-brand="Tiptoe">
+      <a class="card" id="piece-6" href="https://www.tiptoe.fr/products/accroche-murale-bracket-edition-core" target="_blank" rel="noopener noreferrer" data-product="Wall Hook BRACKET" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/WallBracket_INOX-WEB.jpg?v=1773825141&amp;width=500" alt="Wall Hook BRACKET by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Wall Hook BRACKET</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-7" href="https://www.tiptoe.fr/products/table-manger-murale-bois-ancien-recycle-75cm" target="_blank" rel="noopener noreferrer" data-product="Wall-Mounted Dining Table TIPTOE" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-murale-75cm-150x75-bois-ancien-noir-1.jpg?v=1777041108&amp;width=500" alt="Wall-Mounted Dining Table TIPTOE by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Wall-Mounted Dining Table TIPTOE</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-8" href="https://www.tiptoe.fr/products/module-seul-canape-bridge" target="_blank" rel="noopener noreferrer" data-product="Single Sofa Module BRIDGE" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Module_Chauffeuse_Coussin_beige.jpg?v=1777047924&amp;width=500" alt="Single Sofa Module BRIDGE by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Single Sofa Module BRIDGE</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://www.tiptoe.fr/products/tabouret-lou-edition-chroma-bois-eco-certifie" target="_blank" rel="noopener noreferrer" data-product="Stool LOU CHROMA Edition" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/tabouret-lou-monochrome-bleuazur.jpg?v=1779354221&amp;width=500" alt="Stool LOU CHROMA Edition by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Stool LOU CHROMA Edition</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-10" href="https://www.tiptoe.fr/products/tabouret-bar-ssd-full-wood-bois-eco-certifie" target="_blank" rel="noopener noreferrer" data-product="Bar Stool SSD Full Wood" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/tabouret-bar-SSD-chene-65.jpg?v=1777052539&amp;width=500" alt="Bar Stool SSD Full Wood by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bar Stool SSD Full Wood</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://www.tiptoe.fr/products/boite-de-rangement-brick" target="_blank" rel="noopener noreferrer" data-product="Storage Box BRICK" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/BRICK-boite-S-blanc-creme.jpg?v=1788861394&amp;width=500" alt="Storage Box BRICK by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Storage Box BRICK</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-12" href="https://www.tiptoe.fr/products/banc-lou-bois-eco-certifie" target="_blank" rel="noopener noreferrer" data-product="Bench LOU" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Banc-LOU-140x30-chene-naturel-noir.jpg?v=1777052038&amp;width=500" alt="Bench LOU by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bench LOU</p>
+          
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show more pieces (134 in all)</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p>
+  <div class="grid" data-listing-grid>
+      <a class="card" id="piece-13" href="https://www.tiptoe.fr/products/accroche-murale-bracket-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Accroche murale BRACKET &quot;Les Imparfaits&quot;" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Tiptoe_Bracket_NoirGraphite_4c0ba812-0db4-4bd9-b4f3-78998d33c2ea.jpg?v=1777044152&amp;width=500" alt="Accroche murale BRACKET &quot;Les Imparfaits&quot; by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Accroche murale BRACKET &quot;Les Imparfaits&quot;</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-14" href="https://www.tiptoe.fr/products/fauteuil-etude" target="_blank" rel="noopener noreferrer" data-product="Armchair ETUDE" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Chaise_ETUDE_LOUNGE_accoudoir_tissu_noir_noir_e7478673-5536-474d-bbb6-375317f237df.jpg?v=1777051556&amp;width=500" alt="Armchair ETUDE by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Armchair ETUDE</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-15" href="https://www.tiptoe.fr/products/chaise-de-bar-ssd-bois-eco-certifie-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Bar Chair SSD" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/ssd-bar-65-chene-blanc_d58c5661-1c11-41be-8781-1c17a5eca5e8.jpg?v=1777044092&amp;width=500" alt="Bar Chair SSD by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bar Chair SSD</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-16" href="https://www.tiptoe.fr/products/chaise-de-bar-ssdr-plastique-recycle-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Bar Chair SSDr" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/ssd-bar-65-plastique-vert-romarin_1e890c32-c9cb-4213-a203-afae59f2c2ee.jpg?v=1777044022&amp;width=500" alt="Bar Chair SSDr by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bar Chair SSDr</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-17" href="https://www.tiptoe.fr/products/tabouret-de-bar-lou-chene-massif-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Bar Stool LOU" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/tabouret-bar-lou-66cm-chene-massif-noirgraphite_bba13401-4ec1-46b9-8e07-cb3816c3cca1.jpg?v=1777059417&amp;width=500" alt="Bar Stool LOU by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bar Stool LOU</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-18" href="https://www.tiptoe.fr/products/tabouret-de-bar-ssd-bois-eco-certifie" target="_blank" rel="noopener noreferrer" data-product="Bar Stool SSD" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/tabouret-bar-SSD-66-griseucalytpus.jpg?v=1773825067&amp;width=500" alt="Bar Stool SSD by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bar Stool SSD</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.tiptoe.fr/products/tabouret-bar-ssd-full-wood-bois-eco-certifie" target="_blank" rel="noopener noreferrer" data-product="Bar Stool SSD Full Wood" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/tabouret-bar-SSD-chene-65.jpg?v=1777052539&amp;width=500" alt="Bar Stool SSD Full Wood by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bar Stool SSD Full Wood</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-19" href="https://www.tiptoe.fr/products/pied-de-table-bar-110cm-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Bar Table Leg" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/pied-de-table-seul-110-noirgraphite_0ed1081b-1c44-4328-92c6-8a0f144199ed.jpg?v=1777040538&amp;width=500" alt="Bar Table Leg by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bar Table Leg</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-20" href="https://www.tiptoe.fr/products/pied-110cm-et-accroche-murale-bracket" target="_blank" rel="noopener noreferrer" data-product="Bar Table Leg 110cm and Wall Hook BRACKET" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/pack-pied-110-bracket-noirgraphite.jpg?v=1777032370&amp;width=500" alt="Bar Table Leg 110cm and Wall Hook BRACKET by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bar Table Leg 110cm and Wall Hook BRACKET</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.tiptoe.fr/products/banc-lou-bois-eco-certifie" target="_blank" rel="noopener noreferrer" data-product="Bench LOU" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Banc-LOU-140x30-chene-naturel-noir.jpg?v=1777052038&amp;width=500" alt="Bench LOU by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bench LOU</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-21" href="https://www.tiptoe.fr/products/table-bistrot-moka-plastique-recycle" target="_blank" rel="noopener noreferrer" data-product="Bistro Table MOKA" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/MOKA_H75_Round70_RP.jpg?v=1777050999&amp;width=500" alt="Bistro Table MOKA by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Bistro Table MOKA</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-22" href="https://www.tiptoe.fr/products/vide-poche-brick" target="_blank" rel="noopener noreferrer" data-product="Catchall Tray BRICK" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/BRICK-plateau-S-rouge-tangerine.jpg?v=1788861394&amp;width=500" alt="Catchall Tray BRICK by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Catchall Tray BRICK</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-23" href="https://www.tiptoe.fr/products/chaise-etude-tissu-recycle" target="_blank" rel="noopener noreferrer" data-product="Chair ETUDE" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Chaise_ETUDE_tissu_bleumarine_noir_v2_30e9463d-865a-49f6-bbbb-84b2176568ac.jpg?v=1779442842&amp;width=500" alt="Chair ETUDE by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chair ETUDE</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-24" href="https://www.tiptoe.fr/products/chaise-etude-accoudoirs-tissu-recycle" target="_blank" rel="noopener noreferrer" data-product="Chair ETUDE with Armrests" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Chaise_ETUDE_accoudoir_tissu_bleumarine_noir_v2.jpg?v=1777051456&amp;width=500" alt="Chair ETUDE with Armrests by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chair ETUDE with Armrests</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-25" href="https://www.tiptoe.fr/products/chaise-ssd-bois-eco-certifie-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Chair SSD" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/SSD_CHAIR_oakwood_rosemarygreen_front_883b293a-bbc2-4603-bc6d-5b33a1d3f1ad.jpg?v=1777039924&amp;width=500" alt="Chair SSD by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chair SSD</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-26" href="https://www.tiptoe.fr/products/chaise-ssd-full-wood-bois-eco-certifie-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Chair SSD Full Wood" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/SSD_Wood_R1_Black-copy_1e07d5e4-dc56-4a45-93a6-e79eb3bf955a.jpg?v=1777051729&amp;width=500" alt="Chair SSD Full Wood by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chair SSD Full Wood</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-27" href="https://www.tiptoe.fr/products/chaise-ssd-soft-2-tissu-recycle" target="_blank" rel="noopener noreferrer" data-product="Chair SSD Soft.2" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/chaise-ssd-soft-v2-blanc-front.jpg?v=1777053081&amp;width=500" alt="Chair SSD Soft.2 by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chair SSD Soft.2</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.tiptoe.fr/products/chaise-ssdr-plastique-recycle-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Chair SSDr" data-brand="Tiptoe">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/ssdr-plastique-griseuca_dbaa67ba-5097-46cc-a764-bf448823c418.jpg?v=1777040212&amp;width=500" alt="Chair SSDr by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chair SSDr</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-28" href="https://www.tiptoe.fr/products/chaise-ssd-soft-tissu-recycle-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Chaise SSD Soft" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/SSD-SOFT-BLACK-OAK_57d42f45-e7dc-490a-854d-6ce4347c16a0.jpg?v=1777056697&amp;width=500" alt="Chaise SSD Soft by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Chaise SSD Soft</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/porte-manteau-patere-jo" target="_blank" rel="noopener noreferrer" data-product="Coat Hook JO" data-brand="Tiptoe">
+      <a class="card" id="piece-29" href="https://www.tiptoe.fr/products/porte-manteau-patere-jo" target="_blank" rel="noopener noreferrer" data-product="Coat Hook JO" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/patere-jo-noirgraphite.jpg?v=1776934888&amp;width=500" alt="Coat Hook JO by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Coat Hook JO</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/etagere-porte-manteau-pli-edition-core" target="_blank" rel="noopener noreferrer" data-product="Coat Rack Shelf PLI" data-brand="Tiptoe">
+      <a class="card" id="piece-30" href="https://www.tiptoe.fr/products/etagere-porte-manteau-pli-edition-core" target="_blank" rel="noopener noreferrer" data-product="Coat Rack Shelf PLI" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/PLI_slim_hooks_30cm_INOX-WEB.jpg?v=1777058685&amp;width=500" alt="Coat Rack Shelf PLI by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Coat Rack Shelf PLI</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/pied-de-table-basse-et-banc-43cm-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Coffee Table Leg" data-brand="Tiptoe">
+      <a class="card" id="piece-31" href="https://www.tiptoe.fr/products/pied-de-table-basse-et-banc-43cm-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Coffee Table Leg" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/pied-tiptoe-43cm-blanc-nuage_5dce4156-de91-4a37-85bd-ed9b853a76e5.jpg?v=1777040273&amp;width=500" alt="Coffee Table Leg by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Coffee Table Leg</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/pied-de-table-basse-43cm-edition-core" target="_blank" rel="noopener noreferrer" data-product="Coffee Table Leg 43cm" data-brand="Tiptoe">
+      <a class="card" id="piece-32" href="https://www.tiptoe.fr/products/pied-de-table-basse-43cm-edition-core" target="_blank" rel="noopener noreferrer" data-product="Coffee Table Leg 43cm" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Leg_43cm_INOX-WEB.jpg?v=1777058183&amp;width=500" alt="Coffee Table Leg 43cm by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Coffee Table Leg 43cm</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/table-basse-moka-chene-massif" target="_blank" rel="noopener noreferrer" data-product="Coffee Table MOKA" data-brand="Tiptoe">
+      <a class="card" id="piece-33" href="https://www.tiptoe.fr/products/table-basse-moka-chene-massif" target="_blank" rel="noopener noreferrer" data-product="Coffee Table MOKA" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/moka-chene-h50-rond48-noir.jpg?v=1777043369&amp;width=500" alt="Coffee Table MOKA by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Coffee Table MOKA</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/table-basse-surf" target="_blank" rel="noopener noreferrer" data-product="Coffee Table TIPTOE 120x48cm" data-brand="Tiptoe">
+      <a class="card" id="piece-34" href="https://www.tiptoe.fr/products/table-basse-surf" target="_blank" rel="noopener noreferrer" data-product="Coffee Table TIPTOE 120x48cm" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-surf-chene-massif-120x48-griseuca.jpg?v=1777028658&amp;width=500" alt="Coffee Table TIPTOE 120x48cm by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Coffee Table TIPTOE 120x48cm</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/table-basse-santiago-bois-ancien-recycle" target="_blank" rel="noopener noreferrer" data-product="Coffee Table TIPTOE 120x60cm" data-brand="Tiptoe">
+      <a class="card" id="piece-35" href="https://www.tiptoe.fr/products/table-basse-santiago-bois-ancien-recycle" target="_blank" rel="noopener noreferrer" data-product="Coffee Table TIPTOE 120x60cm" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-rectangulaire-bois-ancien-120x60-griseuca.jpg?v=1777031659&amp;width=500" alt="Coffee Table TIPTOE 120x60cm by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Coffee Table TIPTOE 120x60cm</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/table-basse-galet" target="_blank" rel="noopener noreferrer" data-product="Coffee Table TIPTOE 120x75cm" data-brand="Tiptoe">
+      <a class="card" id="piece-36" href="https://www.tiptoe.fr/products/table-basse-galet" target="_blank" rel="noopener noreferrer" data-product="Coffee Table TIPTOE 120x75cm" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-galet-chene-massif-120x75-griseuca.jpg?v=1777028923&amp;width=500" alt="Coffee Table TIPTOE 120x75cm by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Coffee Table TIPTOE 120x75cm</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/table-basse-versailles" target="_blank" rel="noopener noreferrer" data-product="Coffee Table TIPTOE 80x80cm" data-brand="Tiptoe">
+      <a class="card" id="piece-37" href="https://www.tiptoe.fr/products/table-basse-versailles" target="_blank" rel="noopener noreferrer" data-product="Coffee Table TIPTOE 80x80cm" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/apercu-listing-table-basse-versailles-noir.jpg?v=1777032613&amp;width=500" alt="Coffee Table TIPTOE 80x80cm by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Coffee Table TIPTOE 80x80cm</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/console-lima-bois-ancien-recycle" target="_blank" rel="noopener noreferrer" data-product="Console TIPTOE 120x30cm" data-brand="Tiptoe">
+      <a class="card" id="piece-38" href="https://www.tiptoe.fr/products/console-lima-bois-ancien-recycle" target="_blank" rel="noopener noreferrer" data-product="Console TIPTOE 120x30cm" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/console-120x30-boisancien-blanccreme.jpg?v=1777031471&amp;width=500" alt="Console TIPTOE 120x30cm by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Console TIPTOE 120x30cm</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/canape-angle-modulable-3-a-4-places" target="_blank" rel="noopener noreferrer" data-product="Corner Sofa BRIDGE" data-brand="Tiptoe">
+      <a class="card" id="piece-39" href="https://www.tiptoe.fr/products/canape-angle-modulable-3-a-4-places" target="_blank" rel="noopener noreferrer" data-product="Corner Sofa BRIDGE" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/3-4p-angle_meridienne-290x185_coussin_B_beige.jpg?v=1777047585&amp;width=500" alt="Corner Sofa BRIDGE by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Corner Sofa BRIDGE</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/canape-dangle-easy-3-a-4-places" target="_blank" rel="noopener noreferrer" data-product="Corner Sofa EASY" data-brand="Tiptoe">
+      <a class="card" id="piece-40" href="https://www.tiptoe.fr/products/canape-dangle-easy-3-a-4-places" target="_blank" rel="noopener noreferrer" data-product="Corner Sofa EASY" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/EASY-canap_C3_A9-3placesottoman-NoirGraphite-BleuMarine1.jpg?v=1777036604&amp;width=500" alt="Corner Sofa EASY by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Corner Sofa EASY</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/set-de-housses-pour-canape-easy" target="_blank" rel="noopener noreferrer" data-product="Cover Set for EASY Sofa" data-brand="Tiptoe">
+      <a class="card" id="piece-41" href="https://www.tiptoe.fr/products/set-de-housses-pour-canape-easy" target="_blank" rel="noopener noreferrer" data-product="Cover Set for EASY Sofa" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Sofa_housses_blue-1-scaled.jpg?v=1777036173&amp;width=500" alt="Cover Set for EASY Sofa by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Cover Set for EASY Sofa</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/bureau-new-modern-bois" target="_blank" rel="noopener noreferrer" data-product="Desk NEW MODERN" data-brand="Tiptoe">
+      <a class="card" id="piece-42" href="https://www.tiptoe.fr/products/bureau-new-modern-bois" target="_blank" rel="noopener noreferrer" data-product="Desk NEW MODERN" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/bureau-new-modern-chene-tiroirs-130x70-blanccreme.jpg?v=1773824489&amp;width=500" alt="Desk NEW MODERN by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Desk NEW MODERN</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/tiptoe-x-jun-yasumoto-bureau-post" target="_blank" rel="noopener noreferrer" data-product="Desk POST" data-brand="Tiptoe">
+      <a class="card" id="piece-43" href="https://www.tiptoe.fr/products/tiptoe-x-jun-yasumoto-bureau-post" target="_blank" rel="noopener noreferrer" data-product="Desk POST" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/POST-bureau-140x70cm.jpg?v=1779355647&amp;width=500" alt="Desk POST by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Desk POST</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/etagere-bureau-unit-h180-215-l164cm-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Desk Shelf UNIT" data-brand="Tiptoe">
+      <a class="card" id="piece-44" href="https://www.tiptoe.fr/products/etagere-bureau-unit-h180-215-l164cm-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Desk Shelf UNIT" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/DU6steel_02-02-00_Black.jpg?v=1777055158&amp;width=500" alt="Desk Shelf UNIT by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Desk Shelf UNIT</p>
@@ -600,168 +706,168 @@
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/bloc-de-rangement-wave-new-modern" target="_blank" rel="noopener noreferrer" data-product="Desk Storage Block NEW MODERN" data-brand="Tiptoe">
+      <a class="card" id="piece-45" href="https://www.tiptoe.fr/products/bloc-de-rangement-wave-new-modern" target="_blank" rel="noopener noreferrer" data-product="Desk Storage Block NEW MODERN" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/wave-new-modern-noir_f9c9944e-aae6-4b52-84ef-fe46ad1ae8d5.jpg?v=1777042366&amp;width=500" alt="Desk Storage Block NEW MODERN by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Desk Storage Block NEW MODERN</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/bloc-de-rangement-wave-noir-graphite-2" target="_blank" rel="noopener noreferrer" data-product="Desk Storage Block TIPTOE" data-brand="Tiptoe">
+      <a class="card" id="piece-46" href="https://www.tiptoe.fr/products/bloc-de-rangement-wave-noir-graphite-2" target="_blank" rel="noopener noreferrer" data-product="Desk Storage Block TIPTOE" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Monochrome-Noir.jpg?v=1774598550&amp;width=500" alt="Desk Storage Block TIPTOE by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Desk Storage Block TIPTOE</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/bureau-tiptoe-120x60cm-bois-ancien-recycle" target="_blank" rel="noopener noreferrer" data-product="Desk TIPTOE 120x60cm" data-brand="Tiptoe">
+      <a class="card" id="piece-47" href="https://www.tiptoe.fr/products/bureau-tiptoe-120x60cm-bois-ancien-recycle" target="_blank" rel="noopener noreferrer" data-product="Desk TIPTOE 120x60cm" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-120x60-boisancien-noirgraphite_d37f47c7-3a30-42da-a218-0b6e722ec3db.jpg?v=1777055338&amp;width=500" alt="Desk TIPTOE 120x60cm by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Desk TIPTOE 120x60cm</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/bureau-unit-h110-a-180-x-l164cm-bois-eco-certifie" target="_blank" rel="noopener noreferrer" data-product="Desk UNIT" data-brand="Tiptoe">
+      <a class="card" id="piece-48" href="https://www.tiptoe.fr/products/bureau-unit-h110-a-180-x-l164cm-bois-eco-certifie" target="_blank" rel="noopener noreferrer" data-product="Desk UNIT" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/UO3_02-00-00_White.jpg?v=1777048119&amp;width=500" alt="Desk UNIT by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Desk UNIT</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/table-a-manger-new-modern-noyer-eco-certifie-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Dining Table NEW MODERN" data-brand="Tiptoe">
+      <a class="card" id="piece-49" href="https://www.tiptoe.fr/products/table-a-manger-new-modern-noyer-eco-certifie-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Dining Table NEW MODERN" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/New-Modern_Walnut_190x95_GB_8c3169e4-7335-462b-af44-d08e611e375d.jpg?v=1779354754&amp;width=500" alt="Dining Table NEW MODERN by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Dining Table NEW MODERN</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/tiptoe-jun-yasumoto-table-a-manger-post" target="_blank" rel="noopener noreferrer" data-product="Dining Table POST" data-brand="Tiptoe">
+      <a class="card" id="piece-50" href="https://www.tiptoe.fr/products/tiptoe-jun-yasumoto-table-a-manger-post" target="_blank" rel="noopener noreferrer" data-product="Dining Table POST" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/POST-tables-a-manger-190x95cm.jpg?v=1779355578&amp;width=500" alt="Dining Table POST by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Dining Table POST</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/table-a-manger-tiptoe-bois-ancien-recycle" target="_blank" rel="noopener noreferrer" data-product="Dining Table TIPTOE" data-brand="Tiptoe">
+      <a class="card" id="piece-51" href="https://www.tiptoe.fr/products/table-a-manger-tiptoe-bois-ancien-recycle" target="_blank" rel="noopener noreferrer" data-product="Dining Table TIPTOE" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-150x75-boisancien-vertkaki.jpg?v=1777053349&amp;width=500" alt="Dining Table TIPTOE by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Dining Table TIPTOE</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/plateau-de-table-a-manger-bureau-et-console" target="_blank" rel="noopener noreferrer" data-product="Dining Table Top" data-brand="Tiptoe">
+      <a class="card" id="piece-52" href="https://www.tiptoe.fr/products/plateau-de-table-a-manger-bureau-et-console" target="_blank" rel="noopener noreferrer" data-product="Dining Table Top" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/plateau-bois-ancien-table-fondgris.jpg?v=1777037877&amp;width=500" alt="Dining Table Top by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Dining Table Top</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/table-a-manger-en-bois-eco-certifie-edition-core" target="_blank" rel="noopener noreferrer" data-product="Dining Table, Eco-Certified Wood" data-brand="Tiptoe">
+      <a class="card" id="piece-53" href="https://www.tiptoe.fr/products/table-a-manger-en-bois-eco-certifie-edition-core" target="_blank" rel="noopener noreferrer" data-product="Dining Table, Eco-Certified Wood" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/DiningTable_150x75_ECW_INOX-WEB.jpg?v=1777058240&amp;width=500" alt="Dining Table, Eco-Certified Wood by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Dining Table, Eco-Certified Wood</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/bloc-portes-et-tiroirs-unit" target="_blank" rel="noopener noreferrer" data-product="Door Block" data-brand="Tiptoe">
+      <a class="card in-selection" href="https://www.tiptoe.fr/products/bloc-portes-et-tiroirs-unit" target="_blank" rel="noopener noreferrer" data-product="Door Block" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/UNIT_caisson_noir.jpg?v=1777046532&amp;width=500" alt="Door Block by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Door Block</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/bloc-portes-et-tiroirs-en-acier-unit" target="_blank" rel="noopener noreferrer" data-product="Door and Drawer Block UNIT" data-brand="Tiptoe">
+      <a class="card" id="piece-54" href="https://www.tiptoe.fr/products/bloc-portes-et-tiroirs-en-acier-unit" target="_blank" rel="noopener noreferrer" data-product="Door and Drawer Block UNIT" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/UNIT_STEEL_CAISSON-BLANC.jpg?v=1777057128&amp;width=500" alt="Door and Drawer Block UNIT by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Door and Drawer Block UNIT</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/repose-pieds-easy-module-dangle" target="_blank" rel="noopener noreferrer" data-product="Footstool EASY" data-brand="Tiptoe">
+      <a class="card" id="piece-55" href="https://www.tiptoe.fr/products/repose-pieds-easy-module-dangle" target="_blank" rel="noopener noreferrer" data-product="Footstool EASY" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/EASY-Ottoman-NoirGraphite-Sable-1_c292f08c-d8b4-4ad3-9b03-5b43bce716b1.jpg?v=1777036965&amp;width=500" alt="Footstool EASY by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Footstool EASY</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/fauteuil-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Garden Armchair PANORAMA" data-brand="Tiptoe">
+      <a class="card" id="piece-56" href="https://www.tiptoe.fr/products/fauteuil-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Garden Armchair PANORAMA" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/fauteuil-panorama-front-rouge-brique.jpg?v=1777058837&amp;width=500" alt="Garden Armchair PANORAMA by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Garden Armchair PANORAMA</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/banc-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Garden Bench PANORAMA" data-brand="Tiptoe">
+      <a class="card" id="piece-57" href="https://www.tiptoe.fr/products/banc-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Garden Bench PANORAMA" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/banc-panorama-140x40-jaunesoleil.jpg?v=1777059010&amp;width=500" alt="Garden Bench PANORAMA by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Garden Bench PANORAMA</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/chaise-jardin-panorama" target="_blank" rel="noopener noreferrer" data-product="Garden Chair PANORAMA" data-brand="Tiptoe">
+      <a class="card" id="piece-58" href="https://www.tiptoe.fr/products/chaise-jardin-panorama" target="_blank" rel="noopener noreferrer" data-product="Garden Chair PANORAMA" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/chaise-panorama-front-gris_2c8b7562-af6a-4d94-bb5e-b867d5370da8.jpg?v=1777052625&amp;width=500" alt="Garden Chair PANORAMA by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Garden Chair PANORAMA</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/chaise-de-jardin-panorama-avec-accoudoirs" target="_blank" rel="noopener noreferrer" data-product="Garden Chair PANORAMA with Armrests" data-brand="Tiptoe">
+      <a class="card" id="piece-59" href="https://www.tiptoe.fr/products/chaise-de-jardin-panorama-avec-accoudoirs" target="_blank" rel="noopener noreferrer" data-product="Garden Chair PANORAMA with Armrests" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/chaise-accoudoirs-panorama-front-vert_b40059b9-db54-4f84-9dba-640c4a6edcbc.jpg?v=1777052797&amp;width=500" alt="Garden Chair PANORAMA with Armrests by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Garden Chair PANORAMA with Armrests</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/chaise-de-jardin-ssdr-plastique-recycle-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Garden Chair SSDr" data-brand="Tiptoe">
+      <a class="card" id="piece-60" href="https://www.tiptoe.fr/products/chaise-de-jardin-ssdr-plastique-recycle-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Garden Chair SSDr" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/chaise-ssdr-midi-vertforet-1_26f49f3b-1dab-454e-8c10-b52e23a132a7.jpg?v=1777053469&amp;width=500" alt="Garden Chair SSDr by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Garden Chair SSDr</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/table-basse-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Garden Coffee Table PANORAMA" data-brand="Tiptoe">
+      <a class="card in-selection" href="https://www.tiptoe.fr/products/table-basse-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Garden Coffee Table PANORAMA" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-basse-panorama-vert-foret.jpg?v=1777059127&amp;width=500" alt="Garden Coffee Table PANORAMA by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Garden Coffee Table PANORAMA</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/salon-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Garden Set PANORAMA" data-brand="Tiptoe">
+      <a class="card" id="piece-61" href="https://www.tiptoe.fr/products/salon-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Garden Set PANORAMA" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/salon-de-jardin-jaune-soleil_83ecce8e-a327-4040-b394-abdcd66552f6.jpg?v=1777059301&amp;width=500" alt="Garden Set PANORAMA by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Garden Set PANORAMA</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/tabouret-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Garden Stool PANORAMA" data-brand="Tiptoe">
+      <a class="card" id="piece-62" href="https://www.tiptoe.fr/products/tabouret-de-jardin-panorama-acier-thermolaque" target="_blank" rel="noopener noreferrer" data-product="Garden Stool PANORAMA" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/tabouret-panorama-noir-graphite.jpg?v=1777059180&amp;width=500" alt="Garden Stool PANORAMA by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Garden Stool PANORAMA</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/table-de-jardin-acier-thermolaque-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Garden Table" data-brand="Tiptoe">
+      <a class="card in-selection" href="https://www.tiptoe.fr/products/table-de-jardin-acier-thermolaque-imparfaits" target="_blank" rel="noopener noreferrer" data-product="Garden Table" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-midi-160x80-vertforet_ae55f968-1e6a-4ded-a6ee-3a2b9c5f6df3.jpg?v=1777060017&amp;width=500" alt="Garden Table by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Garden Table</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/table-de-jardin-panorama" target="_blank" rel="noopener noreferrer" data-product="Garden Table PANORAMA" data-brand="Tiptoe">
+      <a class="card" id="piece-63" href="https://www.tiptoe.fr/products/table-de-jardin-panorama" target="_blank" rel="noopener noreferrer" data-product="Garden Table PANORAMA" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/table-panorama-160x90-gris.jpg?v=1777052906&amp;width=500" alt="Garden Table PANORAMA by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Garden Table PANORAMA</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/carte-cadeau" target="_blank" rel="noopener noreferrer" data-product="Gift Card" data-brand="Tiptoe">
+      <a class="card" id="piece-64" href="https://www.tiptoe.fr/products/carte-cadeau" target="_blank" rel="noopener noreferrer" data-product="Gift Card" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/Carte_Cadeau-WEB.jpg?v=1774557040&amp;width=500" alt="Gift Card by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Gift Card</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.tiptoe.fr/products/pied-de-table-haute-90cm-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="High Table Leg" data-brand="Tiptoe">
+      <a class="card" id="piece-65" href="https://www.tiptoe.fr/products/pied-de-table-haute-90cm-les-imparfaits" target="_blank" rel="noopener noreferrer" data-product="High Table Leg" data-brand="Tiptoe">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0999/6347/0166/files/pied-table-90-seul-noirgraphite_c8bb41d2-b131-44bb-aa5e-1306ffdb0147.jpg?v=1777040484&amp;width=500" alt="High Table Leg by Tiptoe" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">High Table Leg</p>
@@ -769,7 +875,7 @@
         </div>
       </a></div>
   <div class="load-more-row"><a class="load-more-btn" id="see-more" data-total="134" data-start="0" href="/brands/tiptoe-2.html">See more pieces</a><span class="load-more-progress" id="see-more-progress"></span></div>
-  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/brands/tiptoe-2.html">2</a><a href="/brands/tiptoe-3.html">3</a><a href="/brands/tiptoe-2.html" rel="next">Next &rarr;</a></nav>
+  <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/brands/tiptoe-2.html">2</a><a href="/brands/tiptoe-3.html">3</a><a href="/brands/tiptoe-2.html" rel="next">Next &rarr;</a></nav></div>
 
   <section class="brand-section">
     <p class="brand-section-title">Makers like Tiptoe</p>
@@ -816,8 +922,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

@@ -262,11 +262,30 @@
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
   .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
 </style>
+<script>document.documentElement.classList.add("explore-js");</script>
 <style>
   .creator-text { max-width: 640px; margin: 0 auto 36px; }
   .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
@@ -292,100 +311,188 @@
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">Astier de Villatte</h1>
-    <div class="tags"><span class="tag">Ceramics</span><span class="tag">Objects</span><span class="tag">France</span></div>
+    <div class="tags"><a class="tag tag-link" href="/work.html?q=ceramics">Ceramics</a><a class="tag tag-link" href="/work/objects.html">Objects</a><a class="tag tag-link" href="/work.html?q=from+France">France</a></div>
+    <p class="meta-line">Paris · Founded 1996</p>
     <a class="brand-site-link" href="https://www.astierdevillatte.com/en/" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
 
   <section class="creator-text">
     <p>Astier de Villatte is a Paris ceramics house created in 1996, with an artisanal workshop that revives the tradition of Parisian manufactures of the 18th century. Its tableware and objects are handmade in Paris and stamped with the house monogram and the initials of the artisan who made them.</p><p>The ceramics come in named series such as Adélaïde, with hand-cut beading, and Colbert, covering plates, bowls, platters, cups, vases and candle holders. The house also makes incense, candles, perfume, stationery and books. On Formground a selection of 13 ceramics pieces is shown, each linked to its own page.</p>
-    <dl class="creator-facts"><dt>Country</dt><dd>France</dd><dt>City</dt><dd>Paris</dd><dt>Type</dt><dd>Maker</dd><dt>Products</dt><dd>Ceramics: plates, bowls, cups, vases, candle holders</dd><dt>Founded</dt><dd>1996</dd><dt>Website</dt><dd>astierdevillatte.com</dd></dl>
-  </section>  
-  <div class="grid" data-listing-grid>
-      <a class="card" href="https://www.astierdevillatte.com/en/plates/1184-product.html" target="_blank" rel="noopener noreferrer" data-product="Adélaïde Dinner Plate" data-brand="Astier de Villatte">
-        <div class="card-image"><img src="https://www.astierdevillatte.com/2628-thickbox_default/product.jpg" alt="Adélaïde Dinner Plate by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Adélaïde Dinner Plate</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.astierdevillatte.com/en/vases/438-product.html" target="_blank" rel="noopener noreferrer" data-product="Adélaïde Pitcher" data-brand="Astier de Villatte">
+  </section>
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://www.astierdevillatte.com/en/vases/438-product.html" target="_blank" rel="noopener noreferrer" data-product="Adélaïde Pitcher" data-brand="Astier de Villatte">
         <div class="card-image"><img src="https://www.astierdevillatte.com/1882-thickbox_default/product.jpg" alt="Adélaïde Pitcher by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Adélaïde Pitcher</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.astierdevillatte.com/en/platters-salad-bowls-stands/1074-product.html" target="_blank" rel="noopener noreferrer" data-product="Adélaïde Salad Bowl" data-brand="Astier de Villatte">
-        <div class="card-image"><img src="https://www.astierdevillatte.com/3000-thickbox_default/product.jpg" alt="Adélaïde Salad Bowl by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Adélaïde Salad Bowl</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.astierdevillatte.com/en/cups-teapots/386-product.html" target="_blank" rel="noopener noreferrer" data-product="Adélaïde Tea Cup" data-brand="Astier de Villatte">
-        <div class="card-image"><img src="https://www.astierdevillatte.com/1770-thickbox_default/product.jpg" alt="Adélaïde Tea Cup by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Adélaïde Tea Cup</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.astierdevillatte.com/en/ceramics/50143-banshaku-vase.html" target="_blank" rel="noopener noreferrer" data-product="Banshaku Vase" data-brand="Astier de Villatte">
-        <div class="card-image"><img src="https://www.astierdevillatte.com/8527-thickbox_default/banshaku-vase.jpg" alt="Banshaku Vase by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Banshaku Vase</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.astierdevillatte.com/en/vases/489-product.html" target="_blank" rel="noopener noreferrer" data-product="Cat Pitcher" data-brand="Astier de Villatte">
-        <div class="card-image"><img src="https://www.astierdevillatte.com/2034-thickbox_default/product.jpg" alt="Cat Pitcher by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Cat Pitcher</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.astierdevillatte.com/en/plates/64-product.html" target="_blank" rel="noopener noreferrer" data-product="Chou Dinner Plate with Eleven Petals" data-brand="Astier de Villatte">
-        <div class="card-image"><img src="https://www.astierdevillatte.com/1299-thickbox_default/product.jpg" alt="Chou Dinner Plate with Eleven Petals by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Chou Dinner Plate with Eleven Petals</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.astierdevillatte.com/en/cups-teapots/884-product.html" target="_blank" rel="noopener noreferrer" data-product="Colbert Mug" data-brand="Astier de Villatte">
-        <div class="card-image"><img src="https://www.astierdevillatte.com/2848-thickbox_default/product.jpg" alt="Colbert Mug by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Colbert Mug</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.astierdevillatte.com/en/vases/443-product.html" target="_blank" rel="noopener noreferrer" data-product="Colbert Vase" data-brand="Astier de Villatte">
-        <div class="card-image"><img src="https://www.astierdevillatte.com/1897-thickbox_default/product.jpg" alt="Colbert Vase by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Colbert Vase</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.astierdevillatte.com/en/platters-salad-bowls-stands/1090-product.html" target="_blank" rel="noopener noreferrer" data-product="Large Oval Adélaïde Platter" data-brand="Astier de Villatte">
-        <div class="card-image"><img src="https://www.astierdevillatte.com/3008-thickbox_default/product.jpg" alt="Large Oval Adélaïde Platter by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Large Oval Adélaïde Platter</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.astierdevillatte.com/en/vases/449-product.html" target="_blank" rel="noopener noreferrer" data-product="Medium Conserve Vase" data-brand="Astier de Villatte">
-        <div class="card-image"><img src="https://www.astierdevillatte.com/1915-thickbox_default/product.jpg" alt="Medium Conserve Vase by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">Medium Conserve Vase</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://www.astierdevillatte.com/en/candlesticks/143-product.html" target="_blank" rel="noopener noreferrer" data-product="Peggy Candlestick" data-brand="Astier de Villatte">
+      <a class="card" id="piece-2" href="https://www.astierdevillatte.com/en/candlesticks/143-product.html" target="_blank" rel="noopener noreferrer" data-product="Peggy Candlestick" data-brand="Astier de Villatte">
         <div class="card-image"><img src="https://www.astierdevillatte.com/1374-thickbox_default/product.jpg" alt="Peggy Candlestick by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Peggy Candlestick</p>
           
         </div>
       </a>
-      <a class="card" href="https://www.astierdevillatte.com/en/candlesticks/2107-tree-candlestick-with-five-branches.html" target="_blank" rel="noopener noreferrer" data-product="Tree Candle Holder with Five Branches" data-brand="Astier de Villatte">
+      <a class="card" id="piece-3" href="https://www.astierdevillatte.com/en/cups-teapots/386-product.html" target="_blank" rel="noopener noreferrer" data-product="Adélaïde Tea Cup" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/1770-thickbox_default/product.jpg" alt="Adélaïde Tea Cup by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Adélaïde Tea Cup</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-4" href="https://www.astierdevillatte.com/en/plates/1184-product.html" target="_blank" rel="noopener noreferrer" data-product="Adélaïde Dinner Plate" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/2628-thickbox_default/product.jpg" alt="Adélaïde Dinner Plate by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Adélaïde Dinner Plate</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-5" href="https://www.astierdevillatte.com/en/platters-salad-bowls-stands/1074-product.html" target="_blank" rel="noopener noreferrer" data-product="Adélaïde Salad Bowl" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/3000-thickbox_default/product.jpg" alt="Adélaïde Salad Bowl by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Adélaïde Salad Bowl</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-6" href="https://www.astierdevillatte.com/en/platters-salad-bowls-stands/1090-product.html" target="_blank" rel="noopener noreferrer" data-product="Large Oval Adélaïde Platter" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/3008-thickbox_default/product.jpg" alt="Large Oval Adélaïde Platter by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Large Oval Adélaïde Platter</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-7" href="https://www.astierdevillatte.com/en/ceramics/50143-banshaku-vase.html" target="_blank" rel="noopener noreferrer" data-product="Banshaku Vase" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/8527-thickbox_default/banshaku-vase.jpg" alt="Banshaku Vase by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Banshaku Vase</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-8" href="https://www.astierdevillatte.com/en/candlesticks/2107-tree-candlestick-with-five-branches.html" target="_blank" rel="noopener noreferrer" data-product="Tree Candle Holder with Five Branches" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/4846-thickbox_default/tree-candlestick-with-five-branches.jpg" alt="Tree Candle Holder with Five Branches by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Tree Candle Holder with Five Branches</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://www.astierdevillatte.com/en/cups-teapots/884-product.html" target="_blank" rel="noopener noreferrer" data-product="Colbert Mug" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/2848-thickbox_default/product.jpg" alt="Colbert Mug by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Colbert Mug</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-10" href="https://www.astierdevillatte.com/en/plates/64-product.html" target="_blank" rel="noopener noreferrer" data-product="Chou Dinner Plate with Eleven Petals" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/1299-thickbox_default/product.jpg" alt="Chou Dinner Plate with Eleven Petals by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chou Dinner Plate with Eleven Petals</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://www.astierdevillatte.com/en/vases/443-product.html" target="_blank" rel="noopener noreferrer" data-product="Colbert Vase" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/1897-thickbox_default/product.jpg" alt="Colbert Vase by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Colbert Vase</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-12" href="https://www.astierdevillatte.com/en/vases/449-product.html" target="_blank" rel="noopener noreferrer" data-product="Medium Conserve Vase" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/1915-thickbox_default/product.jpg" alt="Medium Conserve Vase by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Medium Conserve Vase</p>
+          
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show all 13 pieces</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p>
+  <div class="grid" data-listing-grid>
+      <a class="card in-selection" href="https://www.astierdevillatte.com/en/plates/1184-product.html" target="_blank" rel="noopener noreferrer" data-product="Adélaïde Dinner Plate" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/2628-thickbox_default/product.jpg" alt="Adélaïde Dinner Plate by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Adélaïde Dinner Plate</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.astierdevillatte.com/en/vases/438-product.html" target="_blank" rel="noopener noreferrer" data-product="Adélaïde Pitcher" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/1882-thickbox_default/product.jpg" alt="Adélaïde Pitcher by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Adélaïde Pitcher</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.astierdevillatte.com/en/platters-salad-bowls-stands/1074-product.html" target="_blank" rel="noopener noreferrer" data-product="Adélaïde Salad Bowl" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/3000-thickbox_default/product.jpg" alt="Adélaïde Salad Bowl by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Adélaïde Salad Bowl</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.astierdevillatte.com/en/cups-teapots/386-product.html" target="_blank" rel="noopener noreferrer" data-product="Adélaïde Tea Cup" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/1770-thickbox_default/product.jpg" alt="Adélaïde Tea Cup by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Adélaïde Tea Cup</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.astierdevillatte.com/en/ceramics/50143-banshaku-vase.html" target="_blank" rel="noopener noreferrer" data-product="Banshaku Vase" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/8527-thickbox_default/banshaku-vase.jpg" alt="Banshaku Vase by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Banshaku Vase</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-13" href="https://www.astierdevillatte.com/en/vases/489-product.html" target="_blank" rel="noopener noreferrer" data-product="Cat Pitcher" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/2034-thickbox_default/product.jpg" alt="Cat Pitcher by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Cat Pitcher</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.astierdevillatte.com/en/plates/64-product.html" target="_blank" rel="noopener noreferrer" data-product="Chou Dinner Plate with Eleven Petals" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/1299-thickbox_default/product.jpg" alt="Chou Dinner Plate with Eleven Petals by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Chou Dinner Plate with Eleven Petals</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.astierdevillatte.com/en/cups-teapots/884-product.html" target="_blank" rel="noopener noreferrer" data-product="Colbert Mug" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/2848-thickbox_default/product.jpg" alt="Colbert Mug by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Colbert Mug</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.astierdevillatte.com/en/vases/443-product.html" target="_blank" rel="noopener noreferrer" data-product="Colbert Vase" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/1897-thickbox_default/product.jpg" alt="Colbert Vase by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Colbert Vase</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.astierdevillatte.com/en/platters-salad-bowls-stands/1090-product.html" target="_blank" rel="noopener noreferrer" data-product="Large Oval Adélaïde Platter" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/3008-thickbox_default/product.jpg" alt="Large Oval Adélaïde Platter by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Large Oval Adélaïde Platter</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.astierdevillatte.com/en/vases/449-product.html" target="_blank" rel="noopener noreferrer" data-product="Medium Conserve Vase" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/1915-thickbox_default/product.jpg" alt="Medium Conserve Vase by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Medium Conserve Vase</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.astierdevillatte.com/en/candlesticks/143-product.html" target="_blank" rel="noopener noreferrer" data-product="Peggy Candlestick" data-brand="Astier de Villatte">
+        <div class="card-image"><img src="https://www.astierdevillatte.com/1374-thickbox_default/product.jpg" alt="Peggy Candlestick by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">Peggy Candlestick</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://www.astierdevillatte.com/en/candlesticks/2107-tree-candlestick-with-five-branches.html" target="_blank" rel="noopener noreferrer" data-product="Tree Candle Holder with Five Branches" data-brand="Astier de Villatte">
         <div class="card-image"><img src="https://www.astierdevillatte.com/4846-thickbox_default/tree-candlestick-with-five-branches.jpg" alt="Tree Candle Holder with Five Branches by Astier de Villatte" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">Tree Candle Holder with Five Branches</p>
@@ -393,7 +500,7 @@
         </div>
       </a></div>
   
-  
+  </div>
 
   <section class="brand-section">
     <p class="brand-section-title">Makers like Astier de Villatte</p>
@@ -440,8 +547,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

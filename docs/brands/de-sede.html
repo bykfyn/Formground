@@ -262,11 +262,30 @@
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
   .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
 </style>
+<script>document.documentElement.classList.add("explore-js");</script>
 <style>
   .creator-text { max-width: 640px; margin: 0 auto 36px; }
   .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
@@ -292,107 +311,195 @@
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">de Sede</h1>
-    <div class="tags"><span class="tag">Furniture</span><span class="tag">Objects</span><span class="tag">Switzerland</span></div>
+    <div class="tags"><a class="tag tag-link" href="/work/furniture.html">Furniture</a><a class="tag tag-link" href="/work/objects.html">Objects</a><a class="tag tag-link" href="/work.html?q=from+Switzerland">Switzerland</a></div>
+    <p class="meta-line">Klingnau · Made to order</p>
     <a class="brand-site-link" href="https://desede.ch/" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
 
   <section class="creator-text">
     <p>de Sede is a Swiss maker of handcrafted leather furniture, based in Klingnau in the canton of Aargau. Its range covers sofas, armchairs, chairs, tables, stools and beds, many known by their DS model numbers, such as the modular DS-600 sofa and the DS-2878 boxing-glove sofa.</p><p>Leather is selected, cut and sewn by hand, and the seams are part of the look. Because the furniture is custom made, orders are not returnable. On Formground a selection of 14 pieces is shown, each linked to its own page.</p>
-    <dl class="creator-facts"><dt>Country</dt><dd>Switzerland</dd><dt>City</dt><dd>Klingnau</dd><dt>Type</dt><dd>Maker</dd><dt>Products</dt><dd>Sofas, armchairs, chairs, tables, beds</dd><dt>Made to order</dt><dd>Yes (stated on their site)</dd><dt>Website</dt><dd>desede.ch</dd></dl>
-  </section>  
-  <div class="grid" data-listing-grid>
-      <a class="card" href="https://desede.ch/products/ds-1025-10" target="_blank" rel="noopener noreferrer" data-product="DS-1025 Sofa" data-brand="de Sede">
+  </section>
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://desede.ch/products/ds-800-01" target="_blank" rel="noopener noreferrer" data-product="DS-800 Cocktail Armchair" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-800_Sessel-Velour-7714-181_01_d5a59391-6b21-4a3d-b4f6-3431b5a859f0.jpg?v=1743155903&amp;width=500" alt="DS-800 Cocktail Armchair by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-800 Cocktail Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-2" href="https://desede.ch/products/ds-1025-10" target="_blank" rel="noopener noreferrer" data-product="DS-1025 Sofa" data-brand="de Sede">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-1025_10-De_Sede_1025_mood_0545_f91ca307-948f-4c4a-935f-2a02acb55af6.jpg?v=1743150528&amp;width=500" alt="DS-1025 Sofa by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">DS-1025 Sofa</p>
           
         </div>
       </a>
-      <a class="card" href="https://desede.ch/products/ds-1165-901" target="_blank" rel="noopener noreferrer" data-product="DS-1165 Bed" data-brand="de Sede">
+      <a class="card" id="piece-3" href="https://desede.ch/products/ds-1165-901" target="_blank" rel="noopener noreferrer" data-product="DS-1165 Bed" data-brand="de Sede">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-1165_180A-1-ds-1165-af_a9c1dbf5-c380-4eff-ab2d-16d8439cb0c8.jpg?v=1743153643&amp;width=500" alt="DS-1165 Bed by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">DS-1165 Bed</p>
           
         </div>
       </a>
-      <a class="card" href="https://desede.ch/products/ds-265-01" target="_blank" rel="noopener noreferrer" data-product="DS-265 Swivel Armchair" data-brand="de Sede">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-265_select_cigarro_fell_hellbraun_06_0b115d36-1117-4c29-ba8f-ee8a577a8ab4.jpg?v=1743155340&amp;width=500" alt="DS-265 Swivel Armchair by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">DS-265 Swivel Armchair</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://desede.ch/products/ds-266-01" target="_blank" rel="noopener noreferrer" data-product="DS-266 Lounger" data-brand="de Sede">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-266_Naturale_Cuoio_08_1f7e9d2f-e154-4ca1-8dec-7b01c20489e6.jpg?v=1743150861&amp;width=500" alt="DS-266 Lounger by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">DS-266 Lounger</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://desede.ch/products/ds-2878-10" target="_blank" rel="noopener noreferrer" data-product="DS-2878 Boxing Glove Sofa" data-brand="de Sede">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS__2878_10_Boxhandschuh_0444_d76c7e31-99b1-4838-bc74-4a9d47c28f1b.jpg?v=1743155670&amp;width=500" alt="DS-2878 Boxing Glove Sofa by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">DS-2878 Boxing Glove Sofa</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://desede.ch/products/ds-3011-991" target="_blank" rel="noopener noreferrer" data-product="DS-3011 Coffee Table" data-brand="de Sede">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-3011_01_b6e52db1-ca8a-4e84-b92d-600f215cf532.jpg?v=1743153714&amp;width=500" alt="DS-3011 Coffee Table by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">DS-3011 Coffee Table</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://desede.ch/products/ds-51-01" target="_blank" rel="noopener noreferrer" data-product="DS-51 Armchair" data-brand="de Sede">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-0051_01-ds-51-b_dc412f6a-88ad-46ee-835a-485fac4eaf3c.jpg?v=1743155719&amp;width=500" alt="DS-51 Armchair by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">DS-51 Armchair</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://desede.ch/products/ds-515-01" target="_blank" rel="noopener noreferrer" data-product="DS-515 Chair" data-brand="de Sede">
+      <a class="card" id="piece-4" href="https://desede.ch/products/ds-515-01" target="_blank" rel="noopener noreferrer" data-product="DS-515 Chair" data-brand="de Sede">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-515_01_pcon-rend_ee482eaf-6bd2-4701-8e7a-03dbb807f958.jpg?v=1743151117&amp;width=500" alt="DS-515 Chair by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">DS-515 Chair</p>
           
         </div>
       </a>
-      <a class="card" href="https://desede.ch/products/ds-5250-61" target="_blank" rel="noopener noreferrer" data-product="DS-5250 Side Table" data-brand="de Sede">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-5250_61_053c125b-fceb-4c73-9b0c-e6bb668962a8.jpg?v=1747232000&amp;width=500" alt="DS-5250 Side Table by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+      <a class="card" id="piece-5" href="https://desede.ch/products/ds-3011-991" target="_blank" rel="noopener noreferrer" data-product="DS-3011 Coffee Table" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-3011_01_b6e52db1-ca8a-4e84-b92d-600f215cf532.jpg?v=1743153714&amp;width=500" alt="DS-3011 Coffee Table by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <p class="card-title">DS-5250 Side Table</p>
+          <p class="card-title">DS-3011 Coffee Table</p>
           
         </div>
       </a>
-      <a class="card" href="https://desede.ch/products/ds-57-01" target="_blank" rel="noopener noreferrer" data-product="DS-57 Armchair" data-brand="de Sede">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-0057_01_0753_4b4ba370-6166-4a97-969d-38de4a56cc88.jpg?v=1743155794&amp;width=500" alt="DS-57 Armchair by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">DS-57 Armchair</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://desede.ch/products/ds-600-00" target="_blank" rel="noopener noreferrer" data-product="DS-600 Non-Stop Sofa" data-brand="de Sede">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/ds_600_combi_c2-pcon_e5738c5b-ebbf-4e75-a6d6-bdb7ae5aac78.jpg?v=1743151305&amp;width=500" alt="DS-600 Non-Stop Sofa by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">DS-600 Non-Stop Sofa</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://desede.ch/products/ds-707-00" target="_blank" rel="noopener noreferrer" data-product="DS-707 Sofa" data-brand="de Sede">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-707_3er-Sofa_SELECT_Perla_ac4b6c6c-1844-4257-ab1e-dc4a0fa117ef.jpg?v=1743151402&amp;width=500" alt="DS-707 Sofa by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">DS-707 Sofa</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://desede.ch/products/ds-80-91" target="_blank" rel="noopener noreferrer" data-product="DS-80 Chaise Longue" data-brand="de Sede">
+      <a class="card" id="piece-6" href="https://desede.ch/products/ds-80-91" target="_blank" rel="noopener noreferrer" data-product="DS-80 Chaise Longue" data-brand="de Sede">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-80_Living_offwhite_2844_f17dd7c0-493d-404b-9845-d41943ee37bb.jpg?v=1743155875&amp;width=500" alt="DS-80 Chaise Longue by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">DS-80 Chaise Longue</p>
           
         </div>
       </a>
-      <a class="card" href="https://desede.ch/products/ds-800-01" target="_blank" rel="noopener noreferrer" data-product="DS-800 Cocktail Armchair" data-brand="de Sede">
+      <a class="card card-extra-m" id="piece-7" href="https://desede.ch/products/ds-266-01" target="_blank" rel="noopener noreferrer" data-product="DS-266 Lounger" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-266_Naturale_Cuoio_08_1f7e9d2f-e154-4ca1-8dec-7b01c20489e6.jpg?v=1743150861&amp;width=500" alt="DS-266 Lounger by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-266 Lounger</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-8" href="https://desede.ch/products/ds-5250-61" target="_blank" rel="noopener noreferrer" data-product="DS-5250 Side Table" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-5250_61_053c125b-fceb-4c73-9b0c-e6bb668962a8.jpg?v=1747232000&amp;width=500" alt="DS-5250 Side Table by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-5250 Side Table</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://desede.ch/products/ds-57-01" target="_blank" rel="noopener noreferrer" data-product="DS-57 Armchair" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-0057_01_0753_4b4ba370-6166-4a97-969d-38de4a56cc88.jpg?v=1743155794&amp;width=500" alt="DS-57 Armchair by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-57 Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-10" href="https://desede.ch/products/ds-600-00" target="_blank" rel="noopener noreferrer" data-product="DS-600 Non-Stop Sofa" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/ds_600_combi_c2-pcon_e5738c5b-ebbf-4e75-a6d6-bdb7ae5aac78.jpg?v=1743151305&amp;width=500" alt="DS-600 Non-Stop Sofa by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-600 Non-Stop Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://desede.ch/products/ds-265-01" target="_blank" rel="noopener noreferrer" data-product="DS-265 Swivel Armchair" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-265_select_cigarro_fell_hellbraun_06_0b115d36-1117-4c29-ba8f-ee8a577a8ab4.jpg?v=1743155340&amp;width=500" alt="DS-265 Swivel Armchair by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-265 Swivel Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-12" href="https://desede.ch/products/ds-2878-10" target="_blank" rel="noopener noreferrer" data-product="DS-2878 Boxing Glove Sofa" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS__2878_10_Boxhandschuh_0444_d76c7e31-99b1-4838-bc74-4a9d47c28f1b.jpg?v=1743155670&amp;width=500" alt="DS-2878 Boxing Glove Sofa by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-2878 Boxing Glove Sofa</p>
+          
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show all 14 pieces</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p>
+  <div class="grid" data-listing-grid>
+      <a class="card in-selection" href="https://desede.ch/products/ds-1025-10" target="_blank" rel="noopener noreferrer" data-product="DS-1025 Sofa" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-1025_10-De_Sede_1025_mood_0545_f91ca307-948f-4c4a-935f-2a02acb55af6.jpg?v=1743150528&amp;width=500" alt="DS-1025 Sofa by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-1025 Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://desede.ch/products/ds-1165-901" target="_blank" rel="noopener noreferrer" data-product="DS-1165 Bed" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-1165_180A-1-ds-1165-af_a9c1dbf5-c380-4eff-ab2d-16d8439cb0c8.jpg?v=1743153643&amp;width=500" alt="DS-1165 Bed by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-1165 Bed</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://desede.ch/products/ds-265-01" target="_blank" rel="noopener noreferrer" data-product="DS-265 Swivel Armchair" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-265_select_cigarro_fell_hellbraun_06_0b115d36-1117-4c29-ba8f-ee8a577a8ab4.jpg?v=1743155340&amp;width=500" alt="DS-265 Swivel Armchair by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-265 Swivel Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://desede.ch/products/ds-266-01" target="_blank" rel="noopener noreferrer" data-product="DS-266 Lounger" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-266_Naturale_Cuoio_08_1f7e9d2f-e154-4ca1-8dec-7b01c20489e6.jpg?v=1743150861&amp;width=500" alt="DS-266 Lounger by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-266 Lounger</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://desede.ch/products/ds-2878-10" target="_blank" rel="noopener noreferrer" data-product="DS-2878 Boxing Glove Sofa" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS__2878_10_Boxhandschuh_0444_d76c7e31-99b1-4838-bc74-4a9d47c28f1b.jpg?v=1743155670&amp;width=500" alt="DS-2878 Boxing Glove Sofa by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-2878 Boxing Glove Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://desede.ch/products/ds-3011-991" target="_blank" rel="noopener noreferrer" data-product="DS-3011 Coffee Table" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-3011_01_b6e52db1-ca8a-4e84-b92d-600f215cf532.jpg?v=1743153714&amp;width=500" alt="DS-3011 Coffee Table by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-3011 Coffee Table</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-13" href="https://desede.ch/products/ds-51-01" target="_blank" rel="noopener noreferrer" data-product="DS-51 Armchair" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-0051_01-ds-51-b_dc412f6a-88ad-46ee-835a-485fac4eaf3c.jpg?v=1743155719&amp;width=500" alt="DS-51 Armchair by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-51 Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://desede.ch/products/ds-515-01" target="_blank" rel="noopener noreferrer" data-product="DS-515 Chair" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-515_01_pcon-rend_ee482eaf-6bd2-4701-8e7a-03dbb807f958.jpg?v=1743151117&amp;width=500" alt="DS-515 Chair by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-515 Chair</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://desede.ch/products/ds-5250-61" target="_blank" rel="noopener noreferrer" data-product="DS-5250 Side Table" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-5250_61_053c125b-fceb-4c73-9b0c-e6bb668962a8.jpg?v=1747232000&amp;width=500" alt="DS-5250 Side Table by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-5250 Side Table</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://desede.ch/products/ds-57-01" target="_blank" rel="noopener noreferrer" data-product="DS-57 Armchair" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-0057_01_0753_4b4ba370-6166-4a97-969d-38de4a56cc88.jpg?v=1743155794&amp;width=500" alt="DS-57 Armchair by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-57 Armchair</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://desede.ch/products/ds-600-00" target="_blank" rel="noopener noreferrer" data-product="DS-600 Non-Stop Sofa" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/ds_600_combi_c2-pcon_e5738c5b-ebbf-4e75-a6d6-bdb7ae5aac78.jpg?v=1743151305&amp;width=500" alt="DS-600 Non-Stop Sofa by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-600 Non-Stop Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-14" href="https://desede.ch/products/ds-707-00" target="_blank" rel="noopener noreferrer" data-product="DS-707 Sofa" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-707_3er-Sofa_SELECT_Perla_ac4b6c6c-1844-4257-ab1e-dc4a0fa117ef.jpg?v=1743151402&amp;width=500" alt="DS-707 Sofa by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-707 Sofa</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://desede.ch/products/ds-80-91" target="_blank" rel="noopener noreferrer" data-product="DS-80 Chaise Longue" data-brand="de Sede">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-80_Living_offwhite_2844_f17dd7c0-493d-404b-9845-d41943ee37bb.jpg?v=1743155875&amp;width=500" alt="DS-80 Chaise Longue by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DS-80 Chaise Longue</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://desede.ch/products/ds-800-01" target="_blank" rel="noopener noreferrer" data-product="DS-800 Cocktail Armchair" data-brand="de Sede">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0863/8562/3382/files/DS-800_Sessel-Velour-7714-181_01_d5a59391-6b21-4a3d-b4f6-3431b5a859f0.jpg?v=1743155903&amp;width=500" alt="DS-800 Cocktail Armchair by de Sede" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">DS-800 Cocktail Armchair</p>
@@ -400,7 +507,7 @@
         </div>
       </a></div>
   
-  
+  </div>
 
   <section class="brand-section">
     <p class="brand-section-title">Makers like de Sede</p>
@@ -447,8 +554,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

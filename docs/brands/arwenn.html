@@ -262,11 +262,30 @@
   .earlier-results a { color: var(--text-muted); text-decoration: none; }
   .earlier-results a:hover { color: var(--text-primary); text-decoration: underline; }
 
+  .meta-line { margin: -4px 0 12px; font-size: 13px; color: var(--text-muted); }
+  .tag-link { text-decoration: none; }
+  .tag-link:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .selection { margin-bottom: 30px; }
+  .show-all-row { display: flex; justify-content: center; margin: 22px 0 6px; }
+  .show-all-row button { font: inherit; font-size: 14px; padding: 10px 22px; border-radius: 999px; cursor: pointer;
+    border: 0.5px solid var(--border-strong, currentColor); background: transparent; color: var(--text-primary); }
+  .show-all-row button:hover { background: var(--surface-1); }
+  .rest-block .in-selection { display: none; }
+  .rest-block { margin-top: 22px; }
+  html.explore-js:not(.explore-expanded) .rest-block { display: none; }
+  html.explore-expanded .show-all-row, html:not(.explore-js) .show-all-row { display: none; }
+  @media (max-width: 640px) { html.explore-js:not(.explore-expanded) .card-extra-m { display: none; } }
+  .piece-link { color: inherit; text-decoration: underline; text-decoration-style: dotted; text-underline-offset: 3px; }
+  .piece-link:hover { text-decoration-style: solid; }
+  a.card { scroll-margin-top: 90px; }
+  a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
+
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
   @media (max-width: 520px) { .like-grid { grid-template-columns: repeat(2, 1fr); } }
   .like-note { margin: -6px 0 18px; font-size: 13px; color: var(--text-secondary); }
 </style>
+<script>document.documentElement.classList.add("explore-js");</script>
 <style>
   .creator-text { max-width: 640px; margin: 0 auto 36px; }
   .creator-text p { font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin: 0 0 12px; }
@@ -292,233 +311,321 @@
   <div class="maker-header">
     <p class="eyebrow">Maker</p>
     <h1 class="maker-name">Arwenn</h1>
-    <div class="tags"><span class="tag">Furniture</span><span class="tag">Lighting</span><span class="tag">Ceramics</span><span class="tag">Objects</span><span class="tag">Germany</span></div>
+    <div class="tags"><a class="tag tag-link" href="/work/furniture.html">Furniture</a><a class="tag tag-link" href="/work/lighting.html">Lighting</a><a class="tag tag-link" href="/work.html?q=ceramics">Ceramics</a><a class="tag tag-link" href="/work/objects.html">Objects</a><a class="tag tag-link" href="/work.html?q=from+Germany">Germany</a></div>
+    <p class="meta-line">Berlin · Retailer</p>
     <a class="brand-site-link" href="https://arwenn.com/" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>
   </div>
 
   <section class="creator-text">
     <p>Arwenn is a furniture retailer in Berlin, Germany. It sells furniture, lighting and accessories, including chairs, lounge chairs, sofas, dining tables, desks, floor and table lamps, mirrors and vases. It runs a physical store in Berlin built around a gallery and warehouse concept.</p><p>Arwenn focuses on items that are available directly, so buyers can go from choosing to owning without a long wait. A separate business channel serves professionals, covering contract conditions, samples, customization and planning support. On Formground it is shown through 32 pieces, each linked to its own page.</p>
-    <dl class="creator-facts"><dt>Country</dt><dd>Germany</dd><dt>City</dt><dd>Berlin</dd><dt>Type</dt><dd>Retailer</dd><dt>Products</dt><dd>Furniture, lighting, accessories</dd><dt>Website</dt><dd>arwenn.com</dd></dl>
-  </section>  
-  <div class="grid" data-listing-grid>
-      <a class="card" href="https://arwenn.com/products/oha-shelf-high" target="_blank" rel="noopener noreferrer" data-product="ANDO Shelf High" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-OHA-shelf-high-01-BG-05_f1737669-cf9f-4ebd-8c03-2f3f85b789b6.jpg?v=1787236136&amp;width=500" alt="ANDO Shelf High by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">ANDO Shelf High</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/arwenn-cushion-large-antracite" target="_blank" rel="noopener noreferrer" data-product="ARWENN Cushion Large - Antracite" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-CUSHION-60-60-anthrazit-01-BG-03.jpg?v=1788795001&amp;width=500" alt="ARWENN Cushion Large - Antracite by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">ARWENN Cushion Large - Antracite</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/atlas-coffee-table-high-light-blue" target="_blank" rel="noopener noreferrer" data-product="ATLAS Table High - Dark Brown" data-brand="Arwenn">
+  </section>
+  <section class="brand-section selection"><p class="brand-section-title">A selection</p>
+  <div class="grid">
+      <a class="card" id="piece-1" href="https://arwenn.com/products/atlas-coffee-table-high-light-blue" target="_blank" rel="noopener noreferrer" data-product="ATLAS Table High - Dark Brown" data-brand="Arwenn">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-ATLAS-coffee_table-high-dark_brown-01-BG-05.jpg?v=1787733659&amp;width=500" alt="ATLAS Table High - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">ATLAS Table High - Dark Brown</p>
           
         </div>
       </a>
-      <a class="card" href="https://arwenn.com/products/base-2-seater-vanir-dark-brown-6" target="_blank" rel="noopener noreferrer" data-product="BASE 2 Seater - Boucle Brown" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-BASE-sofa-l_shape-mode-drak_brown-01-BG-03_fec3e4b0-cb41-46a0-b1eb-addfb9730806.jpg?v=1787653411&amp;width=500" alt="BASE 2 Seater - Boucle Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">BASE 2 Seater - Boucle Brown</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/boxy-chair" target="_blank" rel="noopener noreferrer" data-product="BOXY Chair - Dark Brown" data-brand="Arwenn">
-        <div class="card-image"><img style="object-position:50% 59.8%" src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-BOXY-chair-dark_brown-01-BG-03_5e8d4136-27dc-46fc-b9d5-bc141c942a23.jpg?v=1787232045&amp;width=500" alt="BOXY Chair - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">BOXY Chair - Dark Brown</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/boxy-table" target="_blank" rel="noopener noreferrer" data-product="BOXY Table Round Dark Brown" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-BOXY-bistro_table-round-dark_brown-01-BG-03.jpg?v=1787234164&amp;width=500" alt="BOXY Table Round Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">BOXY Table Round Dark Brown</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/clip-lamp-1" target="_blank" rel="noopener noreferrer" data-product="CLIP Lamp" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-CLIP-table_lamps-01-BG-10.jpg?v=1787245179&amp;width=500" alt="CLIP Lamp by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">CLIP Lamp</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/cloud-clock-blue" target="_blank" rel="noopener noreferrer" data-product="CLOUD Clock - Light Blue" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-CLOUD-clocks-light_blue-01-BG-05.jpg?v=1787245958&amp;width=500" alt="CLOUD Clock - Light Blue by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">CLOUD Clock - Light Blue</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/uu-shelf-large-natural-oak" target="_blank" rel="noopener noreferrer" data-product="DADO Shelf Large - Natural Oak" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-UU-shelves-large-oak-01-BG-05.jpg?v=1787236241&amp;width=500" alt="DADO Shelf Large - Natural Oak by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">DADO Shelf Large - Natural Oak</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/din-tray-oak" target="_blank" rel="noopener noreferrer" data-product="DIN Tray Oak" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-DIN-trays-oak-01-BG-05_82005167-67c2-4d13-812d-339776ee063d.jpg?v=1787575686&amp;width=500" alt="DIN Tray Oak by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">DIN Tray Oak</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/dina-mirror-large-green" target="_blank" rel="noopener noreferrer" data-product="DINA Mirror Large Green" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-DINA-mirrors-large-dark_green-01-BG-05_490e2550-a065-4e54-82a9-30c3305f047d.jpg?v=1787246199&amp;width=500" alt="DINA Mirror Large Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">DINA Mirror Large Green</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/drift-shelve-high-dark-green" target="_blank" rel="noopener noreferrer" data-product="DRIFT Shelf High - Dark Green" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-DRIFT-shelves-high-dark_green-01-BG-05.jpg?v=1787235724&amp;width=500" alt="DRIFT Shelf High - Dark Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">DRIFT Shelf High - Dark Green</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/enter-desk-green-drawer" target="_blank" rel="noopener noreferrer" data-product="ENTER Desk - Dark Green" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-ENTER-desk-dark_green-01-BG-10.jpg?v=1787234854&amp;width=500" alt="ENTER Desk - Dark Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">ENTER Desk - Dark Green</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/glow-chair-natural-oak" target="_blank" rel="noopener noreferrer" data-product="GLOW Chair - Natural Oak" data-brand="Arwenn">
-        <div class="card-image"><img style="object-position:50% 61.0%" src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-GLOW-chair-oak-01-BG-05_87b8b6c4-142c-48a0-8507-ad22bf82c841.jpg?v=1787232262&amp;width=500" alt="GLOW Chair - Natural Oak by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">GLOW Chair - Natural Oak</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/grid-table" target="_blank" rel="noopener noreferrer" data-product="GRID Table 210 - Natural Ash" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-GRID-dining_table-l2000-01-BG-05_0d80ff03-7b5c-47f6-a7d4-09a19a4e064d.jpg?v=1787234491&amp;width=500" alt="GRID Table 210 - Natural Ash by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">GRID Table 210 - Natural Ash</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/halo-lamp-light-grey" target="_blank" rel="noopener noreferrer" data-product="HALO Lamp - Light Grey" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-Halo-floor_lamps-light_grey-01-BG-05.jpg?v=1787245107&amp;width=500" alt="HALO Lamp - Light Grey by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">HALO Lamp - Light Grey</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/haw-lin-blanket-antracite" target="_blank" rel="noopener noreferrer" data-product="HAW-LIN Blanket - Antracite" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-BLANKET-HAW-LIN-Services-anthrazit-01-BG-03.jpg?v=1788794374&amp;width=500" alt="HAW-LIN Blanket - Antracite by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">HAW-LIN Blanket - Antracite</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/hiro-table-large-dark-brown" target="_blank" rel="noopener noreferrer" data-product="HIRO Table Large - Dark Brown" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-HIRO-coffee_table-large-dark_brown-01-BG-03.jpg?v=1787235397&amp;width=500" alt="HIRO Table Large - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">HIRO Table Large - Dark Brown</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/jet-shelf-medium-dark-green" target="_blank" rel="noopener noreferrer" data-product="JET Shelf - Dark Green" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-JET-shelves-medium-dark_green-01-BG-05.jpg?v=1787235903&amp;width=500" alt="JET Shelf - Dark Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">JET Shelf - Dark Green</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/arwenn-vase-large-butter-yellow" target="_blank" rel="noopener noreferrer" data-product="MONZA Vase - Large - Butter Yellow" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-MONZA-vases-high_stack-butter_yellow-01-BG-07.jpg?v=1787246635&amp;width=500" alt="MONZA Vase - Large - Butter Yellow by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">MONZA Vase - Large - Butter Yellow</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/moon-table-lamp-brown" target="_blank" rel="noopener noreferrer" data-product="MOON Lamp - Dark Brown" data-brand="Arwenn">
+      <a class="card" id="piece-2" href="https://arwenn.com/products/moon-table-lamp-brown" target="_blank" rel="noopener noreferrer" data-product="MOON Lamp - Dark Brown" data-brand="Arwenn">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-MOON-table_lamps-brown-01-BG-03.jpg?v=1787245387&amp;width=500" alt="MOON Lamp - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">MOON Lamp - Dark Brown</p>
           
         </div>
       </a>
-      <a class="card" href="https://arwenn.com/products/solid-dark-green" target="_blank" rel="noopener noreferrer" data-product="SOLID Lamp - Dark Green" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-COB-table_lamps-green-01-BG-05.jpg?v=1787245228&amp;width=500" alt="SOLID Lamp - Dark Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+      <a class="card" id="piece-3" href="https://arwenn.com/products/boxy-chair" target="_blank" rel="noopener noreferrer" data-product="BOXY Chair - Dark Brown" data-brand="Arwenn">
+        <div class="card-image"><img style="object-position:50% 59.8%" src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-BOXY-chair-dark_brown-01-BG-03_5e8d4136-27dc-46fc-b9d5-bc141c942a23.jpg?v=1787232045&amp;width=500" alt="BOXY Chair - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <p class="card-title">SOLID Lamp - Dark Green</p>
+          <p class="card-title">BOXY Chair - Dark Brown</p>
           
         </div>
       </a>
-      <a class="card" href="https://arwenn.com/products/solo-table-160-oak" target="_blank" rel="noopener noreferrer" data-product="SOLO Table 160 - Oak" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-SOLO-dining_tables-l1600_oak-01-BG-05.jpg?v=1787234654&amp;width=500" alt="SOLO Table 160 - Oak by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+      <a class="card" id="piece-4" href="https://arwenn.com/products/uu-shelf-large-natural-oak" target="_blank" rel="noopener noreferrer" data-product="DADO Shelf Large - Natural Oak" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-UU-shelves-large-oak-01-BG-05.jpg?v=1787236241&amp;width=500" alt="DADO Shelf Large - Natural Oak by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <p class="card-title">SOLO Table 160 - Oak</p>
+          <p class="card-title">DADO Shelf Large - Natural Oak</p>
           
         </div>
       </a>
-      <a class="card" href="https://arwenn.com/products/studio-bench" target="_blank" rel="noopener noreferrer" data-product="STUDIO Bench" data-brand="Arwenn">
+      <a class="card" id="piece-5" href="https://arwenn.com/products/studio-bench" target="_blank" rel="noopener noreferrer" data-product="STUDIO Bench" data-brand="Arwenn">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-STUDIO-bench-01-BG-05_37b2deef-487f-4b90-9547-6a6ca6d71349.jpg?v=1787233060&amp;width=500" alt="STUDIO Bench by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">STUDIO Bench</p>
           
         </div>
       </a>
-      <a class="card" href="https://arwenn.com/products/studio-table" target="_blank" rel="noopener noreferrer" data-product="STUDIO Table" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-STUDIO-table-01-BG-05.jpg?v=1787234787&amp;width=500" alt="STUDIO Table by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+      <a class="card" id="piece-6" href="https://arwenn.com/products/haw-lin-blanket-antracite" target="_blank" rel="noopener noreferrer" data-product="HAW-LIN Blanket - Antracite" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-BLANKET-HAW-LIN-Services-anthrazit-01-BG-03.jpg?v=1788794374&amp;width=500" alt="HAW-LIN Blanket - Antracite by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
-          <p class="card-title">STUDIO Table</p>
+          <p class="card-title">HAW-LIN Blanket - Antracite</p>
           
         </div>
       </a>
-      <a class="card" href="https://arwenn.com/products/tab-hook" target="_blank" rel="noopener noreferrer" data-product="TAB HOOK - Dark Green" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TAB-hooks-dark_green-05-BG-05.jpg?v=1787738170&amp;width=500" alt="TAB HOOK - Dark Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">TAB HOOK - Dark Green</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/tao-chair" target="_blank" rel="noopener noreferrer" data-product="TAO Chair - Brown Ash" data-brand="Arwenn">
-        <div class="card-image"><img style="object-position:50% 51.3%" src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TAO-chair-natural-01-BG-05_416c60fa-91dd-4a03-ba94-d44da1742cea.jpg?v=1787232449&amp;width=500" alt="TAO Chair - Brown Ash by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">TAO Chair - Brown Ash</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/toad-table-lamp-brown" target="_blank" rel="noopener noreferrer" data-product="TOAD Lamp - Dark Brown" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TOAD-table_lamps-brown-01-BG-03.jpg?v=1787245534&amp;width=500" alt="TOAD Lamp - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">TOAD Lamp - Dark Brown</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/turn-chair-dark-brown" target="_blank" rel="noopener noreferrer" data-product="TURN Chair - Dark Brown" data-brand="Arwenn">
-        <div class="card-image"><img style="object-position:50% 63.3%" src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TURN-chair-dark_brown-01-BG-05.jpg?v=1787232599&amp;width=500" alt="TURN Chair - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">TURN Chair - Dark Brown</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/turn-lounge-chair" target="_blank" rel="noopener noreferrer" data-product="TURN Lounge - Dark Brown" data-brand="Arwenn">
-        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TURN-lounge_chair-dark_brown-01-BG-05.jpg?v=1787232772&amp;width=500" alt="TURN Lounge - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
-        <div class="card-body">
-          <p class="card-title">TURN Lounge - Dark Brown</p>
-          
-        </div>
-      </a>
-      <a class="card" href="https://arwenn.com/products/turrel-bowl-large-dark-brown" target="_blank" rel="noopener noreferrer" data-product="TURRELL Bowl - Large - Dark Brown" data-brand="Arwenn">
+      <a class="card card-extra-m" id="piece-7" href="https://arwenn.com/products/turrel-bowl-large-dark-brown" target="_blank" rel="noopener noreferrer" data-product="TURRELL Bowl - Large - Dark Brown" data-brand="Arwenn">
         <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TURELL-bowls-large-dark_brown-01-BG-03_7bd42475-d018-4306-bedf-5187d9bb9ecb.jpg?v=1787245615&amp;width=500" alt="TURRELL Bowl - Large - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">TURRELL Bowl - Large - Dark Brown</p>
           
         </div>
       </a>
-      <a class="card" href="https://arwenn.com/products/wing-chair-black" target="_blank" rel="noopener noreferrer" data-product="WING Chair - Black" data-brand="Arwenn">
+      <a class="card card-extra-m" id="piece-8" href="https://arwenn.com/products/cloud-clock-blue" target="_blank" rel="noopener noreferrer" data-product="CLOUD Clock - Light Blue" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-CLOUD-clocks-light_blue-01-BG-05.jpg?v=1787245958&amp;width=500" alt="CLOUD Clock - Light Blue by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">CLOUD Clock - Light Blue</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-9" href="https://arwenn.com/products/tab-hook" target="_blank" rel="noopener noreferrer" data-product="TAB HOOK - Dark Green" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TAB-hooks-dark_green-05-BG-05.jpg?v=1787738170&amp;width=500" alt="TAB HOOK - Dark Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">TAB HOOK - Dark Green</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-10" href="https://arwenn.com/products/arwenn-cushion-large-antracite" target="_blank" rel="noopener noreferrer" data-product="ARWENN Cushion Large - Antracite" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-CUSHION-60-60-anthrazit-01-BG-03.jpg?v=1788795001&amp;width=500" alt="ARWENN Cushion Large - Antracite by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">ARWENN Cushion Large - Antracite</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-11" href="https://arwenn.com/products/enter-desk-green-drawer" target="_blank" rel="noopener noreferrer" data-product="ENTER Desk - Dark Green" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-ENTER-desk-dark_green-01-BG-10.jpg?v=1787234854&amp;width=500" alt="ENTER Desk - Dark Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">ENTER Desk - Dark Green</p>
+          
+        </div>
+      </a>
+      <a class="card card-extra-m" id="piece-12" href="https://arwenn.com/products/dina-mirror-large-green" target="_blank" rel="noopener noreferrer" data-product="DINA Mirror Large Green" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-DINA-mirrors-large-dark_green-01-BG-05_490e2550-a065-4e54-82a9-30c3305f047d.jpg?v=1787246199&amp;width=500" alt="DINA Mirror Large Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DINA Mirror Large Green</p>
+          
+        </div>
+      </a></div></section>
+  <div class="show-all-row"><button type="button">Show all 32 pieces</button></div>
+  <div class="rest-block"><p class="brand-section-title">More pieces</p>
+  <div class="grid" data-listing-grid>
+      <a class="card" id="piece-13" href="https://arwenn.com/products/oha-shelf-high" target="_blank" rel="noopener noreferrer" data-product="ANDO Shelf High" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-OHA-shelf-high-01-BG-05_f1737669-cf9f-4ebd-8c03-2f3f85b789b6.jpg?v=1787236136&amp;width=500" alt="ANDO Shelf High by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">ANDO Shelf High</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://arwenn.com/products/arwenn-cushion-large-antracite" target="_blank" rel="noopener noreferrer" data-product="ARWENN Cushion Large - Antracite" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-CUSHION-60-60-anthrazit-01-BG-03.jpg?v=1788795001&amp;width=500" alt="ARWENN Cushion Large - Antracite by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">ARWENN Cushion Large - Antracite</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://arwenn.com/products/atlas-coffee-table-high-light-blue" target="_blank" rel="noopener noreferrer" data-product="ATLAS Table High - Dark Brown" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-ATLAS-coffee_table-high-dark_brown-01-BG-05.jpg?v=1787733659&amp;width=500" alt="ATLAS Table High - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">ATLAS Table High - Dark Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-14" href="https://arwenn.com/products/base-2-seater-vanir-dark-brown-6" target="_blank" rel="noopener noreferrer" data-product="BASE 2 Seater - Boucle Brown" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-BASE-sofa-l_shape-mode-drak_brown-01-BG-03_fec3e4b0-cb41-46a0-b1eb-addfb9730806.jpg?v=1787653411&amp;width=500" alt="BASE 2 Seater - Boucle Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">BASE 2 Seater - Boucle Brown</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://arwenn.com/products/boxy-chair" target="_blank" rel="noopener noreferrer" data-product="BOXY Chair - Dark Brown" data-brand="Arwenn">
+        <div class="card-image"><img style="object-position:50% 59.8%" src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-BOXY-chair-dark_brown-01-BG-03_5e8d4136-27dc-46fc-b9d5-bc141c942a23.jpg?v=1787232045&amp;width=500" alt="BOXY Chair - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">BOXY Chair - Dark Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-15" href="https://arwenn.com/products/boxy-table" target="_blank" rel="noopener noreferrer" data-product="BOXY Table Round Dark Brown" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-BOXY-bistro_table-round-dark_brown-01-BG-03.jpg?v=1787234164&amp;width=500" alt="BOXY Table Round Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">BOXY Table Round Dark Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-16" href="https://arwenn.com/products/clip-lamp-1" target="_blank" rel="noopener noreferrer" data-product="CLIP Lamp" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-CLIP-table_lamps-01-BG-10.jpg?v=1787245179&amp;width=500" alt="CLIP Lamp by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">CLIP Lamp</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://arwenn.com/products/cloud-clock-blue" target="_blank" rel="noopener noreferrer" data-product="CLOUD Clock - Light Blue" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-CLOUD-clocks-light_blue-01-BG-05.jpg?v=1787245958&amp;width=500" alt="CLOUD Clock - Light Blue by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">CLOUD Clock - Light Blue</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://arwenn.com/products/uu-shelf-large-natural-oak" target="_blank" rel="noopener noreferrer" data-product="DADO Shelf Large - Natural Oak" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-UU-shelves-large-oak-01-BG-05.jpg?v=1787236241&amp;width=500" alt="DADO Shelf Large - Natural Oak by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DADO Shelf Large - Natural Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-17" href="https://arwenn.com/products/din-tray-oak" target="_blank" rel="noopener noreferrer" data-product="DIN Tray Oak" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-DIN-trays-oak-01-BG-05_82005167-67c2-4d13-812d-339776ee063d.jpg?v=1787575686&amp;width=500" alt="DIN Tray Oak by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DIN Tray Oak</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://arwenn.com/products/dina-mirror-large-green" target="_blank" rel="noopener noreferrer" data-product="DINA Mirror Large Green" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-DINA-mirrors-large-dark_green-01-BG-05_490e2550-a065-4e54-82a9-30c3305f047d.jpg?v=1787246199&amp;width=500" alt="DINA Mirror Large Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DINA Mirror Large Green</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-18" href="https://arwenn.com/products/drift-shelve-high-dark-green" target="_blank" rel="noopener noreferrer" data-product="DRIFT Shelf High - Dark Green" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-DRIFT-shelves-high-dark_green-01-BG-05.jpg?v=1787235724&amp;width=500" alt="DRIFT Shelf High - Dark Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">DRIFT Shelf High - Dark Green</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://arwenn.com/products/enter-desk-green-drawer" target="_blank" rel="noopener noreferrer" data-product="ENTER Desk - Dark Green" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-ENTER-desk-dark_green-01-BG-10.jpg?v=1787234854&amp;width=500" alt="ENTER Desk - Dark Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">ENTER Desk - Dark Green</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-19" href="https://arwenn.com/products/glow-chair-natural-oak" target="_blank" rel="noopener noreferrer" data-product="GLOW Chair - Natural Oak" data-brand="Arwenn">
+        <div class="card-image"><img style="object-position:50% 61.0%" src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-GLOW-chair-oak-01-BG-05_87b8b6c4-142c-48a0-8507-ad22bf82c841.jpg?v=1787232262&amp;width=500" alt="GLOW Chair - Natural Oak by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">GLOW Chair - Natural Oak</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-20" href="https://arwenn.com/products/grid-table" target="_blank" rel="noopener noreferrer" data-product="GRID Table 210 - Natural Ash" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-GRID-dining_table-l2000-01-BG-05_0d80ff03-7b5c-47f6-a7d4-09a19a4e064d.jpg?v=1787234491&amp;width=500" alt="GRID Table 210 - Natural Ash by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">GRID Table 210 - Natural Ash</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-21" href="https://arwenn.com/products/halo-lamp-light-grey" target="_blank" rel="noopener noreferrer" data-product="HALO Lamp - Light Grey" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-Halo-floor_lamps-light_grey-01-BG-05.jpg?v=1787245107&amp;width=500" alt="HALO Lamp - Light Grey by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">HALO Lamp - Light Grey</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://arwenn.com/products/haw-lin-blanket-antracite" target="_blank" rel="noopener noreferrer" data-product="HAW-LIN Blanket - Antracite" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-BLANKET-HAW-LIN-Services-anthrazit-01-BG-03.jpg?v=1788794374&amp;width=500" alt="HAW-LIN Blanket - Antracite by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">HAW-LIN Blanket - Antracite</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-22" href="https://arwenn.com/products/hiro-table-large-dark-brown" target="_blank" rel="noopener noreferrer" data-product="HIRO Table Large - Dark Brown" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-HIRO-coffee_table-large-dark_brown-01-BG-03.jpg?v=1787235397&amp;width=500" alt="HIRO Table Large - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">HIRO Table Large - Dark Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-23" href="https://arwenn.com/products/jet-shelf-medium-dark-green" target="_blank" rel="noopener noreferrer" data-product="JET Shelf - Dark Green" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-JET-shelves-medium-dark_green-01-BG-05.jpg?v=1787235903&amp;width=500" alt="JET Shelf - Dark Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">JET Shelf - Dark Green</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-24" href="https://arwenn.com/products/arwenn-vase-large-butter-yellow" target="_blank" rel="noopener noreferrer" data-product="MONZA Vase - Large - Butter Yellow" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-MONZA-vases-high_stack-butter_yellow-01-BG-07.jpg?v=1787246635&amp;width=500" alt="MONZA Vase - Large - Butter Yellow by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">MONZA Vase - Large - Butter Yellow</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://arwenn.com/products/moon-table-lamp-brown" target="_blank" rel="noopener noreferrer" data-product="MOON Lamp - Dark Brown" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-MOON-table_lamps-brown-01-BG-03.jpg?v=1787245387&amp;width=500" alt="MOON Lamp - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">MOON Lamp - Dark Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-25" href="https://arwenn.com/products/solid-dark-green" target="_blank" rel="noopener noreferrer" data-product="SOLID Lamp - Dark Green" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-COB-table_lamps-green-01-BG-05.jpg?v=1787245228&amp;width=500" alt="SOLID Lamp - Dark Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">SOLID Lamp - Dark Green</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-26" href="https://arwenn.com/products/solo-table-160-oak" target="_blank" rel="noopener noreferrer" data-product="SOLO Table 160 - Oak" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-SOLO-dining_tables-l1600_oak-01-BG-05.jpg?v=1787234654&amp;width=500" alt="SOLO Table 160 - Oak by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">SOLO Table 160 - Oak</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://arwenn.com/products/studio-bench" target="_blank" rel="noopener noreferrer" data-product="STUDIO Bench" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-STUDIO-bench-01-BG-05_37b2deef-487f-4b90-9547-6a6ca6d71349.jpg?v=1787233060&amp;width=500" alt="STUDIO Bench by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">STUDIO Bench</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-27" href="https://arwenn.com/products/studio-table" target="_blank" rel="noopener noreferrer" data-product="STUDIO Table" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-STUDIO-table-01-BG-05.jpg?v=1787234787&amp;width=500" alt="STUDIO Table by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">STUDIO Table</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://arwenn.com/products/tab-hook" target="_blank" rel="noopener noreferrer" data-product="TAB HOOK - Dark Green" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TAB-hooks-dark_green-05-BG-05.jpg?v=1787738170&amp;width=500" alt="TAB HOOK - Dark Green by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">TAB HOOK - Dark Green</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-28" href="https://arwenn.com/products/tao-chair" target="_blank" rel="noopener noreferrer" data-product="TAO Chair - Brown Ash" data-brand="Arwenn">
+        <div class="card-image"><img style="object-position:50% 51.3%" src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TAO-chair-natural-01-BG-05_416c60fa-91dd-4a03-ba94-d44da1742cea.jpg?v=1787232449&amp;width=500" alt="TAO Chair - Brown Ash by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">TAO Chair - Brown Ash</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-29" href="https://arwenn.com/products/toad-table-lamp-brown" target="_blank" rel="noopener noreferrer" data-product="TOAD Lamp - Dark Brown" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TOAD-table_lamps-brown-01-BG-03.jpg?v=1787245534&amp;width=500" alt="TOAD Lamp - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">TOAD Lamp - Dark Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-30" href="https://arwenn.com/products/turn-chair-dark-brown" target="_blank" rel="noopener noreferrer" data-product="TURN Chair - Dark Brown" data-brand="Arwenn">
+        <div class="card-image"><img style="object-position:50% 63.3%" src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TURN-chair-dark_brown-01-BG-05.jpg?v=1787232599&amp;width=500" alt="TURN Chair - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">TURN Chair - Dark Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-31" href="https://arwenn.com/products/turn-lounge-chair" target="_blank" rel="noopener noreferrer" data-product="TURN Lounge - Dark Brown" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TURN-lounge_chair-dark_brown-01-BG-05.jpg?v=1787232772&amp;width=500" alt="TURN Lounge - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">TURN Lounge - Dark Brown</p>
+          
+        </div>
+      </a>
+      <a class="card in-selection" href="https://arwenn.com/products/turrel-bowl-large-dark-brown" target="_blank" rel="noopener noreferrer" data-product="TURRELL Bowl - Large - Dark Brown" data-brand="Arwenn">
+        <div class="card-image"><img src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-TURELL-bowls-large-dark_brown-01-BG-03_7bd42475-d018-4306-bedf-5187d9bb9ecb.jpg?v=1787245615&amp;width=500" alt="TURRELL Bowl - Large - Dark Brown by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
+        <div class="card-body">
+          <p class="card-title">TURRELL Bowl - Large - Dark Brown</p>
+          
+        </div>
+      </a>
+      <a class="card" id="piece-32" href="https://arwenn.com/products/wing-chair-black" target="_blank" rel="noopener noreferrer" data-product="WING Chair - Black" data-brand="Arwenn">
         <div class="card-image"><img style="object-position:48.3% 50%" src="https://cdn.shopify.com/s/files/1/0915/0523/0148/files/ARWENN-WING-lounge_chair-black_leather_01-BG-03.jpg?v=1787232923&amp;width=500" alt="WING Chair - Black by Arwenn" loading="lazy"><button class="share-btn" type="button" aria-label="Share this piece"><i class="ti ti-share-2" aria-hidden="true"></i></button></div>
         <div class="card-body">
           <p class="card-title">WING Chair - Black</p>
@@ -526,7 +633,7 @@
         </div>
       </a></div>
   
-  
+  </div>
 
   <section class="brand-section">
     <p class="brand-section-title">Makers like Arwenn</p>
@@ -573,8 +680,28 @@
     document.head.appendChild(s);
   })();
 </script>
-<script src="/share.js?v=3dc65514" defer></script>
-<script src="/listing.js?v=7ceb087f" defer></script>
+<script>
+(function () {
+  var root = document.documentElement;
+  function expand() { root.classList.add("explore-expanded"); }
+  var button = document.querySelector(".show-all-row button");
+  if (button) button.addEventListener("click", expand);
+  // a link such as ?brand=<maker> filters the full list: that list has to be showing
+  if (/[?&]brand=/.test(location.search)) expand();
+  document.addEventListener("click", function (e) {
+    var link = e.target.closest && e.target.closest(".piece-link");
+    if (!link) return;
+    var card = document.getElementById(link.getAttribute("href").slice(1));
+    if (!card) return;
+    e.preventDefault();
+    if (!card.offsetParent) expand();                  // the card sits in the part of the list that is still folded away
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.add("flash");
+    setTimeout(function () { card.classList.remove("flash"); }, 1800);
+  });
+})();
+</script><script src="/share.js?v=3dc65514" defer></script>
+<script src="/listing.js?v=3bedc23c" defer></script>
 <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "87e51fd2f5894326b3c6e883edc75a6d"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
