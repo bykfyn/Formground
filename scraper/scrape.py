@@ -19728,6 +19728,7 @@ EXTRACTORS = {
     "Lukas Cober": extract_lukas_cober,
     "Jeremy Maxwell Wintrebert": extract_jeremy_maxwell_wintrebert,
     "Johan Viladrich": extract_portfolio_designer,
+    "Rooms": extract_portfolio_designer,
     "Ben McCarthy": extract_portfolio_designer,
     "Roll & Hill": extract_roll_and_hill,
     "HAHA studio": extract_haha_studio,
