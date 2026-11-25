@@ -878,7 +878,7 @@ class CreatorTextTests(unittest.TestCase):
             self.assertTrue(e["sources"] and all(u.startswith("https://") for _, u in e["sources"]), key)
 
     def _page(self, e):
-        folder = {"architects": "architects", "makers": "brands", "designers": "designers"}[e["group"]]
+        folder = {"architects": "architects", "makers": "brands", "designers": "designers", "retailers": "galleries"}[e["group"]]
         return (DOCS / folder / f"{e['page_slug']}.html").read_text()
 
     def test_every_text_is_on_its_creators_page_at_once_and_unknown_facts_are_left_out(self):

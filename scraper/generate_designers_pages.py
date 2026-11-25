@@ -56,6 +56,8 @@ from generate_brand_pages import (
     tags_html,
     umbrella_categories_for,
     FAVICON_TAGS,
+    galleries_for,
+    render_galleries_section,
     HERO_SEARCH_POSITION_CSS,
     PAGE_CSS,
     SITE_FOOTER_HTML,
@@ -320,7 +322,7 @@ def render_designer_page(designer_name, slug, products, page=1):
     {f'<div class="tags">{tags}</div>' if tags else ''}{meta_line}{designer_links_html(designer_name)}
   </div>
   {text_html}
-  {listing_html}{piece_section_html(designer_name, designer_pieces(designer_name, products)) if page == 1 else ""}
+  {listing_html}{piece_section_html(designer_name, designer_pieces(designer_name, products)) if page == 1 else ""}{render_galleries_section(designer_name, galleries_for(designer_name)) if page == 1 else ""}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
@@ -432,7 +434,7 @@ def render_portfolio_designer_page(d, slug, credited=()):
   </div>
   {creator_texts.text_block_html("designers", slug, len(works), facts_block=False)}
   <div class="maker-grid">{cards}
-  </div>{credited_html}
+  </div>{credited_html}{render_galleries_section(name, galleries_for(name))}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>

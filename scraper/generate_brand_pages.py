@@ -259,7 +259,7 @@ def load_stockists_by_brand():
     """
     if not RETAILERS_PATH.exists():
         return {}
-    retailers = json.loads(RETAILERS_PATH.read_text(encoding="utf-8"))
+    retailers = [r for r in json.loads(RETAILERS_PATH.read_text(encoding="utf-8")) if r.get("kind") != "gallery"]   # galleries have their own section: see load_galleries_by_brand
     groups = {}
     order = []
     for r in retailers:
@@ -1170,6 +1170,49 @@ def _brand_stockist_item(name, locations):
       </a>"""
 
 
+def load_galleries():
+    """The retailers.json entries marked kind "gallery" (2026-11-25): shown on their own page under /galleries/ and as "Shown at" on the
+    pages of the makers and designers they show, not as stockists. Galleries stay in the Marketplace, apart from the stockists."""
+    if not RETAILERS_PATH.exists():
+        return []
+    return [r for r in json.loads(RETAILERS_PATH.read_text(encoding="utf-8")) if r.get("kind") == "gallery"]
+
+
+def gallery_slug(gallery):
+    return slugify(gallery["name"])
+
+
+_GALLERIES_BY_NAME = None
+
+
+def galleries_for(name):
+    """[gallery entry] for the galleries that show this maker or designer (their name is in the gallery's list)."""
+    global _GALLERIES_BY_NAME
+    if _GALLERIES_BY_NAME is None:
+        _GALLERIES_BY_NAME = {}
+        for g in load_galleries():
+            for n in g.get("brands") or []:
+                _GALLERIES_BY_NAME.setdefault(n.casefold(), []).append(g)      # "De Sede" in the gallery's list is "de Sede" on the maker's page
+    return _GALLERIES_BY_NAME.get(name.casefold(), [])
+
+
+def render_galleries_section(name, galleries):
+    """"Shown at": the galleries that show this maker or designer, each linking to its page on Formground. "" when there are none."""
+    if not galleries:
+        return ""
+    items = "\n".join(
+        f'      <a class="stockist-item gallery-link" href="/galleries/{gallery_slug(g)}.html"><span class="stockist-name">{html.escape(g["name"])}</span>'
+        f'<span class="stockist-location">{html.escape(", ".join(x for x in (g.get("city"), g.get("country")) if x))}</span></a>'
+        for g in galleries)
+    return f"""
+  <section class="brand-section">
+    <p class="brand-section-title">Shown at</p>
+    <div class="stockist-row">
+{items}
+    </div>
+  </section>"""
+
+
 # "Where to buy" only shows once a maker has at least this many stockists (2026-11-21, the user's call): a single pill reads as
 # sparse and one retailer's claim is the likeliest to go stale. Lower it as the retailer lists grow. `python3 scraper/stockist_coverage.py`
 # shows how many maker pages each setting would cover.
@@ -1590,7 +1633,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
                         f'\n  {see_more_html}\n  {pager_html}')
     designers_section = render_designers_section(brand, designers) if page == 1 else ""
     similar_section = render_similar_section(brand, similar) if page == 1 else ""
-    stockist_section = render_stockist_section(brand, stockists) if page == 1 else ""
+    stockist_section = (render_galleries_section(brand, galleries_for(brand)) + render_stockist_section(brand, stockists)) if page == 1 else ""
     page_url = f"{SITE_URL}/brands/{brand_page_slug(slug, page)}.html"
     page_note = f" (page {page} of {pages})" if pages > 1 else ""
     pg = f", page {page}" if page > 1 else ""

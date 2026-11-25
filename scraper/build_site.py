@@ -28,6 +28,7 @@ GENERATORS = [
     "generate_category_hubs",
     "generate_guides_pages",
     "generate_designers_pages",
+    "generate_gallery_pages",
     "generate_architects_pages",
     "generate_creators_page",
     "generate_marketplace_page",

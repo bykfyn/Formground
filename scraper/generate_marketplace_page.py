@@ -37,6 +37,7 @@ from urllib.parse import urlparse
 import sqlite3
 
 from generate_brand_pages import (
+    slugify,
     PROMOTIONS_ENABLED,
     BANNER_CAROUSEL_CSS,
     BANNER_CAROUSEL_JS,
@@ -126,6 +127,8 @@ STOCKIST_SUBCHIPS = [
 ]
 
 PAGE_CSS = """
+  .panel-group-title { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin: 28px 0 6px; }
+  .panel-group-note { margin: 0 0 16px; font-size: 13px; color: var(--text-secondary); }
   main { max-width: 1160px; margin: 0 auto; padding: 24px 20px 60px; }
   .site-header { margin-bottom: 0; }
   .search-wide { width: 100%; max-width: 900px; margin: 0 auto 32px; }
@@ -583,7 +586,8 @@ FORCE_MONOGRAM = {
 }
 
 
-def _stockist_card(name, locations, brand_umbrellas, has_promo=False):
+def _stockist_card(name, locations, brand_umbrellas, has_promo=False, href=None):
+    """A stockist's card, linking to its own site; a gallery's card (href given) links to its page on Formground instead."""
     website = locations[0]["website"]
     # Union of every location's brands, order preserved, dedup by
     # first occurrence - a chain like Svenssons doesn't necessarily
@@ -656,7 +660,8 @@ def _stockist_card(name, locations, brand_umbrellas, has_promo=False):
         '<i class="ti ti-tag" aria-hidden="true"></i></span>'
         if has_promo else ""
     )
-    return f"""      <a class="maker-card" href="{html.escape(website)}" target="_blank" rel="noopener noreferrer"{match_data}{subcat_attr}>
+    link = f'href="{html.escape(href)}"' if href else f'href="{html.escape(website)}" target="_blank" rel="noopener noreferrer"'
+    return f"""      <a class="maker-card" {link}{match_data}{subcat_attr}>
         <div class="maker-card-hero"><div class="icon-badge">{badge}</div>{promo_badge}</div>
         <div class="maker-card-body">
           <span class="maker-name">{html.escape(name)}</span>
@@ -666,7 +671,21 @@ def _stockist_card(name, locations, brand_umbrellas, has_promo=False):
       </a>"""
 
 
+def render_galleries_group(galleries, brand_umbrellas):
+    """The galleries, apart from the stockists (2026-11-25): each card opens the gallery's page on Formground, not its own site."""
+    if not galleries:
+        return ""
+    cards = "\n".join(_stockist_card(g["name"], [g], brand_umbrellas, href=f"/galleries/{slugify(g['name'])}.html")
+                      for g in sorted(galleries, key=lambda g: g["name"]))
+    return (f'    <p class="panel-group-title">Galleries</p>\n'
+            f'    <p class="panel-group-note">Galleries show and represent designers, often making their pieces to order.</p>\n'
+            f'    <div class="maker-grid">\n{cards}\n    </div>\n'
+            f'    <p class="panel-group-title">Stockists</p>\n')
+
+
 def render_stockists_panel(retailers, promotions):
+    galleries = [r for r in retailers if r.get("kind") == "gallery"]
+    retailers = [r for r in retailers if r.get("kind") != "gallery"]
     groups = _group_stockists(retailers)
     ordered = sorted(groups, key=lambda g: (g[1][0].get("country") or "zzz", g[1][0].get("city") or "", g[0]))
     brand_umbrellas = _load_brand_umbrellas()
@@ -691,6 +710,7 @@ def render_stockists_panel(retailers, promotions):
         _stockist_card(name, locations, brand_umbrellas, name in retailers_with_promo)
         for name, locations in free
     )
+    galleries_group = render_galleries_group(galleries, brand_umbrellas)
     sponsored_section = render_sponsored_section(sponsored_cards, "maker-grid")
     free_grid = f'    <div class="maker-grid">\n{free_cards}\n    </div>' if free_cards else ""
     grid = "\n".join(part for part in (sponsored_section, free_grid) if part)
@@ -709,7 +729,7 @@ def render_stockists_panel(retailers, promotions):
         # promotions_cross_site_linking).
         f'    <div class="cat-panel" data-cat="stockists"{"" if not PROMOTIONS_ENABLED else " style=" + chr(34) + "display: none;" + chr(34)}>\n{intro}\n'
         f'    <div class="sub-chips">\n{subchips_html}\n    </div>\n'
-        f'{grid}\n    </div>'
+        f'{galleries_group}{grid}\n    </div>'
     )
 
 
