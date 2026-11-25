@@ -19522,6 +19522,11 @@ def run(brand_name=None, local_only=False):
             # the same conservative way as the zero-products case: don't let a
             # partial, possibly-blocked scrape overwrite good existing data.
             suspicious_drop = prev_count >= 10 and len(products) < prev_count * 0.4
+            curated = curated_selections().get(brand["name"])
+            if curated:
+                # a hand-picked selection is meant to be far smaller than the old full catalogue; what would signal a
+                # block is the selection itself coming back mostly empty
+                suspicious_drop = len(products) < len(curated["selected"]) * 0.8
             if suspicious_drop:
                 print(f"  {brand['name']}: only found {len(products)} products vs {prev_count} previously - "
                       f"looks like a possible block or site change, not a real catalog change. "
