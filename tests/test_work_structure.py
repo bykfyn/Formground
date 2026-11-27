@@ -327,7 +327,10 @@ class StructureTests(unittest.TestCase):
         for url in ("/work/sofas-2.html", "/work/chairs-24.html", "/brands/serax-2.html", "/designers/hella-jongerius-2.html"):
             self.assertNotIn(url, sm, url)
             self.assertTrue((DOCS / url.lstrip("/")).exists(), url)       # the pages themselves still exist (and stay linked)
-        self.assertLess(sm.count("<loc>"), 1000)
+        for path in re.findall(r"<loc>https://formground\.com(/[^<]*)</loc>", sm):
+            numbered = re.match(r"(.*)-\d+\.html$", path)              # a continuation is "<primary page>-<n>.html"
+            self.assertFalse(numbered and (DOCS / (numbered.group(1).lstrip("/") + ".html")).exists(), path)
+        self.assertLess(sm.count("<loc>"), 50000)                        # the limit for a single sitemap file
 
     @skip_if_houses_hidden
     def test_houses_pages_are_listing_pages_with_the_standard_card(self):
