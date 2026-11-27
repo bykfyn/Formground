@@ -19265,6 +19265,297 @@ def extract_jeremy_maxwell_wintrebert(brand):
     return products
 
 
+# atelierfig.com (Atelier Fig, Arnhem; Wix Stores; added 2026-11-27). /store-products-sitemap.xml lists about 80 listings, mostly
+# colour and repeat listings of the same designs (36 are the small Gravity Man figure), each page with a schema.org Product
+# block; each design is one piece. A listing counts when it is in stock, or out of stock but stated as made to order (the shop shows
+# those as "On request"; the figure pages say "Made to Order (Leading time 3/4 weeks when out of stock)"). Towels, wash cloths,
+# placemats and the pick-up-only "Buttermen" food figures are left out. The Frame Cabinet has no shop listing: it is on
+# /frame-cabinets (two 1/1 versions, price on request). Names fix the shop's "Strarter" and "Diner". A new design the list does not
+# know is printed and skipped.
+ATELIERFIG_SKIP_SLUG = re.compile(r"towel|wash-cloth|placemat|buttermen")
+# (match on the listing title, piece name, type, materials, listing to show when it can still be ordered). First match wins.
+ATELIERFIG_PIECES = [
+    (r"candle ?holder", "Gravity Candle Holder", "Candle Holder", ["Porcelain"], "gravity-candle-holder-medium-indigo"),
+    (r"gravity chain bowl", "Gravity Chain Bowl", "Bowl", ["Porcelain"], "gravity-chain-bowl-indigo"),
+    (r"gravity bowl 01", "Gravity Bowl 01", "Bowl", ["Porcelain"], "gravity-bowl-01-forest-green"),
+    (r"gravity vase round", "Gravity Vase Round", "Vase", ["Porcelain"], "gravity-vase-round-small-cordovan"),
+    (r"square vase", "Square Vase", "Vase", ["Porcelain"], "square-vase-medium"),
+    (r"wall grid", "Wall Grid", "Wall Relief", ["Ceramic"], "wall-grid-apple-mint"),
+    (r"birdhouse", "Birdhouse", "Objects", ["Porcelain"], "birdhouse-outdoor"),
+    (r"gravity crane bird", "Gravity Crane Bird", "Sculpture", ["Porcelain"], "gravity-crane-bird-s-sulpher"),
+    (r"gravity bird", "Gravity Bird", "Sculpture", ["Porcelain"], "gravity-bird-s-earth"),
+    (r"gravity dog", "Gravity Dog", "Sculpture", ["Porcelain"], "gravity-dog-left-s-rust-brown"),
+    (r"gravity (man|duo)", "Gravity Man", "Sculpture", ["Porcelain"], "gravity-man-s-lipstick-red"),
+    (r"fringe coffee mug", "Fringe Coffee Mug", "Cup", ["Porcelain"], "fringe-coffee-mug"),
+    (r"fringe cup", "Fringe Cup", "Cup", ["Porcelain"], "fringe-cup-high"),
+    (r"fringe mini bowl", "Fringe Mini Bowl", "Bowl", ["Porcelain"], "fringe-mini-bowl-1"),
+    (r"fringe large sharing bowl", "Fringe Large Sharing Bowl", "Bowl", ["Porcelain"], "fringe-large-sharing-bowl"),
+    (r"fringe bowl", "Fringe Bowl", "Bowl", ["Porcelain"], "fringe-bowl"),
+    (r"fringe dessert plate", "Fringe Dessert Plate", "Plate", ["Porcelain"], "fringe-dessert-plate-1"),
+    (r"fringe plateau starter plate", "Fringe Plateau Starter Plate", "Plate", ["Porcelain"], "fringe-plateau-starter-plate"),
+    (r"fringe st(r)?arter plate", "Fringe Starter Plate", "Plate", ["Porcelain"], "fringe-strarter-plate"),
+    (r"fringe low din+er plate", "Fringe Low Dinner Plate", "Plate", ["Porcelain"], "fringe-low-diner-plate-2"),
+    (r"fringe terra plateau", "Fringe Terra Plateau", "Tray", ["Terracotta"], "fringe-terra-plateau-medium"),
+    (r"fringe clock", "Fringe Clock", "Clock", ["Stoneware"], "fringe-clock"),
+]
+ATELIERFIG_FRAME_PHOTO = "102dd7_e127abf71af545f9a2e2f60b91b19207~mv2.jpg"    # one whole cabinet, plain studio wall
+
+
+def _atelierfig_get(url):
+    time.sleep(1)
+    try:
+        resp = requests.get(url, headers=HEADERS, timeout=30)
+        if resp.status_code in BLOCK_STATUS_CODES:
+            raise ScrapeBlockedError(url, resp.status_code)
+        resp.raise_for_status()
+    except requests.RequestException as e:
+        print(f"  Could not fetch {url}: {e}")
+        return None
+    return resp.content.decode("utf-8", "replace")
+
+
+def extract_atelier_fig(brand):
+    base = brand["url"].rstrip("/")
+    sitemap = _atelierfig_get(f"{base}/store-products-sitemap.xml")
+    if not sitemap:
+        return []
+    groups = {}
+    for url in sorted(re.findall(r"<loc>([^<]+/product-page/[^<]+)</loc>", sitemap)):
+        slug = url.rsplit("/", 1)[-1]
+        if ATELIERFIG_SKIP_SLUG.search(slug):
+            continue
+        data = None
+        for block in re.findall(r'<script type="application/ld\+json"[^>]*>(.*?)</script>', _atelierfig_get(url) or "", re.S):
+            try:
+                candidate = json.loads(block)
+            except json.JSONDecodeError:
+                continue
+            if isinstance(candidate, dict) and candidate.get("@type") == "Product":
+                data = candidate
+                break
+        if not data:
+            continue
+        title = re.sub(r"\s+", " ", html.unescape(data.get("name", ""))).strip()
+        rule = next((r for r in ATELIERFIG_PIECES if re.search(r[0], title, re.I)), None)
+        if not rule:
+            print(f"  Atelier Fig: '{title}' is not in the design list - skipped")
+            continue
+        offers = data.get("Offers") or data.get("offers") or {}
+        offer = offers[0] if isinstance(offers, list) and offers else offers
+        in_stock = str(offer.get("Availability") or offer.get("availability") or "").endswith("InStock")
+        made_to_order = bool(re.search(r"made to order", html.unescape(data.get("description", "")), re.I))
+        images = data.get("image") or []
+        image = images[0].get("contentUrl") if images and isinstance(images[0], dict) else (images[0] if images else "")
+        if not image or not (in_stock or made_to_order):
+            continue
+        try:
+            price = float(offer.get("price"))
+        except (TypeError, ValueError):
+            price = None
+        groups.setdefault(rule[1], []).append({
+            "slug": slug, "url": url, "in_stock": in_stock, "price": price,
+            "currency": offer.get("priceCurrency"),
+            "image": re.sub(r"/v1/fit/w_\d+,h_\d+,q_\d+/", "/v1/fit/w_1000,h_1000,q_85/", image),
+        })
+    products = []
+    for _, name, category, materials, preferred in ATELIERFIG_PIECES:
+        listings = groups.get(name)
+        if not listings:
+            continue
+        pick = next((x for x in listings if x["slug"] == preferred), None) or next((x for x in listings if x["in_stock"]), listings[0])
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": pick["url"],
+            "category": category, "material_options": materials, "dimensions": "", "notes": "", "image_url": pick["image"],
+            "designer": "", "price": pick["price"] if pick["price"] else None, "currency": pick["currency"] if pick["price"] else None,
+        })
+    cabinet = _atelierfig_get(f"{base}/frame-cabinets")
+    if cabinet and ATELIERFIG_FRAME_PHOTO in cabinet and re.search(r"price on request", cabinet, re.I):
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": "Frame Cabinet",
+            "product_url": f"{base}/frame-cabinets", "category": "Cabinet", "material_options": ["Beech", "Aluminium"],
+            "dimensions": "100 x 200 x 75 cm", "notes": "",
+            "image_url": f"https://static.wixstatic.com/media/{ATELIERFIG_FRAME_PHOTO}/v1/fit/w_1000,h_1000,q_85/file.jpg",
+            "designer": "", "price": None, "currency": None,
+        })
+    return products
+
+
+# jacobegeberg.com (Jacob Egeberg, Copenhagen; WooCommerce; added 2026-11-27). One Store API request, about 21 listings. A listing
+# is built when it is in stock and can be bought in the shop's own cart. Left out: Quarry Bowl, Molten Vase and Liquid Light (their button
+# leads to projectmateria.com, a project run by the retailer Tableau CPH and Edition Solenne, not by the designer), sold-out listings,
+# listings without a working buy button (Sand Container, price 0) and the Melting Plug extension cord. The Bootprint Vase Large and
+# Mini are one piece. The shop's own titles are in capitals and the addresses are copy leftovers (chair-4-copy...), so names and
+# types are set here; a title not in the list is printed and skipped.
+EGEBERG_PIECES = {    # shop title (lower case) -> (piece name, type, which photo)
+    "bolt cup": ("Bolt Cup", "Cup", 1),
+    "nascar table lamp": ("NASCAR Table Lamp", "Table Lamp", 0),
+    "bootprint vase large": ("Bootprint Vase", "Vase", 0),
+    "bootprint vase mini": ("Bootprint Vase", "Vase", 0),
+    "molten mirror": ("Molten Mirror", "Mirror", 0),
+    "amphibious chair": ("Amphibious Chair", "Lounge Chair", 0),
+    "amphibious puff": ("Amphibious Pouf", "Pouf", 0),
+    "amphibious sofa": ("Amphibious Sofa", "Sofa", 0),
+    "excavation candle holder": ("Excavation Candle Holder", "Candle Holder", 0),
+    "excavation block candle": ("Excavation Block Candle", "Candle", 0),
+    "small pile book-end": ("Small Pile Bookend", "Bookend", 0),
+    "tiny crater": ("Tiny Crater", "Bowl", 0),
+    "tiny island": ("Tiny Island Charging Station", "Objects", 0),
+    "patched sidetable": ("Patched Side Table", "Side Table", 0),
+    "folded leaf table": ("Folded Leaf Table", "Coffee Table", 0),
+    "office chair": ("Office Chair", "Office Chair", 0),
+    "sand container": ("Sand Container", "Planter", 0),
+}
+EGEBERG_EXTERNAL = ("quarry bowl", "molten vase", "liquid light")    # sold through projectmateria.com
+
+
+def _egeberg_image(image):
+    """The originals are up to 6000 px: take the smallest srcset copy of at least 750 px, else the largest copy under 1700 px."""
+    sizes = sorted((int(w), u) for u, w in re.findall(r"(\S+) (\d+)w", image.get("srcset") or ""))
+    fit = [u for w, u in sizes if 750 <= w <= 1700]
+    if fit:
+        return fit[0]
+    smaller = [u for w, u in sizes if 500 <= w < 750]
+    return smaller[-1] if smaller else image.get("src", "")
+
+
+def extract_jacob_egeberg(brand):
+    base = brand["url"].rstrip("/")
+    data = _fetch_json(f"{base}/wp-json/wc/store/v1/products?per_page=100&page=1")
+    if not data:
+        print("  Could not fetch the Jacob Egeberg Store API")
+        return []
+    listings = {html.unescape(p.get("name", "")).strip().lower(): p for p in data}
+    products, seen = [], set()
+    for title, (name, category, photo) in EGEBERG_PIECES.items():    # Large before Mini, so Large stands for the vase
+        p = listings.get(title)
+        if not p or name in seen or not (p.get("is_in_stock") and p.get("is_purchasable")) or not p.get("images"):
+            continue
+        if p.get("type") == "external":
+            continue
+        seen.add(name)
+        prices = p.get("prices") or {}
+        try:
+            price = int(prices["price"]) / 10 ** int(prices.get("currency_minor_unit", 2))
+        except (KeyError, TypeError, ValueError):
+            price = 0
+        images = p["images"]
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": p["permalink"],
+            "category": category, "material_options": [], "dimensions": "", "notes": "",
+            "image_url": _egeberg_image(images[photo] if photo < len(images) else images[0]), "designer": "",
+            "price": price if price > 0 else None, "currency": prices.get("currency_code") if price > 0 else None,
+        })
+    for title, p in listings.items():
+        if title not in EGEBERG_PIECES and title not in EGEBERG_EXTERNAL and title != "melting plug":
+            print(f"  Jacob Egeberg: '{title}' is not in the piece list - skipped")
+    return products
+
+
+# daydreamingobjects.com (Daydreaming Objects, Copenhagen; Squarespace; added 2026-11-27). One request: the /webshop page carries
+# every listing with its sold-out flag and photos (HTML only; robots.txt disallows ?format=json). SCOOP's two heights and the blue
+# edition are one piece, and so are the three Stem light sculptures (Stem I, Stem II, White Stem); each Soft Solid luminaire is its
+# own design on its own vintage base. A sold-out piece drops out by itself (Stem I, luminaire_O today). The first photo is often a
+# detail or a hand shot, so each piece names the file it is shown with (falling back to the shop's main photo).
+DAYDREAMING_PIECES = [    # (piece name, type, [(listing slug, part of the photo's file name), ...] in order of preference)
+    ("Scoop", "Table Lamp", [("scoop-grounded", "Tukaj-9025."), ("scoop-elevated", "Tukaj-8979."), ("scoop-blue", "Scoop+Blue.")]),
+    ("Stem", "Floor Lamp", [("soft-solidstem-52pjg", "Tukaj-3095."), ("soft-solidstem-838nh", "0525_crop."),
+                            ("soft-solidstem", "Tukaj-0074.")]),
+    ("Soft Solid Luminaire I", "Floor Lamp", [("soft-solid-luminairei", "")]),
+    ("Soft Solid Luminaire U", "Table Lamp", [("soft-solid-luminairew", "")]),
+    ("Soft Solid Luminaire D", "Table Lamp", [("soft-solid-luminaireq", "")]),
+    ("Soft Solid Luminaire O", "Table Lamp", [("soft-solid-luminaireo", "")]),
+    ("Daydreamer", "Wall Lamp", [("daydreamer", "")]),
+    ("Soft Solid Candles", "Candle", [("soft-solid-candles", "")]),
+]
+# photo by position in the listing's gallery, where the file names do not tell the pictures apart
+DAYDREAMING_PHOTO_INDEX = {"soft-solid-luminairei": 4, "soft-solid-luminairew": 1, "soft-solid-luminaireq": 4,
+                           "daydreamer": 9, "soft-solid-candles": 1}
+
+
+def extract_daydreaming_objects(brand):
+    base = brand["url"].rstrip("/")
+    items = {(i.get("fullUrl") or "").rstrip("/").rsplit("/", 1)[-1]: i for i in _extract_squarespace_commerce_page(f"{base}/webshop")}
+    products, known = [], set()
+    for name, category, listings in DAYDREAMING_PIECES:
+        known.update(slug for slug, _ in listings)
+        pick = next(((slug, part) for slug, part in listings if slug in items and not items[slug].get("soldOut")), None)
+        if not pick:
+            continue
+        slug, part = pick
+        item = items[slug]
+        photos = [x["assetUrl"] for x in item.get("images") or [] if x.get("assetUrl")]
+        image = next((u for u in photos if part and part in u), None)
+        if not image and slug in DAYDREAMING_PHOTO_INDEX and DAYDREAMING_PHOTO_INDEX[slug] < len(photos):
+            image = photos[DAYDREAMING_PHOTO_INDEX[slug]]
+        image = image or (item.get("mainImage") or {}).get("assetUrl") or (photos[0] if photos else "")
+        if not image:
+            continue
+        money = item.get("price") if isinstance(item.get("price"), dict) else {}
+        try:
+            price = float(money.get("value"))
+        except (TypeError, ValueError):
+            price = 0
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": base + item["fullUrl"],
+            "category": category, "material_options": [], "dimensions": "", "notes": "", "image_url": image, "designer": "",
+            "price": price if price > 0 else None, "currency": money.get("currency") if price > 0 else None,
+        })
+    for slug in sorted(set(items) - known):
+        print(f"  Daydreaming Objects: '{items[slug].get('title')}' is not in the piece list - skipped")
+    return products
+
+
+# fangoceramics.com (Fango Ceramics, Jacopo Cucci; Squarespace; added 2026-11-27). One request: the /shop page carries every listing
+# with its sold-out flag, text and photos (HTML only; robots.txt disallows ?format=json). Every listing is a single pot and many
+# share a name, so each FORM is one piece (all the grappino cups, all the tea bowls, both jugs ...), shown with the first listing in
+# the shop's own order that is not sold out; sold-out pots drop out and a form with none left disappears until more are listed.
+# The shop spells one title "pourng vessel". A title the list does not know is printed and skipped.
+FANGO_FORMS = [    # (match on the lower-case title, match on the description or "", piece name, type). First match wins.
+    (r"grappino", "", "Grappino", "Cup"),
+    (r"tea ?bowl|chawan", "", "Chawan Tea Bowl", "Bowl"),
+    (r"pair of cups", "", "Pair of Cups", "Cup"),
+    (r"\bcup\b", "", "Cup", "Cup"),
+    (r"teapot", "", "Teapot", "Teapot"),
+    (r"\bjug\b", "", "Jug", "Jug"),
+    (r"pour(i)?ng vessel", r"side[ -]handled", "Side-Handled Pouring Vessel", "Jug"),
+    (r"pour(i)?ng vessel", "", "Pouring Vessel", "Jug"),
+    (r"^bowl$", "", "Bowl", "Bowl"),
+]
+
+
+def extract_fango_ceramics(brand):
+    base = brand["url"].rstrip("/")
+    products, seen = [], set()
+    for item in _extract_squarespace_commerce_page(f"{base}/shop"):
+        if item.get("soldOut") or not item.get("fullUrl"):
+            continue
+        title = re.sub(r"\s+", " ", item.get("title") or "").strip()
+        text = html.unescape(re.sub(r"<[^>]+>", " ", item.get("description") or ""))
+        form = next((f for f in FANGO_FORMS if re.search(f[0], title.lower()) and (not f[1] or re.search(f[1], text, re.I))), None)
+        if not form:
+            print(f"  Fango Ceramics: '{title}' is not in the form list - skipped")
+            continue
+        name, category = form[2], form[3]
+        if name == "Teapot" and "cicada" in title.lower():
+            name = "Cicada Teapot"
+        image = (item.get("mainImage") or {}).get("assetUrl") or next(
+            (x.get("assetUrl") for x in item.get("images") or [] if x.get("assetUrl")), "")
+        if form[2] in seen or not image:
+            continue
+        seen.add(form[2])
+        money = item.get("price") if isinstance(item.get("price"), dict) else {}
+        try:
+            price = float(money.get("value"))
+        except (TypeError, ValueError):
+            price = 0
+        products.append({
+            "brand": brand["name"], "brand_url": brand["url"], "product_name": name, "product_url": base + item["fullUrl"],
+            "category": category, "material_options": [], "dimensions": "", "notes": "", "image_url": image, "designer": "",
+            "price": price if price > 0 else None, "currency": money.get("currency") if price > 0 else None,
+        })
+    return products
+
+
 # Map brand name -> extractor function. Add new brands here as extractors
 # get built for them.
 EXTRACTORS = {
@@ -19729,6 +20020,15 @@ EXTRACTORS = {
     "Jeremy Maxwell Wintrebert": extract_jeremy_maxwell_wintrebert,
     "Johan Viladrich": extract_portfolio_designer,
     "Rooms": extract_portfolio_designer,
+    "Atelier Fig": extract_atelier_fig,
+    "Jacob Egeberg": extract_jacob_egeberg,
+    "Daydreaming Objects": extract_daydreaming_objects,
+    "Fango Ceramics": extract_fango_ceramics,
+    "Filippo Andrighetto": extract_portfolio_designer,
+    "Sunhyo Mast": extract_portfolio_designer,
+    "Forever Studio": extract_portfolio_designer,
+    "Ward Wijnant": extract_portfolio_designer,
+    "Kim Richardt": extract_portfolio_designer,
     "Ben McCarthy": extract_portfolio_designer,
     "Roll & Hill": extract_roll_and_hill,
     "HAHA studio": extract_haha_studio,
