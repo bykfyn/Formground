@@ -4,11 +4,14 @@ Measures the photos of one product type so its cards can show off-square studio 
     python3 scraper/analyze_card_images.py table-lamps      # slug from generate_browse_pages.CATEGORIES
     python3 scraper/analyze_card_images.py --all            # every browse type (slow)
     python3 scraper/analyze_card_images.py --brand Tecta    # every photo of one brand (its maker page cards)
+    python3 scraper/analyze_card_images.py --designer-cards # only the photos on maker pages' designer cards
 
 Results go to data/image_fit.json (cached: only new photos are fetched). Photos are measured at card size, 8 at a time.
+The --designer-cards results go to data/designer_card_fit.json, so they leave product cards as they are.
 """
 
 import concurrent.futures
+import json
 import sys
 
 import generate_browse_pages as gb
@@ -28,6 +31,26 @@ def analyze_brand(brand):
     measure(brand, urls)
 
 
+def analyze_designer_cards():
+    import sqlite3
+
+    import generate_brand_pages as gbp
+    db = sqlite3.connect(image_fit.CACHE_PATH.parent / "formground.db")
+    db.row_factory = sqlite3.Row
+    by_brand = {}
+    for row in db.execute("SELECT * FROM products WHERE image_url != ''"):
+        by_brand.setdefault(row["brand"], []).append(dict(row))
+    info = {name: (slug, n_brands) for name, slug, _, n_brands in gbp._designer_pages()}
+    urls = sorted({d[3] for brand, products in by_brand.items() for d in gbp.designers_for_brand(brand, products, info)})
+    todo = [u for u in urls if not image_fit.designer_card_info(u)]
+    print(f"designer cards: {len(urls)} photos, {len(todo)} to measure")
+    with concurrent.futures.ThreadPoolExecutor(8) as ex:
+        found = dict(zip(todo, ex.map(lambda u: image_fit.measure_designer_card(u, fetch_url=sized(u, CARD)), todo)))
+    cache = image_fit._load_designer_cache()
+    cache.update({u: info for u, info in found.items() if info})
+    image_fit.DESIGNER_CACHE_PATH.write_text(json.dumps(cache, indent=1, sort_keys=True))
+
+
 def measure(label, urls):
     cache = image_fit._load()
     # measure what is missing; also redo flat-edged entries made before subject boxes existed
@@ -44,6 +67,9 @@ def measure(label, urls):
 
 if __name__ == "__main__":
     args = sys.argv[1:]
+    if args == ["--designer-cards"]:
+        analyze_designer_cards()
+        sys.exit(0)
     if args[:1] == ["--brand"] and len(args) > 1:
         for b in args[1:]:
             analyze_brand(b)

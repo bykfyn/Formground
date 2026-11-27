@@ -1240,19 +1240,9 @@ def render_stockist_section(brand, stockist_groups):
 
 
 BRAND_DESIGNERS_CSS = """
-  .designer-row { display: flex; flex-wrap: wrap; gap: 10px; }
-  .designer-chip {
-    display: inline-flex; align-items: baseline; gap: 8px;
-    background: var(--surface-1); border: 0.5px solid var(--border);
-    border-radius: 999px; padding: 8px 14px;
-    text-decoration: none; color: inherit; font-size: 13px;
-  }
-  .designer-chip:hover { background: var(--surface-2); border-color: var(--border-strong); }
-  .designer-chip-name { font-weight: 500; }
-  .designer-chip-count { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-  .designer-more { margin-top: 12px; }
-  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; margin-bottom: 12px; }
-  .designer-more[open] summary { margin-bottom: 12px; }
+  .designer-more { margin-top: 18px; }
+  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; }
+  .designer-more[open] summary { margin-bottom: 16px; }
 """
 
 # "Makers like X" (mockup v3, 2026-10-19): matched through the work. Each maker is described by which /work/ types their
@@ -1360,7 +1350,7 @@ def render_similar_section(brand, similar):
   </section>"""
 
 
-DESIGNERS_SHOWN = 12   # the rest sit behind "and N more" (Alessi has 77, Galerie Kreo 68)
+DESIGNERS_SHOWN = 6    # one row on desktop; the rest sit behind "and N more" (Alessi has 80, Galerie Kreo 68)
 
 
 def _portfolio_names():
@@ -1369,47 +1359,62 @@ def _portfolio_names():
 
 
 def designers_for_brand(brand, products, designer_info):
-    """[(name, href, pieces)] for the designers credited on this brand's pieces who have a page on Formground, most
-    pieces first. A designer without a page (fewer than two credited pieces anywhere) is not listed: no dead links.
+    """[(name, href, pieces, image)] for the designers credited on this brand's pieces who have a page on Formground, most
+    pieces first. The image is one of the pieces that designer made for this brand (a different one on each card where
+    possible). A designer without a page (fewer than two credited pieces anywhere) is not listed: no dead links; nor is
+    one without a photo here: no photo, no card.
     designer_info = {name: (slug, brand count)}. A designer who works with several brands links with ?brand=<this
     brand>, so their page opens already filtered to this brand's pieces."""
-    counts = {}
+    import brand_selection
+    pieces = {}
     for p in products:
         for name in split_credit(p.get("designer")):
             if name in designer_info:
-                counts[name] = counts.get(name, 0) + 1
-    out = []
-    for name, c in counts.items():
+                pieces.setdefault(name, []).append(p)
+    out, used = [], set()
+    for name, mine in sorted(pieces.items(), key=lambda t: (-len(t[1]), t[0].lower())):
+        usable = [p for p in mine if p.get("image_url") and not p.get("link_dead")]
+        pick = brand_selection.representative_selection([p for p in usable if p["image_url"] not in used] or usable, 1)
+        if not pick:
+            continue
+        used.add(pick[0]["image_url"])
         slug, n_brands = designer_info[name]
         # a designer shown by their own work (portfolio page) has no brand chips to filter
         href = f"/designers/{slug}.html" + (f"?brand={slugify(brand)}" if n_brands >= 2 and name not in _portfolio_names() else "")
-        out.append((name, href, c))
-    return sorted(out, key=lambda t: (-t[2], t[0].lower()))
+        out.append((name, href, len(mine), pick[0]["image_url"]))
+    return out
 
 
-def _designer_chip(name, href, pieces):
-    label = f"{pieces} piece" + ("" if pieces == 1 else "s")
-    return (f'<a class="designer-chip" href="{html.escape(href)}" title="{label} on Formground">'
-            f'<span class="designer-chip-name">{html.escape(name)}</span>'
-            f'<span class="designer-chip-count">{pieces}</span></a>')
+def _designer_card(name, href, pieces, image):
+    count = f"{pieces} piece" + ("" if pieces == 1 else "s")
+    import image_fit
+    # a studio shot stays whole in the wide frame
+    cls, box_style, img_style = image_fit.fit_for_card(image, frame=4 / 3, info=image_fit.designer_card_info(image))
+    img_attrs = (f' class="{cls}"' if cls else "") + (f' style="{img_style}"' if img_style else "")
+    hero_style = f' style="{box_style}"' if box_style else ""
+    return (f'\n      <a class="maker-card" href="{html.escape(href)}"><div class="maker-card-hero"{hero_style}>'
+            f'<img{img_attrs} src="{html.escape(sized(image, CARD))}" alt="{html.escape(name)}" loading="lazy"></div>'
+            f'<div class="maker-card-body"><span class="maker-name">{html.escape(name)}</span>'
+            f'<span class="maker-categories">{count}</span></div></a>')
 
 
 def render_designers_section(brand, designers):
-    """"Designers who work with X": links to their pages on Formground (the Designers section). Returns "" when the
-    brand credits no designer who has a page. A long list shows the first DESIGNERS_SHOWN and folds the rest into a
-    plain <details> (no JS, and the links stay in the page for crawlers)."""
+    """"Designers who work with X": a card for each, linking to their page on Formground (the Designers section). Returns
+    "" when the brand credits no designer who has a page. A long list shows the first DESIGNERS_SHOWN and folds the rest
+    into a plain <details> (no JS, the links stay in the page for crawlers, and the folded photos load only when opened)."""
     if not designers:
         return ""
     shown, rest = designers[:DESIGNERS_SHOWN], designers[DESIGNERS_SHOWN:]
-    chips = "".join(_designer_chip(*d) for d in shown)
+    cards = "".join(_designer_card(*d) for d in shown)
     more = ""
     if rest:
         more = (f'\n    <details class="designer-more"><summary>and {len(rest)} more</summary>'
-                f'<div class="designer-row">{"".join(_designer_chip(*d) for d in rest)}</div></details>')
+                f'\n    <div class="like-grid">{"".join(_designer_card(*d) for d in rest)}\n    </div></details>')
     return f"""
   <section class="brand-section">
     <p class="brand-section-title">Designers who work with {html.escape(brand)}</p>
-    <div class="designer-row">{chips}</div>{more}
+    <div class="like-grid">{cards}
+    </div>{more}
   </section>"""
 
 
@@ -1632,6 +1637,8 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
         listing_html = (f'{all_work_title}  {earlier_html}\n  <div class="grid" data-listing-grid>{cards}</div>'
                         f'\n  {see_more_html}\n  {pager_html}')
     designers_section = render_designers_section(brand, designers) if page == 1 else ""
+    # with designer cards on the page, card photos with an extreme shape are fitted whole too
+    fit_selector = ".card-image img, .maker-card-hero img" if designers_section else ".card-image img"
     similar_section = render_similar_section(brand, similar) if page == 1 else ""
     stockist_section = (render_galleries_section(brand, galleries_for(brand)) + render_stockist_section(brand, stockists)) if page == 1 else ""
     page_url = f"{SITE_URL}/brands/{brand_page_slug(slug, page)}.html"
@@ -1690,7 +1697,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
 <script type="application/ld+json">{breadcrumb_json}</script>
 <link rel="stylesheet" href="/site.css">
 <link rel="stylesheet" href="{ICONS_CSS}">
-<style>{PAGE_CSS}{BRAND_DESIGNERS_CSS if designers_section else ''}{BRAND_SIMILAR_CSS if similar_section else ''}</style>
+<style>{PAGE_CSS}{BRAND_DESIGNERS_CSS if designers_section else ''}{BRAND_SIMILAR_CSS if similar_section or designers_section else ''}</style>
 {f"<script>{EXPLORE_HEAD_JS}</script>" if use_explore else ""}
 {creator_texts.style_tag("makers", slug) if page == 1 else ""}
 </head>
@@ -1707,7 +1714,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
     <a class="brand-site-link" href="{html.escape(brand_url)}" target="_blank" rel="noopener noreferrer">Visit site &rarr;</a>{promo_callout}
   </div>
 {text_html}{curated_note_html(brand, len(products)) if page == 1 else ""}{news_section}{listing_html}
-{similar_section}{designers_section}{stockist_section}
+{designers_section}{similar_section}{stockist_section}
   <p class="foot-note">
     {SITE_FOOTER_HTML}
   </p>
@@ -1722,7 +1729,7 @@ def render_brand_page(brand, slug, brand_url, products, umbrellas, country=None,
   // loses most of its content to the crop instead of just being
   // letterboxed. Switches to "contain" once the real aspect ratio is
   // known to be this extreme.
-  document.querySelectorAll(".card-image img").forEach(function (img) {{
+  document.querySelectorAll("{fit_selector}").forEach(function (img) {{
     img.addEventListener("load", function () {{
       var ratio = img.naturalWidth / img.naturalHeight;
       if (!img.style.objectPosition && (ratio < 0.55 || ratio > 1.8)) img.classList.add("contain-fit");

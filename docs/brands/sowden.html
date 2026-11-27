@@ -280,19 +280,9 @@
   a.card { scroll-margin-top: 90px; }
   a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
 
-  .designer-row { display: flex; flex-wrap: wrap; gap: 10px; }
-  .designer-chip {
-    display: inline-flex; align-items: baseline; gap: 8px;
-    background: var(--surface-1); border: 0.5px solid var(--border);
-    border-radius: 999px; padding: 8px 14px;
-    text-decoration: none; color: inherit; font-size: 13px;
-  }
-  .designer-chip:hover { background: var(--surface-2); border-color: var(--border-strong); }
-  .designer-chip-name { font-weight: 500; }
-  .designer-chip-count { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-  .designer-more { margin-top: 12px; }
-  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; margin-bottom: 12px; }
-  .designer-more[open] summary { margin-bottom: 12px; }
+  .designer-more { margin-top: 18px; }
+  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; }
+  .designer-more[open] summary { margin-bottom: 16px; }
 
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -615,6 +605,13 @@
   </div>
 
   <section class="brand-section">
+    <p class="brand-section-title">Designers who work with SOWDEN</p>
+    <div class="like-grid">
+      <a class="maker-card" href="/designers/george-sowden.html"><div class="maker-card-hero"><img src="https://www.sowden.it/web/image/product.product/317/image_512/%5BPL5.01%5D%20Portable%20and%20Table%20Lamp%20in%20silicone%20%E2%80%93%20Sowden%20PL5%20%28White%29?unique=ba9a160" alt="George Sowden" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">George Sowden</span><span class="maker-categories">23 pieces</span></div></a>
+      <a class="maker-card" href="/designers/pierre-charpin.html?brand=sowden"><div class="maker-card-hero"><img src="https://www.sowden.it/web/image/product.product/1134/image_512/%5BPC1.01%5D%20Pierre%20Charpin%20for%20SOWDEN%20-%20Portable-Table-Wall%20Lamp%20PC1?unique=28b5b3e" alt="Pierre Charpin" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Pierre Charpin</span><span class="maker-categories">1 piece</span></div></a>
+    </div>
+  </section>
+  <section class="brand-section">
     <p class="brand-section-title">Makers like SOWDEN</p>
     <p class="like-note">Other makers on Formground whose work overlaps with theirs.</p>
     <div class="like-grid">
@@ -625,10 +622,6 @@
       <a class="maker-card" href="/brands/rieul-lighting.html"><div class="maker-card-hero"><img src="https://rieullighting.com/web/product/medium/202606/8cf86a4b582ddf83b61c38cad21648ae.jpg" alt="Rieul Lighting" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Rieul Lighting</span><span class="maker-country">South Korea</span><span class="maker-categories">Portable Lamps · Vases</span></div></a>
       <a class="maker-card" href="/brands/anour.html"><div class="maker-card-hero"><img src="https://anour.dk/wp-content/uploads/2026/06/triple_backplate_donya_pivot_ceiling_black_stainless_steel-1000x1250.jpg" alt="Anour" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Anour</span><span class="maker-country">Denmark</span><span class="maker-categories">Ceiling Lamps · Table Lamps</span></div></a>
     </div>
-  </section>
-  <section class="brand-section">
-    <p class="brand-section-title">Designers who work with SOWDEN</p>
-    <div class="designer-row"><a class="designer-chip" href="/designers/george-sowden.html" title="23 pieces on Formground"><span class="designer-chip-name">George Sowden</span><span class="designer-chip-count">23</span></a><a class="designer-chip" href="/designers/pierre-charpin.html?brand=sowden" title="1 piece on Formground"><span class="designer-chip-name">Pierre Charpin</span><span class="designer-chip-count">1</span></a></div>
   </section>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
@@ -644,7 +637,7 @@
   // loses most of its content to the crop instead of just being
   // letterboxed. Switches to "contain" once the real aspect ratio is
   // known to be this extreme.
-  document.querySelectorAll(".card-image img").forEach(function (img) {
+  document.querySelectorAll(".card-image img, .maker-card-hero img").forEach(function (img) {
     img.addEventListener("load", function () {
       var ratio = img.naturalWidth / img.naturalHeight;
       if (!img.style.objectPosition && (ratio < 0.55 || ratio > 1.8)) img.classList.add("contain-fit");

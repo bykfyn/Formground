@@ -24,6 +24,9 @@ import requests
 from PIL import Image
 
 CACHE_PATH = Path(__file__).parent.parent / "data" / "image_fit.json"
+# Photos measured only for the designer cards on maker pages. Kept apart so that measuring them does not change how the
+# same photos sit on product cards across the site.
+DESIGNER_CACHE_PATH = Path(__file__).parent.parent / "data" / "designer_card_fit.json"
 LANDSCAPE_MIN = 1.6
 FLAT_EDGE_MAX = 22
 HEADERS = {"User-Agent": "Mozilla/5.0", "Referer": "https://formground.com/"}
@@ -139,36 +142,61 @@ MANUAL_CARD_POSITION = {
 }
 
 
-def fit_for_card(url):
-    """Square product cards (2026-10-11, user: table lamp photos cropped badly). Cache only, never fetches at build
+def fit_for_card(url, frame=1.0, info=None):
+    """`frame` is the card photo's width / height: 1.0 for product cards, 4/3 for the designer cards on maker pages.
+    Square product cards (2026-10-11, user: table lamp photos cropped badly). Cache only, never fetches at build
     time: run analyze_card_images.py for a type first. Returns (class, container style, image style).
     A photo clearly taller or wider than square, on flat edges:
       - if the piece fits inside the square window, it stays full-size and the window is moved onto the piece
         (object-position), so nothing is cut off and nothing shrinks;
       - otherwise it is shown whole on its own edge colour (contain).
     Near-square or busy photos keep the normal centred crop."""
-    if url in MANUAL_CARD_POSITION:
+    if url in MANUAL_CARD_POSITION and frame == 1.0:      # the hand-set positions are for the square window
         return "", "", f"object-position:{MANUAL_CARD_POSITION[url]}"
-    info = _load().get(url)
+    info = info or _load().get(url)
     if not info:
         return "", "", ""
-    ratio = info["ratio"]
+    ratio = info["ratio"] / frame                   # the photo's shape compared with the frame's: 1.0 is the same shape
     if TILE_SQUARE_RANGE[0] <= ratio <= TILE_SQUARE_RANGE[1] or info["edge_std"] > FLAT_EDGE_MAX:
         return "", "", ""
     box = info.get("box")
     if box:
         left, top, right, bottom = box
-        if ratio < 1:                       # taller than square: the window is `ratio` of the height
+        if ratio < 1:                       # taller than the frame: the window is `ratio` of the height
             window, lo, hi = ratio, top, bottom
             fits = (hi - lo) <= window - CARD_MARGIN
             pos = f"50% {_pos(lo, hi, window)}"
-        else:                               # wider than square: the window is 1/ratio of the width
+        else:                               # wider than the frame: the window is 1/ratio of the width
             window, lo, hi = 1 / ratio, left, right
             fits = (hi - lo) <= window - CARD_MARGIN
             pos = f"{_pos(lo, hi, window)} 50%"
         if fits:
             return "", "", f"object-position:{pos}"
     return "contain-fit", _bg_style(info), ""
+
+
+def _load_designer_cache():
+    return json.loads(DESIGNER_CACHE_PATH.read_text()) if DESIGNER_CACHE_PATH.exists() else {}
+
+
+_designer_cache = None
+
+
+def designer_card_info(url):
+    """The measurement for a designer card's photo: the shared cache first, then the designer cards' own."""
+    global _designer_cache
+    if _designer_cache is None:
+        _designer_cache = _load_designer_cache()
+    return _load().get(url) or _designer_cache.get(url)
+
+
+def measure_designer_card(url, fetch_url=None):
+    """Measures one photo without storing it; None when it cannot be fetched or read."""
+    try:
+        return _measure(fetch_url or url)
+    except Exception as e:  # noqa: BLE001 - any failure just means "crop as before"
+        print(f"  image_fit: could not analyze {url[:70]} ({type(e).__name__})")
+        return None
 
 
 CARD_MARGIN = 0.03          # the piece needs this much air (of the photo's own length) inside the square window

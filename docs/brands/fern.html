@@ -280,19 +280,9 @@
   a.card { scroll-margin-top: 90px; }
   a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
 
-  .designer-row { display: flex; flex-wrap: wrap; gap: 10px; }
-  .designer-chip {
-    display: inline-flex; align-items: baseline; gap: 8px;
-    background: var(--surface-1); border: 0.5px solid var(--border);
-    border-radius: 999px; padding: 8px 14px;
-    text-decoration: none; color: inherit; font-size: 13px;
-  }
-  .designer-chip:hover { background: var(--surface-2); border-color: var(--border-strong); }
-  .designer-chip-name { font-weight: 500; }
-  .designer-chip-count { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-  .designer-more { margin-top: 12px; }
-  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; margin-bottom: 12px; }
-  .designer-more[open] summary { margin-bottom: 12px; }
+  .designer-more { margin-top: 18px; }
+  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; }
+  .designer-more[open] summary { margin-bottom: 16px; }
 
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -846,6 +836,12 @@
   <nav class="pager" aria-label="Pages"><span class="current" aria-current="page">1</span><a href="/brands/fern-2.html">2</a><a href="/brands/fern-2.html" rel="next">Next &rarr;</a></nav></div>
 
   <section class="brand-section">
+    <p class="brand-section-title">Designers who work with Fern</p>
+    <div class="like-grid">
+      <a class="maker-card" href="/designers/jason-roskey.html"><div class="maker-card-hero"><img src="https://images.squarespace-cdn.com/content/v1/580c042ebebafb59fd8b453b/8c968f26-0a0d-437e-bd34-c056264f3256/C40A6705.jpg?format=500w" alt="Jason Roskey" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Jason Roskey</span><span class="maker-categories">77 pieces</span></div></a>
+    </div>
+  </section>
+  <section class="brand-section">
     <p class="brand-section-title">Makers like Fern</p>
     <p class="like-note">Other makers on Formground whose work overlaps with theirs.</p>
     <div class="like-grid">
@@ -856,10 +852,6 @@
       <a class="maker-card" href="/brands/galvin-brothers.html"><div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0177/8296/files/GB_Nov2024_IndiaHobson_LR-25.jpg?v=1733268293&amp;width=500" alt="Galvin Brothers" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Galvin Brothers</span><span class="maker-country">United Kingdom</span><span class="maker-categories">Dining Tables · Stools</span></div></a>
       <a class="maker-card" href="/brands/faye-toogood.html"><div class="maker-card-hero"><img src="https://www.datocms-assets.com/197231/1778068710-260408_fayetoogood1232.jpg?fit=max&amp;w=500&amp;auto=format" alt="Faye Toogood" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Faye Toogood</span><span class="maker-country">United Kingdom</span><span class="maker-categories">Dining Tables · Coffee Tables</span></div></a>
     </div>
-  </section>
-  <section class="brand-section">
-    <p class="brand-section-title">Designers who work with Fern</p>
-    <div class="designer-row"><a class="designer-chip" href="/designers/jason-roskey.html" title="77 pieces on Formground"><span class="designer-chip-name">Jason Roskey</span><span class="designer-chip-count">77</span></a></div>
   </section>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
@@ -875,7 +867,7 @@
   // loses most of its content to the crop instead of just being
   // letterboxed. Switches to "contain" once the real aspect ratio is
   // known to be this extreme.
-  document.querySelectorAll(".card-image img").forEach(function (img) {
+  document.querySelectorAll(".card-image img, .maker-card-hero img").forEach(function (img) {
     img.addEventListener("load", function () {
       var ratio = img.naturalWidth / img.naturalHeight;
       if (!img.style.objectPosition && (ratio < 0.55 || ratio > 1.8)) img.classList.add("contain-fit");

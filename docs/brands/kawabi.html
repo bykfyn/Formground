@@ -280,19 +280,9 @@
   a.card { scroll-margin-top: 90px; }
   a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
 
-  .designer-row { display: flex; flex-wrap: wrap; gap: 10px; }
-  .designer-chip {
-    display: inline-flex; align-items: baseline; gap: 8px;
-    background: var(--surface-1); border: 0.5px solid var(--border);
-    border-radius: 999px; padding: 8px 14px;
-    text-decoration: none; color: inherit; font-size: 13px;
-  }
-  .designer-chip:hover { background: var(--surface-2); border-color: var(--border-strong); }
-  .designer-chip-name { font-weight: 500; }
-  .designer-chip-count { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-  .designer-more { margin-top: 12px; }
-  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; margin-bottom: 12px; }
-  .designer-more[open] summary { margin-bottom: 12px; }
+  .designer-more { margin-top: 18px; }
+  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; }
+  .designer-more[open] summary { margin-bottom: 16px; }
 
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -563,6 +553,13 @@
   </div>
 
   <section class="brand-section">
+    <p class="brand-section-title">Designers who work with Kawabi</p>
+    <div class="like-grid">
+      <a class="maker-card" href="/designers/christopher-merchant.html?brand=kawabi"><div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0584/3579/7061/files/Kawabi_YamaPendant_Lagoon_FrontOff.jpg?v=1790216926&amp;width=500" alt="Christopher Merchant" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Christopher Merchant</span><span class="maker-categories">5 pieces</span></div></a>
+      <a class="maker-card" href="/designers/kawabi.html"><div class="maker-card-hero" style="background:#9f9885"><img class="contain-fit" src="https://cdn.shopify.com/s/files/1/0584/3579/7061/files/Kawabi_LulaSconce_Lagoon_FrontOff.jpg?v=1790214898&amp;width=500" alt="Kawabi" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Kawabi</span><span class="maker-categories">5 pieces</span></div></a>
+    </div>
+  </section>
+  <section class="brand-section">
     <p class="brand-section-title">Makers like Kawabi</p>
     <p class="like-note">Other makers on Formground whose work overlaps with theirs.</p>
     <div class="like-grid">
@@ -573,10 +570,6 @@
       <a class="maker-card" href="/brands/russo-betak.html"><div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0861/2600/2504/files/1147_RussoBetak_Lamp_90824.jpg?width=500" alt="Russo Betak" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Russo Betak</span><span class="maker-country">Denmark</span><span class="maker-categories">Table Lamps · Pendant Lamps</span></div></a>
       <a class="maker-card" href="/brands/frangere-studio.html"><div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0633/8114/3751/files/FunGuyChandelier_3Stem.jpg?v=1793171338&amp;width=500" alt="Frangere Studio" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Frangere Studio</span><span class="maker-country">New Zealand</span><span class="maker-categories">Pendant Lamps · Table Lamps</span></div></a>
     </div>
-  </section>
-  <section class="brand-section">
-    <p class="brand-section-title">Designers who work with Kawabi</p>
-    <div class="designer-row"><a class="designer-chip" href="/designers/christopher-merchant.html?brand=kawabi" title="5 pieces on Formground"><span class="designer-chip-name">Christopher Merchant</span><span class="designer-chip-count">5</span></a><a class="designer-chip" href="/designers/kawabi.html" title="5 pieces on Formground"><span class="designer-chip-name">Kawabi</span><span class="designer-chip-count">5</span></a></div>
   </section>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
@@ -592,7 +585,7 @@
   // loses most of its content to the crop instead of just being
   // letterboxed. Switches to "contain" once the real aspect ratio is
   // known to be this extreme.
-  document.querySelectorAll(".card-image img").forEach(function (img) {
+  document.querySelectorAll(".card-image img, .maker-card-hero img").forEach(function (img) {
     img.addEventListener("load", function () {
       var ratio = img.naturalWidth / img.naturalHeight;
       if (!img.style.objectPosition && (ratio < 0.55 || ratio > 1.8)) img.classList.add("contain-fit");

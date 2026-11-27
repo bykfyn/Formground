@@ -701,7 +701,7 @@ class HiddenHousesTests(unittest.TestCase):
 class BrandDesignerLinkTests(unittest.TestCase):
     """The "Designers who work with X" section on maker pages links only to designer pages that exist."""
 
-    CHIP = re.compile(r'class="designer-chip" href="(/designers/[^"]+)"')
+    CARD_LINK = re.compile(r'class="maker-card" href="(/designers/[^"]+)"')
 
     def _brand_pages(self):
         return sorted(glob.glob(str(DOCS / "brands" / "*.html")))
@@ -709,7 +709,7 @@ class BrandDesignerLinkTests(unittest.TestCase):
     def test_every_designer_link_points_at_a_real_page(self):
         broken = []
         for path in self._brand_pages():
-            for href in self.CHIP.findall(Path(path).read_text()):
+            for href in self.CARD_LINK.findall(Path(path).read_text()):
                 if not (DOCS / href.split("?")[0].lstrip("/")).exists():
                     broken.append((os.path.basename(path), href))
         self.assertEqual(broken, [])
@@ -726,11 +726,28 @@ class BrandDesignerLinkTests(unittest.TestCase):
             if numbered and (DOCS / "brands" / f"{numbered.group(1)}.html").exists() and "Designers who work with" in text:
                 self.fail(f"{name}: designers section repeated on a numbered page")
             if "Designers who work with" in text:
-                self.assertTrue(self.CHIP.search(text), f"{name}: heading with no designers")
+                self.assertTrue(self.CARD_LINK.search(text), f"{name}: heading with no designers")
+
+    def test_designers_show_as_cards_with_a_photo_and_a_piece_count_only(self):
+        for path in self._brand_pages():
+            text, name = Path(path).read_text(), os.path.basename(path)
+            if "Designers who work with" not in text:
+                continue
+            start = text.index('<p class="brand-section-title">Designers who work with')
+            section = text[start:text.index("</section>", start)]
+            cards = re.findall(r'<a class="maker-card" href="/designers/.*?</a>', section)
+            self.assertTrue(cards, name)
+            for card in cards:
+                self.assertRegex(card, r'<img[^>]* src="[^"]+"', name)
+                self.assertRegex(card, r'<span class="maker-categories">\d+ pieces?</span>', name)
+                self.assertNotIn("maker-country", card, name)
+            self.assertLessEqual(len(re.findall(r'class="maker-card" href="/designers/', section.split("<details")[0])), 6, name)
+            if "Makers like" in text:                      # the maker's own designers come before the way on to other makers
+                self.assertLess(start, text.index('<p class="brand-section-title">Makers like'), name)
 
     def test_no_designer_listed_twice_on_one_page(self):
         for path in self._brand_pages():
-            links = self.CHIP.findall(Path(path).read_text())
+            links = self.CARD_LINK.findall(Path(path).read_text())
             self.assertEqual(len(links), len(set(links)), os.path.basename(path))
 
 
@@ -764,7 +781,7 @@ class DesignerBrandFilterTests(unittest.TestCase):
     def test_maker_links_carry_the_brand_only_for_multi_brand_designers(self):
         multi = {os.path.basename(p) for p in self._multi_brand_pages()}
         for path in glob.glob(str(DOCS / "brands" / "*.html")):
-            for href in re.findall(r'class="designer-chip" href="(/designers/[^"]+)"', Path(path).read_text()):
+            for href in re.findall(r'class="maker-card" href="(/designers/[^"]+)"', Path(path).read_text()):
                 page = os.path.basename(href.split("?")[0])
                 self.assertEqual("?brand=" in href, page in multi, f"{os.path.basename(path)}: {href}")
                 if "?brand=" in href:

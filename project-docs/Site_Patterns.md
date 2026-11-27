@@ -82,8 +82,10 @@ Made to order; designers (no tags) also get the country. Website and Products ar
 it). Tags are links: Furniture / Lighting / Objects go to the type page, Ceramics to `/work.html?q=ceramics`, the country to
 `/work.html?q=from+<country>`. A page with more than 12 pieces shows, in this order: text, (curated note), "New from X"
 (when there is something new), "A selection" (12 on desktop, the first 6 on phones; `scraper/brand_selection.py`, one piece per
-category in turn), "Show all N pieces", then the full list (page 1's 60 cards, See more, pager), then "Makers like X" /
-Where to buy. The full list is in the HTML; CSS folds it only while `html.explore-js` is set. Pieces named in the profile text
+category in turn), "Show all N pieces", then the full list (page 1's 60 cards, See more, pager), then "Designers who work
+with X" / "Makers like X" / Where to buy. The designers show as maker cards (since 2026-11-27, chips before): a photo of a
+piece the designer made for this maker, the name, and the piece count only (no country); six shown, the rest behind
+"and N more". The full list is in the HTML; CSS folds it only while `html.explore-js` is set. Pieces named in the profile text
 link to their card (scroll and highlight; unfolds the list when needed). Pages with 12 pieces or fewer show everything as before.
 Designer pages use the same layout; a `?brand=` link unfolds the list so the brand chips act on it. Code: `explore_layout()` in
 `generate_brand_pages.py`, `meta_line_html()` in `creator_texts.py`, "in-selection" handling in `listing.js`.

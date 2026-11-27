@@ -280,19 +280,9 @@
   a.card { scroll-margin-top: 90px; }
   a.card.flash { outline: 2px solid var(--text-secondary); outline-offset: 4px; }
 
-  .designer-row { display: flex; flex-wrap: wrap; gap: 10px; }
-  .designer-chip {
-    display: inline-flex; align-items: baseline; gap: 8px;
-    background: var(--surface-1); border: 0.5px solid var(--border);
-    border-radius: 999px; padding: 8px 14px;
-    text-decoration: none; color: inherit; font-size: 13px;
-  }
-  .designer-chip:hover { background: var(--surface-2); border-color: var(--border-strong); }
-  .designer-chip-name { font-weight: 500; }
-  .designer-chip-count { color: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
-  .designer-more { margin-top: 12px; }
-  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; margin-bottom: 12px; }
-  .designer-more[open] summary { margin-bottom: 12px; }
+  .designer-more { margin-top: 18px; }
+  .designer-more summary { font-size: 13px; color: var(--text-accent); cursor: pointer; }
+  .designer-more[open] summary { margin-bottom: 16px; }
 
   .like-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; }
   @media (max-width: 900px) { .like-grid { grid-template-columns: repeat(3, 1fr); } }
@@ -594,6 +584,12 @@
   </div>
 
   <section class="brand-section">
+    <p class="brand-section-title">Designers who work with Evam</p>
+    <div class="like-grid">
+      <a class="maker-card" href="/designers/caroline-kable.html"><div class="maker-card-hero"><img style="object-position:50% 53.1%" src="https://static.wixstatic.com/media/f698c7_b95963df978d4859b563d155aa0c329c~mv2.jpg/v1/fit/w_500,h_500,q_80/file.jpg" alt="Caroline Kable" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Caroline Kable</span><span class="maker-categories">24 pieces</span></div></a>
+    </div>
+  </section>
+  <section class="brand-section">
     <p class="brand-section-title">Makers like Evam</p>
     <p class="like-note">Other makers on Formground whose work overlaps with theirs.</p>
     <div class="like-grid">
@@ -604,10 +600,6 @@
       <a class="maker-card" href="/brands/coco-flip.html"><div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/1737/9815/files/CocoFlip_Honey_Wall_Lrg_ForestGreen_On.jpg?v=1755738081&amp;width=500" alt="Coco Flip" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Coco Flip</span><span class="maker-country">Australia</span><span class="maker-categories">Wall Lamps · Benches</span></div></a>
       <a class="maker-card" href="/brands/thorup-copenhagen.html"><div class="maker-card-hero"><img src="https://cdn.shopify.com/s/files/1/0972/7672/3527/files/RWS1166_PatroneRecessedWallLamp_ThorupCph_Packshot_BlackBrownBrass.png?v=1793089810&amp;width=500" alt="Thorup Copenhagen" loading="lazy"></div><div class="maker-card-body"><span class="maker-name">Thorup Copenhagen</span><span class="maker-country">Denmark</span><span class="maker-categories">Wall Lamps · Coffee Tables</span></div></a>
     </div>
-  </section>
-  <section class="brand-section">
-    <p class="brand-section-title">Designers who work with Evam</p>
-    <div class="designer-row"><a class="designer-chip" href="/designers/caroline-kable.html" title="24 pieces on Formground"><span class="designer-chip-name">Caroline Kable</span><span class="designer-chip-count">24</span></a></div>
   </section>
   <p class="foot-note">
     &copy; 2026 Formground &middot; <a href="/">&larr; Back to Formground</a> &middot; <a href="/work.html">Work</a> &middot; <a href="/creators.html">Creators</a> &middot; <a href="/edits.html">Edits</a> &middot; <a href="/marketplace.html">Marketplace</a> &middot; <a href="/for-creators.html">For Creators</a> &middot; <a href="/guides.html">Guides</a> &middot; <a href="/privacy.html">Privacy</a> &middot; <a href="/about.html">About</a> &middot; <a href="/contact.html">Contact</a> &middot; <a href="https://sheerd.com" target="_blank" rel="noopener">Powered by Sheerd</a>
@@ -623,7 +615,7 @@
   // loses most of its content to the crop instead of just being
   // letterboxed. Switches to "contain" once the real aspect ratio is
   // known to be this extreme.
-  document.querySelectorAll(".card-image img").forEach(function (img) {
+  document.querySelectorAll(".card-image img, .maker-card-hero img").forEach(function (img) {
     img.addEventListener("load", function () {
       var ratio = img.naturalWidth / img.naturalHeight;
       if (!img.style.objectPosition && (ratio < 0.55 || ratio > 1.8)) img.classList.add("contain-fit");
